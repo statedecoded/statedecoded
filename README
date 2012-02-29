@@ -1,7 +1,7 @@
 THE STATE DECODED
 
 A free, open source PHP- and MySQL-based application to parse and
-display state laws. This project is currently in alpha testing for a
+display state laws. This project is currently in beta testing for a
 Virginia implementation, and will soon be cleaned up and pushed out to
 Github.
 
