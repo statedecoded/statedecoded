@@ -1,0 +1,47 @@
+.pop {
+	position: absolute;
+	display: inline;
+}
+	.pop .pop_menu {
+		display: none;
+		border: 1px solid #dccbaf;
+	}
+	.pop .pop_toggle {
+		background-image: url('/images/arrow-down.png');
+		background-repeat: no-repeat;
+		background-position: center center;
+		width: 14px;
+		height: 14px;
+		overflow: hidden;
+		cursor: pointer;
+	}
+
+.active .pop_menu {
+	display: block;
+	background-color: #f4eee5;
+	color: #000;
+	position: absolute;
+	padding: .6em;
+	width: 300px;
+	max-height: 500px;
+	overflow: auto;
+}
+	.active .pop_menu h2 {
+		margin-top: 0;
+	}
+	.active .pop_menu a {
+		color: #000;
+		text-decoration: none;
+		display: block;
+		padding: 2px 0;
+	}
+		.active .pop_menu a:hover {
+			background-color: #dccbaf;
+		}
+.active .pop_toggle {
+	z-index: 2000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url('/images/arrow-up.png');
+}

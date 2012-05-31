@@ -13,28 +13,12 @@ class Parser
 			return false;
 		}
 		
-		# Include HTML Purifier, which we use to clean up the code and character sets.
-		require_once(INCLUDE_PATH.'/htmlpurifier/HTMLPurifier.auto.php');
-		# Fire up HTML Purifier.
-		$purifier = new HTMLPurifier();
-		
 		# Strip out the whitespace.
 		$this->section = trim($this->section);
 		
 		# For whatever reason, the SGML file from LIS uses a vertical pipe in place of the section
 		# symbol. Swap them out.
 		$this->section = str_replace('|', '§', $this->section);
-		
-/*
-?			$$PROFILE=COD
-section		2.2-2031
-ignore		Division of Public Safety Communications established; appointment of Virginia Public Safety Communic
-?			00000000001
-?			05602.2
-?			20.1
-concerns?	Virginia Information Technologies Agency
-?			N
-*/
 		
 		# Break this section into an array based on newlines.
 		$section = explode(PHP_EOL, $this->section);
@@ -60,14 +44,15 @@ concerns?	Virginia Information Technologies Agency
 			$tmp[2] = 'Untitled';
 		}
 		
-		// *Really*? There's no better way to do this?
+		// *Really*? Just foreach() this puppy.
 		$tmp[0] = trim($tmp[0]);
 		$tmp[1] = trim($tmp[1]);
 		$tmp[2] = trim($tmp[2]);
 		$tmp[3] = trim($tmp[3]);
 		
-		# I don't know what this bit is, but we store it for when we figure that out.
-		$code->unknown1 = $tmp[0];
+		# This long string of numbers is a unique identifer that increments sequentially, so we
+		# use it to populate the order_by column.
+		$code->order_by = $tmp[0];
 		
 		# This bit contains the chapter number.
 		$code->chapter_number = $tmp[1];
@@ -113,13 +98,24 @@ concerns?	Virginia Information Technologies Agency
 		$tmp = str_replace('</table>', '</section>', $tmp);
 		$tmp = str_replace('<section>', '<section type="section">', $tmp);
 		
-		# Use HTML Purifier to clean this up. Specifically, we're invoking a function that's meant
-		# to clean up SGML, by cleaning up the character set without worrying about the validity of
-		# HTML tags. That leaves our SGML unharmed, and our character set tidy, too.
-		$tmp = HTMLPurifier_Encoder::cleanUTF8($tmp, $force_php = false);
+		# And now render that array as a XML tree, catching any errors.
+		libxml_use_internal_errors(true);
+		try
+		{
+			$xml = new SimpleXMLElement($tmp);
+		}
+		catch (Exception $e)
+		{
+			echo '<p>SimpleXML could not parse '.$this->section.' because of the following:</p><ul>';
+			foreach (libxml_get_errors() as $error)
+			{
+				echo '<li>'.$error.'</li>';
+			}
+			echo '</ul>';
+			continue;
+		}
 		
-		# And now render that array as a XML tree.
-		$xml = new SimpleXMLElement($tmp);
+		# Save memory space.
 		unset($tmp);
 
 		# Define all five possible section prefixes via via PCRE strings.
@@ -303,7 +299,7 @@ concerns?	Virginia Information Technologies Agency
 			
 			# And save the stuff that isn't the matched string as the name. Since this sometimes
 			# includes a newline, and sometimes has double spaces, do a couple of quick substitutions.
-			$code->name = trim(str_replace('§ '.$code->section_number.'.', '', $xml->section->{0}));
+			$code->name = trim(str_replace(SECTION_IDENTIFIER.' '.$code->section_number.'.', '', $xml->section->{0}));
 			$code->name = str_replace("\n", ' ', $code->name);
 			$code->name = str_replace('  ', ' ', $code->name);
 			
@@ -322,12 +318,12 @@ concerns?	Virginia Information Technologies Agency
 		# the greatest length of a section in the Virginia Code that contains the string "Repealed
 		# by Acts."
 		if (
-			(stristr($code->name, 'repealed effective') !== false)
+			(strpos($code->name, 'repealed effective') !== false)
 			||
-			(strstr($code->name, '§ through ') !== false)
+			(strpos($code->name, '§ through ') !== false)
 			||
 			(
-				(substr($code->text, 0, 16) == 'Repealed by Acts')
+				(strpos($code->text, 'Repealed by Acts') !== false)
 				&&
 				(strlen($code->text) <= 128)
 			)
@@ -362,9 +358,6 @@ concerns?	Virginia Information Technologies Agency
 				$tmp = substr($tmp, 1);
 			}
 			
-			# Use HTML Purifier to clean up this history data.
-			$tmp = $purifier->purify($tmp);
-			
 			# Save the finished history data.
 			$code->history = $tmp;
 		}
@@ -389,18 +382,22 @@ concerns?	Virginia Information Technologies Agency
 		# We're going to need access to the database connection throughout this function.
 		global $db;
 		
-		# Try to create a new chapter. If the chapter already exists, create_chapter() will handle
+		# Try to create a new chapter. If the chapter already exists, create_structure() will handle
 		# that silently. Either way a chapter ID gets returned.
 		$chapter = new Parser;
 		$chapter->number = $this->code->chapter_number;
 		$chapter->name = $this->code->chapter_name;
 		$tmp = explode('-', $this->code->section_number);
 		$chapter->title_number = $tmp[0];
-		$chapter_id = $chapter->create_chapter();
+		$chapter_id = $chapter->create_structure();
 		if ($chapter_id !== false)
 		{
-			$query['chapter_id'] = $chapter_id;
+			$query['structure_id'] = $chapter_id;
 			unset($chapter_id);
+		}
+		else
+		{
+			echo '<p>Error: Chapter could not be created for '.$chapter->number.' ("'.$chapter->name.'")</p>';
 		}
 		unset($chapter->number);
 		unset($chapter->name);
@@ -409,7 +406,6 @@ concerns?	Virginia Information Technologies Agency
 		# the key names.
 		$query['catch_line'] = $this->code->name;
 		$query['section'] = $this->code->section_number;
-		$query['chapter_number'] = $this->code->chapter_number;
 		$query['text'] = $this->code->text;
 		if (!empty($this->code->unknown1))
 		{
@@ -449,6 +445,7 @@ concerns?	Virginia Information Technologies Agency
 		# Preserve the insert ID from this law, since we'll need it below.
 		$law_id = $db->lastInsertID();
 		
+		
 		# This second section inserts the textual portions of the law.
 		
 		# Pull out any mentions of other sections of the code that are found within its text and
@@ -472,6 +469,13 @@ concerns?	Virginia Information Technologies Agency
 		$i=1;
 		foreach ($this->code->section as $section)
 		{
+			
+			# If no section type has been specified, make it your basic section.
+			if (!isset($section->type) || empty($section->type))
+			{
+				$section->type = 'section';
+			}
+			
 			# Insert this section of the...uh...section into the text table.
 			$sql = 'INSERT INTO text
 					SET law_id='.$law_id.',
@@ -512,8 +516,7 @@ concerns?	Virginia Information Technologies Agency
 				}
 				
 				$j++;
-			}			
-			
+			}
 			
 			$i++;
 		}
@@ -555,6 +558,14 @@ concerns?	Virginia Information Technologies Agency
 				$dictionary->store_definitions();
 			}
 		}
+		
+		# Memory management
+		unset($references);
+		unset($dictionary);
+		unset($definitions);
+		unset($chapter);
+		unset($sections);
+		unset($query);
 	}
 	
 	# Step through every line of every file that contains the contents of the code.
@@ -671,35 +682,44 @@ concerns?	Virginia Information Technologies Agency
 	
 	# When provided with a chapter number, verifies whether that chapter exists. Returns the chapter
 	# ID if it exists; otherwise, returns false.
-	public function chapter_exists()
+	public function structure_exists()
 	{
-		if (!isset($this->code->chapter_number))
+		
+		# We're going to need access to the database connection within this function.
+		global $db;
+	
+		if (!isset($this->number) || !isset($this->title_id))
 		{
 			return false;
 		}
 		
 		# Assemble the query.
 		$sql = 'SELECT id
-				FROM chapters
-				WHERE number="'.$this->code->chapter_number.'"';
-		
+				FROM structure
+				WHERE label="chapter" AND number="'.$this->number.'"
+				AND parent_id='.$this->title_id;
+
 		# Execute the query.
 		$result =& $db->query($sql);
-		
+
 		# If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
 			return false;
 		}
 		
-		$chapter = $result->fetchRow();
-		return $chapter['id'];
+		$chapter = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		return $chapter->id;
 	}
 	
 	# When provided with a chapter number, verifies whether that chapter exists. Returns the chapter
 	# ID, if successful; otherwise returns false.
-	public function create_chapter()
+	public function create_structure()
 	{
+		
+		# We're going to need access to the database connection within this function.
+		global $db;
+		
 		# Sometimes the code contains references to no-longer-existent chapters and even whole
 		# titles of the code. These are void of necessary information. We want to ignore these
 		# silently. Though you'd think we should require a chapter name, we actually shouldn't,
@@ -711,23 +731,47 @@ concerns?	Virginia Information Technologies Agency
 			return false;
 		}
 		
-		# We're going to need access to the database connection within this function.
-		global $db;
-			
+		# Get the ID of the title that contains this chapter.
+		$sql = 'SELECT id
+				FROM structure
+				WHERE number="'.$db->escape($this->title_number).'"
+				AND label="title"';
+		# Execute the query.
+		$result =& $db->query($sql);
+		
+		# If the query fails, or if no results are found, return false -- we can't make a match.
+		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		{
+			return false;
+		}
+		
+		$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$this->title_id = $title->id;
+
+
+// It's not clear to be whether this structure_exists() call is necessary, given ON DUPLICATE KEY
+// in the following query. Experiment with eliminating this, as well as the structure_exists()
+// function.
+
+		# If this chapter exists, then we don't need to create it anew.
+		$structure_id = Parser::structure_exists();
+		
+		if ($structure_id !== false)
+		{
+			return $structure_id;
+		}
+		
 		# Insert this chapter record into the database. We use ON DUPLICATE KEY so that this can
-		# be run without first invoking chapter_exists().
-		$sql = 'INSERT INTO chapters
+		# be run without first invoking structure_exists().
+		$sql = 'INSERT INTO structure
 				SET number="'.$db->escape($this->number).'",';
 		if (isset($this->name) && !empty($this->name))
 		{
 			$sql .= 'name="'.$db->escape($this->name).'",';
 		}
-		$sql .= 'date_created=now(), title_id=
-					(SELECT id
-					FROM titles
-					WHERE number="'.$db->escape($this->title_number).'")
+		$sql .= 'label="chapter", date_created=now(), parent_id='.$this->title_id.'
 				ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)';
-				
+
 		# Execute the query.
 		$result =& $db->exec($sql);
 		if (PEAR::isError($result))
@@ -748,6 +792,20 @@ concerns?	Virginia Information Technologies Agency
 		if (!isset($this->text))
 		{
 			return false;
+		}
+		
+		# Measure whether there are more straight quotes or directional quotes in this passage
+		# of text, to determine which type are used in these definitions. We double the count of
+		# directional quotes since we're only counting one of the two directions.
+		if ( substr_count($this->text, '"') > (substr_count($this->text, '”') * 2) )
+		{
+			$quote_type = 'straight';
+			$quote_sample = '"';
+		}
+		else
+		{
+			$quote_type = 'directional';
+			$quote_sample = '”';
 		}
 		
 		# Break up this section into paragraphs.
@@ -816,6 +874,8 @@ concerns?	Virginia Information Technologies Agency
 					(strpos($paragraph, ' shall include ') !== false)
 					|| 
 					(strpos($paragraph, ' includes ') !== false)
+					|| 
+					(strpos($paragraph, ' has the same meaning as ') !== false)
 				   )
 				{
 				
@@ -826,7 +886,7 @@ concerns?	Virginia Information Technologies Agency
 					// We're getting words between quotation marks, such as the word "or" in the
 					// passage "'alpha' or 'bravo'". Also, this is too greedy. Or something. The
 					// matching for lists of defined words is just weird.
-					preg_match_all('/"([A-Za-z]{1})([A-Za-z,\'\s]*)([A-Za-z]{1})"/', $paragraph, $terms);
+					preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
 					
 					# If we've made any matches.
 					if ( ($terms !== false) && (count($terms) > 0) )
@@ -835,7 +895,15 @@ concerns?	Virginia Information Technologies Agency
 						# We only need the first element in this multi-dimensional array, which has
 						# the actual matched term. It includes the quotation marks in which the term
 						# is enclosed, so we strip those out.
-						$terms = str_replace('"', '', $terms[0]);
+						if ($quote_type == 'straight')
+						{
+							$terms = str_replace('"', '', $terms[0]);
+						}
+						elseif ($quote_type == 'directional')
+						{
+							$terms = str_replace('“', '', $terms[0]);
+							$terms = str_replace('”', '', $terms);
+						}
 						
 						# Eliminate whitespace.
 						$terms = array_map('trim', $terms);
@@ -921,9 +989,11 @@ concerns?	Virginia Information Technologies Agency
 		
 		# Make the list of definitions a subset of a larger variable, so that we can store things
 		# other than terms.
-		$tmp = $definitions;
-		$definitions['terms'] = $tmp;
-		$definitions['scope'] = $scope;
+		$tmp = array();
+		$tmp['terms'] = $definitions;
+		$tmp['scope'] = $scope;
+		$definitions = $tmp;
+		unset($tmp);
 			
 		# Return our list of definitions, converted from an array to an object.
 		return (object) $definitions;
@@ -969,6 +1039,9 @@ concerns?	Virginia Information Technologies Agency
 			echo $sql;
 			return false;
 		}
+		
+		# Memory management.
+		unset($this);
 		
 		return true;
 		
