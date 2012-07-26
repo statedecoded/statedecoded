@@ -1,0 +1,4 @@
+AuthUserFile /var/www/vacode.org/htdocs/admin/.htpasswd
+AuthType Basic
+AuthName "Admin Section"
+Require valid-user

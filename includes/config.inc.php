@@ -6,6 +6,9 @@ define('INCLUDE_PATH', $_SERVER['DOCUMENT_ROOT'].'/../includes');
 # Append "/includes/" to the include path.
 set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
 
+# The file in the /includes/ directory that contains functions custom to this installation.
+define('CUSTOM_FUNCTIONS', 'virginia.inc.php');
+
 # Where templates are stored.
 define('TEMPLATE_PATH', INCLUDE_PATH.'/templates');
 
@@ -16,15 +19,19 @@ define('SITE_TITLE', 'The State Decoded');
 define('LAWS_NAME', 'Code of State');
 
 # What is the prefix that indicates a section? In many states, this is §, but in others it might be
-# "s". Note that the trailing space used here, by default, is a Unicode "NO-BREAK SPACE" (U+00A0).
-define('SECTION_SYMBOL', '§ ');
+# "s".
+define('SECTION_SYMBOL', '§');
 
 # Establish which version of the code that's in effect sitewide.
-define('EDITION_ID', 1);
-define('EDITION_YEAR', 2011);
+define('EDITION_ID', 5);
+define('EDITION_YEAR', 2012);
 
-# MySQL DSN
-define('MYSQL_DSN', 'mysql://username:password@localhost/databasename');
+# Does this state's code include laws that have been repealed formally, and that are marked as
+# such?
+define('INCLUDES_REPEALED', true);
+
+# Database information.
+define('MYSQL_DSN', 'mysql://web:tU5!o$M4p2@localhost/vacode');
 
 # Specify the title and chapter of the code that contains definitions of terms that are used
 # throughout the code, and thus should have a global scope.

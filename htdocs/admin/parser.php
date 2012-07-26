@@ -89,7 +89,7 @@ elseif ($_POST['action'] == 'parse')
 	require_once(INCLUDE_PATH.'/htmlpurifier/HTMLPurifier.auto.php');
 	# Fire up HTML Purifier.
 	$purifier = new HTMLPurifier();
-	
+
 	# Let this script run for as long as is necessary to finish running.
 	set_time_limit(0);
 	
@@ -112,17 +112,17 @@ elseif ($_POST['action'] == 'parse')
 	# references, because many of the references are at that time to not-yet-inserted sections.
 	// This belongs in a utility class.
 	$sql = 'UPDATE laws_references
-			SET target_section_id =
+			SET target_law_id =
 				(SELECT laws.id
 				FROM laws
 				WHERE section = laws_references.target_section_number)
-			WHERE target_section_id = 0';
+			WHERE target_law_id = 0';
 	$db->exec($sql);
 	
 	# Any unresolved target section numbers are spurious (strings that happen to match our section
 	# PCRE), and can be deleted.
 	$sql = 'DELETE FROM laws_references
-			WHERE target_section_id = 0';
+			WHERE target_law_id = 0';
 	$db->exec($sql);
 	
 	# Update tags to reflect the new law_id.
@@ -134,8 +134,95 @@ elseif ($_POST['action'] == 'parse')
 				WHERE section = tags.section_number)';
 	$db->exec($sql);
 	
-	// establish (or replace) the structure_unified view, basing its width on the STRUCTURE
-	// constant.
+	# Update court_decision_laws to refer to the new law IDs rather than the section numbers.
+	$sql = 'UPDATE court_decision_laws
+			SET law_id=
+				(SELECT id
+				FROM laws
+				WHERE section=court_decision_laws.law_section)';
+	$db->exec($sql);
+
+// Shouldn't this really be buried in the parser, and not part of a cleanup function?
+	# Break up law histories into their components and save those.
+	$sql = 'SELECT id, history
+			FROM laws';
+	$result =& $db->query($sql);
+	if ($result->numRows() > 0)
+	{
+		
+		$parser = new Parser;
+		
+		# Step through the history of every law that we have a record of.
+		while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		{
+			
+			# Turn the string of text that comprises the history into an object of atomic
+			# history data.
+			$parser->history = $law->history;
+			$history = $parser->extract_history();
+			
+			# Save this object to the metadata table pair.
+			$sql = 'INSERT INTO laws_meta
+					SET law_id='.$db->escape($law->id).',
+					meta_key="history", meta_value="'.$db->escape(serialize($history)).'",
+					date_created=now();';
+			$db->exec($sql);
+		}
+	}
+
+	
+	# If we already have a view, replace it with this new one.
+	$sql = 'DROP VIEW IF EXISTS structure_unified';
+	//$db->exec($sql);
+	
+	# The depth of the structure is the number of entries in STRUCTURE, minus one.
+	$structure_depth = count(explode(',', STRUCTURE))-1;
+	
+	$select = array();
+	$from = array();
+	$order = array();
+	for ($i=1; $i<=$structure_depth; $i++)
+	{
+		$select[] = 's'.$i.'.id AS s'.$i.'_id, s'.$i.'.name AS s'.$i.'_name,
+				s'.$i.'.number AS s'.$i.'_number, s'.$i.'.label AS s'.$i.'_label';
+		$from[] = 's'.$i;
+		$order[] = 's'.$i.'.number';
+	}
+	
+	# We want to to order from highest to lowest, so flip around this array.
+	$order = array_reverse($order);
+	
+	# First, the preamble.
+	$sql = 'CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW structure_unified AS SELECT ';
+
+	# Then the actual SELECT statement.
+	$sql .= implode(',', $select);
+	
+	# Start the FROM statement.
+	$sql .= ' FROM (structure AS ';
+	
+	# Build up the FROM statement using the array of table names.
+	$prev = '';
+	foreach ($from as $table)
+	{
+		if ($table == 's1')
+		{
+			$sql .= $table;
+		}
+		else
+		{
+			$sql .= ' LEFT JOIN structure AS '.$table.' ON ('.$table.'.id = '.$prev.'.parent_id)';
+		}
+		$prev = $table;
+	}
+	
+	# Conclude the FROM statement.
+	$sql .= ')';
+	
+	# Finally, construct the ORDER BY statement.
+	$sql .= ' ORDER BY '.implode(',', $order);
+	
+	$db->exec($sql);
 }
 
 ?>

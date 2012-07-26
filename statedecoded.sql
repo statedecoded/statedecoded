@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `definitions` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`,`term`,`scope`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7423 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7682 ;
 
 -- --------------------------------------------------------
 
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `editions` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `year` (`year`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `laws` (
   PRIMARY KEY  (`id`),
   KEY `section` (`section`),
   KEY `chapter_id` (`structure_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30827 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=31664 ;
 
 -- --------------------------------------------------------
 
@@ -77,14 +77,14 @@ CREATE TABLE IF NOT EXISTS `laws` (
 CREATE TABLE IF NOT EXISTS `laws_meta` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `law_id` int(11) NOT NULL,
-  `key` varchar(255) collate utf8_bin NOT NULL,
-  `value` longtext collate utf8_bin NOT NULL,
+  `meta_key` varchar(255) collate utf8_bin NOT NULL,
+  `meta_value` longtext collate utf8_bin NOT NULL,
   `date_created` date NOT NULL,
   `date_modified` timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`),
-  KEY `key` (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+  KEY `key` (`meta_key`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=31664 ;
 
 -- --------------------------------------------------------
 
@@ -94,16 +94,16 @@ CREATE TABLE IF NOT EXISTS `laws_meta` (
 
 CREATE TABLE IF NOT EXISTS `laws_references` (
   `id` int(3) unsigned NOT NULL auto_increment,
-  `section_id` int(10) unsigned NOT NULL,
+  `law_id` int(10) unsigned NOT NULL,
   `target_section_number` varchar(16) collate utf8_bin NOT NULL,
-  `target_section_id` int(10) unsigned NOT NULL,
+  `target_law_id` int(10) unsigned NOT NULL,
   `mentions` tinyint(3) unsigned NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `date_created` datetime NOT NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `overlap` (`section_id`,`target_section_number`),
+  UNIQUE KEY `overlap` (`law_id`,`target_section_number`),
   KEY `target_section_number` (`target_section_number`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=31936 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=33160 ;
 
 -- --------------------------------------------------------
 
@@ -113,21 +113,13 @@ CREATE TABLE IF NOT EXISTS `laws_references` (
 
 CREATE TABLE IF NOT EXISTS `laws_views` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `section_id` int(10) NOT NULL,
+  `law_id` int(10) NOT NULL,
   `user_id` smallint(5) unsigned default NULL,
   `ip_address` int(10) unsigned default NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `section_id` (`section_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=297665 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `Sphinx`
---
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`web`@`localhost` SQL SECURITY DEFINER VIEW `statedecoded`.`Sphinx` AS select `statedecoded`.`laws`.`id` AS `id`,`statedecoded`.`laws`.`section` AS `section`,`statedecoded`.`laws`.`catch_line` AS `catch_line`,`statedecoded`.`laws`.`text` AS `text`,`statedecoded`.`chapters`.`number` AS `chapter_number`,`statedecoded`.`chapters`.`name` AS `chapter_name`,`statedecoded`.`titles`.`number` AS `title_number`,`statedecoded`.`titles`.`name` AS `title_name`,group_concat(`statedecoded`.`tags`.`text` separator ',') AS `tags` from (((`statedecoded`.`laws` left join `statedecoded`.`chapters` on((`statedecoded`.`laws`.`chapter_id` = `statedecoded`.`chapters`.`id`))) left join `statedecoded`.`titles` on((`statedecoded`.`chapters`.`title_id` = `statedecoded`.`titles`.`id`))) left join `statedecoded`.`tags` on((`statedecoded`.`laws`.`id` = `statedecoded`.`tags`.`law_id`))) group by `statedecoded`.`laws`.`id`;
+  KEY `section_id` (`law_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=39813 ;
 
 -- --------------------------------------------------------
 
@@ -144,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6238 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1615 ;
 
 -- --------------------------------------------------------
 
@@ -198,7 +190,7 @@ CREATE TABLE IF NOT EXISTS `text` (
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`,`sequence`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=115676 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=119943 ;
 
 -- --------------------------------------------------------
 
@@ -215,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `text_sections` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `text_id` (`text_id`,`identifier`,`sequence`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=101937 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=107263 ;
 
 -- --------------------------------------------------------
 
@@ -224,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `text_sections` (
 --
 DROP TABLE IF EXISTS `structure_unified`;
 
-CREATE SQL SECURITY DEFINER VIEW `structure_unified` AS select `s1`.`id` AS `s1_id`,`s1`.`name` AS `s1_name`,`s1`.`number` AS `s1_number`,`s1`.`label` AS `s1_label`,`s2`.`id` AS `s2_id`,`s2`.`name` AS `s2_name`,`s2`.`number` AS `s2_number`,`s2`.`label` AS `s2_label` from (`structure` `s1` left join `structure` `s2` on((`s2`.`id` = `s1`.`parent_id`))) order by `s2`.`number`,`s1`.`number`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`web`@`localhost` SQL SECURITY DEFINER VIEW `structure_unified` AS select `s1`.`id` AS `s1_id`,`s1`.`name` AS `s1_name`,`s1`.`number` AS `s1_number`,`s1`.`label` AS `s1_label`,`s2`.`id` AS `s2_id`,`s2`.`name` AS `s2_name`,`s2`.`number` AS `s2_number`,`s2`.`label` AS `s2_label` from (`structure` `s1` left join `structure` `s2` on((`s2`.`id` = `s1`.`parent_id`))) order by `s2`.`number`,`s1`.`number`;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

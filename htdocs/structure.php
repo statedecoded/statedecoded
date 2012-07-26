@@ -9,6 +9,7 @@ $struct = new Structure();
 # Pass the requested URL to Structure, and then get structural data from that URL.
 $struct->url_to_structure();
 $structure = $struct->structure;
+
 # If the URL doesn't represent a valid structural portion of the code, then bail.
 if ($structure === false)
 {
@@ -25,7 +26,6 @@ $template->field->page_title = $struct->name;
 # Define the breadcrumb trail.
 if (count((array) $structure) > 1)
 {
-	//echo '<pre>'.print_r($structure, true).'</pre>';
 	foreach ($structure as $level)
 	{
 		$template->field->breadcrumbs .= ' <a href="'.$level->url.'">'.$level->number.': '.$level->name.'</a> →';
@@ -68,7 +68,7 @@ if (count((array) $structure) > 1)
 # Get a listing of all the structural children of this portion of the structure.
 $children = $struct->list_children();
 
-# If we have successfully gotten a list of chapters, display them.
+# If we have successfully gotten a list of child sections, display them.
 if ($children !== false)
 {
 	

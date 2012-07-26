@@ -16,13 +16,13 @@ if (PEAR::isError($db))
 # We must always connect to the database with UTF-8.
 $db->setCharset('utf8');
 
-# Include the function library that drives the site.
+# Include the functions that drive the site.
 require_once('functions.inc.php');
 
 # If there exists a custom functions file, include that, too.
-if (file_exists(INCLUDE_PATH.'/custom.inc.php') === true)
+if (defined(CUSTOM_FUNCTIONS))
 {
-	require_once('custom.inc.php');
+	require_once(CUSTOM_FUNCTIONS);
 }
 
 # Include WordPress's texturize function, for typographical niceties.

@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
 # Fire up our templating engine.
 $template = new Page;
 
-$template->field->browser_title = 'Virginia Decoded: The Code of Virginia, for Humans.';
+$template->field->browser_title = SITE_TITLE.': '.LAWS_NAME;
 
 # Initialize our body variable.
 $body = '';
@@ -15,13 +15,6 @@ $body = '';
 $sidebar = '
 	<section>
 	<h1>Welcome</h1>
-	<p>Virginia Decoded provides the Code of Virginia on one friendly website. Court decisions,
-	legislation past and present, inline definitions, a modern API, and all of the niceties of
-	modern website design. It’s like the expensive software lawyers use, but free and wonderful.</p>
-	
-	<p>This is a public beta test of Virginia Decoded, which is to say that everything is under
-	development. Things are funny looking, broken, and generally unreliable right now.</p>
-	
 	<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
 	</section>';
 
@@ -37,24 +30,13 @@ if (!empty($tag_cloud))
 		</section>';
 }
 
-# Show the most recent comments.
-$sidebar .= '
-	<section><h1>Recent Comments</h1>
-		<div id="recentcomments" class="dsq-widget">
-			<script src="http://vacode.disqus.com/recent_comments_widget.js?num_items=3&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=200"></script>
-		</div>
-	</section>';
-
 # Get an object containing a listing of the titles in the code.
 $structure = new Structure();
 $titles = $structure->list_children();
 
 $body .= '
 	<article>
-	<h1>Titles of the Code of Virginia</h1>
-	<p>These are the fundamental units of the Code of Virginia. There are 77 titles, roughly divided
-	up by topic. Each title is divided into chapters, 1,504 in all, and each chapter is divided
-	into sections (a.k.a. laws), 30,826 in all.</p>
+	<h1>'.LAWS_NAME.'</h1>
 	<dl class="titles">';
 foreach ($titles as $title)
 {
@@ -76,4 +58,3 @@ unset($sidebar);
 $template->parse();
 
 ?>
-

@@ -1,5 +1,10 @@
 <?php
 
+# During this debug phase, I want to know about errors.
+ini_set('display_errors', 1);
+ini_set('error_reporting', 'E_ALL');
+ini_set('error_log','errors.log');
+
 class Parser
 {
 	
@@ -13,12 +18,28 @@ class Parser
 			return false;
 		}
 		
+		# Include HTML Purifier, which we use to clean up the code and character sets.
+		require_once(INCLUDE_PATH.'/htmlpurifier/HTMLPurifier.auto.php');
+		# Fire up HTML Purifier.
+		$purifier = new HTMLPurifier();
+		
 		# Strip out the whitespace.
 		$this->section = trim($this->section);
 		
 		# For whatever reason, the SGML file from LIS uses a vertical pipe in place of the section
 		# symbol. Swap them out.
-		$this->section = str_replace('|', '§', $this->section);
+		$this->section = str_replace('|', SECTION_SYMBOL, $this->section);
+		
+/*
+?			$$PROFILE=COD
+section		2.2-2031
+ignore		Division of Public Safety Communications established; appointment of Virginia Public Safety Communic
+?			00000000001
+?			05602.2
+?			20.1
+concerns?	Virginia Information Technologies Agency
+?			N
+*/
 		
 		# Break this section into an array based on newlines.
 		$section = explode(PHP_EOL, $this->section);
@@ -44,7 +65,7 @@ class Parser
 			$tmp[2] = 'Untitled';
 		}
 		
-		// *Really*? Just foreach() this puppy.
+		// *Really*? There's no better way to do this?
 		$tmp[0] = trim($tmp[0]);
 		$tmp[1] = trim($tmp[1]);
 		$tmp[2] = trim($tmp[2]);
@@ -97,6 +118,11 @@ class Parser
 		$tmp = str_replace('<table>', '<section type="table">', $tmp);
 		$tmp = str_replace('</table>', '</section>', $tmp);
 		$tmp = str_replace('<section>', '<section type="section">', $tmp);
+		
+		# Use HTML Purifier to clean this up. Specifically, we're invoking a function that's meant
+		# to clean up SGML, by cleaning up the character set without worrying about the validity of
+		# HTML tags. That leaves our SGML unharmed, and our character set tidy, too.
+		$tmp = HTMLPurifier_Encoder::cleanUTF8($tmp, $force_php = false);
 		
 		# And now render that array as a XML tree, catching any errors.
 		libxml_use_internal_errors(true);
@@ -299,7 +325,7 @@ class Parser
 			
 			# And save the stuff that isn't the matched string as the name. Since this sometimes
 			# includes a newline, and sometimes has double spaces, do a couple of quick substitutions.
-			$code->name = trim(str_replace(SECTION_IDENTIFIER.' '.$code->section_number.'.', '', $xml->section->{0}));
+			$code->name = trim(str_replace('§ '.$code->section_number.'.', '', $xml->section->{0}));
 			$code->name = str_replace("\n", ' ', $code->name);
 			$code->name = str_replace('  ', ' ', $code->name);
 			
@@ -357,6 +383,9 @@ class Parser
 				$tmp = substr($tmp, 0, -1);
 				$tmp = substr($tmp, 1);
 			}
+			
+			# Use HTML Purifier to clean up this history data.
+			$tmp = $purifier->purify($tmp);
 			
 			# Save the finished history data.
 			$code->history = $tmp;
@@ -444,7 +473,6 @@ class Parser
 		
 		# Preserve the insert ID from this law, since we'll need it below.
 		$law_id = $db->lastInsertID();
-		
 		
 		# This second section inserts the textual portions of the law.
 		
@@ -682,7 +710,7 @@ class Parser
 	
 	# When provided with a chapter number, verifies whether that chapter exists. Returns the chapter
 	# ID if it exists; otherwise, returns false.
-	public function structure_exists()
+	public function chapter_exists()
 	{
 		
 		# We're going to need access to the database connection within this function.
@@ -747,22 +775,29 @@ class Parser
 		
 		$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 		$this->title_id = $title->id;
+		
+		# Virginia has nine structural units (chapters) with titles that exceed the 100 character
+		# limit. These are distinguished only by the fact that the last character (the 101st) is
+		# "N" (capitalized). We replace that "N" with the Unicode horizontal ellipsis character.
+		if ( (strlen($this->name) == 101) && (substr($this->name, -1) == 'N') )
+		{
+			$this->name{100} = '…';
+		}
 
-
-// It's not clear to be whether this structure_exists() call is necessary, given ON DUPLICATE KEY
-// in the following query. Experiment with eliminating this, as well as the structure_exists()
+// It's not clear to be whether this chapter_exists() call is necessary, given ON DUPLICATE KEY
+// in the following query. Experiment with eliminating this, as well as the chapter_exists()
 // function.
 
 		# If this chapter exists, then we don't need to create it anew.
-		$structure_id = Parser::structure_exists();
+		$chapter_id = Parser::chapter_exists();
 		
-		if ($structure_id !== false)
+		if ($chapter_id !== false)
 		{
-			return $structure_id;
+			return $chapter_id;
 		}
 		
 		# Insert this chapter record into the database. We use ON DUPLICATE KEY so that this can
-		# be run without first invoking structure_exists().
+		# be run without first invoking chapter_exists().
 		$sql = 'INSERT INTO structure
 				SET number="'.$db->escape($this->number).'",';
 		if (isset($this->name) && !empty($this->name))
@@ -1104,7 +1139,7 @@ class Parser
 		
 		# Start creating our insertion query.
 		$sql = 'INSERT INTO laws_references
-				(section_id, target_section_number, mentions, date_created)
+				(law_id, target_section_number, mentions, date_created)
 				VALUES ';
 		$i=0;
 		foreach ($this->sections as $section => $mentions)
@@ -1131,6 +1166,53 @@ class Parser
 		return true;
 		
 	} // end store_references()
+	
+	
+
+	
+	# Turn the history sections into atomic data.
+	function extract_history()
+	{
+		
+		# If we have no history text, then we're done here.
+		if (!isset($this->history))
+		{
+			return false;
+		}
+		
+		# The list is separated by semicolons and spaces.
+		$updates = explode('; ', $this->history);
+		
+		$i=0;
+		foreach ($updates as &$update)
+		{
+			
+			# Match lines of the format "2010, c. 402, § 1-15.1"
+			$pcre = '/([0-9]{2,4}), c\. ([0-9]+)(.*)/';
+			
+			# First check for single matches.
+			$result = preg_match($pcre, $update, $matches);
+			if ( ($result !== false) && ($result !== 0) )
+			{
+				if (!empty($matches[1]))
+				{
+					$final->{$i}->year = $matches[1];
+				}
+				if (!empty($matches[2]))
+				{
+					$final->{$i}->chapter = $matches[2];
+				}
+				if (!empty($matches[3]))
+				{
+					$final->{$i}->section = substr($matches[3], 4);
+				}
+			}
+			
+			$i++;
+		}
+		
+		return $final;
+	} // end extract_history()
 	
 } // end Parser class
 ?>

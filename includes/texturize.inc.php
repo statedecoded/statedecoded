@@ -4,6 +4,8 @@
 # somewhat, in order to remove the use of a pair of internal WordPress functions (_x and
 # apply_filters), and also to replace WordPress’ use of entities with the use of actual Unicode
 # characters.
+#
+# WordPress is copyright 2003-2010 by its contributors, released under the GPL.
 
 /**
  * Replaces common plain text characters into formatted entities

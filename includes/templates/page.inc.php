@@ -87,6 +87,7 @@
 	<script>
 		{{javascript}}
 	</script>
+	{{javascript_files}}
 	<script src="/js/jquery.qtip.min.js"></script>
 	<script src="/js/jquery.color.js"></script>
 	<script src="/js/jquery.cookies.2.2.0.min.js"></script>
@@ -104,7 +105,6 @@
 			my: "bottom center"
 		}
 	})
-	
 	
 	/* Mentions of other sections of the code. */
 	$("a.section").each(function() {
@@ -127,9 +127,9 @@
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/1.0/section.php',
+					url: '/api/0.1/section/'+section_number,
 					type: 'GET',
-					data: { fields: 'catch_line,ancestry', section: section_number },
+					data: { fields: 'catch_line,ancestry' },
 					dataType: 'json',
 					success: function(section, status) {
 						if( section.ancestry instanceof Object ) {
@@ -145,7 +145,57 @@
 			}
 		})
 	});
-	
+
+	/* Attach to every bill number link an Ajax method to display a tooltip.*/
+	$("a.bill").each(function() {
+		
+		/* Use the Richmond Sunlight URL to determine the bill year and number. */
+		var url = $(this).attr("href");
+		var url_components = url.match(/\/bill\/(\d{4})\/(\w+)\//);
+		var year = url_components[1];
+		var bill_number = url_components[2];
+		
+		$(this).qtip({
+			tip: true,
+			hide: {
+				when: 'mouseout',
+				fixed: true,
+				delay: 100
+			},
+			position: {
+				at: "top center",
+				my: "bottom right"
+			},
+			style: {
+				width: 300,
+				tip: "bottom right"
+			},
+			content: {
+				text: 'Loading .&thinsp;.&thinsp;.',
+				ajax: {
+					url: 'http://api.richmondsunlight.com/1.0/bill/'+year+'/'+bill_number+'.json',
+					type: 'GET',
+					dataType: 'jsonp',
+					success: function(data, status) {
+						var content = '<a href="http://www.richmondsunlight.com/legislator/'
+							+ data.patron.id + '/">' + data.patron.name + '</a>: ' + data.summary.truncate();
+						this.set('content.text', content);
+					}
+				}
+			}
+		})
+	});
+
+	/* Truncate text at 250 characters of length. Written by "c_harm" and posted to Stack Overflow
+	at http://stackoverflow.com/a/1199627/955342 */
+	String.prototype.truncate = function(){
+		var re = this.match(/^.{0,500}[\S]*/);
+		var l = re[0].length;
+		var re = re[0].replace(/\s$/,'');
+		if(l < this.length)
+			re = re + "&nbsp;.&thinsp;.&thinsp;.&thinsp;";
+		return re;
+	}
 	
 	/* Words for which we have definitions.*/
 	$("span.definition").each(function() {
@@ -168,12 +218,12 @@
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/1.0/glossary.php',
+					url: '/api/0.1/glossary',
 					type: 'GET',
 					data: { term: term, section: section_number },
 					dataType: 'json',
 					success: function(data, status) {
-						var content = data.formatted;
+						var content = data.formatted.truncate();
 						this.set('content.text', content);
 					}
 				}

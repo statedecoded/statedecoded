@@ -1,6 +1,6 @@
 <?php
 
-# Get the contents of a given URL.
+# Get the contents of a given URL. A wrapper for cURL.
 function fetch_url($url)
 {
 	if (!isset($url))
@@ -32,7 +32,6 @@ function replace_terms($word)
 		return false;
 	}
 	
-	
 	return '<span class="definition">'.$word.'</span>';
 }
 
@@ -46,11 +45,13 @@ function replace_sections($matches)
 	# If the section symbol prefixes this match, hack it off.
 	if (substr($match, 0, strlen(SECTION_SYMBOL)) == SECTION_SYMBOL)
 	{
-		$match = substr($match, (strlen(SECTION_SYMBOL)));
+		$match = substr($match, (strlen(SECTION_SYMBOL.' ')));
 	}
 	
-	# Create an instance of the Law class in order to retrieve the basic information.
+	# Create an instance of the Law class in order to retrieve the basic information about it.
 	$law = new Law;
+	# Set it to return only the minimum information about this law.
+	$law->config->get_all == FALSE;
 	$law->section_number = $match;
 	$section = $law->get_law();
 	
@@ -64,9 +65,13 @@ function replace_sections($matches)
 	return '<a class="section" href="/'.$match.'/">'.$matches[0].'</a>';
 }
 
-# For sending an error message formatted as JSON.
+# Send an error message formatted as JSON. This requires the text of an error message.
 function json_error($text)
 {
+	if (!isset($text))
+	{
+		return false;
+	}
 	$error = array('error',
 		array(
 			'message' => 'An Error Occurred',
@@ -74,7 +79,10 @@ function json_error($text)
 		)
 	);
 	$error = json_encode($error);
-	header("HTTP/1.0 200 OK");
+	
+	# Return a 400 "Bad Request" error. This indicates that the request was invalid. Whether this is
+	# the best HTTP header is unclear.
+	header("HTTP/1.0 400 OK");
 	# Send an HTTP header defining the content as JSON.
 	header('Content-type: application/json');
 	echo $error;
@@ -105,15 +113,12 @@ class Law
 		# Trim it down.
 		$this->section_number = trim($this->section_number);
 		
-		# Query the database for the ID for this section number, retrieving the most recent version
+		# Query the database for the ID for this section number, retrieving the current version
 		# of the law.
-		$sql = 'SELECT laws.id
+		$sql = 'SELECT id
 				FROM laws
-				LEFT JOIN editions
-					ON laws.edition_id=editions.id
-				WHERE laws.section="'.$db->escape($section_number).'"
-				ORDER BY editions.year DESC
-				LIMIT 1';
+				WHERE section="'.$db->escape($section_number).'"
+				AND edition_id='.EDITION_ID;
 		
 		# Execute the query.
 		$result =& $db->query($sql);
@@ -142,11 +147,24 @@ class Law
 			return false;
 		}
 		
+		# Define the level of detail that we want from this method. By default, we return
+		# everything that we have for this law. But if any specific 
+		if ( !isset($this->config) || ($this->config->get_all == TRUE) )
+		{
+			$this->config->get_text = TRUE;
+			$this->config->get_structure = TRUE;
+			$this->config->get_amendment_attempts = TRUE;
+			$this->config->get_court_decisions = TRUE;
+			$this->config->get_references = TRUE;
+			$this->config->get_related_laws = TRUE;
+		}
+		
 		# Assemble the query that we'll use to get this law.
 		$sql = 'SELECT id, structure_id, section AS section_number, catch_line, history,
-				text AS full_text
+				text AS full_text, repealed
 				FROM laws';
-
+		
+		# If we're requesting a specific law by ID.
 		if (isset($this->law_id))
 		{
 			# If it's just a single law ID, then just request the one.
@@ -173,9 +191,13 @@ class Law
 				$sql .= ')';
 			}
 		}
+		
+		# Else if we're requesting a law by section number, then make sure that we're getting the
+		# law from the newest edition of the laws.
 		else
 		{
-			$sql .= ' WHERE section="'.$db->escape($this->section_number).'"';
+			$sql .= ' WHERE section="'.$db->escape($this->section_number).'"
+					AND edition_id='.EDITION_ID;
 		}
 		
 		# Execute the query.
@@ -195,115 +217,124 @@ class Law
 		$this->section_id = $law->id;
 		
 		# Now get the text for this law.
-		$sql = 'SELECT text, type,
-					(SELECT
-						GROUP_CONCAT(identifier
-						ORDER BY sequence ASC
-						SEPARATOR "|")
-					FROM text_sections
-					WHERE text_id=text.id
-					GROUP BY text_id) AS prefixes
-				FROM text
-				WHERE law_id='.$db->escape($law->id).'
-				ORDER BY text.sequence ASC';
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ($this->config->get_text === TRUE)
 		{
-			return false;
-		}
-		
-		# Iterate through all of the sections of text to save to our object.
-		$i=0;
-		while ($tmp = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
-		{
-			$tmp->prefixes = explode('|', $tmp->prefixes);
-			$tmp->prefix = end($tmp->prefixes);
-			$tmp->entire_prefix = implode('', $tmp->prefixes);
-			$tmp->prefix_anchor = str_replace(' ', '_', $tmp->entire_prefix);
-			$tmp->level = count($tmp->prefixes);
-	
-			# Pretty it up, converting all straight quotes into directional quotes, double dashes
-			# into em dashes, etc.
-			$tmp->text = wptexturize($tmp->text);
+			$sql = 'SELECT text, type,
+						(SELECT
+							GROUP_CONCAT(identifier
+							ORDER BY sequence ASC
+							SEPARATOR "|")
+						FROM text_sections
+						WHERE text_id=text.id
+						GROUP BY text_id) AS prefixes
+					FROM text
+					WHERE law_id='.$db->escape($law->id).'
+					ORDER BY text.sequence ASC';
 			
-			# Append this section.
-			$law->text->$i = $tmp;
-			$i++;
-		}
-		
-		# Create a new instance of the Structure class.
-		$struct = new Structure;
-
-		# Our structure ID provides a starting point to identify this law's ancestry.
-		$struct->id = $law->structure_id;
-		
-		# Save the law's ancestry.
-		$law->ancestry = $struct->id_ancestry();
-		
-		# Short of a parser error, there’s no reason why a law should not have an ancestry. In
-		# case of this unlikely possibility, just erase the false element.
-		if ($law->ancestry === false)
-		{
-			unset($law->ancestry);
-		}
-		
-		# Get the listing of all other sections in the structural unit that contains this section.
-		$law->structure_contents = $struct->list_laws();
-		
-		
-		# Get the chapter for this law and include those (if there are any).
-		/*$tmp = new Law;
-		$tmp->chapter_id = $law->chapter_id;
-		$law->chapter = $tmp->get_chapter();
-		
-		# Get the title for this law.
-		$tmp = new Law;
-		$tmp->title_id = $law->chapter->title_id;
-		$law->title = $tmp->get_title();
-		
-		# Get the listing of all other sections in the chapter that contains this section.
-		$chapter = new Chapter;
-		$chapter->id = $law->chapter_id;
-		$law->chapter_contents = $chapter->list_sections();*/
-		
-		
-		
-		
-		
-		# Figure out what the next and prior sections are (we may have 0-1 of either). Iterate
-		# through all of the contents of the chapter.
-		for ($i=0; $i<count((array) $law->structure_contents); $i++)
-		{
-			# When we get to our current section, that's when we get to work.
-			if ($law->structure_contents->$i->id == $law->id)
+			# Execute the query.
+			$result =& $db->query($sql);
+			
+			# If the query fails, or if no results are found, return false -- we can't make a match.
+			if ( PEAR::isError($result) || ($result->numRows() < 1) )
 			{
-				$j = $i-1;
-				$k = $i+1;
-				if (isset($law->structure_contents->$j))
-				{
-					$law->previous_section = $law->structure_contents->$j;
-				}
+				return false;
+			}
+			
+			# Iterate through all of the sections of text to save to our object.
+			$i=0;
+			while ($tmp = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			{
+				$tmp->prefixes = explode('|', $tmp->prefixes);
+				$tmp->prefix = end($tmp->prefixes);
+				$tmp->entire_prefix = implode('', $tmp->prefixes);
+				$tmp->prefix_anchor = str_replace(' ', '_', $tmp->entire_prefix);
+				$tmp->level = count($tmp->prefixes);
+		
+				# Pretty it up, converting all straight quotes into directional quotes, double dashes
+				# into em dashes, etc.
+				$tmp->text = wptexturize($tmp->text);
 				
-				if (isset($law->structure_contents->$k))
-				{
-					$law->next_section = $law->structure_contents->$k;
-				}
-				break;
+				# Append this section.
+				$law->text->$i = $tmp;
+				$i++;
 			}
 		}
 		
-		# Get the tags for this law and include those (if there are any).
-		$law->tags = Law::get_tags($law->id);
-		
+		# Determine this law's structural position.
+		if ($this->config->get_structure == TRUE)
+		{
+			# Create a new instance of the Structure class.
+			$struct = new Structure;
+	
+			# Our structure ID provides a starting point to identify this law's ancestry.
+			$struct->id = $law->structure_id;
+			
+			# Save the law's ancestry.
+			$law->ancestry = $struct->id_ancestry();
+			
+			# Short of a parser error, there’s no reason why a law should not have an ancestry. In
+			# case of this unlikely possibility, just erase the false element.
+			if ($law->ancestry === false)
+			{
+				unset($law->ancestry);
+			}
+			
+			# Get the listing of all other sections in the structural unit that contains this section.
+			$law->structure_contents = $struct->list_laws();
+			
+			# Figure out what the next and prior sections are (we may have 0-1 of either). Iterate
+			# through all of the contents of the chapter.
+			for ($i=0; $i<count((array) $law->structure_contents); $i++)
+			{
+				# When we get to our current section, that's when we get to work.
+				if ($law->structure_contents->$i->id == $law->id)
+				{
+					$j = $i-1;
+					$k = $i+1;
+					if (isset($law->structure_contents->$j))
+					{
+						$law->previous_section = $law->structure_contents->$j;
+					}
+					
+					if (isset($law->structure_contents->$k))
+					{
+						$law->next_section = $law->structure_contents->$k;
+					}
+					break;
+				}
+			}
+		}
+
+		# Get the amendation attempts for this law and include those (if there are any). But only
+		# if we haven't specifically indicated that we don't want it. The idea behind skipping this
+		# is that it's calling from Richmond Sunlight, which is reasonable for internal purposes,
+		# but it's not sensible for our own API to make a call to another site's API.
+		if ($this->config->get_amendment_attempts == TRUE)
+		{
+// Figure out where this is being called from and replace it with the new $this->config system.
+			if ( !isset($this->skip_amendment_attempts) || ($this->skip_amendment_attempts === false) )
+			{
+				$law->amendation_attempts = Law::get_amendation_attempts($law->section_number);
+			}
+		}
+
 		# Get the court decisions for this law and include those (if there are any).
-		$law->court_decisions = Law::get_court_decisions($law->section);
+		if ($this->config->get_court_decisions == TRUE)
+		{
+			$law->court_decisions = Law::get_court_decisions($law->id);
+		}
 		
 		# Get the references to this law among other laws and include those (if there are any).
-		$law->references = Law::get_references($law->section);
+		if ($this->config->get_references == TRUE)
+		{
+			$law->references = Law::get_references();
+		}
+		
+		if ($this->config->get_related_laws == TRUE)
+		{
+// Commented out because it's returning really unrelated sections. What's going on?
+			//$law->related = Law::get_related();
+		}
 
 		# Extract every year named in the history.
 		preg_match_all('/(18|19|20)([0-9]{2})/', $law->history, $years);
@@ -426,9 +457,10 @@ class Law
 				
 		# We're going to need access to the database connection throughout this class.
 		global $db;
-		
-		# If a law ID hasn't been passed to this function, then there's nothing to do.
-		if (!isset($this->law_id) && !isset($this->section_number))
+
+
+		# If no law ID is available, then we can't return anything.
+		if (!isset($this->section_id))
 		{
 			return false;
 		}
@@ -438,7 +470,7 @@ class Law
 				FROM court_decisions
 				LEFT JOIN court_decision_laws
 					ON court_decisions.id=court_decision_laws.court_decision_id
-				WHERE court_decision_laws.law_section="'.$db->escape($this->section_number).'"
+				WHERE court_decision_laws.law_id='.$db->escape($this->section_id).'
 				ORDER BY court_decisions.date DESC
 				LIMIT 5';
 		
@@ -473,8 +505,7 @@ class Law
 		return $decisions;
 		
 	}
-	
-	
+		
 	# Return a listing of every section of the code that refers to a given section.
 	function get_references()
 	{
@@ -483,7 +514,7 @@ class Law
 		global $db;
 		
 		# If a section number doesn't exist in the scope of this class, then there's nothing to do.
-		if (!isset($this->section_number))
+		if (!isset($this->section_id))
 		{
 			return false;
 		}
@@ -492,9 +523,9 @@ class Law
 		$sql = 'SELECT DISTINCT laws.id, laws.section, laws.catch_line
 				FROM laws
 				INNER JOIN laws_references
-					ON laws.id = laws_references.section_id
-				WHERE laws_references.target_section_number =  "'.$db->escape($this->section_number).'"
-				ORDER BY laws.section+0 ASC, laws.section ASC';
+					ON laws.id = laws_references.law_id
+				WHERE laws_references.target_law_id =  '.$db->escape($this->section_id).'
+				ORDER BY laws.order_by, laws.section ASC';
 		
 		# Execute the query.
 		$result =& $db->query($sql);
@@ -535,7 +566,7 @@ class Law
 		
 		# Record the view.
 		$sql = 'INSERT DELAYED INTO laws_views
-				SET section_id='.$this->section_id;
+				SET law_id='.$this->section_id;
 		if (!empty($_SERVER['REMOTE_ADDR']))
 		{
 			$sql .= ', ip_address=INET_ATON("'.$_SERVER['REMOTE_ADDR'].'")';
@@ -614,15 +645,16 @@ class Structure
 			$this->url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		}
 		
+		# Make sure that this URL is kosher.
+		$this->url = filter_var($this->url, FILTER_SANITIZE_URL);
+		if ($this->url === false)
+		{
+			return false;
+		}
+		
 		# We don't actually want the whole URL, but just the path.
 		$tmp = parse_url($this->url);
 		$this->path = $tmp['path'];
-		
-		# Sanitize the input. Don't allow paths longer than 128 characters.
-		if (strlen($this->path) > 128)
-		{
-			die();
-		}
 		
 		# Turn the URL into an array.
 		$components = explode('/', $this->path);
@@ -791,6 +823,7 @@ class Structure
 		# really nothing for us to do here.
 		if (!isset($this->structure_id))
 		{
+			//throw new Exception('No structure ID provided.');
 			return false;
 		}
 		
@@ -836,31 +869,40 @@ class Structure
 		
 		# Assemble the SQL query. The subselect is to avoid getting structural units that contain
 		# only repealed (that is, unlisted) laws.
-		$sql = 'SELECT id, label, name, number
+		$sql = 'SELECT structure_unified.*
 				FROM structure
-				WHERE parent_id';
+				LEFT JOIN structure_unified
+					ON structure.id = structure_unified.s1_id
+				WHERE structure.parent_id';
 		if (!isset($this->id))
 		{
 			$sql .= ' IS NULL';
 		}
 		else
 		{
-			$sql .= '='.$db->escape($this->id).' AND
-					(SELECT COUNT(*)
-					FROM laws
-					WHERE structure_id=structure.id
-					AND laws.repealed="n") > 0';
-		}
-		$sql .= ' ORDER BY ';
+			$sql .= '='.$db->escape($this->id);
+			
+			# If this legal code continues to print repealed laws, then make sure that we're not
+			# displaying any structural units that consist entirely of repealed laws.
+			if (INCLUDES_REPEALED === true)
+			{
+				$sql .= ' AND
+						(SELECT COUNT(*)
+						FROM laws
+						WHERE structure_id=structure.id
+						AND laws.repealed="n") > 0';
+			}
+
+		}		$sql .= ' ORDER BY ';
 		
 		# We may sort by either Roman numerals or Arabic (traditional) numerals. 
 		if ($this->sort == 'roman')
 		{
-			$sql .= 'fromRoman(number) ASC';
+			$sql .= 'fromRoman(structure.number) ASC';
 		}
 		else
 		{
-			$sql .= 'ABS(SUBSTRING_INDEX(number, ".", 1)) ASC, ABS(SUBSTRING_INDEX(number, ".", -1)) ASC';
+			$sql .= 'ABS(SUBSTRING_INDEX(structure.number, ".", 1)) ASC, ABS(SUBSTRING_INDEX(structure.number, ".", -1)) ASC';
 		}
 		
 		# Execute the query.
@@ -876,16 +918,27 @@ class Structure
 		$i=0;
 		while ($child = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 		{
-			# Figure out the URL and include that.
-			$ancest = new Structure;
-			$ancest->id = $child->id;
-			$ancestry = $ancest->id_ancestry();
+			# Remap the structural column names to simplified column names.
+			$child->id = $child->s1_id;
+			$child->label = $child->s1_label;
+			$child->name = $child->s1_name;
+			$child->number = $child->s1_number;
 			
+			# Figure out the URL for this structural unit by iterating through the "number" columns
+			# in this row.
 			$child->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 			$tmp = array();
-			foreach ($ancestry as $ancestor)
+			foreach ($child as $key => $value)
 			{
-				$tmp[] = $ancestor->number;
+				if (preg_match('/s[0-9]_number/', $key) == 1)
+				{
+					# Higher-level structural elements (e.g., titles) will have blank columns in
+					# structure_unified, so we want to omit any blank values.
+					if (!empty($value))
+					{
+						$tmp[] = $value;
+					}
+				}
 			}
 			$tmp = array_reverse($tmp);
 			$child->url .= implode('/', $tmp).'/';
@@ -1017,11 +1070,14 @@ class Structure
 			return false;
 		}
 		
-		# Assemble the SQL query. Only get sections that haven't been repealed.
+		# Assemble the SQL query. Only get sections that haven't been repealed. We order by the
+		# order_by field primarily, but we also order by section as a backup, in case something
+		# should fail with the order_by field. The section column is not wholly reliable for sorting
+		# (hence the order_by field), but it's a great deal better than an unsorted list.
 		$sql = 'SELECT id, structure_id, section AS number, catch_line
 				FROM laws
 				WHERE structure_id='.$db->escape($this->id).' AND repealed="n"
-				ORDER BY order_by';
+				ORDER BY order_by, section';
 		
 		# Execute the query.
 		$result =& $db->query($sql);
@@ -1042,8 +1098,7 @@ class Structure
 			# Figure out the URL and include that.
 			$section->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$section->number.'/';
 			
-			# We shouldn't have any untitled sections but, if we do, we need to put something in
-			# that field.
+			# Sometimes there are laws that lack titles. We've got to put something in that field.
 			if (empty($section->catch_line))
 			{
 				$section->catch_line = '[Untitled]';
@@ -1487,7 +1542,6 @@ class Dictionary
 		# current title and the current chapter.
 		else
 		{
-			// THIS IS SLOW. A SUBSELECT IN A QUERY LIKE THIS IS NO GOOD.
 			$sql = 'SELECT definitions.term
 					FROM definitions
 					LEFT JOIN laws
@@ -1631,6 +1685,9 @@ class Dictionary
 			# Check to see if this term is already set and, if so, make sure that the most local
 			# term is being used. That is, if we have a chapter definition, we prefer it to a global
 			# definition, because it is narrowly tailored to the instant section.
+
+			// Scope should probably be rendered numerically, so that we could simply use the one
+			// with the smallest number.
 			if (isset($definitions->$term))
 			{
 				if

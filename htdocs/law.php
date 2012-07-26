@@ -89,10 +89,10 @@ foreach ($law->text as $section)
 }
 
 # Define the browser title.
-$template->field->browser_title = $law->catch_line.' ('.SECTION_SYMBOL.$law->section_number.')—'.SITE_TITLE;
+$template->field->browser_title = $law->catch_line.' ('.SECTION_SYMBOL.' '.$law->section_number.')—'.SITE_TITLE;
 
 # Define the page title.
-$template->field->page_title = SECTION_SYMBOL.$law->section_number.' '.$law->catch_line;
+$template->field->page_title = SECTION_SYMBOL.'&nbsp;'.$law->section_number.' '.$law->catch_line;
 
 # Define the breadcrumb trail text.
 $template->field->breadcrumbs = '';
@@ -101,7 +101,7 @@ foreach (array_reverse((array) $law->ancestry) as $ancestor)
 	$template->field->breadcrumbs .= '<a href="'.$ancestor->url.'">'.$ancestor->number.' '
 		.$ancestor->name.'</a> → ';
 }
-$template->field->breadcrumbs .= '<a href="/'.$law->section_number.'/">'.SECTION_SYMBOL.$law->section_number
+$template->field->breadcrumbs .= '<a href="/'.$law->section_number.'/">§&nbsp;'.$law->section_number
 	.' '.$law->catch_line.'</a>';
 
 # If there is a prior section in this structural unit, provide a back arrow.
@@ -194,41 +194,85 @@ $body .= '
 $body .= '</article>';
 
 
-$sidebar = '
+$sidebar = '<iframe src="//www.facebook.com/plugins/like.php?href='.urlencode($_SERVER['REQUEST_URI'])
+				.'&amp;send=false&amp;layout=standard&amp;width=1-0&amp;show_faces=false&amp;'
+				.'action=recommend&amp;colorscheme=light&amp;font&amp;height=35" scrolling="no"
+				frameborder="0" style="border:none; overflow:hidden; width:100px; height:35px;"
+				allowTransparency="true"></iframe>';
+
+# Only show the history if the law hasn't been repealed. (If it has been, then the history text
+# generally disappears along with it, meaning that the below code can behave unpredictably.)
+if (empty($law->repealed) || ($law->repealed != 'y'))
+{
+	$sidebar .= '
 			<section id="history-description">
 				<h1>History</h1>
 				<p>
 					This law was first passed in '.reset($law->amendation_years).'.';
-if (count((array) $law->amendation_years) > 1)
-{
-	$sidebar .= ' It was updated in ';
-
-	# Iterate through every year in which this bill has been amended and list them.
-	foreach ($law->amendation_years as $year)
+	if (count((array) $law->amendation_years) > 1)
 	{
-		if ($year == reset($law->amendation_years))
+		$sidebar .= ' It was updated in ';
+	
+		# Iterate through every year in which this bill has been amended and list them.
+		foreach ($law->amendation_years as $year)
 		{
-			continue;
+			if ($year == reset($law->amendation_years))
+			{
+				continue;
+			}
+			if ( ($year == end($law->amendation_years)) && (count((array)$law->amendation_years) > 2) )
+			{
+				$sidebar .= 'and ';
+			}
+			$sidebar .= $year;
+			if ($year != end($law->amendation_years))
+			{
+				$sidebar .= ', ';
+			}
 		}
-		if ( ($year == end($law->amendation_years)) && (count((array)$law->amendation_years) > 2) )
-		{
-			$sidebar .= 'and ';
-		}
-		$sidebar .= $year;
-		if ($year != end($law->amendation_years))
-		{
-			$sidebar .= ', ';
-		}
+		$sidebar .= '.';
 	}
-	$sidebar .= '.';
+	else
+	{
+		$sidebar .= ' It has not been changed since.';
+	}
+	$sidebar .= '
+					</p>
+				</section>';
 }
-else
+
+# If there have been attempts to amend this legislation, list them, with links.
+if ($law->amendation_attempts != false)
 {
-	$sidebar .= ' It has not been changed since.';
-}
-$sidebar .= '
-				</p>
+	# Set the variable that we'll to maintain the state of the year as we loop through the bills.
+	$tmp = '';
+	$sidebar .= '
+			<section id="amendment-attempts">
+				<h1>Amendment Attempts</h1>
+				<ul>';
+	foreach ($law->amendation_attempts as $attempt)
+	{
+		# If we're dealing with a new year.
+		if ($tmp != $attempt->year)
+		{
+			if (!empty($tmp))
+			{
+				$sidebar .= '</ul></li>';
+			}
+			$sidebar .= '<li style="padding-top: 1em;"><strong style="font-size: 14px; font-family: \'Helvetica Neue\', Arial, Helvetica;">'.$attempt->year.'</strong><ul>';
+			$tmp = $attempt->year;
+		}
+		$sidebar .= '<li class="'.$attempt->outcome.'"><a class="bill" href="http://www.richmondsunlight.com/bill/'.$attempt->year.'/'
+			.strtolower($attempt->number).'/">'.$attempt->number.'</a>: '.$attempt->catch_line;
+		if (!empty($attempt->outcome))
+		{
+			$sidebar .= ' ('.$attempt->outcome.')';
+		}
+		$sidebar .= '</li>';
+	}
+	$sidebar .= '</ul>
 			</section>';
+}
 
 # If this section has been cited in any court decisions, list them.
 if ($law->court_decisions != false)
@@ -248,6 +292,7 @@ if ($law->court_decisions != false)
 
 if ($law->references !== false)
 {
+
 	$sidebar .= '
 			<section id="references">
 				<h1>Cross References</h1>
@@ -258,6 +303,22 @@ if ($law->references !== false)
 			.$reference->catch_line.'</li>';
 	}
 	$sidebar .= '</ul>
+			</section>';
+}
+
+if (isset($law->related) && (count((array) $law->related) > 0))
+{
+	$sidebar .= '			  
+			<section id="related-links">
+				<h1>Related Laws</h1>
+				<nav id="related">';
+	foreach ($law->related as $related)
+	{
+		$sidebar .= '<li>'.$related->catch_line.' ('.SECTION_SYMBOL
+			.'&nbsp;<a href="'.$related->url.'">'.$related->section_number.')</a></li>';
+	}
+	$sidebar .= '
+				</nav>
 			</section>';
 }
 

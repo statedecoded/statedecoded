@@ -1,13 +1,16 @@
 Copyright 2012 by the contributors.
 
 This program incorporates work covered by the following copyright
-notice:
+notices:
 
 Virginia Decoded is copyright 2010 Waldo Jaquith
 <http://waldo.jaquith.org/>, released under the GPL.
 
 WordPress is copyright 2003-2010 by its contributors, released under
-the GPL.
+the GNU Public License, Version 2.
+
+HTML Purifier is copyright 2012 by Edward Z. Yang, released under the
+GNU Lesser General Public License, Version 2.1.
 
 Wherever third party code has been used, credit has been given in the
 code's comments.
