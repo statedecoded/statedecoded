@@ -14,6 +14,8 @@ One particularly important task in the configuration process is devising a Perl-
 
 The `.htaccess` file will need to be customized, with regular expressions devised to support the [URL rewrites](http://httpd.apache.org/docs/current/mod/mod_rewrite.html) that direct site visitors the appropriate law or structural element.
 
+The State Decoded benefits from [APC](http://php.net/manual/en/book.apc.php), which accelerates substantially its operations. It is not required, however. Likewise, it also benefits from [mod_pagespeed](https://developers.google.com/speed/pagespeed/mod) to streamline HTML and JavaScript.
+
 A Google API key must be entered in includes/page.inc.php for the Google JS API call.
 
 #### More
