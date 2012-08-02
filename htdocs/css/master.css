@@ -548,6 +548,14 @@ section#sidebar {
 			  margin: 15px 0 15px 18px;
 			  width: 106px;
 			}
+		section#sidebar section#amendment-attempts > ul > li {
+			padding-top: 1em;
+		}
+			section#sidebar section#amendment-attempts > ul > li > span {
+				font-weight: bold;
+				font-size: 14px;
+				font-family: 'Helvetica Neue', Arial, Helvetica;
+			}
 
 /* Default stars to white. */
 div#portfolio-toggle {

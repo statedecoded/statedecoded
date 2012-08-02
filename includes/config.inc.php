@@ -7,7 +7,7 @@ define('INCLUDE_PATH', $_SERVER['DOCUMENT_ROOT'].'/../includes');
 set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
 
 # The file in the /includes/ directory that contains functions custom to this installation.
-define('CUSTOM_FUNCTIONS', 'virginia.inc.php');
+#define('CUSTOM_FUNCTIONS', 'virginia.inc.php');
 
 # Where templates are stored.
 define('TEMPLATE_PATH', INCLUDE_PATH.'/templates');
@@ -31,7 +31,7 @@ define('EDITION_YEAR', 2012);
 define('INCLUDES_REPEALED', true);
 
 # Database information.
-define('MYSQL_DSN', 'mysql://web:tU5!o$M4p2@localhost/vacode');
+define('MYSQL_DSN', 'mysql://username:password@localhost/statelaws');
 
 # Specify the title and chapter of the code that contains definitions of terms that are used
 # throughout the code, and thus should have a global scope.

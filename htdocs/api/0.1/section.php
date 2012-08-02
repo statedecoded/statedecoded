@@ -33,8 +33,15 @@ $keys = array(
 # Create a new instance of the class that handles information about individual laws.
 $laws = new Law();
 
-# Instruct the Law class to refrain from querying Richmond Sunlight's API.
-$laws->skip_amendment_attempts = true;
+# Instruct the Law class on what, specifically, it should retrieve. Basically it should get
+# everything except amendment attempts, since that requires a query to the Richmond Sunlight API.
+$laws->config->get_text = TRUE;
+$laws->config->get_structure = TRUE;
+$laws->config->get_amendment_attempts = FALSE;
+$laws->config->get_court_decisions = TRUE;
+$laws->config->get_metadata = TRUE;
+$laws->config->get_references = TRUE;
+$laws->config->get_related_laws = TRUE;
 
 # Pass the requested section number to Law.
 $laws->section_number = $_GET['section'];

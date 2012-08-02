@@ -1,395 +1,101 @@
 <?php
 
-# During this debug phase, I want to know about errors.
-ini_set('display_errors', 1);
-ini_set('error_reporting', 'E_ALL');
-ini_set('error_log','errors.log');
-
 class Parser
 {
 	
-	# Accept the raw content of a section of code and normalize it.
+	# Gather the raw text of each law for the parse() function to figure out what to do with. This
+	# might iterate through files with one law per file (as with this example), it might be screen-
+	# scraping text off a legislature's website, or it might do any number of other things to gather
+	# that text. This function needs to loop over and over again, returning the contents of a single
+	# law with each loop, until finally the entire Code has been iterated over.
+	public function iterate()
+	{
+		
+		# Get a listing of every file in the directory.
+		$files = scandir($this->directory);
+		
+		# Iterate through each file.
+		for ($j = $this->file; $j < count($files); $j++)
+		{
+			
+			$this->file = $j;
+			
+			$filename = $files[$j];
+			
+			# Open the file and store its contents as an array.
+			$law = file($filename);
+			
+			return $law;
+			
+		} // end iterating through files
+	} // end iterate() function
+	
+	
+	# Accept the raw content of a section of code and extract each unit of data into the proper
+	# object-based format.
 	public function parse()
 	{
-
-		# If a section of code hasn't been passed to this, then it's of no use.
-		if (!isset($this->section))
-		{
-			return false;
-		}
-		
-		# Include HTML Purifier, which we use to clean up the code and character sets.
-		require_once(INCLUDE_PATH.'/htmlpurifier/HTMLPurifier.auto.php');
-		# Fire up HTML Purifier.
-		$purifier = new HTMLPurifier();
-		
-		# Strip out the whitespace.
-		$this->section = trim($this->section);
-		
-		# For whatever reason, the SGML file from LIS uses a vertical pipe in place of the section
-		# symbol. Swap them out.
-		$this->section = str_replace('|', SECTION_SYMBOL, $this->section);
-		
-/*
-?			$$PROFILE=COD
-section		2.2-2031
-ignore		Division of Public Safety Communications established; appointment of Virginia Public Safety Communic
-?			00000000001
-?			05602.2
-?			20.1
-concerns?	Virginia Information Technologies Agency
-?			N
-*/
-		
-		# Break this section into an array based on newlines.
-		$section = explode(PHP_EOL, $this->section);
-		
-		# The 146th character is where, no matter what, the raw section number appears. Extract
-		# that and everything after it.
-		$tmp = substr($section[0], 145);
-		$tmp = preg_replace('/\s\s+/', '-=-=-=-', $tmp);
-		$tmp = explode('-=-=-=-', $tmp);
-		
-		# If we only have two items present in this array, then we're missing both the chapter title
-		# and the chapter number, because neither exist. (It's not that they're in the SGML -- they
-		# simply don't exist. In that case, we've got to fake it.
-		if (count($tmp) == 2)
-		{
-			# Reassign named_act to the proper variable.
-			$tmp[3] = $tmp[1];
-			
-			# Give it a chapter number of "1". That's not accurate, but it's *something*.
-			$tmp[1] = 1;
-			
-			# Give the chapter a title of "Untitled."
-			$tmp[2] = 'Untitled';
-		}
-		
-		// *Really*? There's no better way to do this?
-		$tmp[0] = trim($tmp[0]);
-		$tmp[1] = trim($tmp[1]);
-		$tmp[2] = trim($tmp[2]);
-		$tmp[3] = trim($tmp[3]);
-		
-		# This long string of numbers is a unique identifer that increments sequentially, so we
-		# use it to populate the order_by column.
-		$code->order_by = $tmp[0];
-		
-		# This bit contains the chapter number.
-		$code->chapter_number = $tmp[1];
 	
-		# Store the chapter name and whether this act has a legislative name.
-		$code->chapter_name = $tmp[2];
-		$code->named_act = $tmp[3];
-		
-		unset($tmp);
-		
-		# Grab everything after this line until we come to "<history>" -- that is, everything within
-		# <section> or <table> tags.
-		for ($i=1; $i<count($section); $i++)
-		{
-			if (stristr($section[$i], '<history>') === false)
-			{
-				$tmp[] = $section[$i];
-			}
-			else
-			{
-				# Store this line number so that we can use it later.
-				$history_line = $i;
-				break;
-			}
-		}
-		
-		# Turn that text into an array.
-		$tmp = '<code>'.implode(' ', $tmp).'</code>';
-		
-		# Take any HTML entities and store them as their actual Unicode characters. For instance, we
-		# don't want &deg;, we want °.
-		$tmp = html_entity_decode($tmp, ENT_QUOTES, 'UTF-8');
-		
-		# Any ampersands that are left over are stand-alone ampersands, which we'll want to convert
-		# into their entity equivalent.
-		$tmp = str_replace('&', '&amp;', $tmp);
-		
-		# We have to deal with <section> and <table> tags. To keep the XML parser happy and keep
-		# those appearing in the proper order, we modify all of the <table> tags to make them
-		# <section> tags, and we give both a "type" attribute so that we can tell them apart.
-		# This is available within $xml as $xml->section->attributes()->type.
-		$tmp = str_replace('<table>', '<section type="table">', $tmp);
-		$tmp = str_replace('</table>', '</section>', $tmp);
-		$tmp = str_replace('<section>', '<section type="section">', $tmp);
-		
-		# Use HTML Purifier to clean this up. Specifically, we're invoking a function that's meant
-		# to clean up SGML, by cleaning up the character set without worrying about the validity of
-		# HTML tags. That leaves our SGML unharmed, and our character set tidy, too.
-		$tmp = HTMLPurifier_Encoder::cleanUTF8($tmp, $force_php = false);
-		
-		# And now render that array as a XML tree, catching any errors.
-		libxml_use_internal_errors(true);
-		try
-		{
-			$xml = new SimpleXMLElement($tmp);
-		}
-		catch (Exception $e)
-		{
-			echo '<p>SimpleXML could not parse '.$this->section.' because of the following:</p><ul>';
-			foreach (libxml_get_errors() as $error)
-			{
-				echo '<li>'.$error.'</li>';
-			}
-			echo '</ul>';
-			continue;
-		}
-		
-		# Save memory space.
-		unset($tmp);
+		# The identifier for this law (e.g., "10.12-46-21").
+		$this->code->section_number = '';
 
-		# Define all five possible section prefixes via via PCRE strings.
-		$prefix_candidates = array	('/[A-Z]{1,2}\. /',
-									'/[0-9]{1,2}\. /',
-									'/[a-z]{1,2}\. /',
-									'/\([0-9]{1,2}\) /',
-									'/\([a-z]{1,2}\) /');
+		# The name of this law (e.g. "Receiving stolen goods").
+		$this->code->name = '';
 		
-		# Establish a blank prefix structure. We'll build this up and continually modify it to keep
-		# track of our current complete section number as we iterate through the code.
-		$prefixes = array();
+		# Store the full text of this law.
+		$this->code->text = '';
 		
-		# Establish a blank variable to accrue the full text.
-		$code->text = '';
+		# Each set of laws is arranged from beginning to ending, with every law occupying a
+		# particular position in that order. To know in what order to display those laws, every
+		# law must be assigned some sort of "order by" characteristic that will result in a natural
+		# order when selected from the database. Assign such a number here.
+		$this->code->order_by = '';
 		
-		# Deal with each subsection, one at a time.
-		for ($i=1; $i<count($xml->section); $i++)
-		{
-			# Strip out carriage returns and collapse whitespace if this is a regular section. The
-			# carriage returns and spaces are meaningful on tables, so we leave them alone.
-			if ($xml->section->$i->attributes()->type == 'section')
-			{
-				$xml->section->$i = str_replace("\n", ' ', $xml->section->$i);
-				$xml->section->$i = preg_replace('/\s\s+/', ' ', $xml->section->$i);
-			}
-			$xml->section->$i = trim($xml->section->$i);
-			
-			# Append this section's text to the complete text.
-			if ($xml->section->$i->attributes()->type == 'section')
-			{
-				$code->text .= '<p>'.$xml->section->$i.'</p>';
-			}
-			elseif ($xml->section->$i->attributes()->type == 'table')
-			{
-				$code->text .= '<pre class="table">'.$xml->section->$i.'</pre>';
-			}
-			
-			# Detect the presence of a subsection prefix -- that is, a letter, number, or series
-			# of letters that defines an individual subsection of a law in a hierarchical fashion.
-			# The subsection letter can be in one of five formats, listed here from most to least
-			# important:
-			# 		A. -> 1. -> a. -> (1) -> (a)
-			# ...or, rather, this is *often* the order in which they appear. But not always! So we
-			# can't rely on this order.
-			# When the capital letters run out, they increment like hex: "AB." "AC." etc.
-			# When the lowercase letters run out, they double: "aa." "bb." etc.
-			
-			# Set aside the first five characters in this section of text. That's the maximum number
-			# of characters that a prefix can occupy.
-			$section_fragment = substr($xml->section->$i, 0, 5);
-			
-			# Iterate through our possible candidates until we find one that matches (if, indeed,
-			# one does at all).
-			foreach ($prefix_candidates as $prefix)
-			{
-			        
-				# If this prefix isn't found in this section fragment, then proceed to the next
-				# prefix.
-				preg_match($prefix, $section_fragment, $matches);
-				if (count($matches) == 0)
-				{
-					continue;
-				}
+		# This bit contains the structure (e.g., chapter, title, part, etc.) number.
+		$this->code->structure_number = '';
+	
+		# Store the structure name.
+		$this->code->structure_name = '';
 				
-				# Great, we've successfully made a match -- we now know that this is the beginning
-				# of a new numbered section. First, let's save a platonic ideal of this match.
-				$match = trim($matches[0]);
-				
-				# Now we need to figure out what the entire section number is, only the very end
-				# of which is our actual prefix. To start with, we need to modify our subsection
-				# structure array to include our current prefix.
-				
-				# If this is our first time through, then this is easy -- our entire structure
-				# consists of the current prefix.
-				if (count($prefixes) == 0)
-				{
-					$prefixes[] = $match;
-				}
-				
-				# But if we already have a prefix stored in our array of prefixes for this section,
-				# then we need to iterate through and see if there's a match.
-				else
-				{
-					
-					# We must figure out where in the structure our current prefix lives. Iterate
-					# through the prefix structure and look for anything that matches the regex that
-					# matched our prefix.
-					foreach ($prefixes as $key => &$prefix_component)
-					{
-						# We include a space after $prefix_component because this regex is looking
-						# for a space after the prefix, something that would be there when finding
-						# this match in the context of a section, but of course we've already
-						# trimmed that out of $prefix_component.
-						preg_match($prefix, $prefix_component.' ', $matches);
-						if (count($matches) == 0)
-						{
-							continue;
-						}
-						
-						# We've found a match! Update our array to reflect the current section
-						# number, by modifying the relevant prefix component.
-						$prefix_component = $match;
-						
-						# Also, set a flag so that we know that we made a match.
-						$match_made = true;
-						
-						# If there are more elements in the array after this one, we need to zero
-						# them out. That is, if we're in A4(c), and our last section was A4(b)6,
-						# then we need to lop off that "6." So kill everything in the array after
-						# this.
-						if (count($prefixes) > $key)
-						{
-							$prefixes = array_slice($prefixes, 0, ($key+1));
-						}
-					}
-					
-					# If the $match_made flag hasn't been set, then we know that this is a new
-					# prefix component, and we can append it to the prefix array.
-					if (!isset($match_made))
-					{
-						$prefixes[] = $match;
-					}
-					else
-					{
-						unset($match_made);
-					}
-				}		
-				
-				# Iterate through the prefix structure and store each prefix section in our code
-				# object. While we're at it, eliminate any periods.
-				for ($j=0; $j<count($prefixes); $j++)
-				{
-					$code->section->$i->prefix_hierarchy->$j = str_replace('.', '', $prefixes[$j]);
-				}
-				
-				# And store the prefix list as a single string.
-				$code->section->$i->prefix = implode('', $prefixes);
-
-			}
-			
-			# Hack off the prefix at the beginning of the text and save what remains to $code.
-			if (isset($code->section->$i->prefix))
-			{
-				$tmp2 = explode(' ', $xml->section->$i);
-				unset($tmp2[0]);
-				$code->section->$i->text = implode(' ', $tmp2);
-			}
-			
-			# If we haven't detected a prefix, that's fine -- just save this section as-is.
-			elseif (!isset($match))
-			{
-				$code->section->$i->text = $xml->section->$i;
-			}
-			
-			# Include the type in $code, too.
-			$code->section->$i->type = $xml->section->$i->attributes()->type;
-			
-			# We want to eliminate our matched prefix now, so that we don't mistakenly believe that
-			# we've successfully made a match on our next loop through.
-			unset($match);
-		}
-		
-		# We don't want to reuse this accidentally.
-		unset($tmp);
-		
-		# The contents of the first section tag are broken into section and name. Pull out the
-		# section number.
-		preg_match(SECTION_PCRE, $xml->section->{0}, $matches);
-		
-		# If we have a matched section number, put it to work.
-		if (is_array($matches) && (count($matches) > 0) )
-		{
-
-			# Save the matched string as the section number.
-			$code->section_number = trim($matches[0]);
-			if (substr($code->section_number, -1) == '.')
-			{
-				$code->section_number = substr($code->section_number, 0, -1);
-			}
-			
-			# And save the stuff that isn't the matched string as the name. Since this sometimes
-			# includes a newline, and sometimes has double spaces, do a couple of quick substitutions.
-			$code->name = trim(str_replace('§ '.$code->section_number.'.', '', $xml->section->{0}));
-			$code->name = str_replace("\n", ' ', $code->name);
-			$code->name = str_replace('  ', ' ', $code->name);
-			
-		}
-		
-		# If we don't have a matched section number, then we're out of luck. We've got to give up.
-		else
-		{
-			return false;
-		}
-		
-		# If the words "repealed effective" appear in the name, or if the string starts with "§
-		# through ", or if it's really short and starts with the phrase "repealed by acts," then we
-		# mark this section as repealed. Those being the hallmarks of repealed sections. Note that
-		# the string length of "128" is used as the threshold for "really short," because that is
-		# the greatest length of a section in the Virginia Code that contains the string "Repealed
-		# by Acts."
-		if (
-			(strpos($code->name, 'repealed effective') !== false)
-			||
-			(strpos($code->name, '§ through ') !== false)
-			||
-			(
-				(strpos($code->text, 'Repealed by Acts') !== false)
-				&&
-				(strlen($code->text) <= 128)
-			)
-		)
-		{
-			$code->repealed = 'y';
-		}
-		
-		# Step through each line in the history.
-		for ($i=$history_line; $i<count($section); $i++)
-		{
-			# Save every line that isn't a container tag. This is probably just one line.
-			if (stristr($section[$i], 'history>') === false)
-			{
-				$tmp[] = preg_replace('/\s\s+/', ' ', $section[$i]);
-			}
-		}
-		
-		# If we've got any history data at this point.
-		if (is_array($tmp))
+		# Iterate through each section of this law (e.g., section A, then section B, etc.)
+		$i=0;
+		foreach ($section_of_the_code as $section)
 		{
 			
-			# Save the finalized history data.
-			$tmp = implode(' ', $tmp);
+			# As we iterate deeper into the code (e.g., subsection 1, then sub-subsection a), build
+			# up an array (e.g., array(A, 1, a)) so that we know the precise identifier for this
+			# subsection of text.
+			$prefixes[] = $section->prefix;
 			
-			$tmp = trim($tmp);
-			
-			# Strip out the parentheses that bracket the history if, in fact, they do.
-			if ( (substr($tmp, -1) == ')') && (substr($tmp, 0, 1) == '(') )
+			# Iterate through the prefix structure of the text of the law and store each prefix section
+			# in our code object.
+			for ($i=0; $i<count($prefixes); $i++)
 			{
-				$tmp = substr($tmp, 0, -1);
-				$tmp = substr($tmp, 1);
+				$this->code->section->$i->prefix_hierarchy->$j = $prefixes[$j];
 			}
 			
-			# Use HTML Purifier to clean up this history data.
-			$tmp = $purifier->purify($tmp);
+			# And store the prefix list as a single string.
+			$this->code->section->$i->prefix = implode('', $prefixes);
 			
-			# Save the finished history data.
-			$code->history = $tmp;
+			# Store the text of this individual section
+			$this->code->section->$i->text = $section->text;
+				
+			# Include the type in $code, too. Type might be "text," "table," "illustration," or any
+			# other class of section that would necessitate different display in the storage or
+			# rendering process.
+			$this->code->section->$i->type = $section->type;
+			
+			$i++;
+		}			
+		
+		# If the words "repealed effective" appear in the name then we mark this section as repealed.
+		if (strpos($this->code->name, 'repealed effective') !== false)
+		{
+			$this->code->repealed = 'y';
 		}
+		
+		# Save history data for this law (i.e., when it was passed, when it was amended, etc.)
+		$this->code->history = '';
 			
 		# Make the data available outside of the scope of this function.
 		$this->code = $code;
@@ -405,45 +111,18 @@ concerns?	Virginia Information Technologies Agency
 			die('No data provided.');
 		}
 		
-		# This first section creates the record for the law, but doesn't do anything with the
-		# content of it just yet.
-		
-		# We're going to need access to the database connection throughout this function.
-		global $db;
-		
 		# Try to create a new chapter. If the chapter already exists, create_structure() will handle
 		# that silently. Either way a chapter ID gets returned.
-		$chapter = new Parser;
-		$chapter->number = $this->code->chapter_number;
-		$chapter->name = $this->code->chapter_name;
-		$tmp = explode('-', $this->code->section_number);
-		$chapter->title_number = $tmp[0];
-		$chapter_id = $chapter->create_structure();
-		if ($chapter_id !== false)
-		{
-			$query['structure_id'] = $chapter_id;
-			unset($chapter_id);
-		}
-		else
-		{
-			echo '<p>Error: Chapter could not be created for '.$chapter->number.' ("'.$chapter->name.'")</p>';
-		}
-		unset($chapter->number);
-		unset($chapter->name);
+		$structure = new Parser;
+		$structure->number = $this->code->structure_number;
+		$structure->name = $this->code->structure_name;
+		$structure_id = $chapter->create_structure();
 		
 		# Build up an array of field names and values, using the names of the database columns as
 		# the key names.
 		$query['catch_line'] = $this->code->name;
 		$query['section'] = $this->code->section_number;
 		$query['text'] = $this->code->text;
-		if (!empty($this->code->unknown1))
-		{
-			$query['unknown1'] = $this->code->unknown1;
-		}
-		if (!empty($this->code->named_act))
-		{
-			$query['named_act'] = $this->code->named_act;
-		}
 		if (isset($this->code->history))
 		{
 			$query['history'] = $this->code->history;
@@ -465,11 +144,6 @@ concerns?	Virginia Information Technologies Agency
 		
 		# Execute the query.
 		$result =& $db->exec($sql);
-		if (PEAR::isError($result))
-		{
-			echo '<p>'.$sql.'</p>';
-			die($result->getMessage());
-		}
 		
 		# Preserve the insert ID from this law, since we'll need it below.
 		$law_id = $db->lastInsertID();
@@ -486,11 +160,6 @@ concerns?	Virginia Information Technologies Agency
 			$references->section_id = $law_id;
 			$references->sections = $sections;
 			$success = $references->store_references();
-			if ($success === false)
-			{
-				echo '<p>References for section ID '.$law_id.' were found, but could not be
-					stored.</p>';
-			}
 		}
 		
 		# Step through each section.
@@ -514,11 +183,6 @@ concerns?	Virginia Information Technologies Agency
 
 			# Execute the query.
 			$result =& $db->exec($sql);
-			if (PEAR::isError($result))
-			{
-				echo '<p>'.$sql.'</p>';
-				die($result->getMessage());
-			}
 		
 			# Preserve the insert ID from this section of text, since we'll need it below.
 			$text_id = $db->lastInsertID();
@@ -537,11 +201,6 @@ concerns?	Virginia Information Technologies Agency
 				
 				# Execute the query.
 				$result =& $db->exec($sql);
-				if (PEAR::isError($result))
-				{
-					echo '<p>'.$sql.'</p>';
-					die($result->getMessage());
-				}
 				
 				$j++;
 			}
@@ -551,8 +210,7 @@ concerns?	Virginia Information Technologies Agency
 		
 		# Trawl through the text for definitions, if the section contains "Definitions" in the title
 		# or if the current chapter is the chapter that we defined in the site config as containing
-		# the global definitions. We could just confirm that title is exactly "Definitions.", but
-		# sometimes it's preceded with other text, e.g. "(Effective July 1, 2012) ".
+		# the global definitions.
 		if (
 			(stristr($this->code->name, 'Definitions.') !== false)
 			||
@@ -586,137 +244,28 @@ concerns?	Virginia Information Technologies Agency
 				$dictionary->store_definitions();
 			}
 		}
-		
-		# Memory management
-		unset($references);
-		unset($dictionary);
-		unset($definitions);
-		unset($chapter);
-		unset($sections);
-		unset($query);
 	}
 	
-	# Step through every line of every file that contains the contents of the code.
-	public function iterate()
-	{
-		
-		if (!isset($this->directory))
-		{
-			$this->directory = getcwd();
-		}
-		
-		# We need to maintain a file counter that will survive instances of this function to keep
-		# track of which file we're working on. If it's not already set, set it now.
-		if (!isset($this->file))
-		{
-			$this->file=0;
-		}
-		
-		# Change to the directory.
-		chdir($this->directory);
-		
-		# Get a listing of every file in the directory.
-		$files = scandir($this->directory);
-		
-		# Drop from the array any file name that doesn't start with "code-".
-		foreach ($files as $number => $file)
-		{
-			if (substr($file, 0, 5) !== 'code-')
-			{
-				unset($files[$number]);
-			}
-		}
-		$files = array_values($files);
-		
-		# Iterate through every file.
-		for ($j = $this->file; $j < count($files); $j++)
-		{
-			
-			$this->file = $j;
-			
-			$filename = $files[$j];
-			
-			# Open the file and store its contents as an array.
-			$file = file($filename);
-			
-			if ($file === false)
-			{
-				die($filename.' could not be opened.');
-			}
-			
-			# Start a counter to track our position in the file. Start with the prior state of this
-			# function, if there was one.
-			if (isset($this->i))
-			{
-				$i = $this->i;
-			}
-			else
-			{
-				$i = 0;
-				$this->i = 0;
-			}
-			
-			# Count how many lines that there are in the file
-			$line_count = count($file);
-			
-			# Iterate through the contents of this file.
-			for ($i=$this->i; $i<$line_count; $i++)
-			{
-				
-				$line = $file[$i];
-				
-				# If the line contains "$$PROFILE" then we're starting a new section of the code.
-				if (stristr($line, '$$PROFILE') !== false)
-				{
-					
-					# Send the amassed chunk of code to our parser to deal with it.
-					if (isset($section))
-					{
-						
-						# Save this variable to reuse next time, so that we can start again where
-						# we left off.
-						$this->i = $i;
-						
-						# Return this section and end the function.
-						return $section;
-					}
-					
-					# Start a new instance of the $section variable, beginning with this line.
-					$section = $line;
-				}
-				
-				# If this is just a regular line, then append it to the existing section variable.
-				elseif (isset($section))
-				{
-					$section .= $line;
-				}
-				
-				# If we've reached the end of the file.
-				if ( ($i+1) == $line_count)
-				{
-					
-					# Reset our line counter.
-					$this->i = 0;
-					$i = 0;
-					
-					# Stop iterating through this file, break out to the file foreach loop,
-					# and continue with the next file.
-					break;
-				}
-				
-			} // end iterating through the contents of a file
-		} // end iterating through files
-	} // end iterate() function
-	
-	# When provided with a chapter number, verifies whether that chapter exists. Returns the chapter
-	# ID if it exists; otherwise, returns false.
-	public function chapter_exists()
+	# When provided with a structure number and label, verifies whether that structural unit. Returns
+	# the structure ID if it exists; otherwise, returns false. Requires the structural unit's
+	# natural number (e.g., "3" -- the actual number provided within the Code) and the label for
+	# that structural unit (e.g., "chapter," "part," "title," etc.) Note that there the combination
+	# of a type and number will rarely be unique, with the exception of top-level structural units
+	# (e.g., titles), so this function should almost always be provided with $parent_id that
+	# specifies the ID of this structural unit's parent.
+	public function structure_exists()
 	{
 		
 		# We're going to need access to the database connection within this function.
 		global $db;
+		
+		
+		if (!isset($this->number))
+		{
+			return false;
+		}
 	
-		if (!isset($this->number) || !isset($this->title_id))
+		if (!isset($this->label))
 		{
 			return false;
 		}
@@ -724,8 +273,13 @@ concerns?	Virginia Information Technologies Agency
 		# Assemble the query.
 		$sql = 'SELECT id
 				FROM structure
-				WHERE label="chapter" AND number="'.$this->number.'"
-				AND parent_id='.$this->title_id;
+				WHERE label="'.$db->escape($this->label).'"
+				AND number="'.$db->escape($this->number).'"';
+		
+		if (isset($this->parent_id))
+		{
+			$sql .= ' AND parent_id='.$db->escape($this->parent_id);
+		}
 
 		# Execute the query.
 		$result =& $db->query($sql);
@@ -740,8 +294,10 @@ concerns?	Virginia Information Technologies Agency
 		return $chapter->id;
 	}
 	
-	# When provided with a chapter number, verifies whether that chapter exists. Returns the chapter
-	# ID, if successful; otherwise returns false.
+	# When provided with a structural unit number and type, it creates a record for that structural
+	# unit. Save for top-level structural units (e.g., titles), it should always be provided with
+	# a $parent_id, which is the ID of the parent structural unit. Most structural units will have
+	# a name, but not all.
 	public function create_structure()
 	{
 		
@@ -752,49 +308,26 @@ concerns?	Virginia Information Technologies Agency
 		# titles of the code. These are void of necessary information. We want to ignore these
 		# silently. Though you'd think we should require a chapter name, we actually shouldn't,
 		# because sometimes chapters don't have names. In the Virginia Code, for instance, titles
-		# 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
+		# 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter (or "part"), and none of them have a
 		# name.
-		if (empty($this->number) || empty($this->title_number))
+		if (empty($this->number) || (empty($this->parent_number) && empty($this->parent_id)) )
 		{
 			return false;
 		}
 		
-		# Get the ID of the title that contains this chapter.
-		$sql = 'SELECT id
-				FROM structure
-				WHERE number="'.$db->escape($this->title_number).'"
-				AND label="title"';
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		# If we've been given a parent number, but not a parent ID, look up the parent ID.
+		if (!isset($this->parent_id))
 		{
-			return false;
-		}
-		
-		$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-		$this->title_id = $title->id;
-		
-		# Virginia has nine structural units (chapters) with titles that exceed the 100 character
-		# limit. These are distinguished only by the fact that the last character (the 101st) is
-		# "N" (capitalized). We replace that "N" with the Unicode horizontal ellipsis character.
-		if ( (strlen($this->name) == 101) && (substr($this->name, -1) == 'N') )
-		{
-			$this->name{100} = '…';
-		}
-
-// It's not clear to be whether this chapter_exists() call is necessary, given ON DUPLICATE KEY
-// in the following query. Experiment with eliminating this, as well as the chapter_exists()
-// function.
-
-		# If this chapter exists, then we don't need to create it anew.
-		$chapter_id = Parser::chapter_exists();
-		
-		if ($chapter_id !== false)
-		{
-			return $chapter_id;
-		}
+			# Get the ID of the title that contains this chapter.
+			$sql = 'SELECT id
+					FROM structure
+					WHERE number="'.$db->escape($this->parent_number).'"
+					AND label="'.$db->escape($this->parent_label).'"';
+			# Execute the query.
+			$result =& $db->query($sql);
+			
+			$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			$this->title_id = $title->id;
 		
 		# Insert this chapter record into the database. We use ON DUPLICATE KEY so that this can
 		# be run without first invoking chapter_exists().
@@ -804,17 +337,13 @@ concerns?	Virginia Information Technologies Agency
 		{
 			$sql .= 'name="'.$db->escape($this->name).'",';
 		}
-		$sql .= 'label="chapter", date_created=now(), parent_id='.$this->title_id.'
+		$sql .= 'label="chapter", date_created=now(), parent_id='.$this->parent_id.'
 				ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)';
 
 		# Execute the query.
 		$result =& $db->exec($sql);
-		if (PEAR::isError($result))
-		{
-			return false;
-		}
 	
-		# Return 
+		# Return the new structural unit's ID.
 		return $db->lastInsertID();
 	}
 	
@@ -1069,14 +598,6 @@ concerns?	Virginia Information Technologies Agency
 				
 		# Execute the query.
 		$result =& $db->exec($sql);
-		if (PEAR::isError($result))
-		{
-			echo $sql;
-			return false;
-		}
-		
-		# Memory management.
-		unset($this);
 		
 		return true;
 		
@@ -1157,11 +678,6 @@ concerns?	Virginia Information Technologies Agency
 		
 		# Execute the query.
 		$result =& $db->exec($sql);
-		if (PEAR::isError($result))
-		{
-			echo '<p>Failed: '.$sql.'</p>';
-			return false;
-		}
 		
 		return true;
 		
@@ -1188,7 +704,7 @@ concerns?	Virginia Information Technologies Agency
 		{
 			
 			# Match lines of the format "2010, c. 402, § 1-15.1"
-			$pcre = '/([0-9]{2,4}), c\. ([0-9]+)(.*)/';
+			$pcre = '/([0-9]{4}), c\. ([0-9]+)(.*)/';
 			
 			# First check for single matches.
 			$result = preg_match($pcre, $update, $matches);
@@ -1200,14 +716,58 @@ concerns?	Virginia Information Technologies Agency
 				}
 				if (!empty($matches[2]))
 				{
-					$final->{$i}->chapter = $matches[2];
+					$final->{$i}->chapter = trim($matches[2]);
 				}
 				if (!empty($matches[3]))
 				{
-					$final->{$i}->section = substr($matches[3], 4);
+					$result = preg_match(SECTION_PCRE, $update, $matches[3]);
+					if ( ($result !== false) && ($result !== 0) )
+					{
+						$final->{$i}->section = $matches[0];
+					}
 				}
 			}
-			
+
+			# Then check for multiple matches.
+			else
+			{
+				# Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
+				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
+				$result = preg_match_all($pcre, $update, $matches);
+				if ( ($result !== false) && ($result !== 0) )
+				{
+					# Save the year.
+					$final->{$i}->year = $matches[1][0];
+					
+					# Save the chapter listing. We eliminate any trailing slash and space to avoid
+					# saving empty array elements.
+					$chapters = rtrim(trim($matches[2][0]), ',');
+					
+					# We explode on a comma, rather than a comma and a space, because of occasional
+					# typographical errors in histories.
+					$chapters = explode(',', $chapters);
+					
+					# Step through each of these chapter references and trim down the leading spaces
+					# (a result of creating the array based on commas rather than commas and
+					# spaces) and eliminate any that are blank.
+					for ($j=0; $j<count($chapters); $j++)
+					{
+						$chapters[$j] = trim($chapters[$j]);
+						if (empty($chapters[$j]))
+						{
+							unset($chapters[$j]);
+						}
+					}
+					$final->{$i}->chapter = $chapters;
+					
+					# Locate any section identifier.
+					$result = preg_match(SECTION_PCRE, $update, $matches);
+					if ( ($result !== false) && ($result !== 0) )
+					{
+						$final->{$i}->section = $matches[0];
+					}
+				}
+			}
 			$i++;
 		}
 		

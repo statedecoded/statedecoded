@@ -6,6 +6,15 @@ require_once 'MDB2.php';
 # Include the site's config file.
 require_once 'config.inc.php';
 
+# If APC is installed on this server, load some assets into APC.
+if (GID_EXTENSION_LOADED_APC === true)
+{
+	# Generate a listing of all of the constants that were defined in config.inc.php.
+	$constants = get_defined_constants(true);
+	apc_define_constants('settings', $constants['user']);
+	apc_load_constants('settings');
+}
+
 # Connect to the database.
 $db =& MDB2::connect(MYSQL_DSN);
 if (PEAR::isError($db))
@@ -20,7 +29,7 @@ $db->setCharset('utf8');
 require_once('functions.inc.php');
 
 # If there exists a custom functions file, include that, too.
-if (defined(CUSTOM_FUNCTIONS))
+if (defined('CUSTOM_FUNCTIONS'))
 {
 	require_once(CUSTOM_FUNCTIONS);
 }

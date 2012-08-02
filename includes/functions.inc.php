@@ -90,8 +90,7 @@ function json_error($text)
 
 function send_404()
 {
-	header('HTTP/1.0 404 Not Found');
-	echo '<h1>404 Not Found</h1><p>The page that you have requested could not be found.</p>';
+	include('/var/www/vacode.org/htdocs/404.php');
 	exit();
 }
 
@@ -155,6 +154,7 @@ class Law
 			$this->config->get_structure = TRUE;
 			$this->config->get_amendment_attempts = TRUE;
 			$this->config->get_court_decisions = TRUE;
+			$this->config->get_metadata = TRUE;
 			$this->config->get_references = TRUE;
 			$this->config->get_related_laws = TRUE;
 		}
@@ -304,25 +304,60 @@ class Law
 				}
 			}
 		}
-
-		# Get the amendation attempts for this law and include those (if there are any). But only
-		# if we haven't specifically indicated that we don't want it. The idea behind skipping this
-		# is that it's calling from Richmond Sunlight, which is reasonable for internal purposes,
-		# but it's not sensible for our own API to make a call to another site's API.
-		if ($this->config->get_amendment_attempts == TRUE)
+		
+		# Gather all metadata stored about this law.
+		if ($this->config->get_metadata == TRUE)
 		{
-// Figure out where this is being called from and replace it with the new $this->config system.
-			if ( !isset($this->skip_amendment_attempts) || ($this->skip_amendment_attempts === false) )
+			$law->metadata = Law::get_metadata();
+		}
+		
+		# If this state has its own State class, then we can potentially use some of its methods.
+		if (class_exists('State'))
+		{
+		
+			# Create a new instance of the State() class.
+			$state = new State();
+			$state->section_id = $law->id;
+			$state->section_number = $law->section_number;
+			
+			# Get the amendation attempts for this law and include those (if there are any). But only
+			# if we haven't specifically indicated that we don't want it. The idea behind skipping this
+			# is that it's calling from Richmond Sunlight, which is reasonable for internal purposes,
+			# but it's not sensible for our own API to make a call to another site's API.
+			if ($this->config->get_amendment_attempts == TRUE)
 			{
-				$law->amendation_attempts = Law::get_amendation_attempts($law->section_number);
+				if (method_exists($state, 'get_amendment_attempts'))
+				{
+					$law->amendment_attempts = $state->get_amendment_attempts();
+				}
 			}
-		}
 
-		# Get the court decisions for this law and include those (if there are any).
-		if ($this->config->get_court_decisions == TRUE)
-		{
-			$law->court_decisions = Law::get_court_decisions($law->id);
-		}
+			# Get the court decisions for this law and include those (if there are any).
+			if ($this->config->get_court_decisions == TRUE)
+			{
+				if (method_exists($state, 'get_court_decisions'))
+				{
+					$law->court_decisions = $state->get_court_decisions();
+				}
+			}
+		
+			# Get the URL for this law on its official state web page.
+			if (method_exists($state, 'official_url'))
+			{
+				$law->official_url = $state->official_url();
+			}
+			
+			# Translate the history of this law into plain English.
+			if (method_exists($state, 'translate_history'))
+			{
+				if (isset($law->metadata->history))
+				{
+					$state->history = $law->metadata->history;
+					$law->history_text = $state->translate_history();
+				}
+			}
+			
+		} // end class_exists('State')
 		
 		# Get the references to this law among other laws and include those (if there are any).
 		if ($this->config->get_references == TRUE)
@@ -332,8 +367,7 @@ class Law
 		
 		if ($this->config->get_related_laws == TRUE)
 		{
-// Commented out because it's returning really unrelated sections. What's going on?
-			//$law->related = Law::get_related();
+			$law->related = Law::get_related();
 		}
 
 		# Extract every year named in the history.
@@ -364,148 +398,6 @@ class Law
 	}
 	
 	
-	# Given a chapter ID, return the chapter's name, number, and title ID. Don't bother getting any
-	# sections that have been repealed.
-	function get_chapter()
-	{
-
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-		
-		# If a chapter ID hasn't been passed to this function, then there's nothing to do.
-		if (!isset($this->chapter_id))
-		{
-			return false;
-		}
-		
-		# Assemble the SQL query.
-		$sql = 'SELECT chapters.number, chapters.name, chapters.parent_id AS title_id,
-				titles.number AS title_number
-				FROM structure AS chapters
-				LEFT JOIN structure AS titles
-					ON chapters.parent_id=titles.id
-				WHERE chapters.id='.$db->escape($this->chapter_id);
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
-		}
-		
-		# Save the result as an object.
-		$chapter = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-		
-		# Create a URL.
-		$chapter->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$chapter->title_number.'/'.$chapter->number.'/';
-		
-		# Drop the now-unnecessary title number.
-		unset($chapter->title_number);
-		
-		return $chapter;
-	}
-	
-	
-	# Given a title ID or number, return a title's name and number.
-	function get_title()
-	{
-
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-		
-		# If a title number or title ID hasn't been passed to this function, then there's nothing to
-		# do.
-		if ( !isset($this->title_id) && !isset($this->title_number) )
-		{
-			return false;
-		}
-		
-		# Assemble the SQL query.
-		$sql = 'SELECT id, name, number
-				FROM structure ';
-		if (isset($this->title_id))
-		{
-			$sql .= 'WHERE id='.$db->escape($this->title_id);
-		}
-		else
-		{
-			$sql .= 'WHERE number='.$db->escape($this->title_number).' AND label="title"';
-		}
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
-		}
-		
-		# Save the result as an object.
-		$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-		
-		$title->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$title->number.'/';
-		
-		return $title;
-	}
-		
-	# Retrieve a listing of court cases that cite a given law.
-	function get_court_decisions()
-	{
-				
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-
-
-		# If no law ID is available, then we can't return anything.
-		if (!isset($this->section_id))
-		{
-			return false;
-		}
-		
-		$sql = 'SELECT court_decisions.type, court_decisions.name, court_decisions.date,
-				court_decisions.abstract, court_decisions.record_number
-				FROM court_decisions
-				LEFT JOIN court_decision_laws
-					ON court_decisions.id=court_decision_laws.court_decision_id
-				WHERE court_decision_laws.law_id='.$db->escape($this->section_id).'
-				ORDER BY court_decisions.date DESC
-				LIMIT 5';
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
-		}
-		
-		# Return the result as an object.
-		$decisions = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
-		
-		# Iterate through the decisions so that we can strip out slashes.
-		foreach($decisions as &$decision)
-		{
-			$decision->name = stripslashes($decision->name);
-			$decision->abstract = stripslashes($decision->abstract);
-			
-			if ($decision->type == 'appeals')
-			{
-				$decision->type_html = '<abbr title="Court of Appeals">COA</abbr>';
-			}
-			elseif ($decision->type == 'supreme')
-			{
-				$decision->type_html = '<abbr title="Supreme Court of Virginia">SCV</abbr>';
-			}
-		}
-		
-		return $decisions;
-		
-	}
-		
 	# Return a listing of every section of the code that refers to a given section.
 	function get_references()
 	{
@@ -598,7 +490,7 @@ class Law
 		}
 		
 		# Get a listing of all metadata that belongs to this law.
-		$sql = 'SELECT id, key, value
+		$sql = 'SELECT id, meta_key, meta_value
 				FROM laws_meta
 				WHERE law_id='.$db->escape($this->section_id);
 		
@@ -615,13 +507,17 @@ class Law
 		# Return the result as an object.
 		$metadata = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
 		
-		foreach($metadata as &$tmp)
+		# Create a new object, to which we will port a rotated version of this object.
+		$new = new stdClass();
+		
+		# Iterate through the object in order to reorganize it, assigning the meta_key field to the
+		# key and the meta_value field to the value.
+		foreach($metadata as $field)
 		{
-			$tmp->key = stripslashes($tmp->key);
-			$tmp->value = stripslashes($tmp->value);
+			$new->{stripslashes($field->meta_key)} = unserialize(stripslashes($field->meta_value));
 		}
 		
-		return $metadata;
+		return $new;
 	}
 }
 
@@ -1108,226 +1004,6 @@ class Structure
 			$i++;
 		}
 		return $laws;
-	}
-
-
-}
-
-
-class Title
-{
-	
-	# Get all of the metadata for this title.
-	function get_title()
-	{
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-		
-		# If a chapter ID hasn't been passed to this function, or a combination of chapter number
-		# and title number, then there's nothing to do.
-		if ( !isset($this->id) && !isset($this->number) )
-		{
-			return false;
-		}
-		
-		$sql = 'SELECT id, name, number
-				FROM structure
-				WHERE';
-			
-		# If we've got a title ID, use that.
-		if (isset($this->id))
-		{
-			$sql .= ' id="'.$db->escape($this->id).'"';
-		}
-		
-		# If we have a title number, use that instead.
-		else
-		{
-			$sql .= ' number="'.$db->escape($this->number).'" AND parent_id IS NULL';
-		}
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
-		}
-		
-		# Return the result as an object.
-		$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-		
-		# Iterate through the decisions so that we can strip out slashes.
-		foreach($title as &$tmp)
-		{
-			$tmp = stripslashes($tmp);
-		}
-		
-		return $title;
-	
-	}
-	
-	# List all of the chapters that are part of this title. Only lists chapters that contain
-	# valid sections. That is, some chapters are old, and contain only sections that have been
-	# repealed. This will not display those.
-	function list_chapters()
-	{
-
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-		
-		# If a title ID hasn't been passed to this function, then there's nothing to do.
-		if (!isset($this->id))
-		{
-			return false;
-		}
-		
-		# Assemble the SQL query. The subselect is to avoid getting chapters that contain only
-		# repealed (that is, unlisted) sections.
-		$sql = 'SELECT chapters.id, chapters.label, chapters.name, chapters.number,
-				titles.id AS title_id, titles.number AS title_number
-				FROM structure AS chapters
-				LEFT JOIN structure AS titles
-					ON chapters.parent_id=titles.id
-				WHERE titles.id='.$db->escape($this->id).'
-				AND
-					(SELECT COUNT(*)
-					FROM laws
-					WHERE chapter_id=chapters.id
-					AND repealed="n") > 0
-				ORDER BY chapters.number+0 ASC, chapters.number ASC';
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
-		}
-		
-		# Return the result as an object, built up as we loop through the results.
-		$i=0;
-		while ($chapter = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
-		{
-			# Figure out the URL and include that.
-			$chapter->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$chapter->title_number.'/'.$chapter->number.'/';
-			$chapters->$i = $chapter;
-			$i++;
-		}
-		return $chapters;
-		
-	}
-}
-
-
-class Chapter
-{
-
-	# Get all of the metadata for this chapter. Accepts a title number and chapter number as input
-	# or, alternately, a chapter ID.
-	function get_chapter()
-	{
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-		
-		# If a chapter ID hasn't been passed to this function, or a combination of chapter number
-		# and title number, then there's nothing to do.
-		if ( !isset($this->id) && ( !isset($this->number) && !isset($this->title_number) ) )
-		{
-			return false;
-		}
-		
-		$sql = 'SELECT chapters.id, chapters.label, chapters.name, chapters.number,
-				titles.id AS title_id, titles.number AS title_number, titles.name AS title_name
-				FROM structure AS chapters
-				LEFT JOIN structure AS titles
-					ON chapters.parent_id=titles.id
-				WHERE';
-			
-		# If we've got a chapter ID, use that.
-		if (isset($this->id))
-		{
-			$sql .= ' chapters.id="'.$db->escape($this->id).'"';
-		}
-		
-		# If we have a chapter and title number, use this.
-		else
-		{
-			$sql .= ' chapters.number="'.$db->escape($this->number).'"
-				AND titles.number="'.$db->escape($this->title_number).'"';
-		}
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
-		}
-		
-		# Return the result as an object.
-		$chapter = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-		
-		# Iterate through the decisions so that we can strip out slashes.
-		foreach($chapter as &$tmp)
-		{
-			$tmp = stripslashes($tmp);
-		}
-		
-		return $chapter;
-	}
-
-	# Get a listing of all sections for a given chapter.
-	function list_sections()
-	{
-
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-		
-		# If a chapter ID hasn't been passed to this function, then there's nothing to do.
-		if (!isset($this->id))
-		{
-			return false;
-		}
-		
-		# Assemble the SQL query. Only get sections that haven't been repealed.
-		$sql = 'SELECT id, chapter_id, section AS number, catch_line
-				FROM laws
-				WHERE chapter_id='.$db->escape($this->id).' AND repealed="n"
-				ORDER BY SUBSTRING_INDEX(number, "-", 1)+0,
-				REPLACE(section, CONCAT(SUBSTRING_INDEX(section, "-", 1), "-"), "")+0';
-		
-		# Execute the query.
-		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
-		}
-		
-		# Return the result as an object, built up as we loop through the results.
-		$i=0;
-		while ($section = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
-		{
-			# Figure out the URL and include that.
-			$tmp = explode('-', $section->number);
-			$section->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$tmp[0].'-'.$tmp[1].'/';
-			
-			# We shouldn't have any untitled sections but, if we do, we need to put something in
-			# that field.
-			if (empty($section->catch_line))
-			{
-				$section->catch_line = '[Untitled]';
-			}
-			
-			$sections->$i = $section;
-			$i++;
-		}
-		return $sections;
 	}
 }
 

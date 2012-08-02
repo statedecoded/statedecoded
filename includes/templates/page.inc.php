@@ -20,6 +20,7 @@
 	<link rel="stylesheet" href="/css/master.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/jquery.qtip.css" type="text/css" media="screen">
 	<link rel="home" title="Home" href="/" />
+	<link rel="search" title="Search" href="/search/" />
 	{{link_rel}}
 	{{css}}
 	{{inline_css}}
@@ -41,9 +42,11 @@
 		google.load("jquery", "1.4.3");
 		google.load("jqueryui", "1.8.11");
 	</script>
-	<!-- Other Javascript is at the end of the page for faster loading pages -->
 </head>
 <body>
+	<div id="corner-banner">
+		<span><a href="/about/">Beta</a></span>
+	</div>
 	<header id="masthead">
 		<hgroup>
 			<h1><a href="/">The State Decoded</a></h1>
@@ -90,162 +93,5 @@
 	{{javascript_files}}
 	<script src="/js/jquery.qtip.min.js"></script>
 	<script src="/js/jquery.color.js"></script>
-	<script src="/js/jquery.cookies.2.2.0.min.js"></script>
-  	<script>
-	$('a.section-permalink').qtip({
-		content: "Permanent link to this subsection",
-		show: {
-			event: "mouseover"
-		},
-		hide: {
-			event: "mouseout"
-		},
-		position: {
-			at: "top center",
-			my: "bottom center"
-		}
-	})
-	
-	/* Mentions of other sections of the code. */
-	$("a.section").each(function() {
-		var section_number = $(this).text();
-		$(this).qtip({
-			tip: true,
-			hide: {
-				when: 'mouseout',
-				fixed: true,
-				delay: 100
-			},
-			position: {
-				at: "top center",
-				my: "bottom left"
-			},
-			style: {
-				width: 300,
-				tip: "bottom left"
-			},
-			content: {
-				text: 'Loading .&thinsp;.&thinsp;.',
-				ajax: {
-					url: '/api/0.1/section/'+section_number,
-					type: 'GET',
-					data: { fields: 'catch_line,ancestry' },
-					dataType: 'json',
-					success: function(section, status) {
-						if( section.ancestry instanceof Object ) {
-							var content = '';
-							for (key in section.ancestry) {
-								var content = section.ancestry[key].name + ' → ' + content;
-							}
-						}
-						var content = content + section.catch_line;
-						this.set('content.text', content);
-					}
-				}
-			}
-		})
-	});
-
-	/* Attach to every bill number link an Ajax method to display a tooltip.*/
-	$("a.bill").each(function() {
-		
-		/* Use the Richmond Sunlight URL to determine the bill year and number. */
-		var url = $(this).attr("href");
-		var url_components = url.match(/\/bill\/(\d{4})\/(\w+)\//);
-		var year = url_components[1];
-		var bill_number = url_components[2];
-		
-		$(this).qtip({
-			tip: true,
-			hide: {
-				when: 'mouseout',
-				fixed: true,
-				delay: 100
-			},
-			position: {
-				at: "top center",
-				my: "bottom right"
-			},
-			style: {
-				width: 300,
-				tip: "bottom right"
-			},
-			content: {
-				text: 'Loading .&thinsp;.&thinsp;.',
-				ajax: {
-					url: 'http://api.richmondsunlight.com/1.0/bill/'+year+'/'+bill_number+'.json',
-					type: 'GET',
-					dataType: 'jsonp',
-					success: function(data, status) {
-						var content = '<a href="http://www.richmondsunlight.com/legislator/'
-							+ data.patron.id + '/">' + data.patron.name + '</a>: ' + data.summary.truncate();
-						this.set('content.text', content);
-					}
-				}
-			}
-		})
-	});
-
-	/* Truncate text at 250 characters of length. Written by "c_harm" and posted to Stack Overflow
-	at http://stackoverflow.com/a/1199627/955342 */
-	String.prototype.truncate = function(){
-		var re = this.match(/^.{0,500}[\S]*/);
-		var l = re[0].length;
-		var re = re[0].replace(/\s$/,'');
-		if(l < this.length)
-			re = re + "&nbsp;.&thinsp;.&thinsp;.&thinsp;";
-		return re;
-	}
-	
-	/* Words for which we have definitions.*/
-	$("span.definition").each(function() {
-		var term = $(this).text();
-		$(this).qtip({
-			tip: true,
-			hide: {
-				when: 'mouseout',
-				fixed: true,
-				delay: 100
-			},
-			position: {
-				at: "top center",
-				my: "bottom left"
-			},
-			style: {
-				width: 300,
-				tip: "bottom left"
-			},
-			content: {
-				text: 'Loading .&thinsp;.&thinsp;.',
-				ajax: {
-					url: '/api/0.1/glossary',
-					type: 'GET',
-					data: { term: term, section: section_number },
-					dataType: 'json',
-					success: function(data, status) {
-						var content = data.formatted.truncate();
-						this.set('content.text', content);
-					}
-				}
-			}
-		})
-	});
-  
-	/* Highlight a section just linked to via an anchor. */
-	function highlight(elemId){
-		var elem = $(elemId);
-		$(elemId).css("backgroundColor", "#fff"); // hack for Safari
-		$(elemId).animate({ backgroundColor: 'rgb(255,255,170)' }, 1500);
-		setTimeout(function(){$(elemId).animate({ backgroundColor: "transparent" }, 3000)},1000);
-	}
-	if (document.location.hash) {
-		highlight(document.location.hash);
-	}
-	$('a[href*=#]').click(function(){
-		var elemId = '#' + $(this).attr('href').split('#')[1];
-		highlight(elemId);
-	});
-
-	</script>
 </body>
 </html>

@@ -8,12 +8,11 @@
 
 <?php
 
-# During this debug phase, I want to know about errors.
-ini_set('display_errors', 1);
-ini_set('error_reporting', 'E_ALL');
-
-# Give PHP 128MB.
-ini_set('memory_limit', '72M');
+# Give PHP 128MB in which to run. Running out of memory can be a real problem. Sometimes the XML
+# for laws is stored in what amounts to a random order in the filesystem, so it can appear that the
+# import has finished when, in fact, it's simply run out of memory, but the resulting content on
+# the website just has random-seeming chunks of the laws missing.
+ini_set('memory_limit', '128M');
 
 # Include a master settings include file.
 require_once $_SERVER['DOCUMENT_ROOT'].'/../includes/config.inc.php';
@@ -31,7 +30,7 @@ if (PEAR::isError($db))
 	die('Could not connect to the database.');
 }
 	
-# We must, must, must always connect with UTF-8.
+# We must always connect with UTF-8.
 $db->setCharset('utf8');
 
 # When first loading the page, show options.
@@ -52,7 +51,8 @@ if (count($_POST) == 0)
 # If the request is to empty the database.
 elseif ($_POST['action'] == 'empty')
 {
-	$tables = array('definitions', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections');
+	$tables = array('definitions', 'laws', 'laws_references', 'text', 'laws_views', 'structure',
+		'text_sections');
 	foreach ($tables as $table)
 	{
 		$sql = 'TRUNCATE '.$table;
@@ -66,19 +66,13 @@ elseif ($_POST['action'] == 'empty')
 		echo '<p>Deleted '.$table.'.</p>';
 	}
 	
-	# We leave titles alone because they have to be added manually.
-	$sql = 'DELETE FROM structure
-			WHERE label != "title"';
-	# Execute the query.
-	$result =& $db->exec($sql);
-	
 	# Reset the auto-increment counter, to avoid unreasonably large numbers.
 	$sql = 'ALTER TABLE structure
 			AUTO_INCREMENT=1';
 	# Execute the query.
 	$result =& $db->exec($sql);
 	
-	echo '<p>Removed everything but titles from structure.</p>';
+	echo '<p>Removed everything.</p>';
 	
 }
 
@@ -87,6 +81,7 @@ elseif ($_POST['action'] == 'parse')
 		
 	# Include HTML Purifier, which we use to clean up the code and character sets.
 	require_once(INCLUDE_PATH.'/htmlpurifier/HTMLPurifier.auto.php');
+	
 	# Fire up HTML Purifier.
 	$purifier = new HTMLPurifier();
 
@@ -96,8 +91,8 @@ elseif ($_POST['action'] == 'parse')
 	# Create a new instance of Parser.
 	$parser = new Parser();
 	
-	# Tell the parser what the working directory should be for the SGML file fragments.
-	$parser->directory = $_SERVER['DOCUMENT_ROOT'].'/sgml/';
+	# Tell the parser what the working directory should be for the XML files.
+	$parser->directory = $_SERVER['DOCUMENT_ROOT'].'/xml/';
 	
 	# Iterate through the files.
 	while ($section = $parser->iterate())
@@ -110,7 +105,6 @@ elseif ($_POST['action'] == 'parse')
 	
 	# Crosslink laws_references. This needs to be done after the time of the creation of these
 	# references, because many of the references are at that time to not-yet-inserted sections.
-	// This belongs in a utility class.
 	$sql = 'UPDATE laws_references
 			SET target_law_id =
 				(SELECT laws.id
@@ -124,25 +118,7 @@ elseif ($_POST['action'] == 'parse')
 	$sql = 'DELETE FROM laws_references
 			WHERE target_law_id = 0';
 	$db->exec($sql);
-	
-	# Update tags to reflect the new law_id.
-	// This belongs in a utility class.
-	$sql = 'UPDATE tags
-			SET law_id =
-				(SELECT laws.id
-				FROM laws
-				WHERE section = tags.section_number)';
-	$db->exec($sql);
-	
-	# Update court_decision_laws to refer to the new law IDs rather than the section numbers.
-	$sql = 'UPDATE court_decision_laws
-			SET law_id=
-				(SELECT id
-				FROM laws
-				WHERE section=court_decision_laws.law_section)';
-	$db->exec($sql);
 
-// Shouldn't this really be buried in the parser, and not part of a cleanup function?
 	# Break up law histories into their components and save those.
 	$sql = 'SELECT id, history
 			FROM laws';
@@ -173,7 +149,7 @@ elseif ($_POST['action'] == 'parse')
 	
 	# If we already have a view, replace it with this new one.
 	$sql = 'DROP VIEW IF EXISTS structure_unified';
-	//$db->exec($sql);
+	$db->exec($sql);
 	
 	# The depth of the structure is the number of entries in STRUCTURE, minus one.
 	$structure_depth = count(explode(',', STRUCTURE))-1;

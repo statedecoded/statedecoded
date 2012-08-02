@@ -69,7 +69,12 @@ $template = new Page;
 
 # Make some section information available globally to JavaScript.
 $template->field->javascript = "var section_number = '".$law->section_number."';";
-$template->field->javascript .= "\r\t\tvar section_id = '".$law->id."';";
+$template->field->javascript .= "var section_id = '".$law->id."';";
+
+$template->field->javascript_files = '
+	<script src="/js/jquery.qtip.min.js"></script>
+	<script src="/js/jquery.slideto.min.js"></script>
+	<script src="/js/mousetrap.min.js"></script>';
 
 # Iterate through every section to make some basic transformations.
 foreach ($law->text as $section)
@@ -182,17 +187,20 @@ foreach ($law->text as $section)
 	}
 	$body .= '</section>';
 }
-	
-$body .= '
-			<section id="history">
+
+# If we have stored history for this section, display it.
+if (isset($law->history_text))
+{
+	$body .= '<section id="history">
 				<h2>History</h2>
-				<p>'.$law->history.'</p>
-			</section>';
+				<p>'.$law->history_text.'</p>';
+}
+
+$body .= '</section>';
 
 # Indicate the conclusion of the "section" article, which is the container for the text of a
 # section of the code.
 $body .= '</article>';
-
 
 $sidebar = '<iframe src="//www.facebook.com/plugins/like.php?href='.urlencode($_SERVER['REQUEST_URI'])
 				.'&amp;send=false&amp;layout=standard&amp;width=1-0&amp;show_faces=false&amp;'
@@ -242,7 +250,7 @@ if (empty($law->repealed) || ($law->repealed != 'y'))
 }
 
 # If there have been attempts to amend this legislation, list them, with links.
-if ($law->amendation_attempts != false)
+if ($law->amendment_attempts != false)
 {
 	# Set the variable that we'll to maintain the state of the year as we loop through the bills.
 	$tmp = '';
@@ -250,7 +258,7 @@ if ($law->amendation_attempts != false)
 			<section id="amendment-attempts">
 				<h1>Amendment Attempts</h1>
 				<ul>';
-	foreach ($law->amendation_attempts as $attempt)
+	foreach ($law->amendment_attempts as $attempt)
 	{
 		# If we're dealing with a new year.
 		if ($tmp != $attempt->year)
@@ -259,11 +267,11 @@ if ($law->amendation_attempts != false)
 			{
 				$sidebar .= '</ul></li>';
 			}
-			$sidebar .= '<li style="padding-top: 1em;"><strong style="font-size: 14px; font-family: \'Helvetica Neue\', Arial, Helvetica;">'.$attempt->year.'</strong><ul>';
+			$sidebar .= '<li><span>'.$attempt->year.'</span><ul>';
 			$tmp = $attempt->year;
 		}
-		$sidebar .= '<li class="'.$attempt->outcome.'"><a class="bill" href="http://www.richmondsunlight.com/bill/'.$attempt->year.'/'
-			.strtolower($attempt->number).'/">'.$attempt->number.'</a>: '.$attempt->catch_line;
+		$sidebar .= '<li class="'.$attempt->outcome.'"><a class="bill" href="'.$attempt->url.'">'
+			.$attempt->number.'</a>: '.$attempt->catch_line;
 		if (!empty($attempt->outcome))
 		{
 			$sidebar .= ' ('.$attempt->outcome.')';
@@ -311,14 +319,14 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 	$sidebar .= '			  
 			<section id="related-links">
 				<h1>Related Laws</h1>
-				<nav id="related">';
+				<ul id="related">';
 	foreach ($law->related as $related)
 	{
-		$sidebar .= '<li>'.$related->catch_line.' ('.SECTION_SYMBOL
-			.'&nbsp;<a href="'.$related->url.'">'.$related->section_number.')</a></li>';
+		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$related->url.'">'
+			.$related->section_number.'</a> '.$related->catch_line.'</li>';
 	}
 	$sidebar .= '
-				</nav>
+				</ul>
 			</section>';
 }
 
@@ -332,13 +340,194 @@ $sidebar .= '<section id="elsewhere">
 				<h1>Trust, But Verify</h1>
 				<p>If you’re reading this for anything important, you should double-check its
 				accuracy';
-if (function_exists('official_url'))
+if (isset($law->official_url))
 {
-	$law->url = official_url($law->section_number);
-	$sidebar .= '—<a href="'.$law->url.'">read §&nbsp;'.$law->section_number;
+	$sidebar .= '—<a href="'.$law->official_url.'">read '.SECTION_SYMBOL.'&nbsp;'.$law->section_number.' ';
 }
 $sidebar .= ' on the official '.LAWS_NAME.' website</a>.
 			</section>';
+
+# The JavaScript that provides the ability to navigate with arrow keys.
+$template->field->javascript .= "
+	$(document).ready(function () {
+		
+		Mousetrap.bind('left', function(e) {
+			var url = $('a.prev').attr('href');
+			if (url) {
+				window.location = url;
+			}
+		});
+		
+		Mousetrap.bind('right', function(e) {
+			var url = $('a.next').attr('href');
+			if (url) {
+				window.location = url;
+			}
+		});
+	 
+	})";
+
+# Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
+# originating traffic, the second is for when clicking on an anchor link within a page.
+$template->field->javascript .= "
+	if (document.location.hash) {
+		$(document.location.hash).slideto({
+			highlight_color: 'yellow',
+			highlight_duration: 5000,
+			slide_duration: 500
+		});
+
+	}
+	$('a[href*=#]').click(function(){
+		var elemId = '#' + $(this).attr('href').split('#')[1];
+		$(elemId).slideto({
+			highlight_color: 'yellow',
+			highlight_duration: 5000,
+			slide_duration: 500
+		});
+	});";
+
+$template->field->javascript .= 
+<<<EOD
+$('a.section-permalink').qtip({
+		content: "Permanent link to this subsection",
+		show: {
+			event: "mouseover"
+		},
+		hide: {
+			event: "mouseout"
+		},
+		position: {
+			at: "top center",
+			my: "bottom center"
+		}
+	})
+	
+	/* Mentions of other sections of the code. */
+	$("a.section").each(function() {
+		var section_number = $(this).text();
+		$(this).qtip({
+			tip: true,
+			hide: {
+				when: 'mouseout',
+				fixed: true,
+				delay: 100
+			},
+			position: {
+				at: "top center",
+				my: "bottom left"
+			},
+			style: {
+				width: 300,
+				tip: "bottom left"
+			},
+			content: {
+				text: 'Loading .&thinsp;.&thinsp;.',
+				ajax: {
+					url: '/api/0.1/section/'+section_number,
+					type: 'GET',
+					data: { fields: 'catch_line,ancestry' },
+					dataType: 'json',
+					success: function(section, status) {
+						if( section.ancestry instanceof Object ) {
+							var content = '';
+							for (key in section.ancestry) {
+								var content = section.ancestry[key].name + ' → ' + content;
+							}
+						}
+						var content = content + section.catch_line;
+						this.set('content.text', content);
+					}
+				}
+			}
+		})
+	});
+
+	/* Attach to every bill number link an Ajax method to display a tooltip.*/
+	$("a.bill").each(function() {
+		
+		/* Use the Richmond Sunlight URL to determine the bill year and number. */
+		var url = $(this).attr("href");
+		var url_components = url.match(/\/bill\/(\d{4})\/(\w+)\//);
+		var year = url_components[1];
+		var bill_number = url_components[2];
+		
+		$(this).qtip({
+			tip: true,
+			hide: {
+				when: 'mouseout',
+				fixed: true,
+				delay: 100
+			},
+			position: {
+				at: "top center",
+				my: "bottom right"
+			},
+			style: {
+				width: 300,
+				tip: "bottom right"
+			},
+			content: {
+				text: 'Loading .&thinsp;.&thinsp;.',
+				ajax: {
+					url: 'http://api.richmondsunlight.com/1.0/bill/'+year+'/'+bill_number+'.json',
+					type: 'GET',
+					dataType: 'jsonp',
+					success: function(data, status) {
+						var content = '<a href="http://www.richmondsunlight.com/legislator/'
+							+ data.patron.id + '/">' + data.patron.name + '</a>: ' + data.summary.truncate();
+						this.set('content.text', content);
+					}
+				}
+			}
+		})
+	});
+
+	/* Truncate text at 250 characters of length. Written by "c_harm" and posted to Stack Overflow
+	at http://stackoverflow.com/a/1199627/955342 */
+	String.prototype.truncate = function(){
+		var re = this.match(/^.{0,500}[\S]*/);
+		var l = re[0].length;
+		var re = re[0].replace(/\s$/,'');
+		if(l < this.length)
+			re = re + "&nbsp;.&thinsp;.&thinsp;.&thinsp;";
+		return re;
+	}
+	
+	/* Words for which we have definitions.*/
+	$("span.definition").each(function() {
+		var term = $(this).text();
+		$(this).qtip({
+			tip: true,
+			hide: {
+				when: 'mouseout',
+				fixed: true,
+				delay: 100
+			},
+			position: {
+				at: "top center",
+				my: "bottom left"
+			},
+			style: {
+				width: 300,
+				tip: "bottom left"
+			},
+			content: {
+				text: 'Loading .&thinsp;.&thinsp;.',
+				ajax: {
+					url: '/api/0.1/glossary',
+					type: 'GET',
+					data: { term: term, section: section_number },
+					dataType: 'json',
+					success: function(data, status) {
+						var content = data.formatted.truncate();
+						this.set('content.text', content);
+					}
+				}
+			}
+		})
+	});
+EOD;
 
 # Put the shorthand $body variable into its proper place.
 $template->field->body = $body;

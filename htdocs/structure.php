@@ -10,8 +10,9 @@ $struct = new Structure();
 $struct->url_to_structure();
 $structure = $struct->structure;
 
-# If the URL doesn't represent a valid structural portion of the code, then bail.
-if ($structure === false)
+# If the URL doesn't represent a valid structural portion of the code, then bail. We use a double
+# equals here because url_to_structure() is mysteriously not returning false.
+if ($structure == false)
 {
 	send_404();
 }
