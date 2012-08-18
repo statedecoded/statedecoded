@@ -328,6 +328,7 @@ class Parser
 			
 			$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 			$this->title_id = $title->id;
+		}
 		
 		# Insert this chapter record into the database. We use ON DUPLICATE KEY so that this can
 		# be run without first invoking chapter_exists().
