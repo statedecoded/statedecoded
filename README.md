@@ -6,9 +6,7 @@ A free, open source PHP- and MySQL-based application to parse and display state 
 #### Notes
 This is the Virginia implementation, stripped down and normalized. Simply installing this would not yield useful results. That said, a few hours of work could well yield a useful, functioning website.
 
-Initial configuration is done in `includes/config.inc.php`, with the heavy lifting coming with customizing `includes/parser.inc.php` to be able to import the legal code in question. Specifically,
-Parser::iterate(), Parser::parse(), and Parser::store() will need to be overhauled to be able to iterate through the structure in which the laws are stored (a single SGML file, a series of XML files, scraped via HTTP, etc.), extract each datum from each law (section number, catch line, text, history, etc.), and then store them in the format expected by the State Decoded. The other methods
-in the Parser class ought to work basically as already written.
+Initial configuration is done in `includes/config.inc.php`, with the heavy lifting coming with customizing `includes/parser.inc.php` to be able to import the legal code in question. Specifically, Parser::iterate(), Parser::parse(), and Parser::store() will need to be overhauled to be able to iterate through the structure in which the laws are stored (a single SGML file, a series of XML files, scraped via HTTP, etc.), extract each datum from each law (section number, catch line, text, history, etc.), and then store them in the format expected by the State Decoded. The other methods in the Parser class ought to work basically as already written. This is all documented within [How the Parser Works](https://github.com/waldoj/statedecoded/wiki/How-the-Parser-Works).
 
 One particularly important task in the configuration process is devising a Perl-compatible regular expression to pluck out every reference to an individual law from within bodies of text. This is stored in `config.inc.php`. By way of example, Virginia’s PCRE is `([[0-9]{1,})([0-9A-Za-z\-\.]{0,3})-([0-9A-Za-z\-\.:]*)([0-9A-Za-z]{1,})`.
 
