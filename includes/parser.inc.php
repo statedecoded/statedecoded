@@ -258,9 +258,8 @@ class Parser
 		
 		# We're going to need access to the database connection within this function.
 		global $db;
-		
-		
-		if (!isset($this->number))
+	
+		if (!isset($this->number) || !isset($this->title_id))
 		{
 			return false;
 		}
