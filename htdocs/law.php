@@ -30,9 +30,13 @@ if ($law->catch_line == 'Definitions.')
 }
 $terms = $dictionary->term_list();
 
-# Store a list of the glossary terms as an array, which is required for preg_replace_callback, the
+# Arrange our terms from longest to shortest. This is to ensure that the most specific terms are
+# defined (e.g. "person of interest") rather than the broadest terms (e.g. "person").
+usort($terms, 'sort_by_length');
+
+# Store a list of the dictionary terms as an array, which is required for preg_replace_callback, the
 # function that we use to insert the definitions.
-$term_list = array();
+$term_pcres = array();
 foreach ($terms as $term)
 {
 	
@@ -42,8 +46,7 @@ foreach ($terms as $term)
 		# If there are any uppercase characters, then make this PCRE string case sensitive.
 		if ( (ord($term{$i}) >= 65) && (ord($term{$i}) <= 90) )
 		{
-			// We want to have this ignore any string that's already within section tags.
-			$term_list[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
+			$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
 			$caps = true;
 			break;
 		}
@@ -53,8 +56,7 @@ foreach ($terms as $term)
 	# insensitive PCRE string.
 	if (!isset($caps))
 	{
-		// We want to have this ignore any string that's already within section tags.
-		$term_list[] = '/\b'.$term.'(s?)\b(?![^<]*>)/i';
+		$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/i';
 	}
 	
 	# Unset our flag -- we don't want to have it set the next time through.
@@ -86,10 +88,11 @@ foreach ($law->text as $section)
 	# Turn every code reference in every paragraph into a link.
 	$section->text = preg_replace_callback(SECTION_PCRE, 'replace_sections', $section->text);
 	
-	# Use our dictionary to embed definitions in the form of span titles.
-	if (isset($terms))
+	# Use our dictionary to embed dictionary terms in the form of span titles.
+	if (isset($term_pcres))
 	{
-		$section->text = preg_replace_callback($term_list, 'replace_terms', $section->text);
+		//$section->text = preg_replace_callback($term_pcres, 'replace_terms', $section->text);
+		$section->text = preg_replace_callback($term_pcres, array($autolinker, 'replace_terms'), $section->text);
 	}
 }
 
