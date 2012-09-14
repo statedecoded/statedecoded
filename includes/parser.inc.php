@@ -273,13 +273,8 @@ class Parser
 		# Assemble the query.
 		$sql = 'SELECT id
 				FROM structure
-				WHERE label="'.$db->escape($this->label).'"
-				AND number="'.$db->escape($this->number).'"';
-		
-		if (isset($this->parent_id))
-		{
-			$sql .= ' AND parent_id='.$db->escape($this->parent_id);
-		}
+				WHERE label="'.$this->label.'" AND number="'.$this->number.'"
+				AND parent_id='.$this->title_id;
 
 		# Execute the query.
 		$result =& $db->query($sql);
