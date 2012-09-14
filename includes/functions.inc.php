@@ -17,24 +17,6 @@ function fetch_url($url)
 	return $html;
 }
 
-# This is used as the preg_replace_callback function that inserts definitions links into text.
-function replace_terms($word)
-{
-
-	# PCRE provides an array-based word listing. We only want the first one.
-	$word = $word[0];
-	
-	# Make our definition list available within this function.
-	global $terms;
-	
-	if (!is_object($terms))
-	{
-		return false;
-	}
-	
-	return '<span class="definition">'.$word.'</span>';
-}
-
 # This is used as the preg_replace_callback function that inserts section links into text.
 function replace_sections($matches)
 {
@@ -63,6 +45,75 @@ function replace_sections($matches)
 	}
 	
 	return '<a class="section" href="/'.$match.'/">'.$matches[0].'</a>';
+}
+
+class Autolinker
+{
+	# Make these arrays available so that we can manipulate them, if need be. There's no need to
+	# feed these to Autolinker directly, because under real-world circumstances, these can always be
+	# plucked from the globals.
+	function __construct()
+	{
+		global $terms;
+		$this->terms = $terms;
+		$this->term_blacklist = array();
+	}
+	
+	# This is used as the preg_replace_callback function that inserts dictionary links into text.
+	function replace_terms($term)
+	{
+		
+		if (!isset($term))
+		{
+			return false;
+		}
+		
+		# If the provided term is an array of terms, just use the first one. This might seem odd,
+		# but note that this function is written to be used within preg_replace_callback(), the PCRE
+		# provides an array-based word listing, and we only want the first one.
+		if (is_array($term))
+		{
+			$term = $term[0];
+		}
+		
+		# If we have already marked this term as blacklisted -- that is, as a word that is a subset
+		# of a longer term -- then just return the term without marking it as a dictionary term.
+		if (in_array(strtolower($term), $this->term_blacklist))
+		{
+			return $term;
+		}
+	
+		# Determine whether this term is made up of multiple words, so that we can eliminate any
+		# terms from our arrays of terms that are any of the individual words that make up this
+		# term. That is, if this term is "person or people," and "person" is another term in our
+		# array, then we want to drop "person," to avoid display overlapping terms.
+		$num_spaces = substr_count($term, ' ');
+		if ($num_spaces > 0)
+		{
+
+			# Use that separator to break the term up into an array of words.
+			$term_components = explode(' ', $term);
+			
+			# Step through each the the words that make up this phrase, and add each of them to
+			# the blacklist, so that we can skip this word next time it appears in this law.
+			foreach ($term_components as $word)
+			{
+				$this->term_blacklist[] = strtolower($word);
+			}
+			
+			# Now step through each two-word sub-phrase that make up this 3+-word phrase (assuming
+			# that there are any) and add each of them to the blacklist.
+			if ($num_spaces > 1)
+			{
+				for ($i=0; $i<$num_spaces; $i++)
+				{
+					$this->term_blacklist[] = strtolower($term_components[$i].' '.$term_components[$i+1]);
+				}
+			}
+		}
+
+		return '<span class="dictionary">'.$term.'</span>';
+	}
 }
 
 # Send an error message formatted as JSON. This requires the text of an error message.
