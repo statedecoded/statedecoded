@@ -6,6 +6,7 @@ require_once 'MDB2.php';
 # If APC is not running.
 if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 {
+	# Include the site's config file.
 	require_once 'config.inc.php';
 }
 
