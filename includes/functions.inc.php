@@ -1295,22 +1295,51 @@ class Dictionary
 
 		# Execute the query.
 		$result =& $db->query($sql);
-		
-		# If the query fails, or if no results are found, return false -- we have no definitions for
-		# this chapter.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+
+		# If the query succeeds, great, retrieve it.
+		if ( (PEAR::isError($result) === false) && ($result->numRows() > 0) )
 		{
-			return false;
+		
+			# Get the first result.
+			$dictionary = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			
+			$dictionary->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$dictionary->section_number.'/';
+			$dictionary->formatted = wptexturize($dictionary->definition).' (<a href="'.$dictionary->url.'">'
+				.$dictionary->section_number.'</a>)';
 		}
 		
-		# Get the first result.
-		$dictionary = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		# Else if the query fails, then the term is found in the generic terms dictionary.
+		else
+		{
 		
-		$dictionary->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$dictionary->section_number.'/';
-		$dictionary->formatted = wptexturize($dictionary->definition).' (<a href="'.$dictionary->url.'">'
-			.$definition->section_number.'</a>)';
+			# Assemble the SQL.		
+			$sql = 'SELECT term, definition, source, source_url AS url
+					FROM dictionary_general
+					WHERE term="'.$db->escape($this->term).'"';
+			if ($plural === true)
+			{
+				$sql .= ' OR term = "'.$db->escape(substr($this->term, 0, -1)).'"';
+			}
+			$sql .= ' LIMIT 1';
+
+			# Execute the query.
+			$result =& $db->query($sql);
+			
+			# If the query fails, or if no results are found, return false -- we have no terms for
+			# this chapter.
+			if ( (PEAR::isError($result) === true) || ($result->numRows() === 0) )
+			{
+				return false;
+			}
 		
-		# Return that result.
+			# Get the first result. Assemble a slightly different response than for a custom term.
+			$dictionary = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			$dictionary->formatted = wptexturize($dictionary->definition).' (<a href="'.$dictionary->url.'">'
+				.$dictionary->source.'</a>)';
+			
+		}
+		
+		# Return the result.
 		return $dictionary;
 		
 	}
@@ -1324,20 +1353,38 @@ class Dictionary
 		# We're going to need access to the database connection throughout this class.
 		global $db;
 		
-		# If a chapter ID hasn't been passed to this function, then return a listing of definitions
+		# If a chapter ID hasn't been passed to this function, then return a listing of terms
 		# that apply to the entirety of the code.
 		if (!isset($this->structure_id) && !isset($this->scope))
 		{
 			$this->scope = 'global';
 		}
 		
-		# Get a listing of all globally scoped definitions.
+		# Get a listing of all structural units that contain the current structural unit -- that is,
+		# if this is a chapter, get the ID of both the chapter and the title. And so on.
+		if (isset($this->structure_id))
+		{
+			$heritage = new Structure;
+			$heritage->id = $this->structure_id;
+			$ancestry = $heritage->id_ancestry();
+			$tmp = array();
+			foreach ($ancestry as $level)
+			{
+				$tmp[] = $level->id;
+			}
+			$ancestry = $tmp;
+			unset($tmp);
+		}
+
+		# Get a listing of all globally scoped terms.
 		if ($this->scope == 'global')
-			$sql = 'SELECT definitions.term
-					FROM definitions
+		{
+			$sql = 'SELECT dictionary.term
+					FROM dictionary
 					LEFT JOIN laws
-						ON definitions.law_id=laws.id
+						ON dictionary.law_id=laws.id
 					 WHERE scope="global"';
+		}
 		
 		# Otherwise, we're getting a listing of all chapter- and title-scoped definitions. We always
 		# make sure that global definitions are included, in addition to the definitions for the
