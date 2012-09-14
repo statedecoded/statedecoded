@@ -223,10 +223,10 @@ $body .= '</section>';
 $body .= '</article>';
 
 $sidebar = '<iframe src="//www.facebook.com/plugins/like.php?href='.urlencode($_SERVER['REQUEST_URI'])
-				.'&amp;send=false&amp;layout=standard&amp;width=1-0&amp;show_faces=false&amp;'
-				.'action=recommend&amp;colorscheme=light&amp;font&amp;height=35" scrolling="no"
-				frameborder="0" style="border:none; overflow:hidden; width:100px; height:35px;"
-				allowTransparency="true"></iframe>';
+			.'&amp;send=false&amp;layout=standard&amp;width=1-0&amp;show_faces=false&amp;'
+			.'action=recommend&amp;colorscheme=light&amp;font&amp;height=35" scrolling="no"
+			frameborder="0" style="border:none; overflow:hidden; width:100px; height:35px;"
+			allowTransparency="true"></iframe>';
 
 # Only show the history if the law hasn't been repealed. (If it has been, then the history text
 # generally disappears along with it, meaning that the below code can behave unpredictably.)
