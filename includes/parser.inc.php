@@ -310,17 +310,23 @@ class Parser
 			return false;
 		}
 		
+		# Get the ID of the title that contains this chapter.
+		$sql = 'SELECT id
+				FROM structure
+				WHERE number="'.$db->escape($this->title_number).'"
+				AND label="title"';
+		# Execute the query.
+		$result =& $db->query($sql);
+		
+		# If the query fails, or if no results are found, return false -- we can't make a match.
+		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			# Get the ID of the title that contains this chapter.
-			$sql = 'SELECT id
-					FROM structure
-					WHERE number="'.$db->escape($this->parent_number).'"
-					AND label="'.$db->escape($this->parent_label).'"';
-			# Execute the query.
-			$result =& $db->query($sql);
-			
-			$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-			$this->title_id = $title->id;
+			return false;
+		}
+		
+		$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$this->title_id = $title->id;
+		
 		# Virginia has nine structural units (chapters) with titles that exceed the 100 character
 		# limit. These are distinguished only by the fact that the last character (the 101st) is
 		# "N" (capitalized). We replace that "N" with the Unicode horizontal ellipsis character.
