@@ -458,11 +458,13 @@ class Parser
 			{
 				if (
 					(stripos($paragraph, 'as used in this chapter') !== false)
-					|| 
+					||
 					(stripos($paragraph, 'for the purpose of this chapter') !== false)
-					|| 
+					||
+					(stripos($paragraph, 'for purposes of this chapter') !== false)
+					||
 					(stripos($paragraph, 'as used in this article') !== false)
-					|| 
+					||
 					(stripos($paragraph, 'as used in this act') !== false)
 				   )
 				{
