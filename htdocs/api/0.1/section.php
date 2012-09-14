@@ -30,6 +30,11 @@ $keys = array(
 	die();
 }*/
 
+if (isset($_REQUEST['callback']))
+{
+	$callback = $_REQUEST['callback'];
+}
+
 # Create a new instance of the class that handles information about individual laws.
 $laws = new Law();
 
@@ -87,6 +92,14 @@ if (isset($_GET['fields']))
 	}
 }
 
+if (isset($callback))
+{
+	echo $callback.' (';
+}
 echo json_encode($response);
+if (isset($callback))
+{
+	echo ');';
+}
 
 ?>
