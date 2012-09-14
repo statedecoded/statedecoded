@@ -668,6 +668,8 @@ class Parser
 			return false;
 		}
 		
+		# Memory management.
+		unset($this);
 		
 		return true;
 		
