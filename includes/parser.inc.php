@@ -640,6 +640,13 @@ class Parser
 			return false;
 		}
 		
+		# If we have no structure ID, just substitute NULL, to avoid creating blank entries in the
+		# structure_id column.
+		if (!isset($this->structure_id))
+		{
+			$this->structure_id = 'NULL';
+		}
+		
 		# We're going to need access to the database connection throughout this function.
 		global $db;
 		
