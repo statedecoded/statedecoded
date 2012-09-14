@@ -622,6 +622,45 @@ class Law
 		return $related;
 	}
 	
+	# When provided with a section number, it indicates whether that section exists. This is
+	# designed for use when parsing the text of each section, which turns any section numbers into
+	# links. But it has to verify that they're really section numbers, and not strings that resemble
+	# section numbers, which necessitates a fast, lightweight function.
+	function exists()
+	{
+		
+		# We're going to need access to the database connection throughout this class.
+		global $db;
+		
+		# If neither a section number nor a law ID has been passed to this function, then there's
+		# nothing to do.
+		if (!isset($this->section_number))
+		{
+			return false;
+		}
+
+		# Trim it down.
+		$this->section_number = trim($this->section_number);
+
+		# Query the database for the ID for this section number, retrieving the current version
+		# of the law.
+		$sql = 'SELECT *
+				FROM laws
+				WHERE section="'.$db->escape($this->section_number).'"
+				AND edition_id='.EDITION_ID;
+		
+		# Execute the query.
+		$result =& $db->query($sql);
+		
+		# If the query fails, or if no results are found, return false -- we can't make a match.
+		if ($result->numRows() < 1)
+		{
+			return false;
+		}
+		
+		# Otherwise we've gotten a result, so return true.
+		return true;
+
 	}
 }
 
