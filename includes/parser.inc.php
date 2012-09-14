@@ -310,8 +310,6 @@ class Parser
 			return false;
 		}
 		
-		# If we've been given a parent number, but not a parent ID, look up the parent ID.
-		if (!isset($this->parent_id))
 		{
 			# Get the ID of the title that contains this chapter.
 			$sql = 'SELECT id
