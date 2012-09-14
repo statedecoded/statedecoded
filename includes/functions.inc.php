@@ -29,8 +29,8 @@ function replace_sections($matches)
 	{
 		$match = substr($match, (strlen(SECTION_SYMBOL.' ')));
 	}
-	
-	# Create an instance of the Law class in order to retrieve the basic information about it.
+
+	# Create an instance of the Law class.
 	$law = new Law;
 	# Set it to return only the minimum information about this law.
 	$law->config->get_all == FALSE;
