@@ -173,7 +173,7 @@ class Law
 		# of the law.
 		$sql = 'SELECT id
 				FROM laws
-				WHERE section="'.$db->escape($section_number).'"
+				WHERE section="'.$db->escape($this->section_number).'"
 				AND edition_id='.EDITION_ID;
 		
 		# Execute the query.
