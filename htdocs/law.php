@@ -20,7 +20,7 @@ if ($law === false)
 # Store a record that this section was viewed.
 $laws->record_view();
 
-# Get the glossary terms for this chapter.
+# Get the dictionary terms for this chapter.
 $dictionary = new Dictionary();
 $dictionary->structure_id = $law->structure_id;
 $dictionary->section_id = $law->id;
@@ -494,8 +494,8 @@ $('a.section-permalink').qtip({
 		return re;
 	}
 	
-	/* Words for which we have definitions.*/
-	$("span.definition").each(function() {
+	/* Words for which we have dictionary terms.*/
+	$("span.dictionary").each(function() {
 		var term = $(this).text();
 		$(this).qtip({
 			tip: true,
@@ -515,7 +515,7 @@ $('a.section-permalink').qtip({
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/0.1/glossary',
+					url: '/api/0.1/dictionary',
 					type: 'GET',
 					data: { term: term, section: section_number },
 					dataType: 'json',
