@@ -572,7 +572,8 @@ class Parser
 		global $db;
 		
 		# Start assembling our SQL string.
-		$sql = 'INSERT INTO definitions (law_id, term, definition, scope, date_created)
+		$sql = 'INSERT INTO dictionary (law_id, term, definition, scope, scope_specificity,
+				structure_id, date_created)
 				VALUES ';
 		
 		# Iterate through our definitions to build up our SQL.
