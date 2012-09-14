@@ -470,7 +470,8 @@ class Parser
 						# that is in all caps is surely an acronym, and should be stored in its
 						# original case so that we don't end up with overzealous matches. For
 						# example, "CA" is a definition in section 3.2-4600, and we don't want to
-						# match every time "ca" appears within a word.
+						# match every time "ca" appears within a word. (Though note that we only
+						# match terms surrounded by word boundaries.)
 						foreach ($terms as &$term)
 						{
 							# Drop noise words that occur in lists of words.
