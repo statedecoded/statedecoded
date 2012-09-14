@@ -145,6 +145,12 @@ function send_404()
 	exit();
 }
 
+# This is relied on by usort() in law.php.
+function sort_by_length($a, $b)
+{
+	return strlen($b) - strlen($a);
+}
+
 class Law
 {
 		
