@@ -303,7 +303,7 @@ class Parser
 		# titles of the code. These are void of necessary information. We want to ignore these
 		# silently. Though you'd think we should require a chapter name, we actually shouldn't,
 		# because sometimes chapters don't have names. In the Virginia Code, for instance, titles
-		# 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter (or "part"), and none of them have a
+		# 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
 		# name.
 		if (empty($this->number) || (empty($this->parent_number) && empty($this->parent_id)) )
 		{
