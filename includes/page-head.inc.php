@@ -27,13 +27,6 @@ else
 	}
 }
 
-# Else if APC is not installed.
-else
-{
-	# Include the site's config file.
-	require_once 'config.inc.php';
-}
-
 # Connect to the database.
 $db =& MDB2::connect(MYSQL_DSN);
 if (PEAR::isError($db))
