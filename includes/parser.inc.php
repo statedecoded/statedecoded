@@ -263,10 +263,11 @@ class Parser
 		{
 			return false;
 		}
-	
+		
+		# If a label hasn't been provided, just assume that it's a chapter.
 		if (!isset($this->label))
 		{
-			return false;
+			$this->label = 'chapter';
 		}
 		
 		# Assemble the query.
