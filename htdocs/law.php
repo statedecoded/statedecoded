@@ -78,6 +78,8 @@ $template->field->javascript_files = '
 	<script src="/js/jquery.slideto.min.js"></script>
 	<script src="/js/mousetrap.min.js"></script>';
 
+$autolinker = new Autolinker;
+
 # Iterate through every section to make some basic transformations.
 foreach ($law->text as $section)
 {
@@ -153,23 +155,34 @@ foreach ($law->text as $paragraph)
 	{
 		$body .= '
 			<section';
-		# If this is a subsection, indent it.
+		if (!empty($paragraph->prefix_anchor))
+		{
+			$body .= ' id="'.$paragraph->prefix_anchor.'"';
 		}
+		
+		# If this is a subsection, indent it.
+		if ($paragraph->level > 1)
+		{
+			$body .= ' class="indent-'.($paragraph->level-1);
+			$body .= '"';
+		}
+		$body .= '>';
 	}
 	
 	# Start a paragraph of the appropriate type.
 	$body .= '<';
+	if ($paragraph->type == 'section')
 	{
 		$body .= 'p';
 	}
-	elseif ($section->type == 'table')
+	elseif ($paragraph->type == 'table')
 	{
 		$body .= 'pre class="table"';
 	}
 	$body .= '>';
 	
-	# If we've got a section prefix, display it.
-	if (!empty($section->prefix))
+	# If we've got a section prefix, and it's not the same as the last one, then display it.
+	if ($paragraph->entire_prefix != $paragraph->prior_prefix)
 	{
 		
 		$body .= $paragraph->prefix;
@@ -200,6 +213,7 @@ foreach ($law->text as $paragraph)
 		$body .= '</pre>';
 	}
 	
+	# If our next prefix is different than the current prefix, than terminate this section.
 	if ( !isset($paragraph->next_prefix) || ($paragraph->entire_prefix != $paragraph->next_prefix) )
 	{
 		$body .= '</section>';
@@ -221,6 +235,7 @@ $body .= '</section>';
 # Indicate the conclusion of the "section" article, which is the container for the text of a
 # section of the code.
 $body .= '</article>';
+
 
 $sidebar = '<iframe src="//www.facebook.com/plugins/like.php?href='.urlencode($_SERVER['REQUEST_URI'])
 			.'&amp;send=false&amp;layout=standard&amp;width=1-0&amp;show_faces=false&amp;'
