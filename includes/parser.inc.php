@@ -293,7 +293,7 @@ class Parser
 	# unit. Save for top-level structural units (e.g., titles), it should always be provided with
 	# a $parent_id, which is the ID of the parent structural unit. Most structural units will have
 	# a name, but not all.
-	public function create_structure()
+	function create_structure()
 	{
 		
 		# We're going to need access to the database connection within this function.
