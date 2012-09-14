@@ -1,5 +1,5 @@
 <?php
-
+	
 class Parser
 {
 	
@@ -245,6 +245,7 @@ class Parser
 			}
 		}
 	}
+
 	
 	# When provided with a structure number and label, verifies whether that structural unit. Returns
 	# the structure ID if it exists; otherwise, returns false. Requires the structural unit's
@@ -807,8 +808,6 @@ class Parser
 		
 	} // end store_references()
 	
-	
-
 	
 	# Turn the history sections into atomic data.
 	function extract_history()
