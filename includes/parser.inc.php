@@ -329,6 +329,11 @@ class Parser
 			$this->name{100} = '…';
 		}
 
+		# If this chapter exists, then we don't need to create it anew.
+		$chapter_id = Parser::structure_exists();
+		if ($chapter_id !== false)
+		{
+			return $chapter_id;
 		}
 		
 		# Insert this chapter record into the database. It's tempting to use ON DUPLICATE KEY here,
