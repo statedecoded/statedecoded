@@ -344,6 +344,69 @@ class Parser
 		return $db->lastInsertID();
 	}
 	
+	# When provided with a structural unit ID and a label, this function will iteratively search
+	# through that structural unit's ancestry until it finds a structural unit with that label. This
+	# is meant for use while identifying definitions, within the store() method, specifically to set
+	# the scope of applicability of a definition.
+	function find_structure_parent()
+	{
+		
+		# We require a beginning structure ID and the label of the structural unit that's sought.
+		if ( !isset($this->structure_id) || !isset($this->label) )
+		{
+			return false;
+		}
+		
+		# We're going to need access to the database connection throughout this function.
+		global $db;
+		
+		# Make the sought parent ID available as a local variable, which we'll repopulate with each
+		# loop through the below while() structure.
+		$parent_id = $this->structure_id;
+		
+		# Establish a blank variable.
+		$returned_id = '';
+		
+		# Loop through a query for parent IDs until we find the one we're looking for.
+		while ($returned_id == '')
+		{
+			
+			$sql = 'SELECT id, parent_id, label
+					FROM structure
+					WHERE id = '.$parent_id;
+
+			# Execute the query.
+			$result =& $db->query($sql);
+			if ( PEAR::isError($result) || ($result->numRows() < 1) )
+			{
+				echo '<p>Query failed: '.$sql.'</p>';
+				return false;
+			}
+			
+			# Return the result as an object.
+			$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			
+			# If the label of this structural unit matches the label that we're looking for, return
+			# its ID.
+			if ($structure->label == $this->label)
+			{
+				return $structure->id;
+			}
+			
+			# Else if this structural unit has no parent ID, then our effort has failed.
+			elseif (empty($structure->parent_id))
+			{
+				return false;
+			}
+			
+			# If all else fails, then loop through again, searching one level farther up.
+			else
+			{
+				$parent_id = $structure->parent_id;
+			}
+		}
+	}
+	
 	
 	# When fed a section of the code that contains definitions, extracts the definitions from that
 	# section and returns them as an object. Requires only a block of text.
