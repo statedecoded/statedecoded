@@ -575,6 +575,51 @@ class Law
 		}
 		
 		return $new;
+	# Get a collection of the 5 sections most similar to the present law.
+	function get_related()
+	{
+		
+		Solarium_Autoloader::register();
+
+		# Create a client instance.
+		$client = new Solarium_Client();
+		
+		# Get a morelikethis query instance.
+		$query = $client->createMoreLikeThis();
+		
+		# Add a query and morelikethis settings. Note that this search MUST be performed against
+		# the "law_location" field. There are two other candidate fields at this writing
+		# (law_section and law_code), but neither of those yield correct matches. A search for
+		# "law_code:18.2-30" turns up "8.01-130" as the first result, a number that is very similar
+		# to 18.2-30, but the result is wildly different -- useless -- related results.
+		#
+		# Note that we have to escape colons in this query.
+		$query->setQuery('law_location:'.str_replace(':', '\:', $this->section_number));
+		$query->setMltFields('law_text,tags,law_title');
+		$query->setMatchInclude(true);
+		$query->setStart(0)->setRows(5);
+		
+		# Execute the query and return the result.
+		$results = $client->select($query);
+		
+		# Create a new, blank object to store our related sections.
+		$related = new StdClass();
+		
+		# Iterate through the returned documents
+		$i=0;
+		foreach ($results as $document)
+		{
+			$related->{$i}->id = $document->id;
+			$related->{$i}->catch_line = $document->law_title;
+			$related->{$i}->section_number = $document->law_section;
+			$related->{$i}->text = $document->law_text;
+			$related->{$i}->url = '/'.$document->law_section.'/';
+			$i++;
+		}
+		
+		return $related;
+	}
+	
 	}
 }
 
