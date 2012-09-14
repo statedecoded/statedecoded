@@ -136,21 +136,29 @@ $i=0;
 $num_paragraphs = count((array) $law->text);
 foreach ($law->text as $paragraph)
 {
-	$body .= '
-		<section';
-	if (!empty($section->prefix_anchor))
+
+	# Identify the prior and next sections, by storing their prefixes.
+	if ($i > 0)
 	{
-		$body .= ' id="'.$section->prefix_anchor.'"';
+		$paragraph->prior_prefix = $law->text->{$i-1}->entire_prefix;
+	}
+	if ($i < $num_paragraphs)
+	{
+		$paragraph->next_prefix = $law->text->{$i+1}->entire_prefix;
+	}
+
+	# If this paragraph's prefix hierarchy is different than that of the prior prefix, than indicate
+	# that this is a new section.
+	if ($paragraph->entire_prefix != $paragraph->prior_prefix)
+	{
+		$body .= '
+			<section';
+		# If this is a subsection, indent it.
+		}
 	}
 	
-	# If this is a subsection, indent it.
-	if ($section->level > 1)
-	{
-		$body .= ' class="indent-'.($section->level-1);
-		$body .= '"';
-	}
-	$body .= '><';
-	if ($section->type == 'section')
+	# Start a paragraph of the appropriate type.
+	$body .= '<';
 	{
 		$body .= 'p';
 	}
@@ -191,7 +199,13 @@ foreach ($law->text as $paragraph)
 	{
 		$body .= '</pre>';
 	}
-	$body .= '</section>';
+	
+	if ( !isset($paragraph->next_prefix) || ($paragraph->entire_prefix != $paragraph->next_prefix) )
+	{
+		$body .= '</section>';
+	}
+	
+	$i++;
 }
 
 # If we have stored history for this section, display it.
