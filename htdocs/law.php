@@ -132,7 +132,9 @@ if (isset($law->next_section))
 $body = '<article id="section">';
 
 # Iterate through each section of text to display it.
-foreach ($law->text as $section)
+$i=0;
+$num_paragraphs = count((array) $law->text);
+foreach ($law->text as $paragraph)
 {
 	$body .= '
 		<section';
@@ -161,11 +163,12 @@ foreach ($law->text as $section)
 	# If we've got a section prefix, display it.
 	if (!empty($section->prefix))
 	{
-		$body .= $section->prefix;
+		
+		$body .= $paragraph->prefix;
 		
 		# We could use a regular expression to determine if we need to append a period, but
 		# that would be slower.
-		if ( (substr($section->prefix, -1) != ')') && (substr($section->prefix, -1) != '.') )
+		if ( (substr($paragraph->prefix, -1) != ')') && (substr($paragraph->prefix, -1) != '.') )
 		{
 			$body .= '.';
 		}
@@ -173,18 +176,18 @@ foreach ($law->text as $section)
 	}
 	
 	# Display this section of text.
-	$body .= $section->text;
+	$body .= $paragraph->text;
 	
 	# If we've got a section prefix, append a paragraph link to the end of this section.
-	if (!empty($section->prefix))
+	if (!empty($paragraph->prefix))
 	{
-		$body .= ' <a class="section-permalink" href="#'.$section->prefix_anchor.'">¶</a>';
+		$body .= ' <a class="section-permalink" href="#'.$paragraph->prefix_anchor.'">¶</a>';
 	}
-	if ($section->type == 'section')
+	if ($paragraph->type == 'section')
 	{
 		$body .= '</p>';
 	}
-	elseif ($section->type == 'table')
+	elseif ($paragraph->type == 'table')
 	{
 		$body .= '</pre>';
 	}
