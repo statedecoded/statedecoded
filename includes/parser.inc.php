@@ -750,6 +750,11 @@ class Parser
 		
 		# Execute the query.
 		$result =& $db->exec($sql);
+		if (PEAR::isError($result))
+		{
+			echo '<p>Failed: '.$sql.'</p>';
+			return false;
+		}
 		
 		return true;
 		
