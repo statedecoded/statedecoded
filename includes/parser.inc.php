@@ -471,7 +471,10 @@ class Parser
 					$scope = 'chapter';
 				}
 				
-				elseif (stripos($paragraph, 'as used in this title') !== false)
+				elseif (
+						(stripos($paragraph, 'in this title') !== false)
+					)
+				
 				{
 					$scope = 'title';
 				}
