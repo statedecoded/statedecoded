@@ -505,7 +505,7 @@ article#section pre.table {
 }
 
 /* A word for which we have a definition */
-span.definition {
+span.dictionary {
 	border-bottom: 1px dotted #aaa;
 	cursor: help;
 }
@@ -808,7 +808,8 @@ footer {
 
 @media screen and (max-width: 500px) {
 	/* Kicks the size down on smaller windows e.g. iPhone */
-	body { font-size: 70%; } 
+	body { font-size: 80%; }
+	article#section {width: 60%;}
 }
 
 
