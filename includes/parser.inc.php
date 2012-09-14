@@ -565,6 +565,12 @@ class Parser
 							}
 						}
 						
+						# This is absolutely necessary. Without it, the following foreach() loop
+						# will simply use $term as-is through each loop, rather than spawning new
+						# instances based on $terms. This is presumably a bug in the current version
+						# of PHP, because it surely doesn't make any sense.
+						unset($term);
+						
 						# Step through all of our matches and save them as discrete definitions.
 						foreach ($terms as $term)
 						{
