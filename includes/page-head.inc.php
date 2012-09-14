@@ -3,8 +3,14 @@
 # Include the PEAR database abstraction layer. <http://pear.php.net/package/MDB2>
 require_once 'MDB2.php';
 
-# If APC is running.
-if (ini_get('apc.enabled') == 1)
+# If APC is not running.
+if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
+{
+	require_once 'config.inc.php';
+}
+
+# Else if APC is running, get data from the cache.
+else
 {
 	# Attempt to load the config file constants out of APC.
 	$result = apc_load_constants('config');
