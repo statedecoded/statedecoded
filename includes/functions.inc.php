@@ -565,7 +565,7 @@ class Law
 		$metadata = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
 		
 		# Create a new object, to which we will port a rotated version of this object.
-		$new = new stdClass();
+		$rotated = new stdClass();
 		
 		# Iterate through the object in order to reorganize it, assigning the meta_key field to the
 		# key and the meta_value field to the value.
