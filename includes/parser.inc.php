@@ -479,7 +479,12 @@ class Parser
 					$scope = 'title';
 				}
 				
-				elseif (stripos($paragraph, 'as used in this section') !== false)
+				elseif	(
+							(stripos($paragraph, 'as used in this section') !== false)
+							||
+							(stripos($paragraph, 'for purposes of this section') !== false)
+						)
+					
 				{
 					$scope = 'section';
 				}
