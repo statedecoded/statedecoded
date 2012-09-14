@@ -32,10 +32,10 @@ function replace_sections($matches)
 
 	# Create an instance of the Law class.
 	$law = new Law;
-	# Set it to return only the minimum information about this law.
-	$law->config->get_all == FALSE;
+	
+	# Just find out if this law exists.
 	$law->section_number = $match;
-	$section = $law->get_law();
+	$section = $law->exists();
 	
 	# If this isn't a valid section number, then just return the match verbatim -- there's no link
 	# to be provided.
