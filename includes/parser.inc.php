@@ -323,16 +323,19 @@ class Parser
 			$this->title_id = $title->id;
 		}
 		
-		# Insert this chapter record into the database. We use ON DUPLICATE KEY so that this can
-		# be run without first invoking chapter_exists().
+		# Insert this chapter record into the database. It's tempting to use ON DUPLICATE KEY here,
+		# and eliminate the use of structure_exists(), but then MDB2's lastInsertID() becomes
+		# unreliable. That means we need a second query to determine the ID of this structural
+		# unit. Better to check if it exists first and insert it if it doesn't than to insert it
+		# every time and then query its ID every time, since the former approach will require many
+		# less queries than the latter.
 		$sql = 'INSERT INTO structure
 				SET number="'.$db->escape($this->number).'",';
 		if (isset($this->name) && !empty($this->name))
 		{
 			$sql .= 'name="'.$db->escape($this->name).'",';
 		}
-		$sql .= 'label="chapter", date_created=now(), parent_id='.$this->parent_id.'
-				ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)';
+		$sql .= 'label="chapter", date_created=now(), parent_id='.$this->title_id;
 
 		# Execute the query.
 		$result =& $db->exec($sql);
