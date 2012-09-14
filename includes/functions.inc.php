@@ -1233,6 +1233,18 @@ class Dictionary
 			return false;
 		}
 		
+		# Determine the structural heritage of the provided section number and store it in an
+		# array.
+		$heritage = new Law;
+		$heritage->config->get_structure = TRUE;
+		$heritage->section_number = $this->section_number;
+		$law = $heritage->get_law();
+		$ancestry = array();
+		foreach ($law->ancestry as $tmp)
+		{
+			$ancestry[] = $tmp->id;
+		}
+		
 		# We want to check if the term is in all caps. If it is, then we want to keep it in all
 		# caps to query the database. Otherwise, we lowercase it. That is, "Board" should be looked
 		# up as "board," but "NAIC" should be looked up as "NAIC."
