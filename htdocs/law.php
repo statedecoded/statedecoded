@@ -540,7 +540,13 @@ $('a.section-permalink').qtip({
 					data: { term: term, section: section_number },
 					dataType: 'json',
 					success: function(data, status) {
-						var content = data.formatted.truncate();
+						var content = data.definition.truncate();
+						if (data.section != null) {
+							content = content + ' (<a href="' + data.url + '">§&nbsp;' + data.section + '</a>)';
+						}
+						else if (data.source) {
+							content = content + ' (Source: <a href="' + data.url + '">' + data.source + '</a>)';
+						}
 						this.set('content.text', content);
 					}
 				}
