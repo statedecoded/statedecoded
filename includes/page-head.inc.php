@@ -48,9 +48,6 @@ $db->setCharset('utf8');
 # Include the functions that drive the site.
 require_once('functions.inc.php');
 
-# Include Solarium's header, for queries to Solr.
-require_once('solarium/Autoloader.php');
-
 # If there exists a custom functions file, include that, too.
 if (defined('CUSTOM_FUNCTIONS'))
 {
