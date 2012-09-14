@@ -87,10 +87,10 @@
 	<footer id="page_footer">
 		<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
 	</footer>
+	{{javascript_files}}
 	<script>
 		{{javascript}}
 	</script>
-	{{javascript_files}}
 	<script src="/js/jquery.qtip.min.js"></script>
 	<script src="/js/jquery.color.js"></script>
 </body>
