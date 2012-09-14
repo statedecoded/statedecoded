@@ -321,6 +321,14 @@ class Parser
 			
 			$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 			$this->title_id = $title->id;
+		# Virginia has nine structural units (chapters) with titles that exceed the 100 character
+		# limit. These are distinguished only by the fact that the last character (the 101st) is
+		# "N" (capitalized). We replace that "N" with the Unicode horizontal ellipsis character.
+		if ( (strlen($this->name) == 101) && (substr($this->name, -1) == 'N') )
+		{
+			$this->name{100} = '…';
+		}
+
 		}
 		
 		# Insert this chapter record into the database. It's tempting to use ON DUPLICATE KEY here,
