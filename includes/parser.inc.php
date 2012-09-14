@@ -659,8 +659,9 @@ class Parser
 		foreach ($this->terms as $term => $definition)
 		{
 		
-			$sql .= '('.$this->law_id.', "'.$db->escape($db->escape($term)).'",
-				"'.$db->escape($definition).'", "'.$db->escape($this->scope).'", now())';
+			$sql .= '('.$this->law_id.', "'.$db->escape($term).'",
+				"'.$db->escape($definition).'", "'.$db->escape($this->scope).'",
+				'.$db->escape($this->scope_specificity).', '.$this->structure_id.', now())';
 			
 			# Append a comma if this isn't our last term.
 			if (array_pop(array_keys($this->terms)) != $term)
