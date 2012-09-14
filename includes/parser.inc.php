@@ -550,6 +550,7 @@ class Parser
 							if (($term == 'and') || ($term == 'or'))
 							{
 								unset($term);
+								continue;
 							}
 						
 							# Step through each character in this word.
