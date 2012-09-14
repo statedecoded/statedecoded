@@ -443,11 +443,7 @@ class Parser
 					# Extract every word in quotation marks in this paragraph as a term that's being
 					# defined here. Most definitions will have just one term being defined, but some
 					# will have two or more.
-					// Isn't this too broad? How can we narrow the scope?
-					// We're getting words between quotation marks, such as the word "or" in the
-					// passage "'alpha' or 'bravo'". Also, this is too greedy. Or something. The
-					// matching for lists of defined words is just weird.
-					preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
+					preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
 					
 					# If we've made any matches.
 					if ( ($terms !== false) && (count($terms) > 0) )
