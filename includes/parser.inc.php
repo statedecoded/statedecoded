@@ -489,6 +489,11 @@ class Parser
 					$scope = 'section';
 				}
 				
+				elseif (stripos($paragraph, 'as used in this Code') !== false)
+				{
+					$scope = 'global';
+				}
+				
 				# If we can't calculate scope, then we can safely assume it's specific to this
 				# chapter.
 				else
