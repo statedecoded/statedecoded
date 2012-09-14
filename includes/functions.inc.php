@@ -1270,56 +1270,27 @@ class Dictionary
 			$plural = true;
 		}
 
-		$sql = 'SELECT definitions.term, definitions.definition, definitions.scope,
-				laws.section AS section_number,
-				(CASE
-					WHEN scope = "section" then "0"
-					WHEN scope = "chapter" then "1"
-					WHEN scope = "title" then "2"
-					WHEN scope = "global" then "3"
-				END) AS scope_order
-				FROM definitions
+		$sql = 'SELECT dictionary.term, dictionary.definition, dictionary.scope,
+				laws.section AS section_number
+				FROM dictionary
 				LEFT JOIN laws
-					ON definitions.law_id=laws.id
-				LEFT JOIN structure AS chapters
-					ON laws.structure_id=chapters.id
-				LEFT JOIN structure AS titles
-					ON chapters.parent_id=titles.id
-				WHERE (definitions.term="'.mysql_real_escape_string($this->term).'"';
+					ON dictionary.law_id=laws.id
+				WHERE (dictionary.term="'.$db->escape($this->term).'"';
 		if ($plural === true)
 		{
-			$sql .= ' OR definitions.term = "'.mysql_real_escape_string(substr($this->term, 0, -1)).'"';
+			$sql .= ' OR dictionary.term = "'.$db->escape(substr($this->term, 0, -1)).'"';
 		}
-		$sql .= ')
-				AND
-				(
-					(
-						(definitions.scope = "section" AND laws.id =
-							(SELECT id
-							FROM laws
-							WHERE section = "'.mysql_real_escape_string($this->section_number).'")
-						)
-						OR
-						(definitions.scope = "title" AND chapters.parent_id =
-							(SELECT titles.id
-							FROM laws
-							LEFT JOIN structure AS chapters
-								ON laws.structure_id=chapters.id
-							LEFT JOIN structure AS titles
-								ON chapters.parent_id=titles.id
-							WHERE section = "'.mysql_real_escape_string($this->section_number).'")
-						)
-						OR
-						(definitions.scope = "chapter" AND laws.structure_id =
-							(SELECT structure_id
-							FROM laws
-							WHERE section = "'.mysql_real_escape_string($this->section_number).'")
-						)
-					)
-					OR (definitions.scope = "global")
+		$sql .= ') AND (';
+		foreach ($ancestry as $structure_id)
+		{
+			$sql .= '(dictionary.structure_id = '.$db->escape($structure_id).') OR';
+		}
+		$sql .= '	(dictionary.scope = "global")
+				OR
+					(laws.section = "'.$db->escape($this->section_number).'")
 				)
-				ORDER BY scope_order
-				COLLATE utf8_general_ci
+				
+				ORDER BY dictionary.scope_specificity
 				LIMIT 1';
 
 		# Execute the query.
