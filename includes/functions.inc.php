@@ -571,10 +571,12 @@ class Law
 		# key and the meta_value field to the value.
 		foreach($metadata as $field)
 		{
-			$new->{stripslashes($field->meta_key)} = unserialize(stripslashes($field->meta_value));
+			$rotated->{stripslashes($field->meta_key)} = unserialize(stripslashes($field->meta_value));
 		}
 		
-		return $new;
+		return $rotated;
+	}
+	
 	# Get a collection of the 5 sections most similar to the present law.
 	function get_related()
 	{
