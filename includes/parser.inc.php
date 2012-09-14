@@ -340,7 +340,7 @@ class Parser
 		# Execute the query.
 		$result =& $db->exec($sql);
 	
-		# Return the new structural unit's ID.
+		# Return the last inserted ID.
 		return $db->lastInsertID();
 	}
 	
