@@ -253,7 +253,7 @@ class Parser
 	# of a type and number will rarely be unique, with the exception of top-level structural units
 	# (e.g., titles), so this function should almost always be provided with $parent_id that
 	# specifies the ID of this structural unit's parent.
-	public function structure_exists()
+	function structure_exists()
 	{
 		
 		# We're going to need access to the database connection within this function.
