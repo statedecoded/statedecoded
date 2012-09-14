@@ -339,6 +339,10 @@ class Parser
 
 		# Execute the query.
 		$result =& $db->exec($sql);
+		if (PEAR::isError($result))
+		{
+			return false;
+		}
 	
 		# Return the last inserted ID.
 		return $db->lastInsertID();
