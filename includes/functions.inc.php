@@ -1386,201 +1386,76 @@ class Dictionary
 					 WHERE scope="global"';
 		}
 		
-		# Otherwise, we're getting a listing of all chapter- and title-scoped definitions. We always
-		# make sure that global definitions are included, in addition to the definitions for the
-		# current title and the current chapter.
+		# Otherwise, we're getting a listing of all more narrowly scoped terms. We always make sure
+		# that global definitions are included, in addition to the definitions for the current
+		# structural heritage.
 		else
 		{
-			$sql = 'SELECT definitions.term
-					FROM definitions
+			$sql = 'SELECT DISTINCT dictionary.term
+					FROM dictionary
 					LEFT JOIN laws
-						ON definitions.law_id=laws.id
+						ON dictionary.law_id=laws.id
 					LEFT JOIN structure
 						ON laws.structure_id=structure.id
 					WHERE
 					(
-						(definitions.law_id='.$db->escape($this->section_id).')
+						(dictionary.law_id='.$db->escape($this->section_id).')
 						AND
-						(definitions.scope="section")
-					)
-					OR
-					(
-						(laws.structure_id='.$db->escape($this->structure_id).')
-						AND
-						(definitions.scope="chapter")
-					)
-					OR (
-						(
-							(SELECT parent_id
-							FROM structure
-							WHERE structure.id='.$db->escape($this->structure_id).'
-							AND label="chapter")
-							= structure.id
-							AND
-							(definitions.scope="title")
-						)
-					)
-					OR (scope="global")';
+						(dictionary.scope="section")
+					)';
+			foreach ($ancestry as $structure_id)
+			{
+				$sql .= ' OR (dictionary.structure_id='.$db->escape($structure_id).')';
+			}
+			$sql .= ' OR (scope="global")';
 		}
 
 		# Execute the query.
 		$result =& $db->query($sql);
 		
-		# If the query fails, or if no results are found, return false -- we have no definitions for
-		# this chapter.
+		# If the query fails, or if no results are found, return false -- we have no terms for this
+		# chapter.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
 			return false;
 		}
 		
-		# Return the result as an object, built up as we loop through the results.
+		# Build up the result as an object as we loop through the results.
 		$i=0;
 		while ($term = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 		{
 			$terms->$i = $term->term;
 			$i++;
 		}
-		return $terms;
-	}
-		
-	
-	# Get a list of definitions for a given chapter of the code, returning the word, the definition,
-	# the scope, the section where the definition appears, and the URL for that definition.
-	function definition_list()
-	{
 
-		# We're going to need access to the database connection throughout this class.
-		global $db;
-		
-		# If a chapter ID hasn't been passed to this function, then return a listing of definitions
-		# that apply to the entirety of the code.
-		if (!isset($this->structure_id) && !isset($this->scope))
-		{
-			$this->scope = 'global';
-		}
-		
-		# Get a listing of all globally scoped definitions.
-		if ($this->scope == 'global')
-			$sql = 'SELECT laws.section, definitions.term, definitions.definition, definitions.scope
-					FROM definitions
-					LEFT JOIN laws
-						ON definitions.law_id=laws.id
-					 WHERE scope="global"';
-		
-		# Otherwise, we're getting a listing of all chapter- and title-scoped definitions. We always
-		# make sure that global definitions are included, in addition to the definitions for the
-		# current title and the current chapter.
-		else
-		{
-			$sql = 'SELECT laws.section, definitions.term, definitions.definition, definitions.scope
-					FROM definitions
-					LEFT JOIN laws
-						ON definitions.law_id=laws.id
-					LEFT JOIN chapters
-						ON laws.structure_id=chapters.id
-					WHERE
-					(
-						(definitions.law_id='.$db->escape($this->section_id).')
-						AND
-						(definitions.scope="section")
-					)
-					OR
-					(
-						(laws.structure_id='.$db->escape($this->structure_id).')
-						AND
-						(definitions.scope="chapter")
-					)
-					OR (
-						(
-							(SELECT parent_id
-							FROM structure
-							WHERE structure.id='.$db->escape($this->structure_id).'
-							AND label="chapter")
-								= chapters.parent_id
-							AND
-							(definitions.scope="title")
-						)
-					)
-					OR (scope="global")';
-		}
-
-		# We order this in an unusual way, but there's a logic to it. First, we sort by string
-		# length, from longest the shortest. The idea here is to get around the problem of matching
-		# briefer definitions within words or phrases for which we have longer definitions. For
-		# instance, "Motor Coach" would come before "Motor," helping to make sure that the whole
-		# phrase will be matched up. Second, we sort alphabetically by term because, hey, why not?
-		$sql .= ' ORDER BY CHAR_LENGTH(definitions.term) DESC, term ASC';
+		# Assemble a second query, this one against our generic legal dictionary.
+		$sql = 'SELECT term
+				FROM dictionary_general';
 
 		# Execute the query.
 		$result =& $db->query($sql);
 		
-		# If the query fails, or if no results are found, return false -- we have no definitions for
-		# this chapter.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
-		{
-			return false;
+		# If the query fails, or if no results are found, return false -- we have no terms for this
+		# chapter.
+		if ($result->numRows() >= 1)
+		{		
+			# Append these results to the existing $terms object, continuing to use the previously-
+			# defined $i counter.
+			while ($term = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			{
+				$terms->$i = $term->term;
+				$i++;
+			}
 		}
 		
-		# Return the result as an object, built up as we loop through the results.
-		while ($definition = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
-		{
-			# Figure out the URL and include that.
-			$tmp = explode('-', $definition->section);
-			$definition->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$tmp[0].'-'.$tmp[1].'/';
-			
-			# Set aside the term so that we can use it as our object element name.
-			$term = $definition->term;
-			
-			# Check to see if this term is already set and, if so, make sure that the most local
-			# term is being used. That is, if we have a chapter definition, we prefer it to a global
-			# definition, because it is narrowly tailored to the instant section.
+		$tmp = (array) $terms;
+		$tmp = array_unique($tmp);
+		$terms = (object) $tmp;
 
-			// Scope should probably be rendered numerically, so that we could simply use the one
-			// with the smallest number.
-			if (isset($definitions->$term))
-			{
-				if
-				(
-					# If we've already recorded a title, chapter, or section definition, and this is
-					# a global definition.
-					(
-						($definition->scope == 'global')
-						&&
-						( ($definitions->scope == 'title') || ($definitions->scope == 'chapter')
-							|| ($definitions->scope == 'section') )
-					)
-					||
-					# Or if we've recorded a section or chapter definition, and this is a title
-					# definition.
-					(
-						($definition->scope == 'title')
-						&&
-						(
-							($definitions->scope == 'chapter')
-							|| 
-							($definition->scope == 'section')
-						)
-					)
-					||
-					# Or if we've recorded a section definition, and this is a chapter definition.
-					(
-						($definition->scope == 'chapter')
-						&&
-						($definitions->scope == 'section')
-					)
-				)
-				{
-					# Then don't bother adding it to the array.
-					continue;
-				}
-			}
-			
-			# Since we've found that this is a relevant definition, add it to the list.
-			$definitions->$term = $definition;
-			unset($tmp);
-		}
-		return $definitions;
+		# Return the result.
+		return $terms;
 	}
+	
 }
 
 
