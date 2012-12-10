@@ -32,7 +32,6 @@ else
 $db =& MDB2::connect(MYSQL_DSN);
 if (PEAR::isError($db))
 {
-	mail('waldo@jaquith.org', 'VA Laws DB Connection Failed', __FILE__."\r\r\r".$db->getMessage());
 	die('We’re having some database trouble right now. Check back later. Sorry!');
 }
 
