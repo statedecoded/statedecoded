@@ -23,7 +23,7 @@ define('LAWS_NAME', 'Code of State');
 define('SECTION_SYMBOL', '§');
 
 # Establish which version of the code that's in effect sitewide.
-define('EDITION_ID', 5);
+define('EDITION_ID', 1);
 define('EDITION_YEAR', 2012);
 
 # Does this state's code include laws that have been repealed formally, and that are marked as
