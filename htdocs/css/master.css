@@ -191,7 +191,7 @@ html {
 
 body {
 	background-color: #fff;
-	background-image: url("/images/bkgnd-header.png"), url("/images/bkgnd-noise.png");
+	background-image: url("/images/templates/default/bkgnd-header.png"), url("/images/templates/default/bkgnd-noise.png");
 	background-repeat: repeat-x, repeat;
 	background-position: top left, top left;
 	font-family: Georgia, "Times New Roman", serif; /*"Hoefler Text", Baskerville, Garamond, "Palatino Linotype",*/
@@ -333,7 +333,7 @@ header h1 {
 		}
 
 header h2 {
-	background: transparent url('/images/h2_tagline.png') no-repeat top left;
+	background: transparent url('/images/templates/default/h2_tagline.png') no-repeat top left;
 	height: 59px;
 	width: 415px;
 }
@@ -364,8 +364,8 @@ header nav#main_navigation ul li a {
 	text-decoration: none;
 }
 
-header nav#main_navigation ul li a#home  { background: transparent url('/images/nav_home.png') top left no-repeat; height: 23px; width: 44px;}
-header nav#main_navigation ul li a#about { background: transparent url('/images/nav_about.png') top left no-repeat; height: 23px; width: 52px;}
+header nav#main_navigation ul li a#home  { background: transparent url('/images/templates/default/nav_home.png') top left no-repeat; height: 23px; width: 44px;}
+header nav#main_navigation ul li a#about { background: transparent url('/images/templates/default/nav_about.png') top left no-repeat; height: 23px; width: 52px;}
 
 header nav#main_navigation ul li.utility {
 	float: right;
@@ -534,7 +534,7 @@ section#sidebar {
 		}
 	
 		section#sidebar section#portfolio {
-		  background: #696153 url('/images/bkgnd_portfolio.jpg') top left no-repeat;
+		  background: #696153 url('/images/templates/default/bkgnd_portfolio.jpg') top left no-repeat;
 		  position: relative;
 		  margin: -1em -1em 1em -1em;
 		  overflow: hidden;
