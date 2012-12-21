@@ -11,6 +11,7 @@
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
 	<link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/master.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="/css/print.css" type="text/css" media="print">
 	<link rel="stylesheet" href="/css/jquery.qtip.css" type="text/css" media="screen">
 	<link rel="home" title="Home" href="/" />
 	<link rel="search" title="Search" href="/search/" />
