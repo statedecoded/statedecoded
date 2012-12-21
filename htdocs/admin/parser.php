@@ -51,8 +51,7 @@ if (count($_POST) == 0)
 # If the request is to empty the database.
 elseif ($_POST['action'] == 'empty')
 {
-	$tables = array('definitions', 'laws', 'laws_references', 'text', 'laws_views', 'structure',
-		'text_sections');
+	$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections');
 	foreach ($tables as $table)
 	{
 		$sql = 'TRUNCATE '.$table;
