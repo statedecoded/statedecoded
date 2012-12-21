@@ -204,6 +204,139 @@ elseif ($_POST['action'] == 'parse')
 	
 	$db->exec($sql);
 	
+	
+	# Define the location of the downloads directory.
+	$downloads_dir = $_SERVER['DOCUMENT_ROOT'].'/downloads/';
+
+	if (is_writable($downloads_dir) === false)
+	{
+		echo '<p>Error: '.$downloads_dir.' could not be written to, so bulk download files could
+			not be exported.</p>';
+	}
+	
+	else
+	{
+		/*
+		 * Get a listing of all laws, to be exported as JSON.
+		 */
+		$sql = 'SELECT laws.section, laws.catch_line, laws.catch_line, laws.text, laws.history,
+				structure_unified.*
+				FROM laws
+				LEFT JOIN structure_unified
+					ON laws.structure_id=structure_unified.s1_id
+				WHERE edition_id='.EDITION_ID.'
+				ORDER BY order_by ASC';
+		$result =& $db->query($sql);
+		if ($result->numRows() > 0)
+		{
+			
+			# Create a new ZIP file object.
+			$zip = new ZipArchive();
+			$filename = $downloads_dir.'code.json.zip';
+			
+			if (file_exists($filename))
+			{
+				unlink($filename);
+			}
+			
+			# If we cannot create a new ZIP file, bail.
+			if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
+			{
+				echo '<p>Cannot open '.$filename.' to create a new ZIP file.</p>';
+			}
+			else
+			{
+				# Establish the depth of this code's structure. Though this constant includes the laws
+				# themselves, we don't subtract 1 from the tally because the structural labels start at 1.
+				$structure_depth = count(explode(',', STRUCTURE));
+				
+				# Iterate through every law.
+				while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+				{
+					
+					# We don't need either of these fields.
+					unset($law->s1_id);
+					unset($law->s2_id);
+					
+					# Rename the structural fields.
+					for ($i=1; $i<$structure_depth; $i++)
+					{
+						# Assign these variables to new locations.
+						$law->structure->{$i-1}->label = $law->{'s'.$i.'_label'};
+						$law->structure->{$i-1}->name = $law->{'s'.$i.'_name'};
+						$law->structure->{$i-1}->number = $law->{'s'.$i.'_number'};
+						
+						# Unset the old variables.
+						unset($law->{'s'.$i.'_label'});
+						unset($law->{'s'.$i.'_name'});
+						unset($law->{'s'.$i.'_number'});
+					}
+			
+					# Reverse the order of the structure, from broadest to most narrow.
+					$law->structure = array_reverse((array) $law->structure);
+					
+					# Renumber the structure. To avoid duplicates, we must do this awkwardly.
+					$tmp = $law->structure;
+					unset($law->structure);
+					$i=0;
+					foreach ($tmp as $structure)
+					{
+						$law->structure->$i = $structure;
+						$i++;
+					}
+					
+					# Add this law to our ZIP archive, creating a pseudofile to do so. Eliminate colons
+					# from section numbers, since Windows can't handle colons in filenames.
+					$zip->addFromString(str_replace(':', '_', $law->section).'.json', json_encode($law));
+				}
+				
+				# Close out our ZIP file.
+				$zip->close();
+			}
+		}
+	
+	
+		
+		/*
+		 * Save dictionary as JSON.
+		 */
+		$sql = 'SELECT laws.section, dictionary.term, dictionary.definition, dictionary.scope
+				FROM dictionary
+				LEFT JOIN laws ON dictionary.law_id = laws.id
+				ORDER BY dictionary.term ASC , laws.order_by ASC';
+		$result =& $db->query($sql);
+		if ($result->numRows() > 0)
+		{
+			# Retrieve the entire dictionary as a single object.
+			$dictionary = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
+		
+			# Define the filename for our dictionary.
+			$filename = $downloads_dir.'dictionary.json.zip';
+			
+			# Create a new ZIP file object.
+			$zip = new ZipArchive();
+			
+			if (file_exists($filename))
+			{
+				unlink($filename);
+			}
+		
+			# If we cannot create a new ZIP file, bail.
+			if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
+			{
+				echo '<p>Cannot open '.$filename.' to create a new ZIP file.</p>';
+			}
+			else
+			{
+				
+				# Add this law to our ZIP archive.
+				$zip->addFromString('dictionary.json', json_encode($dictionary));
+				
+				# Close out our ZIP file.
+				$zip->close();
+			}
+		}
+	}
 
 	# If APC exists on this server, clear everything in the user space. That consists of information
 	# that the State Decoded has stored in APC, which is now suspect, as a result of having reloaded
