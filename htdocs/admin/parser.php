@@ -72,6 +72,11 @@ elseif ($_POST['action'] == 'empty')
 	$result =& $db->exec($sql);
 	
 	echo '<p>Removed everything.</p>';
+	# Delete law histories.
+	$sql = 'DELETE FROM laws_meta
+			WHERE meta_key = "history"';
+	$result =& $db->exec($sql);
+	
 	
 }
 
