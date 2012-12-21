@@ -7,7 +7,7 @@ define('INCLUDE_PATH', $_SERVER['DOCUMENT_ROOT'].'/../includes');
 set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
 
 # The file in the /includes/ directory that contains functions custom to this installation.
-#define('CUSTOM_FUNCTIONS', 'virginia.inc.php');
+//define('CUSTOM_FUNCTIONS', 'state-sample.inc.php');
 
 # Where templates are stored.
 define('TEMPLATE_PATH', INCLUDE_PATH.'/templates');
