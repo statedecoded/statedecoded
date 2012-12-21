@@ -33,6 +33,18 @@ $db =& MDB2::connect(MYSQL_DSN);
 if (PEAR::isError($db))
 {
 	die('We’re having some database trouble right now. Check back later. Sorry!');
+	# If a specific error page has been created for database connection failures, display that.
+	if (defined('ERROR_PAGE_DB'))
+	{
+		require($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.ERROR_PAGE_DB);
+		exit();
+	}
+	
+	# If no special error page exists, display a generic error.
+	else
+	{
+		die(SITE_TITLE.' is having some database trouble right now. Please check back in a few minutes.');
+	}
 }
 
 # We must always connect to the database with UTF-8.
