@@ -9,13 +9,6 @@
 	<meta charset="utf-8"/>
 	<title>{{browser_title}}</title>
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
-	<!--<link rel="shortcut icon" href="/images/favicon.png"/>-->
-	<!--<link rel="apple-touch-icon" href="/images/custom_icon.png"/>-->
-	<!-- The is the icon for iOS's Web Clip.
-	- size: 57x57 for older iPhones, 72x72 for iPads, 114x114 for iPhone4's retina display (IMHO, just go ahead and use the biggest one)
-	- To prevent iOS from applying its styles to the icon name it thusly: apple-touch-icon-precomposed.png
-	- Transparency is not recommended (iOS will put a black BG behind the icon) -->
-	
 	<link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/master.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/jquery.qtip.css" type="text/css" media="screen">
