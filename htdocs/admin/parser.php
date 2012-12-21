@@ -21,7 +21,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/../includes/config.inc.php';
 require_once 'MDB2.php';
 
 # Include the code with the functions that drive this parser.
-require_once 'parser.inc.php';
+require_once CUSTOM_FUNCTIONS;
 
 # Connect to the database.
 $db =& MDB2::connect(MYSQL_DSN);
