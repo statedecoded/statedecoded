@@ -3,104 +3,105 @@
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
+CREATE TABLE IF NOT EXISTS `dictionary` (
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `law_id` int(10) unsigned NOT NULL,
+  `term` varchar(64) collate utf8_bin NOT NULL,
+  `definition` text collate utf8_bin NOT NULL,
+  `scope` varchar(32) collate utf8_bin NOT NULL default 'chapter',
+  `scope_specificity` tinyint(3) unsigned default NULL,
+  `structure_id` smallint(5) unsigned default NULL,
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  KEY `law_id` (`law_id`,`term`,`scope`),
+  KEY `structure_id` (`structure_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
-CREATE TABLE IF NOT EXISTS dictionary (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  law_id int(10) unsigned NOT NULL,
-  term varchar(64) collate utf8_bin NOT NULL,
-  definition text collate utf8_bin NOT NULL,
-  scope varchar(32) collate utf8_bin NOT NULL default 'chapter',
-  scope_specificity tinyint(3) unsigned default NULL,
-  structure_id smallint(5) unsigned default NULL,
-  date_created datetime NOT NULL,
-  date_modified timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
-  KEY law_id (law_id,term,scope),
-  KEY structure_id (structure_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11505 ;
-
-CREATE TABLE IF NOT EXISTS dictionary_general (
-  id smallint(5) unsigned NOT NULL auto_increment,
-  term varchar(64) character set utf8 collate utf8_bin NOT NULL,
-  definition text character set utf8 collate utf8_bin NOT NULL,
+CREATE TABLE IF NOT EXISTS `dictionary_general` (
+  `id` smallint(5) unsigned NOT NULL auto_increment,
+  `term` varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  `definition` text character set utf8 collate utf8_bin NOT NULL,
   `source` varchar(128) character set utf8 collate utf8_bin NOT NULL,
-  source_url varchar(512) character set utf8 collate utf8_bin default NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY term (term)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=502 ;
+  `source_url` varchar(512) character set utf8 collate utf8_bin default NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `term` (`term`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
-CREATE TABLE IF NOT EXISTS editions (
-  id tinyint(3) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `editions` (
+  `id` tinyint(3) unsigned NOT NULL auto_increment,
   `year` year(4) NOT NULL,
-  date_created datetime NOT NULL,
-  date_modified timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
   KEY `year` (`year`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
-CREATE TABLE IF NOT EXISTS laws (
-  id int(10) unsigned NOT NULL auto_increment,
-  structure_id smallint(3) unsigned default NULL,
-  edition_id tinyint(3) unsigned NOT NULL,
-  section varchar(16) collate utf8_bin NOT NULL,
-  catch_line varchar(255) collate utf8_bin NOT NULL,
-  history text collate utf8_bin,
-  order_by varchar(24) collate utf8_bin default NULL,
-  named_act enum('y','n') collate utf8_bin NOT NULL default 'n',
+CREATE TABLE IF NOT EXISTS `laws` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `structure_id` smallint(3) unsigned default NULL,
+  `edition_id` tinyint(3) unsigned NOT NULL,
+  `section` varchar(16) collate utf8_bin NOT NULL,
+  `catch_line` varchar(255) collate utf8_bin NOT NULL,
+  `history` text collate utf8_bin,
+  `order_by` varchar(24) collate utf8_bin default NULL,
+  `named_act` enum('y','n') collate utf8_bin NOT NULL default 'n',
   `text` text collate utf8_bin,
-  repealed enum('y','n') collate utf8_bin NOT NULL default 'n',
-  date_created datetime NOT NULL,
-  date_modified timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
-  KEY section (section),
-  KEY chapter_id (structure_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=31664 ;
+  `repealed` enum('y','n') collate utf8_bin NOT NULL default 'n',
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  KEY `section` (`section`),
+  KEY `chapter_id` (`structure_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
-CREATE TABLE IF NOT EXISTS laws_meta (
-  id int(10) unsigned NOT NULL auto_increment,
-  law_id int(11) NOT NULL,
-  meta_key varchar(255) collate utf8_bin NOT NULL,
-  meta_value longtext collate utf8_bin NOT NULL,
-  date_created date NOT NULL,
-  date_modified timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
-  KEY law_id (law_id),
-  KEY `key` (meta_key)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=253305 ;
+CREATE TABLE IF NOT EXISTS `laws_meta` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `law_id` int(11) NOT NULL,
+  `meta_key` varchar(255) collate utf8_bin NOT NULL,
+  `meta_value` longtext collate utf8_bin NOT NULL,
+  `date_created` date NOT NULL,
+  `date_modified` timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  KEY `law_id` (`law_id`),
+  KEY `key` (`meta_key`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
-CREATE TABLE IF NOT EXISTS laws_references (
-  id int(3) unsigned NOT NULL auto_increment,
-  law_id int(10) unsigned NOT NULL,
-  target_section_number varchar(16) collate utf8_bin NOT NULL,
-  target_law_id int(10) unsigned NOT NULL,
-  mentions tinyint(3) unsigned NOT NULL,
-  date_modified timestamp NOT NULL default CURRENT_TIMESTAMP,
-  date_created datetime NOT NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY overlap (law_id,target_section_number),
-  KEY target_section_number (target_section_number)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=33160 ;
+CREATE TABLE IF NOT EXISTS `laws_references` (
+  `id` int(3) unsigned NOT NULL auto_increment,
+  `law_id` int(10) unsigned NOT NULL,
+  `target_section_number` varchar(16) collate utf8_bin NOT NULL,
+  `target_law_id` int(10) unsigned NOT NULL,
+  `mentions` tinyint(3) unsigned NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `overlap` (`law_id`,`target_section_number`),
+  KEY `target_section_number` (`target_section_number`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
-CREATE TABLE IF NOT EXISTS laws_views (
-  id int(10) unsigned NOT NULL auto_increment,
-  law_id int(10) NOT NULL,
-  user_id smallint(5) unsigned default NULL,
-  ip_address int(10) unsigned default NULL,
+CREATE TABLE IF NOT EXISTS `laws_views` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `section` varchar(16) collate utf8_bin NOT NULL,
+  `ip_address` int(10) unsigned default NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
-  KEY section_id (law_id)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=20354 ;
+  PRIMARY KEY  (`id`),
+  KEY `section` (`section`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
-CREATE TABLE IF NOT EXISTS structure (
-  id smallint(5) unsigned NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS `structure` (
+  `id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(128) collate utf8_bin default NULL,
-  number varchar(16) collate utf8_bin NOT NULL,
-  label varchar(32) collate utf8_bin NOT NULL,
-  parent_id smallint(5) unsigned default NULL,
-  date_created datetime NOT NULL,
-  date_modified timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3177 ;
+  `number` varchar(16) collate utf8_bin NOT NULL,
+  `label` varchar(32) collate utf8_bin NOT NULL,
+  `order_by` int(10) unsigned default NULL,
+  `parent_id` smallint(5) unsigned default NULL,
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  KEY `order_by` (`order_by`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+
 CREATE TABLE IF NOT EXISTS `structure_unified` (
 `s1_id` smallint(5) unsigned
 ,`s1_name` varchar(128)
@@ -111,30 +112,34 @@ CREATE TABLE IF NOT EXISTS `structure_unified` (
 ,`s2_number` varchar(16)
 ,`s2_label` varchar(32)
 );
+
 CREATE TABLE IF NOT EXISTS `text` (
-  id int(10) unsigned NOT NULL auto_increment,
-  law_id int(10) unsigned NOT NULL,
-  sequence smallint(5) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `law_id` int(10) unsigned NOT NULL,
+  `sequence` smallint(5) unsigned NOT NULL,
   `text` text collate utf8_bin NOT NULL,
   `type` enum('section','table') collate utf8_bin NOT NULL,
-  date_created datetime NOT NULL,
-  date_modified timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
-  KEY law_id (law_id,sequence),
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  KEY `law_id` (`law_id`,`sequence`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=119943 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
-CREATE TABLE IF NOT EXISTS text_sections (
-  id int(10) unsigned NOT NULL auto_increment,
-  text_id int(10) unsigned NOT NULL,
-  identifier varchar(3) collate utf8_bin NOT NULL,
-  sequence tinyint(3) unsigned NOT NULL,
-  date_created datetime NOT NULL,
-  date_modified timestamp NOT NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (id),
-  KEY text_id (text_id,identifier,sequence)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=118298 ;
+CREATE TABLE IF NOT EXISTS `text_sections` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `text_id` int(10) unsigned NOT NULL,
+  `identifier` varchar(3) collate utf8_bin NOT NULL,
+  `sequence` tinyint(3) unsigned NOT NULL,
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  KEY `text_id` (`text_id`,`identifier`,`sequence`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+
 DROP TABLE IF EXISTS `structure_unified`;
+
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `structure_unified` AS select `s1`.`id` AS `s1_id`,`s1`.`name` AS `s1_name`,`s1`.`number` AS `s1_number`,`s1`.`label` AS `s1_label`,`s2`.`id` AS `s2_id`,`s2`.`name` AS `s2_name`,`s2`.`number` AS `s2_number`,`s2`.`label` AS `s2_label` from (`structure` `s1` left join `structure` `s2` on((`s2`.`id` = `s1`.`parent_id`))) order by `s2`.`number`,`s1`.`number`;
 
 INSERT INTO `dictionary_general` (`id`, `term`, `definition`, `source`, `source_url`) VALUES
 (1, 'abscond', 0x546f206573636170652c20666c6565206f72206469736170706561722e, 'VA Journey Through Justice Glossary', 'http://www.jtj.courts.state.va.us/resources_glossary.html'),
@@ -627,7 +632,6 @@ INSERT INTO `dictionary_general` (`id`, `term`, `definition`, `source`, `source_
 (499, 'writ of venire facias', 0x41206a7564696369616c20777269742c20646972656374656420746f207468652073686572696666206f662074686520636f756e7479206f7220636974792c20696e207768696368206120636175736520697320746f2062652074697265642c20636f6d6d616e64696e672068696d207468617420686520e2809c636175736520746f20636f6d65e2809d206265666f72652074686520636f7572742028737562706f656e6129206f6e2061206365727461696e20646179207468657265696e206d656e74696f6e65642c20746865206d656d626572206f6620706f74656e7469616c206a75726f7273202876656e6972656d656e29206d656e74696f6e656420696e207468652077726974206f662076656e697265206661636961732e, 'VA Circuit Court Civil Glossary', 'http://www.courts.state.va.us/courts/circuit/resources/manuals/cc_manual_civil/glossary.pdf'),
 (500, 'written statement of facts', 0x466f7220707572706f736573206f662061707065616c20746f2074686520436f757274206f662041707065616c732c20697420697320616e20616c7465726e617469766520746f2061207472616e736372697074206f66207468652070726f63656564696e672061732061207265636f7264206f66207468652066616374732c2074657374696d6f6e7920616e64206f7468657220696e636964656e7473206f6620747269616c20736f20746861742074686520436f757274206f662041707065616c732063616e20626520696e666f726d6564206f662074686f7365206d61747465727320617420747269616c20776869636820617265206e6f7720696d706f7274616e7420696e207468652061707065616c206f662074686520636173652e, 'VA Circuit Court Civil Glossary', 'http://www.courts.state.va.us/courts/circuit/resources/manuals/cc_manual_civil/glossary.pdf'),
 (501, 'mutatis mutandis', 0x486176696e67206368616e6765642077686174206e656564656420746f206265206368616e6765642e20546865207465726d206973207573656420746f20647261772074686520726561646572277320617474656e74696f6e20746f2074686520646966666572656e636573206265747765656e20612073746174656d656e7420616e6420612073696d696c61722062757420646966666572656e74206561726c6965722073746174656d656e742e, 'Wiktionary', 'http://en.wiktionary.org/wiki/mutatis_mutandis');
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
