@@ -1,5 +1,11 @@
 <?php
 
+
+
+/**
+ * Loads the State Decoded environment.
+ */
+
 # Include the PEAR database abstraction layer. <http://pear.php.net/package/MDB2>
 require_once 'MDB2.php';
 
@@ -32,7 +38,6 @@ else
 $db =& MDB2::connect(MYSQL_DSN);
 if (PEAR::isError($db))
 {
-	die('We’re having some database trouble right now. Check back later. Sorry!');
 	# If a specific error page has been created for database connection failures, display that.
 	if (defined('ERROR_PAGE_DB'))
 	{
