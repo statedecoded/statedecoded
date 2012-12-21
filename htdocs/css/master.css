@@ -284,7 +284,7 @@ section#page {
 
 /* -- Columns -----------------------------------------------------------------*/
 
-article#section {
+article#law {
 	float: left;
 	width: 70%;
 }
@@ -465,18 +465,18 @@ section.indent, section.indent-1 {margin-left: 2em;}
 		section.indent-3 {margin-left: 6em;}
 			section.indent-4 {margin-left: 8em;}
 
-article#section { /* The main text of the law */
+article#law { /* The main text of the law */
 	font-size: 1em;
 	line-height: 1.6em;
 }
 
-article#section p {margin: 1em 0;}
+article#law p {margin: 1em 0;}
 
-article#section p a.section {
+article#law p a.law {
 	color: #669;
 }
 
-article#section p a.section-permalink {
+article#law p a.section-permalink {
 	text-decoration: none;
 	visibility: hidden;
 	font-family: Helvetica, Arial, sans-serif;
@@ -484,21 +484,21 @@ article#section p a.section-permalink {
 	color: #66c;
 }
 
-article#section p:hover a.section-permalink {
+article#law p:hover a.section-permalink {
 	visibility: visible;
 }
 
 /* Section headers .*/
-article#section h2 {
+article#law h2 {
 	margin: 2em 0 0 0;
 }
-article#section h2+p {
+article#law h2+p {
 	margin-top: 0;
 }
 
-/*	A "table" element (as opposed to a "section" element), as defined within the VA Code SGML. This
-	is basically ASCII art, tables rendered through careful spacing of type. */
-article#section pre.table {
+/*	A "table" element (as opposed to a "law" element) is tabular data. This is basically ASCII art,
+    tables rendered through careful spacing of type. */
+article#law pre.table {
 	font-size: .75em;
 	overflow-x: scroll;
 	white-space: pre;
@@ -731,29 +731,29 @@ section#comments h3 {
 /* Section listings */
 dl.titles dt, 
 dl.chapters dt, 
-dl.sections dt {
+dl.laws dt {
 	float: left;
 	clear: left;
 	margin-right: 5px;
 	font-weight: bold;
 }
  
-dl.sections dt {
+dl.laws dt {
 	width: 130px;
 }
 dl.titles dt
 dl.chapters dt {
 	width: 60px;
 }
-	
-dl.sections dd {
+
+dl.laws dd {
 	margin-left: 140px; /* Keeps long lines wrapping nicely */
 }
 dl.titles dd,
 dl.chapters dd {
 	margin-left: 70px;
 }
-dl.chapters dd a, dl.sections dd a, dl.titles dd a {
+dl.level-2 dd a, dl.laws dd a, dl.level-1 dd a {
 	text-decoration: none;
 	color: #444;
 }
@@ -809,7 +809,7 @@ footer {
 @media screen and (max-width: 500px) {
 	/* Kicks the size down on smaller windows e.g. iPhone */
 	body { font-size: 80%; }
-	article#section {width: 60%;}
+	article#law {width: 60%;}
 }
 
 
