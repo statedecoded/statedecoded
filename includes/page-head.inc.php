@@ -39,16 +39,13 @@ if (PEAR::isError($db))
 $db->setCharset('utf8');
 
 # Include the functions that drive the site.
-require_once('functions.inc.php');
+require('functions.inc.php');
 
-# If there exists a custom functions file, include that, too.
-if (defined('CUSTOM_FUNCTIONS'))
-{
-	require_once(CUSTOM_FUNCTIONS);
-}
+# Include the custom functions file.
+require(CUSTOM_FUNCTIONS);
 
 # Include WordPress's texturize function, for typographical niceties.
-require_once('texturize.inc.php');
+require('texturize.inc.php');
 		
 # We're going to need access to the database connection throughout the site.
 global $db;
