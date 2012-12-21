@@ -729,8 +729,8 @@ section#comments h3 {
 }
 
 /* Section listings */
-dl.titles dt, 
-dl.chapters dt, 
+dl.level-1 dt, 
+dl.level-2 dt, 
 dl.laws dt {
 	float: left;
 	clear: left;
@@ -741,16 +741,16 @@ dl.laws dt {
 dl.laws dt {
 	width: 130px;
 }
-dl.titles dt
-dl.chapters dt {
+dl.level-1 dt
+dl.level-2 dt {
 	width: 60px;
 }
 
 dl.laws dd {
 	margin-left: 140px; /* Keeps long lines wrapping nicely */
 }
-dl.titles dd,
-dl.chapters dd {
+dl.level-1 dd,
+dl.level-2 dd {
 	margin-left: 70px;
 }
 dl.level-2 dd a, dl.laws dd a, dl.level-1 dd a {
@@ -811,7 +811,6 @@ footer {
 	body { font-size: 80%; }
 	article#law {width: 60%;}
 }
-
 
 
 
