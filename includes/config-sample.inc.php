@@ -59,4 +59,11 @@ define('SECTION_PCRE_STRUCTURE','title,title,section,section');
 # connection error will be displayed.
 // define('ERROR_PAGE_DB', '')
 
+/**
+ * When there is cause to send an e-mail (e.g., API registration), what "From" address should be
+ * used? This may be in the terse format of "jdoe@example.com", or in the named format of
+ * "John Doe <jdoe@example.com>".
+ */
+define('EMAIL_ADDRESS', SITE_TITLE.' <waldo@jaquith.org>');
+
 ?>
