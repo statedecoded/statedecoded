@@ -37,7 +37,8 @@ define('LAWS_NAME', 'Code of State');
 define('SECTION_SYMBOL', '§');
 
 /*
- * Establish which version of the code that's in effect sitewide.
+ * Establish which version of the code that's in effect sitewide. The ID is the database ID in the
+ * "editions" table.
  */
 define('EDITION_ID', 1);
 define('EDITION_YEAR', 2012);
