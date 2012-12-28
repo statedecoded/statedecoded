@@ -54,4 +54,9 @@ define('SECTION_PCRE', '/([[0-9]{1,})([0-9A-Za-z\-\.]{0,3})-([0-9A-Za-z\-\.:]*)(
 # "title,title,part,section,section".
 define('SECTION_PCRE_STRUCTURE','title,title,section,section');
 
+# The path, relative to the webroot, to an error page to be displayed if the database connection is
+# not available. Do not begin this path with a slash. If this is undefined, a bare database
+# connection error will be displayed.
+// define('ERROR_PAGE_DB', '')
+
 ?>
