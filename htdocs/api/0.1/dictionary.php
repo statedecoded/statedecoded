@@ -6,6 +6,19 @@ header('Content-type: application/json');
 # Include the PHP declarations that drive this page.
 require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
 
+# Use a provided JSONP callback, if it's safe.
+if (isset($_REQUEST['callback']))
+{
+	$callback = $_REQUEST['callback'];
+	
+	# If this callback contains any reserved terms that raise XSS concerns, refuse to proceed.
+	if (valid_jsonp_callback($callback) === false)
+	{
+		json_error('The provided JSONP callback uses a reserved word.');
+		die();
+	}
+}
+
 # Get the definitions for the requested term.
 $dict = new Dictionary();
 $dict->section_number = $_GET['section'];
@@ -75,6 +88,14 @@ if (isset($_GET['fields']))
 	}
 }
 
+if (isset($callback))
+{
+	echo $callback.' (';
+}
 echo json_encode($response);
+if (isset($callback))
+{
+	echo ');';
+}
 
 ?>

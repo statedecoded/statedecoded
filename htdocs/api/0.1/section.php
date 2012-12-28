@@ -12,17 +12,16 @@ if (!isset($_GET['section']) || empty($_GET['section']))
 	die();
 }
 
+# Permissible API keys.
+$keys = array(
+	'keygoeshere',
+);
+
 /*if (!isset($_GET['key']) || empty($_GET['key']))
 {
 	json_error('API key not provided.');
 	die();
 }*/
-
-# Permissible API keys.
-$keys = array(
-	'xm6v408xadodig0p', // Virginia Decoded
-	'zxo8k592ztiwbgre', // Richmond Sunlight
-);
 
 /*if (!in_array($_GET['key'], $keys))
 {
@@ -30,9 +29,17 @@ $keys = array(
 	die();
 }*/
 
+# Use a provided JSONP callback, if it's safe.
 if (isset($_REQUEST['callback']))
 {
 	$callback = $_REQUEST['callback'];
+	
+	# If this callback contains any reserved terms that raise XSS concerns, refuse to proceed.
+	if (valid_jsonp_callback($callback) === false)
+	{
+		json_error('The provided JSONP callback uses a reserved word.');
+		die();
+	}
 }
 
 # Create a new instance of the class that handles information about individual laws.

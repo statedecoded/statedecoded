@@ -41,6 +41,15 @@ function fetch_url($url)
 }
 
 /**
+ * Ensure that a JSONP callback doesn't contain any reserved terms.
+ * By Brett Wejrowski <http://stackoverflow.com/questions/2777021/do-i-need-to-sanitize-the-callback-parameter-from-a-jsonp-call/10900911#10900911>
+ */
+function valid_jsonp_callback($callback)
+{
+    return !preg_match( '/[^0-9a-zA-Z\$_]|^(abstract|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|enum|export|extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|volatile|void|while|with|NaN|Infinity|undefined)$/', $callback);
+}
+
+/**
  * Finds linkable strings of text within laws and turns them into links.
  */
 class Autolinker
