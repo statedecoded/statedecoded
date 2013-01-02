@@ -137,6 +137,21 @@ CREATE TABLE IF NOT EXISTS `text_sections` (
   KEY `text_id` (`text_id`,`identifier`,`sequence`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
+CREATE TABLE IF NOT EXISTS `api_keys` (
+  `id` smallint(5) unsigned NOT NULL auto_increment,
+  `api_key` char(16) collate utf8_bin NOT NULL,
+  `email` varchar(255) collate utf8_bin NOT NULL,
+  `name` varchar(128) collate utf8_bin default NULL,
+  `url` varchar(128) collate utf8_bin default NULL,
+  `verified` enum('n','y') collate utf8_bin NOT NULL default 'n',
+  `secret` char(5) collate utf8_bin NOT NULL,
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `key` (`api_key`),
+  KEY `secret_hash` (`secret`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+
 DROP TABLE IF EXISTS `structure_unified`;
 
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `structure_unified` AS select `s1`.`id` AS `s1_id`,`s1`.`name` AS `s1_name`,`s1`.`number` AS `s1_number`,`s1`.`label` AS `s1_label`,`s2`.`id` AS `s2_id`,`s2`.`name` AS `s2_name`,`s2`.`number` AS `s2_number`,`s2`.`label` AS `s2_label` from (`structure` `s1` left join `structure` `s2` on((`s2`.`id` = `s1`.`parent_id`))) order by `s2`.`number`,`s1`.`number`;
