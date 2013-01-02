@@ -1,8 +1,5 @@
 <?php
 
-# Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
-
 /**
  * This file is only meant to be included within other files. As a result, it lacks the preamble of includes,
  * etc., since those will have already been done in the files within which this is invoked.
