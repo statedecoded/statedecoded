@@ -3,14 +3,25 @@
 # Include the PHP declarations that drive this page.
 require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
 
-# Fire up our templating engine.
+/**
+ * This file is only meant to be included within other files. As a result, it lacks the preamble of includes,
+ * etc., since those will have already been done in the files within which this is invoked.
+ */
+
+/*
+ * Fire up our templating engine.
+ */
 $template = new Page;
 
-# Define some page elements.
+/*
+ * Define some page elements.
+ */
 $template->field->browser_title = '404, Not Found';
 $template->field->page_title = '404, Not Found';
 
-# Send a 404 header to the browser.
+/*
+ * Send a 404 header to the browser.
+ */
 header('HTTP/1.1 404 Not Found');
 
 $body = '
@@ -26,16 +37,22 @@ solutions to the problem:</p>
 
 <p>This problem has been noted in our records, and we’ll look into it!</p>';
 
-# Put the shorthand $body variable into its proper place.
+/*
+ * Put the shorthand $body variable into its proper place.
+ */
 $template->field->body = $body;
 unset($body);
 
-# Put the shorthand $sidebar variable into its proper place.
+/*
+ * Put the shorthand $sidebar variable into its proper place.
+ */
 $template->field->sidebar = $sidebar;
 unset($sidebar);
 
-# Parse the template, which is a shortcut for a few steps that culminate in sending the content
-# to the browser.
+/* 
+ * Parse the template, which is a shortcut for a few steps that culminate in sending the content
+ * to the browser.
+ */
 $template->parse();
 
 ?>
