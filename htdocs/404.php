@@ -22,12 +22,13 @@ $template->field->page_title = '404, Not Found';
 header('HTTP/1.1 404 Not Found');
 
 $body = '
-<p>The page that you’re looking for is nowhere to be found. Sorry! Here are a couple of potential
+<p>The page that you’re looking for is nowhere to be found. Sorry! Here are a few potential
 solutions to the problem:</p>
 
 <ul>
 	<li>Check the website address at the top of your browser. Do you see any obvious errors?
 	Fix ‘em!</li>
+	<li>Try using the search box, at the top of the page, to search for what you’re looking for.</li>
 	<li>Start over again <a href="/">at the home page</a> and try to browse your way to what you’re
 	trying to find.</li>
 </ul>
