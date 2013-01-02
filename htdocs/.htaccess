@@ -14,3 +14,5 @@ RewriteRule ^([0-9A-Za-z\.]{1,4})/([0-9a-z:\.]{1,8})/$ /structure.php?title_numb
 
 # Requests for a specific title.
 RewriteRule ^([0-9A-Za-z\.]{1,4})/$ /structure.php?title_number=$1 [QSA]
+# Requests for the API key registration page.
+RewriteRule ^api-key/$ /api-key.php [QSA]
