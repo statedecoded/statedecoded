@@ -205,6 +205,31 @@ elseif ($_POST['action'] == 'parse')
 	$db->exec($sql);
 	
 	
+	# If the site's internal API key is undefined, register a new key and activate it.
+	if (empty(API_KEY))
+	{
+		$api = new API;
+		$api->form->email = EMAIL_ADDRESS;
+		$this->suppress_activation_email = TRUE;
+		$api->register_key();
+		$api->activate_key();
+		
+		# Add the API key to the config file, if it's writable. Otherwise, display it on the
+		# screen, along with instructions.
+		$config_file = $_SERVER['DOCUMENT_ROOT'].'/../includes/config.inc.php';
+		if (is_writable($config_file))
+		{
+			$config = file_get_contents($config_file);
+			$config = str_replace("('API_KEY', '')", "('API_KEY', '".$api->key."')", $config);
+			file_put_contents($config_file, $config);
+		}
+		else
+		{
+			echo '<p>API Key: '.$api->key.'</p>';
+		}
+	}
+	
+	
 	# Define the location of the downloads directory.
 	$downloads_dir = $_SERVER['DOCUMENT_ROOT'].'/downloads/';
 
