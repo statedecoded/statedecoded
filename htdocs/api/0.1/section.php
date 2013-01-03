@@ -12,22 +12,30 @@ if (!isset($_GET['section']) || empty($_GET['section']))
 	die();
 }
 
-# Permissible API keys.
-$keys = array(
-	'keygoeshere',
-);
+$api = new API;
+$api->list_all_keys();
 
-/*if (!isset($_GET['key']) || empty($_GET['key']))
-{
-	json_error('API key not provided.');
-	die();
-}*/
-
-/*if (!in_array($_GET['key'], $keys))
+# Make sure that the key is the correct (safe) length.
+if ( strlen($_GET['key']) != 16 )
 {
 	json_error('Invalid API key.');
 	die();
-}*/
+}
+
+# Localize the key, filtering out unsafe characters.
+$key = filter_input(INPUT_GET, 'key', FILTER_SANITIZE_STRING);
+
+# If no key has been passed with this query, or if there are no registered API keys.
+if ( empty($key) || (count($api->all_keys) == 0) )
+{
+	json_error('API key not provided. Please register for an API key.');
+	die();
+}
+elseif (!isset($api->all_keys->$key))
+{
+	json_error('Invalid API key.');
+	die();
+}
 
 # Use a provided JSONP callback, if it's safe.
 if (isset($_REQUEST['callback']))
