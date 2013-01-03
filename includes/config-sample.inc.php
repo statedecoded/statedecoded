@@ -97,4 +97,15 @@ define('SECTION_PCRE_STRUCTURE','title,title,section,section');
  */
 define('EMAIL_ADDRESS', SITE_TITLE.' <waldo@jaquith.org>');
 
+
+/**
+ * API Keys
+ */
+
+/*
+ * The site uses its own API extensively. Provide the API key here. (This is populated automatically
+ * at the time that the parser is run.)
+ */ 
+define('API_KEY', '');
+
 ?>
