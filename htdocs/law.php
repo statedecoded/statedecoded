@@ -72,6 +72,7 @@ $template = new Page;
 # Make some section information available globally to JavaScript.
 $template->field->javascript = "var section_number = '".$law->section_number."';";
 $template->field->javascript .= "var section_id = '".$law->id."';";
+$template->field->javascript .= "var api_key = '".API_KEY."';";
 
 $template->field->javascript_files = '
 	<script src="/js/jquery.qtip.min.js"></script>
@@ -443,7 +444,7 @@ $('a.section-permalink').qtip({
 				ajax: {
 					url: '/api/0.1/section/'+section_number,
 					type: 'GET',
-					data: { fields: 'catch_line,ancestry', key: API_KEY },
+					data: { fields: 'catch_line,ancestry', key: api_key },
 					dataType: 'json',
 					success: function(section, status) {
 						if( section.ancestry instanceof Object ) {
@@ -534,7 +535,7 @@ $('a.section-permalink').qtip({
 				ajax: {
 					url: '/api/0.1/dictionary',
 					type: 'GET',
-					data: { term: term, section: section_number, key: API_KEY },
+					data: { term: term, section: section_number, key: api_key },
 					dataType: 'json',
 					success: function(data, status) {
 						var content = data.definition.truncate();
@@ -551,9 +552,6 @@ $('a.section-permalink').qtip({
 		})
 	});
 EOD;
-
-# Every reference to the API key in JavaScript should be replaced with the actual API key.
-$template->field->javascript = str_replace('API_KEY', '"'.API_KEY.'"', $template->field->javascript);
 
 # Put the shorthand $body variable into its proper place.
 $template->field->body = $body;
