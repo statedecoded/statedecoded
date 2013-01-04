@@ -443,7 +443,7 @@ $('a.section-permalink').qtip({
 				ajax: {
 					url: '/api/0.1/section/'+section_number,
 					type: 'GET',
-					data: { fields: 'catch_line,ancestry' },
+					data: { fields: 'catch_line,ancestry', key: API_KEY },
 					dataType: 'json',
 					success: function(section, status) {
 						if( section.ancestry instanceof Object ) {
@@ -534,7 +534,7 @@ $('a.section-permalink').qtip({
 				ajax: {
 					url: '/api/0.1/dictionary',
 					type: 'GET',
-					data: { term: term, section: section_number },
+					data: { term: term, section: section_number, key: API_KEY },
 					dataType: 'json',
 					success: function(data, status) {
 						var content = data.definition.truncate();
@@ -551,6 +551,9 @@ $('a.section-permalink').qtip({
 		})
 	});
 EOD;
+
+# Every reference to the API key in JavaScript should be replaced with the actual API key.
+$template->field->javascript = str_replace('API_KEY', '"'.API_KEY.'"', $template->field->javascript);
 
 # Put the shorthand $body variable into its proper place.
 $template->field->body = $body;
