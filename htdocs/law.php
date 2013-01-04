@@ -421,7 +421,7 @@ $('a.section-permalink').qtip({
 	})
 	
 	/* Mentions of other sections of the code. */
-	$("a.section").each(function() {
+	$("a.law").each(function() {
 		var section_number = $(this).text();
 		$(this).qtip({
 			tip: true,
