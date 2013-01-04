@@ -404,24 +404,6 @@ $template->field->javascript .= "
 
 # Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
 # originating traffic, the second is for when clicking on an anchor link within a page.
-$template->field->javascript .= "
-	if (document.location.hash) {
-		$(document.location.hash).slideto({
-			highlight_color: 'yellow',
-			highlight_duration: 5000,
-			slide_duration: 500
-		});
-
-	}
-	$('a[href*=#]').click(function(){
-		var elemId = '#' + $(this).attr('href').split('#')[1];
-		$(elemId).slideto({
-			highlight_color: 'yellow',
-			highlight_duration: 5000,
-			slide_duration: 500
-		});
-	});";
-
 $template->field->javascript .= 
 <<<EOD
 $('a.section-permalink').qtip({
