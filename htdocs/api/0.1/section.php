@@ -50,6 +50,9 @@ if (isset($_REQUEST['callback']))
 	}
 }
 
+# Localize the section identifier, filtering out unsafe characters.
+$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
+
 # Create a new instance of the class that handles information about individual laws.
 $laws = new Law();
 
@@ -63,7 +66,7 @@ $laws->config->get_references = TRUE;
 $laws->config->get_related_laws = TRUE;
 
 # Pass the requested section number to Law.
-$laws->section_number = $_GET['section'];
+$laws->section_number = $section;
 
 # Get a list of all of the basic information that we have about this section.
 $response = $laws->get_law();
