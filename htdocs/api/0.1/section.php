@@ -53,6 +53,12 @@ if (isset($_REQUEST['callback']))
 # Localize the section identifier, filtering out unsafe characters.
 $section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
 
+# If there's a trailing slash, remove it.
+if (substr($section, -1) == '/')
+{
+	$section = substr($section, 0, -1);
+}
+
 # Create a new instance of the class that handles information about individual laws.
 $laws = new Law();
 
