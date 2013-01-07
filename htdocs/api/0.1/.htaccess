@@ -2,4 +2,5 @@ RewriteEngine On
 RewriteBase /api/0.1/
 
 RewriteRule ^section/(.*)$ section.php?section=$1 [QSA]
+RewriteRule ^structure/(.*)$ structure.php?identifier=$1 [QSA]
 RewriteRule ^dictionary$ dictionary.php [QSA]
