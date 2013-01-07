@@ -71,7 +71,7 @@ $(document).ready(function () {
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/0.1/law/'+section_number,
+					url: '/api/law/'+section_number,
 					type: 'GET',
 					data: { fields: 'catch_line,ancestry', key: api_key },
 					dataType: 'json',
@@ -122,7 +122,7 @@ $(document).ready(function () {
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/0.1/dictionary',
+					url: '/api/dictionary',
 					type: 'GET',
 					data: { term: term, section: section_number, key: api_key },
 					dataType: 'json',
