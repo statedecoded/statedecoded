@@ -71,7 +71,7 @@ $(document).ready(function () {
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/0.1/section/'+section_number,
+					url: '/api/0.1/law/'+section_number,
 					type: 'GET',
 					data: { fields: 'catch_line,ancestry', key: api_key },
 					dataType: 'json',
