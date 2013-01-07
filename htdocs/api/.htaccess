@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /api/
+
+# Specify the default version number here.
+RewriteRule .* - [E=VERSION:0.1]
+
+# If the first segment of the URL is an alpha string, rather than a version
+# number, then insert the current version number.
+RewriteRule ^([a-z]+)/(.*)$ %{ENV:VERSION}/$1/$2
