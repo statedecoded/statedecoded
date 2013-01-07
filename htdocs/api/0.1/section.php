@@ -53,8 +53,7 @@ if (isset($_REQUEST['callback']))
 # Create a new instance of the class that handles information about individual laws.
 $laws = new Law();
 
-# Instruct the Law class on what, specifically, it should retrieve. Basically it should get
-# everything except amendment attempts, since that requires a query to the Richmond Sunlight API.
+# Instruct the Law class on what, specifically, it should retrieve.
 $laws->config->get_text = TRUE;
 $laws->config->get_structure = TRUE;
 $laws->config->get_amendment_attempts = FALSE;
