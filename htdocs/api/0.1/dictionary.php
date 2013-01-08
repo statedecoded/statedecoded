@@ -61,8 +61,11 @@ if (isset($_GET['section']))
 
 # Get the definitions for the requested term.
 $dict = new Dictionary();
-$dict->section_number = $_GET['section'];
-$dict->term = $_GET['term'];
+if (isset($section))
+{
+	$dict->section_number = $section;
+}
+$dict->term = $term;
 $dictionary = $dict->define_term();
 
 # If, for whatever reason, this word is not found, return an error.
