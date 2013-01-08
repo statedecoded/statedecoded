@@ -333,7 +333,13 @@ class Dictionary
 		{
 			$plural = true;
 		}
-
+		
+		/*
+		 * This is a tortured assembly of a query. The idea is to provide flexibility on a pair of
+		 * axes. The first is to support both plural and singular terms. The second is to support
+		 * queries with and without section numbers, to provide either the one true definition for
+		 * a term within a given scope or all definitions in the whole code.
+		 */
 		$sql = 'SELECT dictionary.term, dictionary.definition, dictionary.scope,
 				laws.section AS section_number
 				FROM dictionary
