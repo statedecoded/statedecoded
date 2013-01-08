@@ -350,18 +350,26 @@ class Dictionary
 		{
 			$sql .= ' OR dictionary.term = "'.$db->escape(substr($this->term, 0, -1)).'"';
 		}
-		$sql .= ') AND (';
-		foreach ($ancestry as $structure_id)
+		$sql .= ') ';
+		if (isset($this->section_number))
 		{
-			$sql .= '(dictionary.structure_id = '.$db->escape($structure_id).') OR';
+			$sql .= 'AND (';
+			foreach ($ancestry as $structure_id)
+			{
+				$sql .= '(dictionary.structure_id = '.$db->escape($structure_id).') OR';
+			}
+			$sql .= '	(dictionary.scope = "global")
+					OR
+						(laws.section = "'.$db->escape($this->section_number).'")
+					) ';
 		}
-		$sql .= '	(dictionary.scope = "global")
-				OR
-					(laws.section = "'.$db->escape($this->section_number).'")
-				)
-				
-				ORDER BY dictionary.scope_specificity
-				LIMIT 1';
+		
+		$sql .= 'ORDER BY dictionary.scope_specificity ';
+		if (isset($this->section_number))
+		{
+		
+			$sql .= 'LIMIT 1';
+		}
 
 		// Execute the query.
 		$result =& $db->query($sql);
