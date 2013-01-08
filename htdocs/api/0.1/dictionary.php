@@ -76,7 +76,7 @@ if ($dictionary === false)
 
 else
 {
-	
+
 	# Uppercase the first letter of the first (quoted) word. We perform this twice because some
 	# legal codes begin the definition with a quotation mark and some do not. (That is, some write
 	# '"Whale" is a large sea-going mammal' and some write 'Whale is a large sea-going mammal.")
