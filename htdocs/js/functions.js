@@ -122,9 +122,9 @@ $(document).ready(function () {
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/dictionary',
+					url: '/api/dictionary'+term,
 					type: 'GET',
-					data: { term: term, section: section_number, key: api_key },
+					data: { section: section_number, key: api_key },
 					dataType: 'json',
 					success: function(data, status) {
 						var content = data.definition.truncate();
