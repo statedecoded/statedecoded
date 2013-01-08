@@ -88,47 +88,43 @@ else
 	{
 		$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
 	}
-	
-	# Create a simple array, with a prettied-up version of the definition text, to be encoded as
-	# JSON.
-	$response = array(
-		'term' => $dictionary->term,
-		'definition' => wptexturize($dictionary->definition),
-		'section' => $dictionary->section_number,
-		'scope' => $dictionary->scope,
-		'url' => $dictionary->url,
-		'formatted' => wptexturize($dictionary->definition).' (<a href="'.$dictionary->url.'">§&nbsp;'.$dictionary->section_number.'</a>)'
-	);
-	
-	# If this is a definition with a source citation (that is, a generic dictionary definition),
-	# then include that, too.
-	if (isset($dictionary->source))
-	{
-		$response['source'] = $dictionary->source;
-	}
-}
 
-# If the request contains a specific list of fields to be returned.
-if (isset($_GET['fields']))
-{
-	# Turn that list into an array.
-	$returned_fields = explode(',', urldecode($_GET['fields']));
-	foreach ($returned_fields as &$field)
+	# If the request contains a specific list of fields to be returned.
+	if (isset($_GET['fields']))
 	{
-		$field = trim($field);
-	}
-	
-	# It's essential to unset $field at the conclusion of the prior loop.
-	unset($field);
-	
-	# Step through our response fields and eliminate those that aren't in the requested list.
-	foreach($response as $field => &$value)
-	{
-		if (in_array($field, $returned_fields) === false)
+		# Turn that list into an array.
+		$returned_fields = explode(',', urldecode($_GET['fields']));
+		foreach ($returned_fields as &$field)
 		{
-			unset($response->$field);
+			$field = trim($field);
+		}
+		
+		# It's essential to unset $field at the conclusion of the prior loop.
+		unset($field);
+		
+		foreach ($dictionary as &$term)
+		{
+			# Step through our response fields and eliminate those that aren't in the requested
+			# list.
+			foreach($term as $field => &$value)
+			{
+				if (in_array($field, $returned_fields) === false)
+				{
+					unset($term->$field);
+				}
+			}
 		}
 	}
+
+	# If a section has been specified, then simplify this response by returning just a single
+	# definition.
+	if (isset($section))
+	{
+		$dictionary = $dictionary->{0};
+	}
+	
+	# Rename this variable to use the expected name.
+	$response = $dictionary;
 }
 
 if (isset($callback))
