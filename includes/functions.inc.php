@@ -296,14 +296,17 @@ class Dictionary
 		
 		// Determine the structural heritage of the provided section number and store it in an
 		// array.
-		$heritage = new Law;
-		$heritage->config->get_structure = TRUE;
-		$heritage->section_number = $this->section_number;
-		$law = $heritage->get_law();
-		$ancestry = array();
-		foreach ($law->ancestry as $tmp)
+		if (isset($this->section_number))
 		{
-			$ancestry[] = $tmp->id;
+			$heritage = new Law;
+			$heritage->config->get_structure = TRUE;
+			$heritage->section_number = $this->section_number;
+			$law = $heritage->get_law();
+			$ancestry = array();
+			foreach ($law->ancestry as $tmp)
+			{
+				$ancestry[] = $tmp->id;
+			}
 		}
 		
 		// We want to check if the term is in all caps. If it is, then we want to keep it in all
