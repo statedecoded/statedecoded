@@ -378,12 +378,17 @@ class Dictionary
 		if ( (PEAR::isError($result) === false) && ($result->numRows() > 0) )
 		{
 		
-			// Get the first result.
-			$dictionary = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-			
-			$dictionary->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$dictionary->section_number.'/';
-			$dictionary->formatted = wptexturize($dictionary->definition).' (<a href="'.$dictionary->url.'">'
-				.$dictionary->section_number.'</a>)';
+			// Get all results.
+			$dictionary = new stdClass();
+			$i=0;
+			while ($term = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			{
+				$term->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$term->section_number.'/';
+				$term->formatted = wptexturize($term->definition).' (<a href="'.$term->url.'">'
+					.$term->section_number.'</a>)';
+				$dictionary->$i = $term;
+				$i++;
+			}
 		}
 		
 		// Else if the query fails, then the term is found in the generic terms dictionary.
@@ -411,10 +416,12 @@ class Dictionary
 			}
 		
 			// Get the first result. Assemble a slightly different response than for a custom term.
-			$dictionary = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			// We assign this to the first element of an object because that is the format that the
+			// API expects to receive a list of terms in. In this case, we have just one term.
+			$dictionary->{0} = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 			$dictionary->formatted = wptexturize($dictionary->definition).' (<a href="'.$dictionary->url.'">'
 				.$dictionary->source.'</a>)';
-			
+
 		}
 		
 		// Return the result.
