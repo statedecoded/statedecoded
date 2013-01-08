@@ -3,4 +3,4 @@ RewriteBase /api/0.1/
 
 RewriteRule ^law/(.*)$ law.php?section=$1 [QSA]
 RewriteRule ^structure/(.*)$ structure.php?identifier=$1 [QSA]
-RewriteRule ^dictionary$ dictionary.php [QSA]
+RewriteRule ^dictionary/(.*)$ dictionary.php?term=$1 [QSA]
