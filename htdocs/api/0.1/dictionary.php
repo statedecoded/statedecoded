@@ -50,6 +50,15 @@ if (isset($_REQUEST['callback']))
 	}
 }
 
+# Clean up the term.
+$term = filter_input(INPUT_GET, 'term', FILTER_SANITIZE_STRING);
+
+# If a section has been specified, then clean that up.
+if (isset($_GET['section']))
+{
+	$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
+}
+
 # Get the definitions for the requested term.
 $dict = new Dictionary();
 $dict->section_number = $_GET['section'];
