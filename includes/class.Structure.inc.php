@@ -331,6 +331,16 @@ class Structure
 						$tmp[] = $value;
 					}
 				}
+				
+				/*
+				 * We no longer have any need for these "s#_" fields. Eliminate them. (This is
+				 * helpful to save memory, but it also allows this object to be delivered directly
+				 * via the API, without modification.
+				 */
+				if (preg_match('/s[0-9]_([a-z]+)/', $key) == 1)
+				{
+					unset($child->$key);
+				}
 			}
 			$tmp = array_reverse($tmp);
 			$child->url .= implode('/', $tmp).'/';
