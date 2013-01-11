@@ -127,6 +127,10 @@ else
 	$response = $dictionary;
 }
 
+# Include the API version in this response, by pulling it out of the path.
+$tmp = explode('/', $_SERVER['SCRIPT_NAME']);
+$response->api_version = $tmp[2];
+
 if (isset($callback))
 {
 	echo $callback.' (';
