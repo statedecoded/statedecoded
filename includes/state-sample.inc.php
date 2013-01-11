@@ -28,29 +28,18 @@ class State
  */
 class Parser
 {
-	
-	/* Gather the raw text of each law for the parse() function to figure out what to do with. This
-	 * might iterate through files with one law per file (as with this example), it might be screen-
-	 * scraping text off a legislature's website, or it might do any number of other things to gather
-	 * that text. This function needs to loop over and over again, returning the contents of a single
-	 * law with each loop, until finally the entire Code has been iterated over.
+	/*
+	 * Step through every XML file.
 	 */
 	public function iterate()
 	{
 		
-		// Get a listing of every file in the directory.
-		$files = scandir($this->directory);
-		
-		// Iterate through each file.
-		for ($j = $this->file; $j < count($files); $j++)
+		// Iterate through every XML file in this directory.
+		foreach (glob('*.xml') as $filename)
 		{
 			
-			$this->file = $j;
-			
-			$filename = $files[$j];
-			
-			// Open the file and store its contents as an array.
-			$law = file($filename);
+			// Open the file and store its contents as a string.
+			$law = new SimpleXMLElement($xml);
 			
 			return $law;
 			
@@ -65,73 +54,148 @@ class Parser
 	public function parse()
 	{
 	
-		// The identifier for this law (e.g., "10.12-46-21").
-		$this->code->section_number = '';
-
-		// The name of this law (e.g. "Receiving stolen goods").
-		$this->code->name = '';
+		/*
+		 * Create a new, empty object to store our code's data.
+		 */
+		$code = new stdClass();
 		
-		// Store the full text of this law.
-		$this->code->text = '';
+		/* Transfer some data to our object. */
+		$code->catch_line = (string) $law->catch_line[0];
+		$code->section_number = (string) $law->section_number;
+		$code->order_by = (string) $law->order_by;
+		$code->history = (string)  $law->history;
 		
-		// Each set of laws is arranged from beginning to ending, with every law occupying a
-		// particular position in that order. To know in what order to display those laws, every
-		// law must be assigned some sort of "order by" characteristic that will result in a natural
-		// order when selected from the database. Assign such a number here.
-		$this->code->order_by = '';
-		
-		// This bit contains the structure (e.g., chapter, title, part, etc.) number.
-		$this->code->structure_number = '';
-	
-		// Store the structure name.
-		$this->code->structure_name = '';
-				
-		// Iterate through each section of this law (e.g., section A, then section B, etc.)
-		$i=0;
-		foreach ($section_of_the_code as $section)
+		/*
+		 * Iterate through the structural headers.
+		 */
+		foreach ($law->structure->unit as $unit)
 		{
-			
-			// As we iterate deeper into the code (e.g., subsection 1, then sub-subsection a), build
-			// up an array (e.g., array(A, 1, a)) so that we know the precise identifier for this
-			// subsection of text.
-			$prefixes[] = $section->prefix;
-			
-			// Iterate through the prefix structure of the text of the law and store each prefix section
-			// in our code object.
-			for ($i=0; $i<count($prefixes); $i++)
-			{
-				$this->code->section->$i->prefix_hierarchy->$j = $prefixes[$j];
-			}
-			
-			// And store the prefix list as a single string.
-			$this->code->section->$i->prefix = implode('', $prefixes);
-			
-			// Store the text of this individual section
-			$this->code->section->$i->text = $section->text;
-				
-			// Include the type in $code, too. Type might be "text," "table," "illustration," or any
-			// other class of section that would necessitate different display in the storage or
-			// rendering process.
-			$this->code->section->$i->type = $section->type;
-			
-			$i++;
-		}			
-		
-		// If the words "repealed effective" appear in the name then we mark this section as repealed.
-		if (strpos($this->code->name, 'repealed effective') !== false)
-		{
-			$this->code->repealed = 'y';
+			$level = (string) $unit['level'];
+			$code->structure->{$level}->name = (string) $unit;
+			$code->structure->{$level}->label = (string) $unit['label'];
+			$code->structure->{$level}->identifier = (string) $unit['identifier'];
+			$code->structure->{$level}->order_by = (string) $unit['order_by'];
 		}
 		
-		// Save history data for this law (i.e., when it was passed, when it was amended, etc.)
-		$this->code->history = '';
+		/*
+		 * Iterate through the text.
+		 */
+		$i=0;
+		foreach ($law->text as $section)
+		{
+			
+			foreach ($section as $subsection)
+			{
+				
+				/*
+				 * Store this subsection's text.
+				 */
+				$code->section->$i->text = trim((string) $subsection);
+				
+				/*
+				 * Store the prefix, and use that prefix to build up a prefix hiearchy.
+				 */
+				$code->section->$i->prefix = (string) $subsection['prefix'];
+				$code->section->$i->prefix_hierarchy->{0} = (string) $subsection['prefix'];
+				$prefix_hierarchy[] = (string) $subsection['prefix'];
+				
+				/*
+				 * If this subsection has a specified type (e.g., "table"), save that.
+				 */
+				if (!empty($subsection['type']))
+				{
+					$code->section->$i->type = (string) $subsection['type'];
+				}
+				
+			
+				/*
+				 * We increment our counter at this point, rather than at the end of the loop,
+				 * because of the use of the recurse() function after it.
+				 */
+				$i++;
+				
+				/*
+				 * Recurse through any subsections.
+				 */
+				if (count($subsection) > 0)
+				{
+					Parser::recurse($subsection);
+				}
+				
+				/*
+				 * Having come to the end of the loop, reset the prefix hierarchy.
+				 */
+				$prefix_hierarchy = array();
+			}
+		}
 			
 		// Make the data available outside of the scope of this function.
 		$this->code = $code;
 		
-		unset($code);
 	}
-	
+
+	/**
+	 * Intended to be called from within Parser::parse, this is used to iterate through subsections
+	 * of text to indefinite depths. It takes a section as input, and returns only true, as it
+	 * modifies $code directly.
+	 */
+	public static function recurse($section)
+	{
+		
+		/*
+		 * Make these variables available within the scope of this function.
+		 */
+		global $i;
+		global $code;
+		global $prefix_hierarchy;
+		
+		/*
+		 * Track how deep we've recursed, in order to create the prefix hierarchy.
+		 */
+		$depth = 1;
+		
+		/*
+		 * Iterate through each subsection.
+		 */
+		foreach ($section as $subsection)
+		{
+			
+			$code->section->$i->text = (string) $subsection;
+			if (!empty($subsection['type']))
+			{
+				$code->section->$i->type = (string) $subsection['type'];
+			}
+			$code->section->$i->prefix = (string) $subsection['prefix'];
+			$prefix_hierarchy[] = (string) $subsection['prefix'];
+			$code->section->$i->prefix_hierarchy = (object) $prefix_hierarchy;
+			
+			/*
+			 * We increment our counter at this point, rather than at the end of the loop, because of
+			 * the use of the recurse() function after it.
+			 */
+			
+			$i++;
+			
+			/*
+			 * If this recurses further, keep going.
+			 */
+			if (isset($subsection->section))
+			{
+				$depth++;
+				recurse($subsection->section);
+			}
+			
+			/*
+			 * Reduce the prefix hierarchy back to where it started, for our next loop through.
+			 */
+			$prefix_hierarchy = array_slice($prefix_hierarchy, 0, ($depth * -1));
+		}
+		
+		return true;
+	}
+
+
+
 	/**
 	 * Take an object containing the normalized code data and store it.
 	 */
