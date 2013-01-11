@@ -23,7 +23,8 @@ class State
 
 
 /**
- * The parser for Virginia.
+ * An example parser. This is not functional, but it does establish a framework from which one can
+ * see how to develop a parser.
  */
 class Parser
 {
