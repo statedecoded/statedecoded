@@ -84,6 +84,18 @@ class Parser
 		foreach ($law->text as $section)
 		{
 			
+			/*
+			 * If there are no subsections, but just a single block of text, then simply save that.
+			 */
+			if (count($section) === 0)
+			{
+				$code->section->$i->text = trim((string) $section);
+				break;
+			}
+			
+			/*
+			 * If this law is broken down into subsections, iterate through those.
+			 */
 			foreach ($section as $subsection)
 			{
 				
