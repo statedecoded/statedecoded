@@ -416,7 +416,7 @@ class Structure
 		
 		// To assign URLs, we iterate through the object in reverse, and build up the URLs from their
 		// structure numbers.
-		$url = '/';
+		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 		foreach (array_reverse((array) $ancestry) as $key => $level)
 		{
 			$url .= $level->number.'/';
