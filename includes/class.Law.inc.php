@@ -94,6 +94,9 @@ class Law
 			$this->$key = $value;
 		}
 		
+		// Clean up the typography in the full text.
+		$this->full_text = wptexturize($this->full_text);
+		
 		// Now get the text for this law.
 		if ($this->config->get_text === TRUE)
 		{
