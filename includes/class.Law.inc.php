@@ -88,10 +88,21 @@ class Law
 		
 		// Return the result as an object.
 		$tmp = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		
 		// Bring this law into the object scope.
 		foreach ($tmp as $key => $value)
 		{
 			$this->$key = $value;
+		}
+		
+		// Change from the y/n MySQL storage type for "repealed" to true/false.
+		if ($this->repealed == 'n')
+		{
+			$this->repealed = FALSE;
+		}
+		else
+		{
+			$this->repealed = TRUE;
 		}
 		
 		// Clean up the typography in the full text.
