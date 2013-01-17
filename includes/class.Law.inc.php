@@ -482,7 +482,8 @@ class Law
 		// We're going to need access to the database connection throughout this class.
 		global $db;
 		
-		// If neither a section number nor a law ID has been passed to this function, then there's nothing to do.
+		// If neither a section number nor a law ID has been passed to this function, then there's
+		// nothing to do.
 		if (!isset($this->section_number))
 		{
 			return false;
@@ -491,7 +492,8 @@ class Law
 		// Trim it down.
 		$this->section_number = trim($this->section_number);
 
-		// Query the database for the ID for this section number, retrieving the current version of the law.
+		// Query the database for the ID for this section number, retrieving the current version
+		// of the law.
 		$sql = 'SELECT *
 				FROM laws
 				WHERE section="'.$db->escape($this->section_number).'"
