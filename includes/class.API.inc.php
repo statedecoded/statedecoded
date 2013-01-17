@@ -39,17 +39,23 @@ class API
 				WHERE verified="y"';
 		$result = $db->query($sql);
 		
+		/* If the database has returned an error. */
+		if (PEAR::isError($result) === true)
+		{
+			throw new Exception('API keys could not be retrieved.');
+		}
+		
 		/*
 		 * If the query succeeds then retrieve each row and build up an object containing a list
 		 * of all keys.
 		 */
-		if (PEAR::isError($result) === false)
+		else
 		{
 			
 			/*
 			 * If no API keys have been registered.
 			 */
-			if ($result->numRows() > 0)
+			if ($result->numRows() == 0)
 			{
 				return true;
 			}
@@ -63,15 +69,9 @@ class API
 				$this->all_keys->{$i} = $key->api_key;
 				$i++;
 			}
+			
+			return true;
 		}
-		
-		/* If the database has returned an error. */
-		else
-		{
-			throw new Exception('API keys could not be retrieved.');
-		}
-		
-		return true;
 	}
 	
 
