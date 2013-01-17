@@ -30,6 +30,10 @@ class API
 		 */
 		global $db;
 		
+		/* Only retrieve those keys that have been verified -- that is, for people who have been
+		 * sent an e-mail with a unique URL, and that have clicked on that link to confirm their
+		 * e-mail address.
+		 */
 		$sql = 'SELECT api_key
 				FROM api_keys
 				WHERE verified="y"';
@@ -50,6 +54,9 @@ class API
 				return true;
 			}
 			
+			/*
+			 * If API keys have been registered, iterate through them and store them.
+			 */
 			$i=0;
 			while ($key = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 			{
