@@ -222,9 +222,12 @@ class API
 		}
 		
 		/*
-		 * Send an activation e-mail.
+		 * Send an activation e-mail, unless instructed otherwise.
 		 */
-		API::send_activation_email();
+		if ( !isset($this->suppress_activation_email) || ($this->suppress_activation_email !== TRUE) )
+		{	
+			API::send_activation_email();
+		}
 				
 	}
 	
