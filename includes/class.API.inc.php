@@ -66,7 +66,7 @@ class API
 			$i=0;
 			while ($key = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 			{
-				$this->all_keys->{$i} = $key->api_key;
+				$this->all_keys->{$key->api_key} = true;
 				$i++;
 			}
 			
