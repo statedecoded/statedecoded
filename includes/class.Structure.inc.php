@@ -447,7 +447,7 @@ class Structure
 			return false;
 		}
 		
-		// Assemble the SQL query. Only get sections that haven't been repealed.
+		// Assemble the SQL query.
 		$sql = 'SELECT number
 				FROM structure
 				WHERE id='.$db->escape($this->id);
