@@ -460,7 +460,7 @@ class Law
 			$related->{$i}->catch_line = $document->law_title;
 			$related->{$i}->section_number = $document->law_section;
 			$related->{$i}->text = $document->law_text;
-			$related->{$i}->url = '/'.$document->law_section.'/';
+			$related->{$i}->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$document->law_section.'/';
 			$i++;
 		}
 		
