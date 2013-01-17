@@ -125,6 +125,7 @@ class Structure
 		}
 		
 		$sql .= implode(' AND ', $where);
+
 		
 		// We don't need either of these anymore.
 		unset($where);
@@ -343,6 +344,7 @@ class Structure
 			}
 			$tmp = array_reverse($tmp);
 			$child->url .= implode('/', $tmp).'/';
+			$child->api_url = 'http://'.$_SERVER['SERVER_NAME'].'/api/structure/'.implode('/', $tmp).'/';
 			$children->$i = $child;
 			$i++;
 		}
@@ -506,6 +508,9 @@ class Structure
 		{
 			// Figure out the URL and include that.
 			$section->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$section->number.'/';
+			
+			// Ditto for the API URL.
+			$section->api_url = 'http://'.$_SERVER['SERVER_NAME'].'/api/law/'.$section->number.'/';
 			
 			// Sometimes there are laws that lack titles. We've got to put something in that field.
 			if (empty($section->catch_line))
