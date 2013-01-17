@@ -277,7 +277,10 @@ class API
 			."\r\r"
 			.'http://'.$_SERVER['SERVER_NAME'].'/api-key/?secret='.$this->secret;
 		$email->subject = SITE_TITLE.' API Registration';
-		$email->headers = 'From: '.EMAIL_ADDRESS;
+		$email->headers = 'From: '.EMAIL_ADDRESS."\n"
+						.'Return-Path: '.EMAIL_ADDRESS."\n"
+						.'Reply-To: '.EMAIL_ADDRESS."\n"
+						.'X-Originating-IP: '.$_SERVER['REMOTE_ADDR'];
 		
 		/*
 		 * Send the e-mail.
