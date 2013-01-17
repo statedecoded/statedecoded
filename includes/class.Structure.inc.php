@@ -206,7 +206,6 @@ class Structure
 		// really nothing for us to do here.
 		if (!isset($this->structure_id))
 		{
-			//throw new Exception('No structure ID provided.');
 			return false;
 		}
 		
