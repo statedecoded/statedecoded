@@ -344,8 +344,8 @@ if ($law->references !== false)
 				<ul>';
 	foreach ($law->references as $reference)
 	{
-		$sidebar .= '<li><a href="'.$reference->url.'">'.$reference->section.'</a> '
-			.$reference->catch_line.'</li>';
+		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$reference->url.'" class="law">'
+			.$reference->section.'</a> '.$reference->catch_line.'</li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
@@ -360,7 +360,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 	foreach ($law->related as $related)
 	{
 		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$related->url.'">'
-			.$related->section_number.'</a> '.$related->catch_line.'</li>';
+-			.$related->section_number.'</a> '.$related->catch_line.'</li>';
 	}
 	$sidebar .= '
 				</ul>

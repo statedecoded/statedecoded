@@ -347,7 +347,7 @@ class Law
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
 			$reference->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$reference->section.'/';
-			$reference->section = SECTION_SYMBOL.'&nbsp;'.$reference->section;
+			$reference->section = $reference->section;
 		}
 		
 		return $references;
