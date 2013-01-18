@@ -125,15 +125,15 @@ elseif (isset($_GET['secret']))
 	 */
 	if (strlen($_GET['secret']) != 5)
 	{
-		$body .= '<h1>Error</h1>
+		$body .= '<h2>Error</h2>
 			<p>Invalid API key.</p>';
 	}
 	else
 	{
 		$api->secret = $_GET['secret'];
 		$api->activate_key();
-		$body .= '<h1>API Key Activated</h1>
-				<p>Your API key has been activated.</p>';
+		$body .= '<h2>API Key Activated</h2>
+				<p>Your API key has been activated. You may now make requests from the API.</p>';
 	}
 }
 
