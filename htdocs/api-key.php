@@ -53,7 +53,6 @@ $template->field->inline_css = '
 			clear: left;
 			margin-top: 1em;
 		}
-		
 	</style>';
 
 /*
@@ -78,9 +77,14 @@ $sidebar = '<h1>Nota Bene</h1>
 if (isset($_POST['form_data']))
 {
 
-	// Pass the submitted form data to the API class, as an object rather than as an array.
+	/*
+	 * Pass the submitted form data to the API class, as an object rather than as an array.
+	 */
 	$api->form = (object) $_POST['form_data'];
 	
+	/*
+	 * If this form hasn't been completed properly, display the errors and re-display the form.
+	 */
 	if ($api->validate_form() === false)
 	{
 		$body .= '<p class="error">Error: '.$api->form_errors.'</p>';
@@ -92,8 +96,15 @@ if (isset($_POST['form_data']))
 		$api->register_key();
 	}
 	catch (Exception $e)
+	/*
+	 * But if the form has been filled out correctly, then proceed with the registration process.
+	 */
+	else
 	{
 		$body = '<p class="error">Error: ' . $e->getMessage() . '</p>';
+		/*
+		 * Register this key.
+		 */
 	}
 
 	$page_body .= '<p>You have been sent an e-mail to verify your e-mail address. Please click the link in
