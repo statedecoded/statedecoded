@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * The API key registration page.
+ *
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2012 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.6
+ * @link		http://www.statedecoded.com/
+ * @since		0.6
+*/
+
 /*
  * Include the PHP declarations that drive this page.
  */
