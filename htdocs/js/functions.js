@@ -122,7 +122,7 @@ $(document).ready(function () {
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/dictionary'+term,
+					url: '/api/dictionary/' + encodeURI(term),
 					type: 'GET',
 					data: { section: section_number, key: api_key },
 					dataType: 'json',
