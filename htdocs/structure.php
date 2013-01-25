@@ -14,7 +14,7 @@
 */
 
 # Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
+require '../includes/page-head.inc.php';
 
 # Create a new instance of Structure.
 $struct = new Structure();
