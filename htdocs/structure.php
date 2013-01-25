@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * The page that displays an individual structural unit.
+ *
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2012 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.5
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+*/
+
 # Include the PHP declarations that drive this page.
 require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
 
