@@ -1,9 +1,22 @@
 <?php
 
-# Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
+/**
+ * The page that displays an individual law.
+ *
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2012 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.5
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+*/
 
-# Create a new instance of Law.
+// Include the PHP declarations that drive this page.
+require '../includes/page-head.inc.php';
+
+// Create a new instance of Law.
 $laws = new Law();
 
 # Use the section number in the URL as the section number that we're looking up.
