@@ -107,9 +107,9 @@ $sidebar = '<iframe src="//www.facebook.com/plugins/like.php?href='.urlencode($_
 			frameborder="0" style="border:none; overflow:hidden; width:100px; height:35px;"
 			allowTransparency="true"></iframe>';
 
-# Only show the history if the law hasn't been repealed. (If it has been, then the history text
-# generally disappears along with it, meaning that the below code can behave unpredictably.)
 if (empty($law->repealed) || ($law->repealed != 'y'))
+// Only show the history if the law hasn't been repealed. (If it has been, then the history text
+// generally disappears along with it, meaning that the below code can behave unpredictably.)
 {
 	$sidebar .= '
 			<section id="history-description">
