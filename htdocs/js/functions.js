@@ -128,8 +128,8 @@ $(document).ready(function () {
 					dataType: 'json',
 					success: function(data, status) {
 						var content = data.definition.truncate();
-						if (data.section != null) {
-							content = content + ' (<a href="' + data.url + '">§&nbsp;' + data.section + '</a>)';
+						if (data.section_number != null) {
+							content = content + ' (<a href="' + data.url + '">§&nbsp;' + data.section_number + '</a>)';
 						}
 						else if (data.source) {
 							content = content + ' (Source: <a href="' + data.url + '">' + data.source + '</a>)';
