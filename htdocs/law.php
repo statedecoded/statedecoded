@@ -197,7 +197,7 @@ if ($law->references !== false)
 	foreach ($law->references as $reference)
 	{
 		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$reference->url.'" class="law">'
-			.$reference->section.'</a> '.$reference->catch_line.'</li>';
+			.$reference->section_number.'</a> '.$reference->catch_line.'</li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
