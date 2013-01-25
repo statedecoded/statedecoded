@@ -91,9 +91,8 @@ if (isset($law->history_text))
 	$body .= '<section id="history">
 				<h2>History</h2>
 				<p>'.$law->history_text.'</p>
+				</section>';
 }
-
-$body .= '</section>';
 
 // Indicate the conclusion of the "section" article, which is the container for the text of a
 // section of the code.
