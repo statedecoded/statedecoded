@@ -84,8 +84,8 @@ $children = $struct->list_children();
 # If we have successfully gotten a list of child structural units, display them.
 if ($children !== false)
 {
-	
-	$body .= '<dl class="chapters">';
+	/* The level of this child structural unit is that of the current unit, plus one. */
+	$body .= '<dl class="level-'.($structure->{count($structure)-1}->level + 1).'">';
 	foreach ($children as $child)
 	{
 		$body .= '<dt><a href="'.$child->url.'">'.$child->number.'</a></dt>
@@ -103,7 +103,8 @@ if ($laws !== false)
 {
 
 	$body .= ' It’s comprised of the following '.count((array) $laws).' sections.</p>';
-	$body .= '<dl class="sections">';
+	$body .= '<dl class="laws">';
+
 	foreach ($laws as $law)
 	{	
 		$body .= '
