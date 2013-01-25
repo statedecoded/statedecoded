@@ -82,7 +82,6 @@ if (isset($law->next_section))
 // Start assembling the body of this page by indicating the beginning of the text of the section.
 $body = '<article id="law">';
 
-	}
 // Display the rendered HTML of this law.
 $body .= $law->html;
 
@@ -91,7 +90,7 @@ if (isset($law->history_text))
 {
 	$body .= '<section id="history">
 				<h2>History</h2>
-				<p>'.$law->history_text.'</p>';
+				<p>'.$law->history_text.'</p>
 }
 
 $body .= '</section>';
@@ -115,8 +114,8 @@ if (empty($law->repealed) || ($law->repealed != 'y'))
 			<section id="history-description">
 				<h1>History</h1>
 				<p>
-					This law was first passed in '.reset($law->amendation_years).'.';
-	if (count((array) $law->amendation_years) > 1)
+					This law was first passed in '.reset($law->amendment_years).'.';
+	if (count((array) $law->amendment_years) > 1)
 	{
 		$sidebar .= ' It was updated in ';
 	
@@ -221,7 +220,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 	foreach ($law->related as $related)
 	{
 		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$related->url.'">'
--			.$related->section_number.'</a> '.$related->catch_line.'</li>';
+			.$related->section_number.'</a> '.$related->catch_line.'</li>';
 	}
 	$sidebar .= '
 				</ul>
