@@ -108,7 +108,7 @@ if ($laws !== false)
 	foreach ($laws as $law)
 	{	
 		$body .= '
-				<dt><a href="'.$law->url.'">'.SECTION_SYMBOL.'&nbsp;'.$law->number.'</a></dt>
+				<dt><a href="'.$law->url.'">'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</a></dt>
 				<dd><a href="'.$law->url.'">'.$law->catch_line.'</a></dd>';
 	}
 	$body .= '</dl>';
