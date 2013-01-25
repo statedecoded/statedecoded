@@ -114,16 +114,16 @@ if (empty($law->repealed) || ($law->repealed !== true))
 		// Iterate through every year in which this bill has been amended and list them.
 		foreach ($law->amendment_years as $year)
 		{
-			if ($year == reset($law->amendation_years))
+			if ($year == reset($law->amendment_years))
 			{
 				continue;
 			}
-			if ( ($year == end($law->amendation_years)) && (count((array)$law->amendation_years) > 2) )
+			if ( ($year == end($law->amendment_years)) && (count((array)$law->amendment_years) > 2) )
 			{
 				$sidebar .= 'and ';
 			}
 			$sidebar .= $year;
-			if ($year != end($law->amendation_years))
+			if ($year != end($law->amendment_years))
 			{
 				$sidebar .= ', ';
 			}
