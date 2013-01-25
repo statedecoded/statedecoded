@@ -322,7 +322,7 @@ class Law
 		}
 		
 		// Get a listing of IDs, section numbers, and catch lines.
-		$sql = 'SELECT DISTINCT laws.id, laws.section, laws.catch_line
+		$sql = 'SELECT DISTINCT laws.id, laws.section AS section_number, laws.catch_line
 				FROM laws
 				INNER JOIN laws_references
 					ON laws.id = laws_references.law_id
@@ -345,8 +345,7 @@ class Law
 		while ($reference = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
-			$reference->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$reference->section.'/';
-			$reference->section = $reference->section;
+			$reference->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$reference->section_number.'/';
 			
 			$references->$i = $reference;
 			$i++;

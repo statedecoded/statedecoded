@@ -485,7 +485,7 @@ class Structure
 		// order_by field primarily, but we also order by section as a backup, in case something
 		// should fail with the order_by field. The section column is not wholly reliable for
 		// sorting (hence the order_by field), but it's a great deal better than an unsorted list.
-		$sql = 'SELECT id, structure_id, section AS number, catch_line
+		$sql = 'SELECT id, structure_id, section AS section_number, catch_line
 				FROM laws
 				WHERE structure_id='.$db->escape($this->id).' AND repealed="n"
 				ORDER BY order_by, section';
@@ -507,10 +507,10 @@ class Structure
 		while ($section = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 		{
 			// Figure out the URL and include that.
-			$section->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$section->number.'/';
+			$section->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$section->section_number.'/';
 			
 			// Ditto for the API URL.
-			$section->api_url = 'http://'.$_SERVER['SERVER_NAME'].'/api/law/'.$section->number.'/';
+			$section->api_url = 'http://'.$_SERVER['SERVER_NAME'].'/api/law/'.$section->section_number.'/';
 			
 			// Sometimes there are laws that lack titles. We've got to put something in that field.
 			if (empty($section->catch_line))
