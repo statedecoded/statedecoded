@@ -139,38 +139,6 @@ if (empty($law->repealed) || ($law->repealed !== true))
 				</section>';
 }
 
-if ($law->amendment_attempts != false)
-{
-	# Set the variable that we'll to maintain the state of the year as we loop through the bills.
-	$tmp = '';
-	$sidebar .= '
-			<section id="amendment-attempts">
-				<h1>Amendment Attempts</h1>
-				<ul>';
-	foreach ($law->amendment_attempts as $attempt)
-	{
-		# If we're dealing with a new year.
-		if ($tmp != $attempt->year)
-		{
-			if (!empty($tmp))
-			{
-				$sidebar .= '</ul></li>';
-			}
-			$sidebar .= '<li><span>'.$attempt->year.'</span><ul>';
-			$tmp = $attempt->year;
-		}
-		$sidebar .= '<li class="'.$attempt->outcome.'"><a class="bill" href="'.$attempt->url.'">'
-			.$attempt->number.'</a>: '.$attempt->catch_line;
-		if (!empty($attempt->outcome))
-		{
-			$sidebar .= ' ('.$attempt->outcome.')';
-		}
-		$sidebar .= '</li>';
-	}
-	$sidebar .= '</ul>
-			</section>';
-}
-
 // If this section has been cited in any court decisions, list them.
 if ($law->court_decisions != false)
 {
