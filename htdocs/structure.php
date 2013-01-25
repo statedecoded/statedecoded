@@ -66,7 +66,6 @@ if (!empty($tag_cloud))
 $body .= '<p>This is '.ucwords($struct->label).' '.$struct->number.' of the '.LAWS_NAME.', titled
 		“'.$struct->name.'.”';
 
-# If 
 if (count((array) $structure) > 1)
 {
 	foreach ($structure as $level)
@@ -82,7 +81,7 @@ if (count((array) $structure) > 1)
 # Get a listing of all the structural children of this portion of the structure.
 $children = $struct->list_children();
 
-# If we have successfully gotten a list of child sections, display them.
+# If we have successfully gotten a list of child structural units, display them.
 if ($children !== false)
 {
 	
