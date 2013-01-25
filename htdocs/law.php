@@ -33,52 +33,6 @@ if ($law === false)
 // Store a record that this section was viewed.
 $laws->record_view();
 
-# Get the dictionary terms for this chapter.
-$dictionary = new Dictionary();
-$dictionary->structure_id = $law->structure_id;
-$dictionary->section_id = $law->id;
-if ($law->catch_line == 'Definitions.')
-{
-	$dictionary->scope = 'global';
-}
-$terms = $dictionary->term_list();
-
-# Arrange our terms from longest to shortest. This is to ensure that the most specific terms are
-# defined (e.g. "person of interest") rather than the broadest terms (e.g. "person").
-usort($terms, 'sort_by_length');
-
-# Store a list of the dictionary terms as an array, which is required for preg_replace_callback, the
-# function that we use to insert the definitions.
-$term_pcres = array();
-foreach ($terms as $term)
-{
-	
-	# Step through each character in this word.
-	for ($i=0; $i<strlen($term); $i++)
-	{
-		# If there are any uppercase characters, then make this PCRE string case sensitive.
-		if ( (ord($term{$i}) >= 65) && (ord($term{$i}) <= 90) )
-		{
-			$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
-			$caps = true;
-			break;
-		}
-	}
-	
-	# If we have determined that this term does not contain capitalized letters, then create a case-
-	# insensitive PCRE string.
-	if (!isset($caps))
-	{
-		$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/i';
-	}
-	
-	# Unset our flag -- we don't want to have it set the next time through.
-	if (isset($caps))
-	{
-		unset($caps);
-	}
-}
-
 // Fire up our templating engine.
 $template = new Page;
 
@@ -92,26 +46,6 @@ $template->field->javascript_files = '
 	<script src="/js/jquery.slideto.min.js"></script>
 	<script src="/js/mousetrap.min.js"></script>
 	<script src="/js/functions.js"></script>';
-
-$autolinker = new Autolinker;
-
-# Iterate through every section to make some basic transformations.
-foreach ($law->text as $section)
-{
-	
-	# Prevent lines from wrapping in the middle of a section identifier.
-	$section->text = str_replace('§ ', '§&nbsp;', $section->text);
-	
-	# Turn every code reference in every paragraph into a link.
-	$section->text = preg_replace_callback(SECTION_PCRE, 'replace_sections', $section->text);
-	
-	# Use our dictionary to embed dictionary terms in the form of span titles.
-	if (isset($term_pcres))
-	{
-		//$section->text = preg_replace_callback($term_pcres, 'replace_terms', $section->text);
-		$section->text = preg_replace_callback($term_pcres, array($autolinker, 'replace_terms'), $section->text);
-	}
-}
 
 // Define the browser title.
 $template->field->browser_title = $law->catch_line.' ('.SECTION_SYMBOL.' '.$law->section_number.')—'.SITE_TITLE;
@@ -148,94 +82,9 @@ if (isset($law->next_section))
 // Start assembling the body of this page by indicating the beginning of the text of the section.
 $body = '<article id="law">';
 
-# Iterate through each section of text to display it.
-$i=0;
-$num_paragraphs = count((array) $law->text);
-foreach ($law->text as $paragraph)
-{
-
-	# Identify the prior and next sections, by storing their prefixes.
-	if ($i > 0)
-	{
-		$paragraph->prior_prefix = $law->text->{$i-1}->entire_prefix;
 	}
-	if ($i < $num_paragraphs)
-	{
-		$paragraph->next_prefix = $law->text->{$i+1}->entire_prefix;
-	}
-
-	# If this paragraph's prefix hierarchy is different than that of the prior prefix, than indicate
-	# that this is a new section.
-	if ($paragraph->entire_prefix != $paragraph->prior_prefix)
-	{
-		$body .= '
-			<section';
-		if (!empty($paragraph->prefix_anchor))
-		{
-			$body .= ' id="'.$paragraph->prefix_anchor.'"';
-		}
-		
-		# If this is a subsection, indent it.
-		if ($paragraph->level > 1)
-		{
-			$body .= ' class="indent-'.($paragraph->level-1);
-			$body .= '"';
-		}
-		$body .= '>';
-	}
-	
-	# Start a paragraph of the appropriate type.
-	$body .= '<';
-	if ($paragraph->type == 'section')
-	{
-		$body .= 'p';
-	}
-	elseif ($paragraph->type == 'table')
-	{
-		$body .= 'pre class="table"';
-	}
-	$body .= '>';
-	
-	# If we've got a section prefix, and it's not the same as the last one, then display it.
-	if ($paragraph->entire_prefix != $paragraph->prior_prefix)
-	{
-		
-		$body .= $paragraph->prefix;
-		
-		# We could use a regular expression to determine if we need to append a period, but
-		# that would be slower.
-		if ( (substr($paragraph->prefix, -1) != ')') && (substr($paragraph->prefix, -1) != '.') )
-		{
-			$body .= '.';
-		}
-		$body .= ' ';
-	}
-	
-	# Display this section of text.
-	$body .= $paragraph->text;
-	
-	# If we've got a section prefix, append a paragraph link to the end of this section.
-	if (!empty($paragraph->prefix))
-	{
-		$body .= ' <a class="section-permalink" href="#'.$paragraph->prefix_anchor.'">¶</a>';
-	}
-	if ($paragraph->type == 'section')
-	{
-		$body .= '</p>';
-	}
-	elseif ($paragraph->type == 'table')
-	{
-		$body .= '</pre>';
-	}
-	
-	# If our next prefix is different than the current prefix, than terminate this section.
-	if ( !isset($paragraph->next_prefix) || ($paragraph->entire_prefix != $paragraph->next_prefix) )
-	{
-		$body .= '</section>';
-	}
-	
-	$i++;
-}
+// Display the rendered HTML of this law.
+$body .= $law->html;
 
 // If we have stored history for this section, display it.
 if (isset($law->history_text))
