@@ -339,15 +339,17 @@ class Law
 			return false;
 		}
 		
-		// Return the result as an object.
-		$references = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
-		
-		// Iterate through the decisions so that we can strip out slashes.
-		foreach($references as &$reference)
+		// Return the result as an enumerated object.
+		$references = new stdClass();
+		$i = 0;
+		while ($reference = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
 			$reference->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$reference->section.'/';
 			$reference->section = $reference->section;
+			
+			$references->$i = $reference;
+			$i++;
 		}
 		
 		return $references;
