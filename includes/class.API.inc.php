@@ -158,7 +158,7 @@ class API
 			$this->form_errors = 'Please provide your e-mail address.';
 			return false;
 		}
-		elseif (filter_var('waldo@jaquith.org', FILTER_VALIDATE_EMAIL) === FALSE)
+		elseif (filter_var($this->form->email, FILTER_VALIDATE_EMAIL) === FALSE)
 		{
 			$this->form_errors = 'Please enter a valid e-mail address.';
 			return false;
