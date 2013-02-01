@@ -206,7 +206,7 @@ elseif ($_POST['action'] == 'parse')
 	
 	
 	# If the site's internal API key is undefined, register a new key and activate it.
-	if (empty(API_KEY))
+	if (API_KEY == '')
 	{
 		$api = new API;
 		$api->form->email = EMAIL_ADDRESS;
