@@ -90,7 +90,7 @@ class API
 		 */
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
-				WHERE key = "'.$this->key.'"';
+				WHERE key = "'.$db->escape($this->key).'"';
 		$result = $db->query($sql);
 		
 		/*
@@ -206,17 +206,17 @@ class API
 		 * Assemble the SQL query.
 		 */
 		$sql = 'INSERT INTO api_keys
-				SET api_key = "'.$this->key.'",
-				email = "'.$this->email.'",
-				secret = "'.$this->secret.'",
+				SET api_key = "'.$db->escape($this->key).'",
+				email = "'.$db->escape($this->email).'",
+				secret = "'.$db->escape($this->secret).'",
 				date_created = now()';
 		if (!empty($this->name))
 		{
-			$sql .= ', name="'.$this->name.'"';
+			$sql .= ', name="'.$db->escape($this->name).'"';
 		}
 		if (!empty($this->url))
 		{
-			$sql .= ', url="'.$this->url.'"';
+			$sql .= ', url="'.$db->escape($this->url).'"';
 		}
 		
 		/*
@@ -255,7 +255,7 @@ class API
 		 */
 		$sql = 'UPDATE api_keys
 				SET verified = "y"
-				WHERE secret = "'.$this->secret.'"';
+				WHERE secret = "'.$db->escape($this->secret).'"';
 		$result = $db->exec($sql);
 		
 		if (PEAR::isError($result) === true)
