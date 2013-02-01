@@ -576,6 +576,8 @@ class Law
 				unset($caps);
 			}
 		}
+		
+		// Instantiate our autolinker, which embeds links.
 		$autolinker = new Autolinker;
 
 		// Iterate through every section to make some basic transformations.
