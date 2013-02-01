@@ -532,9 +532,9 @@ class Law
 	{
 		// Get the dictionary terms for this chapter.
 		$dictionary = new Dictionary();
-		$dictionary->structure_id = $law->structure_id;
-		$dictionary->section_id = $law->id;
-		if ($law->catch_line == 'Definitions.')
+		$dictionary->structure_id = $this->structure_id;
+		$dictionary->section_id = $this->id;
+		if ($this->catch_line == 'Definitions.')
 		{
 			$dictionary->scope = 'global';
 		}
@@ -576,7 +576,6 @@ class Law
 				unset($caps);
 			}
 		}
-
 		$autolinker = new Autolinker;
 
 		// Iterate through every section to make some basic transformations.
