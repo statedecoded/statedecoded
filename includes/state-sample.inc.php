@@ -28,47 +28,97 @@ class State
  */
 class Parser
 {
-	/*
-	 * Step through every XML file.
+	
+	/**
+	 * Step through every line of every file that contains the contents of the code.
 	 */
 	public function iterate()
 	{
 		
-		// Iterate through every XML file in this directory.
+		/*
+		 * We need to maintain a file counter that will survive instances of this function to keep
+		 * track of which file we're working on. If it's not already set, set it now.
+		 */
+		if (!isset($this->file))
+		{
+			$this->file=0;
+		}
+		
+		if (!isset($this->directory))
+		{
+			$this->directory = getcwd();
+		}
+		
+		chdir($this->directory);
+
+		/*
+		 * Iterate through every XML file in this directory and build up an array of them.
+		 */
+		$files = array();
 		foreach (glob('*.xml') as $filename)
 		{
+			$files[] = $filename;
+		}
+		
+		// Iterate through our resulting file listing.
+		for ($i = $this->file; $i < count($files); $i++)
+		{
 			
-			// Open the file and store its contents as a string.
-			$law = new SimpleXMLElement($xml);
+			/*
+			 * Operate on the present file.
+			 */
+			$filename = $files[$i];
+
+			/*
+			 * Store the contents of the file as a string.
+			 */
+			$xml = file_get_contents($filename);
+	
+			/*
+			 * Convert the XML into an object.
+			 */
+			$this->section = new SimpleXMLElement($xml);
 			
-			return $law;
+			/*
+			 * Increment our placeholder counter.
+			 */
+			$this->file++;
 			
-		} // end iterating through files
+			/*
+			 * Send this object back, out of the iterator.
+			 */
+			return $this->section;
+		}
+
 	} // end iterate() function
 	
 	
-	/** 
-	 * Accept the raw content of a section of code and extract each unit of data into the proper
-	 * object-based format.
+	/**
+	 * Accept the raw content of a section of code and normalize it.
 	 */
 	public function parse()
 	{
-	
+		// If a section of code hasn't been passed to this, then it's of no use.
+		if (!isset($this->section))
+		{
+			return false;
+		}
+		
 		/*
 		 * Create a new, empty object to store our code's data.
 		 */
 		$code = new stdClass();
 		
 		/* Transfer some data to our object. */
-		$code->catch_line = (string) $law->catch_line[0];
-		$code->section_number = (string) $law->section_number;
-		$code->order_by = (string) $law->order_by;
-		$code->history = (string)  $law->history;
+		$code->catch_line = (string) $this->section->catch_line[0];
+		$code->section_number = (string) $this->section->section_number;
+		$code->order_by = (string) $this->section->order_by;
+		$code->history = (string)  $this->section->history;
 		
 		/*
 		 * Iterate through the structural headers.
 		 */
-		foreach ($law->structure->unit as $unit)
+		foreach ($this->section->structure->unit as $unit)
 		{
 			$level = (string) $unit['level'];
 			$code->structure->{$level}->name = (string) $unit;
@@ -81,32 +131,29 @@ class Parser
 		 * Iterate through the text.
 		 */
 		$i=0;
-		foreach ($law->text as $section)
+		foreach ($this->section->text as $section)
 		{
-			
+	
 			/*
 			 * If there are no subsections, but just a single block of text, then simply save that.
 			 */
 			if (count($section) === 0)
 			{
 				$code->section->$i->text = trim((string) $section);
+				$code->text = trim((string) $section);
 				break;
 			}
-			
+	
 			/*
 			 * If this law is broken down into subsections, iterate through those.
 			 */
 			foreach ($section as $subsection)
 			{
 				
-				/*
-				 * Store this subsection's text.
-				 */
 				$code->section->$i->text = trim((string) $subsection);
 				
-				/*
-				 * Store the prefix, and use that prefix to build up a prefix hiearchy.
-				 */
+				$code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
+				
 				$code->section->$i->prefix = (string) $subsection['prefix'];
 				$code->section->$i->prefix_hierarchy->{0} = (string) $subsection['prefix'];
 				$prefix_hierarchy[] = (string) $subsection['prefix'];
@@ -118,12 +165,8 @@ class Parser
 				{
 					$code->section->$i->type = (string) $subsection['type'];
 				}
+				$code->section->$i->prefix = (string) $subsection['prefix'];
 				
-			
-				/*
-				 * We increment our counter at this point, rather than at the end of the loop,
-				 * because of the use of the recurse() function after it.
-				 */
 				$i++;
 				
 				/*
@@ -131,7 +174,7 @@ class Parser
 				 */
 				if (count($subsection) > 0)
 				{
-					Parser::recurse($subsection);
+					recurse($subsection);
 				}
 				
 				/*
@@ -140,11 +183,13 @@ class Parser
 				$prefix_hierarchy = array();
 			}
 		}
-			
+		
 		// Make the data available outside of the scope of this function.
 		$this->code = $code;
 		
+		unset($code);
 	}
+	
 
 	/**
 	 * Intended to be called from within Parser::parse, this is used to iterate through subsections
@@ -218,18 +263,42 @@ class Parser
 			die('No data provided.');
 		}
 		
-		// Try to create a new chapter. If the chapter already exists, create_structure() will handle
-		// that silently. Either way a chapter ID gets returned.
+		// This first section creates the record for the law, but doesn't do anything with the
+		// content of it just yet.
+		
+		// We're going to need access to the database connection throughout this function.
+		global $db;
+		
+		// Try to create this section's structural element(s). If they already exist,
+		// create_structure() will handle that silently. Either way a structural ID gets returned.
 		$structure = new Parser;
-		$structure->number = $this->code->structure_number;
-		$structure->name = $this->code->structure_name;
-		$structure_id = $chapter->create_structure();
+		
+		foreach ($this->code->structure as $struct)
+		{
+			$structure->number = $struct->identifier;
+			$structure->name = $struct->name;
+			$structure->label = $struct->label;
+			/* If we've gone through this loop already, then we have a parent ID. */
+			if (isset($this->code->structure_id))
+			{
+				$structure->parent_id = $this->code->structure_id;
+			}
+			$this->code->structure_id = $structure->create_structure();
+		}
+		
+		// When that loop is finished, because structural units are ordered from most general to
+		// most specific, we're left with the section's parent ID. Preserve it.
+		$query['structure_id'] = $this->code->structure_id;
 		
 		// Build up an array of field names and values, using the names of the database columns as
 		// the key names.
-		$query['catch_line'] = $this->code->name;
+		$query['catch_line'] = $this->code->catch_line;
 		$query['section'] = $this->code->section_number;
 		$query['text'] = $this->code->text;
+		if (!empty($this->code->order_by))
+		{
+			$query['order_by'] = $this->code->order_by;
+		}
 		if (isset($this->code->history))
 		{
 			$query['history'] = $this->code->history;
@@ -251,6 +320,11 @@ class Parser
 		
 		// Execute the query.
 		$result =& $db->exec($sql);
+		if (PEAR::isError($result))
+		{
+			echo '<p>'.$sql.'</p>';
+			die($result->getMessage());
+		}
 		
 		// Preserve the insert ID from this law, since we'll need it below.
 		$law_id = $db->lastInsertID();
@@ -267,6 +341,11 @@ class Parser
 			$references->section_id = $law_id;
 			$references->sections = $sections;
 			$success = $references->store_references();
+			if ($success === false)
+			{
+				echo '<p>References for section ID '.$law_id.' were found, but could not be
+					stored.</p>';
+			}
 		}
 		
 		// Step through each section.
@@ -290,6 +369,11 @@ class Parser
 
 			// Execute the query.
 			$result =& $db->exec($sql);
+			if (PEAR::isError($result))
+			{
+				echo '<p>'.$sql.'</p>';
+				die($result->getMessage());
+			}
 		
 			// Preserve the insert ID from this section of text, since we'll need it below.
 			$text_id = $db->lastInsertID();
@@ -297,7 +381,8 @@ class Parser
 			// Start a new counter.
 			$j = 1;
 			
-			// Step through every portion of the prefix (i.e. A4b is three portions) and insert each.
+			// Step through every portion of the prefix (i.e. A4b is three portions) and insert
+			// each.
 			foreach ($section->prefix_hierarchy as $prefix)
 			{
 				$sql = 'INSERT INTO text_sections
@@ -308,6 +393,11 @@ class Parser
 				
 				// Execute the query.
 				$result =& $db->exec($sql);
+				if (PEAR::isError($result))
+				{
+					echo '<p>'.$sql.'</p>';
+					die($result->getMessage());
+				}
 				
 				$j++;
 			}
@@ -315,17 +405,36 @@ class Parser
 			$i++;
 		}
 		
-		// Trawl through the text for definitions, if the section contains "Definitions" in the title
-		// or if the current chapter is the chapter that we defined in the site config as containing
-		// the global definitions.
-		if (
-			(stristr($this->code->name, 'Definitions.') !== false)
-			||
-			(stristr($this->code->name, 'Definition.') !== false)
-			||
-			(stristr($this->code->name, 'Meaning of certain terms.') !== false)
-			||
-			($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS) )
+		// Trawl through the text for definitions, if the section contains "Definitions" in the
+		// title or if the current chapter is the chapter that we defined in the site config as
+		// containing the global definitions. We could just confirm that title is exactly
+		// "Definitions.", but sometimes it's preceded with other text, e.g. "(Effective July 1,
+		// 2012) ".
+		if	(
+				(strpos($this->code->name, 'Definition') !== false)
+				||
+				(strpos($this->code->name, 'Meaning of certain terms.') !== false)
+				||
+				(strpos($this->code->name, 'Meaning of ') !== false)
+				||
+				(strpos($this->code->text, '" mean ') !== false)
+				||
+				(strpos($this->code->text, '" means ') !== false)
+				||
+				(strpos($this->code->text, '" shall include ') !== false)
+				||
+				(strpos($this->code->text, '" includes ') !== false)
+				||
+				(strpos($this->code->text, '" has the same meaning ') !== false)
+				||
+				(strpos($this->code->text, ' as used in this ') !== false)
+				||
+				(strpos($this->code->text, ' for the purpose of this ') !== false)
+				||
+				(strpos($this->code->text, ' for purposes of this ') !== false)
+				||
+				($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
+			)
 		{
 			
 			$dictionary = new Parser;
@@ -345,23 +454,59 @@ class Parser
 			// If any definitions were found in this text, store them.
 			if ($definitions !== false)
 			{
+				
+				// Populate the appropriate variables.
 				$dictionary->terms = $definitions->terms;
 				$dictionary->law_id = $law_id;
 				$dictionary->scope = $definitions->scope;
+				$dictionary->structure_id = $this->code->structure_id;
+				
+				// If the scope of this definition isn't section-specific, and isn't global, then
+				// find the ID of the structural unit that is the limit of its scope.
+				if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
+				{
+					$find_scope = new Parser;
+					$find_scope->label = $dictionary->scope;
+					$find_scope->structure_id = $dictionary->structure_id;
+					$dictionary->structure_id = $find_scope->find_structure_parent();
+					if ($dictionary->structure_id === false)
+					{
+						unset($dictionary->structure_id);
+					}
+				}
+				
+				// If the scope isn't a structural unit, then delete it, so that we don't store it
+				// and inadvertently limit the scope.
+				else
+				{
+					unset($dictionary->structure_id);
+				}
+				
+				// Determine the position of this structural unit.
+				$structure = array_reverse(explode(',', STRUCTURE));
+				array_push($structure, 'global');
+				
+				// Find and return the position of this structural unit in the hierarchical stack.
+				$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
+				
+				// Store these definitions in the database.
 				$dictionary->store_definitions();
 			}
 		}
+		
+		// Memory management
+		unset($references);
+		unset($dictionary);
+		unset($definitions);
+		unset($chapter);
+		unset($sections);
+		unset($query);
 	}
 
 	
 	/**
-	 * When provided with a structure number and label, verifies whether that structural unit. Returns
-	 * the structure ID if it exists; otherwise, returns false. Requires the structural unit's
-	 * natural number (e.g., "3" -- the actual number provided within the Code) and the label for
-	 * that structural unit (e.g., "chapter," "part," "title," etc.) Note that there the combination
-	 * of a type and number will rarely be unique, with the exception of top-level structural units
-	 * (e.g., titles), so this function should almost always be provided with $parent_id that
-	 * specifies the ID of this structural unit's parent.
+	 * When provided with a chapter number, verifies whether that chapter exists. Returns the
+	 * chapter ID if it exists; otherwise, returns false.
 	 */
 	function structure_exists()
 	{
@@ -369,22 +514,26 @@ class Parser
 		// We're going to need access to the database connection within this function.
 		global $db;
 	
-		if (!isset($this->number) || !isset($this->title_id))
+		if (!isset($this->number))
 		{
 			return false;
-		}
-		
-		// If a label hasn't been provided, just assume that it's a chapter.
-		if (!isset($this->label))
-		{
-			$this->label = 'chapter';
 		}
 		
 		// Assemble the query.
 		$sql = 'SELECT id
 				FROM structure
-				WHERE label="'.$this->label.'" AND number="'.$this->number.'"
-				AND parent_id='.$this->title_id;
+				WHERE number="'.$this->number.'"';
+				
+		// If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
+		// include that in our query.
+		if ( isset($this->parent_id) && !empty($this->parent_id) )
+		{
+			$sql .= ' AND parent_id='.$this->parent_id;
+		}
+		else
+		{
+			$sql .= ' AND parent_id IS NULL';
+		}
 
 		// Execute the query.
 		$result =& $db->query($sql);
@@ -395,9 +544,10 @@ class Parser
 			return false;
 		}
 		
-		$chapter = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-		return $chapter->id;
+		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		return $structure->id;
 	}
+	
 	
 	/**
 	 * When provided with a structural unit number and type, it creates a record for that structural
@@ -417,56 +567,46 @@ class Parser
 		// because sometimes chapters don't have names. In the Virginia Code, for instance, titles
 		// 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
 		// name.
-		if (empty($this->number) || empty($this->title_number))
+		//
+		// Because a valid chapter number can be "0" we can't simply use empty(), but must also
+		// verify that the string is longer than zero characters. We do both because empty() will
+		// valuate faster than strlen(), and because these two strings will almost never be empty.
+		if (
+				( empty($this->number) && (strlen($this->number) === 0) )
+				||
+				( empty($this->label) )
+			)
 		{
 			return false;
 		}
 		
-		// Get the ID of the title that contains this chapter.
-		$sql = 'SELECT id
-				FROM structure
-				WHERE number="'.$db->escape($this->title_number).'"
-				AND label="title"';
-		// Execute the query.
-		$result =& $db->query($sql);
-		
-		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		/*
+		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
+		 */
+		$structure_id = Parser::structure_exists();
+		if ($structure_id !== false)
 		{
-			return false;
+			return $structure_id;
 		}
 		
-		$title = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-		$this->title_id = $title->id;
-		
-		// Virginia has nine structural units (chapters) with titles that exceed the 100 character
-		// limit. These are distinguished only by the fact that the last character (the 101st) is
-		// "N" (capitalized). We replace that "N" with the Unicode horizontal ellipsis character.
-		if ( (strlen($this->name) == 101) && (substr($this->name, -1) == 'N') )
-		{
-			$this->name{100} = '…';
-		}
-
-		// If this chapter exists, then we don't need to create it anew.
-		$chapter_id = Parser::structure_exists();
-		if ($chapter_id !== false)
-		{
-			return $chapter_id;
-		}
-		
-		// Insert this chapter record into the database. It's tempting to use ON DUPLICATE KEY here,
-		// and eliminate the use of structure_exists(), but then MDB2's lastInsertID() becomes
-		// unreliable. That means we need a second query to determine the ID of this structural
-		// unit. Better to check if it exists first and insert it if it doesn't than to insert it
-		// every time and then query its ID every time, since the former approach will require many
-		// less queries than the latter.
+		/* Now we know that this structural unit does not exist, so Insert this structural record
+		 * into the database. It's tempting to use ON DUPLICATE KEY here, and eliminate the use of
+		 * structure_exists(), but then MDB2's lastInsertID() becomes unreliable. That means we need
+		 * a second query to determine the ID of this structural unit. Better to check if it exists
+		 * first and insert it if it doesn't than to insert it every time and then query its ID
+		 * every time, since the former approach will require many less queries than the latter.
+		 */
 		$sql = 'INSERT INTO structure
-				SET number="'.$db->escape($this->number).'",';
+				SET number="'.$db->escape($this->number).'"';
 		if (isset($this->name) && !empty($this->name))
 		{
-			$sql .= 'name="'.$db->escape($this->name).'",';
+			$sql .= ', name="'.$db->escape($this->name).'"';
 		}
-		$sql .= 'label="chapter", date_created=now(), parent_id='.$this->title_id;
+		$sql .= ', label="'.$db->escape($this->label).'", date_created=now()';
+		if (isset($this->parent_id))
+		{
+			$sql .= ', parent_id='.$this->parent_id;
+		}
 
 		// Execute the query.
 		$result =& $db->exec($sql);
@@ -478,6 +618,7 @@ class Parser
 		// Return the last inserted ID.
 		return $db->lastInsertID();
 	}
+	
 	
 	/**
 	 * When provided with a structural unit ID and a label, this function will iteratively search
