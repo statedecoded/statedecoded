@@ -1,7 +1,7 @@
 The State Decoded
 =================
 
-A free, open source, PHP- and MySQL-based application to parse and display state laws. This project is currently in beta testing [as a Virginia implementation](http://vacode.org/) and in alpha testing [as a Florida implementation](http://www.sunshinestatutes.com/).
+A free, open source, PHP- and MySQL-based application to parse and display laws. This project is currently in beta testing [as a Virginia implementation](http://vacode.org/) and in alpha testing [as a Florida implementation](http://www.sunshinestatutes.com/).
 
 #### Notes
 This is a *pre-1.0 release*, which is to say that it is an incompete product. A capable PHP developer who is familiar and comfortable with her state legal code should be able to wrangle their laws into this release with a few hours’ work. All others should wait for v1.0.
