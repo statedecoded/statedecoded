@@ -286,7 +286,7 @@ class Structure
 		
 		// In case the order_by column is not populated, we go on to sort by the structure identifer,
 		// by either Roman numerals or Arabic (traditional) numerals.
-		if ($this->sort == 'roman')
+		if (isset($this->sort) && $this->sort == 'roman')
 		{
 			$sql .= 'fromRoman(structure.number) ASC';
 		}
