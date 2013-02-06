@@ -541,7 +541,7 @@ class Law
 		$terms = $dictionary->term_list();
 		
 		// If we've gotten a list of dictionary terms.
-		if ( ($terms !== false) && is_array($terms) )
+		if ( ($terms !== false) && is_object($terms) )
 		{
 			// Arrange our terms from longest to shortest. This is to ensure that the most specific
 			// terms are defined (e.g. "person of interest") rather than the broadest terms (e.g.
