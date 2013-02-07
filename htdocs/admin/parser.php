@@ -269,7 +269,8 @@ elseif ($_POST['action'] == 'parse')
 		include '../../includes/class.API.inc.php';
 		$api = new API();
 		$api->form->email = EMAIL_ADDRESS;
-		$this->suppress_activation_email = TRUE;
+		$api->form->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
+		$api->suppress_activation_email = TRUE;
 		$api->register_key();
 		$api->activate_key();
 		
