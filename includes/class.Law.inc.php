@@ -594,6 +594,9 @@ class Law
 			// Turn every code reference in every paragraph into a link.
 			$section->text = preg_replace_callback(SECTION_PCRE, array($autolinker, 'replace_sections'), $section->text);
 			
+			// Turn every pair of newlines into carriage returns
+			$section->text = str_replace(PHP_EOL.PHP_EOL, '<br /><br />', $section->text);
+			
 			// Use our dictionary to embed dictionary terms in the form of span titles.
 			if (isset($term_pcres))
 			{
