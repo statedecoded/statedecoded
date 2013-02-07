@@ -200,6 +200,11 @@ class Parser
 	 */
 	public function recurse($section, $i)
 	{
+
+		if ( !isset($section) || !isset($i)  || !isset($this->code) )
+		{
+			return false;
+		}
 		
 		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
 		$this->depth = 1;
