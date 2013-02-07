@@ -265,7 +265,9 @@ elseif ($_POST['action'] == 'parse')
 	 */
 	if (API_KEY == '')
 	{
-		$api = new API;
+		// I have no idea why __autoload() isn't loading this automatically, but it's not.
+		include '../../includes/class.API.inc.php';
+		$api = new API();
 		$api->form->email = EMAIL_ADDRESS;
 		$this->suppress_activation_email = TRUE;
 		$api->register_key();
