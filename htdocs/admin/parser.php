@@ -88,7 +88,6 @@ elseif ($_POST['action'] == 'empty')
 	# Reset the auto-increment counter, to avoid unreasonably large numbers.
 	$sql = 'ALTER TABLE structure
 			AUTO_INCREMENT=1';
-	# Execute the query.
 	$result =& $db->exec($sql);
 	
 	/*
@@ -97,8 +96,6 @@ elseif ($_POST['action'] == 'empty')
 	$sql = 'DELETE FROM laws_meta
 			WHERE meta_key = "history"';
 	$result =& $db->exec($sql);
-	
-	echo '<p>Removed everything but titles from structure.</p>';
 	
 }
 
