@@ -533,7 +533,7 @@ class Law
 		// Get the dictionary terms for this chapter.
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
-		$dictionary->section_id = $this->id;
+		$dictionary->section_id = $this->section_id;
 		if ($this->catch_line == 'Definitions.')
 		{
 			$dictionary->scope = 'global';
