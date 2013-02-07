@@ -107,13 +107,13 @@ class Parser
 		/*
 		 * Create a new, empty object to store our code's data.
 		 */
-		$code = new stdClass();
+		$this->code = new stdClass();
 		
 		/* Transfer some data to our object. */
-		$code->catch_line = (string) $this->section->catch_line[0];
-		$code->section_number = (string) $this->section->section_number;
-		$code->order_by = (string) $this->section->order_by;
-		$code->history = (string)  $this->section->history;
+		$this->code->catch_line = (string) $this->section->catch_line[0];
+		$this->code->section_number = (string) $this->section->section_number;
+		$this->code->order_by = (string) $this->section->order_by;
+		$this->code->history = (string)  $this->section->history;
 		
 		/*
 		 * Iterate through the structural headers.
@@ -121,10 +121,9 @@ class Parser
 		foreach ($this->section->structure->unit as $unit)
 		{
 			$level = (string) $unit['level'];
-			$code->structure->{$level}->name = (string) $unit;
-			$code->structure->{$level}->label = (string) $unit['label'];
-			$code->structure->{$level}->identifier = (string) $unit['identifier'];
-			$code->structure->{$level}->order_by = (string) $unit['order_by'];
+			$this->code->structure->{$level}->name = (string) $unit;
+			$this->code->structure->{$level}->label = (string) $unit['label'];
+			$this->code->structure->{$level}->identifier = (string) $unit['identifier'];
 		}
 		
 		/*
@@ -139,8 +138,8 @@ class Parser
 			 */
 			if (count($section) === 0)
 			{
-				$code->section->$i->text = trim((string) $section);
-				$code->text = trim((string) $section);
+				$this->code->section->$i->text = trim((string) $section);
+				$this->code->text = trim((string) $section);
 				break;
 			}
 	
@@ -150,22 +149,22 @@ class Parser
 			foreach ($section as $subsection)
 			{
 				
-				$code->section->$i->text = trim((string) $subsection);
+				$this->code->section->$i->text = trim((string) $subsection);
 				
-				$code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
+				$this->code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
 				
-				$code->section->$i->prefix = (string) $subsection['prefix'];
-				$code->section->$i->prefix_hierarchy->{0} = (string) $subsection['prefix'];
-				$prefix_hierarchy[] = (string) $subsection['prefix'];
+				$this->code->section->$i->prefix = (string) $subsection['prefix'];
+				$this->code->section->$i->prefix_hierarchy->{0} = (string) $subsection['prefix'];
+				$this->prefix_hierarchy[] = (string) $subsection['prefix'];
 				
 				/*
 				 * If this subsection has a specified type (e.g., "table"), save that.
 				 */
 				if (!empty($subsection['type']))
 				{
-					$code->section->$i->type = (string) $subsection['type'];
+					$this->code->section->$i->type = (string) $subsection['type'];
 				}
-				$code->section->$i->prefix = (string) $subsection['prefix'];
+				$this->code->section->$i->prefix = (string) $subsection['prefix'];
 				
 				$i++;
 				
@@ -174,13 +173,15 @@ class Parser
 				 */
 				if (count($subsection) > 0)
 				{
-					recurse($subsection);
+					$this->recurse($subsection, $i);
+					/* Pass back the incrementer. */
+					$i = $this->i;
 				}
 				
 				/*
 				 * Having come to the end of the loop, reset the prefix hierarchy.
 				 */
-				$prefix_hierarchy = array();
+				$this->prefix_hierarchy = array();
 			}
 		}
 		
@@ -199,17 +200,8 @@ class Parser
 	public static function recurse($section)
 	{
 		
-		/*
-		 * Make these variables available within the scope of this function.
-		 */
-		global $i;
-		global $code;
-		global $prefix_hierarchy;
-		
-		/*
-		 * Track how deep we've recursed, in order to create the prefix hierarchy.
-		 */
-		$depth = 1;
+		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
+		$this->depth = 1;
 		
 		/*
 		 * Iterate through each subsection.
@@ -217,14 +209,14 @@ class Parser
 		foreach ($section as $subsection)
 		{
 			
-			$code->section->$i->text = (string) $subsection;
+			$this->code->section->$i->text = (string) $subsection;
 			if (!empty($subsection['type']))
 			{
-				$code->section->$i->type = (string) $subsection['type'];
+				$this->code->section->$i->type = (string) $subsection['type'];
 			}
-			$code->section->$i->prefix = (string) $subsection['prefix'];
-			$prefix_hierarchy[] = (string) $subsection['prefix'];
-			$code->section->$i->prefix_hierarchy = (object) $prefix_hierarchy;
+			$this->code->section->$i->prefix = (string) $subsection['prefix'];
+			$this->prefix_hierarchy[] = (string) $subsection['prefix'];
+			$this->code->section->$i->prefix_hierarchy = (object) $this->prefix_hierarchy;
 			
 			/*
 			 * We increment our counter at this point, rather than at the end of the loop, because of
@@ -238,14 +230,15 @@ class Parser
 			 */
 			if (isset($subsection->section))
 			{
-				$depth++;
-				recurse($subsection->section);
+				$this->depth++;
+				$this->recurse($subsection->section, $i);
 			}
 			
 			/*
 			 * Reduce the prefix hierarchy back to where it started, for our next loop through.
 			 */
-			$prefix_hierarchy = array_slice($prefix_hierarchy, 0, ($depth * -1));
+			$this->prefix_hierarchy = array_slice($this->prefix_hierarchy, 0, ($this->depth * -1));
+			$this->i = $i;
 		}
 		
 		return true;
