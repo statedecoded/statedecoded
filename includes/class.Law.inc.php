@@ -697,6 +697,82 @@ class Law
 		return $html;
 		
 	} // end render()
+	
+	
+	/**
+	 * Takes the instant law object and turns it into a nicely formatted plain text version.
+	 * NOTE: I'M NOT SURE THAT $paragraph->depth EXISTS! Verify that's a valid variable to make this
+	 * work.
+	 */
+	function render_plain_text()
+	{
+
+		// Iterate through every section to make some basic transformations.
+		foreach ($this->text as $section)
+		{
+			
+			// Prevent lines from wrapping in the middle of a section identifier by inserting the
+			// Unicode NO-BREAK-SPACE (U+00A0) character.
+			$section->text = str_replace('§ ', '§ ', $section->text);
+			
+		}
+		
+		// Iterate through each section of text to display it.
+		$i=0;
+		$num_paragraphs = count((array) $this->text);
+		foreach ($this->text as $paragraph)
+		{
+			
+			// Initialize a variable that we'll use to store the text for this subsection.
+			$subsection = '';
+			
+			// If we've got a section prefix, and it's not the same as the last one, then display
+			// it.
+			if ($paragraph->entire_prefix != $paragraph->prior_prefix)
+			{
+				
+				# Append the prefix for this subsection.
+				$subsection .= $paragraph->prefix;
+				
+				// We could use a regular expression to determine if we need to append a period, but
+				// that would be slower.
+				if ( (substr($paragraph->prefix, -1) != ')') && (substr($paragraph->prefix, -1) != '.') )
+				{
+					$subsection .= '.';
+				}
+				$subsection .= ' ';
+			}
+			
+			// Add the text itself to the subsection.
+			$subsection .= $paragraph->text;
+			
+			// Wrap this text at 80 characters minus two spaces for every nested subsection,
+			// breaking up words that exceed the line length.
+			$subsection = wordwrap($subsection, (80 - (($paragraph->depth - 1) * 2)), "\n", true);
+			
+			// Indent applicable subsections by adding blank space to the beginning of each line.
+			if ($paragraph->depth > 0)
+			{
+				$lines = explode("\n", $subsection);
+				foreach ($lines as $line)
+				{
+					$line = str_repeat(' ', ( ($paragraph->depth - 1) * 2 )).$line;
+				}
+				$subsection = implode("\n", $lines);
+			}
+			
+			// Finish up with a pair of carriage returns.
+			$subsection .= "\n\n";
+			
+			// And, finally, add this subsection to the text of the section.
+			$text .= $subsection;
+			
+			$i++;
+		}
+		
+		return $text;
+		
+	} // end render_plain_text()
 
 } // end Law
 
