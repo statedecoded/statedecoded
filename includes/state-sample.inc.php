@@ -29,6 +29,7 @@ class State
 class Parser
 {
 	
+	
 	/**
 	 * Step through every line of every file that contains the contents of the code.
 	 */
@@ -124,6 +125,10 @@ class Parser
 			$this->code->structure->{$level}->name = (string) $unit;
 			$this->code->structure->{$level}->label = (string) $unit['label'];
 			$this->code->structure->{$level}->identifier = (string) $unit['identifier'];
+			if ( isset($unit['order_by']) && !empty($unit['order_by']) )
+			{
+				$this->code->structure->{$level}->order_by = (string) $unit['order_by'];
+			}
 		}
 		
 		/*
