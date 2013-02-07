@@ -439,8 +439,8 @@ class Dictionary
 		// We're going to need access to the database connection throughout this class.
 		global $db;
 		
-		// If a chapter ID hasn't been passed to this function, then return a listing of terms
-		// that apply to the entirety of the code.
+		// If a chapter ID hasn't been passed to this function, then return a listing of terms that
+		// apply to the entirety of the code.
 		if (!isset($this->structure_id) && !isset($this->scope))
 		{
 			$this->scope = 'global';
