@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.6 (February 7, 2013)
+* Established a public API with methods for retrieving data about laws, structural units, and definitions.
+* Created an XML standard for legal codes to simplify enormously the process of parsing them. Many legal codes are already provided as some type of XML, so XSLT is all that's necessary to convert them into the format expected by Richmond Sunlight.
+* Overhauled the private API for importing legal codes. Previously it was written in a manner intended to serve as a guide to writing one’s own import functionality, with the expectation that a developer would modify it to parse their particular legal code. Now it both serves as that guide and actually works, reading files stored in the State Decoded XML file format.
+* Built an API key registration system, so that third party developers can register to use the API. This key registration system is not a centralized one, shared between State Decoded sites -- each site has its own registration system.
+
 ## Version 0.5 (December 21, 2012)
 
 * Put into a state-specific file all functionality likely to require customization with each implementation, rather than mixed that in with core functionality.
