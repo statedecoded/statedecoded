@@ -11,6 +11,10 @@
 /*
  * During this import phase, report all errors.
  */
+ini_set('display_errors', 1);
+ini_set('error_reporting', 'E_ALL');
+error_reporting(1);
+
 /*
  * Give PHP lots of RAM.
  */
