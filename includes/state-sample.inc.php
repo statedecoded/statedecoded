@@ -734,6 +734,8 @@ class Parser
 				if (
 					(stripos($paragraph, 'as used in this chapter') !== false)
 					||
+					(stripos($paragraph, 'are used in this chapter') !== false)
+					||
 					(stripos($paragraph, 'for the purpose of this chapter') !== false)
 					||
 					(stripos($paragraph, 'for purposes of this chapter') !== false)
@@ -782,7 +784,7 @@ class Parser
 			
 			// All defined terms are surrounded by quotation marks, so let's use that as a criteria
 			// to round down our candidate paragraphs.
-			if (strpos($paragraph, '"') !== false)
+			if (strpos($paragraph, $quote_sample) !== false)
 			{
 				if (
 					(strpos($paragraph, ' mean ') !== false)
@@ -794,6 +796,10 @@ class Parser
 					(strpos($paragraph, ' includes ') !== false)
 					|| 
 					(strpos($paragraph, ' has the same meaning as ') !== false)
+					||
+					(strpos($paragraph, ' shall be construed ') !== false)
+					||
+					(strpos($paragraph, ' shall also be construed to mean ') !== false)
 				   )
 				{
 				
