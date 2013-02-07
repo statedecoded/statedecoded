@@ -3,6 +3,21 @@
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
+CREATE TABLE IF NOT EXISTS `api_keys` (
+  `id` smallint(5) unsigned NOT NULL auto_increment,
+  `api_key` char(16) collate utf8_bin NOT NULL,
+  `email` varchar(255) collate utf8_bin NOT NULL,
+  `name` varchar(128) collate utf8_bin default NULL,
+  `url` varchar(128) collate utf8_bin default NULL,
+  `verified` enum('n','y') collate utf8_bin NOT NULL default 'n',
+  `secret` char(5) collate utf8_bin NOT NULL,
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `key` (`api_key`),
+  KEY `secret_hash` (`secret`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+
 CREATE TABLE IF NOT EXISTS `dictionary` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `law_id` int(10) unsigned NOT NULL,
@@ -60,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `laws_meta` (
   `law_id` int(11) NOT NULL,
   `meta_key` varchar(255) collate utf8_bin NOT NULL,
   `meta_value` longtext collate utf8_bin NOT NULL,
-  `date_created` date NOT NULL,
+  `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`),
@@ -135,21 +150,6 @@ CREATE TABLE IF NOT EXISTS `text_sections` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `text_id` (`text_id`,`identifier`,`sequence`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
-
-CREATE TABLE IF NOT EXISTS `api_keys` (
-  `id` smallint(5) unsigned NOT NULL auto_increment,
-  `api_key` char(16) collate utf8_bin NOT NULL,
-  `email` varchar(255) collate utf8_bin NOT NULL,
-  `name` varchar(128) collate utf8_bin default NULL,
-  `url` varchar(128) collate utf8_bin default NULL,
-  `verified` enum('n','y') collate utf8_bin NOT NULL default 'n',
-  `secret` char(5) collate utf8_bin NOT NULL,
-  `date_created` datetime NOT NULL,
-  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `key` (`api_key`),
-  KEY `secret_hash` (`secret`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 DROP TABLE IF EXISTS `structure_unified`;
