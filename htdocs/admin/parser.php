@@ -8,32 +8,46 @@
 
 <?php
 
-# Give PHP 128MB in which to run. Running out of memory can be a real problem. Sometimes the XML
-# for laws is stored in what amounts to a random order in the filesystem, so it can appear that the
-# import has finished when, in fact, it's simply run out of memory, but the resulting content on
-# the website just has random-seeming chunks of the laws missing.
+/*
+ * During this import phase, report all errors.
+ */
+/*
+ * Give PHP lots of RAM.
+ */
 ini_set('memory_limit', '128M');
 
-# Include a master settings include file.
+/*
+ * Include a master settings include file.
+ */
 require_once $_SERVER['DOCUMENT_ROOT'].'/../includes/config.inc.php';
 
-# Include MDB2
+/*
+ * Include MDB2
+ */
 require_once 'MDB2.php';
 
-# Include the code with the functions that drive this parser.
+/*
+ * Include the code with the functions that drive this parser.
+ */
 require_once CUSTOM_FUNCTIONS;
 
-# Connect to the database.
+/* 
+ * Connect to the database.
+ */
 $db =& MDB2::connect(MYSQL_DSN);
 if (PEAR::isError($db))
 {
 	die('Could not connect to the database.');
 }
 	
-# We must always connect with UTF-8.
+/*
+ * We must, must, must always connect with UTF-8.
+ */
 $db->setCharset('utf8');
 
-# When first loading the page, show options.
+/*
+ * When first loading the page, show options.
+ */
 if (count($_POST) == 0)
 {
 	echo '
@@ -48,7 +62,9 @@ if (count($_POST) == 0)
 		</form>';
 }
 
-# If the request is to empty the database.
+/*
+ * If the request is to empty the database.
+ */
 elseif ($_POST['action'] == 'empty')
 {
 	$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections');
@@ -71,7 +87,9 @@ elseif ($_POST['action'] == 'empty')
 	# Execute the query.
 	$result =& $db->exec($sql);
 	
-	# Delete law histories.
+	/*
+	 * Delete law histories.
+	 */
 	$sql = 'DELETE FROM laws_meta
 			WHERE meta_key = "history"';
 	$result =& $db->exec($sql);
@@ -83,22 +101,28 @@ elseif ($_POST['action'] == 'empty')
 elseif ($_POST['action'] == 'parse')
 {
 		
-	# Include HTML Purifier, which we use to clean up the code and character sets.
+	/*
+	 * Include HTML Purifier, which we use to clean up the code and character sets.
+	 */
 	require_once(INCLUDE_PATH.'/htmlpurifier/HTMLPurifier.auto.php');
-	
-	# Fire up HTML Purifier.
 	$purifier = new HTMLPurifier();
 
-	# Let this script run for as long as is necessary to finish running.
+	/*
+	 * Let this script run for as long as is necessary to finish.
+	 */
 	set_time_limit(0);
 	
-	# Create a new instance of Parser.
+	/*
+	 * Create a new instance of Parser.
+	 */
 	$parser = new Parser();
 	
 	# Tell the parser what the working directory should be for the XML files.
 	$parser->directory = $_SERVER['DOCUMENT_ROOT'].'/xml/';
 	
-	# Iterate through the files.
+	/*
+	 * Iterate through the files.
+	 */
 	while ($section = $parser->iterate())
 	{
 		$parser->section = $section;
@@ -106,9 +130,11 @@ elseif ($_POST['action'] == 'parse')
 		$parser->store();
 		echo '. ';
 	}
-	
-	# Crosslink laws_references. This needs to be done after the time of the creation of these
-	# references, because many of the references are at that time to not-yet-inserted sections.
+
+	/*
+	 * Crosslink laws_references. This needs to be done after the time of the creation of these
+	 * references, because many of the references are at that time to not-yet-inserted sections.
+	 */
 	$sql = 'UPDATE laws_references
 			SET target_law_id =
 				(SELECT laws.id
@@ -117,13 +143,17 @@ elseif ($_POST['action'] == 'parse')
 			WHERE target_law_id = 0';
 	$db->exec($sql);
 	
-	# Any unresolved target section numbers are spurious (strings that happen to match our section
-	# PCRE), and can be deleted.
+	/*
+	 * Any unresolved target section numbers are spurious (strings that happen to match our section
+	 * PCRE), and can be deleted.
+	 */
 	$sql = 'DELETE FROM laws_references
 			WHERE target_law_id = 0';
 	$db->exec($sql);
 
-	# Break up law histories into their components and save those.
+	/*
+	 * Break up law histories into their components and save those.
+	 */
 	$sql = 'SELECT id, history
 			FROM laws';
 	$result =& $db->query($sql);
@@ -132,16 +162,22 @@ elseif ($_POST['action'] == 'parse')
 		
 		$parser = new Parser;
 		
-		# Step through the history of every law that we have a record of.
+		/*
+	 	 * Step through the history of every law that we have a record of.
+	 	 */
 		while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 		{
 			
-			# Turn the string of text that comprises the history into an object of atomic
-			# history data.
+			/*
+			 * Turn the string of text that comprises the history into an object of atomic history
+			 * history data.
+			 */
 			$parser->history = $law->history;
 			$history = $parser->extract_history();
 			
-			# Save this object to the metadata table pair.
+			/*
+			 * Save this object to the metadata table pair.
+			 */
 			$sql = 'INSERT INTO laws_meta
 					SET law_id='.$db->escape($law->id).',
 					meta_key="history", meta_value="'.$db->escape(serialize($history)).'",
@@ -151,11 +187,15 @@ elseif ($_POST['action'] == 'parse')
 	}
 
 	
-	# If we already have a view, replace it with this new one.
+	/*
+	 * If we already have a view, replace it with this new one.
+	 */
 	$sql = 'DROP VIEW IF EXISTS structure_unified';
 	$db->exec($sql);
 	
-	# The depth of the structure is the number of entries in STRUCTURE, minus one.
+	/*
+	 * The depth of the structure is the number of entries in STRUCTURE, minus one.
+	 */
 	$structure_depth = count(explode(',', STRUCTURE))-1;
 	
 	$select = array();
@@ -169,19 +209,29 @@ elseif ($_POST['action'] == 'parse')
 		$order[] = 's'.$i.'.number';
 	}
 	
-	# We want to to order from highest to lowest, so flip around this array.
+	/*
+	 * We want to to order from highest to lowest, so flip around this array.
+	 */
 	$order = array_reverse($order);
 	
-	# First, the preamble.
+	/*
+	 * First, the preamble.
+	 */
 	$sql = 'CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW structure_unified AS SELECT ';
 
-	# Then the actual SELECT statement.
+	/*
+	 * Then the actual SELECT statement.
+	 */
 	$sql .= implode(',', $select);
 	
-	# Start the FROM statement.
+	/*
+	 * Start the FROM statement.
+	 */
 	$sql .= ' FROM (structure AS ';
 	
-	# Build up the FROM statement using the array of table names.
+	/*
+	 * Build up the FROM statement using the array of table names.
+	 */
 	$prev = '';
 	foreach ($from as $table)
 	{
@@ -196,16 +246,22 @@ elseif ($_POST['action'] == 'parse')
 		$prev = $table;
 	}
 	
-	# Conclude the FROM statement.
+	/*
+	 * Conclude the FROM statement.
+	 */
 	$sql .= ')';
 	
-	# Finally, construct the ORDER BY statement.
+	/*
+	 * Finally, construct the ORDER BY statement.
+	 */
 	$sql .= ' ORDER BY '.implode(',', $order);
 	
 	$db->exec($sql);
 	
 	
-	# If the site's internal API key is undefined, register a new key and activate it.
+	/**
+	 * If the site's internal API key is undefined, register a new key and activate it.
+	 */
 	if (API_KEY == '')
 	{
 		$api = new API;
@@ -214,8 +270,10 @@ elseif ($_POST['action'] == 'parse')
 		$api->register_key();
 		$api->activate_key();
 		
-		# Add the API key to the config file, if it's writable. Otherwise, display it on the
-		# screen, along with instructions.
+		/*
+		 * Add the API key to the config file, if it's writable. Otherwise, display it on the
+		 * screen, along with instructions.
+		 */
 		$config_file = $_SERVER['DOCUMENT_ROOT'].'/../includes/config.inc.php';
 		if (is_writable($config_file))
 		{
