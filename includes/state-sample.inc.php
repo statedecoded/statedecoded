@@ -195,9 +195,8 @@ class Parser
 	
 
 	/**
-	 * Intended to be called from within Parser::parse, this is used to iterate through subsections
-	 * of text to indefinite depths. It takes a section as input, and returns only true, as it
-	 * modifies $code directly.
+	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
+	 * we call this method recursively to gather their content.
 	 */
 	public static function recurse($section)
 	{
@@ -221,8 +220,8 @@ class Parser
 			$this->code->section->$i->prefix_hierarchy = (object) $this->prefix_hierarchy;
 			
 			/*
-			 * We increment our counter at this point, rather than at the end of the loop, because of
-			 * the use of the recurse() function after it.
+			 * We increment our counter at this point, rather than at the end of the loop, because
+			 * of the use of the recurse() method after it.
 			 */
 			
 			$i++;
@@ -617,9 +616,9 @@ class Parser
 	
 	/**
 	 * When provided with a structural unit ID and a label, this function will iteratively search
-	 * through that structural unit's ancestry until it finds a structural unit with that label. This
-	 * is meant for use while identifying definitions, within the store() method, specifically to set
-	 * the scope of applicability of a definition.
+	 * through that structural unit's ancestry until it finds a structural unit with that label.
+	 * This is meant for use while identifying definitions, within the store() method, specifically
+	 * to set the scope of applicability of a definition.
 	 */
 	function find_structure_parent()
 	{
@@ -716,9 +715,9 @@ class Parser
 		// Step through each paragraph and determine which contain definitions.
 		foreach ($paragraphs as &$paragraph)
 		{
-			
-			// Any remaining paragraph tags are within an individual, multi-part definition, and can
-			// be turned into spaces.
+
+			// Any remaining paired paragraph tags are within an individual, multi-part definition,
+			// and can be turned into spaces.
 			$paragraph = str_replace('</p><p>', ' ', $paragraph);
 			
 			// Strip out any remaining HTML.
@@ -765,7 +764,7 @@ class Parser
 					$scope = 'global';
 				}
 				
-				// If we can't calculate scope, then we can safely assume it's specific to this
+				// If we can't calculate scope, then we can assume safely that it's specific to this
 				// chapter.
 				else
 				{
@@ -793,9 +792,9 @@ class Parser
 				   )
 				{
 				
-					// Extract every word in quotation marks in this paragraph as a term that's being
-					// defined here. Most definitions will have just one term being defined, but some
-					// will have two or more.
+					// Extract every word in quotation marks in this paragraph as a term that's
+					// being defined here. Most definitions will have just one term being defined,
+					// but some will have two or more.
 					preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
 					
 					// If we've made any matches.
@@ -803,8 +802,8 @@ class Parser
 					{
 						
 						// We only need the first element in this multi-dimensional array, which has
-						// the actual matched term. It includes the quotation marks in which the term
-						// is enclosed, so we strip those out.
+						// the actual matched term. It includes the quotation marks in which the
+						// term is enclosed, so we strip those out.
 						if ($quote_type == 'straight')
 						{
 							$terms = str_replace('"', '', $terms[0]);
@@ -849,8 +848,8 @@ class Parser
 						
 						// This is absolutely necessary. Without it, the following foreach() loop
 						// will simply use $term as-is through each loop, rather than spawning new
-						// instances based on $terms. This is presumably a bug in the current version
-						// of PHP, because it surely doesn't make any sense.
+						// instances based on $terms. This is presumably a bug in the current
+						// version of PHP, because it surely doesn't make any sense.
 						unset($term);
 						
 						// Step through all of our matches and save them as discrete definitions.
@@ -919,7 +918,7 @@ class Parser
 	} // end extract_definitions()
 	
 	
-	/*
+	/**
 	 * When provided with an object containing a list of terms, their definitions, their scope,
 	 * and their section number, this will store them in the database.
 	 */
@@ -977,7 +976,9 @@ class Parser
 	} // end store_definitions()
 	
 	
-	// Find mentions of other sections within a section and return them as an array.
+	/**
+	 * Find mentions of other sections within a section and return them as an array.
+	 */
 	function extract_references()
 	{
 		
@@ -1127,8 +1128,8 @@ class Parser
 					// typographical errors in histories.
 					$chapters = explode(',', $chapters);
 					
-					// Step through each of these chapter references and trim down the leading spaces
-					// (a result of creating the array based on commas rather than commas and
+					// Step through each of these chapter references and trim down the leading
+					// spaces (a result of creating the array based on commas rather than commas and
 					// spaces) and eliminate any that are blank.
 					for ($j=0; $j<count($chapters); $j++)
 					{
