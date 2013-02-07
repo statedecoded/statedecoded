@@ -198,7 +198,7 @@ class Parser
 	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
 	 * we call this method recursively to gather their content.
 	 */
-	public static function recurse($section)
+	public function recurse($section, $i)
 	{
 		
 		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
