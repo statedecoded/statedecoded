@@ -287,7 +287,9 @@ elseif ($_POST['action'] == 'parse')
 		}
 		else
 		{
-			echo '<p>API Key: '.$api->key.'</p>';
+			echo '<p>Your <code>includes/config.inc.php</code> file could not be modified
+				automatically. Please edit that file and set the value of <code>API_KEY</code> to
+				<code>'.$api->key.'</code></p>';
 		}
 	}
 	
