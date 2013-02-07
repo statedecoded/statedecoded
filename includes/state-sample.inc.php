@@ -190,10 +190,7 @@ class Parser
 			}
 		}
 		
-		// Make the data available outside of the scope of this function.
-		$this->code = $code;
-		
-		unset($code);
+		return true;
 	}
 	
 
