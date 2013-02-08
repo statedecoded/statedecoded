@@ -704,8 +704,6 @@ class Law
 	
 	/**
 	 * Takes the instant law object and turns it into a nicely formatted plain text version.
-	 * NOTE: I'M NOT SURE THAT $paragraph->depth EXISTS! Verify that's a valid variable to make this
-	 * work.
 	 */
 	function render_plain_text()
 	{
@@ -714,9 +712,12 @@ class Law
 		foreach ($this->text as $section)
 		{
 			
-			// Prevent lines from wrapping in the middle of a section identifier by inserting the
-			// Unicode NO-BREAK-SPACE (U+00A0) character.
-			$section->text = str_replace('§ ', '§ ', $section->text);
+			// Prevent lines from wrapping in the middle of a section identifier by replacing the
+			// &nbsp; entity with the Unicode NO-BREAK-SPACE (U+00A0) character.
+			$section->text = str_replace('§&nbsp;', '§ ', $section->text);
+			
+			// Eliminate any HTML.
+			$section->text = strip_tags($section->text);
 			
 		}
 		
@@ -751,15 +752,15 @@ class Law
 			
 			// Wrap this text at 80 characters minus two spaces for every nested subsection,
 			// breaking up words that exceed the line length.
-			$subsection = wordwrap($subsection, (80 - (($paragraph->depth - 1) * 2)), "\n", true);
+			$subsection = wordwrap($subsection, (80 - (($paragraph->level - 1) * 2)), "\n", true);
 			
 			// Indent applicable subsections by adding blank space to the beginning of each line.
-			if ($paragraph->depth > 0)
+			if ($paragraph->level > 0)
 			{
 				$lines = explode("\n", $subsection);
-				foreach ($lines as $line)
+				foreach ($lines as &$line)
 				{
-					$line = str_repeat(' ', ( ($paragraph->depth - 1) * 2 )).$line;
+					$line = str_repeat(' ', ( ($paragraph->level - 1) * 3 )).$line;
 				}
 				$subsection = implode("\n", $lines);
 			}
