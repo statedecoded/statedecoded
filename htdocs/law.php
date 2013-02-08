@@ -33,6 +33,29 @@ if ($law === false)
 // Store a record that this section was viewed.
 $laws->record_view();
 
+// If this is a request for a plain text version of this law, simply display that and exit.
+if (isset($_GET['plain_text']))
+{
+	
+	/* Instruct the browser that this is plain text. */
+	header("Content-Type: text/plain");
+	
+	/* Provide a document header. */
+	echo str_repeat(' ', (round(((81 - strlen(LAWS_NAME)) / 2))))
+		.strtoupper(LAWS_NAME)."\n\n";
+	echo wordwrap(strtoupper($law->catch_line).' ('.SECTION_SYMBOL.' '.$law->section_number.')'
+		."\n\n", 80, "\n", true);
+		
+	/* Send the text itself, which is already formatted properly. */
+	echo $law->plain_text;
+	
+	/* Include the history. */
+	echo wordwrap('HISTORY: '.$law->history, 80, "\n", true);
+	
+	/* End processing and exit. */
+	exit;
+}
+
 // Fire up our templating engine.
 $template = new Page;
 
