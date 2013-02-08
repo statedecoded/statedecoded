@@ -118,13 +118,21 @@ class Structure
 		// Third, and finally, create the WHERE portion of our SQL query.
 		$sql .= ' WHERE ';
 		$i=1;
+		$where = array();
 		foreach ($structure as $type => $number)
 		{
 			$where[] = 's'.$i.'.number="'.$db->escape($number).'" AND s'.$i.'.label="'.$db->escape($type).'"';
 			$i++;
 		}
 		
-		$sql .= implode(' AND ', $where);
+		if (count($where) > 1)
+		{
+			$sql .= implode(' AND ', $where);
+		}
+		else
+		{
+			$sql .= current($where);
+		}
 
 		
 		// We don't need either of these anymore.
