@@ -168,5 +168,3 @@ unset($sidebar);
  * the browser.
  */
 $template->parse();
-
-?>

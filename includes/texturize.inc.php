@@ -126,5 +126,3 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 		}
 	}
 }
-
-?>

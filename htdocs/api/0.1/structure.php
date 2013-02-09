@@ -118,5 +118,3 @@ if (isset($callback))
 {
 	echo ');';
 }
-
-?>

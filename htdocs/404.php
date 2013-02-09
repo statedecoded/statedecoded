@@ -52,5 +52,3 @@ unset($sidebar);
  * to the browser.
  */
 $template->parse();
-
-?>
