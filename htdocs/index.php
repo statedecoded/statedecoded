@@ -27,10 +27,13 @@ $body .= '
 	<h1>Titles of the '.LAWS_NAME.'</h1>
 	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>
 	<dl class="titles">';
-foreach ($titles as $title)
+if ( !empty($titles) )
 {
-	$body .= '	<dt><a href="'.$title->url.'">'.$title->number.'</a></dt>
-				<dd><a href="'.$title->url.'">'.$title->name.'</a></dd>';
+	foreach ($titles as $title)
+	{
+		$body .= '	<dt><a href="'.$title->url.'">'.$title->number.'</a></dt>
+					<dd><a href="'.$title->url.'">'.$title->name.'</a></dd>';
+	}
 }
 $body .= '</dl></article>';
 
