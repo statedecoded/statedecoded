@@ -125,7 +125,7 @@ class Parser
 			$this->code->structure->{$level}->name = (string) $unit;
 			$this->code->structure->{$level}->label = (string) $unit['label'];
 			$this->code->structure->{$level}->identifier = (string) $unit['identifier'];
-			if ( isset($unit['order_by']) && !empty($unit['order_by']) )
+			if ( !empty($unit['order_by']) )
 			{
 				$this->code->structure->{$level}->order_by = (string) $unit['order_by'];
 			}
@@ -353,7 +353,7 @@ class Parser
 		{
 			
 			// If no section type has been specified, make it your basic section.
-			if (!isset($section->type) || empty($section->type))
+			if (empty($section->type))
 			{
 				$section->type = 'section';
 			}
@@ -525,7 +525,7 @@ class Parser
 				
 		// If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
 		// include that in our query.
-		if ( isset($this->parent_id) && !empty($this->parent_id) )
+		if ( !empty($this->parent_id) )
 		{
 			$sql .= ' AND parent_id='.$this->parent_id;
 		}
@@ -597,7 +597,7 @@ class Parser
 		 */
 		$sql = 'INSERT INTO structure
 				SET number="'.$db->escape($this->number).'"';
-		if (isset($this->name) && !empty($this->name))
+		if (!empty($this->name))
 		{
 			$sql .= ', name="'.$db->escape($this->name).'"';
 		}
