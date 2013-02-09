@@ -779,5 +779,3 @@ class Law
 	} // end render_plain_text()
 
 } // end Law
-
-?>

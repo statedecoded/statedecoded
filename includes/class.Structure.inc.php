@@ -532,5 +532,3 @@ class Structure
 		return $laws;
 	}
 }
-
-?>

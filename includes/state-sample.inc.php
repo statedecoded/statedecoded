@@ -1167,5 +1167,3 @@ class Parser
 	} // end extract_history()
 	
 } // end Parser class
-
-?>
