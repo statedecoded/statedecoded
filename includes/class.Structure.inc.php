@@ -184,7 +184,7 @@ class Structure
 		
 		// Iterate through the levels and build up the URLs recursively.
 		$url_prefix = 'http://'.$_SERVER['SERVER_NAME'].'/';
-		$url_base = '';
+		$url_suffix = '';
 		foreach ($this->structure as &$level)
 		{
 			$url_suffix .= $level->number.'/';
