@@ -48,20 +48,6 @@ if (count((array) $structure) > 1)
 	$template->field->breadcrumbs = trim($template->field->breadcrumbs);
 }
 
-# Get a listing of tags and display them.
-$tags = new Tags;
-$current_structure = end($structure);
-$tags->structure_id = $current_structure->id;
-$tags->structure_label = $current_structure->label;
-$tags->get();
-$tag_cloud = $tags->cloud();
-if (!empty($tag_cloud))
-{
-	$sidebar = '
-		<h1>Topics</h1>
-		<div class="tag-cloud">'.$tags->cloud().'</div>';
-}
-
 # Provide a textual introduction to this section.
 $body .= '<p>This is '.ucwords($struct->label).' '.$struct->number.' of the '.LAWS_NAME.', titled
 		“'.$struct->name.'.”';
