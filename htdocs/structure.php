@@ -49,6 +49,8 @@ if (count((array) $structure) > 1)
 }
 
 # Get a listing of tags and display them.
+$sidebar = '';
+
 $tags = new Tags;
 $current_structure = end($structure);
 $tags->structure_id = $current_structure->id;
@@ -63,8 +65,7 @@ if (!empty($tag_cloud))
 }
 
 # Provide a textual introduction to this section.
-$body .= '<p>This is '.ucwords($struct->label).' '.$struct->number.' of the '.LAWS_NAME.', titled
-		“'.$struct->name.'.”';
+$body = '<p>This is '.ucwords($struct->label).' '.$struct->number.' of the '.LAWS_NAME.', titled “'.$struct->name.'.”';
 
 if (count((array) $structure) > 1)
 {
