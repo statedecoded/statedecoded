@@ -34,7 +34,16 @@ function fetch_url($url)
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
 	curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1200);
 	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	// Set CURLOPT_PROTOCOLS to protect against exploitation of CVE-2013-0249 that
+	// affects cURL 7.26.0 to and including 7.28.1.
+	// http://curl.haxx.se/docs/adv_20130206.html
+	// http://www.h-online.com/open/news/item/cURL-goes-wrong-1800880.html
+	$allowed_protocols = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+	curl_setopt($ch, CURLOPT_PROTOCOLS, $allowed_protocols);
+	curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols & ~(CURLPROTO_FILE | CURLPROTO_SCP));
+
 	$html = curl_exec($ch);
 	curl_close($ch);
 	return $html;
