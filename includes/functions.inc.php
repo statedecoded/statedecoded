@@ -542,5 +542,3 @@ class Dictionary
 		return $terms;
 	}	
 }
-
-?>

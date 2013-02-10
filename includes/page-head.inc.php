@@ -66,5 +66,3 @@ require('texturize.inc.php');
 		
 # We're going to need access to the database connection throughout the site.
 global $db;
-
-?>

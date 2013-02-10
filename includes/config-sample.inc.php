@@ -107,5 +107,3 @@ define('EMAIL_ADDRESS', SITE_TITLE.' <waldo@jaquith.org>');
  * at the time that the parser is run.)
  */ 
 define('API_KEY', '');
-
-?>

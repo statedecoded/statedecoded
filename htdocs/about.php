@@ -25,5 +25,3 @@ unset($sidebar);
 # Parse the template, which is a shortcut for a few steps that culminate in sending the content
 # to the browser.
 $template->parse();
-
-?>
