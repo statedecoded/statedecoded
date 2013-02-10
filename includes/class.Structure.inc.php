@@ -52,14 +52,20 @@ class Structure
 		// units of this legal code, from broadest—e.g., title—to the narrowest—e.g. article) into
 		// an array.
 		$structure = explode(',', STRUCTURE);
-		
-		// If our structure is longer than the URL components (as it very often will be), hack off
-		// the structure array elements that we don't need.
-		if (count($structure) > count($components))
+
+		// If there are more components of the URL than `count($structure)', only consider the
+		// first `count($structure)' components.
+		if (count($components) > count($structure))
 		{
-			$structure = array_slice($structure, 0, count($components));
+			$components = array_slice($components, 0, count($structure));
 		}
-		
+		// If our structure is longer than the URL components (as it very often will be), hack off
+		// the beginning structure array elements that we don't need.
+		else if (count($structure) > count($components))
+		{
+			$structure = array_slice($structure, -count($components), count($components));
+		}
+
 		// Merge the structure and URL component arrays.
 		$tmp = array_combine($structure, $components);
 		$tmp = array_reverse($tmp);
