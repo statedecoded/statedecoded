@@ -202,7 +202,7 @@ function json_error($text)
  */
 function send_404()
 {
-	include('/var/www/vacode.org/htdocs/404.php');
+	include("{$_SERVER['DOCUMENT_ROOT']}/404.php");
 	exit();
 }
 
