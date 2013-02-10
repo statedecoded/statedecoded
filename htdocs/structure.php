@@ -19,16 +19,13 @@ require '../includes/page-head.inc.php';
 # Create a new instance of Structure.
 $struct = new Structure();
 
-# Pass the requested URL to Structure, and then get structural data from that URL.
-$struct->url_to_structure();
-$structure = $struct->structure;
-
-# If the URL doesn't represent a valid structural portion of the code, then bail. We use a double
-# equals here because url_to_structure() is mysteriously not returning false.
-if ($structure == false)
+# If the URL doesn't represent a valid structural portion of the code, then bail.
+if ( $struct->url_to_structure() === false || empty($struct->structure) )
 {
 	send_404();
 }
+
+$structure = $struct->structure;
 
 # Fire up our templating engine.
 $template = new Page;
