@@ -18,7 +18,10 @@
  */
 function __autoload($class_name)
 {
-	include('class.'.$class_name.'.inc.php');
+	$filename = "class.{$class_name}.inc.php";
+	if ((include_once $filename) === false) {
+		throw new Exception("Could not include `$filename'.");
+	}
 }
 
 /**
