@@ -202,7 +202,7 @@ function json_error($text)
  */
 function send_404()
 {
-	include("{$_SERVER['DOCUMENT_ROOT']}/404.php");
+	include dirname($_SERVER['DOCUMENT_ROOT']). DIRECTORY_SEPARATOR .'404.php');
 	exit();
 }
 
