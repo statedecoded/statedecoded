@@ -263,6 +263,16 @@ class API
 			throw new Exception('API key could not be activated.');
 		}
 		
+		$sql = 'SELECT api_key
+				FROM api_keys
+				WHERE secret = "'.$db->escape($this->secret).'"';
+		$result = $db->query($sql);
+		if ( (PEAR::isError($result) === false) && ($result->numRows() > 0) )
+		{
+			$api_key = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			$this->key = $api_key->api_key;
+		}
+		
 		return true;
 	}
 	
