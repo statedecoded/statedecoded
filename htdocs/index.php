@@ -25,17 +25,18 @@ $titles = $structure->list_children();
 $body .= '
 	<article>
 	<h1>Titles of the '.LAWS_NAME.'</h1>
-	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>
-	<dl class="titles">';
+	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
 if ( !empty($titles) )
 {
+	$body .= '<dl class="level-1">';
 	foreach ($titles as $title)
 	{
 		$body .= '	<dt><a href="'.$title->url.'">'.$title->number.'</a></dt>
 					<dd><a href="'.$title->url.'">'.$title->name.'</a></dd>';
 	}
+	$body .= '</dl>'
 }
-$body .= '</dl></article>';
+$body .= '</article>';
 
 # Put the shorthand $body variable into its proper place.
 $template->field->body = $body;
