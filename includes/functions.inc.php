@@ -202,7 +202,7 @@ function json_error($text)
  */
 function send_404()
 {
-	include dirname($_SERVER['DOCUMENT_ROOT']). DIRECTORY_SEPARATOR .'404.php');
+	include (dirname($_SERVER['DOCUMENT_ROOT']) . DIRECTORY_SEPARATOR . '404.php');
 	exit();
 }
 
@@ -235,7 +235,7 @@ class Page
 	function render()
 	{
 		// Save the contents of the template file to a variable.
-		$this->html = file_get_contents(INCLUDE_PATH.'/templates/'.TEMPLATE.'.inc.php');
+		$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
 		
 		// Create the browser title.
 		if (!isset($field->browser_title))
