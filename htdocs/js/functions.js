@@ -1,15 +1,29 @@
 $(document).ready(function () {
 	
 	/* Provide the ability to navigate with arrow keys. */
-	Mousetrap.bind('left', function(e) {
-		var url = $('a.prev').attr('href');
+	Mousetrap.bind('ctrl+left', function(e) {
+		var url = $('link[rel=prev]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
 	
-	Mousetrap.bind('right', function(e) {
-		var url = $('a.next').attr('href');
+	Mousetrap.bind('ctrl+right', function(e) {
+		var url = $('link[rel=next]').attr('href');
+		if (url) {
+			window.location = url;
+		}
+	});
+	
+	Mousetrap.bind('ctrl+up', function(e) {
+		var url = $('link[rel=up]').attr('href');
+		if (url) {
+			window.location = url;
+		}
+	});
+	
+	Mousetrap.bind('ctrl+down', function(e) {
+		var url = $('link[rel=down]').attr('href');
 		if (url) {
 			window.location = url;
 		}
