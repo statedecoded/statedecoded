@@ -707,6 +707,12 @@ class Law
 	 */
 	function render_plain_text()
 	{
+	
+		// Require the presence of text.
+		if (!isset($this->text))
+		{
+			return false;
+		}
 
 		// Iterate through every section to make some basic transformations.
 		foreach ($this->text as $section)
