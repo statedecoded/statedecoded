@@ -40,9 +40,24 @@ if (count((array) $structure) > 1)
 	foreach ($structure as $level)
 	{
 		$template->field->breadcrumbs .= ' <a href="'.$level->url.'">'.$level->number.': '.$level->name.'</a> →';
+		
+		# If this structural element is the same as the parent container, then use that knowledge
+		# to populate the link rel="up" tag.
+		if ($level->id == $struct->parent_id)
+		{
+			$template->field->link_rel = '<link rel="up" title="Up" href="' . $level->url . '" />';
+		}
 	}
 	$template->field->breadcrumbs = rtrim($template->field->breadcrumbs, '→');
 	$template->field->breadcrumbs = trim($template->field->breadcrumbs);
+}
+
+# If this is a top-level element, there's no breadcrumb trail, but we still need to populate the
+# link rel="up" tag.
+else
+{
+	# Make the "up" link a link to the home page.
+	$template->field->link_rel = '<link rel="up" title="Up" href="/" />';
 }
 
 # Provide a textual introduction to this section.
