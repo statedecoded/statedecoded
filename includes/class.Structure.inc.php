@@ -60,10 +60,10 @@ class Structure
 			$components = array_slice($components, 0, count($structure));
 		}
 		// If our structure is longer than the URL components (as it very often will be), hack off
-		// the beginning structure array elements that we don't need.
-		else if (count($structure) > count($components))
+		// the end structure array elements that we don't need.
+		elseif (count($structure) > count($components))
 		{
-			$structure = array_slice($structure, -count($components), count($components));
+			$structure = array_slice($structure, 0, count($components));
 		}
 
 		// Merge the structure and URL component arrays.
