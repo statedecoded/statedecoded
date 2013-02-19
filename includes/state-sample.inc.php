@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2012 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.4
+ * @version		0.6
  * @link		http://www.statedecoded.com/
  * @since		0.3
 */
@@ -23,8 +23,9 @@ class State
 
 
 /**
- * An example parser. This is not functional, but it does establish a framework from which one can
- * see how to develop a parser.
+ * The parser for importing legal codes. This is fully functional for importing The State Decoded's
+ * prescribed XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
+ * and serves as a guide for those who want to parse an alternate format.
  */
 class Parser
 {
