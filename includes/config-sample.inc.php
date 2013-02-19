@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * The configuration file that drives The State Decoded.
+ * 
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.1
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+ *
+ */
+
 /*
  * Define include path, since we need it sometimes.
  */
