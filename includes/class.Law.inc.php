@@ -292,18 +292,6 @@ class Law
 		
 		// Provide the URL for this section.
 		$this->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$this->section_number.'/';
-		
-		// Assemble the citations. Amendment years may not always be present (such as with repealed
-		// sections, which may lack histories), so only include those if they exist.
-		$this->citation->official = 'Va. Code §&nbsp;'.$this->section_number;
-		$this->citation->universal = 'VA Code §&nbsp;'.$this->section_number;
-		if (is_array($this->amendment_years))
-		{
-			$this->citation->official .= ' ('.end($this->amendment_years).')';
-			$this->citation->universal .= ' ('.end($this->amendment_years).' through Reg Sess)';
-		}
-
-		
 		if ($this->config->render_html == TRUE)
 		{
 			$this->html = Law::render();
