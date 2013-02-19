@@ -67,6 +67,7 @@ class Law
 		{
 			/*
 			 * If it's just a single law ID, then just request the one.
+			 */
 			if (!is_array($this->law_id))
 			{
 				$sql .= ' WHERE id='.$db->escape($this->law_id);
@@ -643,6 +644,7 @@ class Law
 					/*
 					 * If there are any uppercase characters, then make this PCRE string case
 					 * sensitive.
+					 */
 					if ( (ord($term{$i}) >= 65) && (ord($term{$i}) <= 90) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
