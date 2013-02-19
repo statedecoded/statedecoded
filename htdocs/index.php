@@ -1,6 +1,23 @@
 <?php
 
 # Include the PHP declarations that drive this page.
+/**
+ * The site home page.
+ *
+ * Displays a list of the top-level structural units. May be customized to display introductory
+ * text, sidebar content, etc.
+ * 
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.6
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+ *
+ */
+
 require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
 
 # Fire up our templating engine.
