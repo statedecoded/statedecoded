@@ -1,8 +1,19 @@
 <?php
 
 /**
+ * The Law class, for retrieving data about individual laws.
  * 
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.6
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+ *
  */
+ 
 class Law
 {
 	
