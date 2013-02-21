@@ -204,7 +204,7 @@ class Structure
 		$url_suffix = '';
 		foreach ($this->structure as &$level)
 		{
-			$url_suffix .= $level->number.'/';
+			$url_suffix .= urlencode($level->number).'/';
 		}
 		$level->url = $url_prefix.$url_suffix;
 		
@@ -445,7 +445,7 @@ class Structure
 		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 		foreach (array_reverse((array) $ancestry) as $key => $level)
 		{
-			$url .= $level->number.'/';
+			$url .= urlencode($level->number).'/';
 			$ancestry->$key->url = $url;
 		}
 		
