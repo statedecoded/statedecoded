@@ -63,7 +63,7 @@ class Structure
 		// units of this legal code, from broadest—e.g., title—to the narrowest—e.g. article) into
 		// an array.
 		$structure = explode(',', STRUCTURE);
-
+	
 		// If there are more components of the URL than `count($structure)', only consider the
 		// first `count($structure)' components.
 		if (count($components) > count($structure))
@@ -75,8 +75,8 @@ class Structure
 		elseif (count($structure) > count($components))
 		{
 			$structure = array_slice($structure, 0, count($components));
-		}
-
+		}	
+		
 		// Merge the structure and URL component arrays.
 		$tmp = array_combine($structure, $components);
 		$tmp = array_reverse($tmp);
@@ -360,7 +360,7 @@ class Structure
 				/*
 				 * We no longer have any need for these "s#_" fields. Eliminate them. (This is
 				 * helpful to save memory, but it also allows this object to be delivered directly
-				 * via the API, without modification.
+				 * via the API, without modification.)
 				 */
 				if (preg_match('/s[0-9]_([a-z]+)/', $key) == 1)
 				{
