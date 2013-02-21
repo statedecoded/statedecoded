@@ -205,8 +205,8 @@ class Structure
 		foreach ($this->structure as &$level)
 		{
 			$url_suffix .= $level->number.'/';
-			$level->url = $url_prefix.$url_suffix;
 		}
+		$level->url = $url_prefix.$url_suffix;
 		
 		// We set these two variables for the convenience of other functions in this class.
 		$tmp = end($this->structure);
