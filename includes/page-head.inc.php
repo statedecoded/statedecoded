@@ -83,6 +83,11 @@ if (PEAR::isError($db))
 		die(SITE_TITLE.' is having some database trouble right now. Please check back in a few minutes.');
 	}
 }
+		
+/*
+ * We're going to need access to the database connection throughout the site.
+ */
+global $db;
 
 /*
  * We must always connect to the database with UTF-8.
@@ -103,8 +108,3 @@ require(CUSTOM_FUNCTIONS);
  * Include WordPress's texturize function, for typographical niceties.
  */
 require('texturize.inc.php');
-		
-/*
- * We're going to need access to the database connection throughout the site.
- */
-global $db;
