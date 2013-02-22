@@ -61,7 +61,7 @@ if ( !empty($titles) )
 		$body .= '	<dt><a href="'.$title->url.'">'.$title->number.'</a></dt>
 					<dd><a href="'.$title->url.'">'.$title->name.'</a></dd>';
 	}
-	$body .= '</dl>'
+	$body .= '</dl>';
 }
 $body .= '</article>';
 
