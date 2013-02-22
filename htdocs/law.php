@@ -139,6 +139,11 @@ if (isset($law->next_section))
 }
 
 /*
+ * Store the URL for the containing structural unit.
+ */
+$template->field->link_rel .= '<link rel="up" title="Up" href="'.$law->ancestry->{1}->url.'" />';
+
+/*
  * Start assembling the body of this page by indicating the beginning of the text of the section.
  */
 $body = '<article id="law">';
