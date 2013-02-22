@@ -26,10 +26,12 @@ require_once 'MDB2.php';
  */
 if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 {
+
 	/*
 	 * Include the site's config file.
 	 */
 	require_once 'config.inc.php';
+	
 }
 
 /*
@@ -37,6 +39,7 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
  */
 else
 {
+
 	/*
 	 * Attempt to load the config file constants out of APC.
 	 */
@@ -47,6 +50,7 @@ else
 	 */
 	if ($result === false)
 	{
+	
 		/*
 		 * Load constants from the config file.
 		 */
@@ -57,6 +61,7 @@ else
 		 */
 		$constants = get_defined_constants(true);
 		apc_define_constants('config', $constants['user']);
+		
 	}
 }
 
@@ -66,12 +71,13 @@ else
 $db =& MDB2::connect(MYSQL_DSN);
 if (PEAR::isError($db))
 {
+
 	/*
 	 * If a specific error page has been created for database connection failures, display that.
 	 */
 	if (defined('ERROR_PAGE_DB'))
 	{
-		require($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.ERROR_PAGE_DB);
+		require($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . ERROR_PAGE_DB);
 		exit();
 	}
 	
@@ -80,8 +86,9 @@ if (PEAR::isError($db))
 	 */
 	else
 	{
-		die(SITE_TITLE.' is having some database trouble right now. Please check back in a few minutes.');
+		die(SITE_TITLE . ' is having some database trouble right now. Please check back in a few minutes.');
 	}
+	
 }
 		
 /*
