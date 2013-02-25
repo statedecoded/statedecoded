@@ -69,7 +69,7 @@ elseif ($_POST['action'] == 'empty')
 	foreach ($tables as $table)
 	{
 		$sql = 'TRUNCATE '.$table;
-		# Execute the query.
+		
 		$result =& $db->exec($sql);
 		if (PEAR::isError($result))
 		{
@@ -79,7 +79,9 @@ elseif ($_POST['action'] == 'empty')
 		$body .= '<p>Deleted '.$table.'.</p>';
 	}
 	
-	# Reset the auto-increment counter, to avoid unreasonably large numbers.
+	/*
+	 * Reset the auto-increment counter, to avoid unreasonably large numbers.
+	 */
 	$sql = 'ALTER TABLE structure
 			AUTO_INCREMENT=1';
 	$result =& $db->exec($sql);
@@ -313,7 +315,9 @@ elseif ($_POST['action'] == 'parse')
 		if ($result->numRows() > 0)
 		{
 			
-			# Create a new ZIP file object.
+			/*
+			 * Create a new ZIP file object.
+			 */
 			$zip = new ZipArchive();
 			$filename = $downloads_dir.'code.json.zip';
 			
@@ -322,43 +326,63 @@ elseif ($_POST['action'] == 'parse')
 				unlink($filename);
 			}
 			
-			# If we cannot create a new ZIP file, bail.
+			/*
+			 * If we cannot create a new ZIP file, bail.
+			 */
 			if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
 			{
 				$body .= '<p>Cannot open '.$filename.' to create a new ZIP file.</p>';
 			}
 			else
 			{
-				# Establish the depth of this code's structure. Though this constant includes the laws
-				# themselves, we don't subtract 1 from the tally because the structural labels start at 1.
+				/*
+				 * Establish the depth of this code's structure. Though this constant includes the
+				 * laws themselves, we don't subtract 1 from the tally because the structural labels
+				 * start at 1.
+				 */
 				$structure_depth = count(explode(',', STRUCTURE));
 				
-				# Iterate through every law.
+				/*
+				 * Iterate through every law.
+				 */
 				while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 				{
 					
-					# We don't need either of these fields.
+					/*
+					 * We don't need either of these fields.
+					 */
 					unset($law->s1_id);
 					unset($law->s2_id);
 					
-					# Rename the structural fields.
+					/*
+					 * Rename the structural fields.
+					 */
 					for ($i=1; $i<$structure_depth; $i++)
 					{
-						# Assign these variables to new locations.
+						
+						/*
+						 * Assign these variables to new locations.
+						 */
 						$law->structure->{$i-1}->label = $law->{'s'.$i.'_label'};
 						$law->structure->{$i-1}->name = $law->{'s'.$i.'_name'};
 						$law->structure->{$i-1}->number = $law->{'s'.$i.'_number'};
 						
-						# Unset the old variables.
+						/*
+						 * Unset the old variables.
+						 */
 						unset($law->{'s'.$i.'_label'});
 						unset($law->{'s'.$i.'_name'});
 						unset($law->{'s'.$i.'_number'});
 					}
 			
-					# Reverse the order of the structure, from broadest to most narrow.
+					/*
+					 * Reverse the order of the structure, from broadest to most narrow.
+					 */
 					$law->structure = array_reverse((array) $law->structure);
 					
-					# Renumber the structure. To avoid duplicates, we must do this awkwardly.
+					/*
+					 * Renumber the structure. To avoid duplicates, we must do this awkwardly.
+					 */
 					$tmp = $law->structure;
 					unset($law->structure);
 					$i=0;
@@ -368,12 +392,16 @@ elseif ($_POST['action'] == 'parse')
 						$i++;
 					}
 					
-					# Add this law to our ZIP archive, creating a pseudofile to do so. Eliminate colons
-					# from section numbers, since Windows can't handle colons in filenames.
+					/*
+					 * Add this law to our ZIP archive, creating a pseudofile to do so. Eliminate
+					 * colons from section numbers, since Windows can't handle colons in filenames.
+					 */
 					$zip->addFromString(str_replace(':', '_', $law->section).'.json', json_encode($law));
 				}
 				
-				# Close out our ZIP file.
+				/*
+				 * Close out our ZIP file.
+				 */
 				$zip->close();
 			}
 		}
@@ -390,13 +418,20 @@ elseif ($_POST['action'] == 'parse')
 		$result =& $db->query($sql);
 		if ($result->numRows() > 0)
 		{
-			# Retrieve the entire dictionary as a single object.
+		
+			/*
+			 * Retrieve the entire dictionary as a single object.
+			 */
 			$dictionary = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
 		
-			# Define the filename for our dictionary.
+			/*
+			 * Define the filename for our dictionary.
+			 */
 			$filename = $downloads_dir.'dictionary.json.zip';
 			
-			# Create a new ZIP file object.
+			/*
+			 * Create a new ZIP file object.
+			 */
 			$zip = new ZipArchive();
 			
 			if (file_exists($filename))
@@ -404,26 +439,34 @@ elseif ($_POST['action'] == 'parse')
 				unlink($filename);
 			}
 		
-			# If we cannot create a new ZIP file, bail.
+			/*
+			 * If we cannot create a new ZIP file, bail.
+			 */
 			if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
 			{
-				echo '<p>Cannot open '.$filename.' to create a new ZIP file.</p>';
+				$body .= '<p>Cannot open '.$filename.' to create a new ZIP file.</p>';
 			}
 			else
 			{
 				
-				# Add this law to our ZIP archive.
+				/*
+				 * Add this law to our ZIP archive.
+				 */
 				$zip->addFromString('dictionary.json', json_encode($dictionary));
 				
-				# Close out our ZIP file.
+				/*
+				 * Close out our ZIP file.
+				 */
 				$zip->close();
 			}
 		}
 	}
 
-	# If APC exists on this server, clear everything in the user space. That consists of information
-	# that the State Decoded has stored in APC, which is now suspect, as a result of having reloaded
-	# the laws.
+	/*
+	 * If APC exists on this server, clear everything in the user space. That consists of
+	 * information that the State Decoded has stored in APC, which is now suspect, as a result of
+	 * having reloaded the laws.
+	 */
 	if (extension_loaded('apc') && ini_get('apc.enabled') == 1)
 	{
 		apc_clear_cache('user');
