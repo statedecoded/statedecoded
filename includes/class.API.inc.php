@@ -301,11 +301,12 @@ class API
 						.'Return-Path: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
 						.'Reply-To: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
 						.'X-Originating-IP: ' . $_SERVER['REMOTE_ADDR'];
+		$email->parameters = '-f' . EMAIL_ADDRESS;
 		
 		/*
 		 * Send the e-mail.
 		 */
-		mail($this->email, $email->subject, $email->body, $email->headers);
+		mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
 		
 		return true;
 	}
