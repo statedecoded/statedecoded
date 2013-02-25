@@ -97,8 +97,8 @@ class Autolinker
 		 * If the provided term is an array of terms, just use the first one. This might seem odd,
 		 * but note that this function is written to be used within preg_replace_callback(), the
 		 * PCRE provides an array-based word listing, and we only want the first one.
-		 * (is_array($term))
 		 */
+		if (is_array($term))
 		{
 			$term = $term[0];
 		}
