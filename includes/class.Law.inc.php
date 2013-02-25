@@ -369,7 +369,7 @@ class Law
 		 */
 		$this->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$this->section_number.'/';
 	
-		if ($this->config->render_html == TRUE)
+		if ($this->config->render_html === TRUE)
 		{
 			$this->html = Law::render();
 		}
