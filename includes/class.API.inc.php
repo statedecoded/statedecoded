@@ -293,14 +293,14 @@ class API
 			return false;
 		}
 		
-		$email->body = 'Click on the following link to activate your '.SITE_TITLE.' API key.'
-			."\r\r"
-			.'http://'.$_SERVER['SERVER_NAME'].'/api-key/?secret='.$this->secret;
-		$email->subject = SITE_TITLE.' API Registration';
-		$email->headers = 'From: '.EMAIL_ADDRESS."\n"
-						.'Return-Path: '.EMAIL_ADDRESS."\n"
-						.'Reply-To: '.EMAIL_ADDRESS."\n"
-						.'X-Originating-IP: '.$_SERVER['REMOTE_ADDR'];
+		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
+			. "\r\r"
+			. 'http://' . $_SERVER['SERVER_NAME'] . '/api-key/?secret=' . $this->secret;
+		$email->subject = SITE_TITLE . ' API Registration';
+		$email->headers = 'From: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'Return-Path: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'Reply-To: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'X-Originating-IP: ' . $_SERVER['REMOTE_ADDR'];
 		
 		/*
 		 * Send the e-mail.
