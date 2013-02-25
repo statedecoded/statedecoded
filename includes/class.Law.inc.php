@@ -190,7 +190,10 @@ class Law
 				 * Pretty it up, converting all straight quotes into directional quotes, double
 				 * dashes into em dashes, etc.
 				 */
-				$tmp->text = wptexturize($tmp->text);
+				if ($tmp->type != 'table')
+				{
+					$tmp->text = wptexturize($tmp->text);
+				}
 				
 				/*
 				 * Append this section.
