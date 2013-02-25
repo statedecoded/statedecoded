@@ -46,7 +46,7 @@ $template->field->page_title = 'Parser';
 /*
  * When first loading the page, show options.
  */
-if (count($_POST) == 0)
+if (count($_POST) === 0)
 {
 	$body = '
 		<p>What do you want to do?</p>
