@@ -373,7 +373,10 @@ class Law
 		{
 			$this->html = Law::render();
 		}
-	
+		
+		/*
+		 * Provide a plain text version of this law.
+		 */
 		$this->plain_text = Law::render_plain_text();
 		
 		$law = $this;
