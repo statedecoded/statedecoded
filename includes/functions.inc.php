@@ -18,17 +18,21 @@
  */
 function __autoload($class_name)
 {
+
 	$filename = "class.{$class_name}.inc.php";
 	if ((include_once $filename) === false) {
 		throw new Exception("Could not include `$filename'.");
 	}
+	
 }
+
 
 /**
  * Get the contents of a given URL. A wrapper for cURL.
  */
 function fetch_url($url)
 {
+
 	if (!isset($url))
 	{
 		return false;
@@ -51,7 +55,9 @@ function fetch_url($url)
 	$html = curl_exec($ch);
 	curl_close($ch);
 	return $html;
+	
 }
+
 
 /**
  * Ensure that a JSONP callback doesn't contain any reserved terms.
@@ -61,6 +67,7 @@ function valid_jsonp_callback($callback)
 {
     return !preg_match( '/[^0-9a-zA-Z\$_]|^(abstract|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|enum|export|extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|volatile|void|while|with|NaN|Infinity|undefined)$/', $callback);
 }
+
 
 /**
  * Finds linkable strings of text within laws and turns them into links.
@@ -77,9 +84,11 @@ class Autolinker
 	 */
 	function __construct()
 	{
+	
 		global $terms;
 		$this->terms = $terms;
 		$this->term_blacklist = array();
+		
 	}
 	
 	/**
@@ -153,6 +162,7 @@ class Autolinker
 		return '<span class="dictionary">'.$term.'</span>';
 	}
 
+
 	/**
 	 * This is used as the preg_replace_callback function that inserts section links into text.
 	 */
@@ -187,7 +197,7 @@ class Autolinker
 		 * If this isn't a valid section number, then just return the match verbatim -- there's no
 		 * link to be provided.
 		 */
-		if ($section === false)
+		if ($section === FALSE)
 		{
 			return $matches[0];
 		}
@@ -196,11 +206,13 @@ class Autolinker
 	}
 }
 
+
 /**
  * Send an error message formatted as JSON. This requires the text of an error message.
  */
 function json_error($text)
 {
+
 	if (!isset($text))
 	{
 		return false;
@@ -224,7 +236,9 @@ function json_error($text)
 	 */
 	header('Content-type: application/json');
 	echo $error;
+	
 }
+
 
 /**
  * Throw a 404.
@@ -235,6 +249,7 @@ function send_404()
 	exit();
 }
 
+
 /**
  * This is relied on by usort() in law.php.
  */
@@ -242,6 +257,7 @@ function sort_by_length($a, $b)
 {
 	return strlen($b) - strlen($a);
 }
+
 
 /**
  * Turn the variables provided by each page into a rendered page.
@@ -257,6 +273,7 @@ class Page
 		Page::render();
 		Page::display();
 	}
+	
 	
 	/**
 	 * Combine the populated variables with the template.
@@ -276,7 +293,7 @@ class Page
 			if (isset($field->page_title))
 			{
 				$field->browser_title .= $field->page_title;
-				$field->browser_title .= '—'.SITE_TITLE;
+				$field->browser_title .= '—' . SITE_TITLE;
 			}
 			else
 			{
@@ -285,7 +302,7 @@ class Page
 		}
 		else
 		{
-			$field->browser_title .= '—'.SITE_TITLE;
+			$field->browser_title .= '—' . SITE_TITLE;
 		}
 		
 		/*
@@ -293,7 +310,7 @@ class Page
 		 */
 		foreach ($this->field as $field=>$contents)
 		{
-			$this->html = str_replace('{{'.$field.'}}', $contents, $this->html);
+			$this->html = str_replace('{{' . $field . '}}', $contents, $this->html);
 		}
 		
 		/*
@@ -314,6 +331,7 @@ class Page
 	 */
 	function display()
 	{
+	
 		if (!isset($this->html))
 		{
 			return false;
@@ -321,9 +339,11 @@ class Page
 		
 		echo $this->html;
 		return true;
+		
 	}
 }
-	
+
+
 /**
  * 
  */
@@ -335,7 +355,7 @@ class Dictionary
 	 */
 	function define_term()
 	{
-
+		
 		/*
 		 * We're going to need access to the database connection throughout this class.
 		 */
@@ -412,7 +432,7 @@ class Dictionary
 				WHERE (dictionary.term="'.$db->escape($this->term).'"';
 		if ($plural === true)
 		{
-			$sql .= ' OR dictionary.term = "'.$db->escape(substr($this->term, 0, -1)).'"';
+			$sql .= ' OR dictionary.term = "' . $db->escape(substr($this->term, 0, -1)) . '"';
 		}
 		$sql .= ') ';
 		if (isset($this->section_number))
@@ -420,11 +440,11 @@ class Dictionary
 			$sql .= 'AND (';
 			foreach ($ancestry as $structure_id)
 			{
-				$sql .= '(dictionary.structure_id = '.$db->escape($structure_id).') OR';
+				$sql .= '(dictionary.structure_id = ' . $db->escape($structure_id) . ') OR';
 			}
 			$sql .= '	(dictionary.scope = "global")
 					OR
-						(laws.section = "'.$db->escape($this->section_number).'")
+						(laws.section = "' . $db->escape($this->section_number) . '")
 					) ';
 		}
 		
@@ -440,7 +460,7 @@ class Dictionary
 		/*
 		 * If the query succeeds, great, retrieve it.
 		 */
-		if ( (PEAR::isError($result) === false) && ($result->numRows() > 0) )
+		if ( (PEAR::isError($result) === FALSE) && ($result->numRows() > 0) )
 		{
 		
 			/*
@@ -450,9 +470,9 @@ class Dictionary
 			$i=0;
 			while ($term = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 			{
-				$term->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$term->section_number.'/';
-				$term->formatted = wptexturize($term->definition).' (<a href="'.$term->url.'">'
-					.$term->section_number.'</a>)';
+				$term->url = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $term->section_number . '/';
+				$term->formatted = wptexturize($term->definition) . ' (<a href="' . $term->url . '">'
+					. $term->section_number . '</a>)';
 				$dictionary->$i = $term;
 				$i++;
 			}
@@ -469,10 +489,10 @@ class Dictionary
 			 */
 			$sql = 'SELECT term, definition, source, source_url AS url
 					FROM dictionary_general
-					WHERE term="'.$db->escape($this->term).'"';
-			if ($plural === true)
+					WHERE term="' . $db->escape($this->term) . '"';
+			if ($plural === TRUE)
 			{
-				$sql .= ' OR term = "'.$db->escape(substr($this->term, 0, -1)).'"';
+				$sql .= ' OR term = "' . $db->escape(substr($this->term, 0, -1)) . '"';
 			}
 			$sql .= ' LIMIT 1';
 			
@@ -482,7 +502,7 @@ class Dictionary
 			 * If the query fails, or if no results are found, return false -- we have
 			 * no terms for this chapter.
 			 */
-			if ( (PEAR::isError($result) === true) || ($result->numRows() === 0) )
+			if ( (PEAR::isError($result) === TRUE) || ($result->numRows() === 0) )
 			{
 				return false;
 			}
@@ -494,8 +514,8 @@ class Dictionary
 			 * this case, we have just one term.
 			 */
 			$dictionary->{0} = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-			$dictionary->formatted = wptexturize($dictionary->definition).' (<a href="'.$dictionary->url.'">'
-				.$dictionary->source.'</a>)';
+			$dictionary->formatted = wptexturize($dictionary->definition) .
+				' (<a href="' . $dictionary->url . '">' . $dictionary->source . '</a>)';
 
 		}
 		
@@ -569,13 +589,13 @@ class Dictionary
 						ON laws.structure_id=structure.id
 					WHERE
 					(
-						(dictionary.law_id='.$db->escape($this->section_id).')
+						(dictionary.law_id=' . $db->escape($this->section_id) . ')
 						AND
 						(dictionary.scope="section")
 					)';
 			foreach ($ancestry as $structure_id)
 			{
-				$sql .= ' OR (dictionary.structure_id='.$db->escape($structure_id).')';
+				$sql .= ' OR (dictionary.structure_id=' . $db->escape($structure_id) . ')';
 			}
 			$sql .= ' OR (scope="global")';
 		}
