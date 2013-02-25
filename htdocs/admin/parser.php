@@ -1,12 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-</head>
-<body>
-
 <?php
+
+/**
+ * The administrative parser page
+ * 
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.6
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+ *
+ */
+
 
 /*
  * During this import phase, report all errors.
@@ -21,40 +28,27 @@ error_reporting(1);
 ini_set('memory_limit', '128M');
 
 /*
- * Include a master settings include file.
+ * Include the PHP declarations that drive this page.
  */
-require_once $_SERVER['DOCUMENT_ROOT'].'/../includes/config.inc.php';
+require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
 
 /*
- * Include MDB2
+ * Fire up our templating engine.
  */
-require_once 'MDB2.php';
+$template = new Page;
 
 /*
- * Include the code with the functions that drive this parser.
+ * Define some page elements.
  */
-require_once CUSTOM_FUNCTIONS;
-
-/* 
- * Connect to the database.
- */
-$db =& MDB2::connect(MYSQL_DSN);
-if (PEAR::isError($db))
-{
-	die('Could not connect to the database.');
-}
-	
-/*
- * We must, must, must always connect with UTF-8.
- */
-$db->setCharset('utf8');
+$template->field->browser_title = 'Parser';
+$template->field->page_title = 'Parser';
 
 /*
  * When first loading the page, show options.
  */
 if (count($_POST) == 0)
 {
-	echo '
+	$body = '
 		<p>What do you want to do?</p>
 		<form method="post" action="/admin/parser.php">
 			<input type="hidden" name="action" value="parse" />
@@ -79,10 +73,10 @@ elseif ($_POST['action'] == 'empty')
 		$result =& $db->exec($sql);
 		if (PEAR::isError($result))
 		{
-			echo '<p>'.$sql.'</p>';
+			$body .= '<p>'.$sql.'</p>';
 			die($result->getMessage());
 		}
-		echo '<p>Deleted '.$table.'.</p>';
+		$body .= '<p>Deleted '.$table.'.</p>';
 	}
 	
 	# Reset the auto-increment counter, to avoid unreasonably large numbers.
@@ -129,7 +123,7 @@ elseif ($_POST['action'] == 'parse')
 		$parser->section = $section;
 		$parser->parse();
 		$parser->store();
-		echo '. ';
+		$body .= '. ';
 	}
 
 	/*
@@ -287,7 +281,7 @@ elseif ($_POST['action'] == 'parse')
 		}
 		else
 		{
-			echo '<p>Your <code>includes/config.inc.php</code> file could not be modified
+			$body .= '<p>Your <code>includes/config.inc.php</code> file could not be modified
 				automatically. Please edit that file and set the value of <code>API_KEY</code> to
 				<code>'.$api->key.'</code></p>';
 		}
@@ -299,7 +293,7 @@ elseif ($_POST['action'] == 'parse')
 
 	if (is_writable($downloads_dir) === false)
 	{
-		echo '<p>Error: '.$downloads_dir.' could not be written to, so bulk download files could
+		$body .= '<p>Error: '.$downloads_dir.' could not be written to, so bulk download files could
 			not be exported.</p>';
 	}
 	
@@ -331,7 +325,7 @@ elseif ($_POST['action'] == 'parse')
 			# If we cannot create a new ZIP file, bail.
 			if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
 			{
-				echo '<p>Cannot open '.$filename.' to create a new ZIP file.</p>';
+				$body .= '<p>Cannot open '.$filename.' to create a new ZIP file.</p>';
 			}
 			else
 			{
@@ -436,6 +430,15 @@ elseif ($_POST['action'] == 'parse')
 	}
 }
 
-?>
-</body>
-</html>
+
+/*
+ * Put the shorthand $body variable into its proper place.
+ */
+$template->field->body = $body;
+unset($body);
+
+/*
+ * Parse the template, which is a shortcut for a few steps that culminate in sending the content
+ * to the browser.
+ */
+$template->parse();
