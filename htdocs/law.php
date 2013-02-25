@@ -107,6 +107,18 @@ $template->field->browser_title = $law->catch_line.' ('.SECTION_SYMBOL.' '.$law-
 $template->field->page_title = SECTION_SYMBOL.'&nbsp;'.$law->section_number.' '.$law->catch_line;
 
 /*
+ * If we have Dublin Core metadata, then display it.
+ */
+if (is_object($law->dublin_core))
+{
+	$template->field->meta_tags = '';
+	foreach ($law->dublin_core AS $name => $value)
+	{
+		$template->field->meta_tags .= '<meta name="DC.'.$name.'" content="' . $value . '" />';
+	}
+}
+
+/*
  * Define the breadcrumb trail text.
  */
 $template->field->breadcrumbs = '';

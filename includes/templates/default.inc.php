@@ -9,6 +9,7 @@
 	<meta charset="utf-8"/>
 	<title>{{browser_title}}</title>
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+	{{meta_tags}}
 	<link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/master.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/print.css" type="text/css" media="print">

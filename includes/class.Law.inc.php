@@ -368,6 +368,16 @@ class Law
 		 * Provide the URL for this section.
 		 */
 		$this->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$this->section_number.'/';
+		
+		/*
+		 * Create metadata in the Dublin Core format.
+		 */
+		$this->dublin_core = new stdClass();
+		$this->dublin_core->Title = $this->catch_line;
+		$this->dublin_core->Type = 'Text';
+		$this->dublin_core->Format = 'text/html';
+		$this->dublin_core->Identifier = SECTION_SYMBOL . ' ' . $this->section_number;
+		$this->dublin_core->Relation = LAWS_NAME;
 	
 		if ($this->config->render_html === TRUE)
 		{
