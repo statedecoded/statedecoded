@@ -273,6 +273,20 @@ class Law
 		{
 			$this->metadata = Law::get_metadata();
 		}
+
+		/*
+		 * Extract every year named in the history.
+		 */
+		preg_match_all('/(18|19|20)([0-9]{2})/', $this->history, $years);
+		if (count($years[0]) > 0)
+		{
+			$i=0;
+			foreach ($years[0] as $year)
+			{
+				$this->amendment_years->$i = $year;
+				$i++;
+			}
+		}
 		
 		/*
 		 * If this state has its own State class, then we can potentially use some of its methods.
@@ -333,6 +347,17 @@ class Law
 				}
 			}
 			
+			/*
+			 * Generate citations for this law.
+			 */
+			if (method_exists($state, 'citations'))
+			{
+				$state->section_number = $this->section_number;
+				$state->amendment_years = $this->amendment_years;
+				$state->citations();
+				$this->citation = $state->citation;
+			}
+			
 		} // end class_exists('State')
 		
 		/*
@@ -346,20 +371,6 @@ class Law
 		if ($this->config->get_related_laws == TRUE)
 		{
 			$this->related = Law::get_related();
-		}
-
-		/*
-		 * Extract every year named in the history.
-		 */
-		preg_match_all('/(18|19|20)([0-9]{2})/', $this->history, $years);
-		if (count($years[0]) > 0)
-		{
-			$i=0;
-			foreach ($years[0] as $year)
-			{
-				$this->amendment_years->$i = $year;
-				$i++;
-			}
 		}
 		
 		/*

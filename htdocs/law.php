@@ -279,11 +279,18 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 
 if (is_object($law->citation))
 {
+	
 	$sidebar .= '<section id="cite-as">
 				<h1>Cite As</h1>
-				<p>Official: <span class="official">'.$law->citation->official.'</span><br />
-				Universal: <span class="universal">'.$law->citation->universal.'</span></p>
+				<ul>';
+	foreach ($law->citation as $citation)
+	{
+		$sidebar .= '<li>'.$citation->label.': <span class="' . strtolower($citation->label) . '">'
+			. $citation->text .'</span></li>';
+	}
+	$sidebar .= '</ul>
 			</section>';
+	
 }
 
 $sidebar .= '<section id="elsewhere">
