@@ -784,51 +784,77 @@ class Parser
 			// Calculate the scope of these definitions using the first line.
 			if (reset($paragraphs) == $paragraph)
 			{
-				if (
-					(stripos($paragraph, 'as used in this chapter') !== false)
-					||
-					(stripos($paragraph, 'are used in this chapter') !== false)
-					||
-					(stripos($paragraph, 'for the purpose of this chapter') !== false)
-					||
-					(stripos($paragraph, 'for purposes of this chapter') !== false)
-					||
-					(stripos($paragraph, 'as used in this article') !== false)
-					||
-					(stripos($paragraph, 'as used in this act') !== false)
-				   )
+			
+				/*
+				 * Gather up a list of structural labels is, and determine the length of the longest
+				 * one, which we'll use to narrow the scope of our search for the use of structural
+				 * labels within the text.
+				 */
+				$structure_labels = explode(',', STRUCTURE);
+				usort($structure_labels,'sort');
+				$longest_label = strlen(current($structure_label));
+				
+				/*
+				 * The candidate phrases that indicate that the scope of one or more definitions is
+				 * about to be provided.
+				 */
+				$scope_indicators = array(	' are used in this ',
+											' for purposes of this ',
+											' for the purpose of this ',
+											' in this ',
+										);
+				
+				/*
+				 * Iterate through every scope indicator.
+				 */
+				foreach ($scope_indicators as $scope_indicator)
 				{
-					$scope = 'chapter';
-				}
-				
-				elseif (
-						(stripos($paragraph, 'in this title') !== false)
-					)
-				
-				{
-					$scope = 'title';
-				}
-				
-				elseif	(
-							(stripos($paragraph, 'as used in this section') !== false)
-							||
-							(stripos($paragraph, 'for purposes of this section') !== false)
-						)
 					
-				{
-					$scope = 'section';
-				}
-				
-				elseif (stripos($paragraph, 'as used in this Code') !== false)
-				{
-					$scope = 'global';
-				}
-				
-				// If we can't calculate scope, then we can assume safely that it's specific to this
-				// chapter.
-				else
-				{
-					$scope = 'chapter';
+					/*
+					 * See if the scope indicator is present in this paragraph.
+					 */
+					$pos = stripos($paragraph, $scope_indicator);
+					
+					/*
+					 * The term was found.
+					 */
+					if ($pos !== FALSE)
+					{
+						/*
+						 * Now figure out the specified scope by examining the text that appears immediately after
+						 * the scope indicator. Pull out as many character as the longest structural label.
+						 */
+						$phrase = substr( $paragraph, ($pos + strlen($scope_indicator)), $longest_label )
+						
+						/*
+						 * Iterate through the structural labels and check each one to see if it's present in the
+						 * phrase that we're examining.
+						 */
+						foreach ($structure_labels as $structure_label)
+						{
+							if (stripos($phrase, $structure_label) !== FALSE)
+							{
+								
+								/*
+								 * We've made a match -- we've successfully identified the scope of these
+								 * definitions.
+								 */
+								$scope = $structure_label;
+								
+								/*
+								 * Now that we have a match, we can break out of both the containing foreach() and
+								 * its parent foreach().
+								 */
+								break(2);
+							}
+							
+							/*
+							 * If we can't calculate scope, then let’s assume that it's specific to this
+							 * chapter, as most term's scope is.
+							 */
+							$scope = 'chapter';
+						}
+					}
 				}
 				
 				// That's all we're going to get out of this paragraph, so move onto the next one.
