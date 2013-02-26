@@ -750,9 +750,10 @@ class Parser
 			return false;
 		}
 		
-		// Measure whether there are more straight quotes or directional quotes in this passage
-		// of text, to determine which type are used in these definitions. We double the count of
-		// directional quotes since we're only counting one of the two directions.
+		/* Measure whether there are more straight quotes or directional quotes in this passage
+		 * of text, to determine which type are used in these definitions. We double the count of
+		 * directional quotes since we're only counting one of the two directions.
+		 */
 		if ( substr_count($this->text, '"') > (substr_count($this->text, '”') * 2) )
 		{
 			$quote_type = 'straight';
@@ -764,24 +765,36 @@ class Parser
 			$quote_sample = '”';
 		}
 		
-		// Break up this section into paragraphs.
+		/*
+		 * Break up this section into paragraphs.
+		 */
 		$paragraphs = explode('</p><p>', $this->text);
 		
-		// Create the empty array that we'll build up with the definitions found in this section.
+		/*
+		 * Create the empty array that we'll build up with the definitions found in this section.
+		 */
 		$definitions = array();
 		
-		// Step through each paragraph and determine which contain definitions.
+		/*
+		 * Step through each paragraph and determine which contain definitions.
+		 */
 		foreach ($paragraphs as &$paragraph)
 		{
 
-			// Any remaining paired paragraph tags are within an individual, multi-part definition,
-			// and can be turned into spaces.
+			/*
+			 * Any remaining paired paragraph tags are within an individual, multi-part definition,
+			 * and can be turned into spaces.
+			 */
 			$paragraph = str_replace('</p><p>', ' ', $paragraph);
 			
-			// Strip out any remaining HTML.
+			/*
+			 * Strip out any remaining HTML.
+			 */
 			$paragraph = strip_tags($paragraph);
 			
-			// Calculate the scope of these definitions using the first line.
+			/*
+			 * Calculate the scope of these definitions using the first line.
+			 */
 			if (reset($paragraphs) == $paragraph)
 			{
 			
@@ -857,12 +870,17 @@ class Parser
 					}
 				}
 				
-				// That's all we're going to get out of this paragraph, so move onto the next one.
+				/*
+				 * That's all we're going to get out of this paragraph, so move onto the next one.
+				 */
 				next;
+				
 			}
 			
-			// All defined terms are surrounded by quotation marks, so let's use that as a criteria
-			// to round down our candidate paragraphs.
+			/*
+			 * All defined terms are surrounded by quotation marks, so let's use that as a criteria
+			 * to round down our candidate paragraphs.
+			 */
 			if (strpos($paragraph, $quote_sample) !== false)
 			{
 				if (
@@ -882,18 +900,24 @@ class Parser
 				   )
 				{
 				
-					// Extract every word in quotation marks in this paragraph as a term that's
-					// being defined here. Most definitions will have just one term being defined,
-					// but some will have two or more.
+					/*
+					 * Extract every word in quotation marks in this paragraph as a term that's
+					 * being defined here. Most definitions will have just one term being defined,
+					 * but some will have two or more.
+					 */
 					preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
 					
-					// If we've made any matches.
+					/*
+					 * If we've made any matches.
+					 */
 					if ( ($terms !== false) && (count($terms) > 0) )
 					{
 						
-						// We only need the first element in this multi-dimensional array, which has
-						// the actual matched term. It includes the quotation marks in which the
-						// term is enclosed, so we strip those out.
+						/*
+						 * We only need the first element in this multi-dimensional array, which has
+						 * the actual matched term. It includes the quotation marks in which the
+						 * term is enclosed, so we strip those out.
+						 */
 						if ($quote_type == 'straight')
 						{
 							$terms = str_replace('"', '', $terms[0]);
@@ -904,30 +928,40 @@ class Parser
 							$terms = str_replace('”', '', $terms);
 						}
 						
-						// Eliminate whitespace.
+						/*
+						 * Eliminate whitespace.
+						 */
 						$terms = array_map('trim', $terms);
 						
-						// Lowercase most (but not necessarily all) terms. Any term that contains
-						// any lowercase characters will be made entirely lowercase. But any term
-						// that is in all caps is surely an acronym, and should be stored in its
-						// original case so that we don't end up with overzealous matches. For
-						// example, "CA" is a definition in section 3.2-4600, and we don't want to
-						// match every time "ca" appears within a word. (Though note that we only
-						// match terms surrounded by word boundaries.)
+						/* Lowercase most (but not necessarily all) terms. Any term that contains
+						 * any lowercase characters will be made entirely lowercase. But any term
+						 * that is in all caps is surely an acronym, and should be stored in its
+						 * original case so that we don't end up with overzealous matches. For
+						 * example, a two-letter acronym like "CA" is a valid (real-world)
+						 * definition, and we don't want to match every time "ca" appears within a
+						 * word. (Though note that we only match terms surrounded by word
+						 * boundaries.)
+						 */
 						foreach ($terms as &$term)
 						{
-							// Drop noise words that occur in lists of words.
+							/*
+							 * Drop noise words that occur in lists of words.
+							 */
 							if (($term == 'and') || ($term == 'or'))
 							{
 								unset($term);
 								continue;
 							}
 						
-							// Step through each character in this word.
+							/*
+							 * Step through each character in this word.
+							 */
 							for ($i=0; $i<strlen($term); $i++)
 							{
-								// If there are any lowercase characters, then make the whole thing
-								// lowercase.
+								/*
+								 * If there are any lowercase characters, then make the whole thing
+								 * lowercase.
+								 */
 								if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
 								{
 									$term = strtolower($term);
@@ -936,47 +970,71 @@ class Parser
 							}
 						}
 						
-						// This is absolutely necessary. Without it, the following foreach() loop
-						// will simply use $term as-is through each loop, rather than spawning new
-						// instances based on $terms. This is presumably a bug in the current
-						// version of PHP, because it surely doesn't make any sense.
+						/*
+						 * This is absolutely necessary. Without it, the following foreach() loop
+						 * will simply use $term as-is through each loop, rather than spawning new
+						 * instances based on $terms. This is presumably a bug in the current
+						 * version of PHP (5.2), because it surely doesn't make any sense.
+						 */
 						unset($term);
 						
-						// Step through all of our matches and save them as discrete definitions.
+						/*
+						 * Step through all of our matches and save them as discrete definitions.
+						 */
 						foreach ($terms as $term)
 						{
 							
-							// It's possible for a definition to be preceded by a subsection number.
-							// We want to pare down our definition down to the minimum, which means
-							// excluding that. Solution: Start definitions at the first quotation
-							// mark.
-							$paragraph = substr($paragraph, strpos($paragraph, '"'));
+							/*
+							 * It's possible for a definition to be preceded by a subsection number.
+							 * We want to pare down our definition down to the minimum, which means
+							 * excluding that. Solution: Start definitions at the first quotation
+							 * mark.
+							 */
+							if ($quote_type == 'straight')
+							{
+								$paragraph = substr($paragraph, strpos($paragraph, '"'));
+							}
+							elseif ($quote_type == 'directional')
+							{
+								$paragraph = substr($paragraph, strpos($paragraph, '“'));
+							}
 							
-							// Comma-separated lists of multiple words being defined need to have
-							// the trailing commas removed.
+							/*
+							 * Comma-separated lists of multiple words being defined need to have
+							 * the trailing commas removed.
+							 */
 							if (substr($term, -1) == ',')
 							{
 								$term = substr($term, 0, -1);
 							}
 							
-							// If we don't yet have a record of this term.
+							/*
+							 * If we don't yet have a record of this term.
+							 */
 							if (!isset($definitions[$term]))
 							{
-								// Append this definition to our list of definitions.
+								/*
+								 * Append this definition to our list of definitions.
+								 */
 								$definitions[$term] = $paragraph;
 							}
 							
-							// If we already have a record of this term. This is for when a word is
-							// defined twice, once to indicate what it means, and one to list what it
-							// doesn't mean. This is actually pretty common.
+							/* If we already have a record of this term. This is for when a word is
+							 * defined twice, once to indicate what it means, and one to list what it
+							 * doesn't mean. This is actually pretty common.
+							 */
 							else
 							{
-								// Make sure that they're not identical -- this can happen if the
-								// defined term is repeated, in quotation marks, in the body of the
-								// definition.
+								/*
+								 * Make sure that they're not identical -- this can happen if the
+								 * defined term is repeated, in quotation marks, in the body of the
+								 * definition.
+								 */
 								if ( trim($definitions[$term]) != trim($paragraph) )
 								{
-									// Append this definition to our list of definitions.
+									/*
+									 * Append this definition to our list of definitions.
+									 */
 									$definitions[$term] .= ' '.$paragraph;
 								}
 							}
@@ -985,7 +1043,9 @@ class Parser
 				} // end this candidate paragraph (level 1)
 			} // end this candidate paragraph (level 2)
 			
-			// We don't want to accidentally use this the next time we loop through.
+			/*
+			 * We don't want to accidentally use this the next time we loop through.
+			 */
 			unset($terms);
 		}
 		
@@ -994,15 +1054,19 @@ class Parser
 			return false;
 		}
 		
-		// Make the list of definitions a subset of a larger variable, so that we can store things
-		// other than terms.
+		/*
+		 * Make the list of definitions a subset of a larger variable, so that we can store things
+		 * other than terms.
+		 */
 		$tmp = array();
 		$tmp['terms'] = $definitions;
 		$tmp['scope'] = $scope;
 		$definitions = $tmp;
 		unset($tmp);
 			
-		// Return our list of definitions, converted from an array to an object.
+		/*
+		 * Return our list of definitions, converted from an array to an object.
+		 */
 		return (object) $definitions;
 
 	} // end extract_definitions()
