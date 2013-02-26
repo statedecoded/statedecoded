@@ -251,7 +251,7 @@ function send_404()
 
 
 /**
- * This is relied on by usort() in law.php.
+ * This is relied on by usort() in law.php and by extract_definitions().
  */
 function sort_by_length($a, $b)
 {
