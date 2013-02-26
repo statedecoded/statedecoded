@@ -19,6 +19,58 @@
 class State
 {
 
+	/**
+	 * Generate the URL to view a law on the official government website
+	 *
+	 * @return the URL or false
+	 */
+	/*official_url()
+	{
+	
+		if (!isset($this->section_number))
+		{
+			return false;
+		}
+		
+		return 'http://example.gov/laws/' . $this->section_number . '/';
+		
+	}*/
+	
+	/**
+	 * Render the often-confusing history text for a law as plain English.
+	 *
+	 * @return the history text or false
+	 */
+	/*function translate_history()
+	{
+		
+	}
+	*/
+	
+	/**
+	 * Generate one or more citations for a law
+	 * 
+	 * Should create an object named "citation" (singular) with one numbered entry for each citation
+	 * style, with values of "label" and "text," the label describing the type of citation (e.g.
+	 * "Official," "Universal") and the text being the citation itself.
+	 * 
+	 * @return true or false
+	 */
+	/*function citations()
+	{
+	
+		if (!isset($this->section_number))
+		{
+			return false;
+		}
+		
+		$this->citation->{0}->label = 'Official';
+		$this->citation->{0}->text = 'St. Code § '.$this->section_number;
+		
+		return true;
+	}
+	*/
+	
 }
 
 
