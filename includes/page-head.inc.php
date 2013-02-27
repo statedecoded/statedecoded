@@ -112,11 +112,6 @@ require('functions.inc.php');
 require(CUSTOM_FUNCTIONS);
 
 /*
- * Include WordPress's texturize function, for typographical niceties.
- */
-require('texturize.inc.php');
-
-/*
  * Include the help text.
  */
 require('help-text.inc.php');
