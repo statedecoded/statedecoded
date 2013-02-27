@@ -885,165 +885,183 @@ class Parser
 			 */
 			if (strpos($paragraph, $quote_sample) !== false)
 			{
-				if (
-					(strpos($paragraph, ' mean ') !== false)
-					|| 
-					(strpos($paragraph, ' means ') !== false)
-					|| 
-					(strpos($paragraph, ' shall include ') !== false)
-					|| 
-					(strpos($paragraph, ' includes ') !== false)
-					|| 
-					(strpos($paragraph, ' has the same meaning as ') !== false)
-					||
-					(strpos($paragraph, ' shall be construed ') !== false)
-					||
-					(strpos($paragraph, ' shall also be construed to mean ') !== false)
-				   )
+				
+				/*
+				 * Create a list of every phrase that can be used to link a term to its defintion,
+				 * e.g., "'People' has the same meaning as 'persons.'"
+				 */
+				$linking_phrases = array(	' mean ',
+											' means ',
+											' shall include ',
+											' includes ',
+											' has the same meaning as ',
+											' shall be construed ',
+											' shall also be construed to mean ',
+										);
+				
+				/*
+				 * Iterate through every linking phrase and see if it's present in this paragraph.
+				 * We need to find the right one that will allow us to connect a term to its
+				 * definition.
+				 */
+				foreach ($linking_phrases as $linking_phrase)
 				{
 				
-					/*
-					 * Extract every word in quotation marks in this paragraph as a term that's
-					 * being defined here. Most definitions will have just one term being defined,
-					 * but some will have two or more.
-					 */
-					preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
-					
-					/*
-					 * If we've made any matches.
-					 */
-					if ( ($terms !== false) && (count($terms) > 0) )
+					if (strpos($paragraph, $linking_phrase) !== false)
 					{
+					
+						/*
+						 * Extract every word in quotation marks in this paragraph as a term that's
+						 * being defined here. Most definitions will have just one term being
+						 * defined, but some will have two or more.
+						 */
+						preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
 						
 						/*
-						 * We only need the first element in this multi-dimensional array, which has
-						 * the actual matched term. It includes the quotation marks in which the
-						 * term is enclosed, so we strip those out.
+						 * If we've made any matches.
 						 */
-						if ($quote_type == 'straight')
-						{
-							$terms = str_replace('"', '', $terms[0]);
-						}
-						elseif ($quote_type == 'directional')
-						{
-							$terms = str_replace('“', '', $terms[0]);
-							$terms = str_replace('”', '', $terms);
-						}
-						
-						/*
-						 * Eliminate whitespace.
-						 */
-						$terms = array_map('trim', $terms);
-						
-						/* Lowercase most (but not necessarily all) terms. Any term that contains
-						 * any lowercase characters will be made entirely lowercase. But any term
-						 * that is in all caps is surely an acronym, and should be stored in its
-						 * original case so that we don't end up with overzealous matches. For
-						 * example, a two-letter acronym like "CA" is a valid (real-world)
-						 * definition, and we don't want to match every time "ca" appears within a
-						 * word. (Though note that we only match terms surrounded by word
-						 * boundaries.)
-						 */
-						foreach ($terms as &$term)
-						{
-							/*
-							 * Drop noise words that occur in lists of words.
-							 */
-							if (($term == 'and') || ($term == 'or'))
-							{
-								unset($term);
-								continue;
-							}
-						
-							/*
-							 * Step through each character in this word.
-							 */
-							for ($i=0; $i<strlen($term); $i++)
-							{
-								/*
-								 * If there are any lowercase characters, then make the whole thing
-								 * lowercase.
-								 */
-								if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
-								{
-									$term = strtolower($term);
-									break;
-								}
-							}
-						}
-						
-						/*
-						 * This is absolutely necessary. Without it, the following foreach() loop
-						 * will simply use $term as-is through each loop, rather than spawning new
-						 * instances based on $terms. This is presumably a bug in the current
-						 * version of PHP (5.2), because it surely doesn't make any sense.
-						 */
-						unset($term);
-						
-						/*
-						 * Step through all of our matches and save them as discrete definitions.
-						 */
-						foreach ($terms as $term)
+						if ( ($terms !== false) && (count($terms) > 0) )
 						{
 							
 							/*
-							 * It's possible for a definition to be preceded by a subsection number.
-							 * We want to pare down our definition down to the minimum, which means
-							 * excluding that. Solution: Start definitions at the first quotation
-							 * mark.
+							 * We only need the first element in this multi-dimensional array, which
+							 * has the actual matched term. It includes the quotation marks in which
+							 * the term is enclosed, so we strip those out.
 							 */
 							if ($quote_type == 'straight')
 							{
-								$paragraph = substr($paragraph, strpos($paragraph, '"'));
+								$terms = str_replace('"', '', $terms[0]);
 							}
 							elseif ($quote_type == 'directional')
 							{
-								$paragraph = substr($paragraph, strpos($paragraph, '“'));
+								$terms = str_replace('“', '', $terms[0]);
+								$terms = str_replace('”', '', $terms);
 							}
 							
 							/*
-							 * Comma-separated lists of multiple words being defined need to have
-							 * the trailing commas removed.
+							 * Eliminate whitespace.
 							 */
-							if (substr($term, -1) == ',')
+							$terms = array_map('trim', $terms);
+							
+							/* Lowercase most (but not necessarily all) terms. Any term that
+							 * contains any lowercase characters will be made entirely lowercase.
+							 * But any term that is in all caps is surely an acronym, and should be
+							 * stored in its original case so that we don't end up with overzealous
+							 * matches. For example, a two-letter acronym like "CA" is a valid
+							 * (real-world) definition, and we don't want to match every time "ca"
+							 * appears within a word. (Though note that we only match terms
+							 * surrounded by word boundaries.)
+							 */
+							foreach ($terms as &$term)
 							{
-								$term = substr($term, 0, -1);
+								/*
+								 * Drop noise words that occur in lists of words.
+								 */
+								if (($term == 'and') || ($term == 'or'))
+								{
+									unset($term);
+									continue;
+								}
+							
+								/*
+								 * Step through each character in this word.
+								 */
+								for ($i=0; $i<strlen($term); $i++)
+								{
+									/*
+									 * If there are any lowercase characters, then make the whole
+									 * thing lowercase.
+									 */
+									if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
+									{
+										$term = strtolower($term);
+										break;
+									}
+								}
 							}
 							
 							/*
-							 * If we don't yet have a record of this term.
+							 * This is absolutely necessary. Without it, the following foreach()
+							 * loop will simply use $term as-is through each loop, rather than
+							 * spawning new instances based on $terms. This is presumably a bug in
+							 * the current version of PHP (5.2), because it surely doesn't make any
+							 * sense.
 							 */
-							if (!isset($definitions[$term]))
-							{
-								/*
-								 * Append this definition to our list of definitions.
-								 */
-								$definitions[$term] = $paragraph;
-							}
+							unset($term);
 							
-							/* If we already have a record of this term. This is for when a word is
-							 * defined twice, once to indicate what it means, and one to list what it
-							 * doesn't mean. This is actually pretty common.
+							/*
+							 * Step through all of our matches and save them as discrete
+							 * definitions.
 							 */
-							else
+							foreach ($terms as $term)
 							{
+								
 								/*
-								 * Make sure that they're not identical -- this can happen if the
-								 * defined term is repeated, in quotation marks, in the body of the
-								 * definition.
+								 * It's possible for a definition to be preceded by a subsection
+								 * number. We want to pare down our definition down to the minimum,
+								 * which means excluding that. Solution: Start definitions at the
+								 * first quotation mark.
 								 */
-								if ( trim($definitions[$term]) != trim($paragraph) )
+								if ($quote_type == 'straight')
+								{
+									$paragraph = substr($paragraph, strpos($paragraph, '"'));
+								}
+								elseif ($quote_type == 'directional')
+								{
+									$paragraph = substr($paragraph, strpos($paragraph, '“'));
+								}
+								
+								/*
+								 * Comma-separated lists of multiple words being defined need to
+								 * have the trailing commas removed.
+								 */
+								if (substr($term, -1) == ',')
+								{
+									$term = substr($term, 0, -1);
+								}
+								
+								/*
+								 * If we don't yet have a record of this term.
+								 */
+								if (!isset($definitions[$term]))
 								{
 									/*
 									 * Append this definition to our list of definitions.
 									 */
-									$definitions[$term] .= ' '.$paragraph;
+									$definitions[$term] = $paragraph;
 								}
-							}
-						} // end iterating through matches
-					} // end dealing with matches
-				} // end this candidate paragraph (level 1)
-			} // end this candidate paragraph (level 2)
+								
+								/* If we already have a record of this term. This is for when a word
+								 * is defined twice, once to indicate what it means, and one to list
+								 * what it doesn't mean. This is actually pretty common.
+								 */
+								else
+								{
+									/*
+									 * Make sure that they're not identical -- this can happen if
+									 * the defined term is repeated, in quotation marks, in the body
+									 * of the definition.
+									 */
+									if ( trim($definitions[$term]) != trim($paragraph) )
+									{
+										/*
+										 * Append this definition to our list of definitions.
+										 */
+										$definitions[$term] .= ' '.$paragraph;
+									}
+								}
+							} // end iterating through matches
+						} // end dealing with matches
+						
+						/*
+						 * Because we have identified the linking phrase for this paragraph, we no
+						 * longer need to continue to iterate through linking phrases.
+						 */
+						break;
+						
+					} // end matched linking phrase
+				} // end iterating through linking phrases
+			} // end this candidate paragraph
 			
 			/*
 			 * We don't want to accidentally use this the next time we loop through.
