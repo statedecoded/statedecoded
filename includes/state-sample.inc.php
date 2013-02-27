@@ -829,7 +829,7 @@ class Parser
 				 * labels within the text.
 				 */
 				$structure_labels = explode(',', STRUCTURE);
-				usort($structure_labels,'sort');
+				usort($structure_labels, 'sort_by_length');
 				$longest_label = strlen(current($structure_label));
 				
 				/*
