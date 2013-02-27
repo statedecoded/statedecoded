@@ -879,10 +879,10 @@ class Parser
 							
 							/*
 							 * If we can't calculate scope, then let’s assume that it's specific to
-							 * this chapter, as most term's scope is.
+							 * the most basic structural unit -- the individual law -- for the sake
+							 * of caution. We pull that off of the end of the STRUCTURE constant.
 							 */
-							/// THIS IS WRONG
-							$scope = 'chapter';
+							$scope = array_shift(array_reverse(explode(',', STRUCTURE)));
 						}
 					}
 				}
