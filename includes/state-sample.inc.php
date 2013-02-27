@@ -834,14 +834,15 @@ class Parser
 					if ($pos !== FALSE)
 					{
 						/*
-						 * Now figure out the specified scope by examining the text that appears immediately after
-						 * the scope indicator. Pull out as many character as the longest structural label.
+						 * Now figure out the specified scope by examining the text that appears
+						 * immediately after the scope indicator. Pull out as many character as the
+						 * longest structural label.
 						 */
 						$phrase = substr( $paragraph, ($pos + strlen($scope_indicator)), $longest_label )
 						
 						/*
-						 * Iterate through the structural labels and check each one to see if it's present in the
-						 * phrase that we're examining.
+						 * Iterate through the structural labels and check each one to see if it's
+						 * present in the phrase that we're examining.
 						 */
 						foreach ($structure_labels as $structure_label)
 						{
@@ -849,22 +850,23 @@ class Parser
 							{
 								
 								/*
-								 * We've made a match -- we've successfully identified the scope of these
-								 * definitions.
+								 * We've made a match -- we've successfully identified the scope of
+								 * these definitions.
 								 */
 								$scope = $structure_label;
 								
 								/*
-								 * Now that we have a match, we can break out of both the containing foreach() and
-								 * its parent foreach().
+								 * Now that we have a match, we can break out of both the containing
+								 * foreach() and its parent foreach().
 								 */
 								break(2);
 							}
 							
 							/*
-							 * If we can't calculate scope, then let’s assume that it's specific to this
-							 * chapter, as most term's scope is.
+							 * If we can't calculate scope, then let’s assume that it's specific to
+							 * this chapter, as most term's scope is.
 							 */
+							/// THIS IS WRONG
 							$scope = 'chapter';
 						}
 					}
