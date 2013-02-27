@@ -457,36 +457,6 @@ class Parser
 			$i++;
 		}
 		
-		// Trawl through the text for definitions, if the section contains "Definitions" in the
-		// title or if the current chapter is the chapter that we defined in the site config as
-		// containing the global definitions. We could just confirm that title is exactly
-		// "Definitions.", but sometimes it's preceded with other text, e.g. "(Effective July 1,
-		// 2012) ".
-		if	(
-				(strpos($this->code->name, 'Definition') !== false)
-				||
-				(strpos($this->code->name, 'Meaning of certain terms.') !== false)
-				||
-				(strpos($this->code->name, 'Meaning of ') !== false)
-				||
-				(strpos($this->code->text, '" mean ') !== false)
-				||
-				(strpos($this->code->text, '" means ') !== false)
-				||
-				(strpos($this->code->text, '" shall include ') !== false)
-				||
-				(strpos($this->code->text, '" includes ') !== false)
-				||
-				(strpos($this->code->text, '" has the same meaning ') !== false)
-				||
-				(strpos($this->code->text, ' as used in this ') !== false)
-				||
-				(strpos($this->code->text, ' for the purpose of this ') !== false)
-				||
-				(strpos($this->code->text, ' for purposes of this ') !== false)
-				||
-				($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
-			)
 		{
 			
 			$dictionary = new Parser;
