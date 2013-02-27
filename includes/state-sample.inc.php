@@ -749,6 +749,31 @@ class Parser
 		{
 			return false;
 		}
+				
+		/*
+		 * The candidate phrases that indicate that the scope of one or more definitions are about
+		 * to be provided.
+		 */
+		$scope_indicators = array(	' are used in this ',
+									' when used in this ',
+									' for purposes of this ',
+									' for the purpose of this ',
+									' in this ',
+								);
+				
+		/*
+		 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
+		 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
+		 * spaces, to avoid erroneously matching fragments of other terms.
+		 */
+		$linking_phrases = array(	' mean ',
+									' means ',
+									' shall include ',
+									' includes ',
+									' has the same meaning as ',
+									' shall be construed ',
+									' shall also be construed to mean ',
+								);
 		
 		/* Measure whether there are more straight quotes or directional quotes in this passage
 		 * of text, to determine which type are used in these definitions. We double the count of
@@ -806,16 +831,6 @@ class Parser
 				$structure_labels = explode(',', STRUCTURE);
 				usort($structure_labels,'sort');
 				$longest_label = strlen(current($structure_label));
-				
-				/*
-				 * The candidate phrases that indicate that the scope of one or more definitions is
-				 * about to be provided.
-				 */
-				$scope_indicators = array(	' are used in this ',
-											' for purposes of this ',
-											' for the purpose of this ',
-											' in this ',
-										);
 				
 				/*
 				 * Iterate through every scope indicator.
@@ -885,19 +900,6 @@ class Parser
 			 */
 			if (strpos($paragraph, $quote_sample) !== false)
 			{
-				
-				/*
-				 * Create a list of every phrase that can be used to link a term to its defintion,
-				 * e.g., "'People' has the same meaning as 'persons.'"
-				 */
-				$linking_phrases = array(	' mean ',
-											' means ',
-											' shall include ',
-											' includes ',
-											' has the same meaning as ',
-											' shall be construed ',
-											' shall also be construed to mean ',
-										);
 				
 				/*
 				 * Iterate through every linking phrase and see if it's present in this paragraph.
