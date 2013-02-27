@@ -749,7 +749,7 @@ class Parser
 		{
 			return false;
 		}
-				
+			
 		/*
 		 * The candidate phrases that indicate that the scope of one or more definitions are about
 		 * to be provided.
@@ -760,7 +760,7 @@ class Parser
 									' for the purpose of this ',
 									' in this ',
 								);
-				
+		
 		/*
 		 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
 		 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
@@ -853,7 +853,7 @@ class Parser
 						 * immediately after the scope indicator. Pull out as many character as the
 						 * longest structural label.
 						 */
-						$phrase = substr( $paragraph, ($pos + strlen($scope_indicator)), $longest_label )
+						$phrase = substr( $paragraph, ($pos + strlen($scope_indicator)), $longest_label );
 						
 						/*
 						 * Iterate through the structural labels and check each one to see if it's
