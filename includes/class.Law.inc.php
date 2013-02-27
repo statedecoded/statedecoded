@@ -719,7 +719,7 @@ class Law
 			/*
 			 * Turn every pair of newlines into carriage returns
 			 */
-			$section->text = str_replace(PHP_EOL.PHP_EOL, '<br /><br />', $section->text);
+			$section->text = wpautop($section->text);
 			
 			/*
 			 * Use our dictionary to embed dictionary terms in the form of span titles.
