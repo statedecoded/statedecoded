@@ -457,63 +457,61 @@ class Parser
 			$i++;
 		}
 		
+		// Trawl through the text for definitions.
+		$dictionary = new Parser;
+		
+		// Pass this section of text to $dictionary.
+		$dictionary->text = $this->code->text;
+		
+		// Get a normalized listing of definitions.
+		$definitions = $dictionary->extract_definitions();
+		
+		// Override the calculated scope for global definitions.
+		if ($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
+		{
+			$definitions->scope = 'global';
+		}
+		
+		// If any definitions were found in this text, store them.
+		if ($definitions !== false)
 		{
 			
-			$dictionary = new Parser;
+			// Populate the appropriate variables.
+			$dictionary->terms = $definitions->terms;
+			$dictionary->law_id = $law_id;
+			$dictionary->scope = $definitions->scope;
+			$dictionary->structure_id = $this->code->structure_id;
 			
-			// Pass this section of text to $dictionary.
-			$dictionary->text = $this->code->text;
-			
-			// Get a normalized listing of definitions.
-			$definitions = $dictionary->extract_definitions();
-			
-			// Override the calculated scope for global definitions.
-			if ($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
+			// If the scope of this definition isn't section-specific, and isn't global, then
+			// find the ID of the structural unit that is the limit of its scope.
+			if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
 			{
-				$definitions->scope = 'global';
-			}
-			
-			// If any definitions were found in this text, store them.
-			if ($definitions !== false)
-			{
-				
-				// Populate the appropriate variables.
-				$dictionary->terms = $definitions->terms;
-				$dictionary->law_id = $law_id;
-				$dictionary->scope = $definitions->scope;
-				$dictionary->structure_id = $this->code->structure_id;
-				
-				// If the scope of this definition isn't section-specific, and isn't global, then
-				// find the ID of the structural unit that is the limit of its scope.
-				if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
-				{
-					$find_scope = new Parser;
-					$find_scope->label = $dictionary->scope;
-					$find_scope->structure_id = $dictionary->structure_id;
-					$dictionary->structure_id = $find_scope->find_structure_parent();
-					if ($dictionary->structure_id === false)
-					{
-						unset($dictionary->structure_id);
-					}
-				}
-				
-				// If the scope isn't a structural unit, then delete it, so that we don't store it
-				// and inadvertently limit the scope.
-				else
+				$find_scope = new Parser;
+				$find_scope->label = $dictionary->scope;
+				$find_scope->structure_id = $dictionary->structure_id;
+				$dictionary->structure_id = $find_scope->find_structure_parent();
+				if ($dictionary->structure_id === false)
 				{
 					unset($dictionary->structure_id);
 				}
-				
-				// Determine the position of this structural unit.
-				$structure = array_reverse(explode(',', STRUCTURE));
-				array_push($structure, 'global');
-				
-				// Find and return the position of this structural unit in the hierarchical stack.
-				$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
-				
-				// Store these definitions in the database.
-				$dictionary->store_definitions();
 			}
+			
+			// If the scope isn't a structural unit, then delete it, so that we don't store it
+			// and inadvertently limit the scope.
+			else
+			{
+				unset($dictionary->structure_id);
+			}
+			
+			// Determine the position of this structural unit.
+			$structure = array_reverse(explode(',', STRUCTURE));
+			array_push($structure, 'global');
+			
+			// Find and return the position of this structural unit in the hierarchical stack.
+			$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
+			
+			// Store these definitions in the database.
+			$dictionary->store_definitions();
 		}
 		
 		// Memory management
