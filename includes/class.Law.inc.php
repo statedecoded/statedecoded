@@ -636,10 +636,6 @@ class Law
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
-		if ($this->catch_line == 'Definitions.')
-		{
-			$dictionary->scope = 'global';
-		}
 		$terms = $dictionary->term_list();
 
 
