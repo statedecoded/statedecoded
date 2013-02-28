@@ -93,6 +93,7 @@ $template->field->javascript .= "var api_key = '".API_KEY."';";
 $template->field->javascript_files = '
 	<script src="/js/jquery.qtip.min.js"></script>
 	<script src="/js/jquery.slideto.min.js"></script>
+	<script src="/js/jquery.color-2.1.1.min.js"></script>
 	<script src="/js/mousetrap.min.js"></script>
 	<script src="/js/functions.js"></script>';
 
