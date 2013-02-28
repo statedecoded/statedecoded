@@ -32,20 +32,23 @@ $(document).ready(function () {
 	/* Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
 	originating traffic, the second is for when clicking on an anchor link within a page. */
 	if (document.location.hash) {
+	
 		$(document.location.hash).slideto({
-			highlight_color: 'yellow',
-			highlight_duration: 5000,
 			slide_duration: 500
 		});
-
+		
+		$(document.location.hash).show('highlight', {color: '#ffff00'}, 'fast');
 	}
+	
 	$('a[href*=#]').click(function(){
+	
 		var elemId = '#' + $(this).attr('href').split('#')[1];
 		$(elemId).slideto({
-			highlight_color: 'yellow',
-			highlight_duration: 5000,
 			slide_duration: 500
 		});
+		
+		$(document.location.hash).show('highlight', {color: '#ffff00'}, 'fast');
+		
 	});
 	
 		
