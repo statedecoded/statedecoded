@@ -759,9 +759,17 @@ class Parser
 		}
 		
 		/*
-		 * Break up this section into paragraphs.
+		 * Break up this section into paragraphs. If HTML paragraph tags are present, break it up
+		 * with those. If they're not, break it up with carriage returns.
 		 */
-		$paragraphs = explode('</p><p>', $this->text);
+		if (strpos($this->text, '<p>') !== FALSE)
+		{
+			$paragraphs = explode('</p><p>', $this->text);
+		}
+		else
+		{
+			$paragraphs = explode('PHP_EOL', $this->text);
+		}
 		
 		/*
 		 * Create the empty array that we'll build up with the definitions found in this section.
