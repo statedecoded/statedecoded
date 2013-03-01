@@ -112,6 +112,33 @@ require('functions.inc.php');
 require(CUSTOM_FUNCTIONS);
 
 /*
- * Include the help text.
+ * Get the help text for the requested page.
  */
-require('class.Help.inc.php');
+$help = new Help();
+
+/*
+ * Determine the type of help text that's needed based on the requested file.
+ */
+if ($_SERVER['SCRIPT_NAME'] == '/law.php')
+{
+	$help->type = 'law';
+}
+elseif ($_SERVER['SCRIPT_NAME'] == '/structure.php')
+{
+	$help->type = 'structure';
+}
+elseif ($_SERVER['SCRIPT_NAME'] == '/search.php')
+{
+	$help->type = 'search';
+}
+else
+{
+	$help->type = 'sitewide';
+}
+
+/*
+ * Create the help text object of the requested type.
+ */
+$help->get_text();
+
+// The help text is now available, as a JSON object, as $help->text.
