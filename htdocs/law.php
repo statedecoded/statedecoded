@@ -87,7 +87,7 @@ $template = new Page;
  * Make some section information available globally to JavaScript.
  */
 $template->field->javascript = "var section_number = '".$law->section_number."';";
-$template->field->javascript .= "var section_id = '".$law->id."';";
+$template->field->javascript .= "var section_id = '".$law->section_id."';";
 $template->field->javascript .= "var api_key = '".API_KEY."';";
 
 $template->field->javascript_files = '
