@@ -114,4 +114,4 @@ require(CUSTOM_FUNCTIONS);
 /*
  * Include the help text.
  */
-require('help-text.inc.php');
+require('class.Help.inc.php');
