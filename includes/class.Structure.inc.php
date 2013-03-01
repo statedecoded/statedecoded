@@ -200,13 +200,15 @@ class Structure
 		unset($structure);
 		
 		// Iterate through the levels and build up the URLs recursively.
-		$url_prefix = 'http://'.$_SERVER['SERVER_NAME'].'/';
+		$i=0;
+		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 		$url_suffix = '';
 		foreach ($this->structure as &$level)
 		{
 			$url_suffix .= urlencode($level->number).'/';
+			$level->url = $url . $url_suffix;
+			$i++;
 		}
-		$level->url = $url_prefix.$url_suffix;
 		
 		// Set some variables for the convenience of other functions in this class.
 		$tmp = end($this->structure);
