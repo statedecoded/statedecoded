@@ -220,6 +220,7 @@ class Structure
 		return true;
 	}
 	
+	
 	/**
 	 * Get all of the metadata for the specified structural element (title, chapter, etc.).
 	 */
@@ -378,6 +379,7 @@ class Structure
 		
 	}
 	
+	
 	/**
 	 * Get a structure ID's ancestry. For example, when given the ID of a chapter, it will return
 	 * the chapter's ID, number, and name, along with its containing title's ID, number, and name.
@@ -457,6 +459,7 @@ class Structure
 		
 	}
 	
+	
 	/**
 	 * Convert a structure ID to its number.
 	 */
@@ -490,6 +493,7 @@ class Structure
 		
 		return $structure->number;
 	}
+	
 	
 	/**
 	 * Get a listing of all laws for a given structural element.
