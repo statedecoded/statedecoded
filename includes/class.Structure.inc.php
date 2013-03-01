@@ -208,7 +208,7 @@ class Structure
 		}
 		$level->url = $url_prefix.$url_suffix;
 		
-		// We set these two variables for the convenience of other functions in this class.
+		// Set some variables for the convenience of other functions in this class.
 		$tmp = end($this->structure);
 		$this->id = $tmp->id;
 		$this->label = $tmp->label;
