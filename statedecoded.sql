@@ -29,7 +29,9 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `law_id` (`law_id`,`term`,`scope`),
+  KEY `law_id` (`law_id`),
+  KEY `term` (`term`),
+  KEY `scope` (`scope`),
   KEY `structure_id` (`structure_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
@@ -67,7 +69,10 @@ CREATE TABLE IF NOT EXISTS `laws` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `section` (`section`),
-  KEY `chapter_id` (`structure_id`)
+  KEY `chapter_id` (`structure_id`),
+  KEY `structure_id` (`structure_id`),
+  KEY `edition_id` (`edition_id`),
+  KEY `order_by` (`order_by`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `laws_meta` (
