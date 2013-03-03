@@ -96,8 +96,8 @@ class DebugLogger extends Logger {
      */
 	public $start_time;
 
-	public function __construct() {
-		parent::__construct();
+	public function __construct($args) {
+		parent::__construct($args);
 
 		$this->start_time = $this->get_time();
 	}
