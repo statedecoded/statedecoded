@@ -31,6 +31,7 @@ class Parser
 	public $file = 0;
 	public $directory;
 	public $files = array();
+	public $db;
 
 	public function __construct($options) {
 		/**
@@ -299,9 +300,6 @@ class Parser
 		// This first section creates the record for the law, but doesn't do anything with the
 		// content of it just yet.
 
-		// We're going to need access to the database connection throughout this function.
-		global $db;
-
 		// Try to create this section's structural element(s). If they already exist,
 		// create_structure() will handle that silently. Either way a structural ID gets returned.
 		$structure = new Parser;
@@ -348,11 +346,11 @@ class Parser
 		// Iterate through the array and turn it into SQL.
 		foreach ($query as $name => $value)
 		{
-			$sql .= ', '.$name.'="'.$db->escape($value).'"';
+			$sql .= ', '.$name.'="'.$this->db->escape($value).'"';
 		}
 
 		// Execute the query.
-		$result =& $db->exec($sql);
+		$result =& $this->db->exec($sql);
 		if (PEAR::isError($result))
 		{
 			echo '<p>'.$sql.'</p>';
@@ -360,7 +358,7 @@ class Parser
 		}
 
 		// Preserve the insert ID from this law, since we'll need it below.
-		$law_id = $db->lastInsertID();
+		$law_id = $this->db->lastInsertID();
 
 		// This second section inserts the textual portions of the law.
 
@@ -396,12 +394,12 @@ class Parser
 			$sql = 'INSERT INTO text
 					SET law_id='.$law_id.',
 					sequence='.$i.',
-					text="'.$db->escape($section->text).'",
-					type="'.$db->escape($section->type).'",
+					text="'.$this->db->escape($section->text).'",
+					type="'.$this->db->escape($section->type).'",
 					date_created=now()';
 
 			// Execute the query.
-			$result =& $db->exec($sql);
+			$result =& $this->db->exec($sql);
 			if (PEAR::isError($result))
 			{
 				echo '<p>'.$sql.'</p>';
@@ -409,7 +407,7 @@ class Parser
 			}
 
 			// Preserve the insert ID from this section of text, since we'll need it below.
-			$text_id = $db->lastInsertID();
+			$text_id = $this->db->lastInsertID();
 
 			// Start a new counter.
 			$j = 1;
@@ -425,7 +423,7 @@ class Parser
 						date_created=now()';
 
 				// Execute the query.
-				$result =& $db->exec($sql);
+				$result =& $this->db->exec($sql);
 				if (PEAR::isError($result))
 				{
 					echo '<p>'.$sql.'</p>';
@@ -544,9 +542,6 @@ class Parser
 	function structure_exists()
 	{
 
-		// We're going to need access to the database connection within this function.
-		global $db;
-
 		if (!isset($this->number))
 		{
 			return false;
@@ -568,8 +563,8 @@ class Parser
 			$sql .= ' AND parent_id IS NULL';
 		}
 
-		// Execute the query.
-		$result =& $db->query($sql);
+		// Execute the  query.
+		$result =& $this->db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
@@ -590,9 +585,6 @@ class Parser
 	 */
 	function create_structure()
 	{
-
-		// We're going to need access to the database connection within this function.
-		global $db;
 
 		// Sometimes the code contains references to no-longer-existent chapters and even whole
 		// titles of the code. These are void of necessary information. We want to ignore these
@@ -630,26 +622,26 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET number="'.$db->escape($this->number).'"';
+				SET number="'.$this->db->escape($this->number).'"';
 		if (!empty($this->name))
 		{
-			$sql .= ', name="'.$db->escape($this->name).'"';
+			$sql .= ', name="'.$this->db->escape($this->name).'"';
 		}
-		$sql .= ', label="'.$db->escape($this->label).'", date_created=now()';
+		$sql .= ', label="'.$this->db->escape($this->label).'", date_created=now()';
 		if (isset($this->parent_id))
 		{
 			$sql .= ', parent_id='.$this->parent_id;
 		}
 
 		// Execute the query.
-		$result =& $db->exec($sql);
+		$result =& $this->db->exec($sql);
 		if (PEAR::isError($result))
 		{
 			return false;
 		}
 
 		// Return the last inserted ID.
-		return $db->lastInsertID();
+		return $this->db->lastInsertID();
 	}
 
 
@@ -668,9 +660,6 @@ class Parser
 			return false;
 		}
 
-		// We're going to need access to the database connection throughout this function.
-		global $db;
-
 		// Make the sought parent ID available as a local variable, which we'll repopulate with each
 		// loop through the below while() structure.
 		$parent_id = $this->structure_id;
@@ -687,7 +676,7 @@ class Parser
 					WHERE id = '.$parent_id;
 
 			// Execute the query.
-			$result =& $db->query($sql);
+			$result =& $this->db->query($sql);
 			if ( PEAR::isError($result) || ($result->numRows() < 1) )
 			{
 				echo '<p>Query failed: '.$sql.'</p>';
@@ -981,9 +970,6 @@ class Parser
 			$this->structure_id = 'NULL';
 		}
 
-		// We're going to need access to the database connection throughout this function.
-		global $db;
-
 		// Iterate through our definitions to build up our SQL.
 		foreach ($this->terms as $term => $definition)
 		{
@@ -992,9 +978,9 @@ class Parser
 					structure_id, date_created)
 					VALUES ';
 
-			$sql .= '('.$this->law_id.', "'.$db->escape($term).'",
-				"'.$db->escape($definition).'", "'.$db->escape($this->scope).'",
-				'.$db->escape($this->scope_specificity).', '.$this->structure_id.', now())';
+			$sql .= '('.$this->law_id.', "'.$this->db->escape($term).'",
+				"'.$this->db->escape($definition).'", "'.$this->db->escape($this->scope).'",
+				'.$this->db->escape($this->scope_specificity).', '.$this->structure_id.', now())';
 
 			// Execute the query.
 			//$result = $this->retry_query($sql);
@@ -1010,12 +996,11 @@ class Parser
 	} // end store_definitions()
 
 	function query($sql) {
-		global $db;
-		$result =& $db->exec($sql);
+		$result =& $this->db->exec($sql);
 		if (PEAR::isError($result))
 		{
-			var_dump($db->errorInfo());
-			return $db->errorInfo();
+			var_dump($this->db->errorInfo());
+			return $this->db->errorInfo();
 		}
 		else {
 			return true;
@@ -1077,9 +1062,6 @@ class Parser
 			return false;
 		}
 
-		// We're going to need access to the database connection throughout this function.
-		global $db;
-
 		// Start creating our insertion query.
 		$sql = 'INSERT INTO laws_references
 				(law_id, target_section_number, mentions, date_created)
@@ -1099,7 +1081,7 @@ class Parser
 		$sql .= ' ON DUPLICATE KEY UPDATE mentions=mentions';
 
 		// Execute the query.
-		$result =& $db->exec($sql);
+		$result =& $this->db->exec($sql);
 		if (PEAR::isError($result))
 		{
 			echo '<p>Failed: '.$sql.'</p>';

@@ -37,12 +37,22 @@ class Logger {
      */
 	public $level = 0;
 
+	// {{{ __construct
+
+	/**
+	 * Class constructor.  Sets defaults.
+
+	 * @param array    Hash of all values to override in the class
+	 */
+
 	public function __construct($args = array()) {
 		foreach($args as $key=>$value) {
 			$this->$key = $value;
 		}
 
 	}
+
+	// }}}
 
 	// {{{ message
 
@@ -56,12 +66,18 @@ class Logger {
 		if($level >= $this->level) {
 			print $msg;
 
+			/**
+			 * Handle line endings
+			 */
 			if($this->html == true) {
 				print '<br />';
 			}
 			else {
 				print "\n";
 			}
+			/**
+			 * Flush the buffer, just to get the content out ASAP
+			 */
 			flush();
 		}
 	}
@@ -96,25 +112,37 @@ class DebugLogger extends Logger {
      */
 	public $start_time;
 
+	// {{{ __construct
+
+	/**
+	 * Class constructor.  Sets defaults.
+	 *
+ 	 * We need to set the time the logger was created.
+ 	 *
+	 * @param array    Hash of all values to override in the class
+	 */
+
 	public function __construct($args) {
 		parent::__construct($args);
 
 		$this->start_time = $this->get_time();
 	}
 
+	// {{{ message
+
 	/**
-	 * Prints the messa
-	 *
-	 * @param integer $level The log level of the message.
-	 *                      This log level must be greater than the log level
-	 *                      set on the class to actually be printed.
+	 * Prints the message, adds the time elapsed and memory usage.
 	 */
-	public function message($msg) {
+	public function message($msg, $level) {
 		print $this->get_time_elapsed() . "ms ";
 		print memory_get_usage() . "b : ";
 
-		parent::message($msg, 10);
+		parent::message($msg, $level);
 	}
+
+	// }}}
+
+	// {{{ get_time
 
 	/**
 	 * Gets the current (micro) time.  Nothing fancy.
@@ -122,6 +150,8 @@ class DebugLogger extends Logger {
 	public function get_time() {
 		return microtime(true);
 	}
+
+	// }}}
 
 	// {{{ get_time_elapsed
 
@@ -138,4 +168,6 @@ class DebugLogger extends Logger {
 		}
 		return $time - $this->start_time;
 	}
+
+	// }}}
 }
