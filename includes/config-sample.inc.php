@@ -1,14 +1,23 @@
 <?php
 
+/* Define base path */
+
+define('BASE_PATH', dirname(dirname(__FILE__)));
+
 /*
  * Define include path, since we need it sometimes.
  */
-define('INCLUDE_PATH', $_SERVER['DOCUMENT_ROOT'].'/../includes');
+define('INCLUDE_PATH', BASE_PATH . DIRECTORY_SEPARATOR . 'includes');
 
 /*
  * Append "/includes/" to the include path.
  */
 set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
+
+/*
+ * Define web root.
+ */
+define('WEB_ROOT', BASE_PATH . DIRECTORY_SEPARATOR . 'htdocs');
 
 /*
  * The file in the /includes/ directory that contains functions custom to this installation.
@@ -105,5 +114,5 @@ define('EMAIL_ADDRESS', SITE_TITLE.' <waldo@jaquith.org>');
 /*
  * The site uses its own API extensively. Provide the API key here. (This is populated automatically
  * at the time that the parser is run.)
- */ 
+ */
 define('API_KEY', '');
