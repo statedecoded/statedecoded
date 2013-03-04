@@ -1,32 +1,36 @@
 $(document).ready(function () {
 	
 	/* Provide the ability to navigate with arrow keys. */
-	Mousetrap.bind('ctrl+left', function(e) {
+	Mousetrap.bind(['ctrl+left', 'left', 'j', 'a'], function(e) {
 		var url = $('link[rel=prev]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
 	
-	Mousetrap.bind('ctrl+right', function(e) {
+	Mousetrap.bind(['ctrl+right', 'right', 'k', 'd'], function(e) {
 		var url = $('link[rel=next]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
 	
-	Mousetrap.bind('ctrl+up', function(e) {
+	Mousetrap.bind(['ctrl+up', 'w'], function(e) {
 		var url = $('link[rel=up]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
 	
-	Mousetrap.bind('ctrl+down', function(e) {
+	Mousetrap.bind(['ctrl+down', 's'],  function(e) {
 		var url = $('link[rel=down]').attr('href');
 		if (url) {
 			window.location = url;
 		}
+	});
+	
+	Mousetrap.bind(['/', 'ctrl+/'], function(e) {
+		$('#search-input').focus();
 	});
 	
 	/* Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
