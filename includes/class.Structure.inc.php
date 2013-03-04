@@ -356,7 +356,7 @@ class Structure
 					// length, rather than using empty().
 					if (strlen($value) > 0)
 					{
-						$tmp[] = $value;
+						$tmp[] = urlencode($value);
 					}
 				}
 				
