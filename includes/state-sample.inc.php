@@ -466,11 +466,26 @@ class Parser
 		// Get a normalized listing of definitions.
 		$definitions = $dictionary->extract_definitions();
 		
-		// Override the calculated scope for global definitions.
-		if ($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
+		// Check to see if this section or its containing structural unit were specified in the
+		// config file as a container for global definitions. If it was, then we override the
+		// presumed scope and provide a global scope.
+		$ancestry = array();
+		foreach ($this->code->structure as $struct)
+		{
+			$ancestry[] = $struct->identifier;
+		}
+		$ancestry = implode(',' $ancestry);
+		$ancestry_section .= $ancestry . ','.$this->code->section_number;
+		if 	(
+				(GLOBAL_DEFINITIONS === $ancestry)
+				||
+				(GLOBAL_DEFINITIONS === $ancestry_section)
+			)
 		{
 			$definitions->scope = 'global';
 		}
+		unset($ancestry);
+		unset($ancestry_section);
 		
 		// If any definitions were found in this text, store them.
 		if ($definitions !== false)

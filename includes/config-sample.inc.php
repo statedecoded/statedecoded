@@ -69,12 +69,12 @@ define('INCLUDES_REPEALED', true);
 define('MYSQL_DSN', 'mysql://username:password@localhost/statelaws');
 
 /*
- * Specify the title and chapter of the code that contains definitions of terms that are used
- * throughout the code, and thus should have a global scope.
- *
- * IMPORTANT: This is NOT a standard citation method. For instance, "1-2.1" would normally refer to
- * title 1, section 2.1. But here it refers to title 1, chapter 2.1. That's because there's simply
- * no standard way to cite a title and chapter, so we use this.
+ * Specify the structural identifier ancestry for the unit of the code that contains definitions of
+ * terms that are used throughout the code, and thus should have a global scope. Separate each
+ * identifier with a comma. If all global definitions are found in Title 15A, Part BD, Chapter 16.2,
+ * that would be identified as '15A,BD,16.2'. If all global definitions are found in Article 36,
+ * Section 105, that would be identified as '36,105'. This must be the COMPLETE PATH to the
+ * container for global definitions, and not a standard citation.
  */
 define('GLOBAL_DEFINITIONS', '');
 
