@@ -15,7 +15,7 @@
  */
 
 /*
- * Define include path, since we need it sometimes.
+ * Define the path to the includes library.
  */
 define('INCLUDE_PATH', $_SERVER['DOCUMENT_ROOT'].'/../includes');
 
