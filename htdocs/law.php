@@ -125,7 +125,7 @@ if (is_object($law->dublin_core))
 $template->field->breadcrumbs = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->breadcrumbs .= '<a href="'.$ancestor->url.'">'.$ancestor->number.' '
+	$template->field->breadcrumbs .= '<a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
 		.$ancestor->name.'</a> → ';
 }
 $template->field->breadcrumbs .= '<a href="/'.$law->section_number.'/">§&nbsp;'.$law->section_number

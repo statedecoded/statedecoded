@@ -49,8 +49,8 @@ class Structure
 		$components = explode('/', $this->path);
 
 		// Leading and trailing slashes in the path result in blank array elements. Remove them.
-		// A path component may reasonably be "0" (in the case of a structural unit numbered "0,"
-		// as exists in Virginia), so allow those.
+		// A path component may reasonably be "0" (in the case of a structural unit identified as
+		// "0," as exists in Virginia), so allow those.
 		foreach ($components as $key => $component)
 		{
 			if ( empty($component) && (strlen($component) == 0) )
@@ -89,7 +89,7 @@ class Structure
 		$sql = 'SELECT ';
 		
 		// First, come up with the listing of tables and fields that we'll query.
-		$select = '{table}.id as {table}_id, {table}.number AS {table}_number,
+		$select = '{table}.id as {table}_id, {table}.identifier AS {table}_identifier,
 					{table}.name AS {table}_name, {table}.label AS {table}_label,
 					{table}.parent_id AS {table}_parent_id,';
 
@@ -105,7 +105,7 @@ class Structure
 		// itself) to get what might be multiple levels of data.
 		reset($structure);
 		$i=1;
-		foreach ($structure as $type => $number)
+		foreach ($structure as $type => $identifier)
 		{
 			// If this is our first iteration through, start our FROM statement.
 			reset($structure);
@@ -136,9 +136,9 @@ class Structure
 		$sql .= ' WHERE ';
 		$i=1;
 		$where = array();
-		foreach ($structure as $type => $number)
+		foreach ($structure as $type => $identifier)
 		{
-			$where[] = 's'.$i.'.number="'.$db->escape($number).'" AND s'.$i.'.label="'.$db->escape($type).'"';
+			$where[] = 's'.$i.'.identifier="'.$db->escape($identifier).'" AND s'.$i.'.label="'.$db->escape($type).'"';
 			$i++;
 		}
 		
@@ -205,7 +205,7 @@ class Structure
 		$url_suffix = '';
 		foreach ($this->structure as &$level)
 		{
-			$url_suffix .= urlencode($level->number).'/';
+			$url_suffix .= urlencode($level->identifier).'/';
 			$level->url = $url . $url_suffix;
 			$i++;
 		}
@@ -215,7 +215,7 @@ class Structure
 		$this->id = $tmp->id;
 		$this->label = $tmp->label;
 		$this->name = $tmp->name;
-		$this->number = $tmp->number;
+		$this->identifier = $tmp->identifier;
 		$this->parent_id = $tmp->parent_id;
 		unset($tmp);
 		
@@ -238,7 +238,7 @@ class Structure
 			return false;
 		}
 		
-		$sql = 'SELECT id, name, number, label, parent_id
+		$sql = 'SELECT id, name, identifier, label, parent_id
 				FROM structure
 				WHERE';
 			
@@ -316,11 +316,12 @@ class Structure
 		// by either Roman numerals or Arabic (traditional) numerals.
 		if (isset($this->sort) && $this->sort == 'roman')
 		{
-			$sql .= 'fromRoman(structure.number) ASC';
+			$sql .= 'fromRoman(structure.identifier) ASC';
 		}
 		else
 		{
-			$sql .= 'structure.number+0, ABS(SUBSTRING_INDEX(structure.number, ".", 1)) ASC, ABS(SUBSTRING_INDEX(structure.number, ".", -1)) ASC';
+			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
+				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
 
 		// Execute the query.
@@ -340,19 +341,19 @@ class Structure
 			$child->id = $child->s1_id;
 			$child->label = $child->s1_label;
 			$child->name = $child->s1_name;
-			$child->number = $child->s1_number;
+			$child->identifier = $child->s1_identifier;
 			
-			// Figure out the URL for this structural unit by iterating through the "number" columns
-			// in this row.
+			// Figure out the URL for this structural unit by iterating through the "identifier"
+			// columns in this row.
 			$child->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 			$tmp = array();
 			foreach ($child as $key => $value)
 			{
-				if (preg_match('/s[0-9]_number/', $key) == 1)
+				if (preg_match('/s[0-9]_identifier/', $key) == 1)
 				{
 					// Higher-level structural elements (e.g., titles) will have blank columns in
 					// structure_unified, so we want to omit any blank values. Because a valid
-					// structural unit number is "0" (Virginia does this), we check the string
+					// structural unit identifier is "0" (Virginia does this), we check the string
 					// length, rather than using empty().
 					if (strlen($value) > 0)
 					{
@@ -384,7 +385,8 @@ class Structure
 	
 	/**
 	 * Get a structure ID's ancestry. For example, when given the ID of a chapter, it will return
-	 * the chapter's ID, number, and name, along with its containing title's ID, number, and name.
+	 * the chapter's ID, identifier, and name, along with its containing title's ID, number, and
+	 * name.
 	 */	
 	function id_ancestry()
 	{
@@ -427,7 +429,7 @@ class Structure
 			// Some of the fields in our structure_unified table are going to be empty -- that's
 			// just how it works. We're not interested in these fields, so we omit them. We verify
 			// the string's length because 0 evaluates as empty in PHP, and we want to allow the use
-			// of 0 as a valid structural unit number.
+			// of 0 as a valid structural unit identifier.
 			if (empty($cell) && (strlen($cell) == 0))
 			{
 				continue;
@@ -444,12 +446,12 @@ class Structure
 			$ancestry->$prefix->$label = $cell;
 		}
 		
-		// To assign URLs, we iterate through the object in reverse, and build up the URLs from their
-		// structure numbers.
+		// To assign URLs, we iterate through the object in reverse, and build up the URLs from
+		// their structure identifiers.
 		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 		foreach (array_reverse((array) $ancestry) as $key => $level)
 		{
-			$url .= urlencode($level->number).'/';
+			$url .= urlencode($level->identifier).'/';
 			$ancestry->$key->url = $url;
 		}
 		
@@ -463,9 +465,9 @@ class Structure
 	
 	
 	/**
-	 * Convert a structure ID to its number.
+	 * Convert a structure ID to its identifier.
 	 */
-	function id_to_number()
+	function id_to_identifier()
 	{
 
 		// We're going to need access to the database connection throughout this class.
@@ -478,7 +480,7 @@ class Structure
 		}
 		
 		// Assemble the SQL query.
-		$sql = 'SELECT number
+		$sql = 'SELECT identifier
 				FROM structure
 				WHERE id='.$db->escape($this->id);
 		
@@ -493,7 +495,7 @@ class Structure
 		
 		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 		
-		return $structure->number;
+		return $structure->identifier;
 	}
 	
 	

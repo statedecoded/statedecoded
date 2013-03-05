@@ -58,7 +58,7 @@ if ( !empty($titles) )
 	$body .= '<dl class="level-1">';
 	foreach ($structures as $structure)
 	{
-		$body .= '	<dt><a href="'.$title->url.'">'.$title->number.'</a></dt>
+		$body .= '	<dt><a href="'.$structure->url.'">'.$structure->identifier.'</a></dt>
 					<dd><a href="'.$structure->url.'">'.$structure->name.'</a></dd>';
 	}
 	$body .= '</dl>';
