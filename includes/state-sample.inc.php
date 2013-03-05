@@ -474,7 +474,7 @@ class Parser
 		{
 			$ancestry[] = $struct->identifier;
 		}
-		$ancestry = implode(',' $ancestry);
+		$ancestry = implode(',', $ancestry);
 		$ancestry_section .= $ancestry . ','.$this->code->section_number;
 		if 	(
 				(GLOBAL_DEFINITIONS === $ancestry)
