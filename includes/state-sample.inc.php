@@ -327,7 +327,7 @@ class Parser
 		
 		foreach ($this->code->structure as $struct)
 		{
-			$structure->number = $struct->identifier;
+			$structure->identifier = $struct->identifier;
 			$structure->name = $struct->name;
 			$structure->label = $struct->label;
 			/* If we've gone through this loop already, then we have a parent ID. */
@@ -549,7 +549,7 @@ class Parser
 		// We're going to need access to the database connection within this function.
 		global $db;
 	
-		if (!isset($this->number))
+		if (!isset($this->identifier))
 		{
 			return false;
 		}
@@ -557,7 +557,7 @@ class Parser
 		// Assemble the query.
 		$sql = 'SELECT id
 				FROM structure
-				WHERE identifier="'.$this->number.'"';
+				WHERE identifier="'.$this->identifier.'"';
 				
 		// If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
 		// include that in our query.
@@ -585,10 +585,10 @@ class Parser
 	
 	
 	/**
-	 * When provided with a structural unit number and type, it creates a record for that structural
-	 * unit. Save for top-level structural units (e.g., titles), it should always be provided with
-	 * a $parent_id, which is the ID of the parent structural unit. Most structural units will have
-	 * a name, but not all.
+	 * When provided with a structural unit identifier and type, it creates a record for that
+	 * structural unit. Save for top-level structural units (e.g., titles), it should always be
+	 * provided with a $parent_id, which is the ID of the parent structural unit. Most structural
+	 * units will have a name, but not all.
 	 */
 	function create_structure()
 	{
@@ -603,11 +603,12 @@ class Parser
 		// 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
 		// name.
 		//
-		// Because a valid chapter number can be "0" we can't simply use empty(), but must also
-		// verify that the string is longer than zero characters. We do both because empty() will
-		// valuate faster than strlen(), and because these two strings will almost never be empty.
+		// Because a valid structural identifier can be "0" we can't simply use empty(), but must
+		// also verify that the string is longer than zero characters. We do both because empty()
+		// will valuate faster than strlen(), and because these two strings will almost never be
+		// empty.
 		if (
-				( empty($this->number) && (strlen($this->number) === 0) )
+				( empty($this->identifier) && (strlen($this->identifier) === 0) )
 				||
 				( empty($this->label) )
 			)
@@ -632,7 +633,7 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET identifier="'.$db->escape($this->number).'"';
+				SET identifier="'.$db->escape($this->identifier).'"';
 		if (!empty($this->name))
 		{
 			$sql .= ', name="'.$db->escape($this->name).'"';
