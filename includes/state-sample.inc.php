@@ -388,12 +388,12 @@ class Parser
 		$references = new Parser;
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
-		if ( ($sections !== false) && (count($sections) > 0) )
+		if ( ($sections !== FALSE) && (count($sections) > 0) )
 		{
 			$references->section_id = $law_id;
 			$references->sections = $sections;
 			$success = $references->store_references();
-			if ($success === false)
+			if ($success === FALSE)
 			{
 				echo '<p>References for section ID '.$law_id.' were found, but could not be
 					stored.</p>';
@@ -488,7 +488,7 @@ class Parser
 		unset($ancestry_section);
 		
 		// If any definitions were found in this text, store them.
-		if ($definitions !== false)
+		if ($definitions !== FALSE)
 		{
 			
 			// Populate the appropriate variables.
@@ -505,7 +505,7 @@ class Parser
 				$find_scope->label = $dictionary->scope;
 				$find_scope->structure_id = $dictionary->structure_id;
 				$dictionary->structure_id = $find_scope->find_structure_parent();
-				if ($dictionary->structure_id === false)
+				if ($dictionary->structure_id === FALSE)
 				{
 					unset($dictionary->structure_id);
 				}
@@ -620,7 +620,7 @@ class Parser
 		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
 		 */
 		$structure_id = Parser::structure_exists();
-		if ($structure_id !== false)
+		if ($structure_id !== FALSE)
 		{
 			return $structure_id;
 		}
@@ -890,7 +890,7 @@ class Parser
 			 * All defined terms are surrounded by quotation marks, so let's use that as a criteria
 			 * to round down our candidate paragraphs.
 			 */
-			if (strpos($paragraph, $quote_sample) !== false)
+			if (strpos($paragraph, $quote_sample) !== FALSE)
 			{
 				
 				/*
@@ -901,7 +901,7 @@ class Parser
 				foreach ($linking_phrases as $linking_phrase)
 				{
 				
-					if (strpos($paragraph, $linking_phrase) !== false)
+					if (strpos($paragraph, $linking_phrase) !== FALSE)
 					{
 					
 						/*
@@ -914,7 +914,7 @@ class Parser
 						/*
 						 * If we've made any matches.
 						 */
-						if ( ($terms !== false) && (count($terms) > 0) )
+						if ( ($terms !== FALSE) && (count($terms) > 0) )
 						{
 							
 							/*
@@ -1257,7 +1257,7 @@ class Parser
 			
 			// First check for single matches.
 			$result = preg_match($pcre, $update, $matches);
-			if ( ($result !== false) && ($result !== 0) )
+			if ( ($result !== FALSE) && ($result !== 0) )
 			{
 				if (!empty($matches[1]))
 				{
@@ -1270,7 +1270,7 @@ class Parser
 				if (!empty($matches[3]))
 				{
 					$result = preg_match(SECTION_PCRE, $update, $matches[3]);
-					if ( ($result !== false) && ($result !== 0) )
+					if ( ($result !== FALSE) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}
@@ -1283,7 +1283,7 @@ class Parser
 				// Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
 				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
 				$result = preg_match_all($pcre, $update, $matches);
-				if ( ($result !== false) && ($result !== 0) )
+				if ( ($result !== FALSE) && ($result !== 0) )
 				{
 					// Save the year.
 					$final->{$i}->year = $matches[1][0];
@@ -1311,7 +1311,7 @@ class Parser
 					
 					// Locate any section identifier.
 					$result = preg_match(SECTION_PCRE, $update, $matches);
-					if ( ($result !== false) && ($result !== 0) )
+					if ( ($result !== FALSE) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}
