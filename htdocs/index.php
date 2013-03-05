@@ -44,22 +44,22 @@ $sidebar = '
 
 
 /*
- * Get an object containing a listing of the titles in the code.
+ * Get an object containing a listing of the fundamental units of the code.
  */
-$structure = new Structure();
-$titles = $structure->list_children();
+$struct = new Structure();
+$structures = $struct->list_children();
 
 $body .= '
 	<article>
-	<h1>Titles of the '.LAWS_NAME.'</h1>
+	<h1>'.ucwords($structures->{0}->label).'s of the '.LAWS_NAME.'</h1>
 	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
 if ( !empty($titles) )
 {
 	$body .= '<dl class="level-1">';
-	foreach ($titles as $title)
+	foreach ($structures as $structure)
 	{
 		$body .= '	<dt><a href="'.$title->url.'">'.$title->number.'</a></dt>
-					<dd><a href="'.$title->url.'">'.$title->name.'</a></dd>';
+					<dd><a href="'.$structure->url.'">'.$structure->name.'</a></dd>';
 	}
 	$body .= '</dl>';
 }
