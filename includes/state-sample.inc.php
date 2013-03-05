@@ -780,11 +780,12 @@ class Parser
 		 */
 		if (strpos($this->text, '<p>') !== FALSE)
 		{
-			$paragraphs = explode('</p><p>', $this->text);
+			$paragraphs = explode('<p>', $this->text);
 		}
 		else
 		{
-			$paragraphs = explode('PHP_EOL', $this->text);
+			$this->text = str_replace("\n", "\r", $this->text);
+			$paragraphs = explode("\r", $this->text);
 		}
 		
 		/*
