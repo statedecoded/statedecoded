@@ -557,7 +557,7 @@ class Parser
 		// Assemble the query.
 		$sql = 'SELECT id
 				FROM structure
-				WHERE number="'.$this->number.'"';
+				WHERE identifier="'.$this->number.'"';
 				
 		// If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
 		// include that in our query.
@@ -632,7 +632,7 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET number="'.$db->escape($this->number).'"';
+				SET identifier="'.$db->escape($this->number).'"';
 		if (!empty($this->name))
 		{
 			$sql .= ', name="'.$db->escape($this->name).'"';
