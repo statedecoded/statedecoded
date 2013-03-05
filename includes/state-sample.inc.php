@@ -540,8 +540,8 @@ class Parser
 
 	
 	/**
-	 * When provided with a chapter number, verifies whether that chapter exists. Returns the
-	 * chapter ID if it exists; otherwise, returns false.
+	 * When provided with a structural identifier, verifies whether that structural unit exists.
+	 * Returns the structural database ID if it exists; otherwise, returns false.
 	 */
 	function structure_exists()
 	{
