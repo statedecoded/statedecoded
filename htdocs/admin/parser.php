@@ -201,9 +201,9 @@ elseif ($_POST['action'] == 'parse')
 	for ($i=1; $i<=$structure_depth; $i++)
 	{
 		$select[] = 's'.$i.'.id AS s'.$i.'_id, s'.$i.'.name AS s'.$i.'_name,
-				s'.$i.'.number AS s'.$i.'_number, s'.$i.'.label AS s'.$i.'_label';
+				s'.$i.'.identifier AS s'.$i.'_identifier, s'.$i.'.label AS s'.$i.'_label';
 		$from[] = 's'.$i;
-		$order[] = 's'.$i.'.number';
+		$order[] = 's'.$i.'.identifier';
 	}
 	
 	/*
@@ -365,14 +365,14 @@ elseif ($_POST['action'] == 'parse')
 						 */
 						$law->structure->{$i-1}->label = $law->{'s'.$i.'_label'};
 						$law->structure->{$i-1}->name = $law->{'s'.$i.'_name'};
-						$law->structure->{$i-1}->number = $law->{'s'.$i.'_number'};
+						$law->structure->{$i-1}->identifier = $law->{'s'.$i.'_identifier'};
 						
 						/*
 						 * Unset the old variables.
 						 */
 						unset($law->{'s'.$i.'_label'});
 						unset($law->{'s'.$i.'_name'});
-						unset($law->{'s'.$i.'_number'});
+						unset($law->{'s'.$i.'_identifier'});
 					}
 			
 					/*
