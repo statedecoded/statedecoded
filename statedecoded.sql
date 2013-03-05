@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `laws_views` (
 CREATE TABLE IF NOT EXISTS `structure` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(128) collate utf8_bin default NULL,
-  `number` varchar(16) collate utf8_bin NOT NULL,
+  `identifier` varchar(16) collate utf8_bin NOT NULL,
   `label` varchar(32) collate utf8_bin NOT NULL,
   `order_by` int(10) unsigned default NULL,
   `parent_id` smallint(5) unsigned default NULL,
