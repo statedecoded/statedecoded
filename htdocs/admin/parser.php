@@ -115,7 +115,7 @@ elseif ($_POST['action'] == 'parse')
 	$parser = new Parser();
 	
 	# Tell the parser what the working directory should be for the XML files.
-	$parser->directory = $_SERVER['DOCUMENT_ROOT'].'/xml/';
+	$parser->directory = $_SERVER['DOCUMENT_ROOT'].'/admin/xml/';
 	
 	/*
 	 * Iterate through the files.
