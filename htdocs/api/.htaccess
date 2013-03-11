@@ -2,7 +2,7 @@ RewriteEngine On
 RewriteBase /api/
 
 # Specify the default version number here.
-RewriteRule .* - [E=VERSION:0.1]
+RewriteRule .* - [E=VERSION:1.0]
 
 # If the first segment of the URL is an alpha string, rather than a version
 # number, then insert the current version number.

@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2012 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.4
  * @link		http://www.statedecoded.com/
  * @since		0.3
 */
@@ -19,65 +19,12 @@
 class State
 {
 
-	/**
-	 * Generate the URL to view a law on the official government website
-	 *
-	 * @return the URL or false
-	 */
-	/*official_url()
-	{
-	
-		if (!isset($this->section_number))
-		{
-			return false;
-		}
-		
-		return 'http://example.gov/laws/' . $this->section_number . '/';
-		
-	}*/
-	
-	/**
-	 * Render the often-confusing history text for a law as plain English.
-	 *
-	 * @return the history text or false
-	 */
-	/*function translate_history()
-	{
-		
-	}
-	*/
-	
-	/**
-	 * Generate one or more citations for a law
-	 * 
-	 * Should create an object named "citation" (singular) with one numbered entry for each citation
-	 * style, with values of "label" and "text," the label describing the type of citation (e.g.
-	 * "Official," "Universal") and the text being the citation itself.
-	 * 
-	 * @return true or false
-	 */
-	/*function citations()
-	{
-	
-		if (!isset($this->section_number))
-		{
-			return false;
-		}
-		
-		$this->citation->{0}->label = 'Official';
-		$this->citation->{0}->text = 'St. Code § '.$this->section_number;
-		
-		return true;
-	}
-	*/
-	
 }
 
 
 /**
- * The parser for importing legal codes. This is fully functional for importing The State Decoded's
- * prescribed XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
- * and serves as a guide for those who want to parse an alternate format.
+ * An example parser. This is not functional, but it does establish a framework from which one can
+ * see how to develop a parser.
  */
 class Parser
 {
@@ -489,62 +436,93 @@ class Parser
 			$i++;
 		}
 
-		
-		// Trawl through the text for definitions.
-		$dictionary = new Parser(array('db' => $this->db));
-		
-		// Pass this section of text to $dictionary.
-		$dictionary->text = $this->code->text;
-		
-		// Get a normalized listing of definitions.
-		$definitions = $dictionary->extract_definitions();
-		
-		// Override the calculated scope for global definitions.
-		if ($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
+		// Trawl through the text for definitions, if the section contains "Definitions" in the
+		// title or if the current chapter is the chapter that we defined in the site config as
+		// containing the global definitions. We could just confirm that title is exactly
+		// "Definitions.", but sometimes it's preceded with other text, e.g. "(Effective July 1,
+		// 2012) ".
+		if	(
+				(strpos($this->code->name, 'Definition') !== false)
+				||
+				(strpos($this->code->name, 'Meaning of certain terms.') !== false)
+				||
+				(strpos($this->code->name, 'Meaning of ') !== false)
+				||
+				(strpos($this->code->text, '" mean ') !== false)
+				||
+				(strpos($this->code->text, '" means ') !== false)
+				||
+				(strpos($this->code->text, '" shall include ') !== false)
+				||
+				(strpos($this->code->text, '" includes ') !== false)
+				||
+				(strpos($this->code->text, '" has the same meaning ') !== false)
+				||
+				(strpos($this->code->text, ' as used in this ') !== false)
+				||
+				(strpos($this->code->text, ' for the purpose of this ') !== false)
+				||
+				(strpos($this->code->text, ' for purposes of this ') !== false)
+				||
+				($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
+			)
 		{
-			$definitions->scope = 'global';
-		}
-		
-		// If any definitions were found in this text, store them.
-		if ($definitions !== false)
-		{
-			
-			// Populate the appropriate variables.
-			$dictionary->terms = $definitions->terms;
-			$dictionary->law_id = $law_id;
-			$dictionary->scope = $definitions->scope;
-			$dictionary->structure_id = $this->code->structure_id;
-			
-			// If the scope of this definition isn't section-specific, and isn't global, then
-			// find the ID of the structural unit that is the limit of its scope.
-			if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
+
+			$dictionary = new Parser(array('db' => $this->db));
+
+			// Pass this section of text to $dictionary.
+			$dictionary->text = $this->code->text;
+
+			// Get a normalized listing of definitions.
+			$definitions = $dictionary->extract_definitions();
+
+			// Override the calculated scope for global definitions.
+			if ($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
 			{
-				$find_scope = new Parser(array('db' => $this->db));
-				$find_scope->label = $dictionary->scope;
-				$find_scope->structure_id = $dictionary->structure_id;
-				$dictionary->structure_id = $find_scope->find_structure_parent();
-				if ($dictionary->structure_id === false)
+				$definitions->scope = 'global';
+			}
+
+			// If any definitions were found in this text, store them.
+			if ($definitions !== false)
+			{
+
+				// Populate the appropriate variables.
+				$dictionary->terms = $definitions->terms;
+				$dictionary->law_id = $law_id;
+				$dictionary->scope = $definitions->scope;
+				$dictionary->structure_id = $this->code->structure_id;
+
+				// If the scope of this definition isn't section-specific, and isn't global, then
+				// find the ID of the structural unit that is the limit of its scope.
+				if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
+				{
+					$find_scope = new Parser(array('db' => $this->db));
+					$find_scope->label = $dictionary->scope;
+					$find_scope->structure_id = $dictionary->structure_id;
+					$dictionary->structure_id = $find_scope->find_structure_parent();
+					if ($dictionary->structure_id === false)
+					{
+						unset($dictionary->structure_id);
+					}
+				}
+
+				// If the scope isn't a structural unit, then delete it, so that we don't store it
+				// and inadvertently limit the scope.
+				else
 				{
 					unset($dictionary->structure_id);
 				}
+
+				// Determine the position of this structural unit.
+				$structure = array_reverse(explode(',', STRUCTURE));
+				array_push($structure, 'global');
+
+				// Find and return the position of this structural unit in the hierarchical stack.
+				$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
+
+				// Store these definitions in the database.
+				$dictionary->store_definitions();
 			}
-			
-			// If the scope isn't a structural unit, then delete it, so that we don't store it
-			// and inadvertently limit the scope.
-			else
-			{
-				unset($dictionary->structure_id);
-			}
-			
-			// Determine the position of this structural unit.
-			$structure = array_reverse(explode(',', STRUCTURE));
-			array_push($structure, 'global');
-			
-			// Find and return the position of this structural unit in the hierarchical stack.
-			$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
-			
-			// Store these definitions in the database.
-			$dictionary->store_definitions();
 		}
 
 		// Memory management
@@ -741,36 +719,10 @@ class Parser
 		{
 			return false;
 		}
-			
-		/*
-		 * The candidate phrases that indicate that the scope of one or more definitions are about
-		 * to be provided.
-		 */
-		$scope_indicators = array(	' are used in this ',
-									' when used in this ',
-									' for purposes of this ',
-									' for the purpose of this ',
-									' in this ',
-								);
-		
-		/*
-		 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
-		 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
-		 * spaces, to avoid erroneously matching fragments of other terms.
-		 */
-		$linking_phrases = array(	' mean ',
-									' means ',
-									' shall include ',
-									' includes ',
-									' has the same meaning as ',
-									' shall be construed ',
-									' shall also be construed to mean ',
-								);
-		
-		/* Measure whether there are more straight quotes or directional quotes in this passage
-		 * of text, to determine which type are used in these definitions. We double the count of
-		 * directional quotes since we're only counting one of the two directions.
-		 */
+
+		// Measure whether there are more straight quotes or directional quotes in this passage
+		// of text, to determine which type are used in these definitions. We double the count of
+		// directional quotes since we're only counting one of the two directions.
 		if ( substr_count($this->text, '"') > (substr_count($this->text, '”') * 2) )
 		{
 			$quote_type = 'straight';
@@ -781,293 +733,203 @@ class Parser
 			$quote_type = 'directional';
 			$quote_sample = '”';
 		}
-		
-		/*
-		 * Break up this section into paragraphs. If HTML paragraph tags are present, break it up
-		 * with those. If they're not, break it up with carriage returns.
-		 */
-		if (strpos($this->text, '<p>') !== FALSE)
-		{
-			$paragraphs = explode('</p><p>', $this->text);
-		}
-		else
-		{
-			$paragraphs = explode('PHP_EOL', $this->text);
-		}
-		
-		/*
-		 * Create the empty array that we'll build up with the definitions found in this section.
-		 */
+
+		// Break up this section into paragraphs.
+		$paragraphs = explode('</p><p>', $this->text);
+
+		// Create the empty array that we'll build up with the definitions found in this section.
 		$definitions = array();
-		
-		/*
-		 * Step through each paragraph and determine which contain definitions.
-		 */
+
+		// Step through each paragraph and determine which contain definitions.
 		foreach ($paragraphs as &$paragraph)
 		{
 
-			/*
-			 * Any remaining paired paragraph tags are within an individual, multi-part definition,
-			 * and can be turned into spaces.
-			 */
+			// Any remaining paired paragraph tags are within an individual, multi-part definition,
+			// and can be turned into spaces.
 			$paragraph = str_replace('</p><p>', ' ', $paragraph);
-			
-			/*
-			 * Strip out any remaining HTML.
-			 */
+
+			// Strip out any remaining HTML.
 			$paragraph = strip_tags($paragraph);
-			
-			/*
-			 * Calculate the scope of these definitions using the first line.
-			 */
+
+			// Calculate the scope of these definitions using the first line.
 			if (reset($paragraphs) == $paragraph)
 			{
-			
-				/*
-				 * Gather up a list of structural labels is, and determine the length of the longest
-				 * one, which we'll use to narrow the scope of our search for the use of structural
-				 * labels within the text.
-				 */
-				$structure_labels = explode(',', STRUCTURE);
-				usort($structure_labels, 'sort_by_length');
-				$longest_label = strlen(current($structure_label));
-				
-				/*
-				 * Iterate through every scope indicator.
-				 */
-				foreach ($scope_indicators as $scope_indicator)
+				if (
+					(stripos($paragraph, 'as used in this chapter') !== false)
+					||
+					(stripos($paragraph, 'are used in this chapter') !== false)
+					||
+					(stripos($paragraph, 'for the purpose of this chapter') !== false)
+					||
+					(stripos($paragraph, 'for purposes of this chapter') !== false)
+					||
+					(stripos($paragraph, 'as used in this article') !== false)
+					||
+					(stripos($paragraph, 'as used in this act') !== false)
+				   )
 				{
-					
-					/*
-					 * See if the scope indicator is present in this paragraph.
-					 */
-					$pos = stripos($paragraph, $scope_indicator);
-					
-					/*
-					 * The term was found.
-					 */
-					if ($pos !== FALSE)
-					{
-						/*
-						 * Now figure out the specified scope by examining the text that appears
-						 * immediately after the scope indicator. Pull out as many character as the
-						 * longest structural label.
-						 */
-						$phrase = substr( $paragraph, ($pos + strlen($scope_indicator)), $longest_label );
-						
-						/*
-						 * Iterate through the structural labels and check each one to see if it's
-						 * present in the phrase that we're examining.
-						 */
-						foreach ($structure_labels as $structure_label)
-						{
-							if (stripos($phrase, $structure_label) !== FALSE)
-							{
-								
-								/*
-								 * We've made a match -- we've successfully identified the scope of
-								 * these definitions.
-								 */
-								$scope = $structure_label;
-								
-								/*
-								 * Now that we have a match, we can break out of both the containing
-								 * foreach() and its parent foreach().
-								 */
-								break(2);
-							}
-							
-							/*
-							 * If we can't calculate scope, then let’s assume that it's specific to
-							 * the most basic structural unit -- the individual law -- for the sake
-							 * of caution. We pull that off of the end of the STRUCTURE constant.
-							 */
-							$scope = array_shift(array_reverse(explode(',', STRUCTURE)));
-						}
-					}
+					$scope = 'chapter';
 				}
-				
-				/*
-				 * That's all we're going to get out of this paragraph, so move onto the next one.
-				 */
+
+				elseif (
+						(stripos($paragraph, 'in this title') !== false)
+					)
+
+				{
+					$scope = 'title';
+				}
+
+				elseif	(
+							(stripos($paragraph, 'as used in this section') !== false)
+							||
+							(stripos($paragraph, 'for purposes of this section') !== false)
+						)
+
+				{
+					$scope = 'section';
+				}
+
+				elseif (stripos($paragraph, 'as used in this Code') !== false)
+				{
+					$scope = 'global';
+				}
+
+				// If we can't calculate scope, then we can assume safely that it's specific to this
+				// chapter.
+				else
+				{
+					$scope = 'chapter';
+				}
+
+				// That's all we're going to get out of this paragraph, so move onto the next one.
 				next;
-				
 			}
-			
-			/*
-			 * All defined terms are surrounded by quotation marks, so let's use that as a criteria
-			 * to round down our candidate paragraphs.
-			 */
+
+			// All defined terms are surrounded by quotation marks, so let's use that as a criteria
+			// to round down our candidate paragraphs.
 			if (strpos($paragraph, $quote_sample) !== false)
 			{
-				
-				/*
-				 * Iterate through every linking phrase and see if it's present in this paragraph.
-				 * We need to find the right one that will allow us to connect a term to its
-				 * definition.
-				 */
-				foreach ($linking_phrases as $linking_phrase)
+				if (
+					(strpos($paragraph, ' mean ') !== false)
+					||
+					(strpos($paragraph, ' means ') !== false)
+					||
+					(strpos($paragraph, ' shall include ') !== false)
+					||
+					(strpos($paragraph, ' includes ') !== false)
+					||
+					(strpos($paragraph, ' has the same meaning as ') !== false)
+					||
+					(strpos($paragraph, ' shall be construed ') !== false)
+					||
+					(strpos($paragraph, ' shall also be construed to mean ') !== false)
+				   )
 				{
-				
-					if (strpos($paragraph, $linking_phrase) !== false)
+
+					// Extract every word in quotation marks in this paragraph as a term that's
+					// being defined here. Most definitions will have just one term being defined,
+					// but some will have two or more.
+					preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
+
+					// If we've made any matches.
+					if ( ($terms !== false) && (count($terms) > 0) )
 					{
-					
-						/*
-						 * Extract every word in quotation marks in this paragraph as a term that's
-						 * being defined here. Most definitions will have just one term being
-						 * defined, but some will have two or more.
-						 */
-						preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
-						
-						/*
-						 * If we've made any matches.
-						 */
-						if ( ($terms !== false) && (count($terms) > 0) )
+
+						// We only need the first element in this multi-dimensional array, which has
+						// the actual matched term. It includes the quotation marks in which the
+						// term is enclosed, so we strip those out.
+						if ($quote_type == 'straight')
 						{
-							
-							/*
-							 * We only need the first element in this multi-dimensional array, which
-							 * has the actual matched term. It includes the quotation marks in which
-							 * the term is enclosed, so we strip those out.
-							 */
-							if ($quote_type == 'straight')
+							$terms = str_replace('"', '', $terms[0]);
+						}
+						elseif ($quote_type == 'directional')
+						{
+							$terms = str_replace('“', '', $terms[0]);
+							$terms = str_replace('”', '', $terms);
+						}
+
+						// Eliminate whitespace.
+						$terms = array_map('trim', $terms);
+
+						// Lowercase most (but not necessarily all) terms. Any term that contains
+						// any lowercase characters will be made entirely lowercase. But any term
+						// that is in all caps is surely an acronym, and should be stored in its
+						// original case so that we don't end up with overzealous matches. For
+						// example, "CA" is a definition in section 3.2-4600, and we don't want to
+						// match every time "ca" appears within a word. (Though note that we only
+						// match terms surrounded by word boundaries.)
+						foreach ($terms as &$term)
+						{
+							// Drop noise words that occur in lists of words.
+							if (($term == 'and') || ($term == 'or'))
 							{
-								$terms = str_replace('"', '', $terms[0]);
+								unset($term);
+								continue;
 							}
-							elseif ($quote_type == 'directional')
+
+							// Step through each character in this word.
+							for ($i=0; $i<strlen($term); $i++)
 							{
-								$terms = str_replace('“', '', $terms[0]);
-								$terms = str_replace('”', '', $terms);
-							}
-							
-							/*
-							 * Eliminate whitespace.
-							 */
-							$terms = array_map('trim', $terms);
-							
-							/* Lowercase most (but not necessarily all) terms. Any term that
-							 * contains any lowercase characters will be made entirely lowercase.
-							 * But any term that is in all caps is surely an acronym, and should be
-							 * stored in its original case so that we don't end up with overzealous
-							 * matches. For example, a two-letter acronym like "CA" is a valid
-							 * (real-world) definition, and we don't want to match every time "ca"
-							 * appears within a word. (Though note that we only match terms
-							 * surrounded by word boundaries.)
-							 */
-							foreach ($terms as &$term)
-							{
-								/*
-								 * Drop noise words that occur in lists of words.
-								 */
-								if (($term == 'and') || ($term == 'or'))
+								// If there are any lowercase characters, then make the whole thing
+								// lowercase.
+								if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
 								{
-									unset($term);
-									continue;
-								}
-							
-								/*
-								 * Step through each character in this word.
-								 */
-								for ($i=0; $i<strlen($term); $i++)
-								{
-									/*
-									 * If there are any lowercase characters, then make the whole
-									 * thing lowercase.
-									 */
-									if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
-									{
-										$term = strtolower($term);
-										break;
-									}
+									$term = strtolower($term);
+									break;
 								}
 							}
-							
-							/*
-							 * This is absolutely necessary. Without it, the following foreach()
-							 * loop will simply use $term as-is through each loop, rather than
-							 * spawning new instances based on $terms. This is presumably a bug in
-							 * the current version of PHP (5.2), because it surely doesn't make any
-							 * sense.
-							 */
-							unset($term);
-							
-							/*
-							 * Step through all of our matches and save them as discrete
-							 * definitions.
-							 */
-							foreach ($terms as $term)
+						}
+
+						// This is absolutely necessary. Without it, the following foreach() loop
+						// will simply use $term as-is through each loop, rather than spawning new
+						// instances based on $terms. This is presumably a bug in the current
+						// version of PHP, because it surely doesn't make any sense.
+						unset($term);
+
+						// Step through all of our matches and save them as discrete definitions.
+						foreach ($terms as $term)
+						{
+
+							// It's possible for a definition to be preceded by a subsection number.
+							// We want to pare down our definition down to the minimum, which means
+							// excluding that. Solution: Start definitions at the first quotation
+							// mark.
+							$paragraph = substr($paragraph, strpos($paragraph, '"'));
+
+							// Comma-separated lists of multiple words being defined need to have
+							// the trailing commas removed.
+							if (substr($term, -1) == ',')
 							{
-								
-								/*
-								 * It's possible for a definition to be preceded by a subsection
-								 * number. We want to pare down our definition down to the minimum,
-								 * which means excluding that. Solution: Start definitions at the
-								 * first quotation mark.
-								 */
-								if ($quote_type == 'straight')
+								$term = substr($term, 0, -1);
+							}
+
+							// If we don't yet have a record of this term.
+							if (!isset($definitions[$term]))
+							{
+								// Append this definition to our list of definitions.
+								$definitions[$term] = $paragraph;
+							}
+
+							// If we already have a record of this term. This is for when a word is
+							// defined twice, once to indicate what it means, and one to list what it
+							// doesn't mean. This is actually pretty common.
+							else
+							{
+								// Make sure that they're not identical -- this can happen if the
+								// defined term is repeated, in quotation marks, in the body of the
+								// definition.
+								if ( trim($definitions[$term]) != trim($paragraph) )
 								{
-									$paragraph = substr($paragraph, strpos($paragraph, '"'));
+									// Append this definition to our list of definitions.
+									$definitions[$term] .= ' '.$paragraph;
 								}
-								elseif ($quote_type == 'directional')
-								{
-									$paragraph = substr($paragraph, strpos($paragraph, '“'));
-								}
-								
-								/*
-								 * Comma-separated lists of multiple words being defined need to
-								 * have the trailing commas removed.
-								 */
-								if (substr($term, -1) == ',')
-								{
-									$term = substr($term, 0, -1);
-								}
-								
-								/*
-								 * If we don't yet have a record of this term.
-								 */
-								if (!isset($definitions[$term]))
-								{
-									/*
-									 * Append this definition to our list of definitions.
-									 */
-									$definitions[$term] = $paragraph;
-								}
-								
-								/* If we already have a record of this term. This is for when a word
-								 * is defined twice, once to indicate what it means, and one to list
-								 * what it doesn't mean. This is actually pretty common.
-								 */
-								else
-								{
-									/*
-									 * Make sure that they're not identical -- this can happen if
-									 * the defined term is repeated, in quotation marks, in the body
-									 * of the definition.
-									 */
-									if ( trim($definitions[$term]) != trim($paragraph) )
-									{
-										/*
-										 * Append this definition to our list of definitions.
-										 */
-										$definitions[$term] .= ' '.$paragraph;
-									}
-								}
-							} // end iterating through matches
-						} // end dealing with matches
-						
-						/*
-						 * Because we have identified the linking phrase for this paragraph, we no
-						 * longer need to continue to iterate through linking phrases.
-						 */
-						break;
-						
-					} // end matched linking phrase
-				} // end iterating through linking phrases
-			} // end this candidate paragraph
-			
-			/*
-			 * We don't want to accidentally use this the next time we loop through.
-			 */
+							}
+						} // end iterating through matches
+					} // end dealing with matches
+				} // end this candidate paragraph (level 1)
+			} // end this candidate paragraph (level 2)
+
+			// We don't want to accidentally use this the next time we loop through.
 			unset($terms);
 		}
 
@@ -1075,20 +937,16 @@ class Parser
 		{
 			return false;
 		}
-		
-		/*
-		 * Make the list of definitions a subset of a larger variable, so that we can store things
-		 * other than terms.
-		 */
+
+		// Make the list of definitions a subset of a larger variable, so that we can store things
+		// other than terms.
 		$tmp = array();
 		$tmp['terms'] = $definitions;
 		$tmp['scope'] = $scope;
 		$definitions = $tmp;
 		unset($tmp);
-			
-		/*
-		 * Return our list of definitions, converted from an array to an object.
-		 */
+
+		// Return our list of definitions, converted from an array to an object.
 		return (object) $definitions;
 
 	} // end extract_definitions()

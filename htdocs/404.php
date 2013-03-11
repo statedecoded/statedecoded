@@ -1,8 +1,20 @@
 <?php
 
 /**
- * This file is only meant to be included within other files. As a result, it lacks the preamble of includes,
- * etc., since those will have already been done in the files within which this is invoked.
+ * The 404 page.
+ * This file is only meant to be included within other files. As a result, it lacks the preamble
+ * of includes, etc., since those will have already been done in the files within which this is
+ * invoked.
+ * 
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.6
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+ *
  */
 
 /*

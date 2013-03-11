@@ -142,9 +142,8 @@ CREATE TABLE IF NOT EXISTS `text` (
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `law_id` (`law_id`,`sequence`),
-  FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+  KEY `law_id` (`law_id`,`sequence`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `text_sections` (
   `id` int(10) unsigned NOT NULL auto_increment,

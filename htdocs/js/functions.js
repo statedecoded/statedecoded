@@ -1,15 +1,29 @@
 $(document).ready(function () {
 	
 	/* Provide the ability to navigate with arrow keys. */
-	Mousetrap.bind('left', function(e) {
-		var url = $('a.prev').attr('href');
+	Mousetrap.bind('ctrl+left', function(e) {
+		var url = $('link[rel=prev]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
 	
-	Mousetrap.bind('right', function(e) {
-		var url = $('a.next').attr('href');
+	Mousetrap.bind('ctrl+right', function(e) {
+		var url = $('link[rel=next]').attr('href');
+		if (url) {
+			window.location = url;
+		}
+	});
+	
+	Mousetrap.bind('ctrl+up', function(e) {
+		var url = $('link[rel=up]').attr('href');
+		if (url) {
+			window.location = url;
+		}
+	});
+	
+	Mousetrap.bind('ctrl+down', function(e) {
+		var url = $('link[rel=down]').attr('href');
 		if (url) {
 			window.location = url;
 		}
@@ -18,20 +32,23 @@ $(document).ready(function () {
 	/* Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
 	originating traffic, the second is for when clicking on an anchor link within a page. */
 	if (document.location.hash) {
+	
 		$(document.location.hash).slideto({
-			highlight_color: 'yellow',
-			highlight_duration: 5000,
 			slide_duration: 500
 		});
-
+		
+		$(document.location.hash).show('highlight', {color: '#ffff00'}, 'fast');
 	}
+	
 	$('a[href*=#]').click(function(){
+	
 		var elemId = '#' + $(this).attr('href').split('#')[1];
 		$(elemId).slideto({
-			highlight_color: 'yellow',
-			highlight_duration: 5000,
 			slide_duration: 500
 		});
+		
+		$(document.location.hash).show('highlight', {color: '#ffff00'}, 'fast');
+		
 	});
 	
 		

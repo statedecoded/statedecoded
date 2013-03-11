@@ -6,7 +6,7 @@
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
- * @copyright	2010-2012 Waldo Jaquith
+ * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.6
  * @link		http://www.statedecoded.com/
@@ -293,19 +293,20 @@ class API
 			return false;
 		}
 		
-		$email->body = 'Click on the following link to activate your '.SITE_TITLE.' API key.'
-			."\r\r"
-			.'http://'.$_SERVER['SERVER_NAME'].'/api-key/?secret='.$this->secret;
-		$email->subject = SITE_TITLE.' API Registration';
-		$email->headers = 'From: '.EMAIL_ADDRESS."\n"
-						.'Return-Path: '.EMAIL_ADDRESS."\n"
-						.'Reply-To: '.EMAIL_ADDRESS."\n"
-						.'X-Originating-IP: '.$_SERVER['REMOTE_ADDR'];
+		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
+			. "\r\r"
+			. 'http://' . $_SERVER['SERVER_NAME'] . '/api-key/?secret=' . $this->secret;
+		$email->subject = SITE_TITLE . ' API Registration';
+		$email->headers = 'From: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'Return-Path: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'Reply-To: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'X-Originating-IP: ' . $_SERVER['REMOTE_ADDR'];
+		$email->parameters = '-f' . EMAIL_ADDRESS;
 		
 		/*
 		 * Send the e-mail.
 		 */
-		mail($this->email, $email->subject, $email->body, $email->headers);
+		mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
 		
 		return true;
 	}

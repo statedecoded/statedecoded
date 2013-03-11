@@ -1,12 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-</head>
-<body>
-
 <?php
+
+/**
+ * The administrative parser page
+ * 
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.6
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
+ *
+ */
+
 
 /*
  * During this import phase, report all errors.
@@ -15,14 +22,19 @@
 //error_reporting(E_ALL);
 
 /*
- * Include a master settings include file.
+ * Include the PHP declarations that drive this page.
+ */
+require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
+
+/*
+ * Include the PHP declarations that drive this page.
  */
 require_once dirname(dirname(dirname(__FILE__))) . '/includes/config.inc.php';
 
 /*
- * Include MDB2
+ * Fire up our templating engine.
  */
-require_once 'MDB2.php';
+$template = new Page;
 
 /*
  * Include the code with the functions that drive this parser.
@@ -32,17 +44,23 @@ require_once CUSTOM_FUNCTIONS;
 require_once INCLUDE_PATH . '/parser-controller.inc.php';
 require_once INCLUDE_PATH . '/logger.inc.php';
 
-$logger = new DebugLogger(array('html' => true));
+//$logger = new DebugLogger(array('html' => true));
+$logger = new Logger(array('html' => true));
 
 $parser = new ParserController(array('logger' => $logger));
 
+/*
+ * Define some page elements.
+ */
+$template->field->browser_title = 'Parser';
+$template->field->page_title = 'Parser';
 
 /*
  * When first loading the page, show options.
  */
-if (count($_POST) == 0)
+if (count($_POST) === 0)
 {
-	echo '
+	$body = '
 		<p>What do you want to do?</p>
 		<form method="post" action="/admin/parser.php">
 			<input type="hidden" name="action" value="parse" />
@@ -59,11 +77,17 @@ if (count($_POST) == 0)
  */
 elseif ($_POST['action'] == 'empty')
 {
+	ob_start();
+	
 	$parser->clear_db();
-
+	
+	$body = ob_get_contents();
+	ob_end_clean();
 }
 
 elseif ($_POST['action'] == 'parse') {
+	ob_start();
+
 	$parser->parse();
 
 	$parser->write_api_key();
@@ -71,9 +95,20 @@ elseif ($_POST['action'] == 'parse') {
 	$parser->export();
 
 	$parser->clear_apc();
+	
+	$body = ob_get_contents();
+	ob_end_clean();
 }
 
 
-?>
-</body>
-</html>
+/*
+ * Put the shorthand $body variable into its proper place.
+ */
+$template->field->body = $body;
+unset($body);
+
+/*
+ * Parse the template, which is a shortcut for a few steps that culminate in sending the content
+ * to the browser.
+ */
+$template->parse();

@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /api/0.1/
+RewriteBase /api/1.0/
 
 RewriteRule ^law/(.*)$ law.php?section=$1 [QSA]
 RewriteRule ^structure/(.*)$ structure.php?identifier=$1 [QSA]

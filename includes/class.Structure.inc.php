@@ -1,8 +1,19 @@
 <?php
 
 /**
+ * The Structure class, for retrieving data about structural units (e.g., titles, chapters, etc.)
+ * 
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2010-2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.6
+ * @link		http://www.statedecoded.com/
+ * @since		0.1
  *
  */
+ 
 class Structure
 {
 	/**
@@ -52,13 +63,19 @@ class Structure
 		// units of this legal code, from broadest—e.g., title—to the narrowest—e.g. article) into
 		// an array.
 		$structure = explode(',', STRUCTURE);
-		
+	
+		// If there are more components of the URL than `count($structure)', only consider the
+		// first `count($structure)' components.
+		if (count($components) > count($structure))
+		{
+			$components = array_slice($components, 0, count($structure));
+		}
 		// If our structure is longer than the URL components (as it very often will be), hack off
-		// the structure array elements that we don't need.
-		if (count($structure) > count($components))
+		// the end structure array elements that we don't need.
+		elseif (count($structure) > count($components))
 		{
 			$structure = array_slice($structure, 0, count($components));
-		}
+		}	
 		
 		// Merge the structure and URL component arrays.
 		$tmp = array_combine($structure, $components);
@@ -183,15 +200,17 @@ class Structure
 		unset($structure);
 		
 		// Iterate through the levels and build up the URLs recursively.
-		$url_prefix = 'http://'.$_SERVER['SERVER_NAME'].'/';
+		$i=0;
+		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 		$url_suffix = '';
 		foreach ($this->structure as &$level)
 		{
-			$url_suffix .= $level->number.'/';
-			$level->url = $url_prefix.$url_suffix;
+			$url_suffix .= urlencode($level->number).'/';
+			$level->url = $url . $url_suffix;
+			$i++;
 		}
 		
-		// We set these two variables for the convenience of other functions in this class.
+		// Set some variables for the convenience of other functions in this class.
 		$tmp = end($this->structure);
 		$this->id = $tmp->id;
 		$this->label = $tmp->label;
@@ -202,6 +221,7 @@ class Structure
 		
 		return true;
 	}
+	
 	
 	/**
 	 * Get all of the metadata for the specified structural element (title, chapter, etc.).
@@ -343,7 +363,7 @@ class Structure
 				/*
 				 * We no longer have any need for these "s#_" fields. Eliminate them. (This is
 				 * helpful to save memory, but it also allows this object to be delivered directly
-				 * via the API, without modification.
+				 * via the API, without modification.)
 				 */
 				if (preg_match('/s[0-9]_([a-z]+)/', $key) == 1)
 				{
@@ -360,6 +380,7 @@ class Structure
 		return $children;
 		
 	}
+	
 	
 	/**
 	 * Get a structure ID's ancestry. For example, when given the ID of a chapter, it will return
@@ -428,7 +449,7 @@ class Structure
 		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 		foreach (array_reverse((array) $ancestry) as $key => $level)
 		{
-			$url .= $level->number.'/';
+			$url .= urlencode($level->number).'/';
 			$ancestry->$key->url = $url;
 		}
 		
@@ -439,6 +460,7 @@ class Structure
 		return $ancestry;
 		
 	}
+	
 	
 	/**
 	 * Convert a structure ID to its number.
@@ -473,6 +495,7 @@ class Structure
 		
 		return $structure->number;
 	}
+	
 	
 	/**
 	 * Get a listing of all laws for a given structural element.
