@@ -148,7 +148,7 @@ class Parser
 				/*
 				 * If we can't convert to XML, try cleaning the data first.
 				 */
-				if(class_exists('tidy')) {
+				if(class_exists('tidy', false)) {
 					$tidy_config = array('input-xml' => true);
 					$tidy = new tidy();
 					$tidy->parseString($xml, $tidy_config, 'utf8');
@@ -157,7 +157,8 @@ class Parser
 					$xml = (string) $tidy;
 				}
 				elseif(exec('which tidy')) {
-					$xml = exec('tidy -xml '.$filename);
+					exec('tidy -xml '.$filename, $output);
+					$xml = join('', $output);
 				}
 				$this->section = new SimpleXMLElement($xml);
 			}
@@ -660,7 +661,7 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET identifier="'.$db->escape($this->identifier).'"';
+				SET identifier="'.$this->db->escape($this->identifier).'"';
 		if (!empty($this->name))
 		{
 			$sql .= ', name="'.$this->db->escape($this->name).'"';

@@ -127,7 +127,7 @@ class ParserController {
 		 */
 		$this->logger->message('Parsing XML', 3);
 
-		while ($section = $parser->iterate($starttime))
+		while ($section = $parser->iterate())
 		{
 			$parser->section = $section;
 			$parser->parse();
