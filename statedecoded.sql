@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `laws_views` (
 CREATE TABLE IF NOT EXISTS `structure` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(128) collate utf8_bin default NULL,
-  `number` varchar(16) collate utf8_bin NOT NULL,
+  `identifier` varchar(16) collate utf8_bin NOT NULL,
   `label` varchar(32) collate utf8_bin NOT NULL,
   `order_by` int(10) unsigned default NULL,
   `parent_id` smallint(5) unsigned default NULL,
@@ -121,17 +121,6 @@ CREATE TABLE IF NOT EXISTS `structure` (
   PRIMARY KEY  (`id`),
   KEY `order_by` (`order_by`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
-
-CREATE TABLE IF NOT EXISTS `structure_unified` (
-`s1_id` smallint(5) unsigned
-,`s1_name` varchar(128)
-,`s1_number` varchar(16)
-,`s1_label` varchar(32)
-,`s2_id` smallint(5) unsigned
-,`s2_name` varchar(128)
-,`s2_number` varchar(16)
-,`s2_label` varchar(32)
-);
 
 CREATE TABLE IF NOT EXISTS `text` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -155,10 +144,6 @@ CREATE TABLE IF NOT EXISTS `text_sections` (
   PRIMARY KEY  (`id`),
   KEY `text_id` (`text_id`,`identifier`,`sequence`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
-
-DROP TABLE IF EXISTS `structure_unified`;
-
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `structure_unified` AS select `s1`.`id` AS `s1_id`,`s1`.`name` AS `s1_name`,`s1`.`number` AS `s1_number`,`s1`.`label` AS `s1_label`,`s2`.`id` AS `s2_id`,`s2`.`name` AS `s2_name`,`s2`.`number` AS `s2_number`,`s2`.`label` AS `s2_label` from (`structure` `s1` left join `structure` `s2` on((`s2`.`id` = `s1`.`parent_id`))) order by `s2`.`number`,`s1`.`number`;
 
 INSERT INTO `dictionary_general` (`id`, `term`, `definition`, `source`, `source_url`) VALUES
 (1, 'abscond', 0x546f206573636170652c20666c6565206f72206469736170706561722e, 'VA Journey Through Justice Glossary', 'http://www.jtj.courts.state.va.us/resources_glossary.html'),

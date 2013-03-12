@@ -359,7 +359,7 @@ class Parser
 
 		foreach ($this->code->structure as $struct)
 		{
-			$structure->number = $struct->identifier;
+			$structure->identifier = $struct->identifier;
 			$structure->name = $struct->name;
 			$structure->label = $struct->label;
 			/* If we've gone through this loop already, then we have a parent ID. */
@@ -420,12 +420,12 @@ class Parser
 		$references = new Parser(array('db' => $this->db));
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
-		if ( ($sections !== false) && (count($sections) > 0) )
+		if ( ($sections !== FALSE) && (count($sections) > 0) )
 		{
 			$references->section_id = $law_id;
 			$references->sections = $sections;
 			$success = $references->store_references();
-			if ($success === false)
+			if ($success === FALSE)
 			{
 				echo '<p>References for section ID '.$law_id.' were found, but could not be
 					stored.</p>';
@@ -499,14 +499,29 @@ class Parser
 		// Get a normalized listing of definitions.
 		$definitions = $dictionary->extract_definitions();
 		
-		// Override the calculated scope for global definitions.
-		if ($chapter->title_number.'-'.$this->code->chapter_number == GLOBAL_DEFINITIONS)
+		// Check to see if this section or its containing structural unit were specified in the
+		// config file as a container for global definitions. If it was, then we override the
+		// presumed scope and provide a global scope.
+		$ancestry = array();
+		foreach ($this->code->structure as $struct)
+		{
+			$ancestry[] = $struct->identifier;
+		}
+		$ancestry = implode(',', $ancestry);
+		$ancestry_section .= $ancestry . ','.$this->code->section_number;
+		if 	(
+				(GLOBAL_DEFINITIONS === $ancestry)
+				||
+				(GLOBAL_DEFINITIONS === $ancestry_section)
+			)
 		{
 			$definitions->scope = 'global';
 		}
+		unset($ancestry);
+		unset($ancestry_section);
 		
 		// If any definitions were found in this text, store them.
-		if ($definitions !== false)
+		if ($definitions !== FALSE)
 		{
 			
 			// Populate the appropriate variables.
@@ -523,7 +538,7 @@ class Parser
 				$find_scope->label = $dictionary->scope;
 				$find_scope->structure_id = $dictionary->structure_id;
 				$dictionary->structure_id = $find_scope->find_structure_parent();
-				if ($dictionary->structure_id === false)
+				if ($dictionary->structure_id === FALSE)
 				{
 					unset($dictionary->structure_id);
 				}
@@ -558,13 +573,13 @@ class Parser
 
 
 	/**
-	 * When provided with a chapter number, verifies whether that chapter exists. Returns the
-	 * chapter ID if it exists; otherwise, returns false.
+	 * When provided with a structural identifier, verifies whether that structural unit exists.
+	 * Returns the structural database ID if it exists; otherwise, returns false.
 	 */
 	function structure_exists()
 	{
 
-		if (!isset($this->number))
+		if (!isset($this->identifier))
 		{
 			return false;
 		}
@@ -572,8 +587,8 @@ class Parser
 		// Assemble the query.
 		$sql = 'SELECT id
 				FROM structure
-				WHERE number="'.$this->number.'"';
-
+				WHERE identifier="'.$this->identifier.'"';
+				
 		// If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
 		// include that in our query.
 		if ( !empty($this->parent_id) )
@@ -600,10 +615,10 @@ class Parser
 
 
 	/**
-	 * When provided with a structural unit number and type, it creates a record for that structural
-	 * unit. Save for top-level structural units (e.g., titles), it should always be provided with
-	 * a $parent_id, which is the ID of the parent structural unit. Most structural units will have
-	 * a name, but not all.
+	 * When provided with a structural unit identifier and type, it creates a record for that
+	 * structural unit. Save for top-level structural units (e.g., titles), it should always be
+	 * provided with a $parent_id, which is the ID of the parent structural unit. Most structural
+	 * units will have a name, but not all.
 	 */
 	function create_structure()
 	{
@@ -615,11 +630,12 @@ class Parser
 		// 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
 		// name.
 		//
-		// Because a valid chapter number can be "0" we can't simply use empty(), but must also
-		// verify that the string is longer than zero characters. We do both because empty() will
-		// valuate faster than strlen(), and because these two strings will almost never be empty.
+		// Because a valid structural identifier can be "0" we can't simply use empty(), but must
+		// also verify that the string is longer than zero characters. We do both because empty()
+		// will valuate faster than strlen(), and because these two strings will almost never be
+		// empty.
 		if (
-				( empty($this->number) && (strlen($this->number) === 0) )
+				( empty($this->identifier) && (strlen($this->identifier) === 0) )
 				||
 				( empty($this->label) )
 			)
@@ -631,7 +647,7 @@ class Parser
 		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
 		 */
 		$structure_id = Parser::structure_exists();
-		if ($structure_id !== false)
+		if ($structure_id !== FALSE)
 		{
 			return $structure_id;
 		}
@@ -644,7 +660,7 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET number="'.$this->db->escape($this->number).'"';
+				SET identifier="'.$db->escape($this->identifier).'"';
 		if (!empty($this->name))
 		{
 			$sql .= ', name="'.$this->db->escape($this->name).'"';
@@ -788,11 +804,12 @@ class Parser
 		 */
 		if (strpos($this->text, '<p>') !== FALSE)
 		{
-			$paragraphs = explode('</p><p>', $this->text);
+			$paragraphs = explode('<p>', $this->text);
 		}
 		else
 		{
-			$paragraphs = explode('PHP_EOL', $this->text);
+			$this->text = str_replace("\n", "\r", $this->text);
+			$paragraphs = explode("\r", $this->text);
 		}
 		
 		/*
@@ -898,7 +915,7 @@ class Parser
 			 * All defined terms are surrounded by quotation marks, so let's use that as a criteria
 			 * to round down our candidate paragraphs.
 			 */
-			if (strpos($paragraph, $quote_sample) !== false)
+			if (strpos($paragraph, $quote_sample) !== FALSE)
 			{
 				
 				/*
@@ -909,7 +926,7 @@ class Parser
 				foreach ($linking_phrases as $linking_phrase)
 				{
 				
-					if (strpos($paragraph, $linking_phrase) !== false)
+					if (strpos($paragraph, $linking_phrase) !== FALSE)
 					{
 					
 						/*
@@ -922,7 +939,7 @@ class Parser
 						/*
 						 * If we've made any matches.
 						 */
-						if ( ($terms !== false) && (count($terms) > 0) )
+						if ( ($terms !== FALSE) && (count($terms) > 0) )
 						{
 							
 							/*
@@ -1259,7 +1276,7 @@ class Parser
 
 			// First check for single matches.
 			$result = preg_match($pcre, $update, $matches);
-			if ( ($result !== false) && ($result !== 0) )
+			if ( ($result !== FALSE) && ($result !== 0) )
 			{
 				if (!empty($matches[1]))
 				{
@@ -1272,7 +1289,7 @@ class Parser
 				if (!empty($matches[3]))
 				{
 					$result = preg_match(SECTION_PCRE, $update, $matches[3]);
-					if ( ($result !== false) && ($result !== 0) )
+					if ( ($result !== FALSE) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}
@@ -1285,7 +1302,7 @@ class Parser
 				// Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
 				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
 				$result = preg_match_all($pcre, $update, $matches);
-				if ( ($result !== false) && ($result !== 0) )
+				if ( ($result !== FALSE) && ($result !== 0) )
 				{
 					// Save the year.
 					$final->{$i}->year = $matches[1][0];
@@ -1313,7 +1330,7 @@ class Parser
 
 					// Locate any section identifier.
 					$result = preg_match(SECTION_PCRE, $update, $matches);
-					if ( ($result !== false) && ($result !== 0) )
+					if ( ($result !== FALSE) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}

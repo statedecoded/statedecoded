@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.1
+ * @version		0.6
  * @link		http://www.statedecoded.com/
  * @since		0.1
  *
@@ -21,7 +21,7 @@
 define('BASE_PATH', dirname(dirname(__FILE__)));
 
 /*
- * Define include path, since we need it sometimes.
+ * Define the path to the includes library.
  */
 define('INCLUDE_PATH', BASE_PATH . DIRECTORY_SEPARATOR . 'includes');
 
@@ -72,7 +72,7 @@ define('EDITION_YEAR', 2012);
  * Does this state's code include laws that have been repealed formally, and that are marked as
  * such?
  */
-define('INCLUDES_REPEALED', true);
+define('INCLUDES_REPEALED', TRUE);
 
 /*
  * The DSN to connect to MySQL.
@@ -80,12 +80,12 @@ define('INCLUDES_REPEALED', true);
 define('MYSQL_DSN', 'mysql://username:password@localhost/statelaws');
 
 /*
- * Specify the title and chapter of the code that contains definitions of terms that are used
- * throughout the code, and thus should have a global scope.
- *
- * IMPORTANT: This is NOT a standard citation method. For instance, "1-2.1" would normally refer to
- * title 1, section 2.1. But here it refers to title 1, chapter 2.1. That's because there's simply
- * no standard way to cite a title and chapter, so we use this.
+ * Specify the structural identifier ancestry for the unit of the code that contains definitions of
+ * terms that are used throughout the code, and thus should have a global scope. Separate each
+ * identifier with a comma. If all global definitions are found in Title 15A, Part BD, Chapter 16.2,
+ * that would be identified as '15A,BD,16.2'. If all global definitions are found in Article 36,
+ * Section 105, that would be identified as '36,105'. This must be the COMPLETE PATH to the
+ * container for global definitions, and not a standard citation.
  */
 define('GLOBAL_DEFINITIONS', '');
 

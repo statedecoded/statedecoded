@@ -15,7 +15,6 @@
 	<link rel="stylesheet" href="/css/print.css" type="text/css" media="print">
 	<link rel="stylesheet" href="/css/jquery.qtip.css" type="text/css" media="screen">
 	<link rel="home" title="Home" href="/" />
-	<link rel="search" title="Search" href="/search/" />
 	{{link_rel}}
 	{{css}}
 	{{inline_css}}
@@ -48,10 +47,6 @@
 		</hgroup>
 		<nav id="main_navigation">
 			<div id="search">
-				<form method="get" action="/search/">
-					<input type="search" size="20" name="q" placeholder="Search the Code"/>
-					<input type="submit" value="Search" />
-				</form>
 			</div> <!-- // #search -->
 			<ul>
 				<li><a href="/" class="ir" id="home">Home</a></li>

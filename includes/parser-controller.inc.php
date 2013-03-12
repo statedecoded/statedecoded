@@ -112,7 +112,7 @@ class ParserController {
 				 * should be for the XML files.
 				 */
 
-				'directory' => WEB_ROOT . '/xml/',
+				'directory' => WEB_ROOT . '/admin/xml/',
 
 				/*
 				 * Set the database

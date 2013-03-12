@@ -39,7 +39,7 @@ if (count((array) $structure) > 1)
 {
 	foreach ($structure as $level)
 	{
-		$template->field->breadcrumbs .= ' <a href="'.$level->url.'">'.$level->number.': '.$level->name.'</a> →';
+		$template->field->breadcrumbs .= ' <a href="'.$level->url.'">'.$level->identifier.': '.$level->name.'</a> →';
 		
 		# If this structural element is the same as the parent container, then use that knowledge
 		# to populate the link rel="up" tag.
@@ -61,7 +61,7 @@ else
 }
 
 # Provide a textual introduction to this section.
-$body = '<p>This is '.ucwords($struct->label).' '.$struct->number.' of the '.LAWS_NAME.', titled
+$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the '.LAWS_NAME.', titled
 		“'.$struct->name.'.”';
 
 if (count((array) $structure) > 1)
@@ -70,7 +70,7 @@ if (count((array) $structure) > 1)
 	{
 		if ($level->label !== $struct->label)
 		{
-			$body .= ' It is part of '.ucwords($level->label).' '.$level->number.', titled “'
+			$body .= ' It is part of '.ucwords($level->label).' '.$level->identifier.', titled “'
 				.$level->name.'.”';
 		}
 	}
@@ -86,7 +86,7 @@ if ($children !== false)
 	$body .= '<dl class="level-'.($structure->{count($structure)-1}->level + 1).'">';
 	foreach ($children as $child)
 	{
-		$body .= '<dt><a href="'.$child->url.'">'.$child->number.'</a></dt>
+		$body .= '<dt><a href="'.$child->url.'">'.$child->identifier.'</a></dt>
 				<dd><a href="'.$child->url.'">'.$child->name.'</a></dd>';
 	}
 	$body .= '</dl>';
