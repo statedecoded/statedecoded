@@ -53,7 +53,7 @@ $body .= '
 	<article>
 	<h1>'.ucwords($structures->{0}->label).'s of the '.LAWS_NAME.'</h1>
 	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
-if ( !empty($titles) )
+if ( !empty($structures) )
 {
 	$body .= '<dl class="level-1">';
 	foreach ($structures as $structure)
