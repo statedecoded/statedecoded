@@ -1,3 +1,17 @@
+/**
+ * Truncate text at  characters of length. Written by "c_harm" and posted 
+ * to Stack Overflow at http://stackoverflow.com/a/1199627/955342
+ */
+function truncate(str){
+	var re = str.match(/^.{0,500}[\S]*/);
+	var new_str = re[0];
+	var new_str = new_str.replace(/\s$/,'');
+	if(new_str.length < str.length)
+		new_str = new_str + "&nbsp;&#8230;";
+	console.log(str, new_str);
+	return new_str;
+}
+
 $(document).ready(function () {
 	
 	/* Provide the ability to navigate with arrow keys. */
@@ -110,17 +124,6 @@ $(document).ready(function () {
 			}
 		})
 	});
-
-	/* Truncate text at 250 characters of length. Written by "c_harm" and posted to Stack Overflow
-	at http://stackoverflow.com/a/1199627/955342 */
-	String.prototype.truncate = function(){
-		var re = this.match(/^.{0,500}[\S]*/);
-		var l = re[0].length;
-		var re = re[0].replace(/\s$/,'');
-		if(l < this.length)
-			re = re + "&nbsp;.&thinsp;.&thinsp;.&thinsp;";
-		return re;
-	}
 	
 	/* Words for which we have dictionary terms.*/
 	$("span.dictionary").each(function() {
@@ -148,7 +151,7 @@ $(document).ready(function () {
 					data: { section: section_number, key: api_key },
 					dataType: 'json',
 					success: function(data, status) {
-						var content = data.definition.truncate();
+						var content = truncate(data.definition);
 						if (data.section_number != null) {
 							content = content + ' (<a href="' + data.url + '">§&nbsp;' + data.section_number + '</a>)';
 						}
