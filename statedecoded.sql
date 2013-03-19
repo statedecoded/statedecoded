@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `laws` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `section` (`section`),
-  KEY `chapter_id` (`structure_id`),
   KEY `structure_id` (`structure_id`),
   KEY `edition_id` (`edition_id`),
   KEY `order_by` (`order_by`)
