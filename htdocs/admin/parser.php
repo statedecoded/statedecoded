@@ -25,29 +25,29 @@
  * Include the PHP declarations that drive this page.
  */
 require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
-
-/*
- * Include the PHP declarations that drive this page.
- */
 require_once dirname(dirname(dirname(__FILE__))) . '/includes/config.inc.php';
-
-/*
- * Fire up our templating engine.
- */
-$template = new Page;
 
 /*
  * Include the code with the functions that drive this parser.
  */
 require_once CUSTOM_FUNCTIONS;
-
 require_once INCLUDE_PATH . '/parser-controller.inc.php';
 require_once INCLUDE_PATH . '/logger.inc.php';
 
-//$logger = new DebugLogger(array('html' => true));
+/*
+ * Log parser output.
+ */
 $logger = new Logger(array('html' => true));
 
+/*
+ * Create a new parser controller.
+ */
 $parser = new ParserController(array('logger' => $logger));
+
+/*
+ * Fire up our templating engine.
+ */
+$template = new Page;
 
 /*
  * Define some page elements.
@@ -77,23 +77,30 @@ if (count($_POST) === 0)
  */
 elseif ($_POST['action'] == 'empty')
 {
+
 	ob_start();
 	
 	$parser->clear_db();
 	
 	$body = ob_get_contents();
 	ob_end_clean();
+	
 }
 
-elseif ($_POST['action'] == 'parse') {
+/*
+ * Else if we're actually running the parser.
+ */
+elseif ($_POST['action'] == 'parse')
+{
+
 	ob_start();
-
+	
+	/*
+	 * Step through each parser method.
+	 */
 	$parser->parse();
-
 	$parser->write_api_key();
-
 	$parser->export();
-
 	$parser->clear_apc();
 	
 	$body = ob_get_contents();
