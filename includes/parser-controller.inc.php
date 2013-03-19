@@ -279,8 +279,6 @@ class ParserController {
 		 */
 		if (API_KEY == '')
 		{
-			// I have no idea why __autoload() isn't loading this automatically, but it's not.
-			include '../../includes/class.API.inc.php';
 			$api = new API();
 			$api->form->email = EMAIL_ADDRESS;
 			$api->form->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
