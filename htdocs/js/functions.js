@@ -1,6 +1,5 @@
 /**
- * Truncate text at  characters of length. Written by "c_harm" and posted 
- * to Stack Overflow at http://stackoverflow.com/a/1199627/955342
+ * Truncate text at 500 characters of length.
  */
 function truncate(str){
 	var re = str.match(/^.{0,500}[\S]*/);
