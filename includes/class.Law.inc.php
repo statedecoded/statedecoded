@@ -368,11 +368,6 @@ class Law
 			$this->references = Law::get_references();
 		}
 		
-		if ($this->config->get_related_laws == TRUE)
-		{
-			$this->related = Law::get_related();
-		}
-		
 		/*
 		 * Pretty up the text for the catch line.
 		 */
