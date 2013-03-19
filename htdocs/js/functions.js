@@ -79,13 +79,21 @@ $(document).ready(function () {
 			event: "mouseover"
 		},
 		hide: {
-			event: "mouseout"
+			event: "mouseout",
+			fixed: true,
+			delay: 100
 		},
 		position: {
 			at: "top center",
 			my: "bottom center"
 		}
 	})
+	
+	/* Permit copying URLs to the clipboard. */
+	$('a.section-permalink-tip').zclip({
+		path: 'js/ZeroClipboard.swf',
+		copy: $('a.section-permalink').attr.('href')
+	});
 	
 	/* Mentions of other sections of the code. */
 	$("a.law").each(function() {

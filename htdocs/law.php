@@ -95,6 +95,7 @@ $template->field->javascript_files = '
 	<script src="/js/jquery.slideto.min.js"></script>
 	<script src="/js/jquery.color-2.1.1.min.js"></script>
 	<script src="/js/mousetrap.min.js"></script>
+	<script src="/js/jquery.zclip.min.js"></script>
 	<script src="/js/functions.js"></script>';
 
 /*
