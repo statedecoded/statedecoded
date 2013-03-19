@@ -19,8 +19,9 @@
 function __autoload($class_name)
 {
 
-	$filename = "class.{$class_name}.inc.php";
-	if ((include_once INCLUDE_PATH . DIRECTORY_SEPARATOR . $filename) === false) {
+	$filename = 'class.' . $class_name . '.inc.php';
+	if ((include_once INCLUDE_PATH . DIRECTORY_SEPARATOR . $filename) === FALSE)
+	{
 		throw new Exception("Could not include `$filename'.");
 	}
 	
