@@ -166,4 +166,11 @@ $(document).ready(function () {
 			}
 		})
 	});
+	
+	/* Modal dialog overlay. */
+	$("#keyhelp").click(function() {
+	
+		$("#keyboard").dialog({modal: true});
+		
+	});
 });
