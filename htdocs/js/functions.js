@@ -44,7 +44,10 @@ $(document).ready(function () {
 	});
 	
 	Mousetrap.bind(['/', 'ctrl+/'], function(e) {
-		$('#search-input').focus();
+		if(!$('#search-input:focus').length) {
+			e.preventDefault();
+			$('#search-input').focus();
+		}
 	});
 	
 	/* Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
