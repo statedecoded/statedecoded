@@ -19,7 +19,8 @@
  * Base Logger - just outputs a message.  Can be HTML or plain text.
  */
 
-class Logger {
+class Logger
+{
    /**
      * Whether or not to show messages as HTML.
      *
@@ -45,8 +46,10 @@ class Logger {
 	 * @param array    Hash of all values to override in the class
 	 */
 
-	public function __construct($args = array()) {
-		foreach($args as $key=>$value) {
+	public function __construct($args = array())
+	{
+		foreach($args as $key=>$value)
+		{
 			$this->$key = $value;
 		}
 
@@ -62,17 +65,21 @@ class Logger {
 	 *                      This log level must be greater than the log level
 	 *                      set on the class to actually be printed.
 	 */
-	public function message($msg, $level = 1) {
-		if($level >= $this->level) {
+	public function message($msg, $level = 1)
+	{
+		if($level >= $this->level)
+		{
 			print $msg;
 
 			/**
 			 * Handle line endings
 			 */
-			if($this->html == true) {
+			if($this->html == true)
+			{
 				print '<br />';
 			}
-			else {
+			else
+			{
 				print "\n";
 			}
 			/**
@@ -91,7 +98,8 @@ class Logger {
  * Silent Logger - does nothing.
  */
 
-class QuietLogger {
+class QuietLogger
+{
 	public function message($msg) {}
 }
 
@@ -100,7 +108,8 @@ class QuietLogger {
  * Debug Logger - includes time and memory usage.
  */
 
-class DebugLogger extends Logger {
+class DebugLogger extends Logger
+{
    /**
      * Time the logger was first created.
      *
@@ -122,7 +131,8 @@ class DebugLogger extends Logger {
 	 * @param array    Hash of all values to override in the class
 	 */
 
-	public function __construct($args) {
+	public function __construct($args)
+	{
 		parent::__construct($args);
 
 		$this->start_time = $this->get_time();
@@ -133,7 +143,8 @@ class DebugLogger extends Logger {
 	/**
 	 * Prints the message, adds the time elapsed and memory usage.
 	 */
-	public function message($msg, $level) {
+	public function message($msg, $level)
+	{
 		print $this->get_time_elapsed() . "ms ";
 		print memory_get_usage() . "b : ";
 
@@ -147,7 +158,8 @@ class DebugLogger extends Logger {
 	/**
 	 * Gets the current (micro) time.  Nothing fancy.
 	 */
-	public function get_time() {
+	public function get_time()
+	{
 		return microtime(true);
 	}
 
@@ -162,8 +174,10 @@ class DebugLogger extends Logger {
 	 *                      This log level must be greater than the log level
 	 *                      set on the class to actually be printed.
 	 */
-	public function get_time_elapsed($time) {
-		if(!$time) {
+	public function get_time_elapsed($time)
+	{
+		if(!$time)
+		{
 			$time = $this->get_time();
 		}
 		return $time - $this->start_time;
