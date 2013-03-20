@@ -1,6 +1,5 @@
 /**
- * Truncate text at  characters of length. Written by "c_harm" and posted 
- * to Stack Overflow at http://stackoverflow.com/a/1199627/955342
+ * Truncate text at 500 characters of length.
  */
 function truncate(str){
 	var re = str.match(/^.{0,500}[\S]*/);
@@ -80,13 +79,21 @@ $(document).ready(function () {
 			event: "mouseover"
 		},
 		hide: {
-			event: "mouseout"
+			event: "mouseout",
+			fixed: true,
+			delay: 100
 		},
 		position: {
 			at: "top center",
 			my: "bottom center"
 		}
 	})
+	
+	/* Permit copying URLs to the clipboard. */
+	$('a.section-permalink-tip').zclip({
+		path: 'js/ZeroClipboard.swf',
+		copy: $('a.section-permalink').attr.('href')
+	});
 	
 	/* Mentions of other sections of the code. */
 	$("a.law").each(function() {

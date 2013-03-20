@@ -1,13 +1,30 @@
 <?php
 
+
+/**
+ * Parser Controller
+ *
+ * PHP version 5
+ *
+ * @author		Bill Hunt <bill at krues8dr.com>
+ * @copyright	2013 Bill Hunt
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.7
+ * @link		http://www.statedecoded.com/
+ * @since		0.7
+*/
+
 require_once INCLUDE_PATH . '/logger.inc.php';
 
-class ParserController {
-	public function __construct($args) {
+class ParserController
+{
+	public function __construct($args)
+	{
 		/*
 		 * Set our defaults
 		 */
-		foreach($args as $key=>$value) {
+		foreach($args as $key=>$value)
+		{
 			$this->$key = $value;
 		}
 
@@ -26,12 +43,12 @@ class ParserController {
 		}
 
 		/*
-		 * We must, must, must always connect with UTF-8.
+		 * We must always connect with UTF-8.
 		 */
 		$this->db->setCharset('utf8');
 
 		/*
-		 * Set our default execution limits
+		 * Set our default execution limits.
 		 */
 		$this->set_execution_limits();
 	}
@@ -44,13 +61,15 @@ class ParserController {
      * @static
      * @since Method available since Release 0.7
      */
-	public function init_logger() {
+	public function init_logger()
+	{
 		if(!$this->logger) {
 			$this->logger = new Logger();
 		}
 	}
 
-	public function set_execution_limits() {
+	public function set_execution_limits()
+	{
 		/*
 		 * Let this script run for as long as is necessary to finish.
 		 */
@@ -65,14 +84,12 @@ class ParserController {
 	/*
 	 * Clear out our database
 	 */
-	public function clear_db() {
+	public function clear_db()
+	{
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections');
 		foreach ($tables as $table)
 		{
 			$sql = 'TRUNCATE '.$table;
-			/*
-			 * Execute the query.
-			 */
 
 			$result =& $this->db->exec($sql);
 			if (PEAR::isError($result))
@@ -99,7 +116,8 @@ class ParserController {
 		$result =& $this->db->exec($sql);
 	}
 
-	public function parse() {
+	public function parse()
+	{
 		$this->logger->message('Parsing', 5);
 
 		/*
@@ -149,8 +167,8 @@ class ParserController {
 		$this->db->exec($sql);
 
 		/*
-		 * Any unresolved target section numbers are spurious (strings that happen to match our section
-		 * PCRE), and can be deleted.
+		 * Any unresolved target section numbers are spurious (strings that happen to match our
+		 * section PCRE), and can be deleted.
 		 */
 		$this->logger->message('Deleting unresolved laws_references', 3);
 
@@ -176,8 +194,8 @@ class ParserController {
 			while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 			{
 				/*
-				 * Turn the string of text that comprises the history into an object of atomic history
-				 * history data.
+				 * Turn the string of text that comprises the history into an object of atomic
+				 * history history data.
 				 */
 				$parser->history = $law->history;
 				$history = $parser->extract_history();
@@ -270,7 +288,8 @@ class ParserController {
 		$this->logger->message('Done', 5);
 	}
 
-	public function write_api_key() {
+	public function write_api_key()
+	{
 
 		$this->logger->message('Writing API key', 5);
 
@@ -291,6 +310,7 @@ class ParserController {
 			 * screen, along with instructions.
 			 */
 			$config_file = INCLUDE_PATH.'/config.inc.php';
+			
 			if (is_writable($config_file))
 			{
 				$config = file_get_contents($config_file);
@@ -313,7 +333,8 @@ class ParserController {
 		}
 	}
 
-	public function export() {
+	public function export()
+	{
 
 		$this->logger->message('Preparing zip exports', 5);
 
@@ -354,7 +375,6 @@ class ParserController {
 				/*
 				 * Create a new ZIP file object.
 				 */
-
 				$zip = new ZipArchive();
 				$filename = $downloads_dir.'code.json.zip';
 
@@ -366,7 +386,6 @@ class ParserController {
 				/*
 				 * If we cannot create a new ZIP file, bail.
 				 */
-
 				if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
 				{
 					$this->logger->message('Cannot open '.$filename.' to create a new ZIP file.', 10);
@@ -374,39 +393,32 @@ class ParserController {
 				else
 				{
 					/*
-					 * Establish the depth of this code's structure. Though this constant includes the laws
+					 * Establish the depth of this code's structure. Though this constant includes
+					 * the laws themselves, we don't subtract 1 from the tally because the
+					 * structural labels start at 1.
 					 */
-
-					/*
-					 * themselves, we don't subtract 1 from the tally because the structural labels start at 1.
-					 */
-
 					$structure_depth = count(explode(',', STRUCTURE));
 
 					/*
 					 * Iterate through every law.
 					 */
-
 					while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 					{
 
 						/*
 						 * We don't need either of these fields.
 						 */
-
 						unset($law->s1_id);
 						unset($law->s2_id);
 
 						/*
 						 * Rename the structural fields.
 						 */
-
 						for ($i=1; $i<$structure_depth; $i++)
 						{
 							/*
 							 * Assign these variables to new locations.
 							 */
-
 							$law->structure->{$i-1}->label = $law->{'s'.$i.'_label'};
 							$law->structure->{$i-1}->name = $law->{'s'.$i.'_name'};
 							$law->structure->{$i-1}->identifier = $law->{'s'.$i.'_identifier'};
@@ -414,7 +426,6 @@ class ParserController {
 							/*
 							 * Unset the old variables.
 							 */
-
 							unset($law->{'s'.$i.'_label'});
 							unset($law->{'s'.$i.'_name'});
 							unset($law->{'s'.$i.'_identifier'});
@@ -423,13 +434,11 @@ class ParserController {
 						/*
 						 * Reverse the order of the structure, from broadest to most narrow.
 						 */
-
 						$law->structure = array_reverse((array) $law->structure);
 
 						/*
 						 * Renumber the structure. To avoid duplicates, we must do this awkwardly.
 						 */
-
 						$tmp = $law->structure;
 						unset($law->structure);
 						$i=0;
@@ -440,11 +449,9 @@ class ParserController {
 						}
 
 						/*
-						 * Add this law to our ZIP archive, creating a pseudofile to do so. Eliminate colons
-						 */
-
-						/*
-						 * from section numbers, since Windows can't handle colons in filenames.
+						 * Add this law to our ZIP archive, creating a pseudofile to do so.
+						 * Eliminate colons from section numbers, since Windows can't handle colons
+						 * in filenames.
 						 */
 
 						$zip->addFromString(str_replace(':', '_', $law->section).'.json', json_encode($law));
@@ -453,7 +460,6 @@ class ParserController {
 					/*
 					 * Close out our ZIP file.
 					 */
-
 					$zip->close();
 				}
 			}
@@ -466,27 +472,26 @@ class ParserController {
 
 			$sql = 'SELECT laws.section, dictionary.term, dictionary.definition, dictionary.scope
 					FROM dictionary
-					LEFT JOIN laws ON dictionary.law_id = laws.id
+					LEFT JOIN laws
+						ON dictionary.law_id = laws.id
 					ORDER BY dictionary.term ASC , laws.order_by ASC';
 			$result =& $this->db->query($sql);
 			if ($result->numRows() > 0)
 			{
+			
 				/*
 				 * Retrieve the entire dictionary as a single object.
 				 */
-
 				$dictionary = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
 
 				/*
 				 * Define the filename for our dictionary.
 				 */
-
 				$filename = $downloads_dir.'dictionary.json.zip';
 
 				/*
 				 * Create a new ZIP file object.
 				 */
-
 				$zip = new ZipArchive();
 
 				if (file_exists($filename))
@@ -497,25 +502,24 @@ class ParserController {
 				/*
 				 * If we cannot create a new ZIP file, bail.
 				 */
-
 				if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
 				{
 					$this->logger->message('Cannot open '.$filename.' to create a new ZIP file.', 10);
 				}
+				
 				else
 				{
 
 					/*
 					 * Add this law to our ZIP archive.
 					 */
-
 					$zip->addFromString('dictionary.json', json_encode($dictionary));
 
 					/*
 					 * Close out our ZIP file.
 					 */
-
 					$zip->close();
+					
 				}
 			}
 
@@ -524,13 +528,14 @@ class ParserController {
 		$this->logger->message('Done', 5);
 	}
 
-	public function clear_apc() {
+	public function clear_apc()
+	{
+	
 		/*
 		 * If APC exists on this server, clear everything in the user space. That consists of information
 		 * that the State Decoded has stored in APC, which is now suspect, as a result of having reloaded
 		 * the laws.
 		 */
-
 		if (extension_loaded('apc') && ini_get('apc.enabled') == 1)
 		{
 			$this->logger->message('Clearing APC cache', 5);
@@ -541,5 +546,3 @@ class ParserController {
 		}
 	}
 }
-
-?>
