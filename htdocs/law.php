@@ -230,6 +230,29 @@ if (empty($law->repealed) || ($law->repealed !== true))
 }
 
 /*
+ * Commenting functionality.
+ */
+if (defined('DISQUS_SHORTNAME') === TRUE)
+{
+	$body .= <<<EOD
+	<section id="comments">
+		<h2>Comments</h2>
+		<div id="disqus_thread"></div>
+		<script>
+			var disqus_shortname = 'vacode'; // required: replace example with your forum shortname
+		
+			/* * * DON'T EDIT BELOW THIS LINE * * */
+			(function() {
+				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+			})();
+		</script>
+	</section>
+EOD;
+}
+
+/*
  * If this section has been cited in any court decisions, list them.
  */
 if ($law->court_decisions != FALSE)
