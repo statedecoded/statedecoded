@@ -38,45 +38,47 @@
 	</script>
 </head>
 <body>
-	<div id="corner-banner">
-		<span><a href="/about/">Beta</a></span>
-	</div>
-	<header id="masthead">
-		<hgroup>
-			<h1><a href="/">The State Decoded</a></h1>
-		</hgroup>
-		<nav id="main_navigation">
-			<div id="search">
-			</div> <!-- // #search -->
-			<ul>
-				<li><a href="/" class="ir" id="home">Home</a></li>
-				<li><a href="/about/" class="ir" id="about">About</a></li>
-			</ul>
-		</nav> <!-- // #main_navigation -->
-	</header> <!-- // #masthead -->
+	<div id="content">
+		<div id="corner-banner">
+			<span><a href="/about/">Beta</a></span>
+		</div>
+		<header id="masthead">
+			<hgroup>
+				<h1><a href="/">The State Decoded</a></h1>
+			</hgroup>
+			<nav id="main_navigation">
+				<div id="search">
+				</div> <!-- // #search -->
+				<ul>
+					<li><a href="/" class="ir" id="home">Home</a></li>
+					<li><a href="/about/" class="ir" id="about">About</a></li>
+				</ul>
+			</nav> <!-- // #main_navigation -->
+		</header> <!-- // #masthead -->
 
-	<section id="page">
-		<nav id="breadcrumbs">
-			{{breadcrumbs}}
-		</nav>
+		<section id="page">
+			<nav id="breadcrumbs">
+				{{breadcrumbs}}
+			</nav>
 		
-		<nav id="intercode">
-			{{intercode}}
-		</nav> <!-- // #intercode -->
+			<nav id="intercode">
+				{{intercode}}
+			</nav> <!-- // #intercode -->
 
-		<h1>{{page_title}}</h1>
-    	
-    	<section id="sidebar">
-		{{sidebar}}
-		</section>
+			<h1>{{page_title}}</h1>
 		
-		{{body}}
+			<section id="sidebar">
+			{{sidebar}}
+			</section>
 		
-	</section> <!-- // #page -->
+			{{body}}
+		
+		</section> <!-- // #page -->
   
-	<footer id="page_footer">
-		<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
-	</footer>
+		<footer id="page_footer">
+			<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
+		</footer>
+	</div>
 	{{javascript_files}}
 	<script>
 		{{javascript}}
