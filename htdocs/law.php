@@ -306,41 +306,21 @@ if (isset($law->official_url))
 $sidebar .= ' on the official '.LAWS_NAME.' website</a>.
 			</section>';
 
-$sidebar .= '<section><p id="keyhelp">Keyboard Guide</p></section>
-	<div id="keyboard" title="Keyboard Shortcuts">
+$sidebar .= '<section id="keyboard-guide"><a id="keyhelp">Keyboard Guide</a>
+		<div id="keyboard" title="Keyboard Shortcuts">
 	
-		<dl>
-			<dt>Ctrl →</dt>
-			<dd>Next law</dd>
+			<dl>
+				<dt>Ctrl →</dt>
+				<dd>Next law</dd>
 			
-			<dt>Ctrl ←</dt>
-			<dd>Prior law</dd>
+				<dt>Ctrl ←</dt>
+				<dd>Prior law</dd>
 			
-			<dt>Ctrl ↑</dt>
-			<dd>Up to chapter</dd>
-		</dl>
-	</div>
-	<style>
-		#keyboard dl {
-			width: 15em;
-		}
-			#keyboard dt {
-				float: left;
-				width: 5em;
-				margin-right: 1em;
-			}
-			#keyboard dd {
-				float: left;
-				width: 9em;
-			}
-		.ui-dialog {
-			background-color: #fff;
-		}
-		.ui-icon-closethick {
-			display: block;
-			float: right;
-		}
-	</style>';
+				<dt>Ctrl ↑</dt>
+				<dd>Up to chapter</dd>
+			</dl>
+		</div>
+	</section>';
 
 /*
  * Put the shorthand $body variable into its proper place.

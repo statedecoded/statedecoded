@@ -177,8 +177,16 @@ $(document).ready(function () {
 	
 	/* Modal dialog overlay. */
 	$("#keyhelp").click(function() {
-	
-		$("#keyboard").dialog({modal: true});
+		$("#keyboard").dialog({
+			modal: true,
+			draggable: false,
+			open: function(e, ui) {
+				$('#content').addClass('behind');
+			},
+			beforeClose: function(e, ui) {
+				$('#content').removeClass('behind');
+			}
+		});
 		
 	});
 });
