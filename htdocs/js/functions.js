@@ -92,7 +92,7 @@ $(document).ready(function () {
 	/* Permit copying URLs to the clipboard. */
 	$('a.section-permalink-tip').zclip({
 		path: 'js/ZeroClipboard.swf',
-		copy: $('a.section-permalink').attr.('href')
+		copy: $('a.section-permalink').attr('href')
 	});
 	
 	/* Mentions of other sections of the code. */
