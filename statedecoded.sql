@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `order_by` (`order_by`),
-  KEY `parent_id` (`parent_id`),
+  KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `text` (
