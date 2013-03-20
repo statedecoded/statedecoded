@@ -69,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `laws` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `section` (`section`),
-  KEY `chapter_id` (`structure_id`),
   KEY `structure_id` (`structure_id`),
   KEY `edition_id` (`edition_id`),
   KEY `order_by` (`order_by`)
@@ -119,7 +118,8 @@ CREATE TABLE IF NOT EXISTS `structure` (
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `order_by` (`order_by`)
+  KEY `order_by` (`order_by`),
+  KEY `parent_id` (`parent_id`),
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `text` (
