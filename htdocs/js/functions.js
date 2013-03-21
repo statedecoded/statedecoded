@@ -89,10 +89,25 @@ $(document).ready(function () {
 		}
 	})
 	
-	/* Permit copying URLs to the clipboard. */
-	$('a.section-permalink-tip').zclip({
-		path: 'js/ZeroClipboard.swf',
-		copy: $('a.section-permalink').attr('href')
+	/* Get each permalink and add a copy function on it */
+	$('a.section-permalink').each(function(i, elm) {
+		var elm = $(elm);
+		var copy_link = $('<a>copy</a>').attr({
+			'data-target': '#'+elm.attr('id'),
+			'title': 'copy to clipboard',
+			'class': 'section-permalink-copy'
+		});
+	
+		elm.after(copy_link);
+		
+		/* Permit copying URLs to the clipboard. */
+		copy_link.zclip({
+			path: '/js/ZeroClipboard.swf',
+			copy: function() {
+				var target = $(this).attr('data-target');
+				return $(target).attr('href');
+			}
+		});
 	});
 	
 	/* Mentions of other sections of the code. */
@@ -177,6 +192,9 @@ $(document).ready(function () {
 	
 	/* Modal dialog overlay. */
 	$("#keyhelp").click(function() {
+		/**
+		 * Fancy fading animations.
+		 */
 		$("#keyboard").dialog({
 			modal: true,
 			draggable: false,

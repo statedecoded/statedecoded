@@ -905,6 +905,30 @@ footer {
 		clear: both;
 	}
 
+/**
+ * Icons
+ *
+ * TODO: Replace with sprites (preferably with Compass)
+ *
+ * Some icons from famfamfam.com (Mark James) and are public domain.
+ */
+
+
+.section-permalink-copy {
+	/* Hide the text */
+	display: inline-block;
+	overflow: hidden;
+	height: 0px;
+	width: 16px;
+	padding-top: 16px;
+	
+	/* Show the icon */
+	background: transparent url(/images/action_paste.gif) no-repeat top left;
+	
+	/* Position */
+	margin-left: 5px;
+	vertical-align: middle;
+}
 
 /* 
 ###############################################################################
