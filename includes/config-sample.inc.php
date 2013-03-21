@@ -132,3 +132,9 @@ define('EMAIL_NAME', SITE_TITLE);
  * at the time that the parser is run.)
  */
 define('API_KEY', '');
+
+/*
+ * If you want to enable Disqus <http://www.disqus.com/> commenting for every law, register for
+ * Disqus, create a new site, and enter the assigned Disqus shortname here.
+ */
+// define('DISQUS_SHORTNAME', '');
