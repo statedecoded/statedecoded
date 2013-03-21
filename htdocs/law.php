@@ -340,7 +340,7 @@ $sidebar .= '<section id="keyboard-guide"><a id="keyhelp">Keyboard Guide</a>
 				<dd>Prior law</dd>
 			
 				<dt>Ctrl ↑</dt>
-				<dd>Up to chapter</dd>
+				<dd>Up to '.$law->ancestry->{1}->label.'</dd>
 			</dl>
 		</div>
 	</section>';
