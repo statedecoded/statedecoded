@@ -148,7 +148,7 @@ class Law
 		 */
 		if ($this->config->get_text === TRUE)
 		{
-			$sql = 'SELECT text, type,
+			$sql = 'SELECT id, text, type,
 						(SELECT
 							GROUP_CONCAT(identifier
 							ORDER BY sequence ASC
@@ -813,7 +813,21 @@ class Law
 			 */
 			if (!empty($paragraph->prefix))
 			{
-				$html .= ' <a class="section-permalink" href="#'.$paragraph->prefix_anchor.'">¶</a>';
+				/*
+				 * Assemble the permalink
+				 * TODO: Move this to its own function.
+				 */
+				$protocol = 'http://';
+				if($_SERVER['HTTPS']) {
+					$protocol = 'https://';
+				}
+				$permalink = $protocol . 
+				             $_SERVER['SERVER_NAME'] . 
+				             $_SERVER['REQUEST_URI'] . 
+				             '#'.$paragraph->prefix_anchor;
+
+				$html .= ' <a id="test-'.$paragraph->id.'"';
+				$html .= ' class="section-permalink" href="'.$permalink.'">¶</a>';
 			}
 			if ($paragraph->type == 'section')
 			{

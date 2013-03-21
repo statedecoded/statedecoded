@@ -329,6 +329,22 @@ if (isset($law->official_url))
 $sidebar .= ' on the official '.LAWS_NAME.' website</a>.
 			</section>';
 
+$sidebar .= '<section id="keyboard-guide"><a id="keyhelp">Keyboard Guide</a>
+		<div id="keyboard" title="Keyboard Shortcuts">
+	
+			<dl>
+				<dt>Ctrl →</dt>
+				<dd>Next law</dd>
+			
+				<dt>Ctrl ←</dt>
+				<dd>Prior law</dd>
+			
+				<dt>Ctrl ↑</dt>
+				<dd>Up to '.$law->ancestry->{1}->label.'</dd>
+			</dl>
+		</div>
+	</section>';
+
 /*
  * Put the shorthand $body variable into its proper place.
  */
