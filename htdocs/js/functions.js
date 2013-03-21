@@ -192,9 +192,6 @@ $(document).ready(function () {
 	
 	/* Modal dialog overlay. */
 	$("#keyhelp").click(function() {
-		/**
-		 * Fancy fading animations.
-		 */
 		$("#keyboard").dialog({
 			modal: true,
 			draggable: false,
