@@ -160,9 +160,6 @@ class Law
 					WHERE law_id='.$db->escape($this->section_id).'
 					ORDER BY text.sequence ASC';
 			
-			/*
-			 * Execute the query.
-			 */
 			$result =& $db->query($sql);
 			
 			/*
@@ -180,6 +177,7 @@ class Law
 			$i=0;
 			while ($tmp = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 			{
+			
 				$tmp->prefixes = explode('|', $tmp->prefixes);
 				$tmp->prefix = end($tmp->prefixes);
 				$tmp->entire_prefix = implode('', $tmp->prefixes);
@@ -200,6 +198,7 @@ class Law
 				 */
 				$this->text->$i = $tmp;
 				$i++;
+				
 			}
 		}
 		
@@ -819,7 +818,6 @@ class Law
 			{
 				/*
 				 * Assemble the permalink
-				 * TODO: Move this to its own function.
 				 */
 				$protocol = 'http://';
 				if ($_SERVER['HTTPS'])
