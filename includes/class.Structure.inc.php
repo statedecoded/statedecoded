@@ -219,6 +219,56 @@ class Structure
 		$this->parent_id = $tmp->parent_id;
 		unset($tmp);
 		
+		
+		/*
+		 * Get a list of all sibling structural units.
+		 */
+		 
+		/*
+		 * If this is anything other than a top-level structural unit. Because of how data is
+		 * stored in structure_unified (the most specific structural units are in s1), the parent
+		 * is always found in s2.
+		 */
+		if (!empty($this->parent_id))
+		{
+			$sql = 'SELECT s1_id AS id, s1_name AS name, s1_identifier AS identifier,
+					CONCAT("/", ';
+			for ($i=count((array) $this->structure); $i > 0; $i--)
+			{
+				$sql .= 's'.$i.'_identifier, "/"';
+				if ($i != 1)
+				{
+					$sql .= ', ';
+				}
+			}
+			$sql .= ') AS url
+					FROM structure_unified
+					LEFT JOIN structure
+						ON structure_unified.s1_id = structure.id
+					WHERE s2_id = ' . $db->escape($this->parent_id) . '
+					ORDER BY structure.order_by, structure_unified.s1_identifier';
+		}
+		
+		/*
+		 * Else this is a top-level structural unit.
+		 */
+		else
+		{
+			$sql = 'SELECT id, name, identifier, CONCAT(identifier, "/") AS url
+					FROM structure
+					WHERE parent_id IS NULL
+					ORDER BY order_by, identifier';
+		}
+		
+		$result =& $db->query($sql);
+
+		// If the query fails, or if no results are found, return false -- we can't make a match.
+		if ( !PEAR::isError($result) && ($result->numRows() > 0) )
+		{
+			// Get the result as an object.
+			$this->siblings = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
+		}
+		
 		return true;
 	}
 	

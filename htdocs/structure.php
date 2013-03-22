@@ -60,6 +60,46 @@ else
 	$template->field->link_rel = '<link rel="up" title="Up" href="/" />';
 }
 
+/*
+ * Provide link relations for the previous and next sibling structural units.
+ */
+if (isset($struct->siblings))
+{
+
+	/*
+	 * Locate the instant structural unit within the structure listing.
+	 */ 
+	$current_structure = end($structure);
+	$i=0;
+	
+	/*
+	 * When the present structure is identified, pull out the prior and next ones.
+	 */
+	foreach ($struct->siblings as $sibling)
+	{
+		if ($sibling->id === $current_structure->id)
+		{
+
+			if ($i >= 1)
+			{
+				prev($struct->siblings);
+				$tmp = prev($struct->siblings);
+				$template->field->link_rel .= '<link rel="prev" title="Previous" href="' . $tmp->url . '" />';
+			}
+
+			if ( $i < (count($struct->siblings)-1) )
+			{
+				next($struct->siblings);
+				$tmp = next($struct->siblings);
+				$template->field->link_rel .= '<link rel="next" title="Next" href="' . $tmp->url . '" />';
+			}
+			break;
+			
+		}
+		$i++;
+	}
+}
+
 # Provide a textual introduction to this section.
 $body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the '.LAWS_NAME.', titled
 		“'.$struct->name.'.”';
