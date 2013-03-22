@@ -244,8 +244,16 @@ class Parser
 			{
 
 				$this->code->section->$i->text = trim((string) $subsection);
-
-				$this->code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
+				
+				/*
+				 * If this subsection has text, save it. Some subsections will not have text, such
+				 * as those that are purely structural, existing to hold sub-subsections, but
+				 * containing no text themselves.
+				 */
+				if ( !empty( trim((string) $subsection) ) )
+				{
+					$this->code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
+				}
 
 				$this->code->section->$i->prefix = (string) $subsection['prefix'];
 				$this->code->section->$i->prefix_hierarchy->{0} = (string) $subsection['prefix'];
@@ -448,9 +456,12 @@ class Parser
 			$sql = 'INSERT INTO text
 					SET law_id='.$law_id.',
 					sequence='.$i.',
-					text="'.$this->db->escape($section->text).'",
 					type="'.$this->db->escape($section->type).'",
 					date_created=now()';
+			if (!empty($section->text))
+			{
+				$sql .= ', text="'.$this->db->escape($section->text).'"';
+			}
 
 			// Execute the query.
 			$result =& $this->db->exec($sql);

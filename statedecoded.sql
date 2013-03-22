@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `text` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `law_id` int(10) unsigned NOT NULL,
   `sequence` smallint(5) unsigned NOT NULL,
-  `text` text collate utf8_bin NOT NULL,
+  `text` text collate utf8_bin,
   `type` enum('section','table') collate utf8_bin NOT NULL,
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
