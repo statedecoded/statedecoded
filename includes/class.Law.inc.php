@@ -804,9 +804,13 @@ class Law
 			}
 			
 			/*
-			 * Display this section of text.
+			 * Display this section of text. Purely structural sections lack text of their own (only
+			 * their child structures contain text), which is why this is conditional.
 			 */
-			$html .= $paragraph->text;
+			if (!empty($paragraph->text))
+			{
+				$html .= $paragraph->text;
+			}
 			
 			/*
 			 * If we've got a section prefix, append a paragraph link to the end of this section.
