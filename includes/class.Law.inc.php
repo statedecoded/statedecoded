@@ -822,12 +822,11 @@ class Law
 				 * TODO: Move this to its own function.
 				 */
 				$protocol = 'http://';
-				if($_SERVER['HTTPS']) {
+				if ($_SERVER['HTTPS'])
+				{
 					$protocol = 'https://';
 				}
-				$permalink = $protocol . 
-				             $_SERVER['SERVER_NAME'] . 
-				             $_SERVER['REQUEST_URI'] . 
+				$permalink = $protocol . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . 
 				             '#'.$paragraph->prefix_anchor;
 
 				$html .= ' <a id="test-'.$paragraph->id.'"';
