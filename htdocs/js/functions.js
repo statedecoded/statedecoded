@@ -49,6 +49,12 @@ $(document).ready(function () {
 		}
 	});
 	
+	Mousetrap.bind(['?', 'h'], function(e) {
+		if($("#keyhelp").length) {
+			$("#keyhelp").click();
+		}
+	});
+	
 	/* Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
 	originating traffic, the second is for when clicking on an anchor link within a page. */
 	if (document.location.hash) {
