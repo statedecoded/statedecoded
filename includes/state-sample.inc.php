@@ -452,7 +452,7 @@ class Parser
 				$section->type = 'section';
 			}
 
-			// Insert this section of the...uh...section into the text table.
+			// Insert this subsection into the text table.
 			$sql = 'INSERT INTO text
 					SET law_id='.$law_id.',
 					sequence='.$i.',
@@ -463,7 +463,6 @@ class Parser
 				$sql .= ', text="'.$this->db->escape($section->text).'"';
 			}
 
-			// Execute the query.
 			$result =& $this->db->exec($sql);
 			if (PEAR::isError($result))
 			{
