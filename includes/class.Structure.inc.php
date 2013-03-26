@@ -256,8 +256,22 @@ class Structure
 		{
 			$sql = 'SELECT id, name, identifier, CONCAT(identifier, "/") AS url
 					FROM structure
-					WHERE parent_id IS NULL
-					ORDER BY order_by, identifier';
+					WHERE parent_id IS NULL';
+
+			// Order these by the order_by column, which may or may not be populated.
+			$sql .= ' ORDER BY structure.order_by ASC, ';
+
+			// In case the order_by column is not populated, we go on to sort by the structure identifer,
+			// by either Roman numerals or Arabic (traditional) numerals.
+			if (isset($this->sort) && $this->sort == 'roman')
+			{
+				$sql .= 'fromRoman(structure.identifier) ASC';
+			}
+			else
+			{
+				$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
+					ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
+			}
 		}
 		
 		$result =& $db->query($sql);

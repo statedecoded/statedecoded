@@ -11,6 +11,57 @@ function truncate(str){
 	return new_str;
 }
 
+/**
+ * Get help via AJAX callback
+ */
+var help = {};
+function getHelp(section, callback) {
+	if(!help.length) {
+		$.getJSON('/content/help.json', {}, function(data, textStatus, jqXHR) {
+			if(data) {
+				help = data;
+				console.log(help);
+				callback(section, help[section]);
+			}
+			else {
+				console.log('No help returned from /content/help.json');
+			}
+		});
+	}
+	else {
+		callback(section, help[section]);
+	}
+}
+
+/**
+ * Show help via jQuery UI dialog
+ */
+function displayHelp(section, help_section) {
+	$("<div></div>")
+		.attr({
+			'id': section,
+			'title': help_section['title']
+		})
+		.append(help_section['content'])
+		.dialog({
+			modal: true,
+			draggable: false,
+			open: function(e, ui) {
+				$('#content').addClass('behind');
+			},
+			beforeClose: function(e, ui) {
+				$('#content').removeClass('behind');
+			}
+		});
+}
+
+/**
+ * Wrapper to both get and show help.
+ */
+function showHelp(section) {
+	getHelp(section, displayHelp);
+}
+
 $(document).ready(function () {
 	
 	/* Provide the ability to navigate with arrow keys. */
@@ -198,16 +249,6 @@ $(document).ready(function () {
 	
 	/* Modal dialog overlay. */
 	$("#keyhelp").click(function() {
-		$("#keyboard").dialog({
-			modal: true,
-			draggable: false,
-			open: function(e, ui) {
-				$('#content').addClass('behind');
-			},
-			beforeClose: function(e, ui) {
-				$('#content').removeClass('behind');
-			}
-		});
-		
+		showHelp('keyboard');
 	});
 });
