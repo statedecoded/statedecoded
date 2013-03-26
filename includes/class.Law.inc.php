@@ -181,11 +181,7 @@ class Law
 				$tmp->prefixes = explode('|', $tmp->prefixes);
 				$tmp->prefix = end($tmp->prefixes);
 				$tmp->entire_prefix = implode('', $tmp->prefixes);
-				$tmp->prefix_anchor = str_replace(
-					array(' ', '(', ')'),
-					array('_', '',  '' ),
-					$tmp->entire_prefix
-				);
+				$tmp->prefix_anchor = str_replace(' ', '_', $tmp->entire_prefix);
 				$tmp->level = count($tmp->prefixes);
 		
 				/*
