@@ -1,9 +1,12 @@
 <?php
+
 /*
  * Reads a JSON file to load content.
- * Later, this could read from a DB if need be.
+ * Later, this could read from a database, if need be.
  */
-class Content {
+class Content
+{
+
 	public $content;
 	public $json;
 	public $filename;
@@ -16,9 +19,9 @@ class Content {
 		/*
 		 * Require something that resembles a filename.
 		 */
-		if(preg_match('/^([a-zA-Z0-9-_]+)$/', $type)) 
+		if (preg_match('/^([a-zA-Z0-9-_]+)$/', $type)) 
 		{
-			$this->filename = WEB_ROOT.'/content/' . $type . '.json';
+			$this->filename = WEB_ROOT . '/content/' . $type . '.json';
 			$this->json = file_get_contents($this->filename);
 			$this->content = json_decode($this->json);
 		}
@@ -29,7 +32,7 @@ class Content {
 	 */
 	public function get_text($section)
 	{
-		if(!$section)
+		if (!$section)
 		{
 			return $this->content;
 		}
@@ -39,4 +42,3 @@ class Content {
 		}
 	}
 }
-?>
