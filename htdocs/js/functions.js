@@ -12,6 +12,22 @@ function truncate(str){
 }
 
 /**
+ * Escape special characters in selectors
+ *
+ * Examples:
+ * console.log(escapeSelector('^')); // returns '\^'
+ * console.log(escapeSelector('#(a)')); // returns '#\(a\)'
+ */
+ 
+function escapeSelector(str) {
+	// Find everything but # which we want to leave intact!
+	var find = /([!"$%&'()*+,.\/:;<=>?@\[\]\\^`\{|\}~])/g;
+	var replace = '\\$1';
+	return str.replace(find, replace);
+}
+
+
+/**
  * Get help via AJAX callback
  */
 var help = {};
@@ -109,22 +125,24 @@ $(document).ready(function () {
 	/* Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
 	originating traffic, the second is for when clicking on an anchor link within a page. */
 	if (document.location.hash) {
-	
-		$(document.location.hash).slideto({
+		var id = escapeSelector(document.location.hash);
+		$(id).slideto({
 			slide_duration: 500
 		});
 		
-		$(document.location.hash).show('highlight', {color: '#ffff00'}, 'fast');
+		$(id).show('highlight', {color: '#ffff00'}, 'fast');
 	}
 	
 	$('a[href*=#]').click(function(){
 	
-		var elemId = '#' + $(this).attr('href').split('#')[1];
+		var elemId = '#' + escapeSelector($(this).attr('href').split('#')[1]);
+		console.log(elemId);
 		$(elemId).slideto({
 			slide_duration: 500
 		});
-		
-		$(document.location.hash).show('highlight', {color: '#ffff00'}, 'fast');
+
+		var id = escapeSelector(document.location.hash);
+		$(id).show('highlight', {color: '#ffff00'}, 'fast');
 		
 	});
 	
@@ -149,8 +167,9 @@ $(document).ready(function () {
 	/* Get each permalink and add a copy function on it */
 	$('a.section-permalink').each(function(i, elm) {
 		var elm = $(elm);
+		var id = escapeSelector(elm.attr('id'));
 		var copy_link = $('<a>copy</a>').attr({
-			'data-target': '#'+elm.attr('id'),
+			'data-target': '#'+id,
 			'title': 'copy to clipboard',
 			'class': 'section-permalink-copy'
 		});
