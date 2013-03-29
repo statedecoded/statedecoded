@@ -56,14 +56,14 @@ CREATE TABLE IF NOT EXISTS `editions` (
 
 CREATE TABLE IF NOT EXISTS `laws` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `structure_id` smallint(3) unsigned default NULL,
-  `edition_id` tinyint(3) unsigned NOT NULL,
-  `section` varchar(16) collate utf8_bin NOT NULL,
-  `catch_line` varchar(255) collate utf8_bin NOT NULL,
-  `history` text collate utf8_bin,
-  `order_by` varchar(24) collate utf8_bin default NULL,
+  `structure_id` smallint(3) unsigned default NULL COMMENT 'The containing structure',
+  `edition_id` tinyint(3) unsigned NOT NULL COMMENT 'The release of the legal code to which this law belongs',
+  `section` varchar(16) collate utf8_bin NOT NULL COMMENT 'The unique identifier for this law (e.g., 12-95.2)',
+  `catch_line` varchar(255) collate utf8_bin NOT NULL COMMENT 'The title of the law',
+  `history` text collate utf8_bin COMMENT 'Optional history of this law',
+  `order_by` varchar(24) collate utf8_bin default NULL COMMENT 'Optional sort attribute',
   `named_act` enum('y','n') collate utf8_bin NOT NULL default 'n',
-  `text` text collate utf8_bin,
+  `text` text collate utf8_bin COMMENT 'Complete text of the law',
   `repealed` enum('y','n') collate utf8_bin NOT NULL default 'n',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -102,23 +102,25 @@ CREATE TABLE IF NOT EXISTS `laws_references` (
 CREATE TABLE IF NOT EXISTS `laws_views` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `section` varchar(16) collate utf8_bin NOT NULL,
-  `ip_address` int(10) unsigned default NULL,
+  `ip_address` int(10) unsigned default NULL COMMENT 'Retrieve with INET_NTOA',
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `section` (`section`)
+  KEY `section` (`section`),
+  KEY `section_2` (`section`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `structure` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
-  `name` varchar(128) collate utf8_bin default NULL,
-  `identifier` varchar(16) collate utf8_bin NOT NULL,
-  `label` varchar(32) collate utf8_bin NOT NULL,
+  `name` varchar(128) collate utf8_bin default NULL COMMENT 'Textual description of this structural unit',
+  `identifier` varchar(16) collate utf8_bin NOT NULL COMMENT 'The public-facing unique identifier, often a number',
+  `label` varchar(32) collate utf8_bin NOT NULL COMMENT 'What this level of structural unit is called',
   `order_by` int(10) unsigned default NULL,
   `parent_id` smallint(5) unsigned default NULL,
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `order_by` (`order_by`),
+  KEY `number` (`identifier`,`label`),
   KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
