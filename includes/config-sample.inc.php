@@ -23,7 +23,7 @@ define('BASE_PATH', dirname(dirname(__FILE__)));
 /*
  * Define the path to the includes library.
  */
-define('INCLUDE_PATH', BASE_PATH . DIRECTORY_SEPARATOR . 'includes');
+define('INCLUDE_PATH', BASE_PATH . '/includes');
 
 /*
  * Append "/includes/" to the include path.
@@ -33,7 +33,7 @@ set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
 /*
  * Define web root.
  */
-define('WEB_ROOT', BASE_PATH . DIRECTORY_SEPARATOR . 'htdocs');
+define('WEB_ROOT', BASE_PATH . '/htdocs');
 
 /*
  * The file in the /includes/ directory that contains functions custom to this installation.

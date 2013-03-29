@@ -77,7 +77,7 @@ if (PEAR::isError($db))
 	 */
 	if (defined('ERROR_PAGE_DB'))
 	{
-		require($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . ERROR_PAGE_DB);
+		require($_SERVER['DOCUMENT_ROOT'] . '/' . ERROR_PAGE_DB);
 		exit();
 	}
 	
