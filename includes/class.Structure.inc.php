@@ -23,6 +23,7 @@ class Structure
 	 */
 	function url_to_structure()
 	{
+	
 		// We're going to need access to the database connection throughout this class.
 		global $db;
 		
@@ -59,104 +60,24 @@ class Structure
 			}
 		}
 		
-		// Turn the sidewide structure listing (just a string, separated by commas, of the basic
-		// units of this legal code, from broadest—e.g., title—to the narrowest—e.g. article) into
-		// an array.
-		$structure = explode(',', STRUCTURE);
-	
-		// If there are more components of the URL than `count($structure)', only consider the
-		// first `count($structure)' components.
-		if (count($components) > count($structure))
-		{
-			$components = array_slice($components, 0, count($structure));
-		}
-		// If our structure is longer than the URL components (as it very often will be), hack off
-		// the end structure array elements that we don't need.
-		elseif (count($structure) > count($components))
-		{
-			$structure = array_slice($structure, 0, count($components));
-		}	
-		
-		// Merge the structure and URL component arrays.
-		$tmp = array_combine($structure, $components);
-		$tmp = array_reverse($tmp);
-		unset($structure);
-		unset($components);
-		$structure = $tmp;
-		unset($tmp);
-		
-		// Assemble the query by which we'll retrieve this URL's pedigree from the structure table.
-		$sql = 'SELECT ';
-		
-		// First, come up with the listing of tables and fields that we'll query.
-		$select = '{table}.id as {table}_id, {table}.identifier AS {table}_identifier,
-					{table}.name AS {table}_name, {table}.label AS {table}_label,
-					{table}.parent_id AS {table}_parent_id,';
+		// Reverse the components.
+		$components = array_reverse($components);
 
-		for ($i=1; $i<=count($structure); $i++)
-		{
-			$sql .= str_replace('{table}', 's'.$i, $select);
-		}
-		
-		// Remove the trailing comma.
-		$sql = rtrim($sql, ',');
-		
-		// Second, come up with the list of joins that we're using (joining the structure table on
-		// itself) to get what might be multiple levels of data.
-		reset($structure);
+		// Retrieve this structural unit's ancestry.
+		$sql = 'SELECT *
+				FROM structure_unified
+				WHERE ';
 		$i=1;
-		foreach ($structure as $type => $identifier)
+		foreach ($components as $component)
 		{
-			// If this is our first iteration through, start our FROM statement.
-			reset($structure);
-			if (key($structure) == $type)
+			$sql .= 's'.$i.'_identifier = ' . $db->escape($component);
+			if ($i < count($components))
 			{
-				$sql .= ' FROM structure AS s'.$i;
-			}
-			
-			// If this isn't our first iteration, through, create joins.
-			else
-			{
-				// Because we've already reset the array's pointer, we need to restore it to its
-				// proper position, and then back it up one, to determine the parent of this current
-				// section.
-				while ($type != key($structure))
-				{
-					next($structure);
-				}
-				prev($structure);
-				$sql .= ' LEFT JOIN structure AS s'.$i.'
-					ON ';
-				$sql .= 's'.($i-1).'.parent_id=s'.$i.'.id';
+				$sql .= ' AND ';
 			}
 			$i++;
 		}
 		
-		// Third, and finally, create the WHERE portion of our SQL query.
-		$sql .= ' WHERE ';
-		$i=1;
-		$where = array();
-		foreach ($structure as $type => $identifier)
-		{
-			$where[] = 's'.$i.'.identifier="'.$db->escape($identifier).'" AND s'.$i.'.label="'.$db->escape($type).'"';
-			$i++;
-		}
-		
-		if (count($where) > 1)
-		{
-			$sql .= implode(' AND ', $where);
-		}
-		else
-		{
-			$sql .= current($where);
-		}
-
-		
-		// We don't need either of these anymore.
-		unset($where);
-		unset($structure);
-
-		// Execute the query.
 		$result =& $db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
@@ -184,6 +105,7 @@ class Structure
 			
 			// Strip out the table prefix from the key name.
 			$key = preg_replace('/s[0-9]_/', '', $key);
+			
 			$structure->{$prefix-1}->$key = $value;
 		}
 		
@@ -195,7 +117,12 @@ class Structure
 			// Include the level of this structural element. (e.g., in Virginia, title is 1, chapter
 			// is 2, part is 3.)
 			$this->structure->{$j}->level = $j+1;
+			if (isset($prior_id))
+			{
+				$this->structure->{$j}->parent_id = $prior_id;
+			}
 			$j++;
+			$prior_id = $structure->{$i}->id;
 		}
 		unset($structure);
 		
