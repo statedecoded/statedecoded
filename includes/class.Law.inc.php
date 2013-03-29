@@ -242,7 +242,8 @@ class Law
 			 * Figure out what the next and prior sections are (we may have 0-1 of either). Iterate
 			 * through all of the contents of the chapter.
 			 */
-			for ($i=0; $i<count((array) $this->structure_contents); $i++)
+			$tmp = count((array) $this->structure_contents);
+			for ($i=0; $i<$tmp; $i++)
 			{
 				/*
 				 * When we get to our current section, that's when we get to work.
