@@ -25,6 +25,20 @@ class API
 	 */
 	function list_all_keys()
 	{
+		
+		/*
+		 * If APC is installed, retreive the keys from APC.
+		 */
+		if ( extension_loaded('apc') || (ini_get('apc.enabled') === 1) )
+		{
+			$api_keys = apc_fetch('api_keys');
+			if ($api_keys !== FALSE)
+			{
+				$this->all_keys = $api_keys;
+				return true;
+			}
+		}
+		
 		/*
 		 * We're going to need access to the database connection within this method.
 		 */
@@ -49,29 +63,34 @@ class API
 		 * If the query succeeds then retrieve each row and build up an object containing a list
 		 * of all keys.
 		 */
-		else
+			
+		/*
+		 * If no API keys have been registered.
+		 */
+		if ($result->numRows() == 0)
 		{
-			
-			/*
-			 * If no API keys have been registered.
-			 */
-			if ($result->numRows() == 0)
-			{
-				return true;
-			}
-			
-			/*
-			 * If API keys have been registered, iterate through them and store them.
-			 */
-			$i=0;
-			while ($key = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
-			{
-				$this->all_keys->{$key->api_key} = true;
-				$i++;
-			}
-			
 			return true;
 		}
+		
+		/*
+		 * If API keys have been registered, iterate through them and store them.
+		 */
+		$i=0;
+		while ($key = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		{
+			$this->all_keys->{$key->api_key} = true;
+			$i++;
+		}
+		
+		/*
+		 * If APC is installed, store the API keys in APC.
+		 */
+		if ( extension_loaded('apc') || (ini_get('apc.enabled') === 1) )
+		{
+			apc_store('api_keys', $this->all_keys);
+		}
+			
+		return true;
 	}
 	
 
@@ -271,6 +290,15 @@ class API
 		{
 			$api_key = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 			$this->key = $api_key->api_key;
+		}
+		
+		/*
+		 * If APC is installed, then delete the cache of the keys, since it's been invalidated by
+		 * the addition of this key.
+		 */
+		if ( extension_loaded('apc') || (ini_get('apc.enabled') === 1) )
+		{
+			apc_delete('api_keys');
 		}
 		
 		return true;
