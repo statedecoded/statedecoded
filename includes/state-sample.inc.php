@@ -124,7 +124,8 @@ class Parser
 	{
 
 		// Iterate through our resulting file listing.
-		for ($i = $this->file; $i < count($this->files); $i++)
+		$file_count = count($this->files);
+		for ($i = $this->file; $i < $file_count; $i++)
 		{
 
 			/*
@@ -1329,7 +1330,8 @@ class Parser
 					// Step through each of these chapter references and trim down the leading
 					// spaces (a result of creating the array based on commas rather than commas and
 					// spaces) and eliminate any that are blank.
-					for ($j=0; $j<count($chapters); $j++)
+					$chapter_count = count($chapters);
+					for ($j=0; $j<$chapter_count; $j++)
 					{
 						$chapters[$j] = trim($chapters[$j]);
 						if (empty($chapters[$j]))
