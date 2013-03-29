@@ -508,10 +508,24 @@ class Page
 	 */
 	function render()
 	{
+	
 		/*
-		 * Save the contents of the template file to a variable.
+		 * Save the contents of the template file to a variable. First check APC and see if it's
+		 * stored there.
 		 */
-		$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
+		if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
+		{
+			$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
+		}
+		else
+		{
+			$this->html = apc_fetch('template-'.TEMPLATE);
+			if ($this->html === FALSE)
+			{
+				$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
+				apc_store('template-'.TEMPLATE, $this->html);
+			}
+		}
 		
 		/*
 		 * Create the browser title.
