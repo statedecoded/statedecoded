@@ -31,14 +31,14 @@ class Structure
 		{
 			// We can safely prepend "http://" because we're really only interested in the path
 			// component of the URL -- the protocol will be ignored.
-			$this->url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+			$this->url = 'http://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		}
 		
 		// Make sure that this URL is kosher.
 		$this->url = filter_var($this->url, FILTER_SANITIZE_URL);
-		if ($this->url === false)
+		if ($this->url === FALSE)
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// We don't actually want the whole URL, but just the path.
@@ -49,8 +49,8 @@ class Structure
 		$components = explode('/', $this->path);
 
 		// Leading and trailing slashes in the path result in blank array elements. Remove them.
-		// A path component may reasonably be "0" (in the case of a structural unit identified as
-		// "0," as exists in Virginia), so allow those.
+		// A path component may reasonably be "0" (in the case of a structural unit numbered "0,"
+		// as exists in Virginia), so allow those.
 		foreach ($components as $key => $component)
 		{
 			if ( empty($component) && (strlen($component) == 0) )
@@ -201,16 +201,16 @@ class Structure
 		
 		// Iterate through the levels and build up the URLs recursively.
 		$i=0;
-		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
+		$url = 'http://' . $_SERVER['SERVER_NAME'].'/';
 		$url_suffix = '';
 		foreach ($this->structure as &$level)
 		{
-			$url_suffix .= urlencode($level->identifier).'/';
+			$url_suffix .= urlencode($level->identifier) . '/';
 			$level->url = $url . $url_suffix;
 			$i++;
 		}
 		
-		// Set some variables for the convenience of other functions in this class.
+		// We set these variables for the convenience of other functions in this class.
 		$tmp = end($this->structure);
 		$this->id = $tmp->id;
 		$this->label = $tmp->label;
@@ -218,7 +218,6 @@ class Structure
 		$this->identifier = $tmp->identifier;
 		$this->parent_id = $tmp->parent_id;
 		unset($tmp);
-		
 		
 		/*
 		 * Get a list of all sibling structural units.
@@ -284,6 +283,7 @@ class Structure
 		}
 		
 		return true;
+		
 	}
 	
 	
