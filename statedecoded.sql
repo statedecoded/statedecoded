@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
   `name` varchar(128) collate utf8_bin default NULL COMMENT 'Textual description of this structural unit',
   `identifier` varchar(16) collate utf8_bin NOT NULL COMMENT 'The public-facing unique identifier, often a number',
   `label` varchar(32) collate utf8_bin NOT NULL COMMENT 'What this level of structural unit is called',
-  `order_by` int(10) unsigned default NULL,
+  `order_by` int(10) unsigned default NULL COMMENT 'Externally provided primary sort attribute',
   `parent_id` smallint(5) unsigned default NULL,
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
   KEY `order_by` (`order_by`),
   KEY `number` (`identifier`,`label`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Titles, chapters, parts, articles, etc.';
 
 CREATE TABLE IF NOT EXISTS `text` (
   `id` int(10) unsigned NOT NULL auto_increment,
