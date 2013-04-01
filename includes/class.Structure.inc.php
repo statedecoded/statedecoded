@@ -106,6 +106,13 @@ class Structure
 			// Strip out the table prefix from the key name.
 			$key = preg_replace('/s[0-9]_/', '', $key);
 			
+			// If we have a null value for an ID, then we've reached the end of the populated
+			// columns in this row.
+			if ( ($key == 'id') && empty($value) )
+			{
+				break;
+			}
+			
 			$structure->{$prefix-1}->$key = $value;
 		}
 		
