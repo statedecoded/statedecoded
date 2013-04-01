@@ -32,6 +32,8 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 	 */
 	require_once 'config.inc.php';
 	
+	define('APC_RUNNING', FALSE);
+	
 }
 
 /*
@@ -39,6 +41,8 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
  */
 else
 {
+	
+	define('APC_RUNNING', TRUE);
 
 	/*
 	 * Attempt to load the config file constants out of APC.
