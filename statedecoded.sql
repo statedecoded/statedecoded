@@ -91,13 +91,13 @@ CREATE TABLE IF NOT EXISTS `laws_references` (
   `law_id` int(10) unsigned NOT NULL,
   `target_section_number` varchar(16) collate utf8_bin NOT NULL,
   `target_law_id` int(10) unsigned NOT NULL,
-  `mentions` tinyint(3) unsigned NOT NULL,
+  `mentions` tinyint(3) unsigned NOT NULL COMMENT 'Number of times the law is mentioned',
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `date_created` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `overlap` (`law_id`,`target_section_number`),
   KEY `target_section_number` (`target_section_number`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mentions of laws within the text of other laws';
 
 CREATE TABLE IF NOT EXISTS `laws_views` (
   `id` int(10) unsigned NOT NULL auto_increment,
