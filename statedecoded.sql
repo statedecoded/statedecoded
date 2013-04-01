@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   `term` varchar(64) collate utf8_bin NOT NULL,
   `definition` text collate utf8_bin NOT NULL,
   `scope` varchar(32) collate utf8_bin NOT NULL COMMENT 'The extent of the code to which this definition applies',
-  `scope_specificity` tinyint(3) unsigned default NULL COMMENT 'Larget numbers have a larger applicability scope',
+  `scope_specificity` tinyint(3) unsigned default NULL COMMENT 'Larger numbers have a larger applicability scope',
   `structure_id` smallint(5) unsigned default NULL COMMENT 'The structure within which this definition applies',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
