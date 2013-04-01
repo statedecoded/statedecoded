@@ -70,7 +70,7 @@ class Structure
 		$i=1;
 		foreach ($components as $component)
 		{
-			$sql .= 's'.$i.'_identifier = ' . $db->escape($component);
+			$sql .= 's'.$i.'_identifier = "' . $db->escape($component) . '"';
 			if ($i < count($components))
 			{
 				$sql .= ' AND ';
