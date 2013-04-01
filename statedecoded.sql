@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
 CREATE TABLE IF NOT EXISTS `text` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `law_id` int(10) unsigned NOT NULL,
-  `sequence` smallint(5) unsigned NOT NULL,
+  `sequence` smallint(5) unsigned NOT NULL COMMENT 'The ordinal position of this subsection',
   `text` text collate utf8_bin,
   `type` enum('section','table','illustration') collate utf8_bin NOT NULL default 'section',
   `date_created` datetime NOT NULL,
