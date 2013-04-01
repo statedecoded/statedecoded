@@ -513,11 +513,7 @@ class Page
 		 * Save the contents of the template file to a variable. First check APC and see if it's
 		 * stored there.
 		 */
-		if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
-		{
-			$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
-		}
-		else
+		if ( APC_RUNNING === TRUE)
 		{
 			$this->html = apc_fetch('template-'.TEMPLATE);
 			if ($this->html === FALSE)
@@ -525,6 +521,10 @@ class Page
 				$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
 				apc_store('template-'.TEMPLATE, $this->html);
 			}
+		}
+		else
+		{
+			$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
 		}
 		
 		/*
