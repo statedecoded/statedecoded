@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `laws_meta` (
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`),
   KEY `key` (`meta_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin  COMMENT='Storage of additional data specific to laws.';
 
 CREATE TABLE IF NOT EXISTS `laws_references` (
   `id` int(3) unsigned NOT NULL auto_increment,
