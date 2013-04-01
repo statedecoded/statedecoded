@@ -27,9 +27,9 @@ class API
 	{
 		
 		/*
-		 * If APC is installed, retreive the keys from APC.
+		 * If APC is running, retrieve the keys from APC.
 		 */
-		if ( extension_loaded('apc') || (ini_get('apc.enabled') === 1) )
+		if (APC_RUNNING === TRUE)
 		{
 			$api_keys = apc_fetch('api_keys');
 			if ($api_keys !== FALSE)
@@ -83,13 +83,13 @@ class API
 		}
 		
 		/*
-		 * If APC is installed, store the API keys in APC.
+		 * If APC is running, store the API keys in APC.
 		 */
-		if ( extension_loaded('apc') || (ini_get('apc.enabled') === 1) )
+		if (APC_RUNNING === TRUE)
 		{
 			apc_store('api_keys', $this->all_keys);
 		}
-			
+		
 		return true;
 	}
 	
