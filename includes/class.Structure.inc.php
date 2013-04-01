@@ -83,7 +83,7 @@ class Structure
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// Get the result as an object.
