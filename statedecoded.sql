@@ -139,13 +139,14 @@ CREATE TABLE IF NOT EXISTS `text` (
 CREATE TABLE IF NOT EXISTS `text_sections` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `text_id` int(10) unsigned NOT NULL,
-  `identifier` varchar(3) collate utf8_bin NOT NULL,
-  `sequence` tinyint(3) unsigned NOT NULL,
+  `identifier` varchar(3) collate utf8_bin NOT NULL COMMENT 'The prefix before this subsection',
+  `sequence` tinyint(3) unsigned NOT NULL COMMENT 'The ordinal position of this identifier (e.g., for A6(f) 6 is in position 2)',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `text_id` (`text_id`,`identifier`,`sequence`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Stores the subsection identifiers for subsections';
+
 
 INSERT INTO `dictionary_general` (`id`, `term`, `definition`, `source`, `source_url`) VALUES
 (1, 'abscond', 0x546f206573636170652c20666c6565206f72206469736170706561722e, 'VA Journey Through Justice Glossary', 'http://www.jtj.courts.state.va.us/resources_glossary.html'),
