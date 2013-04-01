@@ -25,12 +25,10 @@
  * Include the PHP declarations that drive this page.
  */
 require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
-require_once dirname(dirname(dirname(__FILE__))) . '/includes/config.inc.php';
 
 /*
  * Include the code with the functions that drive this parser.
  */
-require_once CUSTOM_FUNCTIONS;
 require_once INCLUDE_PATH . '/parser-controller.inc.php';
 require_once INCLUDE_PATH . '/logger.inc.php';
 
