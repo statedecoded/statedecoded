@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   `law_id` int(10) unsigned NOT NULL,
   `term` varchar(64) collate utf8_bin NOT NULL,
   `definition` text collate utf8_bin NOT NULL,
-  `scope` varchar(32) collate utf8_bin NOT NULL default 'chapter',
-  `scope_specificity` tinyint(3) unsigned default NULL,
-  `structure_id` smallint(5) unsigned default NULL,
+  `scope` varchar(32) collate utf8_bin NOT NULL COMMENT 'The extent of the code to which this definition applies',
+  `scope_specificity` tinyint(3) unsigned default NULL COMMENT 'Larget numbers have a larger applicability scope',
+  `structure_id` smallint(5) unsigned default NULL COMMENT 'The structure within which this definition applies',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   KEY `term` (`term`),
   KEY `scope` (`scope`),
   KEY `structure_id` (`structure_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Terms and definitions scraped from laws';
 
 CREATE TABLE IF NOT EXISTS `dictionary_general` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
