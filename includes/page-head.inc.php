@@ -19,7 +19,7 @@
 /* 
  * Include the PEAR database abstraction layer. <http://pear.php.net/package/MDB2>
  */
-require_once 'MDB2.php';
+require 'MDB2.php';
 
 /* 
  * If APC is not running.
@@ -30,7 +30,7 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 	/*
 	 * Include the site's config file.
 	 */
-	require_once 'config.inc.php';
+	require 'config.inc.php';
 	
 	define('APC_RUNNING', FALSE);
 	
@@ -58,7 +58,7 @@ else
 		/*
 		 * Load constants from the config file.
 		 */
-		require_once 'config.inc.php';
+		require 'config.inc.php';
 		
 		/*
 		 * And then save them to APC.
