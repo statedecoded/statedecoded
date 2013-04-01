@@ -57,6 +57,7 @@ class API
 		if (PEAR::isError($result) === true)
 		{
 			throw new Exception('API keys could not be retrieved.');
+			return false;
 		}
 		
 		/*
