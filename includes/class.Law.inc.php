@@ -742,7 +742,7 @@ class Law
 			{
 				$paragraph->prior_prefix = $this->text->{$i-1}->entire_prefix;
 			}
-			if ($i < $num_paragraphs)
+			if ( ($i+1) < $num_paragraphs )
 			{
 				$paragraph->next_prefix = $this->text->{$i+1}->entire_prefix;
 			}
