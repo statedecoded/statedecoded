@@ -34,7 +34,7 @@ class Law
 		 */
 		if (!isset($this->section_number) && !isset($this->law_id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -110,7 +110,7 @@ class Law
 		
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -168,7 +168,7 @@ class Law
 			 */
 			if ( PEAR::isError($result) || ($result->numRows() < 1) )
 			{
-				return false;
+				return FALSE;
 			}
 			
 			/*
@@ -227,7 +227,7 @@ class Law
 			 * Short of a parser error, there’s no reason why a law should not have an ancestry. In
 			 * case of this unlikely possibility, just erase the false element.
 			 */
-			if ($this->ancestry === false)
+			if ($this->ancestry === FALSE)
 			{
 				unset($this->ancestry);
 			}
@@ -422,7 +422,7 @@ class Law
 		 */
 		if (!isset($this->section_id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -446,7 +446,7 @@ class Law
 		 */
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -483,7 +483,7 @@ class Law
 		 */
 		if (!isset($this->section_number))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -506,10 +506,10 @@ class Law
 		 */
 		if (PEAR::isError($result))
 		{
-			return false;
+			return FALSE;
 		}
 		
-		return true;
+		return TRUE;
 	}
 	
 
@@ -529,7 +529,7 @@ class Law
 		 */
 		if (!isset($this->section_id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -546,7 +546,7 @@ class Law
 		 */
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -592,7 +592,7 @@ class Law
 		 */
 		if (!isset($this->section_number))
 		{
-			return false;
+			return FALSE;
 		}
 
 		/*
@@ -612,10 +612,10 @@ class Law
 		
 		if ($result->numRows() < 1)
 		{
-			return false;
+			return FALSE;
 		}
 		
-		return true;
+		return TRUE;
 
 	}
 	
@@ -637,7 +637,7 @@ class Law
 		/*
 		 * If we've gotten a list of dictionary terms.
 		 */
-		if ( ($terms !== false) && is_object($terms) )
+		if ( ($terms !== FALSE) && is_object($terms) )
 		{
 			/*
 			 * Arrange our terms from longest to shortest. This is to ensure that the most specific
@@ -666,7 +666,7 @@ class Law
 					if ( (ord($term{$i}) >= 65) && (ord($term{$i}) <= 90) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
-						$caps = true;
+						$caps = TRUE;
 						break;
 					}
 				}
@@ -869,7 +869,7 @@ class Law
 	
 		if (!isset($this->text))
 		{
-			return false;
+			return FALSE;
 		}
 
 		/*
@@ -941,7 +941,7 @@ class Law
 			 * Wrap this text at 80 characters minus two spaces for every nested subsection,
 			 * breaking up words that exceed the line length.
 			 */
-			$subsection = wordwrap($subsection, (80 - (($paragraph->level - 1) * 2)), "\n", true);
+			$subsection = wordwrap($subsection, (80 - (($paragraph->level - 1) * 2)), "\n", TRUE);
 			
 			/*
 			 * Indent applicable subsections by adding blank space to the beginning of each line.

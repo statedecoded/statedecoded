@@ -26,7 +26,7 @@ class Logger
      *
      * @var boolean
      */
-	public $html = false;
+	public $html = FALSE;
 
    /**
      * This setting determines how "loud" the logger will be.
@@ -74,7 +74,7 @@ class Logger
 			/**
 			 * Handle line endings
 			 */
-			if($this->html == true)
+			if($this->html === TRUE)
 			{
 				print '<br />';
 			}
@@ -160,7 +160,7 @@ class DebugLogger extends Logger
 	 */
 	public function get_time()
 	{
-		return microtime(true);
+		return microtime(TRUE);
 	}
 
 	// }}}

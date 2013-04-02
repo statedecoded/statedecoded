@@ -50,7 +50,7 @@ else
 	/*
 	 * If this attempt did not work.
 	 */
-	if ($result === false)
+	if ($result === FALSE)
 	{
 	
 		/*
@@ -63,7 +63,7 @@ else
 		/*
 		 * And then save them to APC.
 		 */
-		$constants = get_defined_constants(true);
+		$constants = get_defined_constants(TRUE);
 		apc_define_constants('config', $constants['user']);
 		
 	}

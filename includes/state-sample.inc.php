@@ -29,7 +29,7 @@ class State
 	
 		if (!isset($this->section_number))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		return 'http://example.gov/laws/' . $this->section_number . '/';
@@ -61,13 +61,13 @@ class State
 	
 		if (!isset($this->section_number))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		$this->citation->{0}->label = 'Official';
 		$this->citation->{0}->text = 'St. Code § '.$this->section_number;
 		
-		return true;
+		return TRUE;
 	}
 	*/
 	
@@ -86,18 +86,21 @@ class Parser
 	public $files = array();
 	public $db;
 
-	public function __construct($options) {
+	public function __construct($options)
+	{
 		/**
 		 * Set our defaults
 		 */
-		foreach($options as $key => $value) {
+		foreach($options as $key => $value)
+		{
 			$this->$key = $value;
 		}
 
 		/**
 		 * Set the directory to parse
 		 */
-		if($this->directory) {
+		if($this->directory)
+		{
 
 			if (!isset($this->directory))
 			{
@@ -149,8 +152,8 @@ class Parser
 				/*
 				 * If we can't convert to XML, try cleaning the data first.
 				 */
-				if(class_exists('tidy', false)) {
-					$tidy_config = array('input-xml' => true);
+				if(class_exists('tidy', FALSE)) {
+					$tidy_config = array('input-xml' => TRUE);
 					$tidy = new tidy();
 					$tidy->parseString($xml, $tidy_config, 'utf8');
 					$tidy->cleanRepair();
@@ -192,7 +195,7 @@ class Parser
 		// If a section of code hasn't been passed to this, then it's of no use.
 		if (!isset($this->section))
 		{
-			return false;
+			return FALSE;
 		}
 
 		/*
@@ -288,7 +291,7 @@ class Parser
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 
@@ -301,7 +304,7 @@ class Parser
 
 		if ( !isset($section) || !isset($i)  || !isset($this->code) )
 		{
-			return false;
+			return FALSE;
 		}
 
 		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
@@ -345,7 +348,7 @@ class Parser
 			$this->i = $i;
 		}
 
-		return true;
+		return TRUE;
 	}
 
 
@@ -593,7 +596,7 @@ class Parser
 
 		if (!isset($this->identifier))
 		{
-			return false;
+			return FALSE;
 		}
 
 		// Assemble the query.
@@ -618,7 +621,7 @@ class Parser
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 
 		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
@@ -652,7 +655,7 @@ class Parser
 				( empty($this->label) )
 			)
 		{
-			return false;
+			return FALSE;
 		}
 
 		/*
@@ -687,7 +690,7 @@ class Parser
 		$result =& $this->db->exec($sql);
 		if (PEAR::isError($result))
 		{
-			return false;
+			return FALSE;
 		}
 
 		// Return the last inserted ID.
@@ -707,7 +710,7 @@ class Parser
 		// We require a beginning structure ID and the label of the structural unit that's sought.
 		if ( !isset($this->structure_id) || !isset($this->label) )
 		{
-			return false;
+			return FALSE;
 		}
 
 		// Make the sought parent ID available as a local variable, which we'll repopulate with each
@@ -730,7 +733,7 @@ class Parser
 			if ( PEAR::isError($result) || ($result->numRows() < 1) )
 			{
 				echo '<p>Query failed: '.$sql.'</p>';
-				return false;
+				return FALSE;
 			}
 
 			// Return the result as an object.
@@ -746,7 +749,7 @@ class Parser
 			// Else if this structural unit has no parent ID, then our effort has failed.
 			elseif (empty($structure->parent_id))
 			{
-				return false;
+				return FALSE;
 			}
 
 			// If all else fails, then loop through again, searching one level farther up.
@@ -767,7 +770,7 @@ class Parser
 
 		if (!isset($this->text))
 		{
-			return false;
+			return FALSE;
 		}
 			
 		/*
@@ -1102,7 +1105,7 @@ class Parser
 
 		if (count($definitions) == 0)
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -1131,7 +1134,7 @@ class Parser
 	{
 		if ( !isset($this->terms) || !isset($this->law_id) || !isset($this->scope) )
 		{
-			return false;
+			return FALSE;
 		}
 
 		// If we have no structure ID, just substitute NULL, to avoid creating blank entries in the
@@ -1174,7 +1177,7 @@ class Parser
 			return $this->db->errorInfo();
 		}
 		else {
-			return true;
+			return TRUE;
 		}
 	}
 
@@ -1187,7 +1190,7 @@ class Parser
 		// If we don't have any text to analyze, then there's nothing more to do be done.
 		if (!isset($this->text))
 		{
-			return false;
+			return FALSE;
 		}
 
 		// Find every instance of "##.##" that fits the acceptable format for a state code citation.
@@ -1230,7 +1233,7 @@ class Parser
 		// do anything at all.
 		if ( (!isset($this->sections)) || (!isset($this->section_id)) )
 		{
-			return false;
+			return FALSE;
 		}
 
 		// Start creating our insertion query.
@@ -1256,10 +1259,10 @@ class Parser
 		if (PEAR::isError($result))
 		{
 			echo '<p>Failed: '.$sql.'</p>';
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 
 	} // end store_references()
 
@@ -1273,7 +1276,7 @@ class Parser
 		// If we have no history text, then we're done here.
 		if (!isset($this->history))
 		{
-			return false;
+			return FALSE;
 		}
 
 		// The list is separated by semicolons and spaces.

@@ -35,7 +35,7 @@ class API
 			if ($api_keys !== FALSE)
 			{
 				$this->all_keys = $api_keys;
-				return true;
+				return TRUE;
 			}
 		}
 		
@@ -54,10 +54,10 @@ class API
 		$result = $db->query($sql);
 		
 		/* If the database has returned an error. */
-		if (PEAR::isError($result) === true)
+		if (PEAR::isError($result) === TRUE)
 		{
 			throw new Exception('API keys could not be retrieved.');
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -70,7 +70,7 @@ class API
 		 */
 		if ($result->numRows() == 0)
 		{
-			return true;
+			return TRUE;
 		}
 		
 		/*
@@ -79,7 +79,7 @@ class API
 		$i=0;
 		while ($key = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
 		{
-			$this->all_keys->{$key->api_key} = true;
+			$this->all_keys->{$key->api_key} = TRUE;
 			$i++;
 		}
 		
@@ -91,7 +91,7 @@ class API
 			apc_store('api_keys', $this->all_keys);
 		}
 		
-		return true;
+		return TRUE;
 	}
 	
 
@@ -116,7 +116,7 @@ class API
 		/*
 		 * If the query succeeds then retrieve the result.
 		 */
-		if ( (PEAR::isError($result) === false) && ($result->numRows() > 0) )
+		if ( (PEAR::isError($result) === FALSE) && ($result->numRows() > 0) )
 		{
 			$api_key = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 			
@@ -130,7 +130,7 @@ class API
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 	
@@ -171,26 +171,26 @@ class API
 
 		if (!isset($this->form))
 		{
-			return false;
+			return FALSE;
 		}
 		if (empty($this->form->email))
 		{
 			$this->form_errors = 'Please provide your e-mail address.';
-			return false;
+			return FALSE;
 		}
 		elseif (filter_var($this->form->email, FILTER_VALIDATE_EMAIL) === FALSE)
 		{
 			$this->form_errors = 'Please enter a valid e-mail address.';
-			return false;
+			return FALSE;
 		}
 		
 		if ( !empty($this->form_url) && (filter_var($this->form->url, FILTER_VALIDATE_URL) === FALSE) )
 		{
 			$this->form_errors = 'Please enter a valid URL.';
-			return false;
+			return FALSE;
 		}
 		
-		return true;
+		return TRUE;
 	}
 	
 
@@ -243,7 +243,7 @@ class API
 		 * Insert this record.
 		 */
 		$result = $db->exec($sql);
-		if (PEAR::isError($result) === true)
+		if (PEAR::isError($result) === TRUE)
 		{
 			throw new Exception('API key could not be created.');
 		}
@@ -278,7 +278,7 @@ class API
 				WHERE secret = "'.$db->escape($this->secret).'"';
 		$result = $db->exec($sql);
 		
-		if (PEAR::isError($result) === true)
+		if (PEAR::isError($result) === TRUE)
 		{
 			throw new Exception('API key could not be activated.');
 		}
@@ -287,7 +287,7 @@ class API
 				FROM api_keys
 				WHERE secret = "'.$db->escape($this->secret).'"';
 		$result = $db->query($sql);
-		if ( (PEAR::isError($result) === false) && ($result->numRows() > 0) )
+		if ( (PEAR::isError($result) === FALSE) && ($result->numRows() > 0) )
 		{
 			$api_key = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
 			$this->key = $api_key->api_key;
@@ -302,7 +302,7 @@ class API
 			apc_delete('api_keys');
 		}
 		
-		return true;
+		return TRUE;
 	}
 	
 	
@@ -319,7 +319,7 @@ class API
 	
 		if (!isset($this->email) || !isset($this->secret))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
@@ -337,7 +337,7 @@ class API
 		 */
 		mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
 		
-		return true;
+		return TRUE;
 	}
 	
 	

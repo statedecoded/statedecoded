@@ -216,7 +216,7 @@ class Structure
 			$this->siblings = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
 		}
 		
-		return true;
+		return TRUE;
 		
 	}
 	
@@ -233,7 +233,7 @@ class Structure
 		// really nothing for us to do here.
 		if (!isset($this->structure_id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		$sql = 'SELECT id, name, identifier, label, parent_id
@@ -252,7 +252,7 @@ class Structure
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// Get the result as an object.
@@ -296,7 +296,7 @@ class Structure
 			
 			// If this legal code continues to print repealed laws, then make sure that we're not
 			// displaying any structural units that consist entirely of repealed laws.
-			if (INCLUDES_REPEALED === true)
+			if (INCLUDES_REPEALED === TRUE)
 			{
 				$sql .= ' AND
 						(SELECT COUNT(*)
@@ -328,7 +328,7 @@ class Structure
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// Return the result as an object, built up as we loop through the results.
@@ -395,7 +395,7 @@ class Structure
 		// If a structural ID hasn't been passed to this function, then there's nothing to do.
 		if (!isset($this->id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// We use SELECT * because it's ultimately more efficient. That's because structure_unified
@@ -413,7 +413,7 @@ class Structure
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
@@ -474,7 +474,7 @@ class Structure
 		// If a structural ID hasn't been passed to this function, then there's nothing to do.
 		if (!isset($this->id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// Assemble the SQL query.
@@ -488,7 +488,7 @@ class Structure
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
@@ -509,7 +509,7 @@ class Structure
 		// If a structural ID hasn't been passed to this function, then there's nothing to do.
 		if (!isset($this->id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// Assemble the SQL query. Only get sections that haven't been repealed. We order by the
@@ -527,7 +527,7 @@ class Structure
 		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// Create a new, empty class.

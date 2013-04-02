@@ -348,7 +348,7 @@ class ParserController
 
 		$downloads_dir = WEB_ROOT.'/downloads/';
 
-		if (is_writable($downloads_dir) === false)
+		if (is_writable($downloads_dir) === FALSE)
 		{
 			$this->logger->message('Error: '.$downloads_dir.' could not be written to, so bulk download files could
 				not be exported.', 10);

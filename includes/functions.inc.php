@@ -36,7 +36,7 @@ function fetch_url($url)
 
 	if (!isset($url))
 	{
-		return false;
+		return FALSE;
 	}
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
@@ -100,7 +100,7 @@ class Autolinker
 		
 		if (!isset($term))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -216,7 +216,7 @@ function json_error($text)
 
 	if (!isset($text))
 	{
-		return false;
+		return FALSE;
 	}
 	$error = array('error',
 		array(
@@ -576,11 +576,11 @@ class Page
 	
 		if (!isset($this->html))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		echo $this->html;
-		return true;
+		return TRUE;
 		
 	}
 }
@@ -608,7 +608,7 @@ class Dictionary
 		 */
 		if (!isset($this->term))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -641,12 +641,12 @@ class Dictionary
 			 */
 			if ( (ord($this->term{$i}) >= 97) && (ord($this->term{$i}) <= 122) )
 			{
-				$lowercase = true;
+				$lowercase = TRUE;
 				break;
 			}
 		}
 		
-		if ($lowercase === true)
+		if ($lowercase === TRUE)
 		{
 			$this->term = strtolower($this->term);
 		}
@@ -657,7 +657,7 @@ class Dictionary
 		 */
 		if (substr($this->term, -1) == 's')
 		{
-			$plural = true;
+			$plural = TRUE;
 		}
 		
 		/*
@@ -672,7 +672,7 @@ class Dictionary
 				LEFT JOIN laws
 					ON dictionary.law_id=laws.id
 				WHERE (dictionary.term="'.$db->escape($this->term).'"';
-		if ($plural === true)
+		if ($plural === TRUE)
 		{
 			$sql .= ' OR dictionary.term = "' . $db->escape(substr($this->term, 0, -1)) . '"';
 		}
@@ -746,7 +746,7 @@ class Dictionary
 			 */
 			if ( (PEAR::isError($result) === TRUE) || ($result->numRows() === 0) )
 			{
-				return false;
+				return FALSE;
 			}
 		
 			/*
@@ -850,7 +850,7 @@ class Dictionary
 		 */
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
