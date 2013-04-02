@@ -807,7 +807,7 @@ class Dictionary
 		/*
 		 * Get a listing of all globally scoped terms.
 		 */
-		if ($this->scope == 'global')
+		if ( isset($this->scope) && ($this->scope == 'global') )
 		{
 			$sql = 'SELECT dictionary.term
 					FROM dictionary
