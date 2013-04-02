@@ -892,6 +892,11 @@ class Law
 		}
 		
 		/*
+		 * Instantiate the variable in which we'll store the plain text.
+		 */
+		$text = '';
+		
+		/*
 		 * Iterate through each section of text to display it.
 		 */
 		$i=0;
