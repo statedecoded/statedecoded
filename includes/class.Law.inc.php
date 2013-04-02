@@ -725,6 +725,8 @@ class Law
 			}
 		}
 		
+		$html = '';
+		
 		/*
 		 * Iterate through each section of text to display it.
 		 */
