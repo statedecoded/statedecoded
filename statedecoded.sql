@@ -62,7 +62,6 @@ CREATE TABLE IF NOT EXISTS `laws` (
   `catch_line` varchar(255) collate utf8_bin NOT NULL COMMENT 'The title of the law',
   `history` text collate utf8_bin COMMENT 'Optional history of this law',
   `order_by` varchar(24) collate utf8_bin default NULL COMMENT 'Optional sort attribute',
-  `named_act` enum('y','n') collate utf8_bin NOT NULL default 'n',
   `text` text collate utf8_bin COMMENT 'Complete text of the law',
   `repealed` enum('y','n') collate utf8_bin NOT NULL default 'n',
   `date_created` datetime NOT NULL,
