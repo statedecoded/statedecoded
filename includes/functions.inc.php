@@ -871,10 +871,6 @@ class Dictionary
 
 		$result =& $db->query($sql);
 		
-		/*
-		 * If the query fails, or if no results are found, return false -- we have no terms for this
-		 * chapter.
-		 */
 		if ($result->numRows() >= 1)
 		{		
 			/*
