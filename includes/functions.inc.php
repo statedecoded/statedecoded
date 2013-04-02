@@ -742,7 +742,7 @@ class Dictionary
 			
 			/*
 			 * If the query fails, or if no results are found, return false -- we have
-			 * no terms for this chapter.
+			 * no terms for this structural unit.
 			 */
 			if ( (PEAR::isError($result) === TRUE) || ($result->numRows() === 0) )
 			{
@@ -766,8 +766,8 @@ class Dictionary
 	}
 		
 	/**
-	 * Get a list of defined terms for a given chapter of the code, returning just a listing of
-	 * terms. (The idea is that we can use an Ajax call to get each definition on demand.)
+	 * Get a list of defined terms for a given structural unit of the code, returning just a listing
+	 * of terms. (The idea is that we can use an Ajax call to get each definition on demand.)
 	 */
 	function term_list()
 	{
@@ -778,8 +778,8 @@ class Dictionary
 		global $db;
 		
 		/*
-		 * If a chapter ID hasn't been passed to this function, then return a listing of terms that
-		 * apply to the entirety of the code.
+		 * If a structural ID hasn't been passed to this function, then return a listing of terms
+		 * that apply to the entirety of the code.
 		 */
 		if (!isset($this->structure_id) && !isset($this->scope))
 		{
@@ -846,7 +846,7 @@ class Dictionary
 		
 		/*
 		 * If the query fails, or if no results are found, return false -- we have no terms for this
-		 * chapter.
+		 * structural unit.
 		 */
 		if ( PEAR::isError($result) || ($result->numRows() < 1) )
 		{
