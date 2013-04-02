@@ -751,7 +751,7 @@ class Law
 			 * If this paragraph's prefix hierarchy is different than that of the prior prefix, then
 			 * indicate that this is a new section.
 			 */
-			if ( ($paragraph->entire_prefix != $paragraph->prior_prefix) || !isset($paragraph->prior_prefix) )
+			if ( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) )
 			{
 				$html .= '
 					<section';
