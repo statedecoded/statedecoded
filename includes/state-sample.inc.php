@@ -486,7 +486,7 @@ class Parser
 			{
 				$sql = 'INSERT INTO text_sections
 						SET text_id='.$text_id.',
-						identifier="'.$prefix.'",
+						identifier="'.$this->db->escape($prefix).'",
 						sequence='.$j.',
 						date_created=now()';
 
