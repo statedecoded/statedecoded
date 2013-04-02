@@ -789,7 +789,7 @@ class Law
 			 * If we've got a section prefix, and it's not the same as the last one, then display
 			 * it.
 			 */
-			if ($paragraph->entire_prefix != $paragraph->prior_prefix)
+			if ( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) )
 			{
 				
 				$html .= $paragraph->prefix;
