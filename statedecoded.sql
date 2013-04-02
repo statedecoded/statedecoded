@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `dictionary_general` (
   `source_url` varchar(512) character set utf8 collate utf8_bin default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `term` (`term`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Glossary of generally applicable legal terms';
 
 CREATE TABLE IF NOT EXISTS `editions` (
   `id` tinyint(3) unsigned NOT NULL auto_increment,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `editions` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `year` (`year`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='An entry for every revision of the legal code';
 
 CREATE TABLE IF NOT EXISTS `laws` (
   `id` int(10) unsigned NOT NULL auto_increment,
