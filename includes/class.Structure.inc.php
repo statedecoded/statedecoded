@@ -301,8 +301,11 @@ class Structure
 				$sql .= ' AND
 						(SELECT COUNT(*)
 						FROM laws
-						WHERE structure_id=structure.id
-						AND laws.repealed="n") > 0';
+						LEFT JOIN laws_meta
+							ON laws.id = laws_meta.law_id
+						WHERE laws.structure_id=structure.id
+						AND laws_meta.meta_key = "repealed"
+						AND laws_meta.meta_value = "n") > 0';
 			}
 
 		}
@@ -518,8 +521,16 @@ class Structure
 		// sorting (hence the order_by field), but it's a great deal better than an unsorted list.
 		$sql = 'SELECT id, structure_id, section AS section_number, catch_line
 				FROM laws
-				WHERE structure_id='.$db->escape($this->id).' AND repealed="n"
-				ORDER BY order_by, section';
+				WHERE structure_id='.$db->escape($this->id).' ';
+		if (INCLUDES_REPEALED == TRUE)
+		{
+			$sql .= 'AND 
+				(SELECT meta_value
+				FROM laws_meta
+				WHERE law_id = laws.id
+				AND meta_key = "repealed") = "n" ';
+		}
+		$sql .= 'ORDER BY order_by, section';
 		
 		// Execute the query.
 		$result =& $db->query($sql);
