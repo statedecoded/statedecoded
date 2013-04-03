@@ -207,7 +207,9 @@ class Parser
 		 */
 		$this->code = new stdClass();
 
-		/* Transfer some data to our object. */
+		/*
+		 * Transfer some data to our object.
+		 */
 		$this->code->catch_line = (string) $this->section->catch_line[0];
 		$this->code->section_number = (string) $this->section->section_number;
 		$this->code->order_by = (string) $this->section->order_by;
