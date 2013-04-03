@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `laws_meta` (
   `meta_key` varchar(255) collate utf8_bin NOT NULL,
   `meta_value` longtext collate utf8_bin NOT NULL,
   `date_created` datetime NOT NULL,
-  `date_modified` timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`),
   KEY `key` (`meta_key`)
