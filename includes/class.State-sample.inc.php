@@ -214,6 +214,18 @@ class Parser
 		$this->code->section_number = (string) $this->section->section_number;
 		$this->code->order_by = (string) $this->section->order_by;
 		$this->code->history = (string)  $this->section->history;
+		
+		/*
+		 * If additional metadata is present in a "metadata" container, copy it over to our code
+		 * object.
+		 */
+		if (isset($this->section->metadata))
+		{
+			foreach ($this->section->metadata as $key => $value)
+			{
+				$this->code->metadata->$key = $value;
+			}
+		}
 
 		/*
 		 * Iterate through the structural headers.
@@ -445,6 +457,29 @@ class Parser
 				echo '<p>References for section ID '.$law_id.' were found, but could not be
 					stored.</p>';
 			}
+		}
+		
+		// Store any metadata.
+		if (isset($this->code->metadata))
+		{
+			
+			// Step through every metadata field and add it.
+			foreach ($this->code->metadata as $key => $value)
+			{
+				$sql = 'INSERT INTO laws_meta
+						SET law_id = ' . $law_id . ',
+						meta_key = "' . $this->db->escape($key) . '",
+						meta_value = "' . $this->db->escape($value) . '"';
+				
+				// Execute the query.
+				$result =& $this->db->exec($sql);
+				if (PEAR::isError($result))
+				{
+					echo '<p>'.$sql.'</p>';
+					die($result->getMessage());
+				}
+			}
+			
 		}
 
 		// Step through each section.
