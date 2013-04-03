@@ -145,14 +145,17 @@ class Parser
 			 * Convert the XML into an object.
 			 */
 
-			try {
+			try
+			{
 				$this->section = new SimpleXMLElement($xml);
 			}
-			catch(Exception $e) {
+			catch(Exception $e)
+			{
 				/*
 				 * If we can't convert to XML, try cleaning the data first.
 				 */
-				if(class_exists('tidy', FALSE)) {
+				if (class_exists('tidy', FALSE))
+				{
 					$tidy_config = array('input-xml' => TRUE);
 					$tidy = new tidy();
 					$tidy->parseString($xml, $tidy_config, 'utf8');
@@ -160,7 +163,8 @@ class Parser
 
 					$xml = (string) $tidy;
 				}
-				elseif(exec('which tidy')) {
+				elseif (exec('which tidy'))
+				{
 					exec('tidy -xml '.$filename, $output);
 					$xml = join('', $output);
 				}
@@ -1169,14 +1173,16 @@ class Parser
 
 	} // end store_definitions()
 
-	function query($sql) {
+	function query($sql)
+	{
 		$result =& $this->db->exec($sql);
 		if (PEAR::isError($result))
 		{
 			var_dump($this->db->errorInfo());
 			return $this->db->errorInfo();
 		}
-		else {
+		else
+		{
 			return TRUE;
 		}
 	}
