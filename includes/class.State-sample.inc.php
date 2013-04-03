@@ -406,10 +406,6 @@ class Parser
 		{
 			$query['history'] = $this->code->history;
 		}
-		if (isset($this->code->repealed))
-		{
-			$query['repealed'] = $this->code->repealed;
-		}
 
 		// Create the beginning of the insertion statement.
 		$sql = 'INSERT INTO laws
