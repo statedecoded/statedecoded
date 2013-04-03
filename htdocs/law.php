@@ -188,7 +188,7 @@ $body .= '</article>';
  * Only show the history if the law hasn't been repealed. (If it has been, then the history text
  * generally disappears along with it, meaning that the below code can behave unpredictably.)
  */
-if (empty($law->repealed) || ($law->repealed !== true))
+if ( (INCLUDES_REPEALED == TRUE) && (empty($law->repealed) || ($law->repealed !== true)) )
 {
 	$sidebar .= '
 			<section id="history-description">
