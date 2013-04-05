@@ -770,7 +770,9 @@ class Law
 			 * If we've got a section prefix, and it's not the same as the last one, then display
 			 * it.
 			 */
-			if ( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) )
+			if 	( !empty($paragraph->prefix)
+				&&
+				( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) ) )
 			{
 				
 				$html .= $paragraph->prefix;
@@ -894,18 +896,17 @@ class Law
 			 * If we've got a section prefix, and it's not the same as the last one, then display
 			 * it.
 			 */
-			if ( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) )
+			if 	( !empty($paragraph->prefix)
+				&&
+				( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) ) )
 			{
 				
-				/*
-				 * Append the prefix for this subsection.
-				 */
 				$subsection .= $paragraph->prefix;
 				
 				/*
 				 * We could use a regular expression to determine if we need to append a period, but
-			 	 * that would be slower.
-			 	 */
+				 * that would be slower.
+				 */
 				if ( (substr($paragraph->prefix, -1) != ')') && (substr($paragraph->prefix, -1) != '.') )
 				{
 					$subsection .= '.';
