@@ -68,17 +68,12 @@
         taken from law table tsv dump
      -->
    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" /> 
-   <field name="structure_id" type="ignored" multiValued="true"/>
-   <field name="edition_id" type="ignored" multiValued="true"/>
-   <field name="section" type="ignored" multiValued="true"/>
+   <field name="edition" type="string" multiValued="true"/>
+   <field name="section" type="string" multiValued="true"/>
    <field name="catch_line" type="text_general" indexed="true" stored="true" multiValued="false" />
-   <field name="history" type="text_general" indexed="true" stored="true" multiValued="false" />
-   <field name="order_by" type="ignored" multiValued="true"/>
-   <field name="named_act" type="text_general" indexed="true" stored="true" multiValued="false" />
    <field name="text" type="text_general_html" indexed="true" stored="true" multiValued="false" />
    <field name="repealed" type="ignored" multiValued="true"/>
-   <field name="date_created" type="ignored" multiValued="true"/>
-   <field name="date_modified" type="ignored" multiValued="true"/>
+   <field name="structure" type="string" multiValued="true"/>
 
    <!-- Valid attributes for fields:
      name: mandatory - the name for the field
