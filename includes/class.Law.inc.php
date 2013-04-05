@@ -277,76 +277,69 @@ class Law
 		}
 		
 		/*
-		 * If this state has its own State class, then we can potentially use some of its methods.
+		 * Create a new instance of the State() class.
 		 */
-		if (class_exists('State'))
+		$state = new State();
+		$state->section_id = $this->section_id;
+		$state->section_number = $this->section_number;
+		
+		/*
+		 * Get the amendment attempts for this law and include those (if there are any). But
+		 * only if we have specifically requested this data. That's because, on most installations,
+		 * this will be making a call to a third-party service (e.g., Open States), and such a call
+		 * is expensive.
+		 */
+		if ($this->config->get_amendment_attempts == TRUE)
 		{
-		
-			/*
-			 * Create a new instance of the State() class.
-			 */
-			$state = new State();
-			$state->section_id = $this->section_id;
-			$state->section_number = $this->section_number;
-			
-			/*
-			 * Get the amendation attempts for this law and include those (if there are any). But
-			 * only if we haven't specifically indicated that we don't want it. The idea behind
-			 * skipping this is that it's calling from Richmond Sunlight, which is reasonable for
-			 * internal purposes, but it's not sensible for our own API to make a call to another
-			 * site's API.
-			 */
-			if ($this->config->get_amendment_attempts == TRUE)
+			if (method_exists($state, 'get_amendment_attempts'))
 			{
-				if (method_exists($state, 'get_amendment_attempts'))
-				{
-					$this->amendment_attempts = $state->get_amendment_attempts();
-				}
+				$this->amendment_attempts = $state->get_amendment_attempts();
 			}
+		}
 
-			/*
-			 * Get the court decisions for this law and include those (if there are any).
-			 */
-			if ($this->config->get_court_decisions == TRUE)
+		/*
+		 * Get the amendment attempts for this law and include those (if there are any). But
+		 * only if we have specifically requested this data. That's because, on most installations,
+		 * this will be making a call to a third-party service and such a call is expensive.
+		 */
+		if ($this->config->get_court_decisions == TRUE)
+		{
+			if (method_exists($state, 'get_court_decisions'))
 			{
-				if (method_exists($state, 'get_court_decisions'))
-				{
-					$this->court_decisions = $state->get_court_decisions();
-				}
+				$this->court_decisions = $state->get_court_decisions();
 			}
+		}
+	
+		/*
+		 * Get the URL for this law on its official state web page.
+		 */
+		if (method_exists($state, 'official_url'))
+		{
+			$this->official_url = $state->official_url();
+		}
 		
-			/*
-			 * Get the URL for this law on its official state web page.
-			 */
-			if (method_exists($state, 'official_url'))
+		/*
+		 * Translate the history of this law into plain English.
+		 */
+		if (method_exists($state, 'translate_history'))
+		{
+			if (isset($this->metadata->history))
 			{
-				$this->official_url = $state->official_url();
+				$state->history = $this->metadata->history;
+				$this->history_text = $state->translate_history();
 			}
-			
-			/*
-			 * Translate the history of this law into plain English.
-			 */
-			if (method_exists($state, 'translate_history'))
-			{
-				if (isset($this->metadata->history))
-				{
-					$state->history = $this->metadata->history;
-					$this->history_text = $state->translate_history();
-				}
-			}
-			
-			/*
-			 * Generate citations for this law.
-			 */
-			if (method_exists($state, 'citations'))
-			{
-				$state->section_number = $this->section_number;
-				$state->amendment_years = $this->amendment_years;
-				$state->citations();
-				$this->citation = $state->citation;
-			}
-			
-		} // end class_exists('State')
+		}
+		
+		/*
+		 * Generate citations for this law.
+		 */
+		if (method_exists($state, 'citations'))
+		{
+			$state->section_number = $this->section_number;
+			$state->amendment_years = $this->amendment_years;
+			$state->citations();
+			$this->citation = $state->citation;
+		}
 		
 		/*
 		 * Get the references to this law among other laws and include those (if there are any).
