@@ -773,6 +773,8 @@
        <str name="echoParams">explicit</str>
        <int name="rows">10</int>
        <str name="df">text</str>
+       <str name="qt">edismax</str>
+       <str name="qf"></str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
@@ -837,7 +839,7 @@
        <str name="df">text</str>
      </lst>
   </requestHandler>
-
+  
 
   <!-- realtime get handler, guaranteed to return the latest stored fields of
        any document, without the need to commit or open a new searcher.  The
@@ -947,6 +949,26 @@
        <str>spellcheck</str>
      </arr>
   </requestHandler>
+
+  <requestHandler name="/law" class="solr.SearchHandler">
+     <lst name="defaults">
+       <str name="echoParams">explicit</str>
+
+       <!-- Query settings -->
+       <str name="defType">edismax</str>
+       <!--id section edition catch_line text structure-->
+       <str name="qf">
+           id section edition catch_line text structure
+       </str>
+       <str name="df">text</str>
+       <str name="mm">100%</str> <!--TODO change me!!!-->
+       <str name="q.alt">*:*</str>
+       <str name="rows">10</str>
+       <str name="fl">*</str>
+
+    </lst>
+  </requestHandler>
+
 
 
   <!-- Update Request Handler.  

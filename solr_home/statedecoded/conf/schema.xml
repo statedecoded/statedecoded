@@ -67,13 +67,13 @@
      <!-- State Decoded Fields ==
         taken from law table tsv dump
      -->
-   <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" /> 
-   <field name="edition" type="string" multiValued="true"/>
-   <field name="section" type="string" multiValued="true"/>
-   <field name="catch_line" type="text_general" indexed="true" stored="true" multiValued="false" />
-   <field name="text" type="text_general_html" indexed="true" stored="true" multiValued="false" />
-   <field name="repealed" type="ignored" multiValued="true"/>
-   <field name="structure" type="string" multiValued="true"/>
+   <field name="id" type="string" indexed="true" stored="true" required="true" /> 
+   <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="section" type="statedec_section" indexed="true" stored="true"/>
+   <field name="catch_line" type="text_general" indexed="true" stored="true"/>
+   <field name="text" type="text_general_html" indexed="true" stored="true" />
+   <field name="repealed" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="structure" type="string" indexed="true" stored="true" multiValued="true"/>
 
    <!-- Valid attributes for fields:
      name: mandatory - the name for the field
@@ -283,6 +283,18 @@
    <!-- <copyField source="name" dest="alphaNameSort"/> -->
  
   <types>
+      <!-- FIELD TYPES FOR STATE DECODED -->  
+    <!-- field type for converting different path tokenizers, then performing
+         path tokenization -->
+    <fieldType name="statedec_section" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
+        <filter class="solr.LowerCaseFilterFactory" />
+      </analyzer>
+    </fieldType>
+
+
     <!-- field type definitions. The "name" attribute is
        just a label to be used by field definitions.  The "class"
        attribute and any other attributes determine the real
@@ -668,7 +680,8 @@
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory" />
       </analyzer>
-    </fieldType>
+  </fieldType>
+
 
     <!-- 
       Example of using PathHierarchyTokenizerFactory at index time, so
