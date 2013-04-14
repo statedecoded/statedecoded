@@ -71,7 +71,7 @@
    <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="section" type="statedec_section" indexed="true" stored="true"/>
    <field name="catch_line" type="text_general" indexed="true" stored="true"/>
-   <field name="text" type="statedec_section" indexed="true" stored="true" />
+   <field name="text" type="statedec_text_en" indexed="true" stored="true" />
    <field name="repealed" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="structure" type="string" indexed="true" stored="true" multiValued="true"/>
 
@@ -316,7 +316,7 @@
                 enablePositionIncrements="true"
                 />
         <filter class="solr.LowerCaseFilterFactory"/>
-	<filter class="solr.EnglishPossessiveFilterFactory"/>
+    	<filter class="solr.EnglishPossessiveFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
 	<!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
         <filter class="solr.EnglishMinimalStemFilterFactory"/>
@@ -325,7 +325,8 @@
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.SynonymFilterFactory" synonyms="legalsyns.txt" ignoreCase="true"
+                expand="true"/>
         <filter class="solr.StopFilterFactory"
                 ignoreCase="true"
                 words="lang/stopwords_en.txt"

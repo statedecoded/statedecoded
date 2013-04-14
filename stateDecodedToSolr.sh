@@ -3,6 +3,7 @@
 # Pull laws into a tab delimited file
 
 
+echo "Ingesting Laws..."
 
 
 echo '
@@ -12,7 +13,10 @@ FROM  `laws` AS l
 LEFT JOIN structure AS s1 ON s1.id = structure_id
 LEFT JOIN structure AS s2 ON s2.id = s1.parent_id
 LEFT JOIN structure AS s3 ON s3.id = s2.parent_id) lawstruct' | mysql -u$1 -p$2 vadecoded > /tmp/laws.tsv
-
-# Stolen from
-# http://wiki.apache.org/solr/UpdateCSV
 curl 'http://localhost:8983/solr/statedecoded/update/csv?commit=true&separator=%09&escape=\&stream.file=/tmp/laws.tsv'
+
+
+echo "Ingesting Dictionary Terms..."
+
+echo 'SELECT id,term,definition FROM `dictionary`'  | mysql -u$1 -p$2 vadecoded > /tmp/law_dict.tsv
+curl 'http://localhost:8983/solr/statedecoded_dict/update/csv?commit=true&separator=%09&escape=\&stream.file=/tmp/law_dict.tsv'
