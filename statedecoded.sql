@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `key` (`api_key`),
-  KEY `secret_hash` (`secret`)
+  KEY `secret_hash` (`secret`),
+  KEY `verified` (`verified`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `dictionary` (
@@ -32,7 +33,8 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   KEY `law_id` (`law_id`),
   KEY `term` (`term`),
   KEY `scope` (`scope`),
-  KEY `structure_id` (`structure_id`)
+  KEY `structure_id` (`structure_id`),
+  KEY `scope_specificity` (`scope_specificity`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Terms and definitions scraped from laws';
 
 CREATE TABLE IF NOT EXISTS `dictionary_general` (
@@ -81,7 +83,8 @@ CREATE TABLE IF NOT EXISTS `laws_meta` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`),
-  KEY `key` (`meta_key`)
+  KEY `key` (`meta_key`),
+  KEY `meta_value_short` (`meta_value`(8)) COMMENT 'Just the first bit, for short-text searches'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin  COMMENT='Storage of additional data specific to laws.';
 
 CREATE TABLE IF NOT EXISTS `laws_references` (
@@ -94,6 +97,7 @@ CREATE TABLE IF NOT EXISTS `laws_references` (
   `date_created` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `overlap` (`law_id`,`target_section_number`),
+  KEY `target_law_id` (`target_law_id`),
   KEY `target_section_number` (`target_section_number`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mentions of laws within the text of other laws';
 
@@ -131,7 +135,8 @@ CREATE TABLE IF NOT EXISTS `text` (
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `law_id` (`law_id`,`sequence`)
+  KEY `law_id` (`law_id`),
+  KEY `sequence` (`sequence`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Each subsection of text for each law';
 
 CREATE TABLE IF NOT EXISTS `text_sections` (
