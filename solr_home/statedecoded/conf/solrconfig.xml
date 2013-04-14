@@ -956,12 +956,14 @@
 
        <!-- Query settings -->
        <str name="defType">edismax</str>
-       <!--id section edition catch_line text structure-->
        <str name="qf">
            id section edition catch_line text structure
        </str>
+       <str name="pf">
+           text^2 structure^3 catch_line^5
+       </str>
        <str name="df">text</str>
-       <str name="mm">100%</str> <!--TODO change me!!!-->
+       <str name="mm">50%</str> <!--TODO change me!!!-->
        <str name="q.alt">*:*</str>
        <str name="rows">10</str>
        <str name="fl">*</str>
