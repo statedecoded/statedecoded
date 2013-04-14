@@ -172,12 +172,6 @@ class Parser
 			}
 
 			/*
-			 * Include HTML Purifier, which we use to clean up the code and character sets.
-			 */
-			require_once(INCLUDE_PATH.'/htmlpurifier/HTMLPurifier.auto.php');
-			$purifier = new HTMLPurifier();
-
-			/*
 			 * Increment our placeholder counter.
 			 */
 			$this->file++;
