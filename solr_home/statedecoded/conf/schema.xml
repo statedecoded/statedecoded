@@ -287,8 +287,12 @@
     <!-- field type for converting different path tokenizers, then performing
          path tokenization -->
     <fieldType name="statedec_section" class="solr.TextField" positionIncrementGap="100">
-      <analyzer>
+        <analyzer>
+        <!-- normalize . and - (section delimeters) to a ~ -->
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <!-- remove () or [] that somebody might use to identify a chapter -->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
         <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
         <filter class="solr.LowerCaseFilterFactory" />
       </analyzer>
