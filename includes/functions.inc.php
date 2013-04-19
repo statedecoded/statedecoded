@@ -756,8 +756,8 @@ class Dictionary
 			 * this case, we have just one term.
 			 */
 			$dictionary->{0} = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
-			$dictionary->formatted = wptexturize($dictionary->definition) .
-				' (<a href="' . $dictionary->url . '">' . $dictionary->source . '</a>)';
+			$dictionary->{0}->formatted = wptexturize($dictionary->{0}->definition) .
+				' (<a href="' . $dictionary->{0}->url . '">' . $dictionary->{0}->source . '</a>)';
 
 		}
 		
