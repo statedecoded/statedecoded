@@ -33,7 +33,7 @@ class Varnish()
 			CURLOPT_URL				=>	'http://' . $_SERVER['SERVER_NAME'] . '/',
 			CURLOPT_CUSTOMREQUEST	=>	'BAN',
 			CURLOPT_RETURNTRANSFER	=>	true,
-			CURLOPT_HTTPHEADER		=> 	array ('Host: ' . $url_parts['host'] ),
+			CURLOPT_HTTPHEADER		=> 	array ('Host: ' . $_SERVER['SERVER_NAME'] ),
 		);
 		
 		/*
