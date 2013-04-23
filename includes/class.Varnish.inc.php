@@ -27,13 +27,21 @@ class Varnish()
 	{
 		
 		/*
+		 * If VARNISH_HOST isn't defined, we cannot interact with Varnish.
+		 */
+		if (empty(constant('VARNISH_HOST')))
+		{
+			return false;
+		}
+		
+		/*
 		 * Set our Varnish options.
 		 */
 		$options = array(
 			CURLOPT_URL				=>	'http://' . $_SERVER['SERVER_NAME'] . '/',
 			CURLOPT_CUSTOMREQUEST	=>	'BAN',
 			CURLOPT_RETURNTRANSFER	=>	true,
-			CURLOPT_HTTPHEADER		=> 	array ('Host: ' . $_SERVER['SERVER_NAME'] ),
+			CURLOPT_HTTPHEADER		=> 	array ('Host: ' . VARNISH_HOST ),
 		);
 		
 		/*
