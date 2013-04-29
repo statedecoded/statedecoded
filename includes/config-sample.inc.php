@@ -138,3 +138,9 @@ define('API_KEY', '');
  * Disqus, create a new site, and enter the assigned Disqus shortname here.
  */
 // define('DISQUS_SHORTNAME', '');
+
+/*
+ * If you're running a Varnish server, and you want The State Decoded to automatically purge expired
+ * content, provide the URL (including the port number) here.
+ */
+// define('VARNISH_HOST', 'http://127.0.0.1:80/');
