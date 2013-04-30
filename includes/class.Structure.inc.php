@@ -268,6 +268,122 @@ class Structure
 	
 	
 	/**
+	 * List all of the children of the current structural element. If $this->id is populated, then
+	 * that is that used as the parent ID. If it is not populated, then the function will return all
+	 * top level (parentless) structural elements.
+	 */
+	function list_children()
+	{
+
+		// We're going to need access to the database connection throughout this class.
+		global $db;
+		
+		// Assemble the SQL query. The subselect is to avoid getting structural units that contain
+		// only repealed (that is, unlisted) laws.
+		$sql = 'SELECT structure_unified.*
+				FROM structure
+				LEFT JOIN structure_unified
+					ON structure.id = structure_unified.s1_id
+				WHERE structure.parent_id';
+		if (!isset($this->id))
+		{
+			$sql .= ' IS NULL';
+		}
+		else
+		{
+			$sql .= '='.$db->escape($this->id);
+			
+			// If this legal code continues to print repealed laws, then make sure that we're not
+			// displaying any structural units that consist entirely of repealed laws.
+			if (INCLUDES_REPEALED === TRUE)
+			{
+				$sql .= ' AND
+						(SELECT COUNT(*)
+						FROM laws
+						LEFT JOIN laws_meta
+							ON laws.id = laws_meta.law_id
+						WHERE laws.structure_id=structure.id
+						AND laws_meta.meta_key = "repealed"
+						AND laws_meta.meta_value = "n") > 0';
+			}
+
+		}
+		
+		// Order these by the order_by column, which may or may not be populated.
+		$sql .= ' ORDER BY structure.order_by ASC, ';
+		
+		// In case the order_by column is not populated, we go on to sort by the structure
+		// identifer, by either Roman numerals or Arabic (traditional) numerals.
+		if (isset($this->sort) && $this->sort == 'roman')
+		{
+			$sql .= 'fromRoman(structure.identifier) ASC';
+		}
+		else
+		{
+			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
+				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
+		}
+
+		// Execute the query.
+		$result =& $db->query($sql);
+		
+		// If the query fails, or if no results are found, return false -- we can't make a match.
+		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		{
+			return FALSE;
+		}
+		
+		// Return the result as an object, built up as we loop through the results.
+		$i=0;
+		while ($child = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		{
+			// Remap the structural column names to simplified column names.
+			$child->id = $child->s1_id;
+			$child->label = $child->s1_label;
+			$child->name = $child->s1_name;
+			$child->identifier = $child->s1_identifier;
+			
+			// Figure out the URL for this structural unit by iterating through the "identifier"
+			// columns in this row.
+			$child->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
+			$tmp = array();
+			foreach ($child as $key => $value)
+			{
+				if (preg_match('/s[0-9]_identifier/', $key) == 1)
+				{
+					// Higher-level structural elements (e.g., titles) will have blank columns in
+					// structure_unified, so we want to omit any blank values. Because a valid
+					// structural unit identifier is "0" (Virginia does this), we check the string
+					// length, rather than using empty().
+					if (strlen($value) > 0)
+					{
+						$tmp[] = urlencode($value);
+					}
+				}
+				
+				/*
+				 * We no longer have any need for these "s#_" fields. Eliminate them. (This is
+				 * helpful to save memory, but it also allows this object to be delivered directly
+				 * via the API, without modification.)
+				 */
+				if (preg_match('/s[0-9]_([a-z]+)/', $key) == 1)
+				{
+					unset($child->$key);
+				}
+			}
+			$tmp = array_reverse($tmp);
+			$child->url .= implode('/', $tmp).'/';
+			$child->api_url = 'http://'.$_SERVER['SERVER_NAME'].'/api/structure/'.implode('/', $tmp).'/';
+			$children->$i = $child;
+			$i++;
+		}
+		
+		return $children;
+		
+	}
+	
+	
+	/**
 	 * Get a structure ID's ancestry. For example, when given the ID of a chapter, it will return
 	 * the chapter's ID, identifier, and name, along with its containing title's ID, number, and
 	 * name.
