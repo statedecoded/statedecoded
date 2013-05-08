@@ -84,6 +84,5 @@
 		{{javascript}}
 	</script>
 	<script src="/js/jquery.qtip.min.js"></script>
-	<script src="/js/jquery.color.js"></script>
 </body>
 </html>
