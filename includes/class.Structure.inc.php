@@ -96,7 +96,7 @@ class Structure
 		// Pass the request off to the get_current() method.
 		$this->get_current();
 		
-		return true;
+		return TRUE;
 		
 	}
 	
@@ -114,7 +114,7 @@ class Structure
 		// really nothing for us to do here.
 		if (!isset($this->structure_id))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		// Retrieve this structural unit's ancestry.
@@ -262,7 +262,7 @@ class Structure
 			$this->siblings = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
 		}
 		
-		return true;
+		return TRUE;
 		
 	}
 	
