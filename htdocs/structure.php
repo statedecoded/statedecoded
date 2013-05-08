@@ -19,12 +19,16 @@ require '../includes/page-head.inc.php';
 # Create a new instance of Structure.
 $struct = new Structure();
 
+# Use the URL to identify the requested structural unit.
+$result = $struct->url_to_structure();
+
 # If the URL doesn't represent a valid structural portion of the code, then bail.
-if ( $struct->url_to_structure() === FALSE || empty($struct->structure) )
+if ( $result === FALSE)
 {
 	send_404();
 }
 
+# Set aside the ancestry for this structural unit, to be accessed separately.
 $structure = $struct->structure;
 
 # Fire up our templating engine.

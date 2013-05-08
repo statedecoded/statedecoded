@@ -323,7 +323,7 @@ class Structure
 			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
-
+		
 		// Execute the query.
 		$result =& $db->query($sql);
 		
