@@ -10,6 +10,13 @@ See the [installation instructions](https://github.com/statedecoded/statedecoded
 The State Decoded benefits from [APC](http://php.net/manual/en/book.apc.php), which accelerates substantially its operations. It is not required, however. Likewise, it also benefits from [mod_pagespeed](https://developers.google.com/speed/pagespeed/mod) to streamline the HTML, CSS, and JavaScript.
 
 News at [@StateDecoded](http://twitter.com/statedecoded). Website at [StateDecoded.com](http://www.statedecoded.com/).
+## How to Help
+* Use State Decoded sites (e.g., [Virginia Decoded](http://vacode.org/), [Maryland Decoded](http://www.marylandcode.org/), [Sunshine Statutes](http://www.sunshinestatutes.com/)) and share your feedback in the form of [filing issues](https://github.com/statedecoded/statedecoded/issues/new)—suggestions for new features, notifications of bugs, etc.
+* Write or edit documentation on [the wiki](https://github.com/statedecoded/statedecoded/wiki).
+* Read through [unresolved issues](https://github.com/statedecoded/statedecoded/issues) and comment on those on which you have something to add, to help resolve them.
+* Contribute code to [fix bugs or add features](https://github.com/statedecoded/statedecoded/issues).
+* Comb through [existing code](https://github.com/statedecoded/statedecoded) to clean it up—standardizing code formatting, adding docblocks, or editing/adding comments.
+
 ## More
 
 Development of The State Decoded is funded by the John S. and James L. Knight Foundation’s News Challenge.
