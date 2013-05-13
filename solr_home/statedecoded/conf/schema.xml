@@ -64,16 +64,25 @@
      -->
 
  <fields>
-     <!-- State Decoded Fields ==
+     <!-- State Decoded Law Fields ==
         taken from law table tsv dump
      -->
    <field name="id" type="string" indexed="true" stored="true" required="true" /> 
    <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="section" type="statedec_section" indexed="true" stored="true"/>
    <field name="catch_line" type="text_general" indexed="true" stored="true"/>
-   <field name="text" type="statedec_text_en" indexed="true" stored="true" />
+   <field name="text" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
    <field name="repealed" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="structure" type="string" indexed="true" stored="true" multiValued="true"/>
+
+   <!-- State Decoded Dictionary Fields ==
+        taken from law dict table tsv dump -->
+   <field name="term" type="text_general" indexed="true" stored="true"/>
+   <field name="term_exact" type="lowercase" indexed="true" stored="true"/>
+   <field name="definition" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
+
+   <field name="type" type="lowercase" indexed="true" stored="true"/> 
+   <copyField source= "term" dest="term_exact"/>
 
    <!-- Valid attributes for fields:
      name: mandatory - the name for the field
@@ -329,8 +338,6 @@
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.SynonymFilterFactory" synonyms="legalsyns.txt" ignoreCase="true"
-                expand="true"/>
         <filter class="solr.StopFilterFactory"
                 ignoreCase="true"
                 words="lang/stopwords_en.txt"
