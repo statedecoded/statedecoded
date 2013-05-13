@@ -963,7 +963,34 @@
            text^2 structure^3 catch_line^5
        </str>
        <str name="df">text</str>
-       <str name="mm">2&lt;-25% 5&lt;-50%</str> <!--TODO change me!!!-->
+       <str name="mm">2&lt;-25% 5&lt;-50%</str>
+       <str name="q.alt">*:*</str>
+       <str name="rows">10</str>
+       <str name="fq">
+            type:law
+       </str>
+       <str name="fl">*</str>
+
+    </lst>
+  </requestHandler>
+
+  <requestHandler name="/dict" class="solr.SearchHandler">
+     <lst name="defaults">
+       <str name="echoParams">explicit</str>
+
+       <!-- Query settings -->
+       <str name="defType">edismax</str>
+       <str name="fq">
+            type:dict
+       </str>
+       <str name="qf">
+           term^2 definition^1
+       </str>
+       <str name="pf">
+           term^3 definition^2
+       </str>
+       <str name="df">definition</str>
+       <str name="mm">2&lt;-25% 5&lt;-50%</str> 
        <str name="q.alt">*:*</str>
        <str name="rows">10</str>
        <str name="fl">*</str>
