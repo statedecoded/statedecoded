@@ -70,7 +70,7 @@ class Law
 			 */
 			if (!is_array($this->law_id))
 			{
-				$sql .= ' WHERE id='.$db->escape($this->law_id);
+				$sql .= ' WHERE id='.$db->quote($this->law_id);
 			}
 			
 			/*
@@ -85,7 +85,7 @@ class Law
 				 */
 				foreach ($this->law_id as $id)
 				{
-					$sql .= ' id='.$db->escape($id);
+					$sql .= ' id='.$db->quote($id);
 					if (end($this->law_id) != $id)
 					{
 						$sql .= ' OR';
@@ -102,13 +102,13 @@ class Law
 		 */
 		else
 		{
-			$sql .= ' WHERE section="'.$db->escape($this->section_number).'"
+			$sql .= ' WHERE section="'.$db->quote($this->section_number).'"
 					AND edition_id='.EDITION_ID;
 		}
 		
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->numRows() < 1) )
 		{
 			return FALSE;
 		}
@@ -116,7 +116,7 @@ class Law
 		/*
 		 * Return the result as an object.
 		 */
-		$tmp = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$tmp = $result->fetch(PDO::FETCH_OBJ);
 		
 		/*
 		 * Bring this law into the object scope.
@@ -145,16 +145,16 @@ class Law
 						WHERE text_id=text.id
 						GROUP BY text_id) AS prefixes
 					FROM text
-					WHERE law_id='.$db->escape($this->section_id).'
+					WHERE law_id='.$db->quote($this->section_id).'
 					ORDER BY text.sequence ASC';
 			
-			$result =& $db->query($sql);
+			$result = $db->query($sql);
 			
 			/*
 			 * If the query fails, or if no results are found, return false -- we can't make a
 			 * match.
 			 */
-			if ( PEAR::isError($result) || ($result->numRows() < 1) )
+			if ( ($result === FALSE) || ($result->numRows() < 1) )
 			{
 				return FALSE;
 			}
@@ -163,7 +163,7 @@ class Law
 			 * Iterate through all of the sections of text to save to our object.
 			 */
 			$i=0;
-			while ($tmp = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			while ($tmp = $result->fetch(PDO::FETCH_OBJ))
 			{
 			
 				$tmp->prefixes = explode('|', $tmp->prefixes);
@@ -413,19 +413,19 @@ class Law
 				FROM laws
 				INNER JOIN laws_references
 					ON laws.id = laws_references.law_id
-				WHERE laws_references.target_law_id =  '.$db->escape($this->section_id).'
+				WHERE laws_references.target_law_id =  '.$db->quote($this->section_id).'
 				ORDER BY laws.order_by, laws.section ASC';
 		
 		/*
 		 * Execute the query.
 		 */
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
 		/*
 		 * If the query fails, or if no results are found, return false -- no sections refer to
 		 * this one.
 		 */
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->numRows() < 1) )
 		{
 			return FALSE;
 		}
@@ -435,7 +435,7 @@ class Law
 		 */
 		$references = new stdClass();
 		$i = 0;
-		while ($reference = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		while ($reference = $result->fetch(PDO::FETCH_OBJ))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
 			$reference->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$reference->section_number.'/';
@@ -485,7 +485,7 @@ class Law
 		/*
 		 * If the query fails, return false.
 		 */
-		if (PEAR::isError($result))
+		if ($result === FALSE)
 		{
 			return FALSE;
 		}
@@ -518,14 +518,14 @@ class Law
 		 */
 		$sql = 'SELECT id, meta_key, meta_value
 				FROM laws_meta
-				WHERE law_id='.$db->escape($this->section_id);
-		$result =& $db->query($sql);
+				WHERE law_id='.$db->quote($this->section_id);
+		$result = $db->query($sql);
 		
 		/*
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->numRows() < 1) )
 		{
 			return FALSE;
 		}
@@ -533,7 +533,7 @@ class Law
 		/*
 		 * Return the result as an object.
 		 */
-		$metadata = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
+		$metadata = $result->fetchAll(PDO::FETCH_OBJ);
 		
 		/*
 		 * Create a new object, to which we will port a rotated version of this object.
@@ -587,9 +587,9 @@ class Law
 		 */
 		$sql = 'SELECT *
 				FROM laws
-				WHERE section="'.$db->escape($this->section_number).'"
+				WHERE section="'.$db->quote($this->section_number).'"
 				AND edition_id='.EDITION_ID;
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
 		if ($result->numRows() < 1)
 		{
