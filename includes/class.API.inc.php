@@ -54,7 +54,7 @@ class API
 		$result = $db->query($sql);
 		
 		/* If the database has returned an error. */
-		if (PEAR::isError($result) === TRUE)
+		if ($result === FALSE)
 		{
 			throw new Exception('API keys could not be retrieved.');
 			return FALSE;
@@ -77,7 +77,7 @@ class API
 		 * If API keys have been registered, iterate through them and store them.
 		 */
 		$i=0;
-		while ($key = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		while ($key = $result->fetch(PDO::FETCH_OBJ))
 		{
 			$this->all_keys->{$key->api_key} = TRUE;
 			$i++;
@@ -110,15 +110,16 @@ class API
 		 */
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
-				WHERE key = "'.$db->escape($this->key).'"';
+				WHERE key = "'.$db->quote($this->key).'"';
 		$result = $db->query($sql);
 		
 		/*
 		 * If the query succeeds then retrieve the result.
 		 */
-		if ( (PEAR::isError($result) === FALSE) && ($result->numRows() > 0) )
+		if ($result != FALSE)
 		{
-			$api_key = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		
+			$api_key = $result->fetch(PDO::FETCH_OBJ);
 			
 			/*
 			 * Bring the result into the scope of the object.
@@ -127,6 +128,7 @@ class API
 			{
 				$this->$key = $value;
 			}
+			
 		}
 		else
 		{
@@ -226,24 +228,24 @@ class API
 		 * Assemble the SQL query.
 		 */
 		$sql = 'INSERT INTO api_keys
-				SET api_key = "'.$db->escape($this->key).'",
-				email = "'.$db->escape($this->email).'",
-				secret = "'.$db->escape($this->secret).'",
+				SET api_key = "'.$db->quote($this->key).'",
+				email = "'.$db->quote($this->email).'",
+				secret = "'.$db->quote($this->secret).'",
 				date_created = now()';
 		if (!empty($this->name))
 		{
-			$sql .= ', name="'.$db->escape($this->name).'"';
+			$sql .= ', name="'.$db->quote($this->name).'"';
 		}
 		if (!empty($this->url))
 		{
-			$sql .= ', url="'.$db->escape($this->url).'"';
+			$sql .= ', url="'.$db->quote($this->url).'"';
 		}
 		
 		/*
 		 * Insert this record.
 		 */
 		$result = $db->exec($sql);
-		if (PEAR::isError($result) === TRUE)
+		if ($result === FALSE)
 		{
 			throw new Exception('API key could not be created.');
 		}
@@ -275,21 +277,21 @@ class API
 		 */
 		$sql = 'UPDATE api_keys
 				SET verified = "y"
-				WHERE secret = "'.$db->escape($this->secret).'"';
+				WHERE secret = "'.$db->quote($this->secret).'"';
 		$result = $db->exec($sql);
 		
-		if (PEAR::isError($result) === TRUE)
+		if ($result === FALSE)
 		{
 			throw new Exception('API key could not be activated.');
 		}
 		
 		$sql = 'SELECT api_key
 				FROM api_keys
-				WHERE secret = "'.$db->escape($this->secret).'"';
+				WHERE secret = "'.$db->quote($this->secret).'"';
 		$result = $db->query($sql);
-		if ( (PEAR::isError($result) === FALSE) && ($result->numRows() > 0) )
+		if ($result !== FALSE)
 		{
-			$api_key = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			$api_key = $result->fetch(PDO::FETCH_OBJ);
 			$this->key = $api_key->api_key;
 		}
 		
