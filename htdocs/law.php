@@ -275,6 +275,9 @@ if ($law->court_decisions != FALSE)
 			</section>';
 }
 
+/*
+ * If we have a list of cross-references, list them.
+ */
 if ($law->references !== FALSE)
 {
 
@@ -291,6 +294,9 @@ if ($law->references !== FALSE)
 			</section>';
 }
 
+/*
+ * If we have a list of related laws, list them.
+ */
 if (isset($law->related) && (count((array) $law->related) > 0))
 {
 	$sidebar .= '			  
@@ -308,6 +314,9 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 }
 
 if (is_object($law->citation))
+/*
+ *	If we have citation data and it's formatted properly, display it.
+ */
 {
 	
 	$sidebar .= '<section id="cite-as">
