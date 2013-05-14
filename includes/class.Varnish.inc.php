@@ -31,7 +31,7 @@ class Varnish()
 		 */
 		if (empty(constant('VARNISH_HOST')))
 		{
-			return false;
+			return FALSE;
 		}
 		
 		/*
@@ -40,7 +40,7 @@ class Varnish()
 		$options = array(
 			CURLOPT_URL				=>	'http://' . $_SERVER['SERVER_NAME'] . '/',
 			CURLOPT_CUSTOMREQUEST	=>	'BAN',
-			CURLOPT_RETURNTRANSFER	=>	true,
+			CURLOPT_RETURNTRANSFER	=>	TRUE,
 			CURLOPT_HTTPHEADER		=> 	array ('Host: ' . VARNISH_HOST ),
 		);
 		
@@ -59,7 +59,7 @@ class Varnish()
 		curl_setopt_array($request, $options);
 		curl_exec($request);
 		
-		return true;
+		return TRUE;
 		
 	}
 	
