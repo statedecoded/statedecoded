@@ -77,7 +77,9 @@ define('INCLUDES_REPEALED', TRUE);
 /*
  * The DSN to connect to MySQL.
  */
-define('MYSQL_DSN', 'mysql://username:password@localhost/statelaws');
+define('PDO_DSN', 'mysql:dbname=statelaws;host=localhost;charset=utf8');
+define('PDO_USERNAME', 'username');
+define('PDO_PASSWORD', 'password');
 
 /*
  * Specify the structural identifier ancestry for the unit of the code that contains definitions of
