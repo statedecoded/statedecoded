@@ -425,8 +425,8 @@ class Parser
 		}
 
 		// Execute the query.
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			echo '<p>'.$sql.'</p>';
 			die($result->getMessage());
@@ -467,8 +467,8 @@ class Parser
 						meta_value = "' . $this->db->escape($value) . '"';
 				
 				// Execute the query.
-				$result =& $this->db->exec($sql);
-				if (PEAR::isError($result))
+				$result = $this->db->exec($sql);
+				if ($result === FALSE)
 				{
 					echo '<p>'.$sql.'</p>';
 					die($result->getMessage());
@@ -499,8 +499,8 @@ class Parser
 				$sql .= ', text="'.$this->db->escape($section->text).'"';
 			}
 
-			$result =& $this->db->exec($sql);
-			if (PEAR::isError($result))
+			$result = $this->db->exec($sql);
+			if ($result === FALSE)
 			{
 				echo '<p>'.$sql.'</p>';
 				die($result->getMessage());
@@ -523,8 +523,8 @@ class Parser
 						date_created=now()';
 
 				// Execute the query.
-				$result =& $this->db->exec($sql);
-				if (PEAR::isError($result))
+				$result = $this->db->exec($sql);
+				if ($result === FALSE)
 				{
 					echo '<p>'.$sql.'</p>';
 					die($result->getMessage());
@@ -648,15 +648,15 @@ class Parser
 		}
 
 		// Execute the query.
-		$result =& $this->db->query($sql);
+		$result = $this->db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || $result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 
-		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$structure = $result->fetch(PDO::FETCH_OBJ);
 		return $structure->id;
 	}
 
@@ -719,8 +719,8 @@ class Parser
 		}
 
 		// Execute the query.
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			return FALSE;
 		}
@@ -761,15 +761,15 @@ class Parser
 					WHERE id = '.$parent_id;
 
 			// Execute the query.
-			$result =& $this->db->query($sql);
-			if ( PEAR::isError($result) || ($result->numRows() < 1) )
+			$result = $this->db->query($sql);
+			if ( ($result === FALSE) || ($result->rowCount() == 0) )
 			{
 				echo '<p>Query failed: '.$sql.'</p>';
 				return FALSE;
 			}
 
 			// Return the result as an object.
-			$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			$structure = $result->fetch(PDO::FETCH_OBJ);
 
 			// If the label of this structural unit matches the label that we're looking for, return
 			// its ID.
@@ -1203,8 +1203,8 @@ class Parser
 
 	function query($sql)
 	{
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			var_dump($this->db->errorInfo());
 			return $this->db->errorInfo();
@@ -1289,8 +1289,8 @@ class Parser
 		$sql .= ' ON DUPLICATE KEY UPDATE mentions=mentions';
 
 		// Execute the query.
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			echo '<p>Failed: '.$sql.'</p>';
 			return FALSE;
