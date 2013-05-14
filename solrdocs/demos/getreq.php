@@ -41,7 +41,7 @@ class GetRequest {
             echo "Error Getting $url";
         }
         else {
-            print $content;
+            return json_decode($content, true);
         }
     }
 
