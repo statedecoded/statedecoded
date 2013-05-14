@@ -260,7 +260,7 @@ EOD;
 /*
  * If this section has been cited in any court decisions, list them.
  */
-if ($law->court_decisions != FALSE)
+if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 {
 	$sidebar .= '<section id="court-decisions">
 				<h1>Court Decisions</h1>
@@ -313,10 +313,10 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 			</section>';
 }
 
-if (is_object($law->citation))
 /*
  *	If we have citation data and it's formatted properly, display it.
  */
+if ( isset($law->citation) && is_object($law->citation) )
 {
 	
 	$sidebar .= '<section id="cite-as">
