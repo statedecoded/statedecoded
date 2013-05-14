@@ -16,7 +16,7 @@
  *
  */
  
-class Varnish()
+class Varnish
 {
 	
 	/*
@@ -29,7 +29,7 @@ class Varnish()
 		/*
 		 * If VARNISH_HOST isn't defined, we cannot interact with Varnish.
 		 */
-		if (empty(constant('VARNISH_HOST')))
+		if (!defined('VARNISH_HOST'))
 		{
 			return FALSE;
 		}
