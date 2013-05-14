@@ -108,7 +108,7 @@ class Law
 		
 		$result = $db->query($sql);
 		
-		if ( ($result === FALSE) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() < 1) )
 		{
 			return FALSE;
 		}
@@ -154,7 +154,7 @@ class Law
 			 * If the query fails, or if no results are found, return false -- we can't make a
 			 * match.
 			 */
-			if ( ($result === FALSE) || ($result->numRows() < 1) )
+			if ( ($result === FALSE) || ($result->rowCount() < 1) )
 			{
 				return FALSE;
 			}
@@ -425,7 +425,7 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to
 		 * this one.
 		 */
-		if ( ($result === FALSE) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() < 1) )
 		{
 			return FALSE;
 		}
@@ -525,7 +525,7 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( ($result === FALSE) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() < 1) )
 		{
 			return FALSE;
 		}
@@ -591,7 +591,7 @@ class Law
 				AND edition_id='.EDITION_ID;
 		$result = $db->query($sql);
 		
-		if ($result->numRows() < 1)
+		if ($result->rowCount() < 1)
 		{
 			return FALSE;
 		}
