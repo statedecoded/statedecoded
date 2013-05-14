@@ -185,6 +185,11 @@ if (isset($law->history_text))
 $body .= '</article>';
 
 /*
+ * Establish the $sidebar variable, so that we can append to it in conditionals.
+ */
+$sidebar = '';
+
+/*
  * Only show the history if the law hasn't been repealed. (If it has been, then the history text
  * generally disappears along with it, meaning that the below code can behave unpredictably.)
  */
@@ -255,7 +260,7 @@ EOD;
 /*
  * If this section has been cited in any court decisions, list them.
  */
-if ($law->court_decisions != FALSE)
+if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 {
 	$sidebar .= '<section id="court-decisions">
 				<h1>Court Decisions</h1>
@@ -270,6 +275,9 @@ if ($law->court_decisions != FALSE)
 			</section>';
 }
 
+/*
+ * If we have a list of cross-references, list them.
+ */
 if ($law->references !== FALSE)
 {
 
@@ -286,6 +294,9 @@ if ($law->references !== FALSE)
 			</section>';
 }
 
+/*
+ * If we have a list of related laws, list them.
+ */
 if (isset($law->related) && (count((array) $law->related) > 0))
 {
 	$sidebar .= '			  
@@ -302,7 +313,10 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 			</section>';
 }
 
-if (is_object($law->citation))
+/*
+ *	If we have citation data and it's formatted properly, display it.
+ */
+if ( isset($law->citation) && is_object($law->citation) )
 {
 	
 	$sidebar .= '<section id="cite-as">

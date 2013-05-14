@@ -671,10 +671,10 @@ class Dictionary
 				FROM dictionary
 				LEFT JOIN laws
 					ON dictionary.law_id=laws.id
-				WHERE (dictionary.term="'.$db->escape($this->term).'"';
+				WHERE (dictionary.term=' . $db->quote($this->term);
 		if ($plural === TRUE)
 		{
-			$sql .= ' OR dictionary.term = "' . $db->escape(substr($this->term, 0, -1)) . '"';
+			$sql .= ' OR dictionary.term = ' . $db->quote(substr($this->term, 0, -1));
 		}
 		$sql .= ') ';
 		if (isset($this->section_number))
@@ -682,11 +682,11 @@ class Dictionary
 			$sql .= 'AND (';
 			foreach ($ancestry as $structure_id)
 			{
-				$sql .= '(dictionary.structure_id = ' . $db->escape($structure_id) . ') OR';
+				$sql .= '(dictionary.structure_id = ' . $db->quote($structure_id) . ') OR';
 			}
 			$sql .= '	(dictionary.scope = "global")
 					OR
-						(laws.section = "' . $db->escape($this->section_number) . '")
+						(laws.section = ' . $db->quote($this->section_number) . ')
 					) ';
 		}
 		
@@ -697,12 +697,12 @@ class Dictionary
 			$sql .= 'LIMIT 1';
 		}
 		
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 
 		/*
 		 * If the query succeeds, great, retrieve it.
 		 */
-		if ( (PEAR::isError($result) === FALSE) && ($result->numRows() > 0) )
+		if ( ($result !== FALSE) && ($result->rowCount() > 0) )
 		{
 		
 			/*
@@ -710,7 +710,7 @@ class Dictionary
 			 */
 			$dictionary = new stdClass();
 			$i=0;
-			while ($term = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			while ($term = $result->fetch(PDO::FETCH_OBJ))
 			{
 				$term->url = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $term->section_number . '/';
 				$term->formatted = wptexturize($term->definition) . ' (<a href="' . $term->url . '">'
@@ -731,31 +731,30 @@ class Dictionary
 			 */
 			$sql = 'SELECT term, definition, source, source_url AS url
 					FROM dictionary_general
-					WHERE term="' . $db->escape($this->term) . '"';
+					WHERE term=' . $db->quote($this->term);
 			if ($plural === TRUE)
 			{
-				$sql .= ' OR term = "' . $db->escape(substr($this->term, 0, -1)) . '"';
+				$sql .= ' OR term = ' . $db->quote(substr($this->term, 0, -1));
 			}
 			$sql .= ' LIMIT 1';
 			
-			$result =& $db->query($sql);
+			$result = $db->query($sql);
 			
 			/*
-			 * If the query fails, or if no results are found, return false -- we have
-			 * no terms for this structural unit.
+			 * If the query fails, or if no results are found, return false -- we have no terms for
+			 * this structural unit.
 			 */
-			if ( (PEAR::isError($result) === TRUE) || ($result->numRows() === 0) )
+			if ( ($result === FALSE) || ($result->rowCount() < 1) )
 			{
 				return FALSE;
 			}
 		
 			/*
-			 * Get the first result. Assemble a slightly different response than for a
-			 * custom term. We assign this to the first element of an object because
-			 * that is the format that the API expects to receive a list of terms in. In
-			 * this case, we have just one term.
+			 * Get the first result. Assemble a slightly different response than for a custom term.
+			 * We assign this to the first element of an object because that is the format that the
+			 * API expects to receive a list of terms in. In this case, we have just one term.
 			 */
-			$dictionary->{0} = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			$dictionary->{0} = $result->fetch(PDO::FETCH_OBJ);
 			$dictionary->{0}->formatted = wptexturize($dictionary->{0}->definition) .
 				' (<a href="' . $dictionary->{0}->url . '">' . $dictionary->{0}->source . '</a>)';
 
@@ -831,24 +830,24 @@ class Dictionary
 						ON laws.structure_id=structure.id
 					WHERE
 					(
-						(dictionary.law_id=' . $db->escape($this->section_id) . ')
+						(dictionary.law_id=' . $db->quote($this->section_id) . ')
 						AND
 						(dictionary.scope="section")
 					)';
 			foreach ($ancestry as $structure_id)
 			{
-				$sql .= ' OR (dictionary.structure_id=' . $db->escape($structure_id) . ')';
+				$sql .= ' OR (dictionary.structure_id=' . $db->quote($structure_id) . ')';
 			}
 			$sql .= ' OR (scope="global")';
 		}
 
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
 		/*
 		 * If the query fails, or if no results are found, return false -- we have no terms for this
 		 * structural unit.
 		 */
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() < 1) )
 		{
 			return FALSE;
 		}
@@ -857,7 +856,7 @@ class Dictionary
 		 * Build up the result as an object as we loop through the results.
 		 */
 		$i=0;
-		while ($term = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		while ($term = $result->fetch(PDO::FETCH_OBJ))
 		{
 			$terms->$i = $term->term;
 			$i++;
@@ -869,15 +868,15 @@ class Dictionary
 		$sql = 'SELECT term
 				FROM dictionary_general';
 
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
-		if ($result->numRows() >= 1)
+		if ($result->rowCount() > 0)
 		{		
 			/*
 			* Append these results to the existing $terms object, continuing to use the previously-
 			* defined $i counter.
 			*/
-			while ($term = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			while ($term = $result->fetch(PDO::FETCH_OBJ))
 			{
 				$terms->$i = $term->term;
 				$i++;
