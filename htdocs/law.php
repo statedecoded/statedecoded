@@ -185,6 +185,11 @@ if (isset($law->history_text))
 $body .= '</article>';
 
 /*
+ * Establish the $sidebar variable, so that we can append to it in conditionals.
+ */
+$sidebar = '';
+
+/*
  * Only show the history if the law hasn't been repealed. (If it has been, then the history text
  * generally disappears along with it, meaning that the below code can behave unpredictably.)
  */
