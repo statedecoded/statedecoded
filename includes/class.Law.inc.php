@@ -70,7 +70,7 @@ class Law
 			 */
 			if (!is_array($this->law_id))
 			{
-				$sql .= ' WHERE id='.$db->quote($this->law_id);
+				$sql .= ' WHERE id=' . $db->quote($this->law_id);
 			}
 			
 			/*
@@ -85,7 +85,7 @@ class Law
 				 */
 				foreach ($this->law_id as $id)
 				{
-					$sql .= ' id='.$db->quote($id);
+					$sql .= ' id=' . $db->quote($id);
 					if (end($this->law_id) != $id)
 					{
 						$sql .= ' OR';
@@ -102,13 +102,13 @@ class Law
 		 */
 		else
 		{
-			$sql .= ' WHERE section="'.$db->quote($this->section_number).'"
-					AND edition_id='.EDITION_ID;
+			$sql .= ' WHERE section=' . $db->quote($this->section_number) . '
+					AND edition_id=' . EDITION_ID;
 		}
 		
 		$result = $db->query($sql);
 		
-		if ( ($result === FALSE) || ($result->rowCount() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -154,7 +154,7 @@ class Law
 			 * If the query fails, or if no results are found, return false -- we can't make a
 			 * match.
 			 */
-			if ( ($result === FALSE) || ($result->rowCount() < 1) )
+			if ( ($result === FALSE) || ($result->rowCount() == 0) )
 			{
 				return FALSE;
 			}
@@ -425,7 +425,7 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to
 		 * this one.
 		 */
-		if ( ($result === FALSE) || ($result->rowCount() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -480,7 +480,7 @@ class Law
 		/*
 		 * Execute the query.
 		 */
-		$result =& $db->exec($sql);
+		$result = $db->exec($sql);
 		
 		/*
 		 * If the query fails, return false.
@@ -518,14 +518,14 @@ class Law
 		 */
 		$sql = 'SELECT id, meta_key, meta_value
 				FROM laws_meta
-				WHERE law_id='.$db->quote($this->section_id);
+				WHERE law_id=' . $db->quote($this->section_id);
 		$result = $db->query($sql);
 		
 		/*
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( ($result === FALSE) || ($result->rowCount() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -587,11 +587,11 @@ class Law
 		 */
 		$sql = 'SELECT *
 				FROM laws
-				WHERE section="'.$db->quote($this->section_number).'"
-				AND edition_id='.EDITION_ID;
+				WHERE section=' . $db->quote($this->section_number) . '
+				AND edition_id=' . EDITION_ID;
 		$result = $db->query($sql);
 		
-		if ($result->rowCount() < 1)
+		if ( ($result === FALSE) || ($result->rowCount() < 1) )
 		{
 			return FALSE;
 		}
@@ -612,13 +612,12 @@ class Law
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
-		$terms = $dictionary->term_list();
-
+		$terms = (array) $dictionary->term_list();
 
 		/*
 		 * If we've gotten a list of dictionary terms.
 		 */
-		if ( ($terms !== FALSE) && is_object($terms) )
+		if ( ($terms !== FALSE) && is_array($terms) )
 		{
 			/*
 			 * Arrange our terms from longest to shortest. This is to ensure that the most specific

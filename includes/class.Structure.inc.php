@@ -82,7 +82,7 @@ class Structure
 		$result = $db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -126,7 +126,7 @@ class Structure
 		$result = $db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -259,7 +259,7 @@ class Structure
 		$result = $db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			// Get the result as an object.
 			$this->siblings = $result->fetchAll(PDO::FETCH_OBJ);
@@ -331,7 +331,7 @@ class Structure
 		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -416,7 +416,7 @@ class Structure
 		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -491,7 +491,7 @@ class Structure
 		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -538,7 +538,7 @@ class Structure
 		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}

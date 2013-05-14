@@ -110,7 +110,7 @@ class API
 		 */
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
-				WHERE key = "'.$db->quote($this->key).'"';
+				WHERE key = ' . $db->quote($this->key);
 		$result = $db->query($sql);
 		
 		/*
@@ -228,17 +228,17 @@ class API
 		 * Assemble the SQL query.
 		 */
 		$sql = 'INSERT INTO api_keys
-				SET api_key = "'.$db->quote($this->key).'",
-				email = "'.$db->quote($this->email).'",
-				secret = "'.$db->quote($this->secret).'",
+				SET api_key = ' . $db->quote($this->key) . ',
+				email = ' . $db->quote($this->email) . ',
+				secret = ' . $db->quote($this->secret) . ',
 				date_created = now()';
 		if (!empty($this->name))
 		{
-			$sql .= ', name="'.$db->quote($this->name).'"';
+			$sql .= ', name=' . $db->quote($this->name);
 		}
 		if (!empty($this->url))
 		{
-			$sql .= ', url="'.$db->quote($this->url).'"';
+			$sql .= ', url=' . $db->quote($this->url)
 		}
 		
 		/*
@@ -277,7 +277,7 @@ class API
 		 */
 		$sql = 'UPDATE api_keys
 				SET verified = "y"
-				WHERE secret = "'.$db->quote($this->secret).'"';
+				WHERE secret = ' . $db->quote($this->secret);
 		$result = $db->exec($sql);
 		
 		if ($result === FALSE)
@@ -287,7 +287,7 @@ class API
 		
 		$sql = 'SELECT api_key
 				FROM api_keys
-				WHERE secret = "'.$db->quote($this->secret).'"';
+				WHERE secret = ' . $db->quote($this->secret);
 		$result = $db->query($sql);
 		if ($result !== FALSE)
 		{

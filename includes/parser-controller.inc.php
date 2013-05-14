@@ -35,16 +35,20 @@ class ParserController
 		/*
 		 * Connect to the database.
 		 */
-		$this->db =& MDB2::connect(MYSQL_DSN);
-		if (PEAR::isError($this->db))
+		$db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+		if ($this->db === FALSE)
 		{
 			die('Could not connect to the database.');
 		}
 
 		/*
-		 * We must always connect with UTF-8.
+		 * Prior to PHP v5.3.6, the PDO does not pass along to MySQL the DSN charset configuration
+		 * option, and it must be done manually.
 		 */
-		$this->db->setCharset('utf8');
+		if (version_compare(PHP_VERSION, '5.3.6', '<'))
+		{
+			$db->exec("SET NAMES utf8");
+		}
 
 		/*
 		 * Set our default execution limits.
@@ -90,7 +94,7 @@ class ParserController
 		{
 			$sql = 'TRUNCATE '.$table;
 
-			$result =& $this->db->exec($sql);
+			$result = $this->db->exec($sql);
 			if (PEAR::isError($result))
 			{
 				$this->logger->message("Error in SQL: $sql", 10);
@@ -105,14 +109,14 @@ class ParserController
 
 		$sql = 'ALTER TABLE structure
 				AUTO_INCREMENT=1';
-		$result =& $this->db->exec($sql);
+		$result = $this->db->exec($sql);
 
 		/*
 		 * Delete law histories.
 		 */
 		$sql = 'DELETE FROM laws_meta
 				WHERE meta_key = "history"';
-		$result =& $this->db->exec($sql);
+		$result = $this->db->exec($sql);
 	}
 
 	public function parse()
@@ -182,7 +186,7 @@ class ParserController
 
 		$sql = 'SELECT id, history
 				FROM laws';
-		$result =& $this->db->query($sql);
+		$result = $this->db->query($sql);
 		if ($result->numRows() > 0)
 		{
 
@@ -190,7 +194,7 @@ class ParserController
 			 * Step through the history of every law that we have a record of.
 			 */
 
-			while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			while ($law = $result->fetch(PDO::FETCH_OBJ))
 			{
 				/*
 				 * Turn the string of text that comprises the history into an object of atomic
@@ -203,8 +207,8 @@ class ParserController
 				 * Save this object to the metadata table pair.
 				 */
 				$sql = 'INSERT INTO laws_meta
-						SET law_id='.$this->db->escape($law->id).',
-						meta_key="history", meta_value="'.$this->db->escape(serialize($history)).'",
+						SET law_id=' . $this->db->quote($law->id).',
+						meta_key="history", meta_value=' . $this->db->quote(serialize($history)) . ',
 						date_created=now();';
 				$this->db->exec($sql);
 			}
@@ -367,7 +371,7 @@ class ParserController
 						ON laws.structure_id=structure_unified.s1_id
 					WHERE edition_id='.EDITION_ID.'
 					ORDER BY order_by ASC';
-			$result =& $this->db->query($sql);
+			$result = $this->db->query($sql);
 			if ($result->numRows() > 0)
 			{
 
@@ -401,7 +405,7 @@ class ParserController
 					/*
 					 * Iterate through every law.
 					 */
-					while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+					while ($law = $result->fetch(PDO::FETCH_OBJ))
 					{
 
 						/*
@@ -474,14 +478,14 @@ class ParserController
 					LEFT JOIN laws
 						ON dictionary.law_id = laws.id
 					ORDER BY dictionary.term ASC , laws.order_by ASC';
-			$result =& $this->db->query($sql);
+			$result = $this->db->query($sql);
 			if ($result->numRows() > 0)
 			{
 			
 				/*
 				 * Retrieve the entire dictionary as a single object.
 				 */
-				$dictionary = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
+				$dictionary = $result->fetchAll(PDO::FETCH_OBJ);
 
 				/*
 				 * Define the filename for our dictionary.

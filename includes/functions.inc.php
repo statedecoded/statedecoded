@@ -671,10 +671,10 @@ class Dictionary
 				FROM dictionary
 				LEFT JOIN laws
 					ON dictionary.law_id=laws.id
-				WHERE (dictionary.term="'.$db->quote($this->term).'"';
+				WHERE (dictionary.term=' . $db->quote($this->term);
 		if ($plural === TRUE)
 		{
-			$sql .= ' OR dictionary.term = "' . $db->quote(substr($this->term, 0, -1)) . '"';
+			$sql .= ' OR dictionary.term = ' . $db->quote(substr($this->term, 0, -1));
 		}
 		$sql .= ') ';
 		if (isset($this->section_number))
@@ -686,7 +686,7 @@ class Dictionary
 			}
 			$sql .= '	(dictionary.scope = "global")
 					OR
-						(laws.section = "' . $db->quote($this->section_number) . '")
+						(laws.section = ' . $db->quote($this->section_number) . ')
 					) ';
 		}
 		
@@ -702,7 +702,7 @@ class Dictionary
 		/*
 		 * If the query succeeds, great, retrieve it.
 		 */
-		if ( ($result === FALSE) || ($result->numRows() < 1) )
+		if ( ($result !== FALSE) && ($result->rowCount() > 0) )
 		{
 		
 			/*
@@ -731,10 +731,10 @@ class Dictionary
 			 */
 			$sql = 'SELECT term, definition, source, source_url AS url
 					FROM dictionary_general
-					WHERE term="' . $db->quote($this->term) . '"';
+					WHERE term=' . $db->quote($this->term);
 			if ($plural === TRUE)
 			{
-				$sql .= ' OR term = "' . $db->quote(substr($this->term, 0, -1)) . '"';
+				$sql .= ' OR term = ' . $db->quote(substr($this->term, 0, -1));
 			}
 			$sql .= ' LIMIT 1';
 			
@@ -744,7 +744,7 @@ class Dictionary
 			 * If the query fails, or if no results are found, return false -- we have no terms for
 			 * this structural unit.
 			 */
-			if ( ($result === FALSE) || ($result->numRows() < 1) )
+			if ( ($result === FALSE) || ($result->rowCount() < 1) )
 			{
 				return FALSE;
 			}
@@ -847,7 +847,7 @@ class Dictionary
 		 * If the query fails, or if no results are found, return false -- we have no terms for this
 		 * structural unit.
 		 */
-		if ($result === FALSE)
+		if ( ($result === FALSE) || ($result->rowCount() < 1) )
 		{
 			return FALSE;
 		}
@@ -870,7 +870,7 @@ class Dictionary
 
 		$result = $db->query($sql);
 		
-		if ($result->numRows() >= 1)
+		if ($result->rowCount() > 0)
 		{		
 			/*
 			* Append these results to the existing $terms object, continuing to use the previously-
