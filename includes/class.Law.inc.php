@@ -806,7 +806,8 @@ class Law
 				 * Assemble the permalink
 				 */
 				$protocol = 'http://';
-				if ($_SERVER['HTTPS'])
+				
+				if (!empty($_SERVER['HTTPS']))
 				{
 					$protocol = 'https://';
 				}
