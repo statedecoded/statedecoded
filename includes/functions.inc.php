@@ -741,8 +741,8 @@ class Dictionary
 			$result = $db->query($sql);
 			
 			/*
-			 * If the query fails, or if no results are found, return false -- we have
-			 * no terms for this structural unit.
+			 * If the query fails, or if no results are found, return false -- we have no terms for
+			 * this structural unit.
 			 */
 			if ( ($result === FALSE) || ($result->numRows() < 1) )
 			{
@@ -750,10 +750,9 @@ class Dictionary
 			}
 		
 			/*
-			 * Get the first result. Assemble a slightly different response than for a
-			 * custom term. We assign this to the first element of an object because
-			 * that is the format that the API expects to receive a list of terms in. In
-			 * this case, we have just one term.
+			 * Get the first result. Assemble a slightly different response than for a custom term.
+			 * We assign this to the first element of an object because that is the format that the
+			 * API expects to receive a list of terms in. In this case, we have just one term.
 			 */
 			$dictionary->{0} = $result->fetch(PDO::FETCH_OBJ);
 			$dictionary->{0}->formatted = wptexturize($dictionary->{0}->definition) .
