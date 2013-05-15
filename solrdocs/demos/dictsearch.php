@@ -1,13 +1,12 @@
 <?php
 
-require_once('getreq.php');
-
 // *****************************************************************
 // An HTTP get request to the request handler for law
 // for the state decoded Solr core
 // (GetRequest is just a simple wrapper around curl or 
 //  file_get_contents)
-$searchReq = new GetRequest("http://localhost:8983/solr/statedecoded/law");
+$searchReq = new GetRequest("http://localhost:8983/solr/statedecoded/dict");
+
 
 // *****************************************************************
 // Specify a bunch of parameters into the Query String
@@ -17,7 +16,7 @@ $searchReq = new GetRequest("http://localhost:8983/solr/statedecoded/law");
 // the line in solrconfig.xml defining the requestHandle can be
 // found and modified. In this case, 
 //      
-//      <requestHandler name="/law" class="solr.SearchHandler">
+//      <requestHandler name="/dict" class="solr.SearchHandler">
 //
 // You can override anything specified in the requestHandler
 // by passing it in the query string. 
@@ -62,42 +61,42 @@ $searchReq = new GetRequest("http://localhost:8983/solr/statedecoded/law");
 //  the laws
 
 
-//  search the text field for no child left behind
-//  return fields catch_line,text
-//  return only 5 rows
-$params = array("q" => "text:no child left behind", # search query
-    "fl" => "catch_line,text", # field list to return
+// search term/definition for "motor vehicle"
+$params = array("q" => "motor vehicle", # search query
     "rows" => "5"); # number of rows
 $respJson = $searchReq->execute($params);
 print_r($respJson);
 
-// Page through the results -- get the next 
-// 5 params
-$params = array("q" => "text:no child left behind", # search query
-    "fl" => "catch_line,text",
+// Page through the results with the "start" parameter 
+$params = array("q" => "motor vehicle", # search query
+    "rows" => "5", # number of rows from the matches
+    "start" => "5"); # return starting with the 5th most relevant result
+$respJson = $searchReq->execute($params);
+print_r($respJson);
+
+// Search 
+// You can eliminate duplicates by grouping query 
+// results with a "group by" over the term field
+// You might want to do this as there's many terms with
+// "motor vehicle"
+//
+// http://wiki.apache.org/solr/FieldCollapsing
+$params = array("q" => "motor vehicle", # search query
     "rows" => "5",
-    "start" => "5");
+    "group" => "true",
+    "group.field" => "term"); # number of rows
 $respJson = $searchReq->execute($params);
 print_r($respJson);
 
 
-// Search all fields in qf for no child left behind
-$params = array("q" => "no child left behind", # search query
-    "fl" => "catch_line,text",
-    "rows" => "5");
+
+//  search the text field for no child left behind
+//  return fields catch_line,text
+//  return only 5 rows
+$params = array("q" => "definition:no child left behind", # search query
+    "fl" => "catch_line,text", # field list to return
+    "rows" => "5"); # number of rows
 $respJson = $searchReq->execute($params);
 print_r($respJson);
-
-
-// *****************************************************************
-// execute should return Json 
-$respJson = $searchReq->execute($params);
-
-if ($respJson === FALSE) {
-    echo "Get Request Failed\n";
-}
-else {
-    print_r($respJson);
-}
 
 ?>
