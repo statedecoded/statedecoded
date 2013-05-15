@@ -53,12 +53,6 @@ solutions to the problem:</p>
 $template->field->body = $body;
 unset($body);
 
-/*
- * Put the shorthand $sidebar variable into its proper place.
- */
-$template->field->sidebar = $sidebar;
-unset($sidebar);
-
 /* 
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
  * to the browser.
