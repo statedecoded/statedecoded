@@ -239,16 +239,15 @@ class Parser
 		/*
 		 * Iterate through the text.
 		 */
-		$i=0;
+		$this->i=0;
 		foreach ($this->section->text as $section)
 		{
-
 			/*
 			 * If there are no subsections, but just a single block of text, then simply save that.
 			 */
 			if (count($section) === 0)
 			{
-				$this->code->section->$i->text = trim((string) $section);
+				$this->code->section->{$this->i}->text = trim((string) $section);
 				$this->code->text = trim((string) $section);
 				break;
 			}
@@ -258,8 +257,8 @@ class Parser
 			 */
 			foreach ($section as $subsection)
 			{
-
-				$this->code->section->$i->text = trim((string) $subsection);
+				
+				$this->code->section->{$this->i}->text = trim((string) $subsection);
 				
 				/*
 				 * If this subsection has text, save it. Some subsections will not have text, such
@@ -269,32 +268,31 @@ class Parser
 				$tmp = trim((string) $subsection);
 				if ( !empty( $tmp ) )
 				{
-					$this->code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
+					$this->code->text .= (string) $subsection['prefix'] . ' '
+						. trim((string) $subsection) . "\r\r";
 				}
 
-				$this->code->section->$i->prefix = (string) $subsection['prefix'];
-				$this->code->section->$i->prefix_hierarchy->{0} = (string) $subsection['prefix'];
+				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 				$this->prefix_hierarchy[] = (string) $subsection['prefix'];
+				$this->code->section->{$this->i}->prefix_hierarchy->{0} = (string) $subsection['prefix'];
 
 				/*
 				 * If this subsection has a specified type (e.g., "table"), save that.
 				 */
 				if (!empty($subsection['type']))
 				{
-					$this->code->section->$i->type = (string) $subsection['type'];
+					$this->code->section->{$this->i}->type = (string) $subsection['type'];
 				}
-				$this->code->section->$i->prefix = (string) $subsection['prefix'];
+				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 
-				$i++;
+				$this->i++;
 
 				/*
 				 * Recurse through any subsections.
 				 */
 				if (count($subsection) > 0)
 				{
-					$this->recurse($subsection, $i);
-					/* Pass back the incrementer. */
-					$i = $this->i;
+					$this->recurse($subsection);
 				}
 
 				/*
@@ -312,16 +310,19 @@ class Parser
 	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
 	 * we call this method recursively to gather their content.
 	 */
-	public function recurse($section, $i)
+	public function recurse($section)
 	{
 
-		if ( !isset($section) || !isset($i)  || !isset($this->code) )
+		if ( !isset($section) || !isset($this->code) )
 		{
 			return FALSE;
 		}
 
 		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
-		$this->depth = 1;
+		if (!isset($this->depth))
+		{
+			$this->depth = 1;
+		}
 
 		/*
 		 * Iterate through each subsection.
@@ -329,21 +330,23 @@ class Parser
 		foreach ($section as $subsection)
 		{
 
-			$this->code->section->$i->text = (string) $subsection;
+			/*
+			 * Store this subsection's data in our code object.
+			 */
+			$this->code->section->{$this->i}->text = (string) $subsection;
 			if (!empty($subsection['type']))
 			{
-				$this->code->section->$i->type = (string) $subsection['type'];
+				$this->code->section->{$this->i}->type = (string) $subsection['type'];
 			}
-			$this->code->section->$i->prefix = (string) $subsection['prefix'];
+			$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 			$this->prefix_hierarchy[] = (string) $subsection['prefix'];
-			$this->code->section->$i->prefix_hierarchy = (object) $this->prefix_hierarchy;
+			$this->code->section->{$this->i}->prefix_hierarchy = (object) $this->prefix_hierarchy;
 
 			/*
 			 * We increment our counter at this point, rather than at the end of the loop, because
 			 * of the use of the recurse() method after it.
 			 */
-
-			$i++;
+			$this->i++;
 
 			/*
 			 * If this recurses further, keep going.
@@ -351,19 +354,19 @@ class Parser
 			if (isset($subsection->section))
 			{
 				$this->depth++;
-				$this->recurse($subsection->section, $i);
+				$this->recurse($subsection->section);
 			}
 
 			/*
 			 * Reduce the prefix hierarchy back to where it started, for our next loop through.
 			 */
-			$this->prefix_hierarchy = array_slice($this->prefix_hierarchy, 0, ($this->depth * -1));
-			$this->i = $i;
+			$this->prefix_hierarchy = array_slice($this->prefix_hierarchy, 0, ($this->depth));
+			
 		}
-
+		
 		return TRUE;
+		
 	}
-
 
 
 	/**
