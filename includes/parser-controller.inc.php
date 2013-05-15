@@ -364,18 +364,22 @@ class ParserController
 			 * Get a listing of all laws, to be exported as JSON.
 			 */
 			$this->logger->message('Querying laws', 3);
-
-			$sql = 'SELECT laws.section, laws.catch_line, laws.catch_line, laws.text, laws.history,
-					structure_unified.*
+			
+			/*
+			 * Only get section numbers. We them pass each one to the Laws class to get full data
+			 * about each law.
+			 */
+			$sql = 'SELECT laws.section AS number
 					FROM laws
-					LEFT JOIN structure_unified
-						ON laws.structure_id=structure_unified.s1_id
-					WHERE edition_id='.EDITION_ID.'
+					WHERE edition_id=' . EDITION_ID . '
 					ORDER BY order_by ASC';
 			$result = $this->db->query($sql);
 			if ($result->rowCount() > 0)
 			{
 				
+				/*
+				 * Establish the path of our code JSON storage directory.
+				 */
 				$json_dir = $downloads_dir . 'code-json/';
 				
 				/*
@@ -392,97 +396,76 @@ class ParserController
 				if (!is_writable($json_dir))
 				{
 					$this->logger->message('Cannot open '.$json_dir.' to create a new ZIP file.', 10);
+					break;
 				}
 				
 				/*
-				 * But if we can write to the JSON directory, start writing files.
+				 * Create a new instance of the class that handles information about individual
+				 * laws.
 				 */
-				else
+				$laws = new Law();
+
+				/*
+				 * Instruct the Law class on what, specifically, it should retrieve.
+				 */
+				$laws->config->get_text = TRUE;
+				$laws->config->get_structure = TRUE;
+				$laws->config->get_amendment_attempts = FALSE;
+				$laws->config->get_court_decisions = TRUE;
+				$laws->config->get_metadata = TRUE;
+				$laws->config->get_references = TRUE;
+				$laws->config->get_related_laws = TRUE;
+
+				/*
+				 * Establish the depth of this code's structure. Though this constant includes
+				 * the laws themselves, we don't subtract 1 from the tally because the
+				 * structural labels start at 1.
+				 */
+				$structure_depth = count(explode(',', STRUCTURE));
+
+				/*
+				 * Iterate through every section number, to pass to the Laws class.
+				 */
+				while ($section = $result->fetch(PDO::FETCH_OBJ))
 				{
-					/*
-					 * Establish the depth of this code's structure. Though this constant includes
-					 * the laws themselves, we don't subtract 1 from the tally because the
-					 * structural labels start at 1.
-					 */
-					$structure_depth = count(explode(',', STRUCTURE));
 
 					/*
-					 * Iterate through every law.
+					 * Pass the requested section number to Law.
 					 */
-					while ($law = $result->fetch(PDO::FETCH_OBJ))
+					$laws->section_number = $section->number;
+					
+					/*
+					 * Get a list of all of the basic information that we have about this section.
+					 */
+					$law = $laws->get_law();
+					
+					/*
+					 * Eliminate colons from section numbers, since some OSes can't handle colons in
+					 * filenames.
+					 */		
+					$filename = $json_dir.str_replace(':', '_', $law->section_number).'.json';
+					
+					/*
+					 * Store the file.
+					 */
+					$success = file_put_contents($filename, json_encode($law));
+					if ($success === FALSE)
 					{
-
-						/*
-						 * We don't need either of these fields.
-						 */
-						unset($law->s1_id);
-						unset($law->s2_id);
-
-						/*
-						 * Rename the structural fields.
-						 */
-						for ($i=1; $i<$structure_depth; $i++)
-						{
-							/*
-							 * Assign these variables to new locations.
-							 */
-							$law->structure->{$i-1}->label = $law->{'s'.$i.'_label'};
-							$law->structure->{$i-1}->name = $law->{'s'.$i.'_name'};
-							$law->structure->{$i-1}->identifier = $law->{'s'.$i.'_identifier'};
-
-							/*
-							 * Unset the old variables.
-							 */
-							unset($law->{'s'.$i.'_label'});
-							unset($law->{'s'.$i.'_name'});
-							unset($law->{'s'.$i.'_identifier'});
-						}
-
-						/*
-						 * Reverse the order of the structure, from broadest to most narrow.
-						 */
-						$law->structure = array_reverse((array) $law->structure);
-
-						/*
-						 * Renumber the structure. To avoid duplicates, we must do this awkwardly.
-						 */
-						$tmp = $law->structure;
-						unset($law->structure);
-						$i=0;
-						foreach ($tmp as $structure)
-						{
-							$law->structure->$i = $structure;
-							$i++;
-						}
-
-						/*
-						 * Eliminate colons from section numbers, since some OSes can't handle
-						 * colons in filenames.
-						 */		
-						$filename = $json_dir.str_replace(':', '_', $law->section).'.json';
-						
-						/*
-						 * Store the file.
-						 */
-						$success = file_put_contents($filename, json_encode($law));
-						if ($success === FALSE)
-						{
-							$this->logger->message('Could not write code JSON files', 9);
-							break(3);
-						}
-						
+						$this->logger->message('Could not write code JSON files', 9);
+						break 2;
 					}
 					
-					/*
-					 * Zip up all of the JSON into a single file. We do this via exec(), rather than
-					 * PHP's ZIP extension, because doing it within PHP requires far too much
-					 * memory. Using exec() is faster and more efficient.
-					 */
-					$this->logger->message('Creating code JSON ZIP file', 3);
-					$output = array();
-					exec('cd '.$downloads_dir.'; zip -9rq code.json.zip code-json');
-					
 				}
+				
+				/*
+				 * Zip up all of the JSON into a single file. We do this via exec(), rather than
+				 * PHP's ZIP extension, because doing it within PHP requires far too much memory.
+				 * Using exec() is faster and more efficient.
+				 */
+				$this->logger->message('Creating code JSON ZIP file', 3);
+				$output = array();
+				exec('cd '.$downloads_dir.'; zip -9rq code.json.zip code-json');
+				
 			}
 
 
