@@ -35,7 +35,7 @@ class ParserController
 		/*
 		 * Connect to the database.
 		 */
-		$db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+		$this->db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
 		if ($this->db === FALSE)
 		{
 			die('Could not connect to the database.');
