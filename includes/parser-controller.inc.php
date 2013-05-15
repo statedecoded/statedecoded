@@ -395,9 +395,41 @@ class ParserController
 				 */
 				if (!is_writable($json_dir))
 				{
-					$this->logger->message('Cannot open '.$json_dir.' to create a new ZIP file.', 10);
+					$this->logger->message('Cannot write to '.$json_dir.' to export files.', 10);
 					break;
 				}
+				
+				/*
+				 * Set a flag telling us that we may write JSON.
+				 */
+				$write_json = TRUE;
+				
+				/*
+				 * Establish the path of our code text storage directory.
+				 */
+				$text_dir = $downloads_dir . 'code-text/';
+				
+				/*
+				 * If the text directory doesn't exist, create it.
+				 */
+				if (!file_exists($text_dir))
+				{
+					mkdir($text_dir);
+				}
+				
+				/*
+				 * If we cannot write to the text directory, log an error.
+				 */
+				if (!is_writable($text_dir))
+				{
+					$this->logger->message('Cannot open '.$text_dir.' to export files.', 10);
+					break;
+				}
+				
+				/*
+				 * Set a flag telling us that we may write text.
+				 */
+				$write_text = TRUE;
 				
 				/*
 				 * Create a new instance of the class that handles information about individual
@@ -438,21 +470,36 @@ class ParserController
 					 * Get a list of all of the basic information that we have about this section.
 					 */
 					$law = $laws->get_law();
-					
 					/*
 					 * Eliminate colons from section numbers, since some OSes can't handle colons in
 					 * filenames.
 					 */		
-					$filename = $json_dir.str_replace(':', '_', $law->section_number).'.json';
+					$filename = str_replace(':', '_', $law->section_number);
 					
 					/*
-					 * Store the file.
+					 * Store the JSON file.
 					 */
-					$success = file_put_contents($filename, json_encode($law));
-					if ($success === FALSE)
+					if ($write_json === TRUE)
 					{
-						$this->logger->message('Could not write code JSON files', 9);
-						break 2;
+						$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
+						if ($success === FALSE)
+						{
+							$this->logger->message('Could not write code JSON files', 9);
+							break 2;
+						}
+					}
+					
+					/*
+					 * Store the text file.
+					 */
+					if ($write_text === TRUE)
+					{
+						$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
+						if ($success === FALSE)
+						{
+							$this->logger->message('Could not write code text files', 9);
+							break 2;
+						}
 					}
 					
 				}
@@ -462,9 +509,22 @@ class ParserController
 				 * PHP's ZIP extension, because doing it within PHP requires far too much memory.
 				 * Using exec() is faster and more efficient.
 				 */
-				$this->logger->message('Creating code JSON ZIP file', 3);
-				$output = array();
-				exec('cd '.$downloads_dir.'; zip -9rq code.json.zip code-json');
+				if ($write_json === TRUE)
+				{
+					$this->logger->message('Creating code JSON ZIP file', 3);
+					$output = array();
+					exec('cd '.$downloads_dir.'; zip -9rq code.json.zip code-json');
+				}
+				
+				/*
+				 * Zip up all of the text into a single file.
+				 */
+				if ($write_text === TRUE)
+				{
+					$this->logger->message('Creating code text ZIP file', 3);
+					$output = array();
+					exec('cd '.$downloads_dir.'; zip -9rq code.text.zip code-text');
+				}
 				
 			}
 
