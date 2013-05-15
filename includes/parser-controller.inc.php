@@ -373,7 +373,7 @@ class ParserController
 					WHERE edition_id='.EDITION_ID.'
 					ORDER BY order_by ASC';
 			$result = $this->db->query($sql);
-			if ($result->numRows() > 0)
+			if ($result->rowCount() > 0)
 			{
 
 				/*
@@ -480,7 +480,7 @@ class ParserController
 						ON dictionary.law_id = laws.id
 					ORDER BY dictionary.term ASC , laws.order_by ASC';
 			$result = $this->db->query($sql);
-			if ($result->numRows() > 0)
+			if ($result->rowCount() > 0)
 			{
 			
 				/*
