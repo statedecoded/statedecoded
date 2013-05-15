@@ -66,7 +66,8 @@ class ParserController
      */
 	public function init_logger()
 	{
-		if(!$this->logger) {
+		if (!$this->logger)
+		{
 			$this->logger = new Logger();
 		}
 	}
@@ -349,7 +350,7 @@ class ParserController
 		 * Define the location of the downloads directory.
 		 */
 
-		$downloads_dir = WEB_ROOT.'/downloads/';
+		$downloads_dir = WEB_ROOT . '/downloads/';
 
 		if (is_writable($downloads_dir) === FALSE)
 		{
