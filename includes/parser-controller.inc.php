@@ -375,25 +375,28 @@ class ParserController
 			$result = $this->db->query($sql);
 			if ($result->rowCount() > 0)
 			{
-
+				
+				$json_dir = $downloads_dir . 'code-json/';
+				
 				/*
-				 * Create a new ZIP file object.
+				 * If the JSON directory doesn't exist, create it.
 				 */
-				$zip = new ZipArchive();
-				$filename = $downloads_dir.'code.json.zip';
-
-				if (file_exists($filename))
+				if (!file_exists($json_dir))
 				{
-					unlink($filename);
+					mkdir($json_dir);
 				}
-
+				
 				/*
-				 * If we cannot create a new ZIP file, bail.
+				 * If we cannot write to the JSON directory, log an error.
 				 */
-				if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
+				if (!is_writable($json_dir))
 				{
-					$this->logger->message('Cannot open '.$filename.' to create a new ZIP file.', 10);
+					$this->logger->message('Cannot open '.$json_dir.' to create a new ZIP file.', 10);
 				}
+				
+				/*
+				 * But if we can write to the JSON directory, start writing files.
+				 */
 				else
 				{
 					/*
@@ -453,18 +456,32 @@ class ParserController
 						}
 
 						/*
-						 * Add this law to our ZIP archive, creating a pseudofile to do so.
-						 * Eliminate colons from section numbers, since Windows can't handle colons
-						 * in filenames.
+						 * Eliminate colons from section numbers, since some OSes can't handle
+						 * colons in filenames.
+						 */		
+						$filename = $json_dir.str_replace(':', '_', $law->section).'.json';
+						
+						/*
+						 * Store the file.
 						 */
-
-						$zip->addFromString(str_replace(':', '_', $law->section).'.json', json_encode($law));
+						$success = file_put_contents($filename, json_encode($law));
+						if ($success === FALSE)
+						{
+							$this->logger->message('Could not write code JSON files', 9);
+							break(3);
+						}
+						
 					}
-
+					
 					/*
-					 * Close out our ZIP file.
+					 * Zip up all of the JSON into a single file. We do this via exec(), rather than
+					 * PHP's ZIP extension, because doing it within PHP requires far too much
+					 * memory. Using exec() is faster and more efficient.
 					 */
-					$zip->close();
+					$this->logger->message('Creating code JSON ZIP file', 3);
+					$output = array();
+					exec('cd '.$downloads_dir.'; zip -9rq code.json.zip code-json');
+					
 				}
 			}
 
