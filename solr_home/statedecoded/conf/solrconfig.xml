@@ -1044,6 +1044,10 @@
        </lst>
   </requestHandler>
 
+  <requestHandler name="/update/xslt"
+                  startup="lazy"
+                  class="solr.XsltUpdateRequestHandler"/>
+
   <!-- Solr Cell Update Request Handler
 
        http://wiki.apache.org/solr/ExtractingRequestHandler 
