@@ -1,5 +1,6 @@
 <?php
 
+require_once('httputils.php');
 
 class GetRequest {
 
@@ -9,19 +10,8 @@ class GetRequest {
         $this->urlEndpoint = $urlEndpoint;
     }
 
-    static function buildQueryString($getParams) {
-        $queryString = "";
-        print_r($getParams);
-        foreach ($getParams as $key => $value) {
-            echo "HERE\n";
-            $queryString .= "&" . urlencode($key) . "=" . urlencode($value);
-            echo $queryString . "\n";
-        }
-        return $queryString;
-    }
-
     function fullUrl($getParams) {
-        return $this->urlEndpoint . "?" . $this->buildQueryString($getParams);
+        return $this->urlEndpoint . "?" . httputils\buildQueryString($getParams);
     }
 
     function execute($getParams) {
@@ -39,6 +29,7 @@ class GetRequest {
         $content = file_get_contents($url);
         if ($content === FALSE) {
             echo "Error Getting $url";
+            return FALSE;
         }
         else {
             return json_decode($content, true);
@@ -53,7 +44,7 @@ class GetRequest {
         $results = curl_exec($c); 
         if (curl_errno($c) > 0) {
             echo "Curl Error: " + curl_error($c);
-            return null;
+            return FALSE;
         }
         else {
             return json_decode($results, true);
@@ -63,11 +54,9 @@ class GetRequest {
 
 }
 
-// Test
+// Test only if run directly from CLI
 if (basename($argv[0]) == basename(__FILE__)) {
     $getParams = array('a' => 'hello', 'b'=>'world');
-    print GetRequest::buildQueryString($getParams);
-
     $lawSearcher = new GetRequest("http://localhost:8983/solr/statedecoded/law");
     $searchRes = $lawSearcher->execute( array('q'=>'no child left behind') );
 
