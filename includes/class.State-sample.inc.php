@@ -517,23 +517,26 @@ class Parser
 
 			// Step through every portion of the prefix (i.e. A4b is three portions) and insert
 			// each.
-			foreach ($section->prefix_hierarchy as $prefix)
+			if (isset($section->prefix_hierarchy))
 			{
-				$sql = 'INSERT INTO text_sections
-						SET text_id='.$text_id.',
-						identifier="'.$this->db->escape($prefix).'",
-						sequence='.$j.',
-						date_created=now()';
-
-				// Execute the query.
-				$result = $this->db->exec($sql);
-				if ($result === FALSE)
+				foreach ($section->prefix_hierarchy as $prefix)
 				{
-					echo '<p>'.$sql.'</p>';
-					die($result->getMessage());
+					$sql = 'INSERT INTO text_sections
+							SET text_id='.$text_id.',
+							identifier=' . $this->db->quote($prefix) . ',
+							sequence='.$j.',
+							date_created=now()';
+	
+					// Execute the query.
+					$result = $this->db->exec($sql);
+					if ($result === FALSE)
+					{
+						echo '<p>'.$sql.'</p>';
+						die($result->getMessage());
+					}
+	
+					$j++;
 				}
-
-				$j++;
 			}
 
 			$i++;
