@@ -1395,7 +1395,11 @@ class Parser
 			$i++;
 		}
 
-		return $final;
+		if ( isset($final) && is_object($final) )
+		{
+			return $final;
+		}
+		
 	} // end extract_history()
 
 } // end Parser class
