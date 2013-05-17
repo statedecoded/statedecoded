@@ -21,15 +21,19 @@ class PostFilesRequest {
         // Modified from: 
         // http://stackoverflow.com/a/3892820/8123
         
-        $data=array();
+        $data="";
         if (!is_array($files)) {
             //Convert to array
             $files=array($files);
         }
         $n=sizeof($files);
+        print_r($files);
         for ($i=0;$i<$n;$i++) {
-            $data['file'+$i]="@".$files[$i];
+            $data .= file_get_contents($files[$i]);
         }
+
+        echo "DATA:";
+        print_r($data);
         
         $ch = curl_init();
         $url = $this->fullUrl($getParams);
@@ -37,7 +41,8 @@ class PostFilesRequest {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTDATA, $ch);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/xml; charset=US-ASCII"));
         $response = curl_exec($ch);
         return $response;
     }
