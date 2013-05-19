@@ -95,7 +95,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
   // Focus state for keyboard and accessibility
   &:focus {
-    @extend .tab-focus;
+    @extend %tab-focus;
   }
 
   // Active state
@@ -214,7 +214,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
 // Make the div behave like a button
 .btn-group {
-  @extend .clearfix; // clears the floated buttons
+  @extend %clearfix; // clears the floated buttons
   position: relative;
 }
 
