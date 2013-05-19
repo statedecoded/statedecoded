@@ -17,14 +17,8 @@
     height: 190px;
   }
 
-  @include respond-to(print) {
-    margin: 0;
-    padding: 0;
-    height: 0.5in;
-  }
-
-  hgroup#place_logo {
-    @include background-image(image-url("faux_seal.png"));
+  hgroup#virginia_logo {
+    @include background(image-url("faux_seal.png"));
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -122,7 +116,7 @@
         top: 0.22in;
       }
     } //h2
-  } // hgroup#place_logo
+  } // hgroup#virginia_logo
 
   nav#main_navigation {
     background-color: $base-dark;
@@ -212,46 +206,46 @@
             width: 100%;
           }
 
-          &#browse {
-            @include background-image(image-url("nav-icons/nav_browse.svg"));
+          &#the_code {
+            @include background(image-url("nav-icons/nav_the-code.svg"));
             &:hover {
-              @include background-image(image-url("nav-icons/nav_browse-hover.svg"));
+              @include background(image-url("nav-icons/nav_the-code-hover.svg"));
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_browse.png"));
+              @include background(image-url("nav-icons/fallbacks/nav_the-code.png"));
             }
-          } // &#browse
+          } // &#the_code
 
           &#court_cases {
-            @include background-image(image-url("nav-icons/nav_court-cases.svg"));
+            @include background(image-url("nav-icons/nav_court-cases.svg"));
             &:hover {
-              @include background-image(image-url("nav-icons/nav_court-cases-hover.svg"));
+              @include background(image-url("nav-icons/nav_court-cases-hover.svg"));
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_court-cases.png"));
+              @include background(image-url("nav-icons/fallbacks/nav_court-cases.png"));
             }
-          } // &#browse
+          } // &#the_code
 
           &#about_us {
-            @include background-image(image-url("nav-icons/nav_about-us.svg"));
+            @include background(image-url("nav-icons/nav_about-us.svg"));
             //background-size: 50px 50px;
             &:hover {
-              @include background-image(image-url("nav-icons/nav_about-us-hover.svg"));
+              @include background(image-url("nav-icons/nav_about-us-hover.svg"));
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_about-us.png"));
+              @include background(image-url("nav-icons/fallbacks/nav_about-us.png"));
             }
-          } // &#browse
+          } // &#the_code
 
-          &#download {
-            @include background-image(image-url("nav-icons/nav_download.svg"));
+          &#use_the_api {
+            @include background(image-url("nav-icons/nav_use-the-api.svg"));
             &:hover {
-              @include background-image(image-url("nav-icons/nav_download-hover.svg"));
+              @include background(image-url("nav-icons/nav_use-the-api-hover.svg"));
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_download.png"));
+              @include background(image-url("nav-icons/fallbacks/nav_use-the-api.png"));
             }
-          } // &#browse
+          } // &#the_code
         } // a
       } // li
     } // ul
@@ -274,7 +268,7 @@
         width: 100%;
       }
 
-      hgroup#place_logo {
+      hgroup#virginia_logo {
         background-size: 50px 50px;
         height: 50px;
         padding-left: 0;
@@ -294,7 +288,7 @@
           letter-spacing: 0.5em;
           margin: -5px 0 0 120px;
         }
-      } // hgroup#place_logo
+      } // hgroup#virginia_logo
 
       section#search {
         margin-top: 0;
