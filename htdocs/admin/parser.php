@@ -24,7 +24,7 @@
 /*
  * Include the PHP declarations that drive this page.
  */
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
+require dirname(dirname(dirname(__FILE__))).'/includes/page-head.inc.php';
 
 /*
  * Include the code with the functions that drive this parser.
@@ -100,6 +100,12 @@ elseif ($_POST['action'] == 'parse')
 	$parser->write_api_key();
 	$parser->export();
 	$parser->clear_apc();
+	
+	/*
+	 * Attempt to purge Varnish's cache. (Fails silently if Varnish isn't installed or running.)
+	 */
+	$varnish = new Varnish;
+	$varnish->purge();
 	
 	$body = ob_get_contents();
 	ob_end_clean();

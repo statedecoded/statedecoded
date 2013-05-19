@@ -77,7 +77,9 @@ define('INCLUDES_REPEALED', TRUE);
 /*
  * The DSN to connect to MySQL.
  */
-define('MYSQL_DSN', 'mysql://username:password@localhost/statelaws');
+define('PDO_DSN', 'mysql:dbname=statelaws;host=localhost;charset=utf8');
+define('PDO_USERNAME', 'username');
+define('PDO_PASSWORD', 'password');
 
 /*
  * Specify the structural identifier ancestry for the unit of the code that contains definitions of
@@ -96,8 +98,10 @@ define('GLOBAL_DEFINITIONS', '');
 define('STRUCTURE', 'title,chapter,section');
 
 /*
- * Define the PCRE that identifies section references. It is best to do so without using the section
- * (§) symbol, since section references are frequently made without its presence.
+ * Define the regular expression that identifies section references. It is best to do so without
+ * using a section symbol (e.g., §), since section references are frequently made without its
+ * presence. A growing collection of per-state regular expressions can be found at
+ * <https://github.com/statedecoded/law-identifier>.
  */
 define('SECTION_PCRE', '/([[0-9]{1,})([0-9A-Za-z\-\.]{0,3})-([0-9A-Za-z\-\.:]*)([0-9A-Za-z]{1,})/');
 

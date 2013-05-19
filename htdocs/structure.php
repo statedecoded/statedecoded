@@ -19,12 +19,16 @@ require '../includes/page-head.inc.php';
 # Create a new instance of Structure.
 $struct = new Structure();
 
+# Use the URL to identify the requested structural unit.
+$result = $struct->url_to_structure();
+
 # If the URL doesn't represent a valid structural portion of the code, then bail.
-if ( $struct->url_to_structure() === false || empty($struct->structure) )
+if ( $result === FALSE)
 {
 	send_404();
 }
 
+# Set aside the ancestry for this structural unit, to be accessed separately.
 $structure = $struct->structure;
 
 # Fire up our templating engine.
@@ -120,7 +124,7 @@ if (count((array) $structure) > 1)
 $children = $struct->list_children();
 
 # If we have successfully gotten a list of child structural units, display them.
-if ($children !== false)
+if ($children !== FALSE)
 {
 	/* The level of this child structural unit is that of the current unit, plus one. */
 	$body .= '<dl class="level-'.($structure->{count($structure)-1}->level + 1).'">';
@@ -137,7 +141,7 @@ if ($children !== false)
 $laws = $struct->list_laws();
 
 # If we have successfully gotten a list of laws, display them.
-if ($laws !== false)
+if ($laws !== FALSE)
 {
 
 	$body .= ' It’s comprised of the following '.count((array) $laws).' sections.</p>';

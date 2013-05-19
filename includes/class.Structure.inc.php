@@ -71,7 +71,7 @@ class Structure
 		$i=1;
 		foreach ($components as $component)
 		{
-			$sql .= 's'.$i.'_identifier = "' . $db->escape($component) . '"';
+			$sql .= 's'.$i.'_identifier = ' . $db->quote($component) ;
 			if ($i < count($components))
 			{
 				$sql .= ' AND ';
@@ -79,16 +79,16 @@ class Structure
 			$i++;
 		}
 		
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 		
 		// Get the result as an object.
-		$structure_row = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$structure_row = $result->fetch(PDO::FETCH_OBJ);
 		
 		// Save the variable within the class scope.
 		$this->structure_id = $structure_row->s1_id;
@@ -96,7 +96,7 @@ class Structure
 		// Pass the request off to the get_current() method.
 		$this->get_current();
 		
-		return true;
+		return TRUE;
 		
 	}
 	
@@ -123,16 +123,16 @@ class Structure
 				WHERE 
 				s1_id = '.$this->structure_id;
 		
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 		
 		// Get the result as an object.
-		$structure_row = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$structure_row = $result->fetch(PDO::FETCH_OBJ);
 		
 		// Pivot this into a multidimensional object. That is, it's presently stored in multiple
 		// columns in a single row, but we want it in multiple rows, one per hierarchical level.
@@ -196,7 +196,10 @@ class Structure
 		$this->label = $tmp->label;
 		$this->name = $tmp->name;
 		$this->identifier = $tmp->identifier;
-		$this->parent_id = $tmp->parent_id;
+		if (isset($tmp->parent_id))
+		{
+			$this->parent_id = $tmp->parent_id;
+		}
 		unset($tmp);
 		
 		/*
@@ -224,7 +227,7 @@ class Structure
 					FROM structure_unified
 					LEFT JOIN structure
 						ON structure_unified.s1_id = structure.id
-					WHERE s2_id = ' . $db->escape($this->parent_id) . '
+					WHERE s2_id = ' . $db->quote($this->parent_id) . '
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
 		}
 		
@@ -253,16 +256,16 @@ class Structure
 			}
 		}
 		
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( !PEAR::isError($result) && ($result->numRows() > 0) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			// Get the result as an object.
-			$this->siblings = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
+			$this->siblings = $result->fetchAll(PDO::FETCH_OBJ);
 		}
 		
-		return true;
+		return TRUE;
 		
 	}
 	
@@ -291,7 +294,7 @@ class Structure
 		}
 		else
 		{
-			$sql .= '='.$db->escape($this->id);
+			$sql .= '='.$db->quote($this->id);
 			
 			// If this legal code continues to print repealed laws, then make sure that we're not
 			// displaying any structural units that consist entirely of repealed laws.
@@ -323,19 +326,19 @@ class Structure
 			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
-
+		
 		// Execute the query.
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 		
 		// Return the result as an object, built up as we loop through the results.
 		$i=0;
-		while ($child = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		while ($child = $result->fetch(PDO::FETCH_OBJ))
 		{
 			// Remap the structural column names to simplified column names.
 			$child->id = $child->s1_id;
@@ -410,15 +413,15 @@ class Structure
 				WHERE s1_id='.$this->id;
 
 		// Execute the query.
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 		
-		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$structure = $result->fetch(PDO::FETCH_OBJ);
 
 		// Create a new, blank object.
 		$ancestry = new stdClass();
@@ -482,18 +485,18 @@ class Structure
 		// Assemble the SQL query.
 		$sql = 'SELECT identifier
 				FROM structure
-				WHERE id='.$db->escape($this->id);
+				WHERE id='.$db->quote($this->id);
 		
 		// Execute the query.
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 		
-		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$structure = $result->fetch(PDO::FETCH_OBJ);
 		
 		return $structure->identifier;
 	}
@@ -534,7 +537,7 @@ class Structure
 
 		$sql = 'SELECT id, structure_id, section AS section_number, catch_line
 				FROM laws
-				WHERE structure_id='.$db->escape($this->id).' ';
+				WHERE structure_id='.$db->quote($this->id).' ';
 		if (INCLUDES_REPEALED == TRUE)
 		{
 			$sql .= 'AND 
@@ -546,10 +549,10 @@ class Structure
 		$sql .= 'ORDER BY order_by, section';
 		
 		// Execute the query.
-		$result =& $db->query($sql);
+		$result = $db->query($sql);
 		
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -559,7 +562,7 @@ class Structure
 		
 		// Return the result as an object, built up as we loop through the results.
 		$i=0;
-		while ($section = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+		while ($section = $result->fetch(PDO::FETCH_OBJ))
 		{
 			// Figure out the URL and include that.
 			$section->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$section->section_number.'/';

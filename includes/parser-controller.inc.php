@@ -35,16 +35,20 @@ class ParserController
 		/*
 		 * Connect to the database.
 		 */
-		$this->db =& MDB2::connect(MYSQL_DSN);
-		if (PEAR::isError($this->db))
+		$this->db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+		if ($this->db === FALSE)
 		{
 			die('Could not connect to the database.');
 		}
 
 		/*
-		 * We must always connect with UTF-8.
+		 * Prior to PHP v5.3.6, the PDO does not pass along to MySQL the DSN charset configuration
+		 * option, and it must be done manually.
 		 */
-		$this->db->setCharset('utf8');
+		if (version_compare(PHP_VERSION, '5.3.6', '<'))
+		{
+			$db->exec("SET NAMES utf8");
+		}
 
 		/*
 		 * Set our default execution limits.
@@ -62,7 +66,8 @@ class ParserController
      */
 	public function init_logger()
 	{
-		if(!$this->logger) {
+		if (!$this->logger)
+		{
 			$this->logger = new Logger();
 		}
 	}
@@ -90,7 +95,7 @@ class ParserController
 		{
 			$sql = 'TRUNCATE '.$table;
 
-			$result =& $this->db->exec($sql);
+			$result = $this->db->exec($sql);
 			if (PEAR::isError($result))
 			{
 				$this->logger->message("Error in SQL: $sql", 10);
@@ -105,14 +110,14 @@ class ParserController
 
 		$sql = 'ALTER TABLE structure
 				AUTO_INCREMENT=1';
-		$result =& $this->db->exec($sql);
+		$result = $this->db->exec($sql);
 
 		/*
 		 * Delete law histories.
 		 */
 		$sql = 'DELETE FROM laws_meta
 				WHERE meta_key = "history"';
-		$result =& $this->db->exec($sql);
+		$result = $this->db->exec($sql);
 	}
 
 	public function parse()
@@ -182,7 +187,7 @@ class ParserController
 
 		$sql = 'SELECT id, history
 				FROM laws';
-		$result =& $this->db->query($sql);
+		$result = $this->db->query($sql);
 		if ($result->numRows() > 0)
 		{
 
@@ -190,7 +195,7 @@ class ParserController
 			 * Step through the history of every law that we have a record of.
 			 */
 
-			while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+			while ($law = $result->fetch(PDO::FETCH_OBJ))
 			{
 				/*
 				 * Turn the string of text that comprises the history into an object of atomic
@@ -203,8 +208,8 @@ class ParserController
 				 * Save this object to the metadata table pair.
 				 */
 				$sql = 'INSERT INTO laws_meta
-						SET law_id='.$this->db->escape($law->id).',
-						meta_key="history", meta_value="'.$this->db->escape(serialize($history)).'",
+						SET law_id=' . $this->db->quote($law->id).',
+						meta_key="history", meta_value=' . $this->db->quote(serialize($history)) . ',
 						date_created=now();';
 				$this->db->exec($sql);
 			}
@@ -345,7 +350,7 @@ class ParserController
 		 * Define the location of the downloads directory.
 		 */
 
-		$downloads_dir = WEB_ROOT.'/downloads/';
+		$downloads_dir = WEB_ROOT . '/downloads/';
 
 		if (is_writable($downloads_dir) === FALSE)
 		{
@@ -359,108 +364,168 @@ class ParserController
 			 * Get a listing of all laws, to be exported as JSON.
 			 */
 			$this->logger->message('Querying laws', 3);
-
-			$sql = 'SELECT laws.section, laws.catch_line, laws.catch_line, laws.text, laws.history,
-					structure_unified.*
+			
+			/*
+			 * Only get section numbers. We them pass each one to the Laws class to get full data
+			 * about each law.
+			 */
+			$sql = 'SELECT laws.section AS number
 					FROM laws
-					LEFT JOIN structure_unified
-						ON laws.structure_id=structure_unified.s1_id
-					WHERE edition_id='.EDITION_ID.'
+					WHERE edition_id=' . EDITION_ID . '
 					ORDER BY order_by ASC';
-			$result =& $this->db->query($sql);
-			if ($result->numRows() > 0)
+			$result = $this->db->query($sql);
+			if ($result->rowCount() > 0)
 			{
+				
+				/*
+				 * Establish the path of our code JSON storage directory.
+				 */
+				$json_dir = $downloads_dir . 'code-json/';
+				
+				/*
+				 * If the JSON directory doesn't exist, create it.
+				 */
+				if (!file_exists($json_dir))
+				{
+					mkdir($json_dir);
+				}
+				
+				/*
+				 * If we cannot write to the JSON directory, log an error.
+				 */
+				if (!is_writable($json_dir))
+				{
+					$this->logger->message('Cannot write to '.$json_dir.' to export files.', 10);
+					break;
+				}
+				
+				/*
+				 * Set a flag telling us that we may write JSON.
+				 */
+				$write_json = TRUE;
+				
+				/*
+				 * Establish the path of our code text storage directory.
+				 */
+				$text_dir = $downloads_dir . 'code-text/';
+				
+				/*
+				 * If the text directory doesn't exist, create it.
+				 */
+				if (!file_exists($text_dir))
+				{
+					mkdir($text_dir);
+				}
+				
+				/*
+				 * If we cannot write to the text directory, log an error.
+				 */
+				if (!is_writable($text_dir))
+				{
+					$this->logger->message('Cannot open '.$text_dir.' to export files.', 10);
+					break;
+				}
+				
+				/*
+				 * Set a flag telling us that we may write text.
+				 */
+				$write_text = TRUE;
+				
+				/*
+				 * Create a new instance of the class that handles information about individual
+				 * laws.
+				 */
+				$laws = new Law();
 
 				/*
-				 * Create a new ZIP file object.
+				 * Instruct the Law class on what, specifically, it should retrieve.
 				 */
-				$zip = new ZipArchive();
-				$filename = $downloads_dir.'code.json.zip';
-
-				if (file_exists($filename))
-				{
-					unlink($filename);
-				}
+				$laws->config->get_text = TRUE;
+				$laws->config->get_structure = TRUE;
+				$laws->config->get_amendment_attempts = FALSE;
+				$laws->config->get_court_decisions = TRUE;
+				$laws->config->get_metadata = TRUE;
+				$laws->config->get_references = TRUE;
+				$laws->config->get_related_laws = TRUE;
 
 				/*
-				 * If we cannot create a new ZIP file, bail.
+				 * Establish the depth of this code's structure. Though this constant includes
+				 * the laws themselves, we don't subtract 1 from the tally because the
+				 * structural labels start at 1.
 				 */
-				if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
+				$structure_depth = count(explode(',', STRUCTURE));
+
+				/*
+				 * Iterate through every section number, to pass to the Laws class.
+				 */
+				while ($section = $result->fetch(PDO::FETCH_OBJ))
 				{
-					$this->logger->message('Cannot open '.$filename.' to create a new ZIP file.', 10);
-				}
-				else
-				{
-					/*
-					 * Establish the depth of this code's structure. Though this constant includes
-					 * the laws themselves, we don't subtract 1 from the tally because the
-					 * structural labels start at 1.
-					 */
-					$structure_depth = count(explode(',', STRUCTURE));
 
 					/*
-					 * Iterate through every law.
+					 * Pass the requested section number to Law.
 					 */
-					while ($law = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
+					$laws->section_number = $section->number;
+					
+					/*
+					 * Get a list of all of the basic information that we have about this section.
+					 */
+					$law = $laws->get_law();
+					/*
+					 * Eliminate colons from section numbers, since some OSes can't handle colons in
+					 * filenames.
+					 */		
+					$filename = str_replace(':', '_', $law->section_number);
+					
+					/*
+					 * Store the JSON file.
+					 */
+					if ($write_json === TRUE)
 					{
-
-						/*
-						 * We don't need either of these fields.
-						 */
-						unset($law->s1_id);
-						unset($law->s2_id);
-
-						/*
-						 * Rename the structural fields.
-						 */
-						for ($i=1; $i<$structure_depth; $i++)
+						$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
+						if ($success === FALSE)
 						{
-							/*
-							 * Assign these variables to new locations.
-							 */
-							$law->structure->{$i-1}->label = $law->{'s'.$i.'_label'};
-							$law->structure->{$i-1}->name = $law->{'s'.$i.'_name'};
-							$law->structure->{$i-1}->identifier = $law->{'s'.$i.'_identifier'};
-
-							/*
-							 * Unset the old variables.
-							 */
-							unset($law->{'s'.$i.'_label'});
-							unset($law->{'s'.$i.'_name'});
-							unset($law->{'s'.$i.'_identifier'});
+							$this->logger->message('Could not write code JSON files', 9);
+							break 2;
 						}
-
-						/*
-						 * Reverse the order of the structure, from broadest to most narrow.
-						 */
-						$law->structure = array_reverse((array) $law->structure);
-
-						/*
-						 * Renumber the structure. To avoid duplicates, we must do this awkwardly.
-						 */
-						$tmp = $law->structure;
-						unset($law->structure);
-						$i=0;
-						foreach ($tmp as $structure)
-						{
-							$law->structure->$i = $structure;
-							$i++;
-						}
-
-						/*
-						 * Add this law to our ZIP archive, creating a pseudofile to do so.
-						 * Eliminate colons from section numbers, since Windows can't handle colons
-						 * in filenames.
-						 */
-
-						$zip->addFromString(str_replace(':', '_', $law->section).'.json', json_encode($law));
 					}
-
+					
 					/*
-					 * Close out our ZIP file.
+					 * Store the text file.
 					 */
-					$zip->close();
+					if ($write_text === TRUE)
+					{
+						$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
+						if ($success === FALSE)
+						{
+							$this->logger->message('Could not write code text files', 9);
+							break 2;
+						}
+					}
+					
 				}
+				
+				/*
+				 * Zip up all of the JSON into a single file. We do this via exec(), rather than
+				 * PHP's ZIP extension, because doing it within PHP requires far too much memory.
+				 * Using exec() is faster and more efficient.
+				 */
+				if ($write_json === TRUE)
+				{
+					$this->logger->message('Creating code JSON ZIP file', 3);
+					$output = array();
+					exec('cd '.$downloads_dir.'; zip -9rq code.json.zip code-json');
+				}
+				
+				/*
+				 * Zip up all of the text into a single file.
+				 */
+				if ($write_text === TRUE)
+				{
+					$this->logger->message('Creating code text ZIP file', 3);
+					$output = array();
+					exec('cd '.$downloads_dir.'; zip -9rq code.text.zip code-text');
+				}
+				
 			}
 
 
@@ -474,14 +539,14 @@ class ParserController
 					LEFT JOIN laws
 						ON dictionary.law_id = laws.id
 					ORDER BY dictionary.term ASC , laws.order_by ASC';
-			$result =& $this->db->query($sql);
-			if ($result->numRows() > 0)
+			$result = $this->db->query($sql);
+			if ($result->rowCount() > 0)
 			{
 			
 				/*
 				 * Retrieve the entire dictionary as a single object.
 				 */
-				$dictionary = $result->fetchAll(MDB2_FETCHMODE_OBJECT);
+				$dictionary = $result->fetchAll(PDO::FETCH_OBJ);
 
 				/*
 				 * Define the filename for our dictionary.

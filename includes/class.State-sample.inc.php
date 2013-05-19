@@ -239,16 +239,15 @@ class Parser
 		/*
 		 * Iterate through the text.
 		 */
-		$i=0;
+		$this->i=0;
 		foreach ($this->section->text as $section)
 		{
-
 			/*
 			 * If there are no subsections, but just a single block of text, then simply save that.
 			 */
 			if (count($section) === 0)
 			{
-				$this->code->section->$i->text = trim((string) $section);
+				$this->code->section->{$this->i}->text = trim((string) $section);
 				$this->code->text = trim((string) $section);
 				break;
 			}
@@ -258,42 +257,42 @@ class Parser
 			 */
 			foreach ($section as $subsection)
 			{
-
-				$this->code->section->$i->text = trim((string) $subsection);
+				
+				$this->code->section->{$this->i}->text = trim((string) $subsection);
 				
 				/*
 				 * If this subsection has text, save it. Some subsections will not have text, such
 				 * as those that are purely structural, existing to hold sub-subsections, but
 				 * containing no text themselves.
 				 */
-				if ( !empty( $this->code->section->$i->text ) )
+				$tmp = trim((string) $subsection);
+				if ( !empty( $tmp ) )
 				{
-					$this->code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
+					$this->code->text .= (string) $subsection['prefix'] . ' '
+						. trim((string) $subsection) . "\r\r";
 				}
 
-				$this->code->section->$i->prefix = (string) $subsection['prefix'];
-				$this->code->section->$i->prefix_hierarchy->{0} = (string) $subsection['prefix'];
+				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 				$this->prefix_hierarchy[] = (string) $subsection['prefix'];
+				$this->code->section->{$this->i}->prefix_hierarchy->{0} = (string) $subsection['prefix'];
 
 				/*
 				 * If this subsection has a specified type (e.g., "table"), save that.
 				 */
 				if (!empty($subsection['type']))
 				{
-					$this->code->section->$i->type = (string) $subsection['type'];
+					$this->code->section->{$this->i}->type = (string) $subsection['type'];
 				}
-				$this->code->section->$i->prefix = (string) $subsection['prefix'];
+				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 
-				$i++;
+				$this->i++;
 
 				/*
 				 * Recurse through any subsections.
 				 */
 				if (count($subsection) > 0)
 				{
-					$this->recurse($subsection, $i);
-					/* Pass back the incrementer. */
-					$i = $this->i;
+					$this->recurse($subsection);
 				}
 
 				/*
@@ -311,16 +310,19 @@ class Parser
 	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
 	 * we call this method recursively to gather their content.
 	 */
-	public function recurse($section, $i)
+	public function recurse($section)
 	{
 
-		if ( !isset($section) || !isset($i)  || !isset($this->code) )
+		if ( !isset($section) || !isset($this->code) )
 		{
 			return FALSE;
 		}
 
 		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
-		$this->depth = 1;
+		if (!isset($this->depth))
+		{
+			$this->depth = 1;
+		}
 
 		/*
 		 * Iterate through each subsection.
@@ -328,21 +330,23 @@ class Parser
 		foreach ($section as $subsection)
 		{
 
-			$this->code->section->$i->text = (string) $subsection;
+			/*
+			 * Store this subsection's data in our code object.
+			 */
+			$this->code->section->{$this->i}->text = (string) $subsection;
 			if (!empty($subsection['type']))
 			{
-				$this->code->section->$i->type = (string) $subsection['type'];
+				$this->code->section->{$this->i}->type = (string) $subsection['type'];
 			}
-			$this->code->section->$i->prefix = (string) $subsection['prefix'];
+			$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 			$this->prefix_hierarchy[] = (string) $subsection['prefix'];
-			$this->code->section->$i->prefix_hierarchy = (object) $this->prefix_hierarchy;
+			$this->code->section->{$this->i}->prefix_hierarchy = (object) $this->prefix_hierarchy;
 
 			/*
 			 * We increment our counter at this point, rather than at the end of the loop, because
 			 * of the use of the recurse() method after it.
 			 */
-
-			$i++;
+			$this->i++;
 
 			/*
 			 * If this recurses further, keep going.
@@ -350,19 +354,24 @@ class Parser
 			if (isset($subsection->section))
 			{
 				$this->depth++;
-				$this->recurse($subsection->section, $i);
+				$this->recurse($subsection->section);
 			}
 
 			/*
 			 * Reduce the prefix hierarchy back to where it started, for our next loop through.
 			 */
-			$this->prefix_hierarchy = array_slice($this->prefix_hierarchy, 0, ($this->depth * -1));
-			$this->i = $i;
+			$this->prefix_hierarchy = array_slice($this->prefix_hierarchy, 0, ($this->depth));
+			
+			/*
+			 * Reset the prefix depth back to its default of 1.
+			 */
+			$this->depth = 1;
+			
 		}
-
+		
 		return TRUE;
+		
 	}
-
 
 
 	/**
@@ -424,8 +433,8 @@ class Parser
 		}
 
 		// Execute the query.
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			echo '<p>'.$sql.'</p>';
 			die($result->getMessage());
@@ -466,8 +475,8 @@ class Parser
 						meta_value = "' . $this->db->escape($value) . '"';
 				
 				// Execute the query.
-				$result =& $this->db->exec($sql);
-				if (PEAR::isError($result))
+				$result = $this->db->exec($sql);
+				if ($result === FALSE)
 				{
 					echo '<p>'.$sql.'</p>';
 					die($result->getMessage());
@@ -498,8 +507,8 @@ class Parser
 				$sql .= ', text="'.$this->db->escape($section->text).'"';
 			}
 
-			$result =& $this->db->exec($sql);
-			if (PEAR::isError($result))
+			$result = $this->db->exec($sql);
+			if ($result === FALSE)
 			{
 				echo '<p>'.$sql.'</p>';
 				die($result->getMessage());
@@ -513,23 +522,26 @@ class Parser
 
 			// Step through every portion of the prefix (i.e. A4b is three portions) and insert
 			// each.
-			foreach ($section->prefix_hierarchy as $prefix)
+			if (isset($section->prefix_hierarchy))
 			{
-				$sql = 'INSERT INTO text_sections
-						SET text_id='.$text_id.',
-						identifier="'.$this->db->escape($prefix).'",
-						sequence='.$j.',
-						date_created=now()';
-
-				// Execute the query.
-				$result =& $this->db->exec($sql);
-				if (PEAR::isError($result))
+				foreach ($section->prefix_hierarchy as $prefix)
 				{
-					echo '<p>'.$sql.'</p>';
-					die($result->getMessage());
+					$sql = 'INSERT INTO text_sections
+							SET text_id='.$text_id.',
+							identifier=' . $this->db->quote($prefix) . ',
+							sequence='.$j.',
+							date_created=now()';
+	
+					// Execute the query.
+					$result = $this->db->exec($sql);
+					if ($result === FALSE)
+					{
+						echo '<p>'.$sql.'</p>';
+						die($result->getMessage());
+					}
+	
+					$j++;
 				}
-
-				$j++;
 			}
 
 			$i++;
@@ -647,15 +659,15 @@ class Parser
 		}
 
 		// Execute the query.
-		$result =& $this->db->query($sql);
+		$result = $this->db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( PEAR::isError($result) || ($result->numRows() < 1) )
+		if ( ($result === FALSE) || $result->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 
-		$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		$structure = $result->fetch(PDO::FETCH_OBJ);
 		return $structure->id;
 	}
 
@@ -718,8 +730,8 @@ class Parser
 		}
 
 		// Execute the query.
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			return FALSE;
 		}
@@ -760,15 +772,15 @@ class Parser
 					WHERE id = '.$parent_id;
 
 			// Execute the query.
-			$result =& $this->db->query($sql);
-			if ( PEAR::isError($result) || ($result->numRows() < 1) )
+			$result = $this->db->query($sql);
+			if ( ($result === FALSE) || ($result->rowCount() == 0) )
 			{
 				echo '<p>Query failed: '.$sql.'</p>';
 				return FALSE;
 			}
 
 			// Return the result as an object.
-			$structure = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+			$structure = $result->fetch(PDO::FETCH_OBJ);
 
 			// If the label of this structural unit matches the label that we're looking for, return
 			// its ID.
@@ -893,7 +905,7 @@ class Parser
 				 */
 				$structure_labels = explode(',', STRUCTURE);
 				usort($structure_labels, 'sort_by_length');
-				$longest_label = strlen(current($structure_label));
+				$longest_label = strlen(current($structure_labels));
 				
 				/*
 				 * Iterate through every scope indicator.
@@ -1202,8 +1214,8 @@ class Parser
 
 	function query($sql)
 	{
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			var_dump($this->db->errorInfo());
 			return $this->db->errorInfo();
@@ -1288,8 +1300,8 @@ class Parser
 		$sql .= ' ON DUPLICATE KEY UPDATE mentions=mentions';
 
 		// Execute the query.
-		$result =& $this->db->exec($sql);
-		if (PEAR::isError($result))
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
 		{
 			echo '<p>Failed: '.$sql.'</p>';
 			return FALSE;
@@ -1388,7 +1400,11 @@ class Parser
 			$i++;
 		}
 
-		return $final;
+		if ( isset($final) && is_object($final) )
+		{
+			return $final;
+		}
+		
 	} // end extract_history()
 
 } // end Parser class
