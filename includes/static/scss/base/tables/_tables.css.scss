@@ -1,0 +1,173 @@
+// *****************************************************************************
+// TABLES
+// Tables for, you guessed it, tabular data
+// *****************************************************************************
+
+// ------------------------------------------------------------------
+//  Table Color Variables
+// ------------------------------------------------------------------
+
+$table-header-color-dark: hsla(0,0,0,1);
+$table-header-color-light: $gray-darker;
+$table-background: transparent; // overall background-color
+$table-background-accent: #f9f9f9; // for striping
+$table-background-hover: #f5f5f5; // for hover
+$table-border-color: $gray-lighter; // table and cell border
+
+// Data Tables ... In a perfect world this would just be on the table class above :(
+// ------------------------------------------------------------------
+
+.table { // This is a data table. In theory tables should only ever be data tables, but lets be honest with reality here.
+  border-radius: 4px;
+  border: none;
+  margin-bottom: $base-line-height;
+  width: 100%;
+
+  caption {
+    @extend %invisible;
+  } // caption
+
+  // Remove top border from thead by default
+  caption + thead tr:first-child th,
+  caption + thead tr:first-child td,
+  colgroup + thead tr:first-child th,
+  colgroup + thead tr:first-child td,
+  thead:first-child tr:first-child th,
+  thead:first-child tr:first-child td {
+    border-top: 0;
+  }
+  // Account for multiple tbody instances
+  tbody + tbody {
+    border-top: 2px solid $table-border-color;
+  }
+
+  thead, tfoot {
+    background-color: $gray-darker;
+    &:first-child {
+      tr {
+        &:first-child th {
+          &:first-child {
+            border-radius: 4px 0 0 0;
+          }
+          &:last-child {
+            border-radius: 0 4px 0 0;
+          }
+          border-top: 0;
+        }
+        th {
+          border-top: 0;
+        }
+        td {
+          border-top: 0;
+          white-space: nowrap;
+        }
+      }
+    }
+    &:last-child tr:last-child th {
+      &:first-child {
+        border-radius: 0 0 0 4px;
+      }
+      &:last-child {
+        border-radius: 0 0 4px 0;
+      }
+    }
+    th {
+      background-color: $gray-darker;
+      color: $white;
+      font-size: 9px;
+      padding: 0 5px;
+      text-transform: uppercase;
+      vertical-align: bottom;
+    } // th
+  } // thead, tfoot
+
+
+  tbody {
+    &:first-child tr:first-child {   // Prevent a double border
+      th {
+        border-top: 0;
+        &:first-child {
+          border-radius: 4px 0 0 0;
+        }
+      }
+      td {
+        border-top: 0;
+        &:last-child {
+          border-radius: 0 4px 0 0;
+        }
+      }
+    }
+    &:last-child tr:last-child td {
+      &:first-child {
+        border-radius: 0 0 0 4px;
+      }
+      &:last-child {
+        border-radius: 0 0 4px 0;
+      }
+    }
+    tr {
+      th {
+        border: none;
+        border-top: 1px solid $table-border-color;
+        font-weight: bold;
+        padding: 8px;
+        line-height: $base-line-height;
+        text-align: left;
+        text-transform: uppercase;
+        vertical-align: middle;
+      } // th
+      td {
+        border: none;
+        border-top: 1px solid $table-border-color;
+        padding: 4px 5px;
+        line-height: $base-line-height;
+        text-align: left;
+        vertical-align: top;
+        &.is-number {
+          text-align: center;
+        } // &.is-number
+        &.is-date {
+          text-align: center;
+        } // &.is-date
+        &.is-money {
+          text-align: right;
+        } // &.is-money
+        &.is-actions {
+          text-align: center;
+          a {
+            @extend .btn;
+            @extend .btn-inverse;
+          } // a
+        } // &.cell-centered
+      } // td
+    }
+  } // tbody
+
+} // table
+
+
+// ------------------------------------------------------------------
+//  Base Table Styles
+// ------------------------------------------------------------------
+
+table {
+  @extend .table;
+  background-color: $table-background;
+  border-collapse: collapse;
+  border-spacing: 0;
+  max-width: 100%;
+} // table
+
+colgroup.is-active {
+  background-color: $highlight !important;
+  td, th {
+    background-color: $highlight !important;
+  }  // td, th
+} // colgroup.is-active
+tbody {
+  .is-active {
+    td {
+      background-color: $highlight !important;
+    } // td
+  } // &.is-active
+} // tbody

@@ -1,0 +1,44 @@
+// *****************************************************************************
+// TYPOGRAPHY VARIABLES
+// *****************************************************************************
+
+// ------------------------------------------------------------------
+//  Font Stacks
+// ------------------------------------------------------------------
+
+// The fonts available from TypeKit are Adobe Jenson Pro, FF Meta Serif Web Pro, and Proxima Nova
+
+$statedecoded-stack1: "adobe-jenson-pro", Georgia, "Times New Roman", Times, serif;
+$statedecoded-stack2: "ff-meta-serif-web-pro", Georgia, "Times New Roman", Times, serif;
+$statedecoded-stack3: "proxima-nova", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+$body-stack: $statedecoded-stack2;
+$legal-stack: Georgia, "Times New Roman", Times, serif;
+$code-stack: Menlo, Monaco, Consolas, "Courier New", monospace;
+
+$base-font-size: 13px !default;
+$base-line-height: 18px !default;
+
+//  Headings
+// ------------------------------------------------------------------
+$headings-font-family: $statedecoded-stack1 !default;
+$headings-font-weight: normal !default; // instead of browser default, bold
+$headings-font-color: '' !default; // empty to use BS default, $text-color
+
+$subheadings-font-family: $statedecoded-stack2 !default;
+$subheadings-font-weight: normal !default; // instead of browser default, bold
+$subheadings-font-color: '' !default; // empty to use BS default, $text-color
+
+//  Navigation
+// ------------------------------------------------------------------
+$nav-font-family:    $statedecoded-stack2;
+$nav-font-weight:    normal; // instead of browser default, bold
+
+//  Body
+// ------------------------------------------------------------------
+$base-font-family: $body-stack !default;
+
+
+///  Special Case
+// ------------------------------------------------------------------
+$legal-font-family: $legal-stack !default;

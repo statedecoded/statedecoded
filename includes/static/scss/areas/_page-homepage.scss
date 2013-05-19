@@ -1,0 +1,130 @@
+.homepage {
+
+  hgroup {
+    text-align: center;
+    margin-top: 2em;
+
+    h1 {
+      font-family: $statedecoded-stack1;
+      font-size: 225%;
+      font-weight: normal;
+      line-height: 100%;
+      margin: 0.1em 0; // Override system-wide typography
+    } //h1
+
+    h2 {
+      font-family: $statedecoded-stack3;
+      font-size: 87.5%;
+      font-weight: normal;
+      letter-spacing: 0.1em;
+      line-height: 87.5%;
+      text-transform: uppercase;
+
+      @include respond-to(smartphone) {
+        margin: 0;
+      }
+    } //h2
+  } // hgroup
+
+  section.secondary-content {
+    float: right;
+    margin-top: 30px;
+    width: 50%;
+
+    @include respond-to(smartphone) {
+      float: none;
+      width: 100%;
+    }
+
+    @include respond-to(tablet) {
+      margin-left: 20px;
+      float: none;
+      width: 66%;
+    }
+
+    article.abstract {
+      font-size: 87.5%;
+      position: relative;
+
+      &:nth-child(1) {
+        border-right: 1px solid #ccc;
+        float: left;
+        margin-bottom: 20px;
+        padding-right: 5%;
+        margin-right: 5%;
+        width: 50%;
+
+        @include respond-to(smartphone) {
+          border-right: none;
+          float: none;
+          width: 100%;
+        }
+
+        @include respond-to(tablet) {
+        }
+      }
+
+      &:nth-child(2) {
+        float: right;
+        margin-bottom: 20px;
+        width: 39%;
+
+        @include respond-to(smartphone) {
+          float: none;
+          width: 100%;
+        }
+
+        @include respond-to(tablet) {
+        }
+      }
+
+      &:nth-child(3) {
+        clear: both;
+        margin: 20px 0;
+      }
+
+      figure {
+        height: 125px;
+        margin: 20px 0;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+
+        @include respond-to(smartphone) {
+          height: 75px;
+        }
+
+        @include respond-to(tablet) {
+          height: 100px;
+        }
+
+        img {
+          position: absolute;
+            top: -120px;
+            left: 0;
+          width: 100%;
+
+          @include respond-to(smartphone) {
+            top: -70px;
+          }
+
+          @include respond-to(tablet) {
+            top:-150px;
+          }
+        }
+      } // figure
+
+      h1 {
+        font-family: $statedecoded-stack3;
+        font-size: 107.1428%;
+        font-weight: normal;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+  } // article.abstract
+
+  } // section.secondary-content
+
+} // .homepage

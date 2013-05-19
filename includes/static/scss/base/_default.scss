@@ -1,0 +1,171 @@
+// *****************************************************************************
+// DEFAULT/BOILERPLATE
+// *****************************************************************************
+
+* {
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+}
+
+html {
+  text-align: center;
+  body {
+    background-color: $site-background-color;
+    color: $text-color;
+    font-family: $statedecoded-stack2;
+    font-size: $base-font-size;
+    line-height: $base-line-height;
+    margin: auto;
+    min-height: 100%;
+    padding: 0;
+    text-align: left;
+    &.preload * {
+      transition: none !important;
+    }
+    p {
+      font-size: $base-font-size;
+      line-height: $base-line-height;
+    }
+    h1, h2, h3 {
+      color: $headings-font-color;
+      font-family: $headings-font-family;
+      font-weight: $headings-font-weight;
+    } // h1, h2, h3
+    h4, h5, h6 {
+      color: $subheadings-font-color;
+      font-family: $subheadings-font-family;
+      font-weight: $subheadings-font-weight;
+    } // h4, h5, h6
+    a, a:link {
+        color: $link-color;
+    } // a, a:link;
+    a:hover {
+        color: $link-color-hover;
+    } // a:hover;
+    a:active {
+        color: $link-color-active;
+    } // a:active;
+    a:visited {
+        color: $link-color-visited;
+    } //  a:visited
+    nav {
+    }
+
+    ::-moz-selection {
+        background-color: $link-color;
+        color: $white;
+        text-shadow: none;
+    }
+
+    ::selection {
+        background-color: $link-color;
+        color: $white;
+        text-shadow: none;
+    }
+
+    hr {
+      border: 0;
+      border-bottom: 1px solid $white;
+      border-top: 1px solid $gray-lightest;
+      margin: $base-line-height 0;
+    }
+
+    // Remove the gap between images and the bottom of their containers: h5bp.com/i/440
+    img {
+        vertical-align: middle;
+    }
+
+    // Remove default fieldset styles.
+    fieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    // Allow only vertical resizing of textareas
+    textarea {
+        resize: vertical;
+    }
+
+    #main_content {
+      padding: 20px 0;
+      @include respond-to(smartphone) {
+        padding: 0 10px;
+      }
+    }
+
+    // Unordered and Ordered - <ol> & <ul>
+    // ------------------------------------------------------------------
+
+    ul, ol {
+      padding: 0;
+      margin: 0 0 $base-line-height / 2 25px;
+      ul, ol {
+         margin-bottom: 0;
+      }
+    }
+
+    ul {
+      list-style: disc;
+    }
+
+    ol, ol ol ol ol, ol ol ol ol ol ol ol {
+      list-style: decimal;
+      ol{
+        list-style-type: lower-alpha;
+        ol  {
+          list-style-type: lower-roman;
+        }
+      }
+    }
+
+    li {
+      line-height: $base-line-height;
+    }
+
+
+  } // body
+} // html
+
+// Chrome Frame prompt
+
+.chromeframe {
+    background-color: #ccc;
+    color: $black;
+    margin: 0.2em 0;
+    padding: 0.2em 0;
+}
+
+
+.nest {
+  margin: auto;
+  position: relative;
+  max-width: 960px;
+}
+
+p {
+  hyphenate: auto; /* http://webtypography.net/Rhythm_and_Proportion/Etiquette_of_Hyphenation_and_Pagination/2.4.3/ */
+  hyphenate-lines: 3;
+  margin-bottom: 5px;
+  orphans:4;
+  widows:4;
+}
+
+small { font-size:85%; }
+
+strong, th { font-weight: bold; }
+
+td, td img { vertical-align:top; }
+
+sub { vertical-align: sub; font-size: smaller; }
+
+sup { vertical-align: super; font-size: smaller; }
+
+pre {
+  padding: 15px;
+  /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
+  white-space: pre; /* CSS2 */
+  white-space: pre-wrap; /* CSS 2.1 */
+  white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+  word-wrap: break-word; /* IE */
+}

@@ -1,0 +1,112 @@
+/*
+###############################################################################
+# UI Elements
+###############################################################################
+*/
+
+section#sidebar section#keyboard-guide {
+      padding-top: 1em;
+}
+
+/**
+ * General Modal
+ *
+ * Lots of these styles are taken from jquery UI Bootstrap theme:
+ * https://github.com/addyosmani/jquery-ui-bootstrap
+ */
+
+/* Overlay */
+.ui-widget-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #AAAAAA;
+  opacity: .30;
+  filter:Alpha(Opacity=30);
+}
+
+/**
+ * Totally Superfluous Blur Effect
+ * Neat behind dialogs.
+ */
+#content {
+  -webkit-transition: all 0.1s ease-out;  /* Chrome 1-25, Safari 3.2+ */
+     -moz-transition: all 0.1s ease-out;  /* Firefox 4-15 */
+     -o-transition: all 0.1s ease-out;  /* Opera 10.50–12.00 */
+      transition: all 0.1s ease-out;  /* Chrome 26, FF 16+, IE 10+, Opera 12.50+ */
+}
+#content.behind {
+  -webkit-filter: blur(2px);
+     -moz-filter: blur(2px);
+    -ms-filter: blur(2px);
+     -o-filter: blur(2px);
+      filter: blur(2px);
+}
+
+/**
+ * Dialog Styles
+ */
+.ui-dialog {
+  background-color: #fff;
+  -webkit-box-shadow: 3px 3px 7px 1px #666;
+     -moz-box-shadow: 3px 3px 7px 1px #666;
+          box-shadow: 3px 3px 7px 1px #666;
+}
+  .ui-dialog .ui-dialog-titlebar {
+    padding:5px 15px;
+    border-bottom:1px solid #ccc;
+  }
+  .ui-dialog .ui-dialog-title {
+    color:#404040;
+    font-weight:bold;
+    margin-top:5px;
+    margin-bottom:5px;
+    padding:5px;
+  }
+
+  .ui-dialog .ui-dialog-content {
+    position: relative;
+    border: 0;
+    padding: 1em 1em;
+    background: none;
+    overflow: auto;
+  }
+
+
+.ui-icon-closethick {
+  display: inline-block;
+  float: right;
+  margin-right: -15px;
+  margin-top: -5px;
+  font-size: 0.8em;
+  background-color: #ddd;
+  padding: 1px 10px;
+}
+  .ui-icon-closethick:hover,
+  .ui-icon-closethick:active {
+    background-color: #d0ddf0;
+  }
+
+/**
+ * Keyboard navigation instructions
+ */
+
+/* Hide this to start */
+#keyboard {
+  display: none;
+}
+#keyboard dl {
+  width: 16em;
+}
+  #keyboard dt,
+  #keyboard dd {
+    display: inline-block;
+  }
+  #keyboard dt {
+    width: 5em;
+    margin-right: 1em;
+  }
+  #keyboard dd {
+    width: 9em;
+    clear: both;
+  }

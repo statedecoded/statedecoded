@@ -1,0 +1,291 @@
+/* ################################################################################
+# Law page
+################################################################################
+*/
+
+body.law {
+  .nest {
+    max-width: none;
+    padding: 0 40px;
+    width: 100%;
+    @include respond-to(smartphone) {
+      padding: 0;
+    }
+  }
+
+  section#main_content {
+    overflow: hidden;
+  }
+
+  section.law-detail {
+    float: left;
+    margin-right: 1%;
+    padding: 20px;
+    width: 49%;
+
+    @include respond-to(smartphone) {
+      float: none;
+      width: 100%
+    }
+
+    h1 {
+      font-family: $statedecoded-stack1;
+      font-size: 125%;
+      font-variant: small-caps;
+      letter-spacing: 0.05em;
+      margin: 0 0 10px 0;
+      text-transform: small-caps;
+    }
+
+    h2 {
+      font-family: $statedecoded-stack1;
+      font-size: 200%;
+      line-height: 105%;
+      font-weight: 100;
+      margin: 0 0 20px 0;
+    }
+
+    h3 {
+      margin: 40px 0 10px 0;
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 0 0 20px 0;
+    }
+
+  }
+
+  section.secondary-content {
+
+    float: right;
+    font-size: 81.25%;
+    padding: 20px;
+    text-align: center;
+    width: 44%;
+
+    @include respond-to(smartphone) {
+      float: none;
+      width: 100%;
+    }
+
+    .ad {
+      margin: 0 auto 20px auto ;
+
+      @include respond-to(tablet) {
+        max-width: 100%;
+      }
+
+      @include respond-to(smartphone) {
+        max-width: 100%;
+      }
+
+    }
+
+    div.grouping {
+      float: left;
+      margin-right:1%;
+      text-align: left;
+      width: 32.5%;
+
+      @include respond-to(tablet) {
+        float: none;
+        width: 100%;
+      }
+
+      @include respond-to(smartphone) {
+        float: none;
+        width: 100%;
+      }
+
+    }
+
+    div.grouping.last {
+      margin-right: 0;
+    }
+
+    div.grouping > section,
+    section#legal_self_help {
+
+  //    @include opacity(.5); // layer alpha
+      @extend %clearfix;
+      clear: both;
+      border: 1px solid #e4e9e7; // stroke
+      background-color: #fcfdfa; // layer fill content + color overlay
+      box-shadow:inset 0 2px 20px rgba(111,114,117,.15); // inner shadow
+      margin-bottom: 1em;
+      padding: 0;
+      text-align: left;
+      width: 100%;
+
+      h1 {
+        font-family: $statedecoded-stack3;
+        font-size:16px;
+        font-style: italic;
+        margin: 0.5em 0;
+        padding: 0 10px;
+        text-transform: capitalize;
+      }
+
+      > h1 {
+        font-style: normal;
+        text-transform: uppercase;
+      }
+
+      p, h2 {
+        padding: 0 10px;
+      }
+
+      &.header-bar-full {
+        float: none;
+        width: 100%;
+
+        > h1 {
+          background-color: #656358;
+          color: #fff;
+          font-size: 30px;
+          font-weight: 100;
+          font-style: normal;
+          margin: 0;
+          padding: 0.25em 0.5em;
+          text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+          text-transform: uppercase;
+          width: 100%;
+        } // h1
+
+        p {
+          margin: 0 0 10px 0;
+        }
+
+      } // &.header-bar-full
+
+      &#legal_self_help {
+        overflow: hidden;
+
+        ul {
+          @extend %clearfix;
+          clear: both;
+          list-style-type: none;
+          padding: 0 10px;
+          margin: 0;
+
+          li {
+            list-style-type: none;
+            float: left;
+            margin-bottom: 15px;
+            width: 49%;
+
+            @include respond-to(smartphone) {
+              float: none;
+              width: 100%;
+            }
+
+            @include respond-to(tablet) {
+              float: none;
+              width: 100%;
+            }
+
+            article {
+
+              h1 {
+                font-family: $statedecoded-stack2;
+              }
+
+              &.legal-reference {
+              }
+
+              &.pdf {
+                background-image: url("/public/images/icon_pdf_32.png");
+                background-repeat: no-repeat;
+                background-position: top left;
+                padding-left: 42px;
+              } // &.pdf
+            } // article
+          } // li
+        } // ul
+      } // &#legal_self_help
+
+      &#history {}
+
+      &#amendment_attempts {
+        h2 {
+          font-size: 125%;
+        }
+
+        a {
+          font-size: 18px;
+          font-style: italic;
+          font-weight: bold;
+        }
+      }
+
+      &#court_decisions {
+
+        article.court-decision {
+          h1 {
+            font-family: $statedecoded-stack2;
+            margin: 1em 0 0 0;
+          }
+
+          h2 {
+            font-size: 81.25%;
+            font-weight: normal;
+            font-variant: uppercase;
+            margin: 0;
+            text-transform: uppsercase;
+          }
+        } // article.court-decision
+
+      }
+
+      &#cross_references {
+        article.cross-reference {
+          h1 {
+            font-family: $statedecoded-stack2;
+            margin: 1em 0 0 0;
+          }
+        }
+      }
+
+      &#related_laws {
+        article.related-law {
+          h1 {
+            font-family: $statedecoded-stack2;
+            margin: 1em 0 0 0;
+          }
+        }
+      }
+
+      &#cite_as {
+        background-color: #656358;
+        color: #fff;
+        overflow: hidden;
+        text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+
+        > h1 {
+          float: left;
+          font-size: 24px;
+          font-weight: 100;
+          font-style: normal;
+          margin: 0;
+          padding: 10px;
+          text-transform: uppercase;
+          width: 50%;
+        } // h1
+
+        dl {
+          float: right;
+          margin: 1em 0 0 0;
+          padding: 0;
+          width: 49%;
+
+          dt { font-size: 85%; margin: 0; padding: 0; text-transform: uppercase;}
+          dd { margin: 0 0 1em 0; padding: 0; }
+
+        }
+
+      } // &#cite_as
+    }
+  }
+}
+

@@ -1,0 +1,23 @@
+// *****************************************************************************
+// Z-INDEX VARIABLES
+// *****************************************************************************
+
+// Z-index master list
+// Used for a bird's eye view of components dependent on the z-axis
+// Try to avoid customizing these :)
+
+
+$zindex-base: 1000 !default;
+$zindex-drop-down: ($zindex-base + 10) !default;
+$zindex-popover: ($zindex-base + 20) !default;
+$zindex-tooltip: ($zindex-base + 30) !default;
+$zindex-fixed-navbar: ($zindex-base + 40) !default;
+
+// ------------------------------------------------------------------
+//  Modals
+// ------------------------------------------------------------------
+
+$zindex-modal-hidden: ($zindex-base - 10) !default;
+$zindex-modal-backdrop: ($zindex-base + 50) !default;
+$zindex-modal-backdrop-hidden: ($zindex-base - 50) !default;
+$zindex-modal: ($zindex-base + 60) !default;
