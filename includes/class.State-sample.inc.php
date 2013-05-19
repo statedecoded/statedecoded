@@ -266,7 +266,7 @@ class Parser
 				 * as those that are purely structural, existing to hold sub-subsections, but
 				 * containing no text themselves.
 				 */
-				if ( !empty( trim((string) $subsection) ) )
+				if ( !empty( $this->code->section->$i->text ) )
 				{
 					$this->code->text .= (string) $subsection['prefix'].' '.trim((string) $subsection)."\r\r";
 				}
