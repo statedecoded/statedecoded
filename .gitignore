@@ -3,7 +3,5 @@
 Vagrantfile
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
-includes/class.Virginia.inc.php
-includes/config.inc.php
 htdocs/.sass-cache/
 package.box
