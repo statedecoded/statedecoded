@@ -1,0 +1,32 @@
+@mixin gradient-vertical($startColor: #555, $endColor: #333) {
+  background-color: $endColor;
+  background-image: -khtml-gradient(linear, left top, left bottom, from($startColor), to($endColor)); // Konqueror
+  background-image: -moz-linear-gradient(top, $startColor, $endColor); // FF 3.6+
+  background-image: -ms-linear-gradient(top, $startColor, $endColor); // IE10
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $startColor), color-stop(100%, $endColor)); // Safari 4+, Chrome 2+
+  background-image: -webkit-linear-gradient(top, $startColor, $endColor); // Safari 5.1+, Chrome 10+
+  background-image: -o-linear-gradient(top, $startColor, $endColor); // Opera 11.10
+  //background-image: linear-gradient(top left, $startColor, $endColor); // The standard
+  background-repeat: repeat-x;
+ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$startColor}', endColorstr='#{$endColor}', GradientType=0); // IE9 and down
+}
+
+@mixin gradient-vertical-three-colors($startColor: #00b3ee, $midColor: #7a43b6, $colorStop: 50%, $endColor: #c3325f) {
+  background-color: $endColor;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from($startColor), color-stop($colorStop, $midColor), to($endColor));
+  background-image: -webkit-linear-gradient($startColor, $midColor $colorStop, $endColor);
+  background-image: -moz-linear-gradient(top, $startColor, $midColor $colorStop, $endColor);
+  background-image: -ms-linear-gradient($startColor, $midColor $colorStop, $endColor);
+  background-image: -o-linear-gradient($startColor, $midColor $colorStop, $endColor);
+  background-image: linear-gradient($startColor, $midColor $colorStop, $endColor);
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$startColor}', endColorstr='#{$endColor}', GradientType=0); // IE9 and down, gets no color-stop at all the proper fallback
+}
+
+// Gradient Bar Colors for buttons and alerts
+@mixin gradientBar($primaryColor, $secondaryColor) {
+  @include gradient-vertical($primaryColor, $secondaryColor);
+  border-color: $secondaryColor $secondaryColor darken($secondaryColor, 15%);
+  border-color: $shadow-lightest $shadow-lightest fade-in($shadow-lightest, 0.15);
+}
+

@@ -1,0 +1,88 @@
+// Function Specific Mixins
+// ------------------------------------------------------------------
+
+@mixin wizard-step($bgColor, $shadowTone) {
+  color: $white;
+  text-shadow: 0 1px 0 darken($bgColor, $shadowTone);
+  background-color: $bgColor;
+
+  &:before {
+    border-top-color: $bgColor;
+    border-bottom-color: $bgColor;
+  }
+
+  &:after {
+    border-left-color: $bgColor;
+  }
+} // @mixin wizard-step
+
+@mixin wizard-step-group($bgColor) {
+  a {
+    @include wizard-step($bgColor, 15%);
+  }
+
+  &:hover a {
+    @include wizard-step(darken($bgColor, 20%), 20%);
+  }
+} // @mixin wizard-step-group
+
+
+
+section.breadcrumbs {
+  @extend %clearfix;
+  clear: both;
+  margin-bottom: 20px;
+} // section#progress-bar
+
+.steps-nav {
+  clear: both;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  width: 100%;
+  li {
+    padding: 0;
+    position: relative;
+    float: left;
+    a {
+      position: relative;
+      display: inline-block;
+      font-size: 12px;
+      height: $base-line-height;
+      line-height: $base-line-height;
+      margin-right: 20px;
+      padding: 0 5px;
+      color: $white !important;
+      background-color: $base-lightest;
+      text-decoration: none;
+      span {
+        font-weight: bold;
+      }
+      &:before, &:after {
+        width: 0;
+        height: 0;
+        position: absolute;
+        content: "";
+        top: 0;
+        border: $base-line-height / 2 solid $base-lightest;
+        border-right-width: 0;
+      }
+      &:before {
+        border-left: $base-line-height solid transparent;
+        left: -$base-line-height;
+      }
+      &:after {
+        border-color: transparent;
+        border-left: $base-line-height  solid $base-lightest;
+        right: -$base-line-height;
+      }
+    } // a
+    &:first-child a:before {
+      border-left: none;
+    }
+    &.active {
+      @include wizard-step-group($base-darkest);
+    }
+  } // li
+} // .steps-nav

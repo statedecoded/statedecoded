@@ -1,0 +1,62 @@
+
+footer#page_footer {
+  @extend %clearfix;
+  clear: both;
+  background-color: $gray-darkest;
+  color: $gray;
+  font-family: $statedecoded-stack3;
+  overflow: hidden;
+  @include respond-to(smartphone) {
+    padding: 0 10px;
+  }
+  @include respond-to(tablet) {
+    padding: 0 10px;
+  }
+  p {
+    font-size: 75%;
+
+    a {
+      color: $white-off;
+    } // a
+
+    &.downloads {
+      width: 20%;
+
+      @include respond-to(smartphone) {
+        width: 100%;
+      }
+
+      @include respond-to(tablet) {
+        width: 30%;
+      }
+    } // &.downloads
+
+    &.credits {
+      @extend .downloads;
+
+      @include respond-to(smartphone) {
+        width: 100%;
+      }
+
+      @include respond-to(tablet) {
+        width: 30%;
+      }
+    } // &.credits
+
+    &.legalese {
+      float: right;
+      font-size: 68.75%;
+      width: 75%;
+
+      @include respond-to(smartphone) {
+        float: none;
+        width: 100%;
+      }
+
+      @include respond-to(tablet) {
+        width: 70%;
+      }
+
+    } // &.legalese
+  } // p
+} // footer#page_footer
