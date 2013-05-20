@@ -96,10 +96,10 @@ class ParserController
 			$sql = 'TRUNCATE '.$table;
 
 			$result = $this->db->exec($sql);
-			if (PEAR::isError($result))
+			if ($result === FALSE)
 			{
 				$this->logger->message("Error in SQL: $sql", 10);
-				die($result->getMessage());
+				die(print_r($db->errorInfo(), true));
 			}
 			$this->logger->message('Deleted '.$table, 5);
 		}
@@ -188,7 +188,7 @@ class ParserController
 		$sql = 'SELECT id, history
 				FROM laws';
 		$result = $this->db->query($sql);
-		if ($result->numRows() > 0)
+		if ($result->rowCount() > 0)
 		{
 
 			/*
