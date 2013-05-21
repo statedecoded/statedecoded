@@ -65,7 +65,7 @@ $searchReq = new GetRequest("http://localhost:8983/solr/statedecoded/law");
 //  search the text field for no child left behind
 //  return fields catch_line,text
 //  return only 5 rows
-$params = array("q" => "text:no child left behind", # search query
+$params = array("q" => "text:(no child left behind)", # search query
     "fl" => "catch_line,text", # field list to return
     "rows" => "5"); # number of rows
 $respJson = $searchReq->execute($params);
@@ -73,7 +73,7 @@ print_r($respJson);
 
 // Page through the results -- get the next 
 // 5 params
-$params = array("q" => "text:no child left behind", # search query
+$params = array("q" => "text:(no child left behind)", # search query
     "fl" => "catch_line,text",
     "rows" => "5",
     "start" => "5");
