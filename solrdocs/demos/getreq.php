@@ -39,7 +39,7 @@ class GetRequest {
     function executeCurl($url) {
         $c = curl_init();
         $fullUrl = $url; 
-        $curl_setopt($c, CURLOPT_URL, $fullUrl); 
+        curl_setopt($c, CURLOPT_URL, $fullUrl); 
 
         $results = curl_exec($c); 
         if (curl_errno($c) > 0) {
