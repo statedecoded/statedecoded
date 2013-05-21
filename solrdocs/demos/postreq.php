@@ -14,13 +14,21 @@ class PostFilesRequest {
         return $this->urlEndpoint . "?" . httputils\buildQueryString($getParams);
     }
 
+    function executeGlob($getParams, $globPattern) {
+        $files = array();
+        foreach (glob($globPattern) as $filename) {
+            $files[] = $filename;
+            $this->execute($getParams, $filename);
+        }
+    }
+
 
     // Takes get parameters + an array of file paths 
     // to post. May also specify a single file
     function execute($getParams, $files) {
         // Modified from: 
         // http://stackoverflow.com/a/3892820/8123
-        
+
         $data="";
         if (!is_array($files)) {
             //Convert to array
@@ -32,9 +40,6 @@ class PostFilesRequest {
             $data .= file_get_contents($files[$i]);
         }
 
-        echo "DATA:";
-        print_r($data);
-        
         $ch = curl_init();
         $url = $this->fullUrl($getParams);
         curl_setopt($ch, CURLOPT_URL, $url);
