@@ -4,20 +4,12 @@ This is an overview of State Decoded Setup & Usage. Locally this README can be v
 
 Installation and setup involves downloading Solr, using its default Jetty-based distrubution, and then pointing Solr at State Decoded's config files.
 
-
-## Run with State Decoded solr home
-
-Pull down State Decoded's solr_home from its github repo. Run start.jar with the extra -Dsolr.solr.home parameter (yes that's 2 solrs). This will load all of State Decoded's config files.
-
-    java -jar  -Dsolr.solr.home=/path/to/statedecoded/solr_home/ start.jar
-
 ## Ingest State Decoded Laws & Dictionary
 
 Ingestion is performed by sending the State Decoded XML at Solr's [XSLT update handler](http://wiki.apache.org/solr/XsltUpdateRequestHandler). Examine the [indexlaws.php](demos/indexlaws.php) for detailed examples and additional information.
 
 
-
-# Searching
+## Searching
 
 In Solr, a RequestHandler is an endpoint for processing HTTP requests and responding with results from the search index. They can be configured, with default query parameters, in the solr_config.xml.  Additional query parameters are sent in the query part of the URL get request in the form key=value&key1=value.
 
