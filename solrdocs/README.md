@@ -26,41 +26,21 @@ Pull down State Decoded's solr_home from its github repo. Run start.jar with the
 
 ## Ingest State Decoded Laws & Dictionary
 
-TODO
+Ingestion is performed by sending the State Decoded XML at Solr's [XSLT update handler](http://wiki.apache.org/solr/XsltUpdateRequestHandler). Examine the [indexlaws.php](demos/indexlaws.php) for detailed examples and additional information.
+
 
 
 # Searching
 
-In Solr, a RequestHandler is an endpoint for processing HTTP requests and responding with results from the search index. They can be configured, with default query parameters, in the solr_config.xml. 
+In Solr, a RequestHandler is an endpoint for processing HTTP requests and responding with results from the search index. They can be configured, with default query parameters, in the solr_config.xml.  Additional query parameters are sent in the query part of the URL get request in the form key=value&key1=value.
 
-At present, two RequestHandlers are defined for search. One for the laws and another for the dictionary. 
-
-## Law Request Handler
-
-The law request handler searches only the laws. It can be inspected by looking in solr_config.xml for the requestHandler that begins with:
-
-    <requestHandler name="/law" ...>
-
-Search the law request handler by accessing the endpoint:
-
-    http://solrhost:8983/statedecodec/law?q=no%20child%20left%20behind
-
-See [demos/lawsearch.php](demos/lawsearch.php) for more info.
+* See [lawsearch.php](demos/lawsearch.php) for more info for the law request handler and example usage
+* See [dictsearch.php](demos/dictsearch.php) for more info on the dictionary request handler and example usage
 
 
 ## Dictionary Request Handler
 
-The dictionary request handler searches only the dictionary terms.
-
-    <requestHandler name="/dict" ...>
-
-Search the dictionary request handler:
-
-    http://solrhost:8983/statedecodec/law?q=no%20child%20left%20behind
-
-See [demos/dictsearch.php](demos/dictsearch.php) for more info
-
-# Additional Solr Features
+TODO
 
 ## Suggest-as-you-type
 
