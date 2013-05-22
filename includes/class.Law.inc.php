@@ -38,6 +38,14 @@ class Law
 		}
 		
 		/*
+		 * If we haven't specified which fields that we want, then assume that we want all of them.
+		 */
+		if (!isset($this->config->get_all))
+		{
+			$this->config->get_all = TRUE;
+		}
+		
+		/*
 		 * Define the level of detail that we want from this method. By default, we return
 		 * everything that we have for this law.
 		 */
@@ -369,7 +377,10 @@ class Law
 		$this->dublin_core->Identifier = SECTION_SYMBOL . ' ' . $this->section_number;
 		$this->dublin_core->Relation = LAWS_NAME;
 	
-		if ($this->config->render_html === TRUE)
+		/*
+		 * If the request specifies that rendered HTML should be returned, then generate that.
+		 */
+		if ( isset($this->config->render_html) && ($this->config->render_html === TRUE) )
 		{
 			$this->html = Law::render();
 		}
