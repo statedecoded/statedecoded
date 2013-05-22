@@ -49,6 +49,5 @@
   -->
   <cores adminPath="/admin/cores" defaultCoreName="collection1" host="${host:}" hostPort="${jetty.port:}" hostContext="${hostContext:}" zkClientTimeout="${zkClientTimeout:15000}">
     <core name="statedecoded" instanceDir="statedecoded" />
-    <core name="statedecoded_dict" instanceDir="statedecoded_dict" />
   </cores>
 </solr>
