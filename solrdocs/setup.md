@@ -17,11 +17,11 @@ Confirm that you can run Solr from the example directory:
 
 You should be able to browse to the [Solr Admin UI](http://localhost:8983/solr) located on port 8983 on localhost. There should be a single collection -- collection1 located in the left drop-down. This is the default collection that Solr ships with -- it should be empty.
 
-Don't worry that this directory is called "example". Its a production-ready Jetty based Solr install. The simplest approach is to simply use the example directory as effectively the "bin" directory in Solr. 
+Don't worry that this directory is called "example". Its a production-ready Jetty based Solr install. The simplest approach is to simply use the example directory as effectively the "bin" directory of Solr. 
 
 ## Configuration
 
-The next step is to point Solr at State Decoded's Solr config files. These files are part of the ["solr_home"](https://github.com/o19s/statedecoded/tree/master/solr_home) directory in this repository. So you'll need to pull down that directory on the same box as Solr. This directory contains information for creating a "statedecoded" Solr collection. A "collection" in Solr speak in synonymous with a database. Its going to be the entity that stores/indexes our laws and dictionary terms.
+The next step is to point Solr at State Decoded's Solr config files. These files are part of the ["solr_home"](https://github.com/o19s/statedecoded/tree/master/solr_home) directory in this repository. So you'll need to pull down that directory on the same box as Solr. This directory contains information for creating a "statedecoded" Solr collection. A "collection" in Solr speak in synonymous with a database in a SQL database. Its going to be the entity that stores/indexes our laws and dictionary terms.
 
 Solr makes it pretty straightforward to point new configuraiton files. We simply need to specify a new solr home to Solr at startup:
 
