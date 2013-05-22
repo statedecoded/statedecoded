@@ -2,21 +2,8 @@ This is an overview of State Decoded Setup & Usage. Locally this README can be v
 
 # Installation & Setup 
 
-## PreRequisites
+Installation and setup involves downloading Solr, using its default Jetty-based distrubution, and then pointing Solr at State Decoded's config files.
 
-* A server with Java 6, OpenJDK or Oracle Java
-
-## Installation
-
-Install the latest 4.x Solr from [this location](http://lucene.apache.org/solr/). Confirm Solr works by entering Solr's example directory, and running the command:
-
-    java -jar start.jar
-
-Browse to 
-
-    http://host:8983/solr
-
-and confirm the Solr admin UI can be accessed. There should be a single, empty collection, collection1.
 
 ## Run with State Decoded solr home
 
