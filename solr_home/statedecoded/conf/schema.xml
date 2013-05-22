@@ -74,6 +74,9 @@
    <field name="text" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
    <field name="repealed" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="structure" type="string" indexed="true" stored="true" multiValued="true"/>
+   
+   <field name="refers_to" type="statedec_section" indexed="true" stored="true" multiValued="true"/>
+   <field name="refered_by" type="statedec_section" indexed="true" stored="true" multiValued="true"/>
 
    <!-- State Decoded Dictionary Fields ==
         taken from law dict table tsv dump -->
