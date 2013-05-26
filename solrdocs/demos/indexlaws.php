@@ -35,7 +35,8 @@ $queryParams = array('tr' => 'stateDecodedXml.xsl');
 #    either each law could be posted asynchronously OR if all
 #    the laws could be sent in one POST request, the time could
 #    be dramatically reduced
-$postFilesReq->executeGlob($queryParams, 'lawsamples/*.xml', $contentType);
+#$postFilesReq->executeGlob($queryParams, 'lawsamples/*.xml', $contentType);
+$postFilesReq->executeGlob($queryParams, $argv[1], $contentType);
 
 # Once files are posted, they are not searchable
 # until a commit is done.
