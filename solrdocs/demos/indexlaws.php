@@ -28,6 +28,13 @@ $contentType = "Content-Type: application/xml; charset=US-ASCII";
 $postFilesReq = new PostFilesRequest($url);
 $queryParams = array('tr' => 'stateDecodedXml.xsl');
 
+# A note on performance, this takes about 60 seconds to index all 
+# of Virginias laws. This could be improved dramatically, but 
+# the effort is likely not worth it. Areas of improvement include
+#  - Each law is sent in its own blocking POST request, if 
+#    either each law could be posted asynchronously OR if all
+#    the laws could be sent in one POST request, the time could
+#    be dramatically reduced
 $postFilesReq->executeGlob($queryParams, 'lawsamples/*.xml', $contentType);
 
 # Once files are posted, they are not searchable

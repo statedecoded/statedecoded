@@ -4,9 +4,11 @@ require_once('httputils.php');
 
 class PostFilesRequest {
     private $urlEndpoint;
+    private $ch; // curl handler
 
     function __construct($urlEndpoint) {
         $this->urlEndpoint = $urlEndpoint;
+        $this->ch = curl_init(); # To reuse the HTTP connection
     }
 
     
@@ -18,9 +20,19 @@ class PostFilesRequest {
     // those files up
     function executeGlob($getParams, $globPattern, $contentType) {
         $files = array();
-        foreach (glob($globPattern) as $filename) {
-            $files[] = $filename;
-            $this->execute($getParams, $filename, $contentType);
+        $numFiles = 0;
+        $url = $this->fullUrl($getParams);
+        $contentType = array($contentType);
+        curl_setopt($this->ch, CURLOPT_URL, $url);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($this->ch, CURLOPT_POST, true);
+        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $contentType); 
+        foreach (glob($globPattern, GLOB_NOSORT) as $filename) {
+            curl_setopt($this->ch, CURLOPT_POSTFIELDS, file_get_contents($filename));
+            curl_exec($this->ch); 
+            echo "Posted $numFiles -- $filename           \r";
+            ++$numFiles;
         }
     }
 
@@ -37,22 +49,20 @@ class PostFilesRequest {
             $files=array($files);
         }
         $n=sizeof($files);
-        print_r($files);
         for ($i=0;$i<$n;$i++) {
-            $data .= file_get_contents($files[$i]);
+            $data .= file_get_contents($files[$i]); 
         }
 
         $contentType = array($contentType);
 
-        $ch = curl_init();
         $url = $this->fullUrl($getParams);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $contentType); 
-        $response = curl_exec($ch);
+        curl_setopt($this->ch, CURLOPT_URL, $url);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($this->ch, CURLOPT_POST, true);
+        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $contentType); 
+        $response = curl_exec($this->ch);
         return $response;
     }
 }
