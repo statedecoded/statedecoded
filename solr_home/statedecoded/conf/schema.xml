@@ -72,6 +72,7 @@
    <field name="section" type="statedec_section" indexed="true" stored="true"/>
    <field name="catch_line" type="text_general" indexed="true" stored="true"/>
    <field name="text" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
+   <field name="text_pure" type="statedec_text_pure" indexed="true" stored="false"/>
    <field name="repealed" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="structure" type="string" indexed="true" stored="true" multiValued="true"/>
    
@@ -86,6 +87,7 @@
 
    <field name="type" type="lowercase" indexed="true" stored="true"/> 
    <copyField source= "term" dest="term_exact"/>
+   <copyField source= "text" dest="text_pure"/>
 
    <!-- Valid attributes for fields:
      name: mandatory - the name for the field
@@ -354,7 +356,22 @@
 	-->
         <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
-    </fieldType>
+  </fieldType>
+
+   <!-- A much less heavily analyzed version of statedec_text_en for boosting higher-->
+   <fieldType name="statedec_text_pure" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+         <charFilter class="solr.HTMLStripCharFilterFactory"/>
+         <tokenizer class="solr.StandardTokenizerFactory"/>
+         <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+  </fieldType>
+
+
 
 
 
