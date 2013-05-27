@@ -140,8 +140,12 @@
          path tokenization -->
     <fieldType name="statedec_section" class="solr.TextField" positionIncrementGap="100">
         <analyzer>
-        <!-- normalize . and - (section delimeters) to a ~ -->
-        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+            <!-- normalize . and - (section delimeters) to a ~ 
+                 we also add some length to strongly bias toward
+                 the shorter results via norms. Norms aren't very precise
+                 so the longer the relative query/index values are the more
+                 norms can impact the scoring-->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~UNUSED~"/>
         <!-- remove () or [] that somebody might use to identify a chapter -->
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
