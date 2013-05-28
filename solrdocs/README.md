@@ -32,3 +32,7 @@ TODO
 ## Spell checking
 
 TODO
+
+## Highlighting
+
+TODO
