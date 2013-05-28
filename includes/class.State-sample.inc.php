@@ -428,7 +428,7 @@ class Parser
 		// Iterate through the array and turn it into SQL.
 		foreach ($query as $name => $value)
 		{
-			$sql .= ', '.$name.'="'.$this->db->escape($value).'"';
+			$sql .= ', ' . $name . '=' . $this->db->quote($value);
 		}
 
 		// Execute the query.
@@ -470,8 +470,8 @@ class Parser
 			{
 				$sql = 'INSERT INTO laws_meta
 						SET law_id = ' . $law_id . ',
-						meta_key = "' . $this->db->escape($key) . '",
-						meta_value = "' . $this->db->escape($value) . '"';
+						meta_key = ' . $this->db->quote($key) . ',
+						meta_value = ' . $this->db->quote($value);
 				
 				// Execute the query.
 				$result = $this->db->exec($sql);
@@ -499,11 +499,11 @@ class Parser
 			$sql = 'INSERT INTO text
 					SET law_id='.$law_id.',
 					sequence='.$i.',
-					type="'.$this->db->escape($section->type).'",
+					type=' . $this->db->quote($section->type) . ',
 					date_created=now()';
 			if (!empty($section->text))
 			{
-				$sql .= ', text="'.$this->db->escape($section->text).'"';
+				$sql .= ', text=' . $this->db->quote($section->text);
 			}
 
 			$result = $this->db->exec($sql);
@@ -717,12 +717,12 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET identifier="'.$this->db->escape($this->identifier).'"';
+				SET identifier=' . $this->db->quote($this->identifier);
 		if (!empty($this->name))
 		{
-			$sql .= ', name="'.$this->db->escape($this->name).'"';
+			$sql .= ', name=' . $this->db->quote($this->name);
 		}
-		$sql .= ', label="'.$this->db->escape($this->label).'", date_created=now()';
+		$sql .= ', label=' . $this->db->quote($this->label) . ', date_created=now()';
 		if (isset($this->parent_id))
 		{
 			$sql .= ', parent_id='.$this->parent_id;
@@ -1194,9 +1194,10 @@ class Parser
 					structure_id, date_created)
 					VALUES ';
 
-			$sql .= '('.$this->law_id.', "'.$this->db->escape($term).'",
-				"'.$this->db->escape($definition).'", "'.$this->db->escape($this->scope).'",
-				'.$this->db->escape($this->scope_specificity).', '.$this->structure_id.', now())';
+			$sql .= '('.$this->law_id.', ' . $this->db->quote($term) . ',
+				' . $this->db->quote($definition) . ', ' . $this->db->quote($this->scope) . ',
+				' . $this->db->quote($this->scope_specificity) . ', ' . $this->structure_id . ',
+				now())';
 
 			// Execute the query.
 			//$result = $this->retry_query($sql);
