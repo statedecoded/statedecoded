@@ -340,7 +340,7 @@ class ParserController
 	public function export()
 	{
 
-		$this->logger->message('Preparing zip exports', 5);
+		$this->logger->message('Preparing ZIP exports', 5);
 
 		/*
 		 * Prepare exports
@@ -354,8 +354,9 @@ class ParserController
 
 		if (is_writable($downloads_dir) === FALSE)
 		{
-			$this->logger->message('Error: '.$downloads_dir.' could not be written to, so bulk download files could
-				not be exported.', 10);
+			$this->logger->message('Error: '.$downloads_dir.' could not be written to, so bulk
+				download files could not be exported.', 10);
+			return FALSE;
 		}
 
 		else
