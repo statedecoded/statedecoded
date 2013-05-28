@@ -99,7 +99,7 @@ class ParserController
 			if ($result === FALSE)
 			{
 				$this->logger->message("Error in SQL: $sql", 10);
-				die(print_r($db->errorInfo(), true));
+				die($result->getMessage());
 			}
 			$this->logger->message('Deleted '.$table, 5);
 		}
