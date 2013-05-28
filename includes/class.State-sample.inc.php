@@ -1200,7 +1200,6 @@ class Parser
 				now())';
 
 			// Execute the query.
-			//$result = $this->retry_query($sql);
 			$result = $this->query($sql);
 		}
 
