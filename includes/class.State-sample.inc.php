@@ -964,7 +964,7 @@ class Parser
 				/*
 				 * That's all we're going to get out of this paragraph, so move onto the next one.
 				 */
-				next;
+				continue;
 				
 			}
 			
