@@ -119,6 +119,14 @@ class ParserController
 				WHERE meta_key = "history"';
 		$result = $this->db->exec($sql);
 	}
+	
+	public function prune_views()
+	{
+		$sql = 'DELETE FROM
+				laws_views
+				WHERE DATEDIFF(now(), date) > 365';
+		$result = $this->db->exec($sql);
+	}
 
 	public function parse()
 	{
