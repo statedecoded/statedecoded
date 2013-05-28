@@ -682,8 +682,13 @@ class Law
 		}
 		
 		/*
-		 * Instantiate our autolinker, which embeds links.
+		 * Instantiate our autolinker, which embeds links. If we've defined a state-custom
+		 * autolinker, use that one. Otherwise, use the built-in one.
 		 */
+		if (class_exists('State_Autolinker') === TRUE)
+		{
+			$autolinker = new State_Autolinker;
+		}
 		$autolinker = new Autolinker;
 
 		/*
