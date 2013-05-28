@@ -135,16 +135,15 @@ class Parser
 			 * Operate on the present file.
 			 */
 			$filename = $this->files[$i];
-
+			
 			/*
 			 * Store the contents of the file as a string.
 			 */
 			$xml = file_get_contents($filename);
-
+			
 			/*
 			 * Convert the XML into an object.
 			 */
-
 			try
 			{
 				$this->section = new SimpleXMLElement($xml);
@@ -170,7 +169,7 @@ class Parser
 				}
 				$this->section = new SimpleXMLElement($xml);
 			}
-
+			
 			/*
 			 * Increment our placeholder counter.
 			 */
@@ -383,7 +382,7 @@ class Parser
 		{
 			die('No data provided.');
 		}
-
+		
 		// This first section creates the record for the law, but doesn't do anything with the
 		// content of it just yet.
 
@@ -1399,7 +1398,7 @@ class Parser
 			}
 			$i++;
 		}
-
+		
 		if ( isset($final) && is_object($final) )
 		{
 			return $final;
