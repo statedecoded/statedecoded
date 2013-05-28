@@ -661,7 +661,7 @@ class Parser
 		$result = $this->db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( ($result === FALSE) || $result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($result->rowCount() === 0) )
 		{
 			return FALSE;
 		}
