@@ -815,17 +815,10 @@ class Law
 				/*
 				 * Assemble the permalink
 				 */
-				$protocol = 'http://';
-				
-				if (!empty($_SERVER['HTTPS']))
-				{
-					$protocol = 'https://';
-				}
-				$permalink = $protocol . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . 
-				             '#'.$paragraph->prefix_anchor;
+				$permalink =  $_SERVER['REQUEST_URI'] . '#' . $paragraph->prefix_anchor;
 
-				$html .= ' <a id="test-'.$paragraph->id.'"';
-				$html .= ' class="section-permalink" href="'.$permalink.'">¶</a>';
+				$html .= ' <a id="test-' . $paragraph->id . '" class="section-permalink"
+					href="' . $permalink . '">¶</a>';
 			}
 			if ($paragraph->type == 'section')
 			{
