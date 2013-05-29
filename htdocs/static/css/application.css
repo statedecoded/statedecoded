@@ -1751,7 +1751,7 @@ header#page_header {
       height: 190px; } }
   /* line 20, ../scss/areas/_header.scss */
   header#page_header hgroup#virginia_logo {
-    background: url('/static/images/faux_seal.png?1368993938');
+    background-image: url('/static/images/faux_seal.png?1368993938');
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -1909,40 +1909,40 @@ header#page_header {
               width: 100%; } }
           /* line 181, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#the_code {
-            background: url('/static/images/nav-icons/nav_the-code.svg?1368993938'); }
+            background-image: url('/static/images/nav-icons/nav_the-code.svg?1368993938'); }
             /* line 183, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#the_code:hover {
-              background: url('/static/images/nav-icons/nav_the-code-hover.svg?1368993938'); }
+              background-image: url('/static/images/nav-icons/nav_the-code-hover.svg?1368993938'); }
             /* line 186, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#the_code {
-              background: url('/static/images/nav-icons/fallbacks/nav_the-code.png?1368993938'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_the-code.png?1368993938'); }
           /* line 191, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#court_cases {
-            background: url('/static/images/nav-icons/nav_court-cases.svg?1368993938'); }
+            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1368993938'); }
             /* line 193, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#court_cases:hover {
-              background: url('/static/images/nav-icons/nav_court-cases-hover.svg?1368993938'); }
+              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1368993938'); }
             /* line 196, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
-              background: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1368993938'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1368993938'); }
           /* line 201, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#about_us {
-            background: url('/static/images/nav-icons/nav_about-us.svg?1368993938'); }
+            background-image: url('/static/images/nav-icons/nav_about-us.svg?1368993938'); }
             /* line 204, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#about_us:hover {
-              background: url('/static/images/nav-icons/nav_about-us-hover.svg?1368993938'); }
+              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1368993938'); }
             /* line 207, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#about_us {
-              background: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1368993938'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1368993938'); }
           /* line 212, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#use_the_api {
-            background: url('/static/images/nav-icons/nav_use-the-api.svg?1368993938'); }
+            background-image: url('/static/images/nav-icons/nav_use-the-api.svg?1368993938'); }
             /* line 214, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#use_the_api:hover {
-              background: url('/static/images/nav-icons/nav_use-the-api-hover.svg?1368993938'); }
+              background-image: url('/static/images/nav-icons/nav_use-the-api-hover.svg?1368993938'); }
             /* line 217, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#use_the_api {
-              background: url('/static/images/nav-icons/fallbacks/nav_use-the-api.png?1368993938'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_use-the-api.png?1368993938'); }
   @media only screen and (min-width: 769px) {
     /* line 226, ../scss/areas/_header.scss */
     .inside header#page_header {
