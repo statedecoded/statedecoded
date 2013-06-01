@@ -35,35 +35,10 @@ $template->field->browser_title = SITE_TITLE . ': The ' . LAWS_NAME . ', for Hum
 $body = '';
 
 /*
- * Provide an introduction on the sidebar.
+ * Initialize the sidebar variable.
+ * What's in the box? Nothing, absolutely nothing!
  */
-$sidebar = '<section id="intro">
-				<h1>Welcome</h1>
-				<p>' . SITE_TITLE . ' provides the ' . LAWS_NAME .' on one friendly website. A
-				modern API, bulk downloads, inline definitions, cross-references, a responsive
-				design, and all of the niceties of a modern website. It’s like the expensive
-				software that lawyers use, but free and much better.</p>';
-
-/*
- * If Disqus-based comments are enabled, display the most recent X comments.
- */
-if (defined('DISQUS_SHORTNAME') === TRUE)
-{
-	
-	/*
-	 * Show these many comments.
-	 */
-	$comments = 3;
-	
-	$sidebar .= '<section id="recent-comments">
-				<h1>Recent Comments</h1>
-				<div id="recentcomments" class="dsq-widget">
-					<script src="http://' . DISQUS_SHORTNAME . '.disqus.com/recent_comments_widget.js?num_items=' . $comments . '&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=200"></script>
-				</div>
-			</section>';
-			
-}
-
+$sidebar = '';
 
 /*
  * Get an object containing a listing of the fundamental units of the code.
@@ -72,10 +47,9 @@ $struct = new Structure();
 $structures = $struct->list_children();
 
 $body .= '
-	<article>
-	<h1>' . ucwords($structures->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
-	
-	<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
+	<article class="nest narrow">
+	<h1>'.ucwords($structures->{0}->label).'s of the '.LAWS_NAME.'</h1>
+	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
 	
 /*
  * Row classes and row counter
@@ -119,8 +93,7 @@ unset($sidebar);
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'inside';
-$template->field->content_class = 'nest narrow';
+$template->field->body_class = 'law inside';
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content

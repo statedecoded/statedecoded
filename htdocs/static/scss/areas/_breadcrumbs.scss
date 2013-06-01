@@ -63,35 +63,8 @@ section.breadcrumbs {
       color: $white !important;
       background-color: $base-lightest;
       text-decoration: none;
-<<<<<<< HEAD
-      padding: 0px 0 0px (5+$side-width);
-      background: $base-lightest;
-      position: relative;
-      display: block;
-      float: left;
-      &:before {
-        content: " ";
-        display: block;
-        width: 0;
-        height: 0;
-        border-top: $top-bottom-width solid transparent;
-        border-bottom: $top-bottom-width solid transparent;
-        border-left: $side-width solid $white;
-        position: absolute;
-        margin-left: 1px;
-        left: 100%;
-        z-index: 1;
-
-        @include respond-to(print) {
-          border: none;
-          clear: both;
-          float: none;
-        }
-
-=======
       span {
         font-weight: bold;
->>>>>>> Updated the scss to move the static files, and clean up the scss.
       }
       &:before, &:after {
         width: 0;
@@ -99,61 +72,24 @@ section.breadcrumbs {
         position: absolute;
         content: "";
         top: 0;
-<<<<<<< HEAD
-
-        left: 100%;
-        z-index: 2;
-
-        @include respond-to(print) {
-          border: none;
-        }
-=======
         border: $base-line-height / 2 solid $base-lightest;
         border-right-width: 0;
->>>>>>> Updated the scss to move the static files, and clean up the scss.
       }
       &:before {
         border-left: $base-line-height solid transparent;
         left: -$base-line-height;
       }
       &:after {
-<<<<<<< HEAD
-        border-top: $top-bottom-width solid transparent;           /* Go big on the size, and let overflow hide */
-        border-bottom: $top-bottom-width solid transparent;
-        border-left: $side-width solid $base-darkest;
-
-        @include respond-to(print) {
-          border: none;
-          clear: both;
-          float: none;
-        }
-
-=======
         border-color: transparent;
         border-left: $base-line-height  solid $base-lightest;
         right: -$base-line-height;
->>>>>>> Updated the scss to move the static files, and clean up the scss.
       }
     } // a
     &:first-child a:before {
       border-left: none;
     }
-<<<<<<< HEAD
-  }
-}
-
-.paging {
-  .prev,
-  .next {
-    @include respond-to(print) {
-      display: none;
-    }
-  }
-}
-=======
     &.active {
       @include wizard-step-group($base-darkest);
     }
   } // li
 } // .steps-nav
->>>>>>> Updated the scss to move the static files, and clean up the scss.
