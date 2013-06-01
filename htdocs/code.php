@@ -36,11 +36,9 @@ $body = '';
 
 /*
  * Initialize the sidebar variable.
+ * What's in the box? Nothing, absolutely nothing!
  */
-$sidebar = '
-	<section>
-	<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
-	</section>';
+$sidebar = '';
 
 
 /*
@@ -50,16 +48,32 @@ $struct = new Structure();
 $structures = $struct->list_children();
 
 $body .= '
-	<article>
+	<article class="nest narrow">
 	<h1>'.ucwords($structures->{0}->label).'s of the '.LAWS_NAME.'</h1>
 	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
+	
+/*
+ * Row classes and row counter
+ */
+$row_classes = array('odd', 'even');
+$counter = 0;
+
 if ( !empty($structures) )
 {
-	$body .= '<dl class="level-1">';
+	$body .= '<dl class="title-list">';
 	foreach ($structures as $structure)
 	{
-		$body .= '	<dt><a href="'.$structure->url.'">'.$structure->identifier.'</a></dt>
-					<dd><a href="'.$structure->url.'">'.$structure->name.'</a></dd>';
+		/*
+		 * The remainder of the count divided by the number of classes
+		 * yields the proper index for the row class.
+		 */
+		$class_index = $counter % count($row_classes);
+		$row_class = $row_classes[$class_index];
+
+		$body .= '	<dt class="'.$row_class.'"><a href="'.$structure->url.'">'.$structure->identifier.'</a></dt>
+					<dd class="'.$row_class.'"><a href="'.$structure->url.'">'.$structure->name.'</a></dd>';
+
+		$counter++;
 	}
 	$body .= '</dl>';
 }
@@ -76,6 +90,11 @@ unset($body);
  */
 $template->field->sidebar = $sidebar;
 unset($sidebar);
+
+/*
+ * Add the custom classes to the body.
+ */
+$template->field->body_class = 'law inside';
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
