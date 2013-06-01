@@ -9,7 +9,8 @@
 
 html {
   text-align: center;
-  body {
+}
+body {
     background-color: $site-background-color;
     color: $text-color;
     font-family: $statedecoded-stack2;
@@ -22,110 +23,107 @@ html {
     &.preload * {
       transition: none !important;
     }
-    p {
-      font-size: $base-font-size;
-      line-height: $base-line-height;
-    }
-    h1, h2, h3 {
-      color: $headings-font-color;
-      font-family: $headings-font-family;
-      font-weight: $headings-font-weight;
-    } // h1, h2, h3
-    h4, h5, h6 {
-      color: $subheadings-font-color;
-      font-family: $subheadings-font-family;
-      font-weight: $subheadings-font-weight;
-    } // h4, h5, h6
-    a, a:link {
-        color: $link-color;
-    } // a, a:link;
-    a:hover {
-        color: $link-color-hover;
-    } // a:hover;
-    a:active {
-        color: $link-color-active;
-    } // a:active;
-    a:visited {
-        color: $link-color-visited;
-    } //  a:visited
-    nav {
-    }
+}
+p {
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+}
+h1, h2, h3 {
+  color: $headings-font-color;
+  font-family: $headings-font-family;
+  font-weight: $headings-font-weight;
+} // h1, h2, h3
+h4, h5, h6 {
+  color: $subheadings-font-color;
+  font-family: $subheadings-font-family;
+  font-weight: $subheadings-font-weight;
+} // h4, h5, h6
+a, a:link {
+	color: $link-color;
+} // a, a:link;
+a:hover {
+	color: $link-color-hover;
+} // a:hover;
+a:active {
+	color: $link-color-active;
+} // a:active;
+a:visited {
+	color: $link-color-visited;
+} //  a:visited
+nav {
+}
 
-    ::-moz-selection {
-        background-color: $link-color;
-        color: $white;
-        text-shadow: none;
-    }
+::-moz-selection {
+	background-color: $link-color;
+	color: $white;
+	text-shadow: none;
+}
 
-    ::selection {
-        background-color: $link-color;
-        color: $white;
-        text-shadow: none;
-    }
+::selection {
+	background-color: $link-color;
+	color: $white;
+	text-shadow: none;
+}
 
-    hr {
-      border: 0;
-      border-bottom: 1px solid $white;
-      border-top: 1px solid $gray-lightest;
-      margin: $base-line-height 0;
-    }
+hr {
+  border: 0;
+  border-bottom: 1px solid $white;
+  border-top: 1px solid $gray-lightest;
+  margin: $base-line-height 0;
+}
 
-    // Remove the gap between images and the bottom of their containers: h5bp.com/i/440
-    img {
-        vertical-align: middle;
-    }
+// Remove the gap between images and the bottom of their containers: h5bp.com/i/440
+img {
+	vertical-align: middle;
+}
 
-    // Remove default fieldset styles.
-    fieldset {
-        border: 0;
-        margin: 0;
-        padding: 0;
-    }
+// Remove default fieldset styles.
+fieldset {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
 
-    // Allow only vertical resizing of textareas
-    textarea {
-        resize: vertical;
-    }
+// Allow only vertical resizing of textareas
+textarea {
+	resize: vertical;
+}
 
-    #main_content {
-      padding: 20px 0;
-      @include respond-to(smartphone) {
-        padding: 0 10px;
-      }
-    }
+#main_content {
+  padding: 20px 0;
+  @include respond-to(smartphone) {
+	padding: 0 10px;
+  }
+}
 
-    // Unordered and Ordered - <ol> & <ul>
-    // ------------------------------------------------------------------
+// Unordered and Ordered - <ol> & <ul>
+// ------------------------------------------------------------------
 
-    ul, ol {
-      padding: 0;
-      margin: 0 0 $base-line-height / 2 25px;
-      ul, ol {
-         margin-bottom: 0;
-      }
-    }
+ul, ol {
+  padding: 0;
+  margin: 0 0 $base-line-height / 2 25px;
+  ul, ol {
+	 margin-bottom: 0;
+  }
+}
 
-    ul {
-      list-style: disc;
-    }
+ul {
+  list-style: disc;
+}
 
-    ol, ol ol ol ol, ol ol ol ol ol ol ol {
-      list-style: decimal;
-      ol{
-        list-style-type: lower-alpha;
-        ol  {
-          list-style-type: lower-roman;
-        }
-      }
-    }
+ol, ol ol ol ol, ol ol ol ol ol ol ol {
+  list-style: decimal;
+  ol{
+	list-style-type: lower-alpha;
+	ol  {
+	  list-style-type: lower-roman;
+	}
+  }
+}
 
-    li {
-      line-height: $base-line-height;
-    }
-
-
-  } // body
-} // html
+li {
+  line-height: $base-line-height;
+}
 
 // Chrome Frame prompt
 
