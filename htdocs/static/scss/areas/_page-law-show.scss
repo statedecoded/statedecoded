@@ -4,15 +4,6 @@
 */
 
 body.law {
-  .nest {
-    max-width: none;
-    padding: 0 40px;
-    width: 100%;
-    @include respond-to(smartphone) {
-      padding: 0;
-    }
-  }
-
   section#main_content {
     overflow: hidden;
   }
