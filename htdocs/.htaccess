@@ -7,10 +7,8 @@ RewriteBase /
 # Provide an aliased URL to test during setup whether RewriteRule works.
 RewriteRule ^index.php.test$ /index.php [QSA]
 
-### SAMPLE REWRITERULES ###
-
 # Requests for the code page.
-RewriteRule ^browse/$ /browse.php [QSA]
+RewriteRule ^code/$ /code.php [QSA]
 
 # Requests for the about page.
 RewriteRule ^about/$ /about.php [QSA]
