@@ -134,10 +134,21 @@ li {
     padding: 0.2em 0;
 }
 
-
 .nest {
   margin: auto;
   position: relative;
+}
+
+.wide {
+    max-width: none;
+    padding: 0 40px;
+    width: 100%;
+    @include respond-to(smartphone) {
+      padding: 0;
+    }
+}
+
+.narrow {
   max-width: 960px;
 }
 
