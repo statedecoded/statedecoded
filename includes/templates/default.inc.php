@@ -72,22 +72,24 @@
 		</nav> <!-- // #main_navigation -->
 	</header> <!-- // #page_header -->
 
-	<section id="page">
-		<nav id="breadcrumbs">
-			{{breadcrumbs}}
-		</nav>
+	<section id="main_content" role="main">
+		<div class="{{content_class}}">
+			<nav id="breadcrumbs">
+				{{breadcrumbs}}
+			</nav>
 	
-		<nav id="intercode">
-			{{intercode}}
-		</nav> <!-- // #intercode -->
+			<nav id="intercode">
+				{{intercode}}
+			</nav> <!-- // #intercode -->
 
-		<h1>{{page_title}}</h1>
+			<h1>{{page_title}}</h1>
 	
-		<section id="sidebar">
-		{{sidebar}}
-		</section>
+			<section id="sidebar">
+			{{sidebar}}
+			</section>
 	
-		{{body}}
+			{{body}}
+		</div>
 	
 	</section> <!-- // #page -->
 

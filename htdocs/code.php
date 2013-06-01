@@ -48,7 +48,7 @@ $struct = new Structure();
 $structures = $struct->list_children();
 
 $body .= '
-	<article class="nest narrow">
+	<article>
 	<h1>'.ucwords($structures->{0}->label).'s of the '.LAWS_NAME.'</h1>
 	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
 	
@@ -95,6 +95,7 @@ unset($sidebar);
  * Add the custom classes to the body.
  */
 $template->field->body_class = 'law inside';
+$template->field->content_class = 'nest narrow';
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
