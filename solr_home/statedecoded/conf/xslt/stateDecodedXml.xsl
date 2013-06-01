@@ -11,7 +11,7 @@
  
   <xsl:template match="law">
     <doc>
-        <field name="id"><xsl:value-of select="@id"/></field>
+        <field name="id">l_<xsl:value-of select="@id"/></field>
         <field name="catch_line"><xsl:value-of select="catch_line"/></field>
         <field name="text"><xsl:value-of select="text"/></field>
         <field name="section"><xsl:value-of select="section_number"/></field>
