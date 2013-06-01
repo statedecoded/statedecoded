@@ -76,7 +76,8 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
 
    <field name="catch_line" type="statedec_text_en" indexed="true" stored="true"/>
-   <field name="text" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
+   <field name="tags" type="statedec_text_en" indexed="true" stored="true" multiValues="true" />
+   <field name="text" type="statedec_text_en" indexed="true" stored="true"/>
    <field name="text_pure" type="statedec_text_pure" indexed="true"/>
    <field name="repealed" type="string" indexed="true" stored="true" multiValued="true"/>
 
