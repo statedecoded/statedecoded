@@ -1,6 +1,7 @@
 <?php
 require_once('postreq.php');
 require_once('getreq.php');
+require_once('solrerrorcheck.php');
 
 # ***************************************************************
 # The code here indexes each dictionary json object one at a time
@@ -36,6 +37,9 @@ function createDictId($filename, $counter) {
 
 
 
+# We can actually just post the json object directly
+# but we actually need to go through and give the 
+# objects an id and remove unsupported fields
 $dict_id = 0;
 foreach ($dictJson as $dictObj) {
     $dictObj->id = createDictId($argv[1], $dict_id);
@@ -45,14 +49,24 @@ foreach ($dictJson as $dictObj) {
     $dict_id++;
 }
 
-$encoded = json_encode($dictJson);
 
 # json_encode again and Post
+$encoded = json_encode($dictJson);
 $postReq = new PostRequest($url);
-$noParams = array();
-$postReq->postData($noParams, $encoded, $contentType);
+$queryParams = array("wt" => "json");
+$response = $postReq->postData($queryParams, $encoded, $contentType);
+checkForSolrError($response);
 
+
+# Once files are posted, they are not searchable
+# until a commit is done.
+#
+# For some applications where there's a lot of real time 
+# updates to documents that need to be searched in real time,
+# it may be important to commit often. For state decoded,
+# this is less important as all data is imported at once
+# with a big batch update.
 $req = new GetRequest($url);
-$req->execute(array('commit' => 'true'));
+$req->execute(array('commit' => 'true', 'wt' => 'json'));
 
 ?>

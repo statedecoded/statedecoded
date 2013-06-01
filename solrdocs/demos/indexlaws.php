@@ -1,6 +1,7 @@
 <?php
 require_once('postreq.php');
 require_once('getreq.php');
+require_once('solrerrorcheck.php');
 
 # ***************************************************************
 # The code here indexes each law XML document one at a time
@@ -36,7 +37,8 @@ $queryParams = array('tr' => 'stateDecodedXml.xsl');
 #    the laws could be sent in one POST request, the time could
 #    be dramatically reduced
 #$postFilesReq->executeGlob($queryParams, 'lawsamples/*.xml', $contentType);
-$postFilesReq->executeGlob($queryParams, $argv[1], $contentType);
+$resp = $postFilesReq->executeGlob($queryParams, $argv[1], $contentType);
+checkForSolrError($resp);
 
 # Once files are posted, they are not searchable
 # until a commit is done.

@@ -18,6 +18,16 @@ class PostRequest {
         return httputils\appendQueryString($this->urlEndpoint, $queryParams); 
     }
 
+    function handleResponse($response) {
+        if ($response === FALSE) {
+            echo "POST FAILED!!";
+            trigger_error(curl_error($this->ch));
+        }
+        echo "HANDLE RESPONSE\n";
+        echo $response;
+        return $response;
+    }
+
     function postData($queryParams, $data, $contentType) {
         $contentType = array($contentType);
         $url = $this->fullUrl($queryParams);
@@ -28,8 +38,7 @@ class PostRequest {
         curl_setopt($this->ch, CURLOPT_POST, true);
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $contentType); 
-        $response = curl_exec($this->ch);
-        echo $response;
+        $response = $this->handleResponse(curl_exec($this->ch));
         return $response;
     }
 }
@@ -57,7 +66,7 @@ class PostFilesRequest extends PostRequest {
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $contentType); 
         foreach (glob($globPattern, GLOB_NOSORT) as $filename) {
             curl_setopt($this->ch, CURLOPT_POSTFIELDS, file_get_contents($filename));
-            curl_exec($this->ch); 
+            $response = $this->handleResponse(curl_exec($this->ch));
             echo "Posted $numFiles -- $filename           \r";
             ++$numFiles;
         }
