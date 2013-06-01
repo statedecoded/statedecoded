@@ -557,26 +557,26 @@ li {
   margin: 0.2em 0;
   padding: 0.2em 0; }
 
-/* line 138, ../scss/base/_default.scss */
+/* line 137, ../scss/base/_default.scss */
 .nest {
   margin: auto;
   position: relative; }
 
-/* line 143, ../scss/base/_default.scss */
+/* line 142, ../scss/base/_default.scss */
 .wide {
   max-width: none;
   padding: 0 40px;
   width: 100%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 143, ../scss/base/_default.scss */
+    /* line 142, ../scss/base/_default.scss */
     .wide {
       padding: 0; } }
 
-/* line 152, ../scss/base/_default.scss */
+/* line 151, ../scss/base/_default.scss */
 .narrow {
   max-width: 960px; }
 
-/* line 156, ../scss/base/_default.scss */
+/* line 155, ../scss/base/_default.scss */
 p {
   hyphenate: auto;
   /* http://webtypography.net/Rhythm_and_Proportion/Etiquette_of_Hyphenation_and_Pagination/2.4.3/ */
@@ -585,29 +585,29 @@ p {
   orphans: 4;
   widows: 4; }
 
-/* line 164, ../scss/base/_default.scss */
+/* line 163, ../scss/base/_default.scss */
 small {
   font-size: 85%; }
 
-/* line 166, ../scss/base/_default.scss */
+/* line 165, ../scss/base/_default.scss */
 strong, th {
   font-weight: bold; }
 
-/* line 168, ../scss/base/_default.scss */
+/* line 167, ../scss/base/_default.scss */
 td, td img {
   vertical-align: top; }
 
-/* line 170, ../scss/base/_default.scss */
+/* line 169, ../scss/base/_default.scss */
 sub {
   vertical-align: sub;
   font-size: smaller; }
 
-/* line 172, ../scss/base/_default.scss */
+/* line 171, ../scss/base/_default.scss */
 sup {
   vertical-align: super;
   font-size: smaller; }
 
-/* line 174, ../scss/base/_default.scss */
+/* line 173, ../scss/base/_default.scss */
 pre {
   padding: 15px;
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
@@ -2119,26 +2119,22 @@ section.breadcrumbs {
         border-left-color: #252b2d; }
 
 /* line 3, ../scss/areas/_title-list.scss */
-.title-list li, .title-list dt, .title-list dd {
+.title-list li, .title-list dd, .title-list dt {
   list-style: none;
   padding: 5px; }
   /* line 6, ../scss/areas/_title-list.scss */
-  .title-list li a, .title-list dt a, .title-list dd a {
+  .title-list li a, .title-list dd a, .title-list dt a {
     text-decoration: none; }
-  /* line 9, ../scss/areas/_title-list.scss */
-  .title-list li span, .title-list dt span, .title-list dd span {
-    float: left;
-    display: block;
-    margin-right: 50px; }
-/* line 16, ../scss/areas/_title-list.scss */
+/* line 11, ../scss/areas/_title-list.scss */
 .title-list li:nth-child(even),
 .title-list .even {
   background-color: #f2f1ee; }
-/* line 19, ../scss/areas/_title-list.scss */
+/* line 14, ../scss/areas/_title-list.scss */
 .title-list dt {
   float: left;
   display: block;
-  width: 50px; }
+  margin-right: 10px;
+  width: 100px; }
 
 /* line 2, ../scss/areas/_footer.scss */
 footer#page_footer {

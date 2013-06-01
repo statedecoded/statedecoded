@@ -175,6 +175,11 @@ if ($children !== FALSE)
 }
 
 
+/*
+ * Reset counter
+ */
+$counter = 0;
+
 # Get a listing of all laws that are children of this portion of the structure.
 $laws = $struct->list_laws();
 
@@ -182,13 +187,27 @@ $laws = $struct->list_laws();
 if ($laws !== FALSE)
 {
 
+<<<<<<< HEAD
 	$body .= '<dl class="laws">';
+=======
+	$body .= 'It’s comprised of the following '.count((array) $laws).' sections.</p>';
+	$body .= '<dl class="title-list laws">';
+>>>>>>> Fixed list views to work when identifiers are long or different lengths.
 
 	foreach ($laws as $law)
-	{	
+	{
+		/*
+		 * The remainder of the count divided by the number of classes
+		 * yields the proper index for the row class.
+		 */
+		$class_index = $counter % count($row_classes);
+		$row_class = $row_classes[$class_index];
+
 		$body .= '
-				<dt><a href="'.$law->url.'">'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</a></dt>
-				<dd><a href="'.$law->url.'">'.$law->catch_line.'</a></dd>';
+				<dt class="'.$row_class.'"><a href="'.$law->url.'">'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</a></dt>
+				<dd class="'.$row_class.'"><a href="'.$law->url.'">'.$law->catch_line.'</a></dd>';
+
+		$counter++;
 	}
 	$body .= '</dl>';
 }

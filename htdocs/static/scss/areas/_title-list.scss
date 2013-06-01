@@ -1,15 +1,10 @@
 
 .title-list {
-  li,dt,dd {
+  li,dd,dt {
     list-style: none;
     padding: 5px;
     a {
       text-decoration: none;
-    }
-    span {
-      float: left;
-      display: block;
-      margin-right: 50px;
     }
   }
   li:nth-child(even),
@@ -19,6 +14,7 @@
   dt {
     float: left;
     display: block;
-    width: 50px;
+    margin-right: 10px;
+    width: 100px;
   }
 }
