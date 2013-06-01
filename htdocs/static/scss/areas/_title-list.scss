@@ -1,18 +1,20 @@
 
 .title-list {
-  li {
+  li,dd,dt {
     list-style: none;
     padding: 5px;
     a {
       text-decoration: none;
     }
-    span {
-      float: left;
-      display: block;
-      margin-right: 50px;
-    }
-    &:nth-child(even) {
-      background-color: $gray-lighter;
-    }
+  }
+  li:nth-child(even),
+  .even {
+    background-color: $gray-lighter;
+  }
+  dt {
+    float: left;
+    display: block;
+    margin-right: 10px;
+    width: 100px;
   }
 }

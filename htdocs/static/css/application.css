@@ -2195,20 +2195,22 @@ section.breadcrumbs {
         border-left-color: #252b2d; }
 
 /* line 3, ../scss/areas/_title-list.scss */
-.title-list li {
+.title-list li, .title-list dd, .title-list dt {
   list-style: none;
   padding: 5px; }
   /* line 6, ../scss/areas/_title-list.scss */
-  .title-list li a {
+  .title-list li a, .title-list dd a, .title-list dt a {
     text-decoration: none; }
-  /* line 9, ../scss/areas/_title-list.scss */
-  .title-list li span {
-    float: left;
-    display: block;
-    margin-right: 50px; }
-  /* line 14, ../scss/areas/_title-list.scss */
-  .title-list li:nth-child(even) {
-    background-color: #f2f1ee; }
+/* line 11, ../scss/areas/_title-list.scss */
+.title-list li:nth-child(even),
+.title-list .even {
+  background-color: #f2f1ee; }
+/* line 14, ../scss/areas/_title-list.scss */
+.title-list dt {
+  float: left;
+  display: block;
+  margin-right: 10px;
+  width: 100px; }
 
 /* line 2, ../scss/areas/_footer.scss */
 footer#page_footer {
