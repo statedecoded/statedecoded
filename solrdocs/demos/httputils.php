@@ -44,7 +44,7 @@ function appendQueryString($baseUrl, $queryParams) {
     if (!is_array($queryParams) or count($queryParams) == 0) {
         return $baseUrl;
     }
-    return $this->urlEndpoint . "?" . buildQueryString($queryParams);
+    return $baseUrl . "?" . buildQueryString($queryParams);
 }
  
 
