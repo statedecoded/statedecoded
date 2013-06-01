@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* Application SCSS for The State Decoded
 
    To use this file, you need to use some kind of Sass processor. THe easiest
@@ -2481,7 +2482,7 @@ header#page_header {
       height: 0.5in; } }
   /* line 26, ../scss/areas/_header.scss */
   header#page_header hgroup#place_logo {
-    background-image: url('/static/images/faux_seal.png?1374502908');
+    background-image: url('/static/images/faux_seal.png?1376332137');
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -2667,40 +2668,40 @@ header#page_header {
               width: 100%; } }
           /* line 215, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#browse {
-            background-image: url('/static/images/nav-icons/nav_browse.svg?1374502908'); }
+            background-image: url('/static/images/nav-icons/nav_browse.svg?1376334210'); }
             /* line 217, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#browse:hover {
-              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1374502908'); }
+              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1376334210'); }
             /* line 220, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#browse {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1374502908'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1376334210'); }
           /* line 225, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#court_cases {
-            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1374502908'); }
+            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1376332137'); }
             /* line 227, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#court_cases:hover {
-              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1374502908'); }
+              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1376332137'); }
             /* line 230, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1374502908'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1376332137'); }
           /* line 235, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#about_us {
-            background-image: url('/static/images/nav-icons/nav_about-us.svg?1374502908'); }
+            background-image: url('/static/images/nav-icons/nav_about-us.svg?1376332137'); }
             /* line 238, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#about_us:hover {
-              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1374502908'); }
+              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1376332137'); }
             /* line 241, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#about_us {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1374502908'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1376332137'); }
           /* line 246, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#download {
-            background-image: url('/static/images/nav-icons/nav_download.svg?1374502908'); }
+            background-image: url('/static/images/nav-icons/nav_download.svg?1376334210'); }
             /* line 248, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#download:hover {
-              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1374502908'); }
+              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1376334210'); }
             /* line 251, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#download {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1374502908'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1376334210'); }
   @media only screen and (min-width: 769px) {
     /* line 260, ../scss/areas/_header.scss */
     .inside header#page_header {
@@ -2909,31 +2910,23 @@ nav.prevnext {
   .paging .next {
     display: none; } }
 
-/* line 2, ../scss/areas/_title-list.scss */
-.title-list {
-  margin-bottom: 200px;
-  overflow: hidden; }
+/* line 3, ../scss/areas/_title-list.scss */
+.title-list li, .title-list dd, .title-list dt {
+  list-style: none;
+  padding: 5px; }
   /* line 6, ../scss/areas/_title-list.scss */
-  .title-list li, .title-list dd, .title-list dt {
-    list-style: none;
-    padding: 5px; }
-    /* line 9, ../scss/areas/_title-list.scss */
-    .title-list li a, .title-list dd a, .title-list dt a {
-      text-decoration: none; }
-  /* line 14, ../scss/areas/_title-list.scss */
-  .title-list li:nth-child(even),
-  .title-list .even {
-    background-color: #f2f1ee; }
-  /* line 17, ../scss/areas/_title-list.scss */
-  .title-list dt {
-    clear: both;
-    display: block;
-    float: left;
-    margin-right: 10px;
-    width: 120px; }
-  /* line 25, ../scss/areas/_title-list.scss */
-  .title-list dd {
-    margin-left: 120px; }
+  .title-list li a, .title-list dd a, .title-list dt a {
+    text-decoration: none; }
+/* line 11, ../scss/areas/_title-list.scss */
+.title-list li:nth-child(even),
+.title-list .even {
+  background-color: #f2f1ee; }
+/* line 14, ../scss/areas/_title-list.scss */
+.title-list dt {
+  clear: both;
+  display: block;
+  margin-right: 10px;
+  width: 100px; }
 
 /* line 1, ../scss/areas/_footer.scss */
 #container {
