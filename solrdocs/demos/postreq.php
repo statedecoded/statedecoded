@@ -23,15 +23,12 @@ class PostRequest {
             echo "POST FAILED!!";
             trigger_error(curl_error($this->ch));
         }
-        echo "HANDLE RESPONSE\n";
-        echo $response;
         return $response;
     }
 
     function postData($queryParams, $data, $contentType) {
         $contentType = array($contentType);
         $url = $this->fullUrl($queryParams);
-        echo "Sending to $url " . sizeof($data) . " bytes"; 
         curl_setopt($this->ch, CURLOPT_URL, $url);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
