@@ -120,6 +120,12 @@ if (count((array) $structure) > 1)
 	}
 }
 
+/*
+ * Row classes and row counter
+ */
+$row_classes = array('odd', 'even');
+$counter = 0;
+
 # Get a listing of all the structural children of this portion of the structure.
 $children = $struct->list_children();
 
@@ -127,11 +133,20 @@ $children = $struct->list_children();
 if ($children !== FALSE)
 {
 	/* The level of this child structural unit is that of the current unit, plus one. */
-	$body .= '<dl class="level-'.($structure->{count($structure)-1}->level + 1).'">';
+	$body .= '<dl class="title-list level-'.($structure->{count($structure)-1}->level + 1).'">';
 	foreach ($children as $child)
 	{
-		$body .= '<dt><a href="'.$child->url.'">'.$child->identifier.'</a></dt>
-				<dd><a href="'.$child->url.'">'.$child->name.'</a></dd>';
+		/*
+		 * The remainder of the count divided by the number of classes
+		 * yields the proper index for the row class.
+		 */
+		$class_index = $counter % count($row_classes);
+		$row_class = $row_classes[$class_index];
+
+		$body .= '	<dt class="'.$row_class.'"><a href="'.$child->url.'">'.$child->identifier.'</a></dt>
+					<dd class="'.$row_class.'"><a href="'.$child->url.'">'.$child->name.'</a></dd>';
+
+		$counter++;
 	}
 	$body .= '</dl>';
 }
@@ -171,6 +186,7 @@ if (!empty($sidebar))
  * Add the custom classes to the body.
  */
 $template->field->body_class = 'law inside';
+$template->field->content_class = 'nest narrow';
 
 # Parse the template, which is a shortcut for a few steps that culminate in sending the content
 # to the browser.
