@@ -2,26 +2,53 @@
 
 require_once('httputils.php');
 
-class PostFilesRequest {
-    private $urlEndpoint;
-    private $ch; // curl handler
 
+// PostRequest
+// Post data to somewhere 
+class PostRequest {
+    protected $urlEndpoint;
+    protected $ch; // curl handler
+ 
     function __construct($urlEndpoint) {
         $this->urlEndpoint = $urlEndpoint;
         $this->ch = curl_init(); # To reuse the HTTP connection
     }
-
     
-    function fullUrl($getParams) {
-        return $this->urlEndpoint . "?" . httputils\buildQueryString($getParams);
+    function fullUrl($queryParams) {
+        return httputils\appendQueryString($this->urlEndpoint, $queryParams); 
     }
+
+    function postData($queryParams, $data, $contentType) {
+        $contentType = array($contentType);
+        $url = $this->fullUrl($queryParams);
+        echo "Sending to $url " . sizeof($data) . " bytes"; 
+        curl_setopt($this->ch, CURLOPT_URL, $url);
+        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($this->ch, CURLOPT_POST, true);
+        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $contentType); 
+        $response = curl_exec($this->ch);
+        echo $response;
+        return $response;
+    }
+}
+
+
+// Post a series of files directly
+class PostFilesRequest extends PostRequest {
+
+    function __construct($urlEndpoint) {
+        parent::__construct($urlEndpoint);
+    }
+    
 
     // Takes a glob pattern and posts 
     // those files up
-    function executeGlob($getParams, $globPattern, $contentType) {
+    function executeGlob($queryParams, $globPattern, $contentType) {
         $files = array();
         $numFiles = 0;
-        $url = $this->fullUrl($getParams);
+        $url = $this->fullUrl($queryParams);
         $contentType = array($contentType);
         curl_setopt($this->ch, CURLOPT_URL, $url);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
@@ -39,7 +66,7 @@ class PostFilesRequest {
 
     // Takes get parameters + an array of file paths 
     // to post. May also specify a single file
-    function execute($getParams, $files, $contentType) {
+    function execute($queryParams, $files, $contentType) {
         // Modified from: 
         // http://stackoverflow.com/a/3892820/8123
 
@@ -53,17 +80,7 @@ class PostFilesRequest {
             $data .= file_get_contents($files[$i]); 
         }
 
-        $contentType = array($contentType);
-
-        $url = $this->fullUrl($getParams);
-        curl_setopt($this->ch, CURLOPT_URL, $url);
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($this->ch, CURLOPT_POST, true);
-        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $contentType); 
-        $response = curl_exec($this->ch);
-        return $response;
+        return $this->postData($queryParams, $data, $contentType);
     }
 }
 
