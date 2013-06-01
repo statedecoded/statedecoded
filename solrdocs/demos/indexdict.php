@@ -43,6 +43,7 @@ function createDictId($filename, $counter) {
 $dict_id = 0;
 foreach ($dictJson as $dictObj) {
     $dictObj->id = createDictId($argv[1], $dict_id);
+    $dictObj->type = 'dict'; 
     # unsed some unsupported fields
     unset($dictObj->scope);
     unset($dictObj->section);
