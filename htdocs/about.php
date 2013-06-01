@@ -36,6 +36,11 @@ unset($body);
 $template->field->sidebar = $sidebar;
 unset($sidebar);
 
+/*
+ * Add the custom classes to the body.
+ */
+$template->field->body_class = 'law inside';
+
 # Parse the template, which is a shortcut for a few steps that culminate in sending the content
 # to the browser.
 $template->parse();
