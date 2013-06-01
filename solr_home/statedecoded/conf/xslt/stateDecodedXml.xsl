@@ -18,7 +18,7 @@
         <xsl:apply-templates select="structure"/>
         <xsl:apply-templates select="tags"/>
         <xsl:apply-templates select="refers_to"/>
-        <xsl:apply-templates select="refered_by"/>
+        <xsl:apply-templates select="referred_to_by"/>
         <field name="type">law</field>
     </doc>
   </xsl:template>
@@ -39,9 +39,9 @@
      </xsl:for-each>
   </xsl:template>
   
-  <xsl:template match="refered_by">
+  <xsl:template match="referred_to_by">
     <xsl:for-each select="reference">
-        <field name="refered_by">
+        <field name="referred_to_by">
         <xsl:value-of select="current()"/> 
         </field>
      </xsl:for-each>
