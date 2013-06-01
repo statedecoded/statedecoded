@@ -1,6 +1,6 @@
 
 .title-list {
-  li {
+  li,dt,dd {
     list-style: none;
     padding: 5px;
     a {
@@ -11,8 +11,14 @@
       display: block;
       margin-right: 50px;
     }
-    &:nth-child(even) {
-      background-color: $gray-lighter;
-    }
+  }
+  li:nth-child(even),
+  .even {
+    background-color: $gray-lighter;
+  }
+  dt {
+    float: left;
+    display: block;
+    width: 50px;
   }
 }
