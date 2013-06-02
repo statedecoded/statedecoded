@@ -113,20 +113,25 @@ if (is_object($law->dublin_core))
 $template->field->breadcrumbs = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->breadcrumbs .= '<a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
-		.$ancestor->name.'</a> → ';
+	$template->field->breadcrumbs .= '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
+		.$ancestor->name.'</a></li>';
 }
-$template->field->breadcrumbs .= '<a href="/'.$law->section_number.'/">§&nbsp;'.$law->section_number
-	.' '.$law->catch_line.'</a>';
+$template->field->breadcrumbs .= '<li class="active"><a href="/'.$law->section_number.'/">'.$law->section_number
+	.' '.$law->catch_line.'</a></li>';
+
+$template->field->breadcrumbs = '<ul class="steps-nav">'.$template->field->breadcrumbs.'</ul>';
+
 
 /*
  * If there is a prior section in this structural unit, provide a back arrow.
  */
+
 if (isset($law->previous_section))
 {
-	$template->field->breadcrumbs = '<a href="'.$law->previous_section->url.'" class="prev"
-		title="Previous section">←</a>&nbsp;'.$template->field->breadcrumbs;
-	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
+	$nav .= '<a href="'.$law->previous_section->url.'" class="prev"
+		title="Previous section">Previous: '.$law->previous_section->catch_line.'</a>'.$template->field->breadcrumbs;
+	$template->field->link_rel .= '<link rel="prev" title="Previous: '.$law->previous_section->catch_line.'" 
+		href="'.$law->previous_section->url.'" />';
 }
 
 /*
@@ -134,9 +139,15 @@ if (isset($law->previous_section))
  */
 if (isset($law->next_section))
 {
-	$template->field->breadcrumbs .= '&nbsp;<a href="'.$law->next_section->url.'" class="next"
-		title="Next section">→</a>';
-	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
+	$nav .= '<a href="'.$law->next_section->url.'" class="next"
+		title="Next section">Next: '.$law->next_section->catch_line.'</a>';
+	$template->field->link_rel .= '<link rel="next" title="Next: '.$law->next_section->catch_line.'" 
+		href="'.$law->next_section->url.'" />';
+}
+
+if($nav)
+{
+	$template->field->breadcrumbs .= '<nav class="paging">'.$nav.'</nav>';
 }
 
 /*
@@ -348,6 +359,7 @@ unset($sidebar);
  * Add the custom classes to the body.
  */
 $template->field->body_class = 'law inside';
+$template->field->content_class = 'nest wide';
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
