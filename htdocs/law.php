@@ -115,27 +115,23 @@ if (is_object($law->dublin_core))
 $template->field->breadcrumbs = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->breadcrumbs .= '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
-		.$ancestor->name.'</a></li>';
+	$template->field->breadcrumbs .= '<li><a href="'.$ancestor->url . '">' . $ancestor->identifier . ' '
+		. $ancestor->name . '</a></li>';
 }
-$template->field->breadcrumbs .= '<li class="active"><a href="/'.$law->section_number.'/">§&nbsp;'
-	.$law->section_number.' '.$law->catch_line.'</a></li>';
+$template->field->breadcrumbs .= '<li class="active"><a href="/' . $law->section_number . '/">' . $law->section_number
+	. ' ' . $law->catch_line . '</a></li>';
 
-$template->field->breadcrumbs = '<nav class="breadcrumbs"><ul class="steps-nav">'
-	.$template->field->breadcrumbs.'</ul></nav>';
+$template->field->breadcrumbs = '<ul class="steps-nav">' . $template->field->breadcrumbs . '</ul>';
 
 /*
  * If there is a prior section in this structural unit, provide a back arrow.
  */
 if (isset($law->previous_section))
 {
-	$template->field->prev_next = '<li><a href="'.$law->previous_section->url.'" class="prev"
-		title="Previous section"><span>&larr; Previous</span>'.$law->previous_section->section_number.' '.$law->previous_section->catch_line.'</a></li>';
-	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
-}
-else
-{
-	$template->field->prev_next = '<li></li>';
+	$nav .= '<a href="' . $law->previous_section->url . '" class="prev"
+		title="Previous section">Previous: ' . $law->previous_section->catch_line . '</a>' . $template->field->breadcrumbs;
+	$template->field->link_rel .= '<link rel="prev" title="Previous: ' . $law->previous_section->catch_line . '" 
+		href="' . $law->previous_section->url . '" />';
 }
 
 /*
@@ -143,17 +139,18 @@ else
  */
 if (isset($law->next_section))
 {
-	$template->field->prev_next .= '<li><a href="'.$law->next_section->url.'" class="next"
-		title="Next section"><span>Next &rarr;</span>'.$law->next_section->section_number.' '.$law->next_section->catch_line.'</a></li>';
-	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
-}
-else
-{
-	$template->field->prev_next .= '<li></li>';
+	$nav .= '<a href="' . $law->next_section->url . '" class="next"
+		title="Next section">Next: ' . $law->next_section->catch_line . '</a>';
+	$template->field->link_rel .= '<link rel="next" title="Next: ' . $law->next_section->catch_line . '" 
+		href="' . $law->next_section->url . '" />';
 }
 
-$template->field->heading = '<nav class="prevnext" role="navigation"><ul>' . $template->field->prev_next . '</ul></nav>
-							<nav class="breadcrumbs" role="navigation">' . $template->field->breadcrumbs . '</nav>';
+if($nav)
+{
+	$template->field->breadcrumbs .= '<nav class="paging">' . $nav . '</nav>';
+}
+
+$template->field->heading = '<nav class="paging">' . $template->field->heading . '</nav>';
 
 /*
  * Store the URL for the containing structural unit.
