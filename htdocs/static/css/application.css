@@ -398,9 +398,9 @@ table {
   visibility: hidden; }
 
 /* line 60, ../scss/dependencies/mixins/_non-semantic-helpers.scss */
-.btn-group:before, .modal .modal-footer:before, section.breadcrumbs:before, footer#page_footer:before, body.law section.secondary-content div.grouping > section:before,
+.btn-group:before, .modal .modal-footer:before, footer#page_footer:before, body.law section.secondary-content div.grouping > section:before,
 body.law section.secondary-content section#legal_self_help:before,
-body.law section.secondary-content section#legal_self_help#legal_self_help ul:before, .btn-group:after, .modal .modal-footer:after, section.breadcrumbs:after, footer#page_footer:after, body.law section.secondary-content div.grouping > section:after,
+body.law section.secondary-content section#legal_self_help#legal_self_help ul:before, .btn-group:after, .modal .modal-footer:after, footer#page_footer:after, body.law section.secondary-content div.grouping > section:after,
 body.law section.secondary-content section#legal_self_help:after,
 body.law section.secondary-content section#legal_self_help#legal_self_help ul:after {
   content: " ";
@@ -408,7 +408,7 @@ body.law section.secondary-content section#legal_self_help#legal_self_help ul:af
   display: table;
   /* 2 */ }
 /* line 64, ../scss/dependencies/mixins/_non-semantic-helpers.scss */
-.btn-group:after, .modal .modal-footer:after, section.breadcrumbs:after, footer#page_footer:after, body.law section.secondary-content div.grouping > section:after,
+.btn-group:after, .modal .modal-footer:after, footer#page_footer:after, body.law section.secondary-content div.grouping > section:after,
 body.law section.secondary-content section#legal_self_help:after,
 body.law section.secondary-content section#legal_self_help#legal_self_help ul:after {
   clear: both; }
@@ -2039,84 +2039,73 @@ header#page_header {
               background-size: 40px 40px;
               background-position: center 8px; } }
 
-/* line 31, ../scss/areas/_breadcrumbs.scss */
-section.breadcrumbs {
-  clear: both;
-  margin-bottom: 20px; }
-
-/* line 37, ../scss/areas/_breadcrumbs.scss */
-.steps-nav {
-  clear: both;
-  position: relative;
+/* line 7, ../scss/areas/_breadcrumbs.scss */
+.breadcrumbs ul {
+  list-style: none;
   margin: 0;
-  padding: 0;
-  list-style-type: none;
-  width: 100%; }
-  /* line 44, ../scss/areas/_breadcrumbs.scss */
-  .steps-nav li {
-    padding: 0;
-    position: relative;
+  overflow: hidden;
+  font: 18px Helvetica, Arial, Sans-Serif;
+  overflow: hidden;
+  *zoom: 1; }
+  /* line 13, ../scss/areas/_breadcrumbs.scss */
+  .breadcrumbs ul li {
     float: left; }
-    /* line 48, ../scss/areas/_breadcrumbs.scss */
-    .steps-nav li a {
-      position: relative;
-      display: inline-block;
+    /* line 15, ../scss/areas/_breadcrumbs.scss */
+    .breadcrumbs ul li a {
       font-size: 12px;
       height: 24px;
       line-height: 24px;
-      margin-right: 20px;
-      padding: 0 5px;
-      color: white !important;
-      background-color: #8fa9b2;
-      text-decoration: none; }
-      /* line 59, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li a span {
-        font-weight: bold; }
-      /* line 62, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li a:before, .steps-nav li a:after {
+      color: white;
+      text-decoration: none;
+      padding: 0px 0 0px 29px;
+      background: #8fa9b2;
+      position: relative;
+      display: block;
+      float: left; }
+      /* line 26, ../scss/areas/_breadcrumbs.scss */
+      .breadcrumbs ul li a:before {
+        content: " ";
+        display: block;
         width: 0;
         height: 0;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-left: 24px solid white;
         position: absolute;
-        content: "";
-        top: 0;
-        border: 12px solid #8fa9b2;
-        border-right-width: 0; }
-      /* line 71, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li a:before {
-        border-left: 24px solid transparent;
-        left: -24px; }
-      /* line 75, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li a:after {
-        border-color: transparent;
+        margin-left: 1px;
+        left: 100%;
+        z-index: 1; }
+      /* line 39, ../scss/areas/_breadcrumbs.scss */
+      .breadcrumbs ul li a:after {
+        content: " ";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
         border-left: 24px solid #8fa9b2;
-        right: -24px; }
-    /* line 81, ../scss/areas/_breadcrumbs.scss */
-    .steps-nav li:first-child a:before {
-      border-left: none; }
-    /* line 20, ../scss/areas/_breadcrumbs.scss */
-    .steps-nav li.active a {
-      color: white;
-      text-shadow: 0 1px 0 #30393c;
-      background-color: #526166; }
-      /* line 9, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li.active a:before {
-        border-top-color: #526166;
-        border-bottom-color: #526166; }
-      /* line 14, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li.active a:after {
-        border-left-color: #526166; }
-    /* line 24, ../scss/areas/_breadcrumbs.scss */
-    .steps-nav li.active:hover a {
-      color: white;
-      text-shadow: 0 1px 0 black;
-      background-color: #252b2d; }
-      /* line 9, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li.active:hover a:before {
-        border-top-color: #252b2d;
-        border-bottom-color: #252b2d; }
-      /* line 14, ../scss/areas/_breadcrumbs.scss */
-      .steps-nav li.active:hover a:after {
-        border-left-color: #252b2d; }
+        position: absolute;
+        top: 0;
+        left: 100%;
+        z-index: 2; }
+      /* line 53, ../scss/areas/_breadcrumbs.scss */
+      .breadcrumbs ul li a:hover {
+        background: #597782; }
+      /* line 56, ../scss/areas/_breadcrumbs.scss */
+      .breadcrumbs ul li a:hover:after {
+        border-left-color: #597782; }
+    /* line 60, ../scss/areas/_breadcrumbs.scss */
+    .breadcrumbs ul li:first-child a {
+      padding-left: 5px; }
+    /* line 63, ../scss/areas/_breadcrumbs.scss */
+    .breadcrumbs ul li:last-child a {
+      background: #526166; }
+      /* line 65, ../scss/areas/_breadcrumbs.scss */
+      .breadcrumbs ul li:last-child a:after {
+        border-top: 12px solid transparent;
+        /* Go big on the size, and let overflow hide */
+        border-bottom: 12px solid transparent;
+        border-left: 24px solid #526166; }
 
 /* line 3, ../scss/areas/_title-list.scss */
 .title-list li, .title-list dd, .title-list dt {
