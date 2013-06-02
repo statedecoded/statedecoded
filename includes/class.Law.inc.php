@@ -38,6 +38,14 @@ class Law
 		}
 		
 		/*
+		 * If we haven't specified which fields that we want, then assume that we want all of them.
+		 */
+		if (!isset($this->config->get_all))
+		{
+			$this->config->get_all = TRUE;
+		}
+		
+		/*
 		 * Define the level of detail that we want from this method. By default, we return
 		 * everything that we have for this law.
 		 */
@@ -132,10 +140,20 @@ class Law
 		$this->full_text = wptexturize($this->full_text);
 		
 		/*
-		 * Now get the text for this law.
+		 * Now get the text for this law, subsection by subsection.
 		 */
 		if ($this->config->get_text === TRUE)
 		{
+			
+			/*
+			 * When invoking this method in a loop, $this->text can pile up on itself. If the text
+			 * property is already set, clear it out.
+			 */
+			if (isset($this->text))
+			{
+				unset($this->text);
+			}
+			
 			$sql = 'SELECT id, text, type,
 						(SELECT
 							GROUP_CONCAT(identifier
@@ -369,7 +387,10 @@ class Law
 		$this->dublin_core->Identifier = SECTION_SYMBOL . ' ' . $this->section_number;
 		$this->dublin_core->Relation = LAWS_NAME;
 	
-		if ($this->config->render_html === TRUE)
+		/*
+		 * If the request specifies that rendered HTML should be returned, then generate that.
+		 */
+		if ( isset($this->config->render_html) && ($this->config->render_html === TRUE) )
 		{
 			$this->html = Law::render();
 		}
@@ -378,6 +399,19 @@ class Law
 		 * Provide a plain text version of this law.
 		 */
 		$this->plain_text = Law::render_plain_text();
+	
+		/*
+		 * Provide a plain text document header.
+		 */
+		$this->plain_text =  str_repeat(' ', (round(((81 - strlen(LAWS_NAME)) / 2))))
+			. strtoupper(LAWS_NAME) . "\n\n"
+			. wordwrap(strtoupper($this->catch_line) . ' (' . SECTION_SYMBOL . ' '
+			. $this->section_number . ')', 80, "\n", TRUE)
+			. "\n\n" . $this->plain_text;
+		if (!empty($this->history))
+		{
+			$this->plain_text .=  "\n" . wordwrap('HISTORY: ' . $this->history, 80, "\n", TRUE);
+		}
 		
 		$law = $this;
 		unset($law->config);
@@ -671,8 +705,13 @@ class Law
 		}
 		
 		/*
-		 * Instantiate our autolinker, which embeds links.
+		 * Instantiate our autolinker, which embeds links. If we've defined a state-custom
+		 * autolinker, use that one. Otherwise, use the built-in one.
 		 */
+		if (class_exists('State_Autolinker') === TRUE)
+		{
+			$autolinker = new State_Autolinker;
+		}
 		$autolinker = new Autolinker;
 
 		/*
@@ -737,7 +776,7 @@ class Law
 					<section';
 				if (!empty($paragraph->prefix_anchor))
 				{
-					$html .= ' id="'.$paragraph->prefix_anchor.'"';
+					$html .= ' id="' . $paragraph->prefix_anchor . '"';
 				}
 				
 				/*
@@ -745,8 +784,7 @@ class Law
 				 */
 				if ($paragraph->level > 1)
 				{
-					$html .= ' class="indent-'.($paragraph->level-1);
-					$html .= '"';
+					$html .= ' class="indent-' . ($paragraph->level-1) . '"';
 				}
 				$html .= '>';
 			}
@@ -804,17 +842,10 @@ class Law
 				/*
 				 * Assemble the permalink
 				 */
-				$protocol = 'http://';
-				
-				if (!empty($_SERVER['HTTPS']))
-				{
-					$protocol = 'https://';
-				}
-				$permalink = $protocol . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . 
-				             '#'.$paragraph->prefix_anchor;
+				$permalink = $_SERVER['REQUEST_URI'] . '#'.$paragraph->prefix_anchor;
 
-				$html .= ' <a id="test-'.$paragraph->id.'"';
-				$html .= ' class="section-permalink" href="'.$permalink.'">¶</a>';
+				$html .= ' <a id="test-' . $paragraph->id . '" class="section-permalink"
+					href="' . $permalink . '">¶</a>';
 			}
 			if ($paragraph->type == 'section')
 			{
@@ -933,13 +964,13 @@ class Law
 				$lines = explode("\n", $subsection);
 				foreach ($lines as &$line)
 				{
-					$line = str_repeat(' ', ( ($paragraph->level - 1) * 3 )).$line;
+					$line = str_repeat(' ', ( ($paragraph->level - 1) * 3 )) . $line;
 				}
 				$subsection = implode("\n", $lines);
 			}
 			
 			/*
-			 * Finish up with a pair of carriage returns.
+			 * Finish up with a pair of newlines.
 			 */
 			$subsection .= "\n\n";
 			
@@ -950,6 +981,12 @@ class Law
 			
 			$i++;
 		}
+		
+		/*
+		 * Hack off any trailing (or, somehow, leading) whitespace, and finish with a single
+		 * newline.
+		 */
+		$text = trim($text) . "\n";
 		
 		return $text;
 		

@@ -135,16 +135,15 @@ class Parser
 			 * Operate on the present file.
 			 */
 			$filename = $this->files[$i];
-
+			
 			/*
 			 * Store the contents of the file as a string.
 			 */
 			$xml = file_get_contents($filename);
-
+			
 			/*
 			 * Convert the XML into an object.
 			 */
-
 			try
 			{
 				$this->section = new SimpleXMLElement($xml);
@@ -170,7 +169,7 @@ class Parser
 				}
 				$this->section = new SimpleXMLElement($xml);
 			}
-
+			
 			/*
 			 * Increment our placeholder counter.
 			 */
@@ -383,7 +382,7 @@ class Parser
 		{
 			die('No data provided.');
 		}
-
+		
 		// This first section creates the record for the law, but doesn't do anything with the
 		// content of it just yet.
 
@@ -429,7 +428,7 @@ class Parser
 		// Iterate through the array and turn it into SQL.
 		foreach ($query as $name => $value)
 		{
-			$sql .= ', '.$name.'="'.$this->db->escape($value).'"';
+			$sql .= ', ' . $name . '=' . $this->db->quote($value);
 		}
 
 		// Execute the query.
@@ -471,8 +470,8 @@ class Parser
 			{
 				$sql = 'INSERT INTO laws_meta
 						SET law_id = ' . $law_id . ',
-						meta_key = "' . $this->db->escape($key) . '",
-						meta_value = "' . $this->db->escape($value) . '"';
+						meta_key = ' . $this->db->quote($key) . ',
+						meta_value = ' . $this->db->quote($value);
 				
 				// Execute the query.
 				$result = $this->db->exec($sql);
@@ -500,11 +499,11 @@ class Parser
 			$sql = 'INSERT INTO text
 					SET law_id='.$law_id.',
 					sequence='.$i.',
-					type="'.$this->db->escape($section->type).'",
+					type=' . $this->db->quote($section->type) . ',
 					date_created=now()';
 			if (!empty($section->text))
 			{
-				$sql .= ', text="'.$this->db->escape($section->text).'"';
+				$sql .= ', text=' . $this->db->quote($section->text);
 			}
 
 			$result = $this->db->exec($sql);
@@ -566,7 +565,7 @@ class Parser
 			$ancestry[] = $struct->identifier;
 		}
 		$ancestry = implode(',', $ancestry);
-		$ancestry_section .= $ancestry . ','.$this->code->section_number;
+		$ancestry_section = $ancestry . ','.$this->code->section_number;
 		if 	(
 				(GLOBAL_DEFINITIONS === $ancestry)
 				||
@@ -662,7 +661,7 @@ class Parser
 		$result = $this->db->query($sql);
 
 		// If the query fails, or if no results are found, return false -- we can't make a match.
-		if ( ($result === FALSE) || $result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($result->rowCount() === 0) )
 		{
 			return FALSE;
 		}
@@ -718,12 +717,12 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET identifier="'.$this->db->escape($this->identifier).'"';
+				SET identifier=' . $this->db->quote($this->identifier);
 		if (!empty($this->name))
 		{
-			$sql .= ', name="'.$this->db->escape($this->name).'"';
+			$sql .= ', name=' . $this->db->quote($this->name);
 		}
-		$sql .= ', label="'.$this->db->escape($this->label).'", date_created=now()';
+		$sql .= ', label=' . $this->db->quote($this->label) . ', date_created=now()';
 		if (isset($this->parent_id))
 		{
 			$sql .= ', parent_id='.$this->parent_id;
@@ -965,7 +964,7 @@ class Parser
 				/*
 				 * That's all we're going to get out of this paragraph, so move onto the next one.
 				 */
-				next;
+				continue;
 				
 			}
 			
@@ -1195,12 +1194,12 @@ class Parser
 					structure_id, date_created)
 					VALUES ';
 
-			$sql .= '('.$this->law_id.', "'.$this->db->escape($term).'",
-				"'.$this->db->escape($definition).'", "'.$this->db->escape($this->scope).'",
-				'.$this->db->escape($this->scope_specificity).', '.$this->structure_id.', now())';
+			$sql .= '('.$this->law_id.', ' . $this->db->quote($term) . ',
+				' . $this->db->quote($definition) . ', ' . $this->db->quote($this->scope) . ',
+				' . $this->db->quote($this->scope_specificity) . ', ' . $this->structure_id . ',
+				now())';
 
 			// Execute the query.
-			//$result = $this->retry_query($sql);
 			$result = $this->query($sql);
 		}
 
@@ -1399,7 +1398,7 @@ class Parser
 			}
 			$i++;
 		}
-
+		
 		if ( isset($final) && is_object($final) )
 		{
 			return $final;

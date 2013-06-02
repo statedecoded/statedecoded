@@ -100,6 +100,7 @@ elseif ($_POST['action'] == 'parse')
 	$parser->write_api_key();
 	$parser->export();
 	$parser->clear_apc();
+	$parser->prune_views();
 	
 	/*
 	 * Attempt to purge Varnish's cache. (Fails silently if Varnish isn't installed or running.)
