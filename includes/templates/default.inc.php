@@ -74,7 +74,7 @@
 
 	<section id="main_content" role="main">
 		<div class="{{content_class}}">
-			<nav id="breadcrumbs">
+			<nav class="breadcrumbs">
 				{{breadcrumbs}}
 			</nav>
 	
@@ -84,11 +84,11 @@
 
 			<h1>{{page_title}}</h1>
 	
-			<section id="sidebar">
-			{{sidebar}}
-			</section>
-	
 			{{body}}
+
+			<aside id="sidebar" class="secondary-content">
+			{{sidebar}}
+			</aside>
 		</div>
 	
 	</section> <!-- // #page -->
