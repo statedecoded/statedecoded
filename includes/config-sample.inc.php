@@ -38,7 +38,7 @@ define('WEB_ROOT', BASE_PATH . '/htdocs');
 /*
  * The file in the /includes/ directory that contains functions custom to this installation.
  */
-//define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
+define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
 
 /*
  * Which template to use.
