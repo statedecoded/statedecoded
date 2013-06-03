@@ -6,7 +6,7 @@ $side-width: 24px;
 
 .breadcrumbs ul {
   list-style: none;
-  margin: 0;
+  margin: 0 0 1em;
   overflow: hidden;
   font: 18px Helvetica, Arial, Sans-Serif;
   @include clearfix;
