@@ -36,14 +36,20 @@ $template = new Page;
 
 # Define the title page elements.
 $template->field->browser_title = $struct->name.'—'.SITE_TITLE;
-$template->field->page_title = $struct->name;
+$template->field->page_title = '<h2>'.$struct->name.'</h2>';
 
 # Define the breadcrumb trail.
 if (count((array) $structure) > 1)
 {
 	foreach ($structure as $level)
 	{
-		$template->field->breadcrumbs .= ' <a href="'.$level->url.'">'.$level->identifier.': '.$level->name.'</a> →';
+		$active = '';
+		if($level == end($structure)) {
+			$active = 'active';
+		}
+		$template->field->breadcrumbs .= '<li class="'.$active.'">
+				<a href="'.$level->url.'">'.$level->identifier.': '.$level->name.'</a>
+			</li>';
 		
 		# If this structural element is the same as the parent container, then use that knowledge
 		# to populate the link rel="up" tag.
@@ -52,8 +58,11 @@ if (count((array) $structure) > 1)
 			$template->field->link_rel = '<link rel="up" title="Up" href="' . $level->url . '" />';
 		}
 	}
-	$template->field->breadcrumbs = rtrim($template->field->breadcrumbs, '→');
-	$template->field->breadcrumbs = trim($template->field->breadcrumbs);
+}
+
+if($template->field->breadcrumbs)
+{
+	$template->field->breadcrumbs = '<ul class="steps-nav">'.$template->field->breadcrumbs.'</ul>';
 }
 
 # If this is a top-level element, there's no breadcrumb trail, but we still need to populate the
@@ -120,6 +129,12 @@ if (count((array) $structure) > 1)
 	}
 }
 
+/*
+ * Row classes and row counter
+ */
+$row_classes = array('odd', 'even');
+$counter = 0;
+
 # Get a listing of all the structural children of this portion of the structure.
 $children = $struct->list_children();
 
@@ -127,15 +142,29 @@ $children = $struct->list_children();
 if ($children !== FALSE)
 {
 	/* The level of this child structural unit is that of the current unit, plus one. */
-	$body .= '<dl class="level-'.($structure->{count($structure)-1}->level + 1).'">';
+	$body .= '<dl class="title-list level-'.($structure->{count($structure)-1}->level + 1).'">';
 	foreach ($children as $child)
 	{
-		$body .= '<dt><a href="'.$child->url.'">'.$child->identifier.'</a></dt>
-				<dd><a href="'.$child->url.'">'.$child->name.'</a></dd>';
+		/*
+		 * The remainder of the count divided by the number of classes
+		 * yields the proper index for the row class.
+		 */
+		$class_index = $counter % count($row_classes);
+		$row_class = $row_classes[$class_index];
+
+		$body .= '	<dt class="'.$row_class.'"><a href="'.$child->url.'">'.$child->identifier.'</a></dt>
+					<dd class="'.$row_class.'"><a href="'.$child->url.'">'.$child->name.'</a></dd>';
+
+		$counter++;
 	}
 	$body .= '</dl>';
 }
 
+
+/*
+ * Reset counter
+ */
+$counter = 0;
 
 # Get a listing of all laws that are children of this portion of the structure.
 $laws = $struct->list_laws();
@@ -144,14 +173,23 @@ $laws = $struct->list_laws();
 if ($laws !== FALSE)
 {
 
-	$body .= ' It’s comprised of the following '.count((array) $laws).' sections.</p>';
-	$body .= '<dl class="laws">';
+	$body .= 'It’s comprised of the following '.count((array) $laws).' sections.</p>';
+	$body .= '<dl class="title-list laws">';
 
 	foreach ($laws as $law)
-	{	
+	{
+		/*
+		 * The remainder of the count divided by the number of classes
+		 * yields the proper index for the row class.
+		 */
+		$class_index = $counter % count($row_classes);
+		$row_class = $row_classes[$class_index];
+
 		$body .= '
-				<dt><a href="'.$law->url.'">'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</a></dt>
-				<dd><a href="'.$law->url.'">'.$law->catch_line.'</a></dd>';
+				<dt class="'.$row_class.'"><a href="'.$law->url.'">'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</a></dt>
+				<dd class="'.$row_class.'"><a href="'.$law->url.'">'.$law->catch_line.'</a></dd>';
+
+		$counter++;
 	}
 	$body .= '</dl>';
 }
@@ -166,6 +204,12 @@ if (!empty($sidebar))
 	$template->field->sidebar = $sidebar;
 	unset($sidebar);
 }
+
+/*
+ * Add the custom classes to the body.
+ */
+$template->field->body_class = 'inside';
+$template->field->content_class = 'nest narrow';
 
 # Parse the template, which is a shortcut for a few steps that culminate in sending the content
 # to the browser.

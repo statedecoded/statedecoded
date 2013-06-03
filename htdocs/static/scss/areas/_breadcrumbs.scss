@@ -1,0 +1,72 @@
+// Function Specific Mixins
+// ------------------------------------------------------------------
+
+$top-bottom-width: 12px;
+$side-width: 24px;
+
+.breadcrumbs ul {
+  list-style: none;
+  margin: 0 0 1em;
+  overflow: hidden;
+  font: 18px Helvetica, Arial, Sans-Serif;
+  @include clearfix;
+  li {
+    float: left;
+    a {
+      font-size: 12px;
+      height: $base-line-height;
+      line-height: $base-line-height;
+      color: $white;
+      text-decoration: none;
+      padding: 0px 0 0px (5+$side-width);
+      background: $base-lightest;
+      position: relative;
+      display: block;
+      float: left;
+      &:before {
+        content: " ";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: $top-bottom-width solid transparent;
+        border-bottom: $top-bottom-width solid transparent;
+        border-left: $side-width solid $white;
+        position: absolute;
+        margin-left: 1px;
+        left: 100%;
+        z-index: 1;
+      }
+      &:after {
+        content: " ";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: $top-bottom-width solid transparent;
+        border-bottom: $top-bottom-width solid transparent;
+        border-left: $side-width solid $base-lightest;
+        position: absolute;
+        top: 0;
+
+        left: 100%;
+        z-index: 2;
+      }
+      &:hover {
+        background: darken($base-lightest, 20%);
+      }
+      &:hover:after {
+        border-left-color: darken($base-lightest, 20%);
+      }
+    }
+    &:first-child a {
+      padding-left: 5px;
+    }
+    &:last-child a {
+      background: $base-darkest;
+      &:after {
+        border-top: $top-bottom-width solid transparent;           /* Go big on the size, and let overflow hide */
+        border-bottom: $top-bottom-width solid transparent;
+        border-left: $side-width solid $base-darkest;
+      }
+    }
+  }
+}

@@ -521,6 +521,20 @@ class Structure
 		// order_by field primarily, but we also order by section as a backup, in case something
 		// should fail with the order_by field. The section column is not wholly reliable for
 		// sorting (hence the order_by field), but it's a great deal better than an unsorted list.
+
+		/**
+		 * TODO: Replace this with a join instead ???
+		 * The lookup will be much more efficient.
+		 *     SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line
+		 *     FROM laws
+		 *     INNER JOIN laws_meta
+		 *     ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
+		 *     WHERE laws.structure_id=974
+		 *     AND
+		 *     laws_meta.meta_value = "n"
+		 *     ORDER BY laws.order_by, laws.section
+		 */
+
 		$sql = 'SELECT id, structure_id, section AS section_number, catch_line
 				FROM laws
 				WHERE structure_id='.$db->quote($this->id).' ';

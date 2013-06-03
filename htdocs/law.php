@@ -106,7 +106,8 @@ $template->field->browser_title = $law->catch_line.' ('.SECTION_SYMBOL.' '.$law-
 /*
  * Define the page title.
  */
-$template->field->page_title = SECTION_SYMBOL.'&nbsp;'.$law->section_number.' '.$law->catch_line;
+$template->field->page_title .= '<h1>'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</h1>';
+$template->field->page_title .= '<h2>'.$law->catch_line.'</h2>';
 
 /*
  * If we have Dublin Core metadata, then display it.
@@ -123,23 +124,28 @@ if (is_object($law->dublin_core))
 /*
  * Define the breadcrumb trail text.
  */
-$template->field->breadcrumbs = '';
+$template->field->heading = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->breadcrumbs .= '<a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
-		.$ancestor->name.'</a> → ';
+	$template->field->heading .= '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
+		.$ancestor->name.'</a></li>';
 }
-$template->field->breadcrumbs .= '<a href="/'.$law->section_number.'/">§&nbsp;'.$law->section_number
-	.' '.$law->catch_line.'</a>';
+$template->field->heading .= '<li class="active"><a href="/'.$law->section_number.'/">'.$law->section_number
+	.' '.$law->catch_line.'</a></li>';
+
+$template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">'.$template->field->heading.'</ul></nav>';
+
 
 /*
  * If there is a prior section in this structural unit, provide a back arrow.
  */
+
 if (isset($law->previous_section))
 {
-	$template->field->breadcrumbs = '<a href="'.$law->previous_section->url.'" class="prev"
-		title="Previous section">←</a>&nbsp;'.$template->field->breadcrumbs;
-	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
+	$nav .= '<a href="'.$law->previous_section->url.'" class="prev"
+		title="Previous section">Previous: '.$law->previous_section->catch_line.'</a>'.$template->field->heading;
+	$template->field->link_rel .= '<link rel="prev" title="Previous: '.$law->previous_section->catch_line.'" 
+		href="'.$law->previous_section->url.'" />';
 }
 
 /*
@@ -147,9 +153,15 @@ if (isset($law->previous_section))
  */
 if (isset($law->next_section))
 {
-	$template->field->breadcrumbs .= '&nbsp;<a href="'.$law->next_section->url.'" class="next"
-		title="Next section">→</a>';
-	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
+	$nav .= '<a href="'.$law->next_section->url.'" class="next"
+		title="Next section">Next: '.$law->next_section->catch_line.'</a>';
+	$template->field->link_rel .= '<link rel="next" title="Next: '.$law->next_section->catch_line.'" 
+		href="'.$law->next_section->url.'" />';
+}
+
+if($nav)
+{
+	$template->field->heading .= '<nav class="paging">'.$nav.'</nav>';
 }
 
 /*
@@ -258,6 +270,22 @@ EOD;
 }
 
 /*
+ * General info 
+ */
+$sidebar .= '<section class="info-box" id="elsewhere">
+				<h1>Trust, But Verify</h1>
+				<p>If you’re reading this for anything important, you should double-check its
+				accuracy';
+if (isset($law->official_url))
+{
+	$sidebar .= '—<a href="'.$law->official_url.'">read '.SECTION_SYMBOL.'&nbsp;'.$law->section_number.' ';
+}
+$sidebar .= ' on the official '.LAWS_NAME.' website</a>.
+				</p>
+				<p><a id="keyhelp">'.$help->get_text('keyboard')->title.'</a></p>
+			</section>';
+
+/*
  * If this section has been cited in any court decisions, list them.
  */
 if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
@@ -282,13 +310,15 @@ if ($law->references !== FALSE)
 {
 
 	$sidebar .= '
-			<section id="references">
+			<section class="related-group" id="cross_references">
 				<h1>Cross References</h1>
 				<ul>';
 	foreach ($law->references as $reference)
 	{
-		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$reference->url.'" class="law">'
-			.$reference->section_number.'</a> '.$reference->catch_line.'</li>';
+		$sidebar .= '<li><span class="identifier">
+			'.SECTION_SYMBOL.'&nbsp;<a href="'.$reference->url.'" class="law">'
+			.$reference->section_number.'</a></span> 
+			<span class="title">'.$reference->catch_line.'</li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
@@ -300,7 +330,7 @@ if ($law->references !== FALSE)
 if (isset($law->related) && (count((array) $law->related) > 0))
 {
 	$sidebar .= '			  
-			<section id="related-links">
+			<section class="related-group" id="related-links">
 				<h1>Related Laws</h1>
 				<ul id="related">';
 	foreach ($law->related as $related)
@@ -319,7 +349,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 if ( isset($law->citation) && is_object($law->citation) )
 {
 	
-	$sidebar .= '<section id="cite-as">
+	$sidebar .= '<section class="related-group dark" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';
 	foreach ($law->citation as $citation)
@@ -332,19 +362,6 @@ if ( isset($law->citation) && is_object($law->citation) )
 	
 }
 
-$sidebar .= '<section id="elsewhere">
-				<h1>Trust, But Verify</h1>
-				<p>If you’re reading this for anything important, you should double-check its
-				accuracy';
-if (isset($law->official_url))
-{
-	$sidebar .= '—<a href="'.$law->official_url.'">read '.SECTION_SYMBOL.'&nbsp;'.$law->section_number.' ';
-}
-$sidebar .= ' on the official '.LAWS_NAME.' website</a>.
-			</section>';
-
-$sidebar .= '<section id="keyboard-guide"><a id="keyhelp">'.$help->get_text('keyboard')->title.'</a></section>';
-
 /*
  * Put the shorthand $body variable into its proper place.
  */
@@ -356,6 +373,12 @@ unset($body);
  */
 $template->field->sidebar = $sidebar;
 unset($sidebar);
+
+/*
+ * Add the custom classes to the body.
+ */
+$template->field->body_class = 'law inside';
+$template->field->content_class = 'nest wide';
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
