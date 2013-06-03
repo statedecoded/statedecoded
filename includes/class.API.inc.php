@@ -238,7 +238,7 @@ class API
 		}
 		if (!empty($this->url))
 		{
-			$sql .= ', url=' . $db->quote($this->url)
+			$sql .= ', url=' . $db->quote($this->url);
 		}
 		
 		/*
