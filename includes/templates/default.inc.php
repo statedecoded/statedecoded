@@ -39,16 +39,18 @@
 	<![endif]-->
 	<header id="page_header">
 		<div class="nest">
-			<hgroup id="virginia_logo">
-				<h1>Virginia</h1>
-				<h2>Decoded</h2>
-			</hgroup>
+			<a href="/">
+				<hgroup id="virginia_logo">
+					<h1>Virginia</h1>
+					<h2>Decoded</h2>
+				</hgroup>
+			</a>
 			<section id="search">
 				<form id="search_form">
 					<label for="search">Search the code by title name, common phrase, or assocaited court cases</label>
 					<input type="search" name="search" value="" id="search" placeholder="Search the code...">
 					<input type="submit" name="submit" value="Search" id="submit" class="btn btn-success">
-					<a class="advanced" href="#">Advanced</a>
+					<!--a class="advanced" href="#">Advanced</a-->
 				</form>
 			</section> <!-- // #search -->
 		</div> <!-- // .nest -->
@@ -56,16 +58,16 @@
 			<div class="nest">
 				<ul>
 					<li>
-						<a href="" id="the_code">The Code</a>
+						<a href="/code/" id="the_code">The Code</a>
 					</li>
 					<li>
 						<a href="" id="court_cases">Court Cases</a>
 					</li>
 					<li>
-						<a href="" id="about_us">About Us</a>
+						<a href="/about/" id="about_us">About Us</a>
 					</li>
 					<li>
-						<a href="" id="use_the_api">Use The API</a>
+						<a href="/api-key/" id="use_the_api">Use The API</a>
 					</li>
 				</ul>
 			</div> <!-- // .nest -->
@@ -74,17 +76,20 @@
 
 	<section id="main_content" role="main">
 		<div class="{{content_class}}">
-			<nav class="breadcrumbs">
-				{{breadcrumbs}}
-			</nav>
-	
-			<nav id="intercode">
-				{{intercode}}
-			</nav> <!-- // #intercode -->
+			<heading>
+				{{heading}}
+			</heading>
 
-			<h1>{{page_title}}</h1>
+			<section class="primary-content">
 	
-			{{body}}
+				<nav id="intercode">
+					{{intercode}}
+				</nav> <!-- // #intercode -->
+
+				{{page_title}}
+	
+				{{body}}
+			</section>
 
 			<aside id="sidebar" class="secondary-content">
 			{{sidebar}}
@@ -92,10 +97,24 @@
 		</div>
 	
 	</section> <!-- // #page -->
-
-	<footer id="page_footer">
-		<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
-	</footer>
+	
+    <footer id="page_footer">
+      <div class="nest">
+        <p class="legalese">
+          Richmond Capitol photo licensed under creative commons from http://www.flickr.com/photos/goellnitz/5277987497. All user-contributed content is, of course, owned by its authors. The state code is owned by the citizens of Virginia and, consequently, it is not governed by copyright—so do whatever you want with it! The information on this website does not constitute legal advice—nobody here is acting as your attorney, and nothing that you read here is a substitute for a competent attorney. I make no guarantee that this information is accurate or up-to-date, although I try my best. Seriously, I am not your attorney. Heck, I’m not an attorney at all.
+        </p>
+        <p class="downloads">
+          <a href="" title="">Bulk Downloads</a>
+        </p>
+        <p class="credits">
+          &copy; 2011 - 2012 <a href="http://waldo.jaquith.org">Waldo Jaquith</a>
+          <br>
+          Powered by <a href="">The State Decoded</a>
+          <br>
+          Design by <a href="http://www.meticulous.com">Meticulous</a>
+        </p>
+      </div> <!-- // .nest -->
+    </footer> <!-- // #page_footer -->
 
 	{{javascript_files}}
 	<script>

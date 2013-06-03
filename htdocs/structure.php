@@ -36,7 +36,7 @@ $template = new Page;
 
 # Define the title page elements.
 $template->field->browser_title = $struct->name.'—'.SITE_TITLE;
-$template->field->page_title = $struct->name;
+$template->field->page_title = '<h2>'.$struct->name.'</h2>';
 
 # Define the breadcrumb trail.
 if (count((array) $structure) > 1)
@@ -235,7 +235,7 @@ if (!empty($sidebar))
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'law inside';
+$template->field->body_class = 'inside';
 $template->field->content_class = 'nest narrow';
 
 # Parse the template, which is a shortcut for a few steps that culminate in sending the content
