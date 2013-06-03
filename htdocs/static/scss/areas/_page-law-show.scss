@@ -3,21 +3,17 @@
 ################################################################################
 */
 
-body.law {
-  .nest {
-    max-width: none;
-    padding: 0 40px;
-    width: 100%;
-    @include respond-to(smartphone) {
-      padding: 0;
-    }
-  }
-
+.law {
   section#main_content {
     overflow: hidden;
   }
 
-  section.law-detail {
+  #main_content heading {
+    display: block;
+    padding: 20px;
+  }
+
+  .primary-content {
     float: left;
     margin-right: 1%;
     padding: 20px;
@@ -61,17 +57,25 @@ body.law {
 
   }
 
-  section.secondary-content {
+  .secondary-content {
 
     float: right;
-    font-size: 81.25%;
     padding: 20px;
-    text-align: center;
     width: 44%;
 
     @include respond-to(smartphone) {
       float: none;
       width: 100%;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .identifier,
+    .title {
+      display: block;
+      margin: 1em 0 0;
     }
 
     .ad {
@@ -87,7 +91,8 @@ body.law {
 
     }
 
-    div.grouping {
+    .grouping,
+    .related-group {
       float: left;
       margin-right:1%;
       text-align: left;
@@ -105,23 +110,21 @@ body.law {
 
     }
 
-    div.grouping.last {
+    .grouping.last {
       margin-right: 0;
     }
 
-    div.grouping > section,
-    section#legal_self_help {
+    .grouping > section,
+    .related-group,
+    .info-box {
 
   //    @include opacity(.5); // layer alpha
-      @extend %clearfix;
-      clear: both;
       border: 1px solid #e4e9e7; // stroke
       background-color: #fcfdfa; // layer fill content + color overlay
       box-shadow:inset 0 2px 20px rgba(111,114,117,.15); // inner shadow
       margin-bottom: 1em;
       padding: 0;
       text-align: left;
-      width: 100%;
 
       h1 {
         font-family: $statedecoded-stack3;
@@ -242,55 +245,37 @@ body.law {
         } // article.court-decision
 
       }
-
-      &#cross_references {
-        article.cross-reference {
-          h1 {
-            font-family: $statedecoded-stack2;
-            margin: 1em 0 0 0;
-          }
-        }
-      }
-
-      &#related_laws {
-        article.related-law {
-          h1 {
-            font-family: $statedecoded-stack2;
-            margin: 1em 0 0 0;
-          }
-        }
-      }
-
-      &#cite_as {
-        background-color: #656358;
-        color: #fff;
-        overflow: hidden;
-        text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
-
-        > h1 {
-          float: left;
-          font-size: 24px;
-          font-weight: 100;
-          font-style: normal;
-          margin: 0;
-          padding: 10px;
-          text-transform: uppercase;
-          width: 50%;
-        } // h1
-
-        dl {
-          float: right;
-          margin: 1em 0 0 0;
-          padding: 0;
-          width: 49%;
-
-          dt { font-size: 85%; margin: 0; padding: 0; text-transform: uppercase;}
-          dd { margin: 0 0 1em 0; padding: 0; }
-
-        }
-
-      } // &#cite_as
     }
+
+    .dark {
+      background-color: #656358;
+      color: #fff;
+      overflow: hidden;
+      text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+
+      > h1 {
+        float: left;
+        font-size: 24px;
+        font-weight: 100;
+        font-style: normal;
+        margin: 0;
+        padding: 10px;
+        text-transform: uppercase;
+        width: 50%;
+      } // h1
+
+      dl {
+        float: right;
+        margin: 1em 0 0 0;
+        padding: 0;
+        width: 49%;
+
+        dt { font-size: 85%; margin: 0; padding: 0; text-transform: uppercase;}
+        dd { margin: 0 0 1em 0; padding: 0; }
+
+      }
+
+    } // &#cite_as
   }
 }
 

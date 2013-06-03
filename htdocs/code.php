@@ -93,7 +93,7 @@ unset($sidebar);
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'law inside';
+$template->field->body_class = 'inside';
 $template->field->content_class = 'nest narrow';
 
 /*

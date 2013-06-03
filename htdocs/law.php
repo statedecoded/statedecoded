@@ -115,13 +115,13 @@ if (is_object($law->dublin_core))
 $template->field->breadcrumbs = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->breadcrumbs .= '<li><a href="'.$ancestor->url . '">' . $ancestor->identifier . ' '
+	$template->field->heading .= '<li><a href="' . $ancestor->url . '">' . $ancestor->identifier . ' '
 		. $ancestor->name . '</a></li>';
 }
-$template->field->breadcrumbs .= '<li class="active"><a href="/' . $law->section_number . '/">' . $law->section_number
+$template->field->heading .= '<li class="active"><a href="/' . $law->section_number . '/">' . $law->section_number
 	. ' ' . $law->catch_line . '</a></li>';
 
-$template->field->breadcrumbs = '<ul class="steps-nav">' . $template->field->breadcrumbs . '</ul>';
+$template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">' . $template->field->heading . '</ul></nav>';
 
 /*
  * If there is a prior section in this structural unit, provide a back arrow.
@@ -129,7 +129,7 @@ $template->field->breadcrumbs = '<ul class="steps-nav">' . $template->field->bre
 if (isset($law->previous_section))
 {
 	$nav .= '<a href="' . $law->previous_section->url . '" class="prev"
-		title="Previous section">Previous: ' . $law->previous_section->catch_line . '</a>' . $template->field->breadcrumbs;
+		title="Previous section">Previous: ' . $law->previous_section->catch_line . '</a>' . $template->field->heading;
 	$template->field->link_rel .= '<link rel="prev" title="Previous: ' . $law->previous_section->catch_line . '" 
 		href="' . $law->previous_section->url . '" />';
 }
@@ -147,7 +147,7 @@ if (isset($law->next_section))
 
 if($nav)
 {
-	$template->field->breadcrumbs .= '<nav class="paging">' . $nav . '</nav>';
+	$template->field->heading .= '<nav class="paging">' . $nav . '</nav>';
 }
 
 $template->field->heading = '<nav class="paging">' . $template->field->heading . '</nav>';
