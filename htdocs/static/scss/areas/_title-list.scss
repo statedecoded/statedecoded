@@ -1,0 +1,20 @@
+
+.title-list {
+  li,dd,dt {
+    list-style: none;
+    padding: 5px;
+    a {
+      text-decoration: none;
+    }
+  }
+  li:nth-child(even),
+  .even {
+    background-color: $gray-lighter;
+  }
+  dt {
+    float: left;
+    display: block;
+    margin-right: 10px;
+    width: 100px;
+  }
+}

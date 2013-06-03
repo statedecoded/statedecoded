@@ -1,0 +1,50 @@
+div.video-frame {
+  background-color: $white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.75);
+  float: right;
+  margin-top: -150px;
+  position: relative;
+  width: 50%;
+  z-index: 100;
+
+  @include respond-to(smartphone) {
+    float: none;
+    margin: 1em 0;
+    position: relative;
+      top: 0;
+    width:100%;
+  }
+
+  @include respond-to(tablet) {
+    float: none;
+    margin: 2em 0;
+    position: relative;
+      top: 0;
+    width: 100%;
+  }
+
+  div.video-container {
+    height: 0;
+    padding-bottom: 56.25%;
+    padding-top: 30px;
+    width: 100%;
+
+    iframe,
+    object,
+    embed,
+    img,
+    video {
+      border: 10px solid white;
+      position: absolute;
+        top: 0;
+        left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+
+      @include respond-to(smartphone) {
+        border: 5px solid white;
+      }
+    }
+  }
+} // .video-frame

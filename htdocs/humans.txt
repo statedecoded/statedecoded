@@ -1,0 +1,16 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Waldo Jaquith -- Lead Developer/Ambassador to France -- @waldojaquith
+    John Athayde -- Designer -- @boboroshi
+
+# THANKS
+
+    <name>
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    jQuery, Modernizr
