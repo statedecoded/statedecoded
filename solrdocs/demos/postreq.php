@@ -47,7 +47,7 @@ class PostFilesRequest extends PostRequest {
     function __construct($urlEndpoint) {
         parent::__construct($urlEndpoint);
     }
-    
+
 
     // Takes a glob pattern and posts 
     // those files up
@@ -55,18 +55,22 @@ class PostFilesRequest extends PostRequest {
         $files = array();
         $numFiles = 0;
         $url = $this->fullUrl($queryParams);
-        $contentType = array($contentType);
         curl_setopt($this->ch, CURLOPT_URL, $url);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($this->ch, CURLOPT_POST, true);
-        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $contentType); 
-        foreach (glob($globPattern, GLOB_NOSORT) as $filename) {
-            curl_setopt($this->ch, CURLOPT_POSTFIELDS, file_get_contents($filename));
-            $response = $this->handleResponse(curl_exec($this->ch));
-            echo "Posted $numFiles -- $filename           \r";
+        #curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
+        #curl_setopt($this->ch, CURLOPT_POST, true);
+        #curl_setopt($this->ch, CURLOPT_HTTPHEADER, array("Content-type: multipart/mixed"));
+        $params = array();
+        echo "Preparing MP Req: $globPattern\n"; 
+        $fileListing = glob($globPattern, GLOB_NOSORT);
+        foreach ($fileListing as $key=>$filename) {
+            $params["file_$numFiles"] = '@' . realpath($filename) . ";type=text/xml";
             ++$numFiles;
         }
+        echo "Done Preparing $globPattern\n";
+        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $params);
+        $response = $this->handleResponse(curl_exec($this->ch));
+        echo $response;
     }
 
 
