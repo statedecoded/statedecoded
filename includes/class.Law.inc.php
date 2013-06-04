@@ -706,9 +706,11 @@ class Law
 		
 		/*
 		 * Instantiate our autolinker, which embeds links. If we've defined a state-custom
-		 * autolinker, use that one. Otherwise, use the built-in one.
+		 * autolinker, use that one. Otherwise, use the built-in one. Be sure not to attempt to
+		 * autoload a file fitting our class-name schema, since this class, if it exists, would be
+		 * found within class.[State].inc.php.
 		 */
-		if (class_exists('State_Autolinker') === TRUE)
+		if (class_exists('State_Autolinker', FALSE) === TRUE)
 		{
 			$autolinker = new State_Autolinker;
 		}
