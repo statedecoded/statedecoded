@@ -27,7 +27,8 @@ $contentType = "Content-Type: application/xml; charset=US-ASCII";
 # First we POST to statedecoded/update endpoint and then
 # we commit the changes
 $postFilesReq = new PostFilesRequest($url);
-$queryParams = array('tr' => 'stateDecodedXml.xsl');
+$queryParams = array('wt' => 'json', 
+                     'tr' => 'stateDecodedXml.xsl');
 
 # A note on performance, this takes about 60 seconds to index all 
 # of Virginias laws. This could be improved dramatically, but 
