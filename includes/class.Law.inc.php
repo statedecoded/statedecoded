@@ -808,7 +808,7 @@ class Law
 		$num_paragraphs = count((array) $this->text);
 		foreach ($this->text as $paragraph)
 		{
-		
+			
 			/*
 			 * Identify the prior and next sections, by storing their prefixes.
 			 */
@@ -847,16 +847,14 @@ class Law
 			/*
 			 * Start a paragraph of the appropriate type.
 			 */
-			$html .= '<';
 			if ($paragraph->type == 'section')
 			{
-				$html .= 'p';
+				$html .= '<p>';
 			}
 			elseif ($paragraph->type == 'table')
 			{
-				$html .= 'pre class="table"';
+				$html .= '<pre class="table">';
 			}
-			$html .= '>';
 			
 			/*
 			 * If we've got a section prefix, and it's not the same as the last one, then display
