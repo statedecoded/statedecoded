@@ -20,17 +20,8 @@
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
 	{{css}}
 	{{inline_css}}
-
-	<script src="/static/js/vendor/modernizr.min.js"></script>
-
-	<!-- TypeKit Font loading -->
-	<script type="text/javascript" src="//use.typekit.net/djv6ymt.js"></script>
-	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-	
-	<script src="/js/jquery.qtip.min.js"></script>
 
 </head>
 <body class="preload {{body_class}}">
