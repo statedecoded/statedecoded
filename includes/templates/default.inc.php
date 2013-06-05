@@ -52,12 +52,10 @@
 						<a href="/code/" id="the_code">The Code</a>
 					</li>
 					<li>
+						<a href="/api-key/" id="use_the_api">Use The API</a>
 					</li>
 					<li>
 						<a href="/about/" id="about_us">About Us</a>
-					</li>
-					<li>
-						<a href="/api-key/" id="use_the_api">Use The API</a>
 					</li>
 				</ul>
 			</div> <!-- // .nest -->
