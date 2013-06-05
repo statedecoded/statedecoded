@@ -221,6 +221,39 @@ class Parser
 		{
 			foreach ($this->section->metadata as $field)
 			{
+<<<<<<< HEAD
+				foreach ($field as $key => $value)
+=======
+<<<<<<< HEAD
+				
+				/*
+				 * Convert true/false values to y/n values.
+				 */
+				if ($value == 'true')
+				{
+					$value = 'y';
+				}
+				elseif ($value == 'false')
+>>>>>>> Iterate through metadata differently
+				{
+					/*
+					 * Convert true/false values to y/n values.
+					 */
+					if ($value == 'true')
+					{
+						$value = 'y';
+					}
+					elseif ($value == 'true')
+					{
+						$value = 'n';
+					}
+					$this->code->metadata->$key = $value;
+				}
+<<<<<<< HEAD
+=======
+				
+				$this->code->metadata->$key = $value;
+=======
 				foreach ($field as $key => $value)
 				{
 					/*
@@ -236,6 +269,8 @@ class Parser
 					}
 					$this->code->metadata->$key = $value;
 				}
+>>>>>>> Iterate through metadata differently
+>>>>>>> Iterate through metadata differently
 			}
 			
 		}

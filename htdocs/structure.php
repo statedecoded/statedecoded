@@ -46,17 +46,11 @@ $structure = $struct->structure;
  */
 $template = new Page;
 
-<<<<<<< HEAD
 /*
  * Define the title page elements.
  */
-$template->field->browser_title = $struct->name . '—' . SITE_TITLE;
-$template->field->page_title = '<h2>' . $struct->name . '</h2>';
-=======
-# Define the title page elements.
 $template->field->browser_title = $struct->name.'—'.SITE_TITLE;
 $template->field->page_title = '<h2>'.$struct->name.'</h2>';
->>>>>>> Refactoring law stylings for consistency.
 
 /*
  * Define the breadcrumb trail.
