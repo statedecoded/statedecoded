@@ -1,16 +1,29 @@
-# humanstxt.org/
-# The humans responsible & technology colophon
+/* TEAM */
 
-# TEAM
+    Lead Developer: Waldo Jaquith
+    Twitter: @waldojaquith
+    
+    Developer: Bill Hunt
+    Twitter: @krues8dr
+    
+    Designer: John Athayde
+    Company: Meticulous
+    Twitter: @boboroshi
+    
+    Solr Developer: Doug Turnbull
+    Company: OpenSource Connections, Inc.
+    Twitter: @softwaredoug
+    
+    Solr Developer: John Berryman
+    Company: OpenSource Connections, Inc.
+    Twitter: @JnBrymn
 
-    Waldo Jaquith -- Lead Developer/Ambassador to France -- @waldojaquith
-    John Athayde -- Designer -- @boboroshi
+/* THANKS */
 
-# THANKS
+	Project Funder: The John S. and James L. Knight Foundation News Challenge
+	URL: https://www.newschallenge.org/	
 
-    <name>
-
-# TECHNOLOGY COLOPHON
+/* TECHNOLOGY COLOPHON */
 
     HTML5, CSS3
     jQuery, Modernizr
