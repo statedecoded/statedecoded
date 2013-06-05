@@ -51,6 +51,11 @@ define('TEMPLATE', 'default');
 define('SITE_TITLE', 'The State Decoded');
 
 /*
+ * What is the name of the place that these laws govern?
+ */
+define('PLACE_NAME', 'State');
+
+/*
  * What does this state call its laws?
  */
 define('LAWS_NAME', 'Code of State');
