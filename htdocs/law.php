@@ -135,11 +135,6 @@ $template->field->heading .= '<li class="active"><a href="/'.$law->section_numbe
 
 $template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">'.$template->field->heading.'</ul></nav>';
 
-
-/*
- * If there is a prior section in this structural unit, provide a back arrow.
- */
-
 if (isset($law->previous_section))
 {
 	$nav .= '<a href="'.$law->previous_section->url.'" class="prev"
@@ -148,9 +143,6 @@ if (isset($law->previous_section))
 		href="'.$law->previous_section->url.'" />';
 }
 
-/*
- * If there is a next section in this chapter, provide a forward arrow.
- */
 if (isset($law->next_section))
 {
 	$nav .= '<a href="'.$law->next_section->url.'" class="next"
