@@ -52,7 +52,6 @@
 						<a href="/code/" id="the_code">The Code</a>
 					</li>
 					<li>
-						<a href="" id="court_cases">Court Cases</a>
 					</li>
 					<li>
 						<a href="/about/" id="about_us">About Us</a>
