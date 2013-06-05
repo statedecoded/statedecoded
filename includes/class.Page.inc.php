@@ -75,6 +75,11 @@ class Page
 		}
 		
 		/*
+		 * Include the place name (e.g., "Washington," "Texas," "United States").
+		 */
+		$this->field->place_name = PLACE_NAME;
+		
+		/*
 		 * Replace all of our in-page tokens with our defined variables.
 		 */
 		foreach ($this->field as $field=>$contents)
