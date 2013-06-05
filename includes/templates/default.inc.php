@@ -120,6 +120,10 @@
 	<script>
 		{{javascript}}
 	</script>
-	<script src="/js/jquery.qtip.min.js"></script>
+	<script src="/static/js/vendor/jquery.qtip.min.js"></script>
+	<script src="/static/js/vendor/modernizr.min.js"></script>
+	<!-- TypeKit Font loading -->
+	<script type="text/javascript" src="//use.typekit.net/djv6ymt.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </body>
 </html>
