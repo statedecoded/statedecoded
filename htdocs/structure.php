@@ -60,7 +60,7 @@ if (count((array) $structure) > 1)
 	}
 }
 
-if($template->field->breadcrumbs)
+if (isset($template->field->breadcrumbs))
 {
 	$template->field->breadcrumbs = '<ul class="steps-nav">'.$template->field->breadcrumbs.'</ul>';
 }
