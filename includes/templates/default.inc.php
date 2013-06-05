@@ -31,8 +31,8 @@
 	<header id="page_header">
 		<div class="nest">
 			<a href="/">
-				<hgroup id="virginia_logo">
-					<h1>Virginia</h1>
+				<hgroup id="place_logo">
+					<h1>{{place_name}}</h1>
 					<h2>Decoded</h2>
 				</hgroup>
 			</a>
