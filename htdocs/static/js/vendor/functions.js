@@ -178,7 +178,7 @@ $(document).ready(function () {
 		
 		/* Permit copying URLs to the clipboard. */
 		copy_link.zclip({
-			path: '/js/ZeroClipboard.swf',
+			path: '/static/js/vendor/ZeroClipboard.swf',
 			copy: function() {
 				var target = $(this).attr('data-target');
 				return $(target).attr('href');
