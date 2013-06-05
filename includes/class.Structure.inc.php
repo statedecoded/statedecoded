@@ -655,6 +655,7 @@ class Structure
 		// order_by field primarily, but we also order by section as a backup, in case something
 		// should fail with the order_by field. The section column is not wholly reliable for
 		// sorting (hence the order_by field), but it's a great deal better than an unsorted list.
+<<<<<<< HEAD
 
 		/**
 		 * TODO: Replace this with a join instead ???
@@ -684,6 +685,20 @@ class Structure
 		
 		else
 		{
+=======
+		
+		if (INCLUDES_REPEALED !== TRUE)
+		{
+		
+			$sql = 'SELECT id, structure_id, section AS section_number, catch_line
+					FROM laws
+					WHERE structure_id=' . $db->quote($this->id) . '
+					ORDER BY order_by, section';
+		}
+		
+		else
+		{
+>>>>>>> Rewrite a query to make it faster and work better
 		
 			$sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line
 					FROM laws
