@@ -214,8 +214,9 @@ class Parser
 		 */
 		if (isset($this->section->metadata))
 		{
-			foreach ($this->section->metadata as $key => $value)
+			foreach ($this->section->metadata as $field)
 			{
+<<<<<<< HEAD
 				
 				/*
 				 * Convert true/false values to y/n values.
@@ -230,6 +231,23 @@ class Parser
 				}
 				
 				$this->code->metadata->$key = $value;
+=======
+				foreach ($field as $key => $value)
+				{
+					/*
+					 * Convert true/false values to y/n values.
+					 */
+					if ($value == 'true')
+					{
+						$value = 'y';
+					}
+					elseif ($value == 'true')
+					{
+						$value = 'n';
+					}
+					$this->code->metadata->$key = $value;
+				}
+>>>>>>> Iterate through metadata differently
 			}
 		}
 
@@ -404,6 +422,7 @@ class Parser
 
 		foreach ($this->code->structure as $struct)
 		{
+		
 			$structure->identifier = $struct->identifier;
 			$structure->name = $struct->name;
 			$structure->label = $struct->label;
@@ -413,6 +432,7 @@ class Parser
 				$structure->parent_id = $this->code->structure_id;
 			}
 			$this->code->structure_id = $structure->create_structure();
+
 		}
 
 		// When that loop is finished, because structural units are ordered from most general to
