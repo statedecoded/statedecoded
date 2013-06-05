@@ -57,21 +57,21 @@ class Page
 		/*
 		 * Create the browser title.
 		 */
-		if (!isset($field->browser_title))
+		if (!isset($this->field->browser_title))
 		{
-			if (isset($field->page_title))
+			if (isset($this->field->page_title))
 			{
-				$field->browser_title .= $field->page_title;
-				$field->browser_title .= '—' . SITE_TITLE;
+				$this->field->browser_title .= $this->field->page_title;
+				$this->field->browser_title .= '—' . SITE_TITLE;
 			}
 			else
 			{
-				$field->browser_title .= SITE_TITLE;
+				$this->field->browser_title .= SITE_TITLE;
 			}
 		}
 		else
 		{
-			$field->browser_title .= '—' . SITE_TITLE;
+			$this->field->browser_title .= '—' . SITE_TITLE;
 		}
 		
 		/*
