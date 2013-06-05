@@ -870,8 +870,8 @@ class Law
 				 */
 				$permalink = $_SERVER['REQUEST_URI'] . '#'.$paragraph->prefix_anchor;
 
-				$html .= ' <a id="test-' . $paragraph->id . '" class="section-permalink"
-					href="' . $permalink . '">¶</a>';
+				$html .= ' <a id="test-' . $paragraph->id . '" class="section-permalink" '
+					.'href="' . $permalink . '">¶</a>';
 			}
 			if ($paragraph->type == 'section')
 			{
