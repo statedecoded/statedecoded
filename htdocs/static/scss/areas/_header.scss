@@ -17,7 +17,7 @@
     height: 190px;
   }
 
-  hgroup#virginia_logo {
+  hgroup#place_logo {
     @include background-image(image-url("faux_seal.png"));
     background-repeat: no-repeat;
     background-position: top left;
@@ -92,7 +92,7 @@
         margin: 0;
       }
     } //h2
-  } // hgroup#virginia_logo
+  } // hgroup#place_logo
 
   nav#main_navigation {
     background-color: $base-dark;
@@ -240,7 +240,7 @@
         width: 100%;
       }
 
-      hgroup#virginia_logo {
+      hgroup#place_logo {
         background-size: 50px 50px;
         height: 50px;
         padding-left: 0;
@@ -260,7 +260,7 @@
           letter-spacing: 0.5em;
           margin: -5px 0 0 120px;
         }
-      } // hgroup#virginia_logo
+      } // hgroup#place_logo
 
       section#search {
         margin-top: 0;

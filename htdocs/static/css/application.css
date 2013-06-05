@@ -1782,7 +1782,7 @@ header#page_header {
       padding-top: 0;
       height: 190px; } }
   /* line 20, ../scss/areas/_header.scss */
-  header#page_header hgroup#virginia_logo {
+  header#page_header hgroup#place_logo {
     background-image: url('/static/images/faux_seal.png?1368993938');
     background-repeat: no-repeat;
     background-position: top left;
@@ -1798,7 +1798,7 @@ header#page_header {
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.35); }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
       /* line 20, ../scss/areas/_header.scss */
-      header#page_header hgroup#virginia_logo {
+      header#page_header hgroup#place_logo {
         background-position: 0 10px;
         background-size: 88px 88px;
         clear: both;
@@ -1808,7 +1808,7 @@ header#page_header {
         top: 0; } }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
       /* line 20, ../scss/areas/_header.scss */
-      header#page_header hgroup#virginia_logo {
+      header#page_header hgroup#place_logo {
         background-size: 88px 88px;
         float: left;
         padding-left: 100px;
@@ -1817,7 +1817,7 @@ header#page_header {
         left: 0;
         width: 40%; } }
     /* line 55, ../scss/areas/_header.scss */
-    header#page_header hgroup#virginia_logo h1 {
+    header#page_header hgroup#place_logo h1 {
       font-family: "adobe-jenson-pro", Georgia, "Times New Roman", Times, serif;
       font-size: 65px;
       line-height: 75px;
@@ -1825,18 +1825,18 @@ header#page_header {
       margin: 0; }
       @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
         /* line 55, ../scss/areas/_header.scss */
-        header#page_header hgroup#virginia_logo h1 {
+        header#page_header hgroup#place_logo h1 {
           font-size: 50px;
           line-height: 60px;
           margin: 0; } }
       @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
         /* line 55, ../scss/areas/_header.scss */
-        header#page_header hgroup#virginia_logo h1 {
+        header#page_header hgroup#place_logo h1 {
           font-size: 50px;
           line-height: 60px;
           margin: 0; } }
     /* line 75, ../scss/areas/_header.scss */
-    header#page_header hgroup#virginia_logo h2 {
+    header#page_header hgroup#place_logo h2 {
       font-family: "proxima-nova", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-size: 150%;
       font-weight: 100;
@@ -1845,12 +1845,12 @@ header#page_header {
       text-transform: uppercase; }
       @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
         /* line 75, ../scss/areas/_header.scss */
-        header#page_header hgroup#virginia_logo h2 {
+        header#page_header hgroup#place_logo h2 {
           font-size: 125%;
           margin: 0; } }
       @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
         /* line 75, ../scss/areas/_header.scss */
-        header#page_header hgroup#virginia_logo h2 {
+        header#page_header hgroup#place_logo h2 {
           font-size: 120%;
           font-weight: 400;
           letter-spacing: 0.7em;
@@ -1986,7 +1986,7 @@ header#page_header {
         padding: 0 40px;
         width: 100%; }
       /* line 243, ../scss/areas/_header.scss */
-      .inside header#page_header hgroup#virginia_logo {
+      .inside header#page_header hgroup#place_logo {
         background-size: 50px 50px;
         height: 50px;
         padding-left: 0;
@@ -1994,12 +1994,12 @@ header#page_header {
         top: 8px;
         left: 40px; }
         /* line 251, ../scss/areas/_header.scss */
-        .inside header#page_header hgroup#virginia_logo h1 {
+        .inside header#page_header hgroup#place_logo h1 {
           font-size: 35px;
           line-height: 35px;
           margin: 0 0 0 55px; }
         /* line 257, ../scss/areas/_header.scss */
-        .inside header#page_header hgroup#virginia_logo h2 {
+        .inside header#page_header hgroup#place_logo h2 {
           font-size: 12px;
           font-weight: 400;
           letter-spacing: 0.5em;
