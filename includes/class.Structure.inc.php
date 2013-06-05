@@ -303,11 +303,10 @@ class Structure
 				$sql .= ' AND
 						(SELECT COUNT(*)
 						FROM laws
-						LEFT JOIN laws_meta
-							ON laws.id = laws_meta.law_id
+						LEFT OUTER JOIN laws_meta
+							ON laws.id = laws_meta.law_id AND laws_meta.meta_key = "repealed"
 						WHERE laws.structure_id=structure.id
-						AND laws_meta.meta_key = "repealed"
-						AND laws_meta.meta_value = "n") > 0';
+						AND ((laws_meta.meta_value = "n") OR laws_meta.meta_value IS NULL)  ) > 0';
 			}
 
 		}
