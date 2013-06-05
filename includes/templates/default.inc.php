@@ -98,23 +98,25 @@
 	
 	</section> <!-- // #page -->
 	
-    <footer id="page_footer">
-      <div class="nest">
-        <p class="legalese">
-          Richmond Capitol photo licensed under creative commons from http://www.flickr.com/photos/goellnitz/5277987497. All user-contributed content is, of course, owned by its authors. The state code is owned by the citizens of Virginia and, consequently, it is not governed by copyright—so do whatever you want with it! The information on this website does not constitute legal advice—nobody here is acting as your attorney, and nothing that you read here is a substitute for a competent attorney. I make no guarantee that this information is accurate or up-to-date, although I try my best. Seriously, I am not your attorney. Heck, I’m not an attorney at all.
-        </p>
-        <p class="downloads">
-          <a href="" title="">Bulk Downloads</a>
-        </p>
-        <p class="credits">
-          &copy; 2011 - 2012 <a href="http://waldo.jaquith.org">Waldo Jaquith</a>
-          <br>
-          Powered by <a href="">The State Decoded</a>
-          <br>
-          Design by <a href="http://www.meticulous.com">Meticulous</a>
-        </p>
-      </div> <!-- // .nest -->
-    </footer> <!-- // #page_footer -->
+		<footer id="page_footer">
+			<div class="nest">
+				<p class="legalese">
+					All user-contributed content is owned by its authors. The laws are owned by the
+					people and, consequently, are not governed by copyright—so do whatever you want
+					with them. This website does not constitute legal advice. Only a lawyer can
+					provide legal advice. While every effort is made to keep all information
+					up-to-date and accurate, no guarantee is made as to its accuracy.
+				</p>
+				<p class="downloads">
+					<a href="" title="">Bulk Downloads</a>
+				</p>
+				<p class="credits">
+					Powered by <a href="http://www.statedecoded.com/">The State Decoded</a><br>
+					Copyright 2011–2013 <a href="http://waldo.jaquith.org/">Waldo Jaquith</a><br>
+					Design by <a href="http://www.meticulous.com">Meticulous</a>
+				</p>
+			</div> <!-- // .nest -->
+		</footer> <!-- // #page_footer -->
 
 	{{javascript_files}}
 	<script>
