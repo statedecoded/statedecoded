@@ -788,11 +788,7 @@ class Law
 			/*
 			 * Turn every pair of newlines into carriage returns.
 			 */
-<<<<<<< HEAD
-			$section->text = nl2br($section->text);
-=======
 			$section->text = preg_replace('/\R\R/', '<br /><br />', $section->text);
->>>>>>> Replace newlines with break tags, not paragraph tags
 			
 			/*
 			 * Use our dictionary to embed dictionary terms in the form of span titles.
