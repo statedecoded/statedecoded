@@ -898,9 +898,9 @@ class Law
 				$permalink = '//' . $_SERVER['SERVER_NAME']
 					. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
 					. $_SERVER['REQUEST_URI'] . '#' . $paragraph->prefix_anchor;
-
+				
 				$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
-					.'href="' . $permalink . '">¶</a>';
+					. 'href="' . $permalink . '">¶</a>';
 			}
 			if ($paragraph->type == 'section')
 			{
