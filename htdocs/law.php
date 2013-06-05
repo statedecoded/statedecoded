@@ -123,9 +123,6 @@ $template->field->heading .= '<li class="active"><a href="/' . $law->section_num
 
 $template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">' . $template->field->heading . '</ul></nav>';
 
-/*
- * If there is a prior section in this structural unit, provide a back arrow.
- */
 if (isset($law->previous_section))
 {
 	$nav .= '<a href="' . $law->previous_section->url . '" class="prev"
