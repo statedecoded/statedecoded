@@ -148,12 +148,14 @@ function sort_by_length($a, $b)
  * @param string $text The text to be formatted
  * @return string The string replaced with html entities
  */
-function wptexturize($text) {
+function wptexturize($text)
+{
 	global $wp_cockneyreplace;
 	//static $opening_quote, $closing_quote, $default_no_texturize_tags, $default_no_texturize_shortcodes, $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements;
 
 	// No need to set up these static variables more than once
-	if ( empty( $opening_quote ) ) {
+	if ( empty( $opening_quote ) )
+	{
 		/* translators: opening curly quote */
 		$opening_quote = '“';
 		/* translators: closing curly quote */
@@ -163,10 +165,14 @@ function wptexturize($text) {
 		$default_no_texturize_shortcodes = array('code');
 
 		// if a plugin has provided an autocorrect array, use it
-		if ( isset($wp_cockneyreplace) ) {
+		if ( isset($wp_cockneyreplace) )
+		{
 			$cockney = array_keys($wp_cockneyreplace);
 			$cockneyreplace = array_values($wp_cockneyreplace);
-		} else {
+		}
+		
+		else
+		{
 			$cockney = array("'tain't","'twere","'twas","'tis","'twill","'til","'bout","'nuff","'round","'cause");
 			$cockneyreplace = array("’tain’t","’twere","’twas","’tis","’twill","’til","’bout","’nuff","’round","’cause");
 		}
@@ -188,17 +194,25 @@ function wptexturize($text) {
 
 	$textarr = preg_split('/(<.*>|\[.*\])/Us', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-	foreach ( $textarr as &$curl ) {
+	foreach ( $textarr as &$curl )
+	{
 		if ( empty( $curl ) )
 			continue;
 
 		// Only call _wptexturize_pushpop_element if first char is correct tag opening
 		$first = $curl[0];
-		if ( '<' === $first ) {
+		if ( '<' === $first )
+		{
 			_wptexturize_pushpop_element($curl, $no_texturize_tags_stack, $no_texturize_tags, '<', '>');
-		} elseif ( '[' === $first ) {
+		}
+		
+		elseif ( '[' === $first )
+		{
 			_wptexturize_pushpop_element($curl, $no_texturize_shortcodes_stack, $no_texturize_shortcodes, '[', ']');
-		} elseif ( empty($no_texturize_shortcodes_stack) && empty($no_texturize_tags_stack) ) {
+		}
+		
+		elseif ( empty($no_texturize_shortcodes_stack) && empty($no_texturize_tags_stack) )
+		{
 			// This is not a tag, nor is the texturization disabled static strings
 			$curl = str_replace($static_characters, $static_replacements, $curl);
 			// regular expressions
@@ -223,11 +237,15 @@ function wptexturize($text) {
  * @param string $opening Tag closing  character
  * @return object
  */
-function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $opening = '<', $closing = '>') {
+function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $opening = '<', $closing = '>')
+{
 	// Check if it is a closing tag -- otherwise assume opening tag
-	if (strncmp($opening . '/', $text, 2)) {
+	if (strncmp($opening . '/', $text, 2))
+	{
+	
 		// Opening? Check $text+1 against disabled elements
-		if (preg_match('/^' . $disabled_elements . '\b/', substr($text, 1), $matches)) {
+		if (preg_match('/^' . $disabled_elements . '\b/', substr($text, 1), $matches))
+		{
 			/*
 			 * This disables texturize until we find a closing tag of our type
 			 * (e.g. <pre>) even if there was invalid nesting before that
@@ -238,14 +256,19 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 
 			array_push($stack, $matches[1]);
 		}
-	} else {
+	}
+	
+	else
+	{
 		// Closing? Check $text+2 against disabled elements
 		$c = preg_quote($closing, '/');
-		if (preg_match('/^' . $disabled_elements . $c . '/', substr($text, 2), $matches)) {
+		if (preg_match('/^' . $disabled_elements . $c . '/', substr($text, 2), $matches))
+		{
 			$last = array_pop($stack);
 
 			// Make sure it matches the opening tag
 			if ($last != $matches[1])
+			{
 				array_push($stack, $last);
 		}
 	}
