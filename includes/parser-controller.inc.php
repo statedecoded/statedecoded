@@ -90,7 +90,7 @@ class ParserController
 	 */
 	public function clear_db()
 	{
-		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections');
+		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections', 'structure');
 		foreach ($tables as $table)
 		{
 			$sql = 'TRUNCATE '.$table;
