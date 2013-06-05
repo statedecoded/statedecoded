@@ -249,26 +249,29 @@ class Law
 			 * through all of the contents of the chapter. (It's possible that there are no next or
 			 * prior sections, such as in a single-item structural unit.)
 			 */
-			$tmp = count((array) $this->structure_contents);
-			for ($i=0; $i<$tmp; $i++)
+			if ($this->structure_contents !== FALSE)
 			{
-				/*
-				 * When we get to our current section, that's when we get to work.
-				 */
-				if ($this->structure_contents->$i->id == $this->section_id)
+				$tmp = count((array) $this->structure_contents);
+				for ($i=0; $i<$tmp; $i++)
 				{
-					$j = $i-1;
-					$k = $i+1;
-					if (isset($this->structure_contents->$j))
+					/*
+					 * When we get to our current section, that's when we get to work.
+					 */
+					if ($this->structure_contents->$i->id == $this->section_id)
 					{
-						$this->previous_section = $this->structure_contents->$j;
+						$j = $i-1;
+						$k = $i+1;
+						if (isset($this->structure_contents->$j))
+						{
+							$this->previous_section = $this->structure_contents->$j;
+						}
+						
+						if (isset($this->structure_contents->$k))
+						{
+							$this->next_section = $this->structure_contents->$k;
+						}
+						break;
 					}
-					
-					if (isset($this->structure_contents->$k))
-					{
-						$this->next_section = $this->structure_contents->$k;
-					}
-					break;
 				}
 			}
 		}
