@@ -246,7 +246,8 @@ class Law
 
 			/*
 			 * Figure out what the next and prior sections are (we may have 0-1 of either). Iterate
-			 * through all of the contents of the chapter.
+			 * through all of the contents of the chapter. (It's possible that there are no next or
+			 * prior sections, such as in a single-item structural unit.)
 			 */
 			$tmp = count((array) $this->structure_contents);
 			for ($i=0; $i<$tmp; $i++)
