@@ -572,7 +572,6 @@ class Law
 		 * Return the result as an object.
 		 */
 		$metadata = $result->fetchAll(PDO::FETCH_OBJ);
-		
 		/*
 		 * Create a new object, to which we will port a rotated version of this object.
 		 */
@@ -582,11 +581,34 @@ class Law
 		 * Iterate through the object in order to reorganize it, assigning the meta_key field to the
 		 * key and the meta_value field to the value.
 		 */
-		foreach($metadata as $field)
+		foreach ($metadata as $row)
 		{
-			$rotated->{stripslashes($field->meta_key)} = unserialize(stripslashes($field->meta_value));
+			
+			$row->meta_value = stripslashes($row->meta_value);
+			
+			/*
+			 * If unserializing this value works, then we've got serialized data here.
+			 */
+			if (@unserialize($row->meta_value) !== FALSE)
+			{
+				$row->meta_value = unserialize($row->meta_value);
+			}
+			
+			/*
+			 * Convert y/n values into TRUE/FALSE values.
+			 */
+			if ($row->meta_value == 'y')
+			{
+				$row->meta_value = TRUE;
+			}
+			elseif ($row->meta_value == 'n')
+			{
+				$row->meta_value = FALSE;
+			}
+			
+			$rotated->{stripslashes($row->meta_key)} = $row->meta_value;
+			
 		}
-		
 		return $rotated;
 	}
 	
