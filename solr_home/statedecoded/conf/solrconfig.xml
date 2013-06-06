@@ -852,7 +852,235 @@
      </lst>
   </requestHandler>
 
- 
+
+  <requestHandler name="/search" class="solr.SearchHandler">
+    <lst name="defaults">
+       <str name="echoParams">explicit</str>
+
+       <!-- Query settings -->
+       <str name="defType">edismax</str><!--Use the Google-like query parser. Users just type keywords.-->
+       <str name="qf"><!--Query fields. Change the weighting as you please.-->
+                         catch_line
+                               tags^0.1 <!--Low weighting on this field ensures text will have higher impact on score.-->
+                               text
+                          structure
+                   section_ancestor^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
+                 section_descendent^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
+               refers_to_descendent
+                 refers_to_ancestor
+          referred_to_by_descendent
+            referred_to_by_ancestor
+                               term
+                         definition
+       </str>
+       <str name="pf"><!--Phrase fields. Take the contents of the query and try to find phrases in these fields.-->
+                         catch_line
+                               tags^0.1
+                               text
+                          structure
+                               term
+                         definition
+       </str>
+       <int name="ps">3</int><!--Phrase slop. How "poorly" a phrase can match and still count as a match-->
+       <str name="pf2"><!--2Term Phrase fields. Take the contents of the query 2 sequential terms at a time and try to find phrases in these fields.-->
+                         catch_line
+                               tags^0.1
+                               text
+                          structure
+                               term
+                         definition
+       </str>
+       <int name="ps2">2</int><!--Phrase slop specific to pf2-->
+       <str name="pf3"><!--3Term Phrase fields. Take the contents of the query 3 sequential terms at a time and try to find phrases in these fields.-->
+                         catch_line
+                               tags^0.1
+                               text
+                          structure
+                               term
+                         definition
+       </str>
+       <int name="ps3">2</int><!--Phrase slop specific to pf3-->
+       <str name="df">text</str><!--Default search field. Shouldn't matter, but has to be included.-->
+       <str name="mm">2&lt;-25% 5&lt;-50%</str><!--How many terms must match. Confusing syntax isn't it?-->
+       <str name="q.alt">*:*</str><!--If no search is submitted, this one is used.-->
+
+       <!--Result settings-->
+       <str name="rows">10</str><!--Return 10 rows.-->
+       <str name="fl"><!--Field list. These fields are returned in results.-->
+         id
+         catch_line
+         text
+         type
+         section
+         refers_to
+         referred_to_by
+         term
+         definition
+         score <!--The score field is calculated at query time. Results are sorted by the score, e.g. how well they matched the query.-->
+       </str>
+
+       <!--Facet settings-->
+       <str name="facet">true</str>
+       <str name="facet.limit">100</str>
+       <str name="facet.mincount">1</str>
+       <str name="facet.field">type</str>
+       <str name="facet.field">tags_facet</str>
+       <str name="facet.field">section_facet_hierarchical</str>
+       <str name="facet.field">structure_facet_hierarchical</str>
+
+       <!-- Highlighting -->
+       <str name="hl">true</str>
+       <str name="hl.fl">definition text</str><!--We only highlight these two fields-->
+       <str name="hl.simple.pre"><![CDATA[<span class="highlight">]]></str><!--Highlights will be surrounded by span.highlight-->
+       <str name="hl.simple.post"><![CDATA[</span>]]></str>
+       <str name="hl.snippet">2</str><!--Two highlighted snippets will be returned.-->
+       <str name="hl.fragsize">100</str><!--Each fragment will be 100 characters long.-->
+       <str name="hl.mergeContiguous">true</str><!--If snippets are next to each other, merge them.-->
+       <str name="f.text.hl.alternateField">text</str><!--If there is no highlight match in the text field, then get text starting from the beginning of that field.-->
+       <str name="f.definition.hl.alternateField">definition</str><!--If there is no highlight match in the definition field, then get text starting from the beginning of that field.-->
+       <str name="f.definition.hl.maxAlternateFieldLength">200</str><!--Grab the first 200 chars (consistent with 2 snippets of length 100).-->
+     
+       <!-- Spell checking defaults -->
+       <str name="spellcheck">on</str>
+       <str name="spellcheck.extendedResults">false</str>       
+       <str name="spellcheck.count">5</str>
+       <str name="spellcheck.alternativeTermCount">2</str>
+       <str name="spellcheck.maxResultsForSuggest">5</str>       
+       <str name="spellcheck.collate">true</str>
+       <str name="spellcheck.collateExtendedResults">true</str>  
+       <str name="spellcheck.maxCollationTries">5</str>
+       <str name="spellcheck.maxCollations">3</str>           
+     </lst>
+
+     <!-- append spellchecking to our list of components -->
+     <arr name="last-components">
+       <str>spellcheck</str>
+     </arr>
+
+  </requestHandler>
+
+
+
+
+
+
+
+  <requestHandler name="/suggest" class="solr.SearchHandler">
+    <lst name="defaults">
+       <str name="echoParams">explicit</str>
+
+       <!-- Query settings -->
+       <str name="defType">edismax</str><!--Use the Google-like query parser. Users just type keywords.-->
+       <str name="qf"><!--Query fields. Change the weighting as you please.-->
+                         catch_line
+                               tags^0.1 <!--Low weighting on this field ensures text will have higher impact on score.-->
+                               text
+                          structure
+                   section_ancestor^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
+                 section_descendent^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
+               refers_to_descendent
+                 refers_to_ancestor
+          referred_to_by_descendent
+            referred_to_by_ancestor
+                               term
+                         definition
+       </str>
+       <str name="rows">0</str>
+       <str name="df">text</str><!--Default search field. Shouldn't matter, but has to be included.-->
+       <str name="mm">2&lt;-25% 5&lt;-50%</str><!--How many terms must match. Confusing syntax isn't it?-->
+       <str name="q.alt">*:*</str><!--If no search is submitted, this one is used.-->
+
+       <!--Result settings-->
+       <str name="rows">10</str><!--Return 10 rows.-->
+       <str name="fl"><!--Field list. These fields are returned in results.-->
+         id
+         catch_line
+         text
+         type
+         section
+         refers_to
+         referred_to_by
+         term
+         definition
+         score <!--The score field is calculated at query time. Results are sorted by the score, e.g. how well they matched the query.-->
+       </str>
+
+       <!--Facet settings-->
+       <str name="facet">true</str>
+       <str name="facet.limit">10</str>
+       <str name="facet.mincount">1</str>
+       <str name="facet.field">spelling</str>
+     </lst>
+
+     <!-- append spellchecking to our list of components -->
+     <arr name="last-components">
+       <str>spellcheck</str>
+     </arr>
+
+  </requestHandler>
+
+
+
+
+
+
+  <requestHandler name="/singledoc" class="solr.SearchHandler">
+    <lst name="defaults">
+       <str name="echoParams">explicit</str>
+
+       <!-- Query settings -->
+       <str name="defType">edismax</str><!--Use the Google-like query parser. Users just type keywords.-->
+       <str name="qf"><!--Query fields. Change the weighting as you please.-->
+                         catch_line
+                               tags
+                               text
+                          structure
+                   section_ancestor
+                 section_descendent
+               refers_to_descendent
+                 refers_to_ancestor
+          referred_to_by_descendent
+            referred_to_by_ancestor
+                               term
+                         definition
+       </str>
+       <str name="df">text</str><!--Default search field. Shouldn't matter, but has to be included.-->
+       <str name="q.alt">*:*</str><!--If no search is submitted, this one is used.-->
+       <str name="fq">{!v=$id df=id}</str><!-- this narrows down the search results to only the one with the specified id-->
+       <str name="id">---------YOU HAVE NOT SPECIFIED A DOCUMENT ID-------------;</str><!--If you don't specify an id, you'll see this message.-->
+
+       <!--Result settings-->
+       <str name="rows">1</str><!--Return 1 rows.-->
+       <str name="fl"><!--Field list. These fields are returned in results.-->
+         id
+         catch_line
+         text
+         type
+         section
+         refers_to
+         referred_to_by
+         term
+         definition
+         score <!--The score field is calculated at query time. Results are sorted by the score, e.g. how well they matched the query.-->
+       </str>
+
+       <!-- Highlighting -->
+       <str name="hl">true</str>
+       <str name="hl.fl">definition text</str>
+       <str name="hl.simple.pre"><![CDATA[<span class="highlight">]]></str>
+       <str name="hl.simple.post"><![CDATA[</span>]]></str>
+       <str name="hl.snippet">1</str>
+       <str name="hl.fragsize">999999</str>
+       <str name="hl.mergeContiguous">true</str>
+       <str name="f.text.hl.alternateField">text</str>
+       <str name="f.definition.hl.alternateField">definition</str>
+       <str name="f.definition.hl.maxAlternateFieldLength">999999</str>
+     </lst>
+  </requestHandler>
+
+
+
+
   <!-- A Robust Example 
        
        This example SearchHandler declaration shows off usage of the
@@ -948,57 +1176,6 @@
      <arr name="last-components">
        <str>spellcheck</str>
      </arr>
-  </requestHandler>
-
-  <requestHandler name="/law" class="solr.SearchHandler">
-     <lst name="defaults">
-       <str name="echoParams">explicit</str>
-
-       <!-- Query settings -->
-       <str name="defType">edismax</str>
-       <str name="qf">
-           section^3 edition catch_line text structure
-           refers_to refered_by text_pure^1.5
-       </str>
-       <str name="pf">
-           text^2 text_pure^2.5 structure^3 catch_line^5
-       </str>
-       <str name="df">text</str>
-       <str name="mm">2&lt;-25% 5&lt;-50%</str>
-       <str name="q.alt">*:*</str>
-       <str name="rows">10</str>
-       <str name="fq">
-            type:law
-       </str>
-       <str name="fl">*</str>
-       <str name="wt">json</str>
-
-    </lst>
-  </requestHandler>
-
-  <requestHandler name="/dict" class="solr.SearchHandler">
-     <lst name="defaults">
-       <str name="echoParams">explicit</str>
-
-       <!-- Query settings -->
-       <str name="defType">edismax</str>
-       <str name="fq">
-            type:dict
-       </str>
-       <str name="qf">
-           term^2 definition^1
-       </str>
-       <str name="pf">
-           term^3 definition^2
-       </str>
-       <str name="df">definition</str>
-       <str name="mm">2&lt;-25% 5&lt;-50%</str> 
-       <str name="q.alt">*:*</str>
-       <str name="rows">10</str>
-       <str name="fl">*</str>
-       <str name="wt">json</str>
-
-    </lst>
   </requestHandler>
 
 
@@ -1275,7 +1452,7 @@
     <!-- a spellchecker built from a field of the main index -->
     <lst name="spellchecker">
       <str name="name">default</str>
-      <str name="field">name</str>
+      <str name="field">spelling</str>
       <str name="classname">solr.DirectSolrSpellChecker</str>
       <!-- the spellcheck distance measure used, the default is the internal levenshtein -->
       <str name="distanceMeasure">internal</str>

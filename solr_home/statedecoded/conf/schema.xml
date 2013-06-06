@@ -2,7 +2,8 @@
 <!--
 TODO - rm statedec_section type and fields
 TODO - make sure proper storing and indexing of fields
-
+TODO - remove text_pure
+TODO - remove term_exact
 
 Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -76,12 +77,14 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
 
    <field name="catch_line" type="statedec_text_en" indexed="true" stored="true"/>
-   <field name="tags" type="statedec_text_en" indexed="true" stored="true" multiValues="true" />
+   <field name="tags" type="statedec_text_en" indexed="true" stored="true" multiValued="true" />
+   <field name="tags_facet" type="string" indexed="true" stored="false" multiValued="true" />
+   <copyField source="tags" dest="tags_facet" />
+   
    <field name="text" type="statedec_text_en" indexed="true" stored="true"/>
-   <field name="text_pure" type="statedec_text_pure" indexed="true"/>
-   <field name="repealed" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="repealed" type="string" indexed="true" stored="true" />
 
-   <field name="structure" type="statedec_text_en" indexed="true" stored="true" />
+   <field name="structure" type="string" indexed="true" stored="true" />
    <field name="structure_facet_hierarchical" type="descendent_facet_hierarchical" indexed="true" stored="false" />
    <field name="structure_descendent" type="descendent_path" indexed="true" stored="false" />
    <field name="structure_ancestor" type="ancestor_path" indexed="true" stored="false" />
@@ -89,11 +92,11 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <copyField source= "structure" dest="structure_ancestor"/>
    <copyField source= "structure" dest="structure_facet_hierarchical"/>
 
-   <field name="section" type="string" indexed="false" stored="true"/>
+   <field name="section" type="string" indexed="true" stored="true"/>
    <field name="section_descendent" type="statedec_descendent_section" indexed="true" stored="false"/>
    <field name="section_ancestor" type="statedec_ancestor_section" indexed="true" stored="false"/>
    <field name="section_facet_hierarchical" type="statedec_facet_hierarchical" indexed="true" stored="false"/>
-   <field name="section_facet" type="string" indexed="true" stored="false"/>
+   <field name="section_facet" type="string" indexed="true" stored="false"/><!--TODO should probable be deleted--> 
    <copyField source= "section" dest="section_descendent"/>
    <copyField source= "section" dest="section_ancestor"/>
    <copyField source= "section" dest="section_facet_hierarchical"/>
@@ -114,14 +117,19 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <!-- State Decoded Dictionary Fields ==
         taken from law dict table tsv dump -->
    <field name="term" type="statedec_text_en" indexed="true" stored="true"/>
-   <field name="term_exact" type="lowercase" indexed="true" stored="true"/>
    <field name="definition" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
 
-   <field name="type" type="lowercase" indexed="true" stored="true"/> 
-   <copyField source= "term" dest="term_exact"/>
-   <copyField source= "text" dest="text_pure"/>
 
-   <!-- Valid attributes for fields:
+   <!-- Other -->
+   <field name="type" type="lowercase" indexed="true" stored="true"/> 
+   <field name="spelling" type="statedec_text_pure" indexed="true" stored="true" multiValued="true"/> 
+   <copyField source= "text" dest="spelling"/>
+   <copyField source= "tags" dest="spelling"/>
+   <copyField source= "structure" dest="spelling"/>
+   <copyField source= "term" dest="spelling"/>
+   <copyField source= "definition" dest="spelling"/>
+
+    <!-- Valid attributes for fields:
      name: mandatory - the name for the field
      type: mandatory - the name of a field type from the 
        <types> fieldType section
@@ -171,30 +179,6 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
    <!-- FIELD TYPES FOR STATE DECODED -->  
 
-   <!-- field type for converting different path tokenizers, then performing
-         path tokenization -->
-    <fieldType name="statedec_section" class="solr.TextField" positionIncrementGap="100">
-      <analyzer>
-        <!-- normalize . and - (section delimeters) to a ~ 
-                 we also add some length to strongly bias toward
-                 the shorter results via norms. Norms aren't very precise
-                 so the longer the relative query/index values are the more
-                 norms can impact the scoring
-
-                 This is important for matching section numbers as the lack
-                 of precision doesn't help very much with short fields. Better
-                 to force this to be more precise by artificially increasing the
-                 length of the fields.
-            -->
-        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~||ADD_LENGTH||~"/>
-        <!-- remove () or [] that somebody might use to identify a chapter -->
-        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
-        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
-        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
-        <filter class="solr.LowerCaseFilterFactory" />
-      </analyzer>
-    </fieldType>
-
     <!-- A text field with defaults appropriate for English: it
          tokenizes with StandardTokenizer, removes English stop words
          (lang/stopwords_en.txt), down cases, protects words from protwords.txt, and
@@ -243,13 +227,10 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
     <!-- A much less heavily analyzed version of statedec_text_en for boosting higher-->
     <fieldType name="statedec_text_pure" class="solr.TextField" positionIncrementGap="100">
-      <analyzer type="index">
+      <analyzer>
         <charFilter class="solr.HTMLStripCharFilterFactory"/>
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer>
-      <analyzer type="query">
-        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" enablePositionIncrements="true"/>
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
     </fieldType>
