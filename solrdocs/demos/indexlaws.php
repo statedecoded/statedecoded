@@ -21,35 +21,59 @@ require_once('solrerrorcheck.php');
 # get translated into Solr Update XML -- the standard Solr XML
 # format for specifying a document.
 #
-$url = "http://localhost:8983/solr/statedecoded/update";
-$contentType = "Content-Type: application/xml; charset=US-ASCII";
+function indexLaws($pathOrGlob, $solrUrl) {
+    $url = "http://localhost:8983/solr/statedecoded/update";
+    $contentType = "Content-Type: application/xml; charset=US-ASCII";
 
-# First we POST to statedecoded/update endpoint and then
-# we commit the changes
-$postFilesReq = new PostFilesRequest($url);
-$queryParams = array('wt' => 'json', 
-                     'tr' => 'stateDecodedXml.xsl');
+    if (is_dir($pathOrGlob)) {
+        echo "Please specify a GLOB for now, IE /path/to/xml/*xml\n";
+    }
 
-# A note on performance, this takes about 60 seconds to index all 
-# of Virginias laws. This could be improved dramatically, but 
-# the effort is likely not worth it. Areas of improvement include
-#  - Each law is sent in its own blocking POST request, if 
-#    either each law could be posted asynchronously OR if all
-#    the laws could be sent in one POST request, the time could
-#    be dramatically reduced
-#$postFilesReq->executeGlob($queryParams, 'lawsamples/*.xml', $contentType);
-$resp = $postFilesReq->executeGlob($queryParams, $argv[1], $contentType);
-checkForSolrError($resp);
+    # First we POST to statedecoded/update endpoint and then
+    # we commit the changes
+    $postFilesReq = new PostFilesRequest($url);
+    $queryParams = array('wt' => 'json', 
+                         'tr' => 'stateDecodedXml.xsl');
 
-# Once files are posted, they are not searchable
-# until a commit is done.
-#
-# For some applications where there's a lot of real time 
-# updates to documents that need to be searched in real time,
-# it may be important to commit often. For state decoded,
-# this is less important as all data is imported at once
-# with a big batch update.
-$req = new GetRequest($url);
-$req->execute(array('commit' => 'true'));
+    # Post the specified files to Solr
+    $resp = $postFilesReq->executeGlob($queryParams, $pathOrGlob, $contentType);
+
+    # Note -- Waldo, I'm expecting you'll have validated this XML before
+    # getting here
+    checkForSolrError($resp);
+
+    # Once files are posted, they are not searchable
+    # until a commit is done.
+    #
+    # For some applications where there's a lot of real time 
+    # updates to documents that need to be searched in real time,
+    # it may be important to commit often. For state decoded,
+    # this is less important as all data is imported at once
+    # with a big batch update.
+    $req = new GetRequest($url);
+    $req->execute(array('commit' => 'true'));
+}
+
+$longopts = array("solrUrl:", "pathToLaws:");
+
+$opts = getopt("", $longopts);
+var_dump($opts);
+
+$url = $opts['solrUrl'];
+$lawPath = $opts['pathToLaws'];
+
+if ($url === NULL OR $lawPath === NULL) {
+    echo "Usage --\n";
+    echo "Please specify a path to State Decoded Solr and\n";
+    echo "a location locally where state decoded laws can\n";
+    echo "be found for ingestion.\n";
+    echo "Example --\n";
+    echo "php indexlaws.php \\\n";
+    echo "     --solrURl=http://localhost:8983/solr/laws \\\n";
+    echo "     --pathToLaws=/path/to/law/xml\n";
+    die();
+}
+indexLaws($lawPath, $url);
+
 
 ?>

@@ -64,11 +64,18 @@ class PostFilesRequest extends PostRequest {
         foreach ($files as $key=>$filename) {
             $params[$filename] = '@' . realpath($filename) . ";type=application/xml";
             ++$numFiles;
-            #echo "Adding File($numFiles) $filename\n"; 
         }
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $params);
         $response = $this->handleResponse(curl_exec($this->ch));
         return $response;
+    }
+
+    function executeInBatches($queryParams, $files, $contentType, $batchSize) {
+        for ($i = 0; $i<count($files); $i+=$batchSize) {
+            $slice = array_slice($files, $i, $batchSize);
+            echo "Posting $batchSize docs starting with $slice[0] \n";
+            $this->execute($queryParams, $slice, $contentType);
+        }
     }
 
 
@@ -76,13 +83,8 @@ class PostFilesRequest extends PostRequest {
     // those files up
     function executeGlob($queryParams, $globPattern, $contentType) {
         $files = glob($globPattern);
-        return $this->execute($queryParams, $files, $contentType);
-        #$batchSize = 5000;
-        for ($i = 0; $i<count($files); $i+=$batchSize) {
-            #$slice = array_slice($files, $i, $batchSize);
-            echo "Processing $i up to $batchSize\n";
-            $this->execute($queryParams, $slice, $contentType);
-        }
+        $batchSize = 10000;
+        return $this->executeInBatches($queryParams, $files, $contentType, $batchSize);
     }
 
 }
