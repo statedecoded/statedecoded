@@ -379,7 +379,9 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-		$this->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$this->section_number.'/';
+		$this->url = 'http://' . $_SERVER['SERVER_NAME']
+			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
+			. '/' . $this->section_number . '/';
 		
 		/*
 		 * Create metadata in the Dublin Core format.
@@ -476,7 +478,9 @@ class Law
 		while ($reference = $result->fetch(PDO::FETCH_OBJ))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
-			$reference->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$reference->section_number.'/';
+			$reference->url = 'http://' . $_SERVER['SERVER_NAME']
+				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
+				. '/' . $reference->section_number . '/';
 			
 			$references->$i = $reference;
 			$i++;
@@ -871,10 +875,12 @@ class Law
 				/*
 				 * Assemble the permalink
 				 */
-				$permalink = $_SERVER['REQUEST_URI'] . '#'.$paragraph->prefix_anchor;
+				$permalink = '//' . $_SERVER['SERVER_NAME']
+					. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
+					. $_SERVER['REQUEST_URI'] . '#' . $paragraph->prefix_anchor;
 
-				$html .= ' <a id="test-' . $paragraph->id . '" class="section-permalink"
-					href="' . $permalink . '">¶</a>';
+				$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
+					.'href="' . $permalink . '">¶</a>';
 			}
 			if ($paragraph->type == 'section')
 			{
