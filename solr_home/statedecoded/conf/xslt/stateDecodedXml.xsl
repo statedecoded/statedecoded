@@ -25,7 +25,7 @@
 
   <xsl:template match="tags">
     <xsl:for-each select="tag">
-        <field name="tag">
+        <field name="tags">
         <xsl:value-of select="current()"/> 
         </field>
      </xsl:for-each>
