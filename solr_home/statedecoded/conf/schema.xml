@@ -122,7 +122,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
    <!-- Other -->
    <field name="type" type="lowercase" indexed="true" stored="true"/> 
-   <field name="spelling" type="statedec_text_pure" indexed="true" stored="true" multiValued="true"/> 
+   <field name="spelling" type="statedec_text_pure" indexed="true" stored="false" multiValued="true"/> 
    <copyField source= "text" dest="spelling"/>
    <copyField source= "tags" dest="spelling"/>
    <copyField source= "structure" dest="spelling"/>
