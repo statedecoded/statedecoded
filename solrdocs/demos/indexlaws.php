@@ -69,7 +69,7 @@ if ($url === NULL OR $lawPath === NULL) {
     echo "be found for ingestion.\n";
     echo "Example --\n";
     echo "php indexlaws.php \\\n";
-    echo "     --solrURl=http://localhost:8983/solr/laws \\\n";
+    echo "     --solrUrl=http://localhost:8983/solr/laws \\\n";
     echo "     --pathToLaws=/path/to/law/xml\n";
     die();
 }
