@@ -36,11 +36,18 @@ function indexLaws($pathOrGlob, $solrUrl) {
                          'tr' => 'stateDecodedXml.xsl');
 
     # Post the specified files to Solr
+    $batchSize = 10000;
+    $files = glob($pathOrGlob);
+    for ($i = 0; $i<count($files); $i+=$batchSize) {
+        $slice = array_slice($files, $i, $batchSize);
+        echo "Posting $batchSize docs starting with $slice[0] \r";
+        $resp = $postFilesReq->postFiles($queryParams, $slice, $contentType);
+        checkForSolrError($resp);
+    }
     $resp = $postFilesReq->executeGlob($queryParams, $pathOrGlob, $contentType);
 
     # Note -- Waldo, I'm expecting you'll have validated this XML before
     # getting here
-    checkForSolrError($resp);
 
     # Once files are posted, they are not searchable
     # until a commit is done.
@@ -69,8 +76,8 @@ if ($url === NULL OR $lawPath === NULL) {
     echo "be found for ingestion.\n";
     echo "Example --\n";
     echo "php indexlaws.php \\\n";
-    echo "     --solrURl=http://localhost:8983/solr/laws \\\n";
-    echo "     --pathToLaws=/path/to/law/xml\n";
+    echo "     --solrURl=http://localhost:8983/solr/update \\\n";
+    echo "     --pathToLaws=/path/to/laws/*.xml\n";
     die();
 }
 indexLaws($lawPath, $url);

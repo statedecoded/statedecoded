@@ -42,13 +42,14 @@ class PostRequest {
 
 
 // Post a series of files directly
+// on one multipart request
 class PostFilesRequest extends PostRequest {
 
     function __construct($urlEndpoint) {
         parent::__construct($urlEndpoint);
     }
 
-    function execute($queryParams, $files, $contentType) {
+    function postFiles($queryParams, $files, $contentType) {
         if (!is_array($files)) {
             //Convert to array
             $files=array($files);
@@ -70,23 +71,6 @@ class PostFilesRequest extends PostRequest {
         return $response;
     }
 
-    function executeInBatches($queryParams, $files, $contentType, $batchSize) {
-        for ($i = 0; $i<count($files); $i+=$batchSize) {
-            $slice = array_slice($files, $i, $batchSize);
-            echo "Posting $batchSize docs starting with $slice[0] \n";
-            $this->execute($queryParams, $slice, $contentType);
-        }
-    }
-
-
-    // Takes a glob pattern and posts 
-    // those files up
-    function executeGlob($queryParams, $globPattern, $contentType) {
-        $files = glob($globPattern);
-        $batchSize = 10000;
-        return $this->executeInBatches($queryParams, $files, $contentType, $batchSize);
-    }
-
 }
 
 // Test only if run directly from CLI
@@ -94,7 +78,7 @@ if (basename($argv[0]) == basename(__FILE__)) {
     $queryParams = array('tr' => 'stateDecodedXml.xsl');
     $lawSearcher = new PostFilesRequest("http://localhost:8983/solr/statedecoded/update/xslt");
     $file = "lawsamples/31-45.xml";
-    print $lawSearcher->execute($queryParams, $file, "Content-Type: application/xml; charset=US-ASCII");
+    print $lawSearcher->postFiles($queryParams, $file, "Content-Type: application/xml; charset=US-ASCII");
 }
 
 ?>
