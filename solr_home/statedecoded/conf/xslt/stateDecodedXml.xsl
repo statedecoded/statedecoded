@@ -13,7 +13,7 @@
     <doc>
         <field name="id">l_<xsl:value-of select="@id"/></field>
         <field name="catch_line"><xsl:value-of select="catch_line"/></field>
-        <field name="text"><xsl:value-of select="text"/></field>
+        <field name="text"><xsl:copy-of select="text"/></field>
         <field name="section"><xsl:value-of select="section_number"/></field>
         <xsl:apply-templates select="structure"/>
         <xsl:apply-templates select="tags"/>
