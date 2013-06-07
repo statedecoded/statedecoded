@@ -36,7 +36,7 @@ function indexLaws($pathOrGlob, $solrUrl) {
                          'tr' => 'stateDecodedXml.xsl');
 
     # Post the specified files to Solr
-    $batchSize = 1;
+    $batchSize = 1000;
     $files = glob($pathOrGlob);
     for ($i = 0; $i<count($files); $i+=$batchSize) {
         $slice = array_slice($files, $i, $batchSize);
@@ -44,12 +44,11 @@ function indexLaws($pathOrGlob, $solrUrl) {
         $resp = $postFilesReq->postFiles($queryParams, $slice, $contentType);
         $error = checkForSolrError($resp);
         if ($error != FALSE) {
+            echo "ERROR!\n";
             echo "Solr Error while processing batch $slice[0]\n";
             echo "$error\n";
         }
     }
-    $resp = $postFilesReq->executeGlob($queryParams, $pathOrGlob, $contentType);
-
     # Note -- Waldo, I'm expecting you'll have validated this XML before
     # getting here
 
