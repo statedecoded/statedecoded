@@ -206,15 +206,15 @@
             width: 100%;
           }
 
-          &#the_code {
-            @include background(image-url("nav-icons/nav_the-code.svg"));
+          &#browse {
+            @include background-image(image-url("nav-icons/nav_browse.svg"));
             &:hover {
-              @include background(image-url("nav-icons/nav_the-code-hover.svg"));
+              @include background-image(image-url("nav-icons/nav_browse-hover.svg"));
             }
             .lt-ie9 & {
-              @include background(image-url("nav-icons/fallbacks/nav_the-code.png"));
+              @include background-image(image-url("nav-icons/fallbacks/nav_browse.png"));
             }
-          } // &#the_code
+          } // &#browse
 
           &#court_cases {
             @include background(image-url("nav-icons/nav_court-cases.svg"));
@@ -224,7 +224,7 @@
             .lt-ie9 & {
               @include background(image-url("nav-icons/fallbacks/nav_court-cases.png"));
             }
-          } // &#the_code
+          } // &#browse
 
           &#about_us {
             @include background(image-url("nav-icons/nav_about-us.svg"));
@@ -235,17 +235,17 @@
             .lt-ie9 & {
               @include background(image-url("nav-icons/fallbacks/nav_about-us.png"));
             }
-          } // &#the_code
+          } // &#browse
 
-          &#use_the_api {
-            @include background(image-url("nav-icons/nav_use-the-api.svg"));
+          &#download {
+            @include background-image(image-url("nav-icons/nav_download.svg"));
             &:hover {
-              @include background(image-url("nav-icons/nav_use-the-api-hover.svg"));
+              @include background-image(image-url("nav-icons/nav_download-hover.svg"));
             }
             .lt-ie9 & {
-              @include background(image-url("nav-icons/fallbacks/nav_use-the-api.png"));
+              @include background-image(image-url("nav-icons/fallbacks/nav_download.png"));
             }
-          } // &#the_code
+          } // &#browse
         } // a
       } // li
     } // ul
