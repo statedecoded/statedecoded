@@ -37,9 +37,10 @@ function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
 
     # Post the specified files to Solr
     $files = glob($pathOrGlob);
-    for ($i = 0; $i<count($files); $i+=$batchSize) {
+    $numFiles = count($files);
+    for ($i = 0; $i<$numFiles; $i+=$batchSize) {
         $slice = array_slice($files, $i, $batchSize);
-        echo "Posting $batchSize docs starting with $slice[0] \r";
+        echo "Posting $i($batchSize)/$numFiles docs starting with $slice[0] \r";
         $resp = $postFilesReq->postFiles($queryParams, $slice, $contentType);
         $error = checkForSolrError($resp);
         if ($error != FALSE) {
@@ -63,20 +64,16 @@ function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
     $req->execute(array('commit' => 'true'));
 }
 
+# Parse command line options (see printout below for more info)
 $longopts = array("solrUrl:", "pathToLaws:", "batchSize:");
-
 $opts = getopt("", $longopts);
-var_dump($opts);
-
-$url = $opts['solrUrl'];
-$lawPath = $opts['pathToLaws'];
-
+$url = $lawPath = NULL;
 $batchSize = 10000;
 if (in_array('batchSize', array_keys($opts))) {
     $batchSize = $opts['batchSize'];
 }
-
-if ($url === NULL OR $lawPath === NULL) {
+if (!in_array('solrUrl', array_keys($opts)) ||
+    !in_array('pathToLaws', array_keys($opts))) {
     echo "Usage --\n";
     echo "Please specify a path to State Decoded Solr and\n";
     echo "a location locally where state decoded laws can\n";
@@ -88,6 +85,8 @@ if ($url === NULL OR $lawPath === NULL) {
     echo "     [--batchSize=1000]\n";
     die();
 }
+$url = $opts['solrUrl'];
+$lawPath = $opts['pathToLaws'];
 indexLaws($lawPath, $url, $batchSize);
 
 
