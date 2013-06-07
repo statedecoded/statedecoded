@@ -36,13 +36,17 @@ function indexLaws($pathOrGlob, $solrUrl) {
                          'tr' => 'stateDecodedXml.xsl');
 
     # Post the specified files to Solr
-    $batchSize = 10000;
+    $batchSize = 1;
     $files = glob($pathOrGlob);
     for ($i = 0; $i<count($files); $i+=$batchSize) {
         $slice = array_slice($files, $i, $batchSize);
         echo "Posting $batchSize docs starting with $slice[0] \r";
         $resp = $postFilesReq->postFiles($queryParams, $slice, $contentType);
-        checkForSolrError($resp);
+        $error = checkForSolrError($resp);
+        if ($error != FALSE) {
+            echo "Solr Error while processing batch $slice[0]\n";
+            echo "$error\n";
+        }
     }
     $resp = $postFilesReq->executeGlob($queryParams, $pathOrGlob, $contentType);
 
