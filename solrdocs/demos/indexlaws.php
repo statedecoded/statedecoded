@@ -3,6 +3,44 @@ require_once('postreq.php');
 require_once('getreq.php');
 require_once('solrerrorcheck.php');
 
+# Utility function
+# Check to see if string ends with
+# Adapted from http://stackoverflow.com/a/834355
+function stringEndsWith($needle, $haystack) {
+    $len = strlen($needle);
+    if ($len == 0) {
+        return TRUE;
+    }
+    return (substr($haystack, -$len) === $needle);
+}
+
+# Retreive arary of XML Files from the specified
+# Path or GLOB
+function getXmlFilesFromPathOrGlob($pathOrGlob) {
+    $files = array();
+
+    if (is_dir($pathOrGlob)) {
+        // code adapted from
+        // http://www.php.net/manual/en/class.recursivedirectoryiterator.php
+        $objects = new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($pathOrGlob),
+                        RecursiveIteratorIterator::SELF_FIRST);
+        foreach($objects as $name => $unused) {
+            if (stringEndsWith(".xml", $name)) {
+                $files[] = $name;
+            }
+        }
+    }
+    else if (stringEndsWith("*.xml", $pathOrGlob)) {
+        $files = glob($pathOrGlob);
+    }
+    else {
+        return FALSE;
+    }
+    return $files;
+ 
+}
+
 # ***************************************************************
 # The code here indexes each law XML document one at a time
 #  
@@ -25,9 +63,14 @@ function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
     $url = "http://localhost:8983/solr/statedecoded/update";
     $contentType = "Content-Type: application/xml; charset=US-ASCII";
 
-    if (is_dir($pathOrGlob)) {
-        echo "Please specify a GLOB for now, IE /path/to/xml/*xml\n";
+    $files = getXmlFilesFromPathOrGlob($pathOrGlob);
+    if ($files === FALSE) {
+        echo "Cannot recognize $pathOrGlob as either a valid XML glob\n";
+        echo "pattern (ie /path/to/xml/*.xml) nor can I recognize it \n";
+        echo "as a directory (/path/to/xml)\n";
+        die();
     }
+
 
     # First we POST to statedecoded/update endpoint and then
     # we commit the changes
@@ -36,7 +79,6 @@ function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
                          'tr' => 'stateDecodedXml.xsl');
 
     # Post the specified files to Solr
-    $files = glob($pathOrGlob);
     $numFiles = count($files);
     for ($i = 0; $i<$numFiles; $i+=$batchSize) {
         $slice = array_slice($files, $i, $batchSize);
@@ -47,10 +89,9 @@ function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
             echo "ERROR!\n";
             echo "Solr Error while processing batch $slice[0]\n";
             echo "$error\n";
+            echo "TO GET ERRING XML -- RERUN with --batchSize=1\n";
         }
     }
-    # Note -- Waldo, I'm expecting you'll have validated this XML before
-    # getting here
 
     # Once files are posted, they are not searchable
     # until a commit is done.
@@ -81,8 +122,12 @@ if (!in_array('solrUrl', array_keys($opts)) ||
     echo "Example --\n";
     echo "php indexlaws.php \\\n";
     echo "     --solrURl=http://localhost:8983/solr/update \\\n";
-    echo "     --pathToLaws=/path/to/laws/*.xml\n";
+    echo "     --pathToLaws=/path/to/laws/*.xml\\\n";
     echo "     [--batchSize=1000]\n";
+    echo "\n";
+    echo "This script will then treat all XML files found at\n";
+    echo "pathToLaws as State Decoded XML files and attempt\n";
+    echo "to index them\n";
     die();
 }
 $url = $opts['solrUrl'];
