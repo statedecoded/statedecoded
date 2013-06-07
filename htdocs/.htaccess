@@ -7,7 +7,7 @@ RewriteBase /
 ### SAMPLE REWRITERULES ###
 
 # Requests for the code page.
-RewriteRule ^code/$ /code.php [QSA]
+RewriteRule ^browse/$ /browse.php [QSA]
 
 # Requests for the about page.
 RewriteRule ^about/$ /about.php [QSA]
