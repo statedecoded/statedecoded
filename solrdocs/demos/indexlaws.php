@@ -21,7 +21,7 @@ require_once('solrerrorcheck.php');
 # get translated into Solr Update XML -- the standard Solr XML
 # format for specifying a document.
 #
-function indexLaws($pathOrGlob, $solrUrl) {
+function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
     $url = "http://localhost:8983/solr/statedecoded/update";
     $contentType = "Content-Type: application/xml; charset=US-ASCII";
 
@@ -36,7 +36,6 @@ function indexLaws($pathOrGlob, $solrUrl) {
                          'tr' => 'stateDecodedXml.xsl');
 
     # Post the specified files to Solr
-    $batchSize = 1000;
     $files = glob($pathOrGlob);
     for ($i = 0; $i<count($files); $i+=$batchSize) {
         $slice = array_slice($files, $i, $batchSize);
@@ -64,13 +63,18 @@ function indexLaws($pathOrGlob, $solrUrl) {
     $req->execute(array('commit' => 'true'));
 }
 
-$longopts = array("solrUrl:", "pathToLaws:");
+$longopts = array("solrUrl:", "pathToLaws:", "batchSize:");
 
 $opts = getopt("", $longopts);
 var_dump($opts);
 
 $url = $opts['solrUrl'];
 $lawPath = $opts['pathToLaws'];
+
+$batchSize = 10000;
+if (in_array('batchSize', array_keys($opts))) {
+    $batchSize = $opts['batchSize'];
+}
 
 if ($url === NULL OR $lawPath === NULL) {
     echo "Usage --\n";
@@ -81,9 +85,10 @@ if ($url === NULL OR $lawPath === NULL) {
     echo "php indexlaws.php \\\n";
     echo "     --solrURl=http://localhost:8983/solr/update \\\n";
     echo "     --pathToLaws=/path/to/laws/*.xml\n";
+    echo "     [--batchSize=1000]\n";
     die();
 }
-indexLaws($lawPath, $url);
+indexLaws($lawPath, $url, $batchSize);
 
 
 ?>
