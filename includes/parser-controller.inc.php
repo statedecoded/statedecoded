@@ -116,7 +116,7 @@ class ParserController
 		 * Delete law histories.
 		 */
 		$sql = 'DELETE FROM laws_meta
-				WHERE meta_key = "history"';
+				WHERE meta_key = "history" OR meta_key = "repealed"';
 		$result = $this->db->exec($sql);
 	}
 	
