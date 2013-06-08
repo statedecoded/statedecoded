@@ -22,6 +22,7 @@ class PostRequest {
         if ($response === FALSE) {
             echo "POST FAILED!!";
             trigger_error(curl_error($this->ch));
+            return FALSE;
         }
         return $response;
     }
@@ -43,12 +44,16 @@ class PostRequest {
 
 // Post a series of files directly
 // on one multipart request
+//
+//
 class PostFilesRequest extends PostRequest {
 
     function __construct($urlEndpoint) {
         parent::__construct($urlEndpoint);
     }
 
+    // Return either the HTTP response text or
+    // FALSE on failure
     function postFiles($queryParams, $files, $contentType) {
         if (!is_array($files)) {
             //Convert to array

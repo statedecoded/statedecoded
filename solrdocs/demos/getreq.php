@@ -28,11 +28,10 @@ class GetRequest {
     function executeFGetContents($url) {
         $content = file_get_contents($url);
         if ($content === FALSE) {
-            echo "Error Getting $url";
             return FALSE;
         }
         else {
-            return json_decode($content, true);
+            return $content;
         }
     }
 
@@ -40,14 +39,15 @@ class GetRequest {
         $c = curl_init();
         $fullUrl = $url; 
         curl_setopt($c, CURLOPT_URL, $fullUrl); 
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 
         $results = curl_exec($c); 
         if (curl_errno($c) > 0) {
-            echo "Curl Error: " + curl_error($c);
+            trigger_error("Curl Error: " . curl_error($c));
             return FALSE;
         }
         else {
-            return json_decode($results, true);
+            return $results;
         }
 
     }

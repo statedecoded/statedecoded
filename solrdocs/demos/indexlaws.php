@@ -15,11 +15,14 @@ function stringEndsWith($needle, $haystack) {
 }
 
 # Retreive arary of XML Files from the specified
-# Path or GLOB
+# Path or GLOB input from the command line
 function getXmlFilesFromPathOrGlob($pathOrGlob) {
     $files = array();
 
-    if (is_dir($pathOrGlob)) {
+    if (is_file($pathOrGlob) and stringEndsWith(".xml", $pathOrGlob)) {
+        return array($pathOrGlob);
+    }
+    else if (is_dir($pathOrGlob)) {
         // code adapted from
         // http://www.php.net/manual/en/class.recursivedirectoryiterator.php
         $objects = new RecursiveIteratorIterator(
@@ -67,7 +70,7 @@ function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
     if ($files === FALSE) {
         echo "Cannot recognize $pathOrGlob as either a valid XML glob\n";
         echo "pattern (ie /path/to/xml/*.xml) nor can I recognize it \n";
-        echo "as a directory (/path/to/xml)\n";
+        echo "as a file (/path/to/law.xml) or directory (/path/to/xml)\n";
         die();
     }
 
