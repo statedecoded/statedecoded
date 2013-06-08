@@ -1,4 +1,6 @@
 .DS_Store
+.vagrant/
+Vagrantfile
 htdocs/admin/.htaccess
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
