@@ -49,10 +49,10 @@
 			<div class="nest">
 				<ul>
 					<li>
-						<a href="/code/" id="the_code">The Code</a>
+						<a href="/browse/" id="browse">Browse</a>
 					</li>
 					<li>
-						<a href="" id="court_cases">Court Cases</a>
+						<a href="/download/" id="download">Download</a>
 					</li>
 					<li>
 						<a href="/about/" id="about_us">About Us</a>
@@ -77,7 +77,7 @@
 					{{intercode}}
 				</nav> <!-- // #intercode -->
 
-				{{page_title}}
+				<h1>{{page_title}}</h1>
 	
 				{{body}}
 			</section>
@@ -86,32 +86,6 @@
 			{{sidebar}}
 			</aside>
 		</div>
-<<<<<<< HEAD
-
-	</section> <!-- // #page -->
-
-		<footer id="page_footer">
-			<div class="nest">
-				<p class="legalese">
-					All user-contributed content is owned by its authors. The laws are owned by the
-					people and, consequently, are not governed by copyright—so do whatever you want
-					with them. This website does not constitute legal advice. Only a lawyer can
-					provide legal advice. While every effort is made to keep all information
-					up-to-date and accurate, no guarantee is made as to its accuracy.
-				</p>
-				<p class="downloads">
-					<a href="" title="">Bulk Downloads</a>
-				</p>
-				<p class="credits">
-					Powered by <a href="http://www.statedecoded.com/">The State Decoded</a><br>
-					Copyright 2011–2013 <a href="http://waldo.jaquith.org/">Waldo Jaquith</a><br>
-					Design by <a href="http://www.meticulous.com">Meticulous</a>
-				</p>
-			</div> <!-- // .nest -->
-		</footer> <!-- // #page_footer -->
-  </div> <!-- // #container -->
-
-=======
 
 	<section id="main_content" role="main">
 		<div class="{{content_class}}">
@@ -131,9 +105,6 @@
 	
 			{{body}}
 		</div>
-=======
->>>>>>> Refactoring law stylings for consistency.
-	
 	</section> <!-- // #page -->
 	
     <footer id="page_footer">
