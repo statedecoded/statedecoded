@@ -14,10 +14,10 @@
 	<link rel="home" title="Home" href="/" />
 	{{link_rel}}
 
-
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
 	<link rel="stylesheet" href="/static/css/application.css">
+	<link rel="stylesheet" href="/static/css/jquery.qtip.css">
 	{{css}}
 	{{inline_css}}
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -49,10 +49,10 @@
 			<div class="nest">
 				<ul>
 					<li>
-						<a href="/code/" id="the_code">The Code</a>
+						<a href="/browse/" id="browse">Browse</a>
 					</li>
 					<li>
-						<a href="/api-key/" id="use_the_api">Use The API</a>
+						<a href="/download/" id="download">Download</a>
 					</li>
 					<li>
 						<a href="/about/" id="about_us">About Us</a>
@@ -74,7 +74,7 @@
 					{{intercode}}
 				</nav> <!-- // #intercode -->
 
-				{{page_title}}
+				<h1>{{page_title}}</h1>
 	
 				{{body}}
 			</section>
