@@ -95,7 +95,54 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict) {
         die();
     }
     else {
+        // Response Json
+        // http://wiki.apache.org/solr/SolJSON#JSON_Query_Response_Format
+        //
+        // Important notes:
+        // (1) {response { docs // contains the search results
+        //                          // and values for each result
+        //                          // Control what fields get returned with the
+        //                          // fl parameter
+        // (2) {highlighting // contains highlighted values for
+        //                                  // each search result
+        //                                  // control which fields get highlighted
+        //                                  // with the hl.fl result
+        // (3) {facet_counts { facet_fields
+        //                             // Contain counts for each legal section
+        //                             // to filter on a section, 
         return $respJson;
+    }
+}
+
+function lawSearchResultsCommandLineDisplay($respJson) {
+    $decodedResults = json_decode($respJson);
+    // Show catch_line with highlighted 
+    // text
+    $docs = $decodedResults->response->docs;
+    $highlights = $decodedResults->highlighting;
+    $resultNumber = 0;
+    foreach ($docs as $doc) {
+        $resultId = $doc->id;
+        #var_dump($highlights);
+        $textHl = $highlights->$resultId->text[0];
+        echo "\n";
+        echo "-------------------------------------------\n";
+        echo "Result #" . $resultNumber ."\n";
+        echo "CATCH LINE         : $doc->catch_line\n";
+        echo "HIGHLIGHTED SNIPPET: $textHl\n";
+        echo "-------------------------------------------\n";
+        ++$resultNumber;
+    }
+
+    // Show faceting options
+    echo "STRUCTURE FACETS\n";
+    $facet_fields = $decodedResults->facet_counts->facet_fields->structure_facet_hierarchical;
+    $currFacetPair = 0;
+    for ($currFacetPair = 0; $currFacetPair < count($facet_fields); $currFacetPair += 2) {
+        $count = $facet_fields[$currFacetPair + 1];
+        $currIter = $currFacetPair / 2;
+        echo "--" . $facet_fields[$currFacetPair] . "($count)\n";
+
     }
 }
 
@@ -131,12 +178,15 @@ if (in_array('pageNo', array_keys($opts))) {
     $query = $opts['pageNo'];
 }
 $dict = FALSE;
-var_dump($opts);
 if (in_array('dict', array_keys($opts))) {
     $dict = TRUE;
 }
 
-echo searchStateDecoded($query, $solrUrl, $pageNo, $dict);
+$respJson = searchStateDecoded($query, $solrUrl, $pageNo, $dict);
+
+if (!$dict) {
+    lawSearchResultsCommandLineDisplay($respJson);
+}
 
 
 ?>

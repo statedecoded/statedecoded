@@ -17,10 +17,17 @@ function buildQueryString($queryParams) {
     
     $queryString = "";
     foreach ($queryParams as $key => $value) {
-        if (gettype($key) != "string" or gettype($value) != "string") {
+        if (gettype($key) != "string" or 
+            (gettype($value) != "string" and gettype($value) != "array")) {
             trigger_error("httputils\buildQueryString did not receive strings in its array");
         }
-        $queryString .= urlencode($key) . "=" . urlencode($value) . "&";
+        if (gettype($value) == "string") {
+            $value = array($value);
+        }
+
+        foreach ($value as $val) {
+            $queryString .= urlencode($key) . "=" . urlencode($val) . "&";
+        }
     }
     $queryString = substr($queryString, 0, -1);
     return $queryString;
@@ -46,6 +53,24 @@ function appendQueryString($baseUrl, $queryParams) {
     }
     return $baseUrl . "?" . buildQueryString($queryParams);
 }
+
+function tests() {
+    $appendResult = appendQueryString("http://localhost:8983/solr",
+        array("v1" => "5"));
+    echo "$appendResult\n" ;
+    $appendResult = appendQueryString("http://localhost:8983/solr",
+        array("v1" => array("5", "6")));
+    echo "$appendResult\n" ;
+    $appendResult = appendQueryString("http://localhost:8983/solr",
+        array("v1" => array("5", "6"), "v2"=>"bar"));
+    echo "$appendResult\n" ;
+}
  
+
+if (basename($argv[0]) == basename(__FILE__)) {
+    tests();
+}
+
+
 
 ?>
