@@ -1,6 +1,7 @@
 <?php
 
 require_once('httputils.php');
+require_once('solrerrorcheck.php');
 
 class GetRequest {
 
@@ -14,9 +15,9 @@ class GetRequest {
         return $this->urlEndpoint . "?" . httputils\buildQueryString($getParams);
     }
 
-    function execute($getParams) {
+    function get($getParams) {
         $url = $this->fullUrl($getParams);
-        print "Getting $url";
+        echo "GET $url\n";
         if(is_callable('curl_init')) {
             return $this->executeCurl($url);
         }    
@@ -54,13 +55,5 @@ class GetRequest {
 
 }
 
-// Test only if run directly from CLI
-if (basename($argv[0]) == basename(__FILE__)) {
-    $getParams = array('a' => 'hello', 'b'=>'world');
-    $lawSearcher = new GetRequest("http://localhost:8983/solr/statedecoded/law");
-    $searchRes = $lawSearcher->execute( array('q'=>'no child left behind') );
-
-    print_r($searchRes);
-}
 
 ?>

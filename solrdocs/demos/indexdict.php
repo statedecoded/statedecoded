@@ -85,7 +85,7 @@ function indexDict($solrUrl, $dictJsonFileName) {
     echo "Triggering a commit of dictionary terms...\n";
     // get req to solrUrl/?commit=true&wt=json
     $req = new GetRequest($solrUrl);
-    $response = $req->execute(array('commit' => 'true', 'wt' => 'json'));
+    $response = $req->get(array('commit' => 'true', 'wt' => 'json'));
     $error = checkForSolrError($response);
     var_dump($error);
     if ($error !== FALSE) {

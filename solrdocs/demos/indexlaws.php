@@ -105,7 +105,7 @@ function indexLaws($pathOrGlob, $solrUrl, $batchSize=10000) {
     # this is less important as all data is imported at once
     # with a big batch update.
     $req = new GetRequest($url);
-    $req->execute(array('commit' => 'true'));
+    $req->get(array('commit' => 'true'));
 }
 
 # Parse command line options (see printout below for more info)
