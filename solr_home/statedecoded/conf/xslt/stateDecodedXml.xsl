@@ -131,6 +131,7 @@
       <!--<xsl:message>TEXTLEN: <xsl:value-of select="$textLen"/></xsl:message>
      <xsl:message>AMOUNT TO PROCESS <xsl:value-of select="$amountToProcess"/></xsl:message>-->
 
+         <!--"blah>" "<cat meow"-->
          <xsl:variable name="substr" select="substring($text, 1, $amountToProcess)"/>
          <xsl:variable name="tail" select="substring($text, $amountToProcess + 1)"/>
          <xsl:call-template name="escape-xml-single">

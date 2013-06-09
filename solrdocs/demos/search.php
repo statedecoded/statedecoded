@@ -42,7 +42,7 @@ require_once('getreq.php');
 // params listed below
 //
 // 
-function searchStateDecoded($query, $solrUrl, $pageNo, $dict) {
+function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFilters) {
 
     $resultsPerPage = 3;
     $start = $resultsPerPage * $pageNo;
@@ -62,7 +62,18 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict) {
         "rows" => "$resultsPerPage", // retreive this many rows
         "start" => "$start", // Start at resurt $start
         "indent" => "true"); // pretty print the resulting json
-                                
+
+    // As facets are enabled, a typical option to give users
+    // is the ability to click on a facet and filter the results
+    // in that only match that facet
+    //
+    // We're exposing this as a command line option expecting
+    // that in this demo you might copy/paste the displayed
+    // facets into a command line argument to simulate a click
+    // in an application
+    if ($structureFacetFilters) {
+
+    }    
 
     // Parameters you're most likely going to want
     // to customize
@@ -128,7 +139,7 @@ function lawSearchResultsCommandLineDisplay($respJson) {
         echo "\n";
         echo "-------------------------------------------\n";
         echo "Result #" . $resultNumber ."\n";
-        echo "CATCH LINE         : $doc->catch_line\n";
+        echo "__ $doc->catch_line __\n";
         echo "HIGHLIGHTED SNIPPET: $textHl\n";
         echo "-------------------------------------------\n";
         ++$resultNumber;

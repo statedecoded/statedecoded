@@ -41,11 +41,11 @@ function buildQueryString($queryParams) {
 #
 # Usage:
 #   $baseUrl = "http://localhost:1234/hello/world"
-#   $queryParams = array('user' => '12', 'lastname' => 'turnbull')
+#   $queryParams = array('user' => '12', 'lastname' => 'turnbull', 'hobbies'=array('fishing', 'coding'))
 #   echo appendQueryString($url, $queryParams);
 #
 # Output:
-#   http://localhost:1234/hello/world?user=12&lastname=>turnbull
+#   http://localhost:1234/hello/world?user=12&lastname=>turnbull&hobbies=fishing&hobbies=coding
 #
 function appendQueryString($baseUrl, $queryParams) {
     if (!is_array($queryParams) or count($queryParams) == 0) {
@@ -54,6 +54,7 @@ function appendQueryString($baseUrl, $queryParams) {
     return $baseUrl . "?" . buildQueryString($queryParams);
 }
 
+// Just used as a convenient sandbox for making sure this works
 function tests() {
     $appendResult = appendQueryString("http://localhost:8983/solr",
         array("v1" => "5"));
