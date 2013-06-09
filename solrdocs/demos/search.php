@@ -49,7 +49,7 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
 
     $filters = array();
     // Create a list of multiple fq= parameters to 
-    // pass in the query string
+    // pass in the query string. For more on fq see below
     if ($dict) {
         $filters[] = "type:dict";
     }
@@ -66,20 +66,13 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
     // facets into a command line argument to simulate a click
     // in an application
     foreach ($structureFacetFilters AS $structureFacetFilter) {
-        $filters[] = "structure:(" . $structureFacetFilter . ")";
+        $filters[] = "structure_descendent:\"" . $structureFacetFilter . "\"";
     }
 
 
     // Run a search query against the search request handler,
     // and use these parameters instead of what is specified
     // in the search request handler
-    $params = array("q" => $query,
-        "fq"   => $filters,
-        "rows" => "$resultsPerPage", // retreive this many rows
-        "start" => "$start", // Start at resurt $start
-        "indent" => "true"); // pretty print the resulting json
-
-
     // Parameters you're most likely going to want
     // to customize
     // http://wiki.apache.org/solr/CommonQueryParameters
@@ -98,6 +91,13 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
     //          results for
     //
     // Many of the other parameters have been carefully
+    $params = array("q" => $query,
+        "fq"   => $filters,
+        "rows" => "$resultsPerPage", // retreive this many rows
+        "start" => "$start", // Start at resurt $start
+        "indent" => "true"); // pretty print the resulting json
+
+
 
     // *****************************************************************
     // An HTTP get request to the request handler for law
@@ -115,10 +115,12 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
     }
 }
 
+
+// Display a subset of the law response Json
+// only shown when --dict not present
+// http://wiki.apache.org/solr/SolJSON#JSON_Query_Response_Format
+//
 function lawSearchResultsCommandLineDisplay($respJson) {
-    // Display a subset of the response Json
-    // http://wiki.apache.org/solr/SolJSON#JSON_Query_Response_Format
-    //
     // Important notes:
     // (1) {response { docs // contains the search results
     //                          // and values for each result
@@ -132,7 +134,7 @@ function lawSearchResultsCommandLineDisplay($respJson) {
     //                             // Contain counts for each legal section
     //                             // to filter on a section, 
     $decodedResults = json_decode($respJson);
-    // Show catch_line with highlighted 
+    // Show full catch_line with highlighted 
     // text
     $docs = $decodedResults->response->docs;
     $highlights = $decodedResults->highlighting;
@@ -162,7 +164,7 @@ function lawSearchResultsCommandLineDisplay($respJson) {
     }
 }
 
-
+// Parse through command line options
 $longopts = array("solrUrl:", "query:", "pageNo", "structfilter:", "dict::");
 $opts = getopt("", $longopts);
 if (!in_array('solrUrl', array_keys($opts))) {
@@ -171,6 +173,7 @@ if (!in_array('solrUrl', array_keys($opts))) {
     echo "    --solrUrl='http://localhost:8983/solr/statedecoded/search \\\n";
     echo "   [--query=\"no child left behind\" \\\n";
     echo "    --pageNo=2 \\ \n";
+    echo "    --structfilter=\"Health/Disease Prevention and Control\" \\ \n";
     echo "    --dict] \n";
     echo "Returns 10 search results for the specified query\n";
     echo "If pageNo is specified goes to that page of the \n";
