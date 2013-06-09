@@ -47,22 +47,16 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
     $resultsPerPage = 3;
     $start = $resultsPerPage * $pageNo;
 
+    $filters = array();
+    // Create a list of multiple fq= parameters to 
+    // pass in the query string
     if ($dict) {
-        $lawOrDictFilter = "type:dict";
+        $filters[] = "type:dict";
     }
     else {
-        $lawOrDictFilter = "type:law";
+        $filters[] = "type:law";
     }
-
-    // Run a search query against the search request handler,
-    // and use these parameters instead of what is specified
-    // in the search request handler
-    $params = array("q" => $query,
-        "fq" => $lawOrDictFilter, // apply a filter query, only get laws
-        "rows" => "$resultsPerPage", // retreive this many rows
-        "start" => "$start", // Start at resurt $start
-        "indent" => "true"); // pretty print the resulting json
-
+    
     // As facets are enabled, a typical option to give users
     // is the ability to click on a facet and filter the results
     // in that only match that facet
@@ -71,9 +65,20 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
     // that in this demo you might copy/paste the displayed
     // facets into a command line argument to simulate a click
     // in an application
-    if ($structureFacetFilters) {
+    foreach ($structureFacetFilters AS $structureFacetFilter) {
+        $filters[] = "structure:(" . $structureFacetFilter . ")";
+    }
 
-    }    
+
+    // Run a search query against the search request handler,
+    // and use these parameters instead of what is specified
+    // in the search request handler
+    $params = array("q" => $query,
+        "fq"   => $filters,
+        "rows" => "$resultsPerPage", // retreive this many rows
+        "start" => "$start", // Start at resurt $start
+        "indent" => "true"); // pretty print the resulting json
+
 
     // Parameters you're most likely going to want
     // to customize
@@ -106,26 +111,26 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
         die();
     }
     else {
-        // Response Json
-        // http://wiki.apache.org/solr/SolJSON#JSON_Query_Response_Format
-        //
-        // Important notes:
-        // (1) {response { docs // contains the search results
-        //                          // and values for each result
-        //                          // Control what fields get returned with the
-        //                          // fl parameter
-        // (2) {highlighting // contains highlighted values for
-        //                                  // each search result
-        //                                  // control which fields get highlighted
-        //                                  // with the hl.fl result
-        // (3) {facet_counts { facet_fields
-        //                             // Contain counts for each legal section
-        //                             // to filter on a section, 
         return $respJson;
     }
 }
 
 function lawSearchResultsCommandLineDisplay($respJson) {
+    // Display a subset of the response Json
+    // http://wiki.apache.org/solr/SolJSON#JSON_Query_Response_Format
+    //
+    // Important notes:
+    // (1) {response { docs // contains the search results
+    //                          // and values for each result
+    //                          // Control what fields get returned with the
+    //                          // fl parameter
+    // (2) {highlighting // contains highlighted values for
+    //                                  // each search result
+    //                                  // control which fields get highlighted
+    //                                  // with the hl.fl result
+    // (3) {facet_counts { facet_fields
+    //                             // Contain counts for each legal section
+    //                             // to filter on a section, 
     $decodedResults = json_decode($respJson);
     // Show catch_line with highlighted 
     // text
@@ -134,7 +139,6 @@ function lawSearchResultsCommandLineDisplay($respJson) {
     $resultNumber = 0;
     foreach ($docs as $doc) {
         $resultId = $doc->id;
-        #var_dump($highlights);
         $textHl = $highlights->$resultId->text[0];
         echo "\n";
         echo "-------------------------------------------\n";
@@ -146,7 +150,8 @@ function lawSearchResultsCommandLineDisplay($respJson) {
     }
 
     // Show faceting options
-    echo "STRUCTURE FACETS\n";
+    echo "STRUCTURE FACETS, filter on these be rerunning script\n";
+    echo "with --structfilter=\"value\"\n";
     $facet_fields = $decodedResults->facet_counts->facet_fields->structure_facet_hierarchical;
     $currFacetPair = 0;
     for ($currFacetPair = 0; $currFacetPair < count($facet_fields); $currFacetPair += 2) {
@@ -158,7 +163,7 @@ function lawSearchResultsCommandLineDisplay($respJson) {
 }
 
 
-$longopts = array("solrUrl:", "query:", "pageNo", "dict::");
+$longopts = array("solrUrl:", "query:", "pageNo", "structfilter:", "dict::");
 $opts = getopt("", $longopts);
 if (!in_array('solrUrl', array_keys($opts))) {
     echo "Usage:\n";
@@ -182,6 +187,7 @@ $solrUrl = $opts['solrUrl'];
 $query = '*:*';
 $pageNo = 0;
 
+var_dump($opts);
 if (in_array('query', array_keys($opts))) {
     $query = $opts['query'];
 }
@@ -189,11 +195,22 @@ if (in_array('pageNo', array_keys($opts))) {
     $query = $opts['pageNo'];
 }
 $dict = FALSE;
+$structfilters = array();
 if (in_array('dict', array_keys($opts))) {
     $dict = TRUE;
 }
+else { // cause structure only applies to searching laws
+    if (in_array("structfilter", array_keys($opts))) {
+        $sfOption = $opts["structfilter"];
+        $structfilters = $opts["structfilter"];
+        if (is_string($structfilters)) {
+            $structfilters = array($structfilters);
+        }
+    }
+    var_dump($structfilters);
+}
 
-$respJson = searchStateDecoded($query, $solrUrl, $pageNo, $dict);
+$respJson = searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structfilters);
 
 if (!$dict) {
     lawSearchResultsCommandLineDisplay($respJson);
