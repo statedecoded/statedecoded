@@ -42,16 +42,23 @@ require_once('getreq.php');
 // params listed below
 //
 // 
-function searchLaws($query, $solrUrl, $pageNo) {
+function searchStateDecoded($query, $solrUrl, $pageNo, $dict) {
 
     $resultsPerPage = 3;
     $start = $resultsPerPage * $pageNo;
+
+    if ($dict) {
+        $lawOrDictFilter = "type:dict";
+    }
+    else {
+        $lawOrDictFilter = "type:law";
+    }
 
     // Run a search query against the search request handler,
     // and use these parameters instead of what is specified
     // in the search request handler
     $params = array("q" => $query,
-        "fq" => "type:law", // apply a filter query, only get laws
+        "fq" => $lawOrDictFilter, // apply a filter query, only get laws
         "rows" => "$resultsPerPage", // retreive this many rows
         "start" => "$start", // Start at resurt $start
         "indent" => "true"); // pretty print the resulting json
@@ -93,17 +100,19 @@ function searchLaws($query, $solrUrl, $pageNo) {
 }
 
 
-$longopts = array("solrUrl:", "query:", "pageNo");
+$longopts = array("solrUrl:", "query:", "pageNo", "dict::");
 $opts = getopt("", $longopts);
 if (!in_array('solrUrl', array_keys($opts))) {
     echo "Usage:\n";
-    echo "php lawsearch.php \\\n";
+    echo "php search.php \\\n";
     echo "    --solrUrl='http://localhost:8983/solr/statedecoded/search \\\n";
     echo "   [--query=\"no child left behind\" \\\n";
-    echo "    --pageNo=2] \n";
+    echo "    --pageNo=2 \\ \n";
+    echo "    --dict] \n";
     echo "Returns 10 search results for the specified query\n";
     echo "If pageNo is specified goes to that page of the \n";
-    echo "results. IE pageNo == 0, first 10, pageNo ==1 next 10\n";
+    echo "results. IE pageNo == 0, first 3, pageNo ==1 next 3\n";
+    echo "Specify --dict to search dictionary items\n";
     echo "Query should be parsable by edismax query parser\n";
     echo "";
     echo "ie: http://wiki.apache.org/solr/ExtendedDisMax";
@@ -121,8 +130,13 @@ if (in_array('query', array_keys($opts))) {
 if (in_array('pageNo', array_keys($opts))) {
     $query = $opts['pageNo'];
 }
+$dict = FALSE;
+var_dump($opts);
+if (in_array('dict', array_keys($opts))) {
+    $dict = TRUE;
+}
 
-echo searchLaws($query, $solrUrl, $pageNo);
+echo searchStateDecoded($query, $solrUrl, $pageNo, $dict);
 
 
 ?>
