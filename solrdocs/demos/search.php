@@ -139,11 +139,13 @@ function lawSearchResultsCommandLineDisplay($respJson) {
     $docs = $decodedResults->response->docs;
     $highlights = $decodedResults->highlighting;
     $resultNumber = 0;
+    echo "\n";
+    echo "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n" ;
+    echo "      SEARCH  RESULTS \n" ;
+    echo "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n" ;
     foreach ($docs as $doc) {
         $resultId = $doc->id;
         $textHl = $highlights->$resultId->text[0];
-        echo "\n";
-        echo "-------------------------------------------\n";
         echo "Result #" . $resultNumber ."\n";
         echo "__ $doc->catch_line __\n";
         echo "HIGHLIGHTED SNIPPET: $textHl\n";
@@ -190,7 +192,6 @@ $solrUrl = $opts['solrUrl'];
 $query = '*:*';
 $pageNo = 0;
 
-var_dump($opts);
 if (in_array('query', array_keys($opts))) {
     $query = $opts['query'];
 }
@@ -210,13 +211,15 @@ else { // cause structure only applies to searching laws
             $structfilters = array($structfilters);
         }
     }
-    var_dump($structfilters);
 }
 
 $respJson = searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structfilters);
 
 if (!$dict) {
     lawSearchResultsCommandLineDisplay($respJson);
+}
+else {
+    echo $respJson;
 }
 
 
