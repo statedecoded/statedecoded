@@ -42,7 +42,7 @@ require_once('getreq.php');
 // params listed below
 //
 // 
-function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFilters) {
+function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFilters, $facetdepth) {
 
     $resultsPerPage = 3;
     $start = $resultsPerPage * $pageNo;
@@ -95,9 +95,11 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
         "fq"   => $filters,
         "rows" => "$resultsPerPage", // retreive this many rows
         "start" => "$start", // Start at resurt $start
-        "indent" => "true"); // pretty print the resulting json
-
-
+        "indent" => "true",  // pretty print the resulting json
+        "facet.prefix" => "$facetdepth"); // use the facet prefix to only return results 
+                                          // tagged with a specific depth
+                                          // ie only facets of 2 structure deep (Health/Disease Prevention and Control)
+                                          // facet.prefix = 2 
 
     // *****************************************************************
     // An HTTP get request to the request handler for law
@@ -170,7 +172,7 @@ function lawSearchResultsCommandLineDisplay($respJson) {
 }
 
 // Parse through command line options
-$longopts = array("solrUrl:", "query:", "pageNo", "structfilter:", "dict::");
+$longopts = array("solrUrl:", "query:", "pageNo", "structfilter:", "dict::", "facetdepth:");
 $opts = getopt("", $longopts);
 if (!in_array('solrUrl', array_keys($opts))) {
     echo "Usage:\n";
@@ -179,6 +181,7 @@ if (!in_array('solrUrl', array_keys($opts))) {
     echo "   [--query=\"no child left behind\" \\\n";
     echo "    --pageNo=2 \\ \n";
     echo "    --structfilter=\"Health/Disease Prevention and Control\" \\ \n";
+    echo "    --facetdepth=2 \\ \n";
     echo "    --dict] \n";
     echo "Returns 10 search results for the specified query\n";
     echo "If pageNo is specified goes to that page of the \n";
@@ -194,12 +197,13 @@ if (!in_array('solrUrl', array_keys($opts))) {
 $solrUrl = $opts['solrUrl'];
 $query = '*:*';
 $pageNo = 0;
+$facetdepth = 1;
 
 if (in_array('query', array_keys($opts))) {
     $query = $opts['query'];
 }
 if (in_array('pageNo', array_keys($opts))) {
-    $query = $opts['pageNo'];
+    $pageNo = $opts['pageNo'];
 }
 $dict = FALSE;
 $structfilters = array();
@@ -216,7 +220,13 @@ else { // cause structure only applies to searching laws
     }
 }
 
-$respJson = searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structfilters);
+if (in_array('facetdepth', array_keys($opts))) {
+    $facetdepth = $opts['facetdepth'];
+}
+
+print_r($facetdepth);
+
+$respJson = searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structfilters, $facetdepth);
 
 if (!$dict) {
     lawSearchResultsCommandLineDisplay($respJson);
