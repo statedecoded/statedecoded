@@ -2,7 +2,7 @@ This is an overview of State Decoded Setup & Usage. Locally this README can be v
 
 ## Installation & Setup 
 
-Installation and setup involves downloading Solr, using its default Jetty-based distrubution, and then pointing Solr at State Decoded's config files. To perform these steps refer to the [Setup & Installation](setup.md) instructions located in this directory.
+Installation and setup involves downloading Solr, using its default Jetty-based distrubution, and then pointing Solr at State Decoded's config files. To perform these steps refer to the [Setup & Installation](setup.md) instructions located in this directory. The discussion below pertains to code that can be found in the [statedecoded/solrdocs/demos](demos) directory.
 
 ## Interacting with Solr
 
