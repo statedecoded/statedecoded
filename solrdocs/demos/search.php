@@ -104,6 +104,8 @@ function searchStateDecoded($query, $solrUrl, $pageNo, $dict, $structureFacetFil
     // for the state decoded Solr core
     $searchReq = new GetRequest($solrUrl);
     $respJson = $searchReq->get($params);
+    // Some error checking, did Solr return an error?
+    //  Does it look like Solr is even up?
     $error = checkForSolrError($respJson);
     if ($error !== FALSE) {
         echo "Failure Executing Search:\n";

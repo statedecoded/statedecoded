@@ -53,6 +53,6 @@ TODO
 
 
 
-## John's Notes
-https://docs.google.com/a/opensourceconnections.com/document/d/1qDTDl_VMSjpQGQcdXl8abqY3EKAtJtqUQ_8t-zLkSwY/edit
+# Solr perspective
 
+link here
