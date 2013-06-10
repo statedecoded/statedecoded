@@ -901,7 +901,7 @@
        </str>
        <int name="ps3">2</int><!--Phrase slop specific to pf3-->
        <str name="df">text</str><!--Default search field. Shouldn't matter, but has to be included.-->
-       <str name="mm">2&lt;-25% 5&lt;-50%</str><!--How many terms must match. Confusing syntax isn't it?-->
+       <str name="mm">33%</str><!--How many terms must match. Confusing syntax isn't it?-->
        <str name="q.alt">*:*</str><!--If no search is submitted, this one is used.-->
 
        <!--Result settings-->
@@ -988,7 +988,8 @@
        </str>
        <str name="rows">0</str>
        <str name="df">text</str><!--Default search field. Shouldn't matter, but has to be included.-->
-       <str name="mm">2&lt;-25% 5&lt;-50%</str><!--How many terms must match. Confusing syntax isn't it?-->
+       <str name="mm">33%</str><!--How many terms must match. Confusing syntax isn't it?-->
+       <str name="wt">json</str><!--Return results as json -->
        <str name="q.alt">*:*</str><!--If no search is submitted, this one is used.-->
 
        <!--Result settings-->
@@ -1049,6 +1050,7 @@
        <str name="q.alt">*:*</str><!--If no search is submitted, this one is used.-->
        <str name="fq">{!v=$id df=id}</str><!-- this narrows down the search results to only the one with the specified id-->
        <str name="id">---------YOU HAVE NOT SPECIFIED A DOCUMENT ID-------------;</str><!--If you don't specify an id, you'll see this message.-->
+       <str name="wt">json</str><!--Return results as json -->
 
        <!--Result settings-->
        <str name="rows">1</str><!--Return 1 rows.-->

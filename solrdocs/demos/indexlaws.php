@@ -124,7 +124,7 @@ if (!in_array('solrUrl', array_keys($opts)) ||
     echo "be found for ingestion.\n";
     echo "Example --\n";
     echo "php indexlaws.php \\\n";
-    echo "     --solrURl=http://localhost:8983/solr/update \\\n";
+    echo "     --solrUrl=http://localhost:8983/solr/statedecoded/update \\\n";
     echo "     --pathToLaws=/path/to/laws/*.xml\\\n";
     echo "     [--batchSize=1000]\n";
     echo "\n";

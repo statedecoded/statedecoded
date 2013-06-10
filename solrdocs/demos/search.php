@@ -137,6 +137,7 @@ function lawSearchResultsCommandLineDisplay($respJson) {
     // Show full catch_line with highlighted 
     // text
     $docs = $decodedResults->response->docs;
+    var_dump($respJson);
     $highlights = $decodedResults->highlighting;
     $resultNumber = 0;
     echo "\n";
@@ -172,7 +173,7 @@ $opts = getopt("", $longopts);
 if (!in_array('solrUrl', array_keys($opts))) {
     echo "Usage:\n";
     echo "php search.php \\\n";
-    echo "    --solrUrl='http://localhost:8983/solr/statedecoded/search \\\n";
+    echo "    --solrUrl='http://localhost:8983/solr/statedecoded/search' \\\n";
     echo "   [--query=\"no child left behind\" \\\n";
     echo "    --pageNo=2 \\ \n";
     echo "    --structfilter=\"Health/Disease Prevention and Control\" \\ \n";
