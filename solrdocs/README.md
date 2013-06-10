@@ -35,23 +35,20 @@ See [indexdict.php](demos/indexdict.php) for a command-line runnable demo of ind
     * [Solr highlighting](http://wiki.apache.org/solr/HighlightingParameters) -- returning matches and surrounding snippets of specific fields highlighted
     * [Solr faceting](http://wiki.apache.org/solr/SolrFacetingOverview) for the structure and section number fields -- returning a count of the number of search results in each section of the law, along with the ability to then filter on specific subsections.
 
+## Single Document Search
+
+The Single Doc request handler is intended for returning results appropriate to display on a document viewing page. This includes:
+
+* [More Like This](http://wiki.apache.org/solr/MoreLikeThis) functionality
+* More extensive [Highlighting](http://wiki.apache.org/solr/MoreLikeThis) functionality intended for displaying the entire document with highlighted snippets
+
+See [singledoc.php](demos/singledoc.php) for a command-line runnable demo of Single Doc request handler.
+
 ## Suggest-as-you-type
 
 We have developed a Javascript based demo of autocompletion, aka ["suggest as you type"](http://www.opensourceconnections.com/2013/06/08/advanced-suggest-as-you-type-with-solr/). 
 
 Runnable by opening in a browser, [sample_suggest.html](demos/sample_suggest.html) provides a Javascript demo of interacting with Solr for autocompletion. Note, you may need to browse directly to this html file in your file system for your browser to run the javascript correctly. 
-
-
-## More-like-this
-
-Given an id of a source document, Solr can return multiple similar documents. This functionality is known as ["more like this"](http://wiki.apache.org/solr/MoreLikeThis). We have implemented this feature as part of the single doc request handler.:
-
-* See [mlt.php](demos/mlt.php) for a command-line runnable demo of more-like-this.
-
-## Single Document Search
-
-TODO
-
 
 ## John's Notes
 
