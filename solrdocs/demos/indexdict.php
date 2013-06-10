@@ -112,7 +112,7 @@ if (!in_array('solrUrl', array_keys($opts)) ||
     echo "terms\n";
     echo "Example --\n";
     echo "php indexdict.php \\\n";
-    echo "     --solrURl=http://localhost:8983/solr/statedecoded/update \\\n";
+    echo "     --solrUrl=http://localhost:8983/solr/statedecoded/update \\\n";
     echo "     --dictFile=/home/doug/dictionary.json\\\n";
     echo "\n";
     die();
