@@ -50,8 +50,8 @@ We have developed a Javascript based demo of autocompletion, aka ["suggest as yo
 
 Runnable by opening in a browser, [sample_suggest.html](demos/sample_suggest.html) provides a Javascript demo of interacting with Solr for autocompletion. Note, you may need to browse directly to this html file in your file system for your browser to run the javascript correctly. 
 
-## John's Notes
 
-John Berryman's notes on additional advanced features that you may wish to enable:
-https://docs.google.com/a/opensourceconnections.com/document/d/1qDTDl_VMSjpQGQcdXl8abqY3EKAtJtqUQ_8t-zLkSwY/edit
 
+# Solr perspective
+
+link here
