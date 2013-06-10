@@ -46,6 +46,10 @@ Runnable by opening in a browser, [sample_suggest.html](demos/sample_suggest.htm
 
 TODO
 
+## Single Document Search
+
+TODO
+
 
 
 
