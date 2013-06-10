@@ -44,11 +44,13 @@ Runnable by opening in a browser, [sample_suggest.html](demos/sample_suggest.htm
 
 ## More-like-this
 
-TODO
+Given an id of a source document, Solr can return multiple similar documents. This functionality is known as ["more like this"](http://wiki.apache.org/solr/MoreLikeThis). We have implemented this feature as part of the single doc request handler.:
 
-
+* See [mlt.php](demos/mlt.php) for a command-line runnable demo of more-like-this.
 
 
 ## John's Notes
+
+John Berryman's notes on additional advanced features that you may wish to enable:
 https://docs.google.com/a/opensourceconnections.com/document/d/1qDTDl_VMSjpQGQcdXl8abqY3EKAtJtqUQ_8t-zLkSwY/edit
 
