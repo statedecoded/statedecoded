@@ -1,4 +1,3 @@
-
 # Solr perspective
 ##searching
 * normal searching: [http://localhost:8983/solr/statedecoded/search?q=automobile tax](http://localhost:8983/solr/statedecoded/search?q=automobile tax)
@@ -12,7 +11,8 @@
 * When someone selects a particular document, note it’s id field and retrieve that particular document by: q=id:l_23425
 * If you want to show a single document highlighted, then perform the same query at the singledoc request handler and the text of the law or definition will come back highlighted. http://localhost:8983/solr/statedecoded/singledoc?q=automobile tax&id=l_28328
   * If you don’t specify a query (q) then the single document will come back with no highlights.
-  * If you do not specify an id, then no results will be returned.
+  * If you do not specify an id, then no results will be returned. 
+  
 ##grouping
 * I didn’t include grouping by default because it might just be better to issue two searches, once for laws, once for definitions. If you want to group, here’s how!
 grouping take 1 (complex structure): http://localhost:8983/solr/statedecoded/search
@@ -31,6 +31,7 @@ grouping take 1 (complex structure): http://localhost:8983/solr/statedecoded/sea
 * You can page through groups with group.offset - though I don’t know how to page through a specific group
 * More information at http://wiki.apache.org/solr/FieldCollapsing
 * You might just want to issue two separate queries rather than worrying about grouping at all. Grouping saves some Solr sweat if you’re really being pounded, but I double local municipalities or even state municipalities are going to get enough traffic to create problems. ~And if they do, then there are other ways to improve performance of Solr.
+
 ##facet display
 * Easiest facet display to type (Which is either law or dict.) http://localhost:8983/solr/statedecoded/search?q=whatever
   * &facet=true
@@ -52,19 +53,23 @@ grouping take 1 (complex structure): http://localhost:8983/solr/statedecoded/sea
   * Option 2: structure_facet_hierarchical - and you can find facets n level deep via f.structure_facet_hierarchical.facet.prefix=1
   * Option 3: We could create a special analysis Java code to split on a regex as above.
   * Section filtering - just add fq=structure_descendent:”Conservation/Virginia Waste Management Act” and that will find any document that is a descendent of this structure.
+
 ##highlighting
 * Highlighting is part of /search and /singledoc request handlers by default.
 * By default, we highlight only fields definition and text. You can modify this with the hl.fl (highlight field list parameter).
 * The highlights section is returned past facets in the result set. It’s a list of snippets for the specified field for each document that matches.
 * By default we return 2 snippets of lenght 100 each. If we can’t do this, then we return the first 200 characters of the appropriate fields. (This reduces logic in the client in the case that a match doesn’t occur in that field.)
 * We’ve surrounded the matches with <span class=”highlight”>the highlight</span>. You can make it look like whatever you want in CSS
+
 ##spell correction
 * The spellcheck component is built into the search request handler. If someone misspells a word, then last section of the response will have corrections. Notably, the collation sections will have recommendations of similar multi-term searches that are guaranteed to have results. Try http://localhost:8983/solr/statedecoded/search?q=electrc%20vehilce
 * I have dumped the text, tags, structure, term, and definition fields into the spelling fields, so any word present there may at some point be presented as a suggestion. Therefore it’s really a good idea not to stick comments into the spelling field ever! Otherwise you’ll inevitably get recommendations like “did you mean ‘damn communist’?”
 * In order to make spell correction start working (I think) you have to build the spelling index first. Just include spellcheck.build=true in the url. Ex: http://localhost:8983/solr/statedecoded/search?q=electrc%20vehilce&spellcheck.build=true
+
 ##suggestion
 * As the user is typing into the search box, you might want to provide them with suggested term completions. For this use the suggestion request handler: http://localhost:8983/solr/statedecoded/suggest?q=vehicle elec*&facet.prefix=elec
 * You have to supply two things here: the partial query followed by a wildcard character, and the prefix of the term being typed. In the example here, the users is probably going to type “vehicle electricity”.
 * You wanted to see a code example of this. Once Solr is running and laws are indexed, try opening statedecoded/solrdocs/demos/sample_suggest.html and you can play with a simple jquery implementation of suggestion
+
 ##more like this
 * This is built into the singledoc request handler. There will be a section called moreLikeThis that contains documents considered similar. I’m currently returning several fields, so we might want to change that 
