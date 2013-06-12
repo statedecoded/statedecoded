@@ -38,10 +38,10 @@
 				</hgroup>
 			</a>
 			<section id="search">
-					<input type="submit" name="submit" value="Search" id="submit" class="btn btn-success">
 				<form id="search_form" method="get" action="/search/">
 					<label for="search">Search the code by title name, common phrase, or associated court cases</label>
 					<input type="search" name="q" value="" id="search" placeholder="Search the Laws">
+					<input type="submit" name="" value="Search" id="submit" class="btn btn-success">
 					<!--a class="advanced" href="#">Advanced</a-->
 				</form>
 			</section> <!-- // #search -->
