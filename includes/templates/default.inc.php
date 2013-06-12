@@ -39,9 +39,9 @@
 			</a>
 			<section id="search">
 				<form id="search_form">
-					<input type="search" name="search" value="" id="search" placeholder="Search the code...">
 					<input type="submit" name="submit" value="Search" id="submit" class="btn btn-success">
 					<label for="search">Search the code by title name, common phrase, or associated court cases</label>
+					<input type="search" name="q" value="" id="search" placeholder="Search the Laws">
 					<!--a class="advanced" href="#">Advanced</a-->
 				</form>
 			</section> <!-- // #search -->
