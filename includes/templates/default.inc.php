@@ -18,6 +18,7 @@
 
 	<link rel="stylesheet" href="/static/css/application.css">
 	<link rel="stylesheet" href="/static/css/jquery.qtip.css">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
 	{{css}}
 	{{inline_css}}
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
