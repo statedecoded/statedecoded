@@ -51,6 +51,23 @@
       text-transform: uppercase;
     }
 
+
+    section.indent, section.indent-1 {
+      margin-left: 15px;
+    }
+    
+    section.indent-2 {
+      margin-left: 30px;
+    }
+    
+    section.indent-3 {
+      margin-left: 45px;
+    }
+    
+    section.indent-4 {
+      margin-left: 60px;
+    }
+
     p {
       margin: 0 0 20px 0;
     }
