@@ -2494,6 +2494,18 @@ section.feature-content {
     margin: 40px 0 10px 0;
     text-transform: uppercase; }
   /* line 53, ../scss/areas/_page-law-show.scss */
+  .law .primary-content section.indent, .law .primary-content section.indent-1 {
+    margin-left: 15px;
+  }
+  .law .primary-content section.indent-2 {
+    margin-left: 30px;
+  }
+  .law .primary-content section.indent-3 {
+    margin-left: 45px;
+  }
+  .law .primary-content section.indent-4 {
+    margin-left: 60px;
+  }
   .law .primary-content p {
     margin: 0 0 20px 0; }
   .law .primary-content pre.table {
