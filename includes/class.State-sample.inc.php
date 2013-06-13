@@ -181,6 +181,7 @@ class Parser
 			 * Send this object back, out of the iterator.
 			 */
 			return $this->section;
+			
 		}
 
 	} // end iterate() function
@@ -191,7 +192,7 @@ class Parser
 	 */
 	public function parse()
 	{
-	
+
 		/*
 		 * If a section of code hasn't been passed to this, then it's of no use.
 		 */
@@ -221,39 +222,6 @@ class Parser
 		{
 			foreach ($this->section->metadata as $field)
 			{
-<<<<<<< HEAD
-				foreach ($field as $key => $value)
-=======
-<<<<<<< HEAD
-				
-				/*
-				 * Convert true/false values to y/n values.
-				 */
-				if ($value == 'true')
-				{
-					$value = 'y';
-				}
-				elseif ($value == 'false')
->>>>>>> Iterate through metadata differently
-				{
-					/*
-					 * Convert true/false values to y/n values.
-					 */
-					if ($value == 'true')
-					{
-						$value = 'y';
-					}
-					elseif ($value == 'true')
-					{
-						$value = 'n';
-					}
-					$this->code->metadata->$key = $value;
-				}
-<<<<<<< HEAD
-=======
-				
-				$this->code->metadata->$key = $value;
-=======
 				foreach ($field as $key => $value)
 				{
 					/*
@@ -269,8 +237,6 @@ class Parser
 					}
 					$this->code->metadata->$key = $value;
 				}
->>>>>>> Iterate through metadata differently
->>>>>>> Iterate through metadata differently
 			}
 			
 		}
@@ -447,7 +413,7 @@ class Parser
 		 * create_structure() will handle that silently. Either way a structural ID gets returned.
 		 */
 		$structure = new Parser(array('db' => $this->db));
-
+		
 		foreach ($this->code->structure as $struct)
 		{
 		
@@ -498,7 +464,7 @@ class Parser
 		{
 			$sql .= ', ' . $name . '=' . $this->db->quote($value);
 		}
-		
+
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
@@ -619,7 +585,7 @@ class Parser
 							identifier=' . $this->db->quote($prefix) . ',
 							sequence=' . $j . ',
 							date_created=now()';
-					
+
 					$result = $this->db->exec($sql);
 					if ($result === FALSE)
 					{
@@ -855,6 +821,9 @@ class Parser
 			return FALSE;
 		}
 
+		/*
+		 * Return the last inserted ID.
+		 */
 		return $this->db->lastInsertID();
 		
 	}
@@ -1355,7 +1324,7 @@ class Parser
 		return $result;
 
 	} // end store_definitions()
-	
+
 	
 	function query($sql)
 	{
@@ -1496,7 +1465,15 @@ class Parser
 		 * The list is separated by semicolons and spaces.
 		 */
 		$updates = explode('; ', $this->history);
-
+		
+		/*
+		 * If this turns out not to be a list formatted in this manner.
+		 */
+		if (count($updates) == 0)
+		{
+			return FALSE;
+		}
+		
 		$i=0;
 		foreach ($updates as &$update)
 		{
@@ -1537,7 +1514,7 @@ class Parser
 			 */
 			else
 			{
-			
+
 				/*
 				 * Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
 				 */
@@ -1546,7 +1523,7 @@ class Parser
 				
 				if ( ($result !== FALSE) && ($result !== 0) )
 				{
-					
+
 					/*
 					 * Save the year.
 					 */
