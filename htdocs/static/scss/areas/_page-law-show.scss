@@ -54,6 +54,13 @@
     p {
       margin: 0 0 20px 0;
     }
+    
+    pre.table {
+      margin: 0 0 20px 0;
+      font-size: .75em;
+      overflow-x: scroll;
+      white-space: pre;
+    }
 
   }
 

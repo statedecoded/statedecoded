@@ -2496,6 +2496,11 @@ section.feature-content {
   /* line 53, ../scss/areas/_page-law-show.scss */
   .law .primary-content p {
     margin: 0 0 20px 0; }
+  .law .primary-content pre.table {
+    margin: 0 0 20px 0;
+    font-size: .75em;
+	overflow-x: scroll;
+	white-space: pre; }
 /* line 59, ../scss/areas/_page-law-show.scss */
 .law .secondary-content {
   float: right;
