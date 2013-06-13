@@ -6,9 +6,9 @@
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
- * @copyright	2010-2012 Waldo Jaquith
+ * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.5
+ * @version		0.6
  * @link		http://www.statedecoded.com/
  * @since		0.1
 */
@@ -19,12 +19,16 @@ require '../includes/page-head.inc.php';
 # Create a new instance of Structure.
 $struct = new Structure();
 
+# Use the URL to identify the requested structural unit.
+$result = $struct->url_to_structure();
+
 # If the URL doesn't represent a valid structural portion of the code, then bail.
-if ( $struct->url_to_structure() === false || empty($struct->structure) )
+if ( $result === FALSE)
 {
 	send_404();
 }
 
+# Set aside the ancestry for this structural unit, to be accessed separately.
 $structure = $struct->structure;
 
 # Fire up our templating engine.
@@ -39,14 +43,69 @@ if (count((array) $structure) > 1)
 {
 	foreach ($structure as $level)
 	{
-		$template->field->breadcrumbs .= ' <a href="'.$level->url.'">'.$level->number.': '.$level->name.'</a> →';
+		$template->field->breadcrumbs .= ' <a href="'.$level->url.'">'.$level->identifier.': '.$level->name.'</a> →';
+		
+		# If this structural element is the same as the parent container, then use that knowledge
+		# to populate the link rel="up" tag.
+		if ($level->id == $struct->parent_id)
+		{
+			$template->field->link_rel = '<link rel="up" title="Up" href="' . $level->url . '" />';
+		}
 	}
 	$template->field->breadcrumbs = rtrim($template->field->breadcrumbs, '→');
 	$template->field->breadcrumbs = trim($template->field->breadcrumbs);
 }
 
+# If this is a top-level element, there's no breadcrumb trail, but we still need to populate the
+# link rel="up" tag.
+else
+{
+	# Make the "up" link a link to the home page.
+	$template->field->link_rel = '<link rel="up" title="Up" href="/" />';
+}
+
+/*
+ * Provide link relations for the previous and next sibling structural units.
+ */
+if (isset($struct->siblings))
+{
+
+	/*
+	 * Locate the instant structural unit within the structure listing.
+	 */ 
+	$current_structure = end($structure);
+	$i=0;
+	
+	/*
+	 * When the present structure is identified, pull out the prior and next ones.
+	 */
+	foreach ($struct->siblings as $sibling)
+	{
+		if ($sibling->id === $current_structure->id)
+		{
+
+			if ($i >= 1)
+			{
+				prev($struct->siblings);
+				$tmp = prev($struct->siblings);
+				$template->field->link_rel .= '<link rel="prev" title="Previous" href="' . $tmp->url . '" />';
+			}
+
+			if ( $i < (count($struct->siblings)-1) )
+			{
+				next($struct->siblings);
+				$tmp = next($struct->siblings);
+				$template->field->link_rel .= '<link rel="next" title="Next" href="' . $tmp->url . '" />';
+			}
+			break;
+			
+		}
+		$i++;
+	}
+}
+
 # Provide a textual introduction to this section.
-$body = '<p>This is '.ucwords($struct->label).' '.$struct->number.' of the '.LAWS_NAME.', titled
+$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the '.LAWS_NAME.', titled
 		“'.$struct->name.'.”';
 
 if (count((array) $structure) > 1)
@@ -55,7 +114,7 @@ if (count((array) $structure) > 1)
 	{
 		if ($level->label !== $struct->label)
 		{
-			$body .= ' It is part of '.ucwords($level->label).' '.$level->number.', titled “'
+			$body .= ' It is part of '.ucwords($level->label).' '.$level->identifier.', titled “'
 				.$level->name.'.”';
 		}
 	}
@@ -65,13 +124,13 @@ if (count((array) $structure) > 1)
 $children = $struct->list_children();
 
 # If we have successfully gotten a list of child structural units, display them.
-if ($children !== false)
+if ($children !== FALSE)
 {
 	/* The level of this child structural unit is that of the current unit, plus one. */
 	$body .= '<dl class="level-'.($structure->{count($structure)-1}->level + 1).'">';
 	foreach ($children as $child)
 	{
-		$body .= '<dt><a href="'.$child->url.'">'.$child->number.'</a></dt>
+		$body .= '<dt><a href="'.$child->url.'">'.$child->identifier.'</a></dt>
 				<dd><a href="'.$child->url.'">'.$child->name.'</a></dd>';
 	}
 	$body .= '</dl>';
@@ -82,7 +141,7 @@ if ($children !== false)
 $laws = $struct->list_laws();
 
 # If we have successfully gotten a list of laws, display them.
-if ($laws !== false)
+if ($laws !== FALSE)
 {
 
 	$body .= ' It’s comprised of the following '.count((array) $laws).' sections.</p>';

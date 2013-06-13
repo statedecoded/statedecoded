@@ -6,7 +6,7 @@
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
- * @copyright	2010-2012 Waldo Jaquith
+ * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.6
  * @link		http://www.statedecoded.com/
@@ -25,6 +25,20 @@ class API
 	 */
 	function list_all_keys()
 	{
+		
+		/*
+		 * If APC is running, retrieve the keys from APC.
+		 */
+		if (APC_RUNNING === TRUE)
+		{
+			$api_keys = apc_fetch('api_keys');
+			if ($api_keys !== FALSE)
+			{
+				$this->all_keys = $api_keys;
+				return TRUE;
+			}
+		}
+		
 		/*
 		 * We're going to need access to the database connection within this method.
 		 */
@@ -40,38 +54,44 @@ class API
 		$result = $db->query($sql);
 		
 		/* If the database has returned an error. */
-		if (PEAR::isError($result) === true)
+		if ($result === FALSE)
 		{
 			throw new Exception('API keys could not be retrieved.');
+			return FALSE;
 		}
 		
 		/*
 		 * If the query succeeds then retrieve each row and build up an object containing a list
 		 * of all keys.
 		 */
-		else
+			
+		/*
+		 * If no API keys have been registered.
+		 */
+		if ($result->numRows() == 0)
 		{
-			
-			/*
-			 * If no API keys have been registered.
-			 */
-			if ($result->numRows() == 0)
-			{
-				return true;
-			}
-			
-			/*
-			 * If API keys have been registered, iterate through them and store them.
-			 */
-			$i=0;
-			while ($key = $result->fetchRow(MDB2_FETCHMODE_OBJECT))
-			{
-				$this->all_keys->{$key->api_key} = true;
-				$i++;
-			}
-			
-			return true;
+			return TRUE;
 		}
+		
+		/*
+		 * If API keys have been registered, iterate through them and store them.
+		 */
+		$i=0;
+		while ($key = $result->fetch(PDO::FETCH_OBJ))
+		{
+			$this->all_keys->{$key->api_key} = TRUE;
+			$i++;
+		}
+		
+		/*
+		 * If APC is running, store the API keys in APC.
+		 */
+		if (APC_RUNNING === TRUE)
+		{
+			apc_store('api_keys', $this->all_keys);
+		}
+		
+		return TRUE;
 	}
 	
 
@@ -90,15 +110,16 @@ class API
 		 */
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
-				WHERE key = "'.$db->escape($this->key).'"';
+				WHERE key = ' . $db->quote($this->key);
 		$result = $db->query($sql);
 		
 		/*
 		 * If the query succeeds then retrieve the result.
 		 */
-		if ( (PEAR::isError($result) === false) && ($result->numRows() > 0) )
+		if ($result != FALSE)
 		{
-			$api_key = $result->fetchRow(MDB2_FETCHMODE_OBJECT);
+		
+			$api_key = $result->fetch(PDO::FETCH_OBJ);
 			
 			/*
 			 * Bring the result into the scope of the object.
@@ -107,10 +128,11 @@ class API
 			{
 				$this->$key = $value;
 			}
+			
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 	
@@ -151,26 +173,26 @@ class API
 
 		if (!isset($this->form))
 		{
-			return false;
+			return FALSE;
 		}
 		if (empty($this->form->email))
 		{
 			$this->form_errors = 'Please provide your e-mail address.';
-			return false;
+			return FALSE;
 		}
 		elseif (filter_var($this->form->email, FILTER_VALIDATE_EMAIL) === FALSE)
 		{
 			$this->form_errors = 'Please enter a valid e-mail address.';
-			return false;
+			return FALSE;
 		}
 		
 		if ( !empty($this->form_url) && (filter_var($this->form->url, FILTER_VALIDATE_URL) === FALSE) )
 		{
 			$this->form_errors = 'Please enter a valid URL.';
-			return false;
+			return FALSE;
 		}
 		
-		return true;
+		return TRUE;
 	}
 	
 
@@ -206,24 +228,24 @@ class API
 		 * Assemble the SQL query.
 		 */
 		$sql = 'INSERT INTO api_keys
-				SET api_key = "'.$db->escape($this->key).'",
-				email = "'.$db->escape($this->email).'",
-				secret = "'.$db->escape($this->secret).'",
+				SET api_key = ' . $db->quote($this->key) . ',
+				email = ' . $db->quote($this->email) . ',
+				secret = ' . $db->quote($this->secret) . ',
 				date_created = now()';
 		if (!empty($this->name))
 		{
-			$sql .= ', name="'.$db->escape($this->name).'"';
+			$sql .= ', name=' . $db->quote($this->name);
 		}
 		if (!empty($this->url))
 		{
-			$sql .= ', url="'.$db->escape($this->url).'"';
+			$sql .= ', url=' . $db->quote($this->url)
 		}
 		
 		/*
 		 * Insert this record.
 		 */
 		$result = $db->exec($sql);
-		if (PEAR::isError($result) === true)
+		if ($result === FALSE)
 		{
 			throw new Exception('API key could not be created.');
 		}
@@ -255,15 +277,34 @@ class API
 		 */
 		$sql = 'UPDATE api_keys
 				SET verified = "y"
-				WHERE secret = "'.$db->escape($this->secret).'"';
+				WHERE secret = ' . $db->quote($this->secret);
 		$result = $db->exec($sql);
 		
-		if (PEAR::isError($result) === true)
+		if ($result === FALSE)
 		{
 			throw new Exception('API key could not be activated.');
 		}
 		
-		return true;
+		$sql = 'SELECT api_key
+				FROM api_keys
+				WHERE secret = ' . $db->quote($this->secret);
+		$result = $db->query($sql);
+		if ($result !== FALSE)
+		{
+			$api_key = $result->fetch(PDO::FETCH_OBJ);
+			$this->key = $api_key->api_key;
+		}
+		
+		/*
+		 * If APC is installed, then delete the cache of the keys, since it's been invalidated by
+		 * the addition of this key.
+		 */
+		if ( extension_loaded('apc') || (ini_get('apc.enabled') === 1) )
+		{
+			apc_delete('api_keys');
+		}
+		
+		return TRUE;
 	}
 	
 	
@@ -280,24 +321,25 @@ class API
 	
 		if (!isset($this->email) || !isset($this->secret))
 		{
-			return false;
+			return FALSE;
 		}
 		
-		$email->body = 'Click on the following link to activate your '.SITE_TITLE.' API key.'
-			."\r\r"
-			.'http://'.$_SERVER['SERVER_NAME'].'/api-key/?secret='.$this->secret;
-		$email->subject = SITE_TITLE.' API Registration';
-		$email->headers = 'From: '.EMAIL_ADDRESS."\n"
-						.'Return-Path: '.EMAIL_ADDRESS."\n"
-						.'Reply-To: '.EMAIL_ADDRESS."\n"
-						.'X-Originating-IP: '.$_SERVER['REMOTE_ADDR'];
+		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
+			. "\r\r"
+			. 'http://' . $_SERVER['SERVER_NAME'] . '/api-key/?secret=' . $this->secret;
+		$email->subject = SITE_TITLE . ' API Registration';
+		$email->headers = 'From: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'Return-Path: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'Reply-To: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
+						.'X-Originating-IP: ' . $_SERVER['REMOTE_ADDR'];
+		$email->parameters = '-f' . EMAIL_ADDRESS;
 		
 		/*
 		 * Send the e-mail.
 		 */
-		mail($this->email, $email->subject, $email->body, $email->headers);
+		mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
 		
-		return true;
+		return TRUE;
 	}
 	
 	

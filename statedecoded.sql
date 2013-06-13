@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
   `email` varchar(255) collate utf8_bin NOT NULL,
   `name` varchar(128) collate utf8_bin default NULL,
   `url` varchar(128) collate utf8_bin default NULL,
-  `verified` enum('n','y') collate utf8_bin NOT NULL default 'n',
-  `secret` char(5) collate utf8_bin NOT NULL,
+  `verified` enum('n','y') collate utf8_bin NOT NULL default 'n' COMMENT 'Has the user verified their e-mail address?',
+  `secret` char(5) collate utf8_bin NOT NULL COMMENT 'Used as a password in confirmation URLs',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
@@ -23,15 +23,17 @@ CREATE TABLE IF NOT EXISTS `dictionary` (
   `law_id` int(10) unsigned NOT NULL,
   `term` varchar(64) collate utf8_bin NOT NULL,
   `definition` text collate utf8_bin NOT NULL,
-  `scope` varchar(32) collate utf8_bin NOT NULL default 'chapter',
-  `scope_specificity` tinyint(3) unsigned default NULL,
-  `structure_id` smallint(5) unsigned default NULL,
+  `scope` varchar(32) collate utf8_bin NOT NULL COMMENT 'The extent of the code to which this definition applies',
+  `scope_specificity` tinyint(3) unsigned default NULL COMMENT 'Larger numbers have a larger applicability scope',
+  `structure_id` smallint(5) unsigned default NULL COMMENT 'The structure within which this definition applies',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `law_id` (`law_id`,`term`,`scope`),
+  KEY `law_id` (`law_id`),
+  KEY `term` (`term`),
+  KEY `scope` (`scope`),
   KEY `structure_id` (`structure_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Terms and definitions scraped from laws';
 
 CREATE TABLE IF NOT EXISTS `dictionary_general` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
@@ -41,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `dictionary_general` (
   `source_url` varchar(512) character set utf8 collate utf8_bin default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `term` (`term`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Glossary of generally applicable legal terms';
 
 CREATE TABLE IF NOT EXISTS `editions` (
   `id` tinyint(3) unsigned NOT NULL auto_increment,
@@ -50,24 +52,24 @@ CREATE TABLE IF NOT EXISTS `editions` (
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `year` (`year`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='An entry for every revision of the legal code';
 
 CREATE TABLE IF NOT EXISTS `laws` (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `structure_id` smallint(3) unsigned default NULL,
-  `edition_id` tinyint(3) unsigned NOT NULL,
-  `section` varchar(16) collate utf8_bin NOT NULL,
-  `catch_line` varchar(255) collate utf8_bin NOT NULL,
-  `history` text collate utf8_bin,
-  `order_by` varchar(24) collate utf8_bin default NULL,
-  `named_act` enum('y','n') collate utf8_bin NOT NULL default 'n',
-  `text` text collate utf8_bin,
-  `repealed` enum('y','n') collate utf8_bin NOT NULL default 'n',
+  `structure_id` smallint(3) unsigned default NULL COMMENT 'The containing structure',
+  `edition_id` tinyint(3) unsigned NOT NULL COMMENT 'The release of the legal code to which this law belongs',
+  `section` varchar(16) collate utf8_bin NOT NULL COMMENT 'The unique identifier for this law (e.g., 12-95.2)',
+  `catch_line` varchar(255) collate utf8_bin NOT NULL COMMENT 'The title of the law',
+  `history` text collate utf8_bin COMMENT 'Optional history of this law',
+  `order_by` varchar(24) collate utf8_bin default NULL COMMENT 'Optional sort attribute',
+  `text` text collate utf8_bin COMMENT 'Complete text of the law',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `section` (`section`),
-  KEY `chapter_id` (`structure_id`)
+  KEY `structure_id` (`structure_id`),
+  KEY `edition_id` (`edition_id`),
+  KEY `order_by` (`order_by`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `laws_meta` (
@@ -76,85 +78,73 @@ CREATE TABLE IF NOT EXISTS `laws_meta` (
   `meta_key` varchar(255) collate utf8_bin NOT NULL,
   `meta_value` longtext collate utf8_bin NOT NULL,
   `date_created` datetime NOT NULL,
-  `date_modified` timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
+  `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`),
   KEY `key` (`meta_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin  COMMENT='Storage of additional data specific to laws.';
 
 CREATE TABLE IF NOT EXISTS `laws_references` (
   `id` int(3) unsigned NOT NULL auto_increment,
   `law_id` int(10) unsigned NOT NULL,
   `target_section_number` varchar(16) collate utf8_bin NOT NULL,
   `target_law_id` int(10) unsigned NOT NULL,
-  `mentions` tinyint(3) unsigned NOT NULL,
+  `mentions` tinyint(3) unsigned NOT NULL COMMENT 'Number of times the law is mentioned',
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `date_created` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `overlap` (`law_id`,`target_section_number`),
   KEY `target_section_number` (`target_section_number`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mentions of laws within the text of other laws';
 
 CREATE TABLE IF NOT EXISTS `laws_views` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `section` varchar(16) collate utf8_bin NOT NULL,
-  `ip_address` int(10) unsigned default NULL,
+  `ip_address` int(10) unsigned default NULL COMMENT 'Retrieve with INET_NTOA',
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `section` (`section`)
+  KEY `section` (`section`),
+  KEY `section_2` (`section`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
 CREATE TABLE IF NOT EXISTS `structure` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
-  `name` varchar(128) collate utf8_bin default NULL,
-  `number` varchar(16) collate utf8_bin NOT NULL,
-  `label` varchar(32) collate utf8_bin NOT NULL,
-  `order_by` int(10) unsigned default NULL,
+  `name` varchar(128) collate utf8_bin default NULL COMMENT 'Textual description of this structural unit',
+  `identifier` varchar(16) collate utf8_bin NOT NULL COMMENT 'The public-facing unique identifier, often a number',
+  `label` varchar(32) collate utf8_bin NOT NULL COMMENT 'What this level of structural unit is called',
+  `order_by` int(10) unsigned default NULL COMMENT 'Externally provided primary sort attribute',
   `parent_id` smallint(5) unsigned default NULL,
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `order_by` (`order_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
-
-CREATE TABLE IF NOT EXISTS `structure_unified` (
-`s1_id` smallint(5) unsigned
-,`s1_name` varchar(128)
-,`s1_number` varchar(16)
-,`s1_label` varchar(32)
-,`s2_id` smallint(5) unsigned
-,`s2_name` varchar(128)
-,`s2_number` varchar(16)
-,`s2_label` varchar(32)
-);
+  KEY `order_by` (`order_by`),
+  KEY `number` (`identifier`,`label`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Titles, chapters, parts, articles, etc.';
 
 CREATE TABLE IF NOT EXISTS `text` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `law_id` int(10) unsigned NOT NULL,
-  `sequence` smallint(5) unsigned NOT NULL,
-  `text` text collate utf8_bin NOT NULL,
-  `type` enum('section','table') collate utf8_bin NOT NULL,
+  `sequence` smallint(5) unsigned NOT NULL COMMENT 'The ordinal position of this subsection',
+  `text` text collate utf8_bin,
+  `type` enum('section','table','illustration') collate utf8_bin NOT NULL default 'section',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
-  KEY `law_id` (`law_id`,`sequence`),
-  FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+  KEY `law_id` (`law_id`,`sequence`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Each subsection of text for each law';
 
 CREATE TABLE IF NOT EXISTS `text_sections` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `text_id` int(10) unsigned NOT NULL,
-  `identifier` varchar(3) collate utf8_bin NOT NULL,
-  `sequence` tinyint(3) unsigned NOT NULL,
+  `identifier` varchar(3) collate utf8_bin NOT NULL COMMENT 'The prefix before this subsection',
+  `sequence` tinyint(3) unsigned NOT NULL COMMENT 'The ordinal position of this identifier (e.g., for A6(f) 6 is in position 2)',
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `text_id` (`text_id`,`identifier`,`sequence`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Stores the subsection identifiers for subsections';
 
-DROP TABLE IF EXISTS `structure_unified`;
-
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `structure_unified` AS select `s1`.`id` AS `s1_id`,`s1`.`name` AS `s1_name`,`s1`.`number` AS `s1_number`,`s1`.`label` AS `s1_label`,`s2`.`id` AS `s2_id`,`s2`.`name` AS `s2_name`,`s2`.`number` AS `s2_number`,`s2`.`label` AS `s2_label` from (`structure` `s1` left join `structure` `s2` on((`s2`.`id` = `s1`.`parent_id`))) order by `s2`.`number`,`s1`.`number`;
 
 INSERT INTO `dictionary_general` (`id`, `term`, `definition`, `source`, `source_url`) VALUES
 (1, 'abscond', 0x546f206573636170652c20666c6565206f72206469736170706561722e, 'VA Journey Through Justice Glossary', 'http://www.jtj.courts.state.va.us/resources_glossary.html'),

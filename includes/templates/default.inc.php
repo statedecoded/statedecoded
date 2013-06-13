@@ -8,13 +8,13 @@
 <head>
 	<meta charset="utf-8"/>
 	<title>{{browser_title}}</title>
-	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	{{meta_tags}}
 	<link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/master.css" type="text/css" media="screen">
 	<link rel="stylesheet" href="/css/print.css" type="text/css" media="print">
 	<link rel="stylesheet" href="/css/jquery.qtip.css" type="text/css" media="screen">
 	<link rel="home" title="Home" href="/" />
-	<link rel="search" title="Search" href="/search/" />
 	{{link_rel}}
 	{{css}}
 	{{inline_css}}
@@ -38,54 +38,51 @@
 	</script>
 </head>
 <body>
-	<div id="corner-banner">
-		<span><a href="/about/">Beta</a></span>
-	</div>
-	<header id="masthead">
-		<hgroup>
-			<h1><a href="/">The State Decoded</a></h1>
-		</hgroup>
-		<nav id="main_navigation">
-			<div id="search">
-				<form method="get" action="/search/">
-					<input type="search" size="20" name="q" placeholder="Search the Code"/>
-					<input type="submit" value="Search" />
-				</form>
-			</div> <!-- // #search -->
-			<ul>
-				<li><a href="/" class="ir" id="home">Home</a></li>
-				<li><a href="/about/" class="ir" id="about">About</a></li>
-			</ul>
-		</nav> <!-- // #main_navigation -->
-	</header> <!-- // #masthead -->
+	<div id="content">
+		<div id="corner-banner">
+			<span><a href="/about/">Beta</a></span>
+		</div>
+		<header id="masthead">
+			<hgroup>
+				<h1><a href="/">The State Decoded</a></h1>
+			</hgroup>
+			<nav id="main_navigation">
+				<div id="search">
+				</div> <!-- // #search -->
+				<ul>
+					<li><a href="/" class="ir" id="home">Home</a></li>
+					<li><a href="/about/" class="ir" id="about">About</a></li>
+				</ul>
+			</nav> <!-- // #main_navigation -->
+		</header> <!-- // #masthead -->
 
-	<section id="page">
-		<nav id="breadcrumbs">
-			{{breadcrumbs}}
-		</nav>
+		<section id="page">
+			<nav id="breadcrumbs">
+				{{breadcrumbs}}
+			</nav>
 		
-		<nav id="intercode">
-			{{intercode}}
-		</nav> <!-- // #intercode -->
+			<nav id="intercode">
+				{{intercode}}
+			</nav> <!-- // #intercode -->
 
-		<h1>{{page_title}}</h1>
-    	
-    	<section id="sidebar">
-		{{sidebar}}
-		</section>
+			<h1>{{page_title}}</h1>
 		
-		{{body}}
+			<section id="sidebar">
+			{{sidebar}}
+			</section>
 		
-	</section> <!-- // #page -->
+			{{body}}
+		
+		</section> <!-- // #page -->
   
-	<footer id="page_footer">
-		<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
-	</footer>
+		<footer id="page_footer">
+			<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
+		</footer>
+	</div>
 	{{javascript_files}}
 	<script>
 		{{javascript}}
 	</script>
 	<script src="/js/jquery.qtip.min.js"></script>
-	<script src="/js/jquery.color.js"></script>
 </body>
 </html>

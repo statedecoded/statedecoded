@@ -133,7 +133,11 @@ elseif (isset($_GET['secret']))
 		$api->secret = $_GET['secret'];
 		$api->activate_key();
 		$body .= '<h2>API Key Activated</h2>
-				<p>Your API key has been activated. You may now make requests from the API.</p>';
+				
+				<p>Your API key has been activated. You may now make requests from the API. Your
+				key is:</p>
+				
+				<p><code>'.$api->key.'</code></p>';
 	}
 }
 
