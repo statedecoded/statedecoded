@@ -12,6 +12,12 @@ Each request handler comes with defaults for the arguments supported by that req
 
 State decoded's features in Solr: indexing, searching, auto-completion, or more-like-this are all implemented as a request handler. Parameters can be overriden by passing them via the query string in the URL. The demos described below describe specific parameters you might wish to customize.
 
+## Note about the Demos
+
+The documentation below contains several php demos for interacting with Solr. These demos use the php-curl library to interact with Solr over HTTP. On Ubuntu, php curl can be installed via apt-get:
+
+    sudo apt-get install php5-curl
+
 ## Ingest State Decoded Laws & Dictionary
 
 ### Laws 
