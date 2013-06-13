@@ -126,7 +126,9 @@ class Parser
 	public function iterate()
 	{
 
-		// Iterate through our resulting file listing.
+		/*
+		 * Iterate through our resulting file listing.
+		 */
 		$file_count = count($this->files);
 		for ($i = $this->file; $i < $file_count; $i++)
 		{
@@ -179,6 +181,7 @@ class Parser
 			 * Send this object back, out of the iterator.
 			 */
 			return $this->section;
+			
 		}
 
 	} // end iterate() function
@@ -189,7 +192,10 @@ class Parser
 	 */
 	public function parse()
 	{
-		// If a section of code hasn't been passed to this, then it's of no use.
+
+		/*
+		 * If a section of code hasn't been passed to this, then it's of no use.
+		 */
 		if (!isset($this->section))
 		{
 			return FALSE;
@@ -412,14 +418,13 @@ class Parser
 		{
 			die('No data provided.');
 		}
-		
-		// This first section creates the record for the law, but doesn't do anything with the
-		// content of it just yet.
 
-		// Try to create this section's structural element(s). If they already exist,
-		// create_structure() will handle that silently. Either way a structural ID gets returned.
+		/*
+		 * Try to create this section's structural element(s). If they already exist,
+		 * create_structure() will handle that silently. Either way a structural ID gets returned.
+		 */
 		$structure = new Parser(array('db' => $this->db));
-
+		
 		foreach ($this->code->structure as $struct)
 		{
 		
@@ -435,12 +440,16 @@ class Parser
 
 		}
 
-		// When that loop is finished, because structural units are ordered from most general to
-		// most specific, we're left with the section's parent ID. Preserve it.
+		/*
+		 * When that loop is finished, because structural units are ordered from most general to
+		 * most specific, we're left with the section's parent ID. Preserve it.
+		 */
 		$query['structure_id'] = $this->code->structure_id;
 
-		// Build up an array of field names and values, using the names of the database columns as
-		// the key names.
+		/*
+		 * Build up an array of field names and values, using the names of the database columns as
+		 * the key names.
+		 */
 		$query['catch_line'] = $this->code->catch_line;
 		$query['section'] = $this->code->section_number;
 		$query['text'] = $this->code->text;
@@ -453,17 +462,20 @@ class Parser
 			$query['history'] = $this->code->history;
 		}
 
-		// Create the beginning of the insertion statement.
+		/*
+		 * Create the beginning of the insertion statement.
+		 */
 		$sql = 'INSERT INTO laws
 				SET date_created=now(), edition_id='.EDITION_ID;
 
-		// Iterate through the array and turn it into SQL.
+		/*
+		 * Iterate through the array and turn it into SQL.
+		 */
 		foreach ($query as $name => $value)
 		{
 			$sql .= ', ' . $name . '=' . $this->db->quote($value);
 		}
 
-		// Execute the query.
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
@@ -471,13 +483,19 @@ class Parser
 			die($result->getMessage());
 		}
 
-		// Preserve the insert ID from this law, since we'll need it below.
+		/*
+		 * Preserve the insert ID from this law, since we'll need it below.
+		 */
 		$law_id = $this->db->lastInsertID();
 
-		// This second section inserts the textual portions of the law.
+		/*
+		 * Now insert the textual portions of the law.
+		 */
 
-		// Pull out any mentions of other sections of the code that are found within its text and
-		// save a record of those, for crossreferencing purposes.
+		/*
+		 * Pull out any mentions of other sections of the code that are found within its text and
+		 * save a record of those, for crossreferencing purposes.
+		 */
 		$references = new Parser(array('db' => $this->db));
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
@@ -493,11 +511,15 @@ class Parser
 			}
 		}
 		
-		// Store any metadata.
+		/*
+		 * Store any metadata.
+		 */
 		if (isset($this->code->metadata))
 		{
 			
-			// Step through every metadata field and add it.
+			/*
+			 * Step through every metadata field and add it.
+			 */
 			foreach ($this->code->metadata as $key => $value)
 			{
 				$sql = 'INSERT INTO laws_meta
@@ -505,7 +527,6 @@ class Parser
 						meta_key = ' . $this->db->quote($key) . ',
 						meta_value = ' . $this->db->quote($value);
 				
-				// Execute the query.
 				$result = $this->db->exec($sql);
 				if ($result === FALSE)
 				{
@@ -515,19 +536,25 @@ class Parser
 			}
 			
 		}
-
-		// Step through each section.
+		
+		/*
+		 * Step through each section.
+		 */
 		$i=1;
 		foreach ($this->code->section as $section)
 		{
 
-			// If no section type has been specified, make it your basic section.
+			/*
+			 * If no section type has been specified, make it your basic section.
+			 */
 			if (empty($section->type))
 			{
 				$section->type = 'section';
 			}
 
-			// Insert this subsection into the text table.
+			/*
+			 * Insert this subsection into the text table.
+			 */
 			$sql = 'INSERT INTO text
 					SET law_id='.$law_id.',
 					sequence='.$i.',
@@ -545,14 +572,20 @@ class Parser
 				die($result->getMessage());
 			}
 
-			// Preserve the insert ID from this section of text, since we'll need it below.
+			/*
+			 * Preserve the insert ID from this section of text, since we'll need it below.
+			 */
 			$text_id = $this->db->lastInsertID();
 
-			// Start a new counter.
+			/*
+			 * Start a new counter.
+			 */
 			$j = 1;
 
-			// Step through every portion of the prefix (i.e. A4b is three portions) and insert
-			// each.
+			/*
+			 * Step through every portion of the prefix (i.e. A4b is three portions) and insert
+			 * each.
+			 */
 			if (isset($section->prefix_hierarchy))
 			{
 				foreach ($section->prefix_hierarchy as $prefix)
@@ -563,7 +596,6 @@ class Parser
 							sequence='.$j.',
 							date_created=now()';
 	
-					// Execute the query.
 					$result = $this->db->exec($sql);
 					if ($result === FALSE)
 					{
@@ -579,18 +611,26 @@ class Parser
 		}
 
 		
-		// Trawl through the text for definitions.
+		/*
+		 * Trawl through the text for definitions.
+		 */
 		$dictionary = new Parser(array('db' => $this->db));
 		
-		// Pass this section of text to $dictionary.
+		/*
+		 * Pass this section of text to $dictionary.
+		 */
 		$dictionary->text = $this->code->text;
 		
-		// Get a normalized listing of definitions.
+		/*
+		 * Get a normalized listing of definitions.
+		 */
 		$definitions = $dictionary->extract_definitions();
 		
-		// Check to see if this section or its containing structural unit were specified in the
-		// config file as a container for global definitions. If it was, then we override the
-		// presumed scope and provide a global scope.
+		/*
+		 * Check to see if this section or its containing structural unit were specified in the
+		 * config file as a container for global definitions. If it was, then we override the
+		 * presumed scope and provide a global scope.
+		 */
 		$ancestry = array();
 		if (isset($this->code->structure))
 		{
@@ -612,18 +652,24 @@ class Parser
 		unset($ancestry);
 		unset($ancestry_section);
 		
-		// If any definitions were found in this text, store them.
+		/*
+		 * If any definitions were found in this text, store them.
+		 */
 		if ($definitions !== FALSE)
 		{
 			
-			// Populate the appropriate variables.
+			/*
+			 * Populate the appropriate variables.
+			 */
 			$dictionary->terms = $definitions->terms;
 			$dictionary->law_id = $law_id;
 			$dictionary->scope = $definitions->scope;
 			$dictionary->structure_id = $this->code->structure_id;
 			
-			// If the scope of this definition isn't section-specific, and isn't global, then
-			// find the ID of the structural unit that is the limit of its scope.
+			/*
+			 * If the scope of this definition isn't section-specific, and isn't global, then
+			 * find the ID of the structural unit that is the limit of its scope.
+			 */
 			if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
 			{
 				$find_scope = new Parser(array('db' => $this->db));
@@ -636,25 +682,35 @@ class Parser
 				}
 			}
 			
-			// If the scope isn't a structural unit, then delete it, so that we don't store it
-			// and inadvertently limit the scope.
+			/*
+			 * If the scope isn't a structural unit, then delete it, so that we don't store it
+			 * and inadvertently limit the scope.
+			 */
 			else
 			{
 				unset($dictionary->structure_id);
 			}
 			
-			// Determine the position of this structural unit.
+			/*
+			 * Determine the position of this structural unit.
+			 */
 			$structure = array_reverse(explode(',', STRUCTURE));
 			array_push($structure, 'global');
 			
-			// Find and return the position of this structural unit in the hierarchical stack.
+			/*
+			 * Find and return the position of this structural unit in the hierarchical stack.
+			 */
 			$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
 			
-			// Store these definitions in the database.
+			/*
+			 * Store these definitions in the database.
+			 */
 			$dictionary->store_definitions();
 		}
 
-		// Memory management
+		/*
+		 * Memory management
+		 */
 		unset($references);
 		unset($dictionary);
 		unset($definitions);
@@ -676,13 +732,17 @@ class Parser
 			return FALSE;
 		}
 
-		// Assemble the query.
+		/*
+		 * Assemble the query.
+		 */
 		$sql = 'SELECT id
 				FROM structure
 				WHERE identifier="'.$this->identifier.'"';
 				
-		// If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
-		// include that in our query.
+		/*
+		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
+		 * include that in our query.
+		 */
 		if ( !empty($this->parent_id) )
 		{
 			$sql .= ' AND parent_id='.$this->parent_id;
@@ -692,10 +752,8 @@ class Parser
 			$sql .= ' AND parent_id IS NULL';
 		}
 
-		// Execute the query.
 		$result = $this->db->query($sql);
 
-		// If the query fails, or if no results are found, return false -- we can't make a match.
 		if ( ($result === FALSE) || ($result->rowCount() === 0) )
 		{
 			return FALSE;
@@ -715,17 +773,19 @@ class Parser
 	function create_structure()
 	{
 
-		// Sometimes the code contains references to no-longer-existent chapters and even whole
-		// titles of the code. These are void of necessary information. We want to ignore these
-		// silently. Though you'd think we should require a chapter name, we actually shouldn't,
-		// because sometimes chapters don't have names. In the Virginia Code, for instance, titles
-		// 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
-		// name.
-		//
-		// Because a valid structural identifier can be "0" we can't simply use empty(), but must
-		// also verify that the string is longer than zero characters. We do both because empty()
-		// will valuate faster than strlen(), and because these two strings will almost never be
-		// empty.
+		/*
+		 * Sometimes the code contains references to no-longer-existent chapters and even whole
+		 * titles of the code. These are void of necessary information. We want to ignore these
+		 * silently. Though you'd think we should require a chapter name, we actually shouldn't,
+		 * because sometimes chapters don't have names. In the Virginia Code, for instance, titles
+		 * 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
+		 * name.
+		 *
+		 * Because a valid structural identifier can be "0" we can't simply use empty(), but must
+		 * also verify that the string is longer than zero characters. We do both because empty()
+		 * will valuate faster than strlen(), and because these two strings will almost never be
+		 * empty.
+		 */
 		if (
 				( empty($this->identifier) && (strlen($this->identifier) === 0) )
 				||
@@ -763,14 +823,15 @@ class Parser
 			$sql .= ', parent_id='.$this->parent_id;
 		}
 
-		// Execute the query.
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
 			return FALSE;
 		}
 
-		// Return the last inserted ID.
+		/*
+		 * Return the last inserted ID.
+		 */
 		return $this->db->lastInsertID();
 	}
 
@@ -784,20 +845,28 @@ class Parser
 	function find_structure_parent()
 	{
 
-		// We require a beginning structure ID and the label of the structural unit that's sought.
+		/*
+		 * We require a beginning structure ID and the label of the structural unit that's sought.
+		 */
 		if ( !isset($this->structure_id) || !isset($this->label) )
 		{
 			return FALSE;
 		}
 
-		// Make the sought parent ID available as a local variable, which we'll repopulate with each
-		// loop through the below while() structure.
+		/*
+		 * Make the sought parent ID available as a local variable, which we'll repopulate with each
+		 * loop through the below while() structure.
+		 */
 		$parent_id = $this->structure_id;
 
-		// Establish a blank variable.
+		/*
+		 * Establish a blank variable.
+		 */
 		$returned_id = '';
 
-		// Loop through a query for parent IDs until we find the one we're looking for.
+		/*
+		 * Loop through a query for parent IDs until we find the one we're looking for.
+		 */
 		while ($returned_id == '')
 		{
 
@@ -805,7 +874,6 @@ class Parser
 					FROM structure
 					WHERE id = '.$parent_id;
 
-			// Execute the query.
 			$result = $this->db->query($sql);
 			if ( ($result === FALSE) || ($result->rowCount() == 0) )
 			{
@@ -813,23 +881,31 @@ class Parser
 				return FALSE;
 			}
 
-			// Return the result as an object.
+			/*
+			 * Return the result as an object.
+			 */
 			$structure = $result->fetch(PDO::FETCH_OBJ);
 
-			// If the label of this structural unit matches the label that we're looking for, return
-			// its ID.
+			/*
+			 * If the label of this structural unit matches the label that we're looking for, return
+			 * its ID.
+			 */
 			if ($structure->label == $this->label)
 			{
 				return $structure->id;
 			}
 
-			// Else if this structural unit has no parent ID, then our effort has failed.
+			/*
+			 * Else if this structural unit has no parent ID, then our effort has failed.
+			 */
 			elseif (empty($structure->parent_id))
 			{
 				return FALSE;
 			}
 
-			// If all else fails, then loop through again, searching one level farther up.
+			/*
+			 * If all else fails, then loop through again, searching one level farther up.
+			 */
 			else
 			{
 				$parent_id = $structure->parent_id;
@@ -1214,17 +1290,24 @@ class Parser
 			return FALSE;
 		}
 
-		// If we have no structure ID, just substitute NULL, to avoid creating blank entries in the
-		// structure_id column.
+		/*
+		 * If we have no structure ID, just substitute NULL, to avoid creating blank entries in the
+		 * structure_id column.
+		 */
 		if (!isset($this->structure_id))
 		{
 			$this->structure_id = 'NULL';
 		}
 
-		// Iterate through our definitions to build up our SQL.
+		/*
+		 * Iterate through our definitions to build up our SQL.
+		 */
 		foreach ($this->terms as $term => $definition)
 		{
-			// Start assembling our SQL string.
+		
+			/*
+			 * Start assembling our SQL string.
+			 */
 			$sql = 'INSERT INTO dictionary (law_id, term, definition, scope, scope_specificity,
 					structure_id, date_created)
 					VALUES ';
@@ -1234,18 +1317,21 @@ class Parser
 				' . $this->db->quote($this->scope_specificity) . ', ' . $this->structure_id . ',
 				now())';
 
-			// Execute the query.
 			$result = $this->query($sql);
+			
 		}
 
 
-		// Memory management.
+		/*
+		 * Memory management.
+		 */
 		unset($this);
 
 		return $result;
 
 	} // end store_definitions()
 
+	
 	function query($sql)
 	{
 		$result = $this->db->exec($sql);
@@ -1266,27 +1352,37 @@ class Parser
 	function extract_references()
 	{
 
-		// If we don't have any text to analyze, then there's nothing more to do be done.
+		/*
+		 * If we don't have any text to analyze, then there's nothing more to do be done.
+		 */
 		if (!isset($this->text))
 		{
 			return FALSE;
 		}
 
-		// Find every instance of "##.##" that fits the acceptable format for a state code citation.
+		/*
+		 * Find every instance of "##.##" that fits the acceptable format for a state code citation.
+		 */
 		preg_match_all(SECTION_PCRE, $this->text, $matches);
 
-		// We don't need all of the matches data -- just the first set. (The others are arrays of
-		// subset matches.)
+		/*
+		 * We don't need all of the matches data -- just the first set. (The others are arrays of
+		 * subset matches.)
+		 */
 		$matches = $matches[0];
 
-		// We assign the count to a variable because otherwise we're constantly diminishing the
-		// count, meaning that we don't process the entire array.
+		/*
+		 * We assign the count to a variable because otherwise we're constantly diminishing the
+		 * count, meaning that we don't process the entire array.
+		 */
 		$total_matches = count($matches);
 		for ($j=0; $j<$total_matches; $j++)
 		{
 			$matches[$j] = trim($matches[$j]);
 
-			// Lop off trailing periods, colons, and hyphens.
+			/*
+			 * Lop off trailing periods, colons, and hyphens.
+			 */
 			if ( (substr($matches[$j], -1) == '.') || (substr($matches[$j], -1) == ':')
 				|| (substr($matches[$j], -1) == '-') )
 			{
@@ -1294,11 +1390,14 @@ class Parser
 			}
 		}
 
-		// Make unique, but with counts.
+		/*
+		 * Make unique, but with counts.
+		 */
 		$sections = array_count_values($matches);
 		unset($matches);
 
 		return $sections;
+		
 	} // end extract_references()
 
 
@@ -1308,14 +1407,18 @@ class Parser
 	 */
 	function store_references()
 	{
-		// If we don't have any section numbers or a section number to tie them to, then we can't
-		// do anything at all.
+		/*
+		 * If we don't have any section numbers or a section number to tie them to, then we can't
+		 * do anything at all.
+		 */
 		if ( (!isset($this->sections)) || (!isset($this->section_id)) )
 		{
 			return FALSE;
 		}
 
-		// Start creating our insertion query.
+		/*
+		 * Start creating our insertion query.
+		 */
 		$sql = 'INSERT INTO laws_references
 				(law_id, target_section_number, mentions, date_created)
 				VALUES ';
@@ -1330,10 +1433,11 @@ class Parser
 			}
 		}
 
-		// If we already have this record, then just refresh it with a requisite update.
+		/*
+		 * If we already have this record, then just refresh it with a requisite update.
+		 */
 		$sql .= ' ON DUPLICATE KEY UPDATE mentions=mentions';
 
-		// Execute the query.
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
@@ -1352,23 +1456,39 @@ class Parser
 	function extract_history()
 	{
 
-		// If we have no history text, then we're done here.
+		/*
+		 * If we have no history text, then we're done here.
+		 */
 		if (!isset($this->history))
 		{
 			return FALSE;
 		}
 
-		// The list is separated by semicolons and spaces.
+		/*
+		 * The list is separated by semicolons and spaces.
+		 */
 		$updates = explode('; ', $this->history);
-
+		
+		/*
+		 * If this turns out not to be a list formatted in this manner.
+		 */
+		if (count($updates) == 0)
+		{
+			return FALSE;
+		}
+		
 		$i=0;
 		foreach ($updates as &$update)
 		{
 
-			// Match lines of the format "2010, c. 402, § 1-15.1"
+			/*
+			 * Match lines of the format "2010, c. 402, § 1-15.1"
+			 */
 			$pcre = '/([0-9]{4}), c\. ([0-9]+)(.*)/';
 
-			// First check for single matches.
+			/*
+			 * First check for single matches.
+			 */
 			$result = preg_match($pcre, $update, $matches);
 			if ( ($result !== FALSE) && ($result !== 0) )
 			{
@@ -1390,28 +1510,40 @@ class Parser
 				}
 			}
 
-			// Then check for multiple matches.
+			/*
+			 * Then check for multiple matches.
+			 */
 			else
 			{
-				// Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
+				/*
+				 * Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
+				 */
 				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
 				$result = preg_match_all($pcre, $update, $matches);
 				if ( ($result !== FALSE) && ($result !== 0) )
 				{
-					// Save the year.
+					/*
+					 * Save the year.
+					 */
 					$final->{$i}->year = $matches[1][0];
 
-					// Save the chapter listing. We eliminate any trailing slash and space to avoid
-					// saving empty array elements.
+					/*
+					 * Save the chapter listing. We eliminate any trailing slash and space to avoid
+					 * saving empty array elements.
+					 */
 					$chapters = rtrim(trim($matches[2][0]), ',');
 
-					// We explode on a comma, rather than a comma and a space, because of occasional
-					// typographical errors in histories.
+					/*
+					 * We explode on a comma, rather than a comma and a space, because of occasional
+					 * typographical errors in histories.
+					 */
 					$chapters = explode(',', $chapters);
-
-					// Step through each of these chapter references and trim down the leading
-					// spaces (a result of creating the array based on commas rather than commas and
-					// spaces) and eliminate any that are blank.
+					
+					/*
+					 * Step through each of these chapter references and trim down the leading
+					 * spaces (a result of creating the array based on commas rather than commas and
+					 * spaces) and eliminate any that are blank.
+					 */
 					$chapter_count = count($chapters);
 					for ($j=0; $j<$chapter_count; $j++)
 					{
@@ -1423,7 +1555,9 @@ class Parser
 					}
 					$final->{$i}->chapter = $chapters;
 
-					// Locate any section identifier.
+					/*
+					 * Locate any section identifier.
+					 */
 					$result = preg_match(SECTION_PCRE, $update, $matches);
 					if ( ($result !== FALSE) && ($result !== 0) )
 					{
