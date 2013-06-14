@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-TODO - rm statedec_section type and fields
-TODO - make sure proper storing and indexing of fields
-TODO - remove text_pure
-TODO - remove term_exact
-
 Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
@@ -76,12 +71,12 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="id" type="string" indexed="true" stored="true" required="true" /> 
    <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
 
-   <field name="catch_line" type="statedec_text_en" indexed="true" stored="true"/>
-   <field name="tags" type="statedec_text_en" indexed="true" stored="true" multiValued="true" />
+   <field name="catch_line" type="html_stripped_text_en" indexed="true" stored="true"/>
+   <field name="tags" type="html_stripped_text_en" indexed="true" stored="true" multiValued="true" />
    <field name="tags_facet" type="string" indexed="true" stored="false" multiValued="true" />
    <copyField source="tags" dest="tags_facet" />
    
-   <field name="text" type="statedec_text_en" indexed="true" stored="true"/>
+   <field name="text" type="html_stripped_text_en" indexed="true" stored="true"/>
    <field name="repealed" type="string" indexed="true" stored="true" />
 
    <field name="structure" type="string" indexed="true" stored="true" />
@@ -93,36 +88,34 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <copyField source= "structure" dest="structure_facet_hierarchical"/>
 
    <field name="section" type="string" indexed="true" stored="true"/>
-   <field name="section_descendent" type="statedec_descendent_section" indexed="true" stored="false"/>
-   <field name="section_ancestor" type="statedec_ancestor_section" indexed="true" stored="false"/>
-   <field name="section_facet_hierarchical" type="statedec_facet_hierarchical" indexed="true" stored="false"/>
-   <field name="section_facet" type="string" indexed="true" stored="false"/><!--TODO should probable be deleted--> 
+   <field name="section_descendent" type="section_descendent" indexed="true" stored="false"/>
+   <field name="section_ancestor" type="section_ancestor" indexed="true" stored="false"/>
+   <field name="section_facet_hierarchical" type="section_descendent_prefixed" indexed="true" stored="false"/>
    <copyField source= "section" dest="section_descendent"/>
    <copyField source= "section" dest="section_ancestor"/>
    <copyField source= "section" dest="section_facet_hierarchical"/>
-   <copyField source= "section" dest="section_facet"/>
 
    <field name="refers_to" type="string" indexed="false" stored="true" multiValued="true"/>
-   <field name="refers_to_descendent" type="statedec_descendent_section" indexed="true" stored="false" multiValued="true"/>
-   <field name="refers_to_ancestor" type="statedec_ancestor_section" indexed="true" stored="false" multiValued="true"/>
+   <field name="refers_to_descendent" type="section_descendent" indexed="true" stored="false" multiValued="true"/>
+   <field name="refers_to_ancestor" type="section_ancestor" indexed="true" stored="false" multiValued="true"/>
    <copyField source= "refers_to" dest="refers_to_descendent"/>
    <copyField source= "refers_to" dest="refers_to_ancestor"/>
    
    <field name="referred_to_by" type="string" indexed="false" stored="true" multiValued="true"/>
-   <field name="referred_to_by_descendent" type="statedec_descendent_section" indexed="true" stored="false" multiValued="true"/>
-   <field name="referred_to_by_ancestor" type="statedec_ancestor_section" indexed="true" stored="false" multiValued="true"/>
+   <field name="referred_to_by_descendent" type="section_descendent" indexed="true" stored="false" multiValued="true"/>
+   <field name="referred_to_by_ancestor" type="section_ancestor" indexed="true" stored="false" multiValued="true"/>
    <copyField source= "referred_to_by" dest="referred_to_by_descendent"/>
    <copyField source= "referred_to_by" dest="referred_to_by_ancestor"/>
 
    <!-- State Decoded Dictionary Fields ==
         taken from law dict table tsv dump -->
-   <field name="term" type="statedec_text_en" indexed="true" stored="true"/>
-   <field name="definition" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
+   <field name="term" type="html_stripped_text_en" indexed="true" stored="true"/>
+   <field name="definition" type="html_stripped_text_en" indexed="true" stored="true" termVectors="true"/>
 
 
    <!-- Other -->
    <field name="type" type="lowercase" indexed="true" stored="true"/> 
-   <field name="spelling" type="statedec_text_pure" indexed="true" stored="false" multiValued="true"/> 
+   <field name="spelling" type="html_stripped_text" indexed="true" stored="false" multiValued="true"/> 
    <copyField source= "text" dest="spelling"/>
    <copyField source= "tags" dest="spelling"/>
    <copyField source= "structure" dest="spelling"/>
@@ -184,7 +177,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
          (lang/stopwords_en.txt), down cases, protects words from protwords.txt, and
          finally applies Porter's stemming.  The query time analyzer
          also applies synonyms from synonyms.txt. -->
-    <fieldType name="statedec_text_en" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="html_stripped_text_en" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
         <charFilter class="solr.HTMLStripCharFilterFactory"/>
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -225,8 +218,8 @@ Licensed to the Apache Software Foundation (ASF) under one or more
       </analyzer>
     </fieldType>
 
-    <!-- A much less heavily analyzed version of statedec_text_en for boosting higher-->
-    <fieldType name="statedec_text_pure" class="solr.TextField" positionIncrementGap="100">
+    <!-- A much less heavily analyzed version of html_stripped_text_en for boosting higher-->
+    <fieldType name="html_stripped_text" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <charFilter class="solr.HTMLStripCharFilterFactory"/>
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -303,7 +296,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 
 
-    <fieldType name="statedec_ancestor_section" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="section_ancestor" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
         <!-- remove () or [] that somebody might use to identify a chapter -->
@@ -321,7 +314,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
       </analyzer>
     </fieldType>
 
-    <fieldType name="statedec_descendent_section" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="section_descendent" class="solr.TextField" positionIncrementGap="100">
      <analyzer type="index">
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
         <!-- remove () or [] that somebody might use to identify a chapter -->
@@ -339,13 +332,13 @@ Licensed to the Apache Software Foundation (ASF) under one or more
       </analyzer>
     </fieldType>
 
-    <fieldType name="statedec_facet_hierarchical" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="section_descendent_prefixed" class="solr.TextField" positionIncrementGap="100">
      <analyzer type="index">
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
         <!-- remove () or [] that somebody might use to identify a chapter -->
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
-        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" /><!-- this is different in query -->
         <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*$)" replacement="1|$1" />
         <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*$)" replacement="2|$1" />
         <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*$)" replacement="3|$1" />
@@ -359,7 +352,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
         <!-- remove () or [] that somebody might use to identify a chapter -->
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
         <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
-        <tokenizer class="solr.KeywordTokenizerFactory" delimiter="~" />
+        <tokenizer class="solr.KeywordTokenizerFactory" />
         <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*$)" replacement="1|$1" />
         <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*$)" replacement="2|$1" />
         <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*$)" replacement="3|$1" />
@@ -368,7 +361,6 @@ Licensed to the Apache Software Foundation (ASF) under one or more
         <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*~[^~]*~[^~]*~[^~]*$)" replacement="6|$1" />
         <filter class="solr.LowerCaseFilterFactory" />
       </analyzer>
-
     </fieldType>
 
 
