@@ -1,0 +1,12 @@
+<dataConfig>
+    <dataSource type="JdbcDataSource"
+        driver="com.mysql.jdbc.Driver"
+        url="jdbc://localhost/vadecoded"
+        user="root"
+        password="root">
+    </dataSource>
+    <document>
+
+    </document>
+
+</dataConfig>

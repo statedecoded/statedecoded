@@ -1,0 +1,83 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>state decoded example suggest</title>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<style>
+#searchbox { width: 25em; }
+</style>
+<script>
+$(function() {
+  function split( val ) {
+    return val.split( /\s+/ );
+  }
+  function extractLast( term ) {
+    return split( term ).pop();
+  }
+
+
+  $( "#searchbox" ).autocomplete({
+    source: function( request, response ) {
+      if(request.term[request.term.length-1]==' ') {
+        response()
+        return;
+      }
+      $.ajax({
+        url: "http://localhost:8983/solr/statedecoded/suggest",
+        dataType: "jsonp",
+        jsonp: 'json.wrf',
+        cache: true,
+        data: {
+          q:request.term+"*",
+          "facet.prefix":extractLast( request.term ),
+          wt:"json",
+        },
+        success: function( data ) {
+          response( $.map(data.facet_counts.facet_fields.spelling, function(item,i) { 
+            if(1-i%2) {
+              return item;
+            }
+          }));
+        }
+      });
+    },
+    minLength: 2,
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push( ui.item.value );
+      // add placeholder to get the comma-and-space at the end
+      terms.push( "" );
+      this.value = terms.join( " " );
+      return false;
+    },
+    open: function() {
+      $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+    },
+    close: function() {
+      $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+    }
+  });
+});
+</script>
+</head>
+<body>
+
+<div class="ui-widget">
+  <label for="searchbox">Search Box: </label>
+  <input id="searchbox" />
+</div>
+
+
+</body>
+</html>
