@@ -1,6 +1,8 @@
 .DS_Store
 htdocs/admin/.htaccess
 htdocs/admin/.htpasswd
+va
+solr_home/statedecoded/data/
 htdocs/admin/xml/
 htdocs/includes/class.Virginia.inc.php
 htdocs/includes/config.inc.php
