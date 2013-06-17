@@ -183,7 +183,9 @@ class Structure
 			$prefix = str_replace('s', '', $tmp);
 			unset($tmp);
 			
+			/*
 			 * Strip out the table prefix from the key name.
+			 */
 			$key = preg_replace('/s[0-9]_/', '', $key);
 			
 			/*
