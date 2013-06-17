@@ -63,9 +63,9 @@ class Structure
 		$components = explode('/', $this->path);
 
 		/*
-		 * Leading and trailing slashes in the path result in blank array elements. Remove them. A
-	 	 * path component may reasonably be "0" (in the case of a structural unit numbered "0," as
-		 * exists in Virginia), so allow those.
+		 * Leading and trailing slashes in the path result in blank array elements. Remove them.
+	 	 * A path component may reasonably be "0" (in the case of a structural unit numbered "0,"
+		 * as exists in Virginia), so allow those.
 		 */
 		foreach ($components as $key => $component)
 		{
