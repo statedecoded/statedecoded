@@ -6,7 +6,7 @@
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
- * @copyright	2010-2013 Waldo Jaquith
+ * @copyright		2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.6
  * @link		http://www.statedecoded.com/
@@ -99,6 +99,7 @@ elseif ($_POST['action'] == 'parse')
 	$parser->parse();
 	$parser->write_api_key();
 	$parser->export();
+	$parser->structural_stats_generate();
 	$parser->clear_apc();
 	$parser->prune_views();
 	
