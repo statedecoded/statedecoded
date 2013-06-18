@@ -49,8 +49,8 @@ $template = new Page;
 /*
  * Define the title page elements.
  */
-$template->field->browser_title = $struct->name.'—'.SITE_TITLE;
-$template->field->page_title = '<h2>'.$struct->name.'</h2>';
+$template->field->browser_title = $struct->name . '—' . SITE_TITLE;
+$template->field->page_title = '<h2>' . $struct->name . '</h2>';
 
 /*
  * Define the breadcrumb trail.
@@ -84,7 +84,7 @@ if (count((array) $structure) > 1)
 
 if($template->field->breadcrumbs)
 {
-	$template->field->breadcrumbs = '<ul class="steps-nav">'.$template->field->breadcrumbs.'</ul>';
+	$template->field->breadcrumbs = '<ul class="steps-nav">' . $template->field->breadcrumbs . '</ul>';
 }
 
 if (isset($template->field->breadcrumbs))
