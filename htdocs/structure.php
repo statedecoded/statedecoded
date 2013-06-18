@@ -49,8 +49,8 @@ $template = new Page;
 /*
  * Define the title page elements.
  */
-$template->field->browser_title = $struct->name.'—'.SITE_TITLE;
-$template->field->page_title = '<h2>'.$struct->name.'</h2>';
+$template->field->browser_title = $struct->name . '—' . SITE_TITLE;
+$template->field->page_title = '<h2>' . $struct->name . '</h2>';
 
 /*
  * Define the breadcrumb trail.
@@ -66,8 +66,8 @@ if (count((array) $structure) > 1)
 			$active = 'active';
 		}
 		
-		$template->field->breadcrumbs .= '<li class="'.$active.'">
-				<a href="'.$level->url.'">'.$level->identifier.': '.$level->name.'</a>
+		$template->field->breadcrumbs .= '<li class="' . $active . '">
+				<a href="' . $level->url . '">' . $level->identifier . ': ' . $level->name . '</a>
 			</li>';
 		
 		/*
@@ -84,7 +84,7 @@ if (count((array) $structure) > 1)
 
 if (isset($template->field->breadcrumbs))
 {
-	$template->field->breadcrumbs = '<ul class="steps-nav">'.$template->field->breadcrumbs.'</ul>';
+	$template->field->breadcrumbs = '<ul class="steps-nav">' . $template->field->breadcrumbs . '</ul>';
 }
 
 /*
@@ -142,7 +142,7 @@ if (isset($struct->siblings))
 /*
  * Provide a textual introduction to this section.
  */
-$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the '.LAWS_NAME.', titled
+$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME . ', titled
 		“'.$struct->name.'.”';
 
 if (count((array) $structure) > 1)
@@ -151,8 +151,8 @@ if (count((array) $structure) > 1)
 	{
 		if ($level->label !== $struct->label)
 		{
-			$body .= ' It is part of '.ucwords($level->label).' '.$level->identifier.', titled “'
-				.$level->name.'.”';
+			$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ', '
+			.'titled “' . $level->name . '.”';
 		}
 	}
 }
@@ -200,7 +200,7 @@ if ($children !== FALSE)
 	/*
 	 * The level of this child structural unit is that of the current unit, plus one.
 	 */
-	$body .= '<dl class="title-list level-'.($structure->{count($structure)-1}->level + 1).'">';
+	$body .= '<dl class="title-list level-' . ($structure->{count($structure)-1}->level + 1) . '">';
 	foreach ($children as $child)
 	{
 	
@@ -211,8 +211,8 @@ if ($children !== FALSE)
 		$class_index = $counter % count($row_classes);
 		$row_class = $row_classes[$class_index];
 
-		$body .= '	<dt class="'.$row_class.'"><a href="'.$child->url.'">'.$child->identifier.'</a></dt>
-					<dd class="'.$row_class.'"><a href="'.$child->url.'">'.$child->name.'</a></dd>';
+		$body .= '	<dt class="' . $row_class . '"><a href="' . $child->url . '">' . $child->identifier . '</a></dt>
+					<dd class="' . $row_class . '"><a href="' . $child->url . '">' . $child->name . '</a></dd>';
 
 		$counter++;
 		
@@ -239,9 +239,13 @@ if ($laws !== FALSE)
 {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	$body .= '<dl class="laws">';
 =======
 	$body .= 'It’s comprised of the following '.count((array) $laws).' sections.</p>';
+=======
+	$body .= 'It’s comprised of the following ' . count((array) $laws) . ' sections.</p>';
+>>>>>>> Improve code formatting
 	$body .= '<dl class="title-list laws">';
 >>>>>>> Fixed list views to work when identifiers are long or different lengths.
 
@@ -255,8 +259,8 @@ if ($laws !== FALSE)
 		$row_class = $row_classes[$class_index];
 
 		$body .= '
-				<dt class="'.$row_class.'"><a href="'.$law->url.'">'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</a></dt>
-				<dd class="'.$row_class.'"><a href="'.$law->url.'">'.$law->catch_line.'</a></dd>';
+				<dt class="' . $row_class.'"><a href="' . $law->url . '">' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</a></dt>
+				<dd class="' . $row_class.'"><a href="' . $law->url . '">' . $law->catch_line . '</a></dd>';
 
 		$counter++;
 	}
