@@ -181,7 +181,6 @@ class Parser
 			 * Send this object back, out of the iterator.
 			 */
 			return $this->section;
-			
 		}
 
 	} // end iterate() function
@@ -192,7 +191,7 @@ class Parser
 	 */
 	public function parse()
 	{
-
+	
 		/*
 		 * If a section of code hasn't been passed to this, then it's of no use.
 		 */
@@ -418,13 +417,18 @@ class Parser
 		{
 			die('No data provided.');
 		}
+		
+		/*
+		 * This first section creates the record for the law, but doesn't do anything with the
+		 * content of it just yet.
+		 */
 
 		/*
 		 * Try to create this section's structural element(s). If they already exist,
 		 * create_structure() will handle that silently. Either way a structural ID gets returned.
 		 */
 		$structure = new Parser(array('db' => $this->db));
-		
+
 		foreach ($this->code->structure as $struct)
 		{
 		
@@ -475,7 +479,7 @@ class Parser
 		{
 			$sql .= ', ' . $name . '=' . $this->db->quote($value);
 		}
-
+		
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
@@ -489,7 +493,7 @@ class Parser
 		$law_id = $this->db->lastInsertID();
 
 		/*
-		 * Now insert the textual portions of the law.
+		 * This second section inserts the textual portions of the law.
 		 */
 
 		/*
@@ -536,7 +540,7 @@ class Parser
 			}
 			
 		}
-		
+
 		/*
 		 * Step through each section.
 		 */
@@ -578,7 +582,7 @@ class Parser
 			$text_id = $this->db->lastInsertID();
 
 			/*
-			 * Start a new counter.
+			 * Start a new counter. We'll use it to track the sequence of subsections.
 			 */
 			$j = 1;
 
@@ -588,23 +592,25 @@ class Parser
 			 */
 			if (isset($section->prefix_hierarchy))
 			{
+			
 				foreach ($section->prefix_hierarchy as $prefix)
 				{
 					$sql = 'INSERT INTO text_sections
-							SET text_id='.$text_id.',
+							SET text_id=' . $text_id . ',
 							identifier=' . $this->db->quote($prefix) . ',
-							sequence='.$j.',
+							sequence=' . $j . ',
 							date_created=now()';
-	
+					
 					$result = $this->db->exec($sql);
 					if ($result === FALSE)
 					{
-						echo '<p>'.$sql.'</p>';
+						echo '<p>' . $sql . '</p>';
 						die($result->getMessage());
 					}
 	
 					$j++;
 				}
+				
 			}
 
 			$i++;
@@ -706,10 +712,11 @@ class Parser
 			 * Store these definitions in the database.
 			 */
 			$dictionary->store_definitions();
+			
 		}
 
 		/*
-		 * Memory management
+		 * Memory management.
 		 */
 		unset($references);
 		unset($dictionary);
@@ -737,7 +744,7 @@ class Parser
 		 */
 		$sql = 'SELECT id
 				FROM structure
-				WHERE identifier="'.$this->identifier.'"';
+				WHERE identifier="' . $this->identifier . '"';
 				
 		/*
 		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
@@ -745,15 +752,15 @@ class Parser
 		 */
 		if ( !empty($this->parent_id) )
 		{
-			$sql .= ' AND parent_id='.$this->parent_id;
+			$sql .= ' AND parent_id=' . $this->parent_id;
 		}
 		else
 		{
 			$sql .= ' AND parent_id IS NULL';
 		}
-
+		
 		$result = $this->db->query($sql);
-
+		
 		if ( ($result === FALSE) || ($result->rowCount() === 0) )
 		{
 			return FALSE;
@@ -820,7 +827,7 @@ class Parser
 		$sql .= ', label=' . $this->db->quote($this->label) . ', date_created=now()';
 		if (isset($this->parent_id))
 		{
-			$sql .= ', parent_id='.$this->parent_id;
+			$sql .= ', parent_id=' . $this->parent_id;
 		}
 
 		$result = $this->db->exec($sql);
@@ -829,10 +836,8 @@ class Parser
 			return FALSE;
 		}
 
-		/*
-		 * Return the last inserted ID.
-		 */
 		return $this->db->lastInsertID();
+		
 	}
 
 
@@ -1285,6 +1290,7 @@ class Parser
 	 */
 	function store_definitions()
 	{
+	
 		if ( !isset($this->terms) || !isset($this->law_id) || !isset($this->scope) )
 		{
 			return FALSE;
@@ -1330,7 +1336,7 @@ class Parser
 		return $result;
 
 	} // end store_definitions()
-
+	
 	
 	function query($sql)
 	{
@@ -1361,7 +1367,7 @@ class Parser
 		}
 
 		/*
-		 * Find every instance of "##.##" that fits the acceptable format for a state code citation.
+		 * Find every string that fits the acceptable format for a state code citation.
 		 */
 		preg_match_all(SECTION_PCRE, $this->text, $matches);
 
@@ -1378,6 +1384,7 @@ class Parser
 		$total_matches = count($matches);
 		for ($j=0; $j<$total_matches; $j++)
 		{
+		
 			$matches[$j] = trim($matches[$j]);
 
 			/*
@@ -1388,6 +1395,7 @@ class Parser
 			{
 				$matches[$j] = substr($matches[$j], 0, -1);
 			}
+			
 		}
 
 		/*
@@ -1407,6 +1415,7 @@ class Parser
 	 */
 	function store_references()
 	{
+	
 		/*
 		 * If we don't have any section numbers or a section number to tie them to, then we can't
 		 * do anything at all.
@@ -1425,7 +1434,7 @@ class Parser
 		$i=0;
 		foreach ($this->sections as $section => $mentions)
 		{
-			$sql .= '('.$this->section_id.', "'.$section.'", '.$mentions.', now())';
+			$sql .= '(' . $this->section_id . ', "' . $section . '", ' . $mentions . ', now())';
 			$i++;
 			if ($i < count($this->sections))
 			{
@@ -1468,15 +1477,7 @@ class Parser
 		 * The list is separated by semicolons and spaces.
 		 */
 		$updates = explode('; ', $this->history);
-		
-		/*
-		 * If this turns out not to be a list formatted in this manner.
-		 */
-		if (count($updates) == 0)
-		{
-			return FALSE;
-		}
-		
+
 		$i=0;
 		foreach ($updates as &$update)
 		{
@@ -1492,6 +1493,7 @@ class Parser
 			$result = preg_match($pcre, $update, $matches);
 			if ( ($result !== FALSE) && ($result !== 0) )
 			{
+			
 				if (!empty($matches[1]))
 				{
 					$final->{$i}->year = $matches[1];
@@ -1508,6 +1510,7 @@ class Parser
 						$final->{$i}->section = $matches[0];
 					}
 				}
+				
 			}
 
 			/*
@@ -1515,13 +1518,16 @@ class Parser
 			 */
 			else
 			{
+			
 				/*
 				 * Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
 				 */
 				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
 				$result = preg_match_all($pcre, $update, $matches);
+				
 				if ( ($result !== FALSE) && ($result !== 0) )
 				{
+					
 					/*
 					 * Save the year.
 					 */
@@ -1538,13 +1544,14 @@ class Parser
 					 * typographical errors in histories.
 					 */
 					$chapters = explode(',', $chapters);
-					
+
 					/*
 					 * Step through each of these chapter references and trim down the leading
 					 * spaces (a result of creating the array based on commas rather than commas and
 					 * spaces) and eliminate any that are blank.
 					 */
 					$chapter_count = count($chapters);
+					
 					for ($j=0; $j<$chapter_count; $j++)
 					{
 						$chapters[$j] = trim($chapters[$j]);
@@ -1553,6 +1560,7 @@ class Parser
 							unset($chapters[$j]);
 						}
 					}
+					
 					$final->{$i}->chapter = $chapters;
 
 					/*
@@ -1563,9 +1571,13 @@ class Parser
 					{
 						$final->{$i}->section = $matches[0];
 					}
+					
 				}
+				
 			}
+			
 			$i++;
+			
 		}
 		
 		if ( isset($final) && is_object($final) )

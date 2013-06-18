@@ -13,50 +13,72 @@
  * @since		0.1
 */
 
-# Include the PHP declarations that drive this page.
+/*
+ * Include the PHP declarations that drive this page.
+ */
 require '../includes/page-head.inc.php';
 
-# Create a new instance of Structure.
+/*
+ * Create a new instance of Structure.
+ */
 $struct = new Structure();
 
-# Use the URL to identify the requested structural unit.
+/*
+ * Use the URL to identify the requested structural unit.
+ */
 $result = $struct->url_to_structure();
 
-# If the URL doesn't represent a valid structural portion of the code, then bail.
+/*
+ * If the URL doesn't represent a valid structural portion of the code, then bail.
+ */
 if ( $result === FALSE)
 {
 	send_404();
 }
 
-# Set aside the ancestry for this structural unit, to be accessed separately.
+/*
+ * Set aside the ancestry for this structural unit, to be accessed separately.
+ */
 $structure = $struct->structure;
 
-# Fire up our templating engine.
+/*
+ * Fire up our templating engine.
+ */
 $template = new Page;
 
-# Define the title page elements.
+/*
+ * Define the title page elements.
+ */
 $template->field->browser_title = $struct->name.'—'.SITE_TITLE;
 $template->field->page_title = '<h2>'.$struct->name.'</h2>';
 
-# Define the breadcrumb trail.
+/*
+ * Define the breadcrumb trail.
+ */
 if (count((array) $structure) > 1)
 {
 	foreach ($structure as $level)
 	{
+	
 		$active = '';
+		
 		if($level == end($structure)) {
 			$active = 'active';
 		}
+		
 		$template->field->breadcrumbs .= '<li class="'.$active.'">
 				<a href="'.$level->url.'">'.$level->identifier.': '.$level->name.'</a>
 			</li>';
 		
-		# If this structural element is the same as the parent container, then use that knowledge
-		# to populate the link rel="up" tag.
+		/*
+		 * If this structural element is the same as the parent container, then use that knowledge
+		 * to populate the link rel="up" tag.
+		 */
 		if ($level->id == $struct->parent_id)
 		{
 			$template->field->link_rel = '<link rel="up" title="Up" href="' . $level->url . '" />';
 		}
+		
 	}
 }
 
@@ -65,11 +87,15 @@ if (isset($template->field->breadcrumbs))
 	$template->field->breadcrumbs = '<ul class="steps-nav">'.$template->field->breadcrumbs.'</ul>';
 }
 
-# If this is a top-level element, there's no breadcrumb trail, but we still need to populate the
-# link rel="up" tag.
+/*
+ * If this is a top-level element, there's no breadcrumb trail, but we still need to populate the
+ * link rel="up" tag.
+ */
 else
 {
-	# Make the "up" link a link to the home page.
+	/*
+	* Make the "up" link a link to the home page.
+	*/
 	$template->field->link_rel = '<link rel="up" title="Up" href="/" />';
 }
 
@@ -113,7 +139,9 @@ if (isset($struct->siblings))
 	}
 }
 
-# Provide a textual introduction to this section.
+/*
+ * Provide a textual introduction to this section.
+ */
 $body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the '.LAWS_NAME.', titled
 		“'.$struct->name.'.”';
 
@@ -158,16 +186,24 @@ if (isset($struct->metadata))
 $row_classes = array('odd', 'even');
 $counter = 0;
 
-# Get a listing of all the structural children of this portion of the structure.
+/*
+ * Get a listing of all the structural children of this portion of the structure.
+ */
 $children = $struct->list_children();
 
-# If we have successfully gotten a list of child structural units, display them.
+/*
+ * If we have successfully gotten a list of child structural units, display them.
+ */
 if ($children !== FALSE)
 {
-	/* The level of this child structural unit is that of the current unit, plus one. */
+
+	/*
+	 * The level of this child structural unit is that of the current unit, plus one.
+	 */
 	$body .= '<dl class="title-list level-'.($structure->{count($structure)-1}->level + 1).'">';
 	foreach ($children as $child)
 	{
+	
 		/*
 		 * The remainder of the count divided by the number of classes
 		 * yields the proper index for the row class.
@@ -179,8 +215,10 @@ if ($children !== FALSE)
 					<dd class="'.$row_class.'"><a href="'.$child->url.'">'.$child->name.'</a></dd>';
 
 		$counter++;
+		
 	}
 	$body .= '</dl>';
+	
 }
 
 
@@ -189,10 +227,14 @@ if ($children !== FALSE)
  */
 $counter = 0;
 
-# Get a listing of all laws that are children of this portion of the structure.
+/*
+ * Get a listing of all laws that are children of this portion of the structure.
+ */
 $laws = $struct->list_laws();
 
-# If we have successfully gotten a list of laws, display them.
+/*
+ * If we have successfully gotten a list of laws, display them.
+ */
 if ($laws !== FALSE)
 {
 
@@ -221,11 +263,15 @@ if ($laws !== FALSE)
 	$body .= '</dl>';
 }
 
-# Put the shorthand $body variable into its proper place.
+/*
+ * Put the shorthand $body variable into its proper place.
+ */
 $template->field->body = $body;
 unset($body);
 
-# Put the shorthand $sidebar variable into its proper place.
+/*
+ * Put the shorthand $sidebar variable into its proper place.
+ */
 if (!empty($sidebar))
 {
 	$template->field->sidebar = $sidebar;
