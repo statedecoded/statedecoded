@@ -237,7 +237,7 @@ $laws = $struct->list_laws();
  */
 if ($laws !== FALSE)
 {
-	
+
 	$body .= 'It’s comprised of the following ' . count((array) $laws) . ' sections.</p>';
 	$body .= '<dl class="title-list laws">';
 
