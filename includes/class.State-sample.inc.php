@@ -181,7 +181,6 @@ class Parser
 			 * Send this object back, out of the iterator.
 			 */
 			return $this->section;
-			
 		}
 
 	} // end iterate() function
@@ -192,7 +191,7 @@ class Parser
 	 */
 	public function parse()
 	{
-
+	
 		/*
 		 * If a section of code hasn't been passed to this, then it's of no use.
 		 */
@@ -413,7 +412,7 @@ class Parser
 		 * create_structure() will handle that silently. Either way a structural ID gets returned.
 		 */
 		$structure = new Parser(array('db' => $this->db));
-		
+
 		foreach ($this->code->structure as $struct)
 		{
 		
@@ -464,7 +463,7 @@ class Parser
 		{
 			$sql .= ', ' . $name . '=' . $this->db->quote($value);
 		}
-
+		
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
@@ -821,9 +820,6 @@ class Parser
 			return FALSE;
 		}
 
-		/*
-		 * Return the last inserted ID.
-		 */
 		return $this->db->lastInsertID();
 		
 	}
@@ -1324,7 +1320,7 @@ class Parser
 		return $result;
 
 	} // end store_definitions()
-
+	
 	
 	function query($sql)
 	{
@@ -1465,15 +1461,7 @@ class Parser
 		 * The list is separated by semicolons and spaces.
 		 */
 		$updates = explode('; ', $this->history);
-		
-		/*
-		 * If this turns out not to be a list formatted in this manner.
-		 */
-		if (count($updates) == 0)
-		{
-			return FALSE;
-		}
-		
+
 		$i=0;
 		foreach ($updates as &$update)
 		{

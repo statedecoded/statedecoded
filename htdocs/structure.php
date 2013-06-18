@@ -147,6 +147,7 @@ if (isset($struct->siblings))
 /*
  * Provide a textual introduction to this section.
  */
+
 $body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME . ', titled
 		“'.$struct->name.'.”';
 
