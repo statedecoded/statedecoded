@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
   `label` varchar(32) collate utf8_bin NOT NULL COMMENT 'What this level of structural unit is called',
   `order_by` int(10) unsigned default NULL COMMENT 'Externally provided primary sort attribute',
   `parent_id` smallint(5) unsigned default NULL,
+  `metadata` text collate utf8_bin,
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
