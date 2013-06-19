@@ -766,7 +766,7 @@ class Law
 			/*
 			 * Turn every pair of newlines into carriage returns
 			 */
-			$section->text = wpautop($section->text);
+			$section->text = nl2br($section->text);
 			
 			/*
 			 * Use our dictionary to embed dictionary terms in the form of span titles.
