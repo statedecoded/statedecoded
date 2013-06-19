@@ -164,28 +164,6 @@ $(document).ready(function () {
 		}
 	})
 	
-	/* Get each permalink and add a copy function on it */
-	$('a.section-permalink').each(function(i, elm) {
-		var elm = $(elm);
-		var id = escapeSelector(elm.attr('id'));
-		var copy_link = $('<a>copy</a>').attr({
-			'data-target': '#'+id,
-			'title': 'copy to clipboard',
-			'class': 'section-permalink-copy'
-		});
-	
-		elm.after(copy_link);
-		
-		/* Permit copying URLs to the clipboard. */
-		copy_link.zclip({
-			path: '/js/ZeroClipboard.swf',
-			copy: function() {
-				var target = $(this).attr('data-target');
-				return $(target).attr('href');
-			}
-		});
-	});
-	
 	/* Mentions of other sections of the code. */
 	$("a.law").each(function() {
 		var section_number = $(this).text();
