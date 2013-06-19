@@ -585,29 +585,29 @@ class Law
 		foreach($metadata as $field)
 		{
 			
-			$row->meta_value = stripslashes($row->meta_value);
+			$field->meta_value = stripslashes($field->meta_value);
 			
 			/*
 			 * If unserializing this value works, then we've got serialized data here.
 			 */
-			if (@unserialize($row->meta_value) !== FALSE)
+			if (@unserialize($field->meta_value) !== FALSE)
 			{
-				$row->meta_value = unserialize($row->meta_value);
+				$field->meta_value = unserialize($field->meta_value);
 			}
 			
 			/*
 			 * Convert y/n values into TRUE/FALSE values.
 			 */
-			if ($row->meta_value == 'y')
+			if ($field->meta_value == 'y')
 			{
-				$row->meta_value = TRUE;
+				$field->meta_value = TRUE;
 			}
-			elseif ($row->meta_value == 'n')
+			elseif ($field->meta_value == 'n')
 			{
-				$row->meta_value = FALSE;
+				$field->meta_value = FALSE;
 			}
 			
-			$rotated->{stripslashes($row->meta_key)} = $row->meta_value;
+			$rotated->{stripslashes($field->meta_key)} = $field->meta_value;
 			
 		}
 		return $rotated;
