@@ -621,4 +621,168 @@ class ParserController
 			$this->logger->message('Done', 5);
 		}
 	}
+	
+	/**
+	 * Generate statistics about structural units
+	 *
+	 * Iterate through every structure to determine how many ancestors that it has (either ancestor
+	 * structural units or laws), and then store that data as serialized objects in the "structure"
+	 * database table.
+	 */
+	function structural_stats_generate()
+	{
+		
+		$this->logger->message('Generating structural statistics', 3);
+		
+		/*
+		 * List all of the top-level structural units.
+		 */
+		$struct = new Structure();
+		$structures = $struct->list_children();
+		
+		/*
+		 * Create an object to store structural statistics.
+		 */
+		$this->stats = new stdClass();
+		
+		/*
+		 * Iterate through each of those units.
+		 */
+		foreach ($structures as $structure)
+		{
+			$this->depth = 0;
+			$this->structure_id = $structure->id;
+			$this->structural_stats_recurse();
+		}
+		
+		$code_structures = explode(',', STRUCTURE);
+		
+		/*
+		 * Iterate through every primary structural unit.
+		 */
+		foreach ($this->stats as $structure_id => $structure)
+		{
+		
+			/*
+			 * If this is more than 1 level deep.
+			 */
+			if (count($structure->ancestry) > 1)
+			{
+				/*
+				 * Iterate through all but the last ancestry element.
+				 */
+				for ($i=0; $i < (count($structure->ancestry) - 1); $i++)
+				{
+					$ancestor_id = $structure->ancestry[$i];
+					
+					if (!isset($this->stats->{$ancestor_id}->child_laws))
+					{
+						$this->stats->{$ancestor_id}->child_laws = 0;
+					}
+					
+					if (!isset($this->stats->{$ancestor_id}->child_structures))
+					{
+						$this->stats->{$ancestor_id}->child_structures = 0;
+					}
+					
+					if (isset($structure->child_laws))
+					{
+						$this->stats->{$ancestor_id}->child_laws = $this->stats->{$ancestor_id}->child_laws + $structure->child_laws;
+					}
+					
+					if (isset($structure->child_structures))
+					{
+						$this->stats->{$ancestor_id}->child_structures = $this->stats->{$ancestor_id}->child_structures + $structure->child_structures;
+					}
+				}
+			}
+		
+		}
+		
+		foreach ($this->stats as $structure_id => $structure)
+		{
+			
+			if (!isset($structure->child_laws))
+			{
+				$structure->child_laws = 0;
+			}
+			if (!isset($structure->child_structures))
+			{
+				$structure->child_structures = 0;
+			}
+			
+			$metadata = new stdClass();
+			$metadata->child_laws = $structure->child_laws;
+			$metadata->child_structures = $structure->child_structures;
+			
+			$sql = 'UPDATE structure
+					SET metadata = "' . $this->db->quote(serialize($metadata)) . '"
+					WHERE id = ' . $structure_id;
+			$result = $this->db->exec($sql);
+		
+		}
+		
+	} // end structural_stats_generate()
+	
+	
+	/**
+	 * Recurse through structural information
+	 *
+	 * A helper method for structural_stats_generate(); not intended to be called on its own.
+	 */
+	function structural_stats_recurse()
+	{
+		
+		/*
+		 * Retrieve basic stats about the children of this structural unit.
+		 */
+		$struct = new Structure();
+		$struct->id = $this->structure_id;
+		$child_structures = $struct->list_children();
+		$child_laws = $struct->list_laws();
+		
+		/*
+		 * Append the structure's ID to the structural ancestry.
+		 */
+		$this->ancestry[] = $this->structure_id;
+
+		/*
+		 * Store the tallies.
+		 */
+		$this->stats->{$this->structure_id} = new stdClass();
+		if ($child_structures !== FALSE)
+		{
+			$this->stats->{$this->structure_id}->child_structures = count((array) $child_structures);
+		}
+		if ($child_laws !== FALSE)
+		{
+			$this->stats->{$this->structure_id}->child_laws = count((array) $child_laws);
+		}
+		$this->stats->{$this->structure_id}->depth = $this->depth;
+		$this->stats->{$this->structure_id}->ancestry = $this->ancestry;
+		
+		/*
+		 * If this structural unit has child structural units of its own, recurse into those.
+		 */
+		if (isset($this->stats->{$this->structure_id}->child_structures)
+			&& ($this->stats->{$this->structure_id}->child_structures > 0))
+		{
+			foreach ($child_structures as $child_structure)
+			{
+				$this->depth++;
+				$this->structure_id = $child_structure->id;
+				$this->structural_stats_recurse();
+			}
+			
+		}
+		
+		/*
+		 * Having just finished a recursion, we can remove the last member of the ancestry array
+		 * and eliminate one level of the depth tracking.
+		 */
+		$this->ancestry = array_slice($this->ancestry, 0, -1);
+		$this->depth--;
+		
+	} // end structural_stats_recurse()
+	
 }
