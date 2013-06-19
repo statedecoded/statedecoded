@@ -7,7 +7,7 @@ This is a *pre-1.0 release*, which is to say that it is an incompete product. A 
 
 See the [installation instructions](https://github.com/statedecoded/statedecoded/wiki/Installation-Instructions) for details.
 
-The State Decoded benefits from [APC](http://php.net/manual/en/book.apc.php), which accelerates substantially its operations. It is not required, however. Likewise, it also benefits from [mod_pagespeed](https://developers.google.com/speed/pagespeed/mod) to streamline the HTML, CSS, and JavaScript.
+The State Decoded benefits from [APC](http://php.net/manual/en/book.apc.php) and [Varnish](https://www.varnish-cache.org/), as it is written to capitalize on the caching benefits provided by these excellent programs. Likewise, it also benefits from [mod_pagespeed](https://developers.google.com/speed/pagespeed/mod), to streamline the HTML, CSS, and JavaScript. But none of these programs are required.
 
 ## How to Help
 * Use State Decoded sites (e.g., [Virginia Decoded](http://vacode.org/), [Maryland Decoded](http://www.marylandcode.org/), [Sunshine Statutes](http://www.sunshinestatutes.com/)) and share your feedback in the form of [filing issues](https://github.com/statedecoded/statedecoded/issues/new)—suggestions for new features, notifications of bugs, etc.
