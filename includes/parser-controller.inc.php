@@ -608,9 +608,9 @@ class ParserController
 	{
 	
 		/*
-		 * If APC exists on this server, clear everything in the user space. That consists of information
-		 * that the State Decoded has stored in APC, which is now suspect, as a result of having reloaded
-		 * the laws.
+		 * If APC exists on this server, clear everything in the user space. That consists of
+		 * information that the State Decoded has stored in APC, which is now suspect, as a result
+		 * of having reloaded the laws.
 		 */
 		if (extension_loaded('apc') && ini_get('apc.enabled') == 1)
 		{
