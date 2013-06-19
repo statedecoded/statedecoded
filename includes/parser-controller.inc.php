@@ -211,15 +211,20 @@ class ParserController
 				 */
 				$parser->history = $law->history;
 				$history = $parser->extract_history();
+				
+				if ($history !== FALSE)
+				{
 
-				/*
-				 * Save this object to the metadata table pair.
-				 */
-				$sql = 'INSERT INTO laws_meta
-						SET law_id=' . $this->db->quote($law->id).',
-						meta_key="history", meta_value=' . $this->db->quote(serialize($history)) . ',
-						date_created=now();';
-				$this->db->exec($sql);
+					/*
+					 * Save this object to the metadata table pair.
+					 */
+					$sql = 'INSERT INTO laws_meta
+							SET law_id=' . $this->db->quote($law->id).',
+							meta_key="history", meta_value=' . $this->db->quote(serialize($history)) . ',
+							date_created=now();';
+					$this->db->exec($sql);
+				
+				}
 			}
 
 		}
