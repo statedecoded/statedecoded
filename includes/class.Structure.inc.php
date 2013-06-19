@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.1
  *
@@ -181,7 +181,8 @@ class Structure
 		
 		// Iterate through the levels and build up the URLs recursively.
 		$i=0;
-		$url = 'http://' . $_SERVER['SERVER_NAME'].'/';
+		$url = 'http://' . $_SERVER['SERVER_NAME']
+			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
 		$url_suffix = '';
 		foreach ($this->structure as &$level)
 		{
@@ -347,7 +348,8 @@ class Structure
 			
 			// Figure out the URL for this structural unit by iterating through the "identifier"
 			// columns in this row.
-			$child->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
+			$child->url = '//' . $_SERVER['SERVER_NAME'] .
+				( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
 			$tmp = array();
 			foreach ($child as $key => $value)
 			{
@@ -375,7 +377,9 @@ class Structure
 			}
 			$tmp = array_reverse($tmp);
 			$child->url .= implode('/', $tmp).'/';
-			$child->api_url = 'http://'.$_SERVER['SERVER_NAME'].'/api/structure/'.implode('/', $tmp).'/';
+			$child->api_url = 'http://' . $_SERVER['SERVER_NAME']
+				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
+				. '/api/structure/' . implode('/', $tmp) . '/';
 			$children->$i = $child;
 			$i++;
 		}
@@ -450,7 +454,8 @@ class Structure
 		
 		// To assign URLs, we iterate through the object in reverse, and build up the URLs from
 		// their structure identifiers.
-		$url = 'http://'.$_SERVER['SERVER_NAME'].'/';
+		$url = 'http://' . $_SERVER['SERVER_NAME']
+			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
 		foreach (array_reverse((array) $ancestry) as $key => $level)
 		{
 			$url .= urlencode($level->identifier).'/';
@@ -559,11 +564,16 @@ class Structure
 		$i=0;
 		while ($section = $result->fetch(PDO::FETCH_OBJ))
 		{
+		
 			// Figure out the URL and include that.
-			$section->url = 'http://'.$_SERVER['SERVER_NAME'].'/'.$section->section_number.'/';
+			$section->url = 'http://'.$_SERVER['SERVER_NAME']
+				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
+				. '/'.$section->section_number.'/';
 			
 			// Ditto for the API URL.
-			$section->api_url = 'http://'.$_SERVER['SERVER_NAME'].'/api/law/'.$section->section_number.'/';
+			$section->api_url = 'http://'.$_SERVER['SERVER_NAME']
+				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
+				. '/api/law/'.$section->section_number.'/';
 			
 			// Sometimes there are laws that lack titles. We've got to put something in that field.
 			if (empty($section->catch_line))
@@ -573,6 +583,7 @@ class Structure
 			
 			$laws->$i = $section;
 			$i++;
+			
 		}
 		return $laws;
 	}
