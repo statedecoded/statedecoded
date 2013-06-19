@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * The Autolinker class, for identifying linkable text and turn it into links
+ * 
+ * PHP version 5
+ *
+ * @author		Bill Hunt <bill at krues8dr.com>
+ * @copyright	2013 Bill Hunt
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.7
+ * @link		http://www.statedecoded.com/
+ * @since		0.2
+ *
+ */
+
 /*
  * Reads a JSON file to load content.
  * Later, this could read from a database, if need be.
