@@ -51,7 +51,7 @@ else
 		/*
 		 * Load constants from the config file.
 		 */
-		require 'config.inc.php';
+		require './config.inc.php';
 	
 		define('APC_RUNNING', TRUE);
 		
