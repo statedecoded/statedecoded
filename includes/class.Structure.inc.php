@@ -204,10 +204,24 @@ class Structure
 		unset($tmp);
 		
 		/*
-		 * Get a list of all sibling structural units.
+		 * Get any metadata available about this structural unit.
 		 */
-		 
+		$sql = 'SELECT metadata
+				FROM structure
+				WHERE id=' . $this->id . '
+				AND metadata IS NOT NULL';
+		
+		$result = $db->query($sql);
+		
+		if ( ($result !== FALSE) && ($result->rowCount() >= 1) )
+		{
+			$structure_row = $result->fetch(PDO::FETCH_OBJ);
+			$this->metadata = unserialize(stripslashes($structure_row->metadata));
+		}		
+		
 		/*
+		 * Get a list of all sibling structural units.
+		 *
 		 * If this is anything other than a top-level structural unit. Because of how data is
 		 * stored in structure_unified (the most specific structural units are in s1), the parent
 		 * is always found in s2.
