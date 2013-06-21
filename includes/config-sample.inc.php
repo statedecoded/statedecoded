@@ -82,7 +82,7 @@ define('INCLUDES_REPEALED', TRUE);
 /*
  * The DSN to connect to MySQL.
  */
-define('PDO_DSN', 'mysql:dbname=statelaws;host=localhost;charset=utf8');
+define('PDO_DSN', 'mysql:dbname=statedecoded;host=localhost;charset=utf8');
 define('PDO_USERNAME', 'username');
 define('PDO_PASSWORD', 'password');
 
