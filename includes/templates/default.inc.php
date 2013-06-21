@@ -29,6 +29,7 @@
 	<!--[if lt IE 7]>
 		<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 	<![endif]-->
+  <div id="container"><!-- Hack for footer lock -->
 	<header id="page_header">
 		<div class="nest">
 			<a href="/">
@@ -70,13 +71,13 @@
 			</heading>
 
 			<section class="primary-content">
-	
+
 				<nav id="intercode">
 					{{intercode}}
 				</nav> <!-- // #intercode -->
 
 				<h1>{{page_title}}</h1>
-	
+
 				{{body}}
 			</section>
 
@@ -84,9 +85,9 @@
 			{{sidebar}}
 			</aside>
 		</div>
-	
+
 	</section> <!-- // #page -->
-	
+
 		<footer id="page_footer">
 			<div class="nest">
 				<p class="legalese">
@@ -106,6 +107,7 @@
 				</p>
 			</div> <!-- // .nest -->
 		</footer> <!-- // #page_footer -->
+  </div> <!-- // #container -->
 
 	{{javascript_files}}
 	<script>

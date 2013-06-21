@@ -7,6 +7,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 html {
   text-align: center;
 }
@@ -18,7 +25,6 @@ body {
     line-height: $base-line-height;
     margin: auto;
     min-height: 100%;
-    padding: 0;
     text-align: left;
     &.preload * {
       transition: none !important;
