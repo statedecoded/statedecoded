@@ -5,3 +5,4 @@ htdocs/admin/.htaccess
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
 htdocs/.sass-cache/
+package.box
