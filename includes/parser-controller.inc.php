@@ -6,7 +6,7 @@
  * PHP version 5
  *
  * @author		Bill Hunt <bill at krues8dr.com>
- * @copyright		2013 Bill Hunt
+ * @copyright	2013 Bill Hunt
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.7
  * @link		http://www.statedecoded.com/
@@ -716,7 +716,7 @@ class ParserController
 			$metadata->child_structures = $structure->child_structures;
 			
 			$sql = 'UPDATE structure
-					SET metadata = "' . $this->db->quote(serialize($metadata)) . '"
+					SET metadata = ' . $this->db->quote(serialize($metadata)) . '
 					WHERE id = ' . $structure_id;
 			$result = $this->db->exec($sql);
 		
