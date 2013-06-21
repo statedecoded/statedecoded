@@ -120,6 +120,29 @@ if (count((array) $structure) > 1)
 	}
 }
 
+# If we have any metadata about this structural unit.
+if (isset($struct->metadata))
+{
+	if (isset($struct->metadata->child_laws) && ($struct->metadata->child_laws > 0) )
+	{
+		$body .= ' It contains ' . number_format($struct->metadata->child_laws) . ' laws';
+		if (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
+		{
+			$body .= ' divided across ' . number_format($struct->metadata->child_structures)
+				. ' structures.';
+		}
+		else
+		{
+			$body .= '.';
+		}
+	}
+	elseif (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
+	{
+		$body .= ' It is divided into ' . number_format($struct->metadata->child_structures)
+			. ' sub-structures.';
+	}
+}
+
 # Get a listing of all the structural children of this portion of the structure.
 $children = $struct->list_children();
 
@@ -144,7 +167,6 @@ $laws = $struct->list_laws();
 if ($laws !== FALSE)
 {
 
-	$body .= ' It’s comprised of the following '.count((array) $laws).' sections.</p>';
 	$body .= '<dl class="laws">';
 
 	foreach ($laws as $law)
