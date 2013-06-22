@@ -99,8 +99,21 @@ $positive-green: #399e25 !default;
 $negative-red: #c83434 !default;
 
 
+// QTip Specific Colors
+// ------------------------------------------------------------------
+$qtip-border-color: #f1d031;
+$qtip-bkgnd-color: #ffffa3;
+$qtip-color: #555;
+$qtip-titlebar-bkgnd-color: #ffef93;
+$qtip-icon-border-color: #ccc;
+$qtip-icon-bkgnd: #f1f1f1;
+$qtip-icon-color: #777;
+$qtip-close-border-color: #aaa;
+$qtip-close-color: #111;
+
+
 // Tooltips and popovers
-// -------------------------
+// ------------------------------------------------------------------
 $tooltip-color: $white;
 $tooltip-background: $black;
 $tooltip-arrow-color: $tooltip-background;
