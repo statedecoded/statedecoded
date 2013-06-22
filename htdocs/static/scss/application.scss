@@ -58,6 +58,9 @@
 @import "components/_modal.scss";
 @import "components/_keyboard-shortcuts.scss";
 
+/* Jquery Plugins */
+@import "vendor/jquery.qtip";
+
 // Areas
 @import "areas/_header.scss";
 @import "areas/_breadcrumbs.scss";
