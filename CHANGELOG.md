@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 0.7 (June 19, 2013)
+* Made extensive optimizations throughout the entire codebase and within MySQL, eliminating all sources of PHP errors of level E_NOTICE and above.
+* Added support for import, storage, and display of arbitrary metadata fields.
+* Added APC support, and implemented caching of API keys, constants, and templates.
+* Added Varnish support, to clear the Varnish cache upon running the importer.
+* Replaced MDB2 with PDO, eliminating an installation requirement and modernizing database connectivity.
+* Replaced HTML Purifier with Tidy, which more servers are likely to have installed already.
+* Added support for port numbers in site URLs, to facilitate development on Vagrant.
+* Provided comments for all non-obvious database columns, to improve extensibility.
+* Normalized all code along PEAR standardards, or at least our own variant of PEAR.
+* Added Dublin Core metadata tags to each law, in case that's useful to somebody for something.
+* Created the infrastructure for an extensible inline help text.
+* Implemented keyboard navigation within laws and structures.
+* Baked in support for Disqus-based commenting on each law page.
+* Implemented a logger and debug system within the parser, to improve reporting and error handling.
+* Added production of bulk plain text and JSON versions of laws.
+* Reduced substantially the parser's memory usage, eliminating out-of-memory errors affecting larger legal codes.
+
 ## Version 0.6 (February 7, 2013)
 * Established a public API with methods for retrieving data about laws, structural units, and definitions.
 * Created an XML standard for legal codes to simplify enormously the process of parsing them. Many legal codes are already provided as some type of XML, so XSLT is all that's necessary to convert them into the format expected by Richmond Sunlight.
