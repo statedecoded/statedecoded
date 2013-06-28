@@ -219,7 +219,6 @@ class Parser
 		 */
 		if (isset($this->section->metadata))
 		{
-			
 			foreach ($this->section->metadata as $field)
 			{
 
