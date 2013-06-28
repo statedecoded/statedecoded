@@ -4,23 +4,7 @@ Vagrantfile
 htdocs/admin/.htaccess
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 includes/class.Virginia.inc.php
 includes/config.inc.php
-=======
-htdocs/includes/class.Virginia.inc.php
-htdocs/includes/config.inc.php
->>>>>>> 3c539ba14598e180c0cbfbc1b9c388cfea84d90e
-=======
-=======
-includes/class.Virginia.inc.php
-includes/config.inc.php
->>>>>>> Adding the local config includes to .gitignore
 htdocs/.sass-cache/
-<<<<<<< HEAD
->>>>>>> Adding sass-cache to gitignore
-=======
 package.box
->>>>>>> Adding package.box to gitignore
