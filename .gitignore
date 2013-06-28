@@ -6,8 +6,5 @@ htdocs/admin/.htpasswd
 htdocs/admin/xml/
 includes/class.Virginia.inc.php
 includes/config.inc.php
-<<<<<<< HEAD
 htdocs/.sass-cache/
 package.box
-=======
->>>>>>> e481035e9783c71edd6e814f29e73ce3092f2bff

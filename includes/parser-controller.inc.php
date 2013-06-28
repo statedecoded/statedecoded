@@ -6,7 +6,7 @@
  * PHP version 5
  *
  * @author		Bill Hunt <bill at krues8dr.com>
- * @copyright		2013 Bill Hunt
+ * @copyright	2013 Bill Hunt
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.7
  * @link		http://www.statedecoded.com/

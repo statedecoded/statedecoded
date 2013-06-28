@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2012 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.7
+ * @version		0.6
  * @link		http://www.statedecoded.com/
  * @since		0.3
 */
@@ -221,7 +221,6 @@ class Parser
 		{
 			foreach ($this->section->metadata as $field)
 			{
-<<<<<<< HEAD
 				foreach ($field as $key => $value)
 				{
 					/*
@@ -237,22 +236,6 @@ class Parser
 					}
 					$this->code->metadata->$key = $value;
 				}
-=======
-				
-				/*
-				 * Convert true/false values to y/n values.
-				 */
-				if ($value == 'true')
-				{
-					$value = 'y';
-				}
-				elseif ($value == 'false')
-				{
-					$value = 'n';
-				}
-				
-				$this->code->metadata->$key = $value;
->>>>>>> e481035e9783c71edd6e814f29e73ce3092f2bff
 			}
 		}
 
