@@ -110,7 +110,7 @@ class API
 		 */
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
-				WHERE key = ' . $db->quote($this->key);
+				WHERE api_key = ' . $db->quote($this->key);
 		$result = $db->query($sql);
 		
 		/*
