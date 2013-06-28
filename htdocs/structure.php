@@ -237,17 +237,9 @@ $laws = $struct->list_laws();
  */
 if ($laws !== FALSE)
 {
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-	$body .= '<dl class="laws">';
-=======
-	$body .= 'It’s comprised of the following '.count((array) $laws).' sections.</p>';
-=======
+	
 	$body .= 'It’s comprised of the following ' . count((array) $laws) . ' sections.</p>';
->>>>>>> Improve code formatting
 	$body .= '<dl class="title-list laws">';
->>>>>>> Fixed list views to work when identifiers are long or different lengths.
 
 	foreach ($laws as $law)
 	{
