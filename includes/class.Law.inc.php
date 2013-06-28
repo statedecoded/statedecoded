@@ -588,41 +588,19 @@ class Law
 		foreach ($metadata as $row)
 		{
 			
-<<<<<<< HEAD
-			$field->meta_value = stripslashes($field->meta_value);
-=======
 			$row->meta_value = stripslashes($row->meta_value);
->>>>>>> Fix bug preventing metadata from being returned properly
 			
 			/*
 			 * If unserializing this value works, then we've got serialized data here.
 			 */
-<<<<<<< HEAD
-			if (@unserialize($field->meta_value) !== FALSE)
-			{
-				$field->meta_value = unserialize($field->meta_value);
-=======
 			if (@unserialize($row->meta_value) !== FALSE)
 			{
 				$row->meta_value = unserialize($row->meta_value);
->>>>>>> Fix bug preventing metadata from being returned properly
 			}
 			
 			/*
 			 * Convert y/n values into TRUE/FALSE values.
 			 */
-<<<<<<< HEAD
-			if ($field->meta_value == 'y')
-			{
-				$field->meta_value = TRUE;
-			}
-			elseif ($field->meta_value == 'n')
-			{
-				$field->meta_value = FALSE;
-			}
-			
-			$rotated->{stripslashes($field->meta_key)} = $field->meta_value;
-=======
 			if ($row->meta_value == 'y')
 			{
 				$row->meta_value = TRUE;
@@ -633,7 +611,6 @@ class Law
 			}
 			
 			$rotated->{stripslashes($row->meta_key)} = $row->meta_value;
->>>>>>> Fix bug preventing metadata from being returned properly
 			
 		}
 		return $rotated;
