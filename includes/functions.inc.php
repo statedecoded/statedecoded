@@ -270,10 +270,7 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 			if ($last != $matches[1])
 			{
 				array_push($stack, $last);
-<<<<<<< HEAD
-=======
 			}
->>>>>>> Remove wpautop
 		}
 	}
 }
