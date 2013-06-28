@@ -597,7 +597,6 @@ class Law
 		{
 			
 			$row->meta_value = stripslashes($row->meta_value);
-			$row->meta_value = stripslashes($row->meta_value);
 			
 			/*
 			 * If unserializing this value works, then we've got serialized data here.
