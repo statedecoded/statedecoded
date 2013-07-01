@@ -36,7 +36,6 @@ $body = '';
 
 /*
  * Initialize the sidebar variable.
- * What's in the box? Nothing, absolutely nothing!
  */
 $sidebar = '';
 
