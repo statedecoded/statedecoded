@@ -20,14 +20,14 @@
 /*
  * Include the PHP declarations that drive this page.
  */
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/../includes/page-head.inc.php';
 
 /*
  * Fire up our templating engine.
  */
 $template = new Page;
 
-$template->field->browser_title = SITE_TITLE.': The '.LAWS_NAME.', for Humans.';
+$template->field->browser_title = SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.';
 
 /*
  * Initialize the body variable.
@@ -48,8 +48,8 @@ $structures = $struct->list_children();
 
 $body .= '
 	<article>
-	<h1>'.ucwords($structures->{0}->label).'s of the '.LAWS_NAME.'</h1>
-	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
+	<h1>' . ucwords($structures->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
+	<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
 	
 /*
  * Row classes and row counter
@@ -69,8 +69,8 @@ if ( !empty($structures) )
 		$class_index = $counter % count($row_classes);
 		$row_class = $row_classes[$class_index];
 
-		$body .= '	<dt class="'.$row_class.'"><a href="'.$structure->url.'">'.$structure->identifier.'</a></dt>
-					<dd class="'.$row_class.'"><a href="'.$structure->url.'">'.$structure->name.'</a></dd>';
+		$body .= '	<dt class="' . $row_class . '"><a href="' . $structure->url . '">' . $structure->identifier . '</a></dt>
+					<dd class="' . $row_class . '"><a href="' . $structure->url . '">' . $structure->name . '</a></dd>';
 
 		$counter++;
 	}
