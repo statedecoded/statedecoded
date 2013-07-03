@@ -578,7 +578,7 @@ class Structure
 	
 	
 	/**
-	 * Convert a structure ID to its identifier.
+	 * Convert an internal structure ID to its public identifier.
 	 */
 	function id_to_identifier()
 	{
@@ -613,6 +613,47 @@ class Structure
 		$structure = $result->fetch(PDO::FETCH_OBJ);
 		
 		return $structure->identifier;
+		
+	}
+	
+	
+	/**
+	 * Convert a structure's public identifier to its internal ID.
+	 */
+	function identifier_to_id()
+	{
+
+		/*
+		 * We're going to need access to the database connection throughout this class.
+		 */
+		global $db;
+		
+		/*
+		 * If a structural identifier hasn't been passed to this function, then there's nothing to
+		 * do.
+		 */
+		if (!isset($this->identifier))
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Assemble the SQL query.
+		 */
+		$sql = 'SELECT id
+				FROM structure
+				WHERE identifier = ' . $db->quote($this->identifier);
+		
+		$result = $db->query($sql);
+		
+		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		{
+			return FALSE;
+		}
+		
+		$structure = $result->fetch(PDO::FETCH_OBJ);
+		
+		return $structure->id;
 		
 	}
 	
