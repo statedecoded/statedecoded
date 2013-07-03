@@ -2,10 +2,3 @@
 htdocs/admin/.htaccess
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
-<<<<<<< HEAD
-includes/class.Virginia.inc.php
-includes/config.inc.php
-=======
-htdocs/includes/class.Virginia.inc.php
-htdocs/includes/config.inc.php
->>>>>>> 3c539ba14598e180c0cbfbc1b9c388cfea84d90e
