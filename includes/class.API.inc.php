@@ -68,7 +68,7 @@ class API
 		/*
 		 * If no API keys have been registered.
 		 */
-		if ($result->numRows() == 0)
+		if ($result->rowCount() == 0)
 		{
 			return TRUE;
 		}
