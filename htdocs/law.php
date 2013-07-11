@@ -178,10 +178,9 @@ $body .= '</article>';
 $sidebar = '';
 
 /*
- * Only show the history if the law hasn't been repealed. (If it has been, then the history text
- * generally disappears along with it, meaning that the below code can behave unpredictably.)
+ * Only show the history if the law has a list of amendment years.
  */
-if ( (INCLUDES_REPEALED == TRUE) && (empty($law->metadata->repealed) || ($law->metadata->repealed !== TRUE)) )
+if ( isset($law->amendment_years) )
 {
 	$sidebar .= '
 			<section id="history-description">
