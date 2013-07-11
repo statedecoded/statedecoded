@@ -118,7 +118,9 @@ foreach (array_reverse((array) $law->ancestry) as $ancestor)
 	$template->field->heading .= '<li><a href="' . $ancestor->url . '">' . $ancestor->identifier . ' '
 		. $ancestor->name . '</a></li>';
 }
-$template->field->heading .= '<li class="active"><a href="/' . $law->section_number . '/">' . $law->section_number
+
+$template->field->heading .= '<li class="active"><a href="/' . $law->section_number . '/">'
+	. $law->section_number
 	. ' ' . $law->catch_line . '</a></li>';
 
 $template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">' . $template->field->heading . '</ul></nav>';
@@ -263,6 +265,7 @@ if (isset($law->official_url))
 }
 $sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
+				<p><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>
 			</section>';
 
 $sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>';
