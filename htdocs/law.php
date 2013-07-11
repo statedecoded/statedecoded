@@ -73,9 +73,9 @@ $template = new Page;
 /*
  * Make some section information available globally to JavaScript.
  */
-$template->field->javascript = "var section_number = '".$law->section_number."';";
-$template->field->javascript .= "var section_id = '".$law->section_id."';";
-$template->field->javascript .= "var api_key = '".API_KEY."';";
+$template->field->javascript = "var section_number = '" . $law->section_number . "';";
+$template->field->javascript .= "var section_id = '" . $law->section_id . "';";
+$template->field->javascript .= "var api_key = '" . API_KEY . "';";
 
 $template->field->javascript_files = '
 	<script src="/static/js/vendor/jquery.qtip.min.js"></script>
@@ -88,23 +88,24 @@ $template->field->javascript_files = '
 /*
  * Define the browser title.
  */
-$template->field->browser_title = $law->catch_line.' ('.SECTION_SYMBOL.' '.$law->section_number.')—'.SITE_TITLE;
+$template->field->browser_title = $law->catch_line . ' (' . SECTION_SYMBOL . ' '
+	. $law->section_number . ')—' . SITE_TITLE;
 
 /*
  * Define the page title.
  */
-$template->field->page_title .= '<h1>'.SECTION_SYMBOL.'&nbsp;'.$law->section_number.'</h1>';
-$template->field->page_title .= '<h2>'.$law->catch_line.'</h2>';
+$template->field->page_title .= '<h1>' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</h1>';
+$template->field->page_title .= '<h2>' . $law->catch_line . '</h2>';
 
 /*
- * If we have Dublin Core metadata, then display it.
+ * If we have Dublin Core metadata, display it.
  */
 if (is_object($law->dublin_core))
 {
 	$template->field->meta_tags = '';
 	foreach ($law->dublin_core AS $name => $value)
 	{
-		$template->field->meta_tags .= '<meta name="DC.'.$name.'" content="' . $value . '" />';
+		$template->field->meta_tags .= '<meta name="DC.' . $name . '" content="' . $value . '" />';
 	}
 }
 
@@ -114,13 +115,14 @@ if (is_object($law->dublin_core))
 $template->field->heading = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->heading .= '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
-		.$ancestor->name.'</a></li>';
+	$template->field->heading .= '<li><a href="' . $ancestor->url . '">' . $ancestor->identifier . ' '
+		. $ancestor->name . '</a></li>';
 }
-$template->field->heading .= '<li class="active"><a href="/'.$law->section_number.'/">'.$law->section_number
-	.' '.$law->catch_line.'</a></li>';
+$template->field->heading .= '<li class="active"><a href="/' . $law->section_number . '/">'
+	. $law->section_number
+	. ' ' . $law->catch_line . '</a></li>';
 
-$template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">'.$template->field->heading.'</ul></nav>';
+$template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">' . $template->field->heading . '</ul></nav>';
 
 if (isset($law->previous_section))
 {
@@ -186,7 +188,7 @@ if ( isset($law->amendment_years) )
 			<section id="history-description">
 				<h1>History</h1>
 				<p>
-					This law was first passed in '.reset($law->amendment_years).'.';
+					This law was first passed in ' . reset($law->amendment_years) . '.';
 	if (count((array) $law->amendment_years) > 1)
 	{
 		$sidebar .= ' It was updated in ';
@@ -253,11 +255,12 @@ $sidebar .= '<section class="info-box" id="elsewhere">
 				accuracy';
 if (isset($law->official_url))
 {
-	$sidebar .= '—<a href="'.$law->official_url.'">read '.SECTION_SYMBOL.'&nbsp;'.$law->section_number.' ';
+	$sidebar .= '—<a href="' . $law->official_url . '">read ' . SECTION_SYMBOL . '&nbsp;'
+		. $law->section_number . ' ';
 }
-$sidebar .= ' on the official '.LAWS_NAME.' website</a>.
+$sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
-				<p><a id="keyhelp">'.$help->get_text('keyboard')->title.'</a></p>
+				<p><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>
 			</section>';
 
 /*
@@ -270,9 +273,9 @@ if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 				<ul>';
 	foreach ($law->court_decisions as $decision)
 	{
-		$sidebar .= '<li><a href="'.$decision->url.'"><em>'.$decision->name.'</em></a> ('
-			.$decision->type_html.', '.date('m/d/y', strtotime($decision->date)).')<br />'
-			.$decision->abstract.'</li>';
+		$sidebar .= '<li><a href="' . $decision->url . '"><em>' . $decision->name . '</em></a> ('
+			. $decision->type_html . ', ' . date('m/d/y', strtotime($decision->date)) . ')<br />'
+			. $decision->abstract . '</li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
@@ -290,10 +293,10 @@ if ($law->references !== FALSE)
 				<ul>';
 	foreach ($law->references as $reference)
 	{
-		$sidebar .= '<li><span class="identifier">
-			'.SECTION_SYMBOL.'&nbsp;<a href="'.$reference->url.'" class="law">'
-			.$reference->section_number.'</a></span> 
-			<span class="title">'.$reference->catch_line.'</li>';
+		$sidebar .= '<li><span class="identifier">'
+			. SECTION_SYMBOL . '&nbsp;<a href="' . $reference->url . '" class="law">'
+			. $reference->section_number . '</a></span> 
+			<span class="title">' . $reference->catch_line . '</li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
@@ -310,8 +313,8 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 				<ul id="related">';
 	foreach ($law->related as $related)
 	{
-		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$related->url.'">'
-			.$related->section_number.'</a> '.$related->catch_line.'</li>';
+		$sidebar .= '<li>' . SECTION_SYMBOL . '&nbsp;<a href="' . $related->url . '">'
+			. $related->section_number . '</a> ' . $related->catch_line . '</li>';
 	}
 	$sidebar .= '
 				</ul>
@@ -329,8 +332,8 @@ if ( isset($law->citation) && is_object($law->citation) )
 				<ul>';
 	foreach ($law->citation as $citation)
 	{
-		$sidebar .= '<li>'.$citation->label.': <span class="' . strtolower($citation->label) . '">'
-			. $citation->text .'</span></li>';
+		$sidebar .= '<li>' . $citation->label . ': <span class="' . strtolower($citation->label) . '">'
+			. $citation->text . '</span></li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
