@@ -130,7 +130,7 @@ $template->field->breadcrumbs = '<nav class="breadcrumbs"><ul class="steps-nav">
 if (isset($law->previous_section))
 {
 	$template->field->prev_next = '<a href="'.$law->previous_section->url.'" class="prev"
-		title="Previous section">←</a>&nbsp;'.$template->field->breadcrumbs;
+		title="Previous section">←</a>';
 	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
 }
 
