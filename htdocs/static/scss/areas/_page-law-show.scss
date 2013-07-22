@@ -8,10 +8,20 @@
   section#main_content {
     overflow: hidden;
     padding-bottom: 150px; // Footer fixed hack
+
+    @include respond-to(print) {
+      padding-bottom: 0;
+    }
   }
 
   .nest {
     @extend .wide;
+
+    @include respond-to(print) {
+      margin: 0 0 0 0.25in;
+      padding: 0;
+      width: 7in;
+    }
   }
 
   #main_content heading {
@@ -28,6 +38,11 @@
     @include respond-to(smartphone) {
       float: none;
       width: 100%
+    }
+
+    @include respond-to(print) {
+      float: none;
+      width: 100%;
     }
 
     h1 {
@@ -90,6 +105,12 @@
 
     @include respond-to(smartphone) {
       float: none;
+      width: 100%;
+    }
+
+    @include respond-to(print) {
+      float: none;
+      padding: 0;
       width: 100%;
     }
 
@@ -265,10 +286,16 @@
             font-weight: normal;
             font-variant: uppercase;
             margin: 0;
-            text-transform: uppsercase;
+            text-transform: uppercase;
           }
         } // article.court-decision
 
+      }
+
+      a#keyhelp {
+        @include respond-to(print) {
+          display: none;
+        }
       }
     }
 

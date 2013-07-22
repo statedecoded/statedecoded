@@ -10,8 +10,21 @@ $side-width: 24px;
   overflow: hidden;
   font: 18px Helvetica, Arial, Sans-Serif;
   @include clearfix;
+
+  @include respond-to(print) {
+    margin: 0;
+    padding: 0;
+  }
+
   li {
     float: left;
+
+    @include respond-to(print) {
+      border: none;
+      clear: both;
+      float: none;
+    }
+
     a {
       font-size: 12px;
       height: $base-line-height;
@@ -35,6 +48,13 @@ $side-width: 24px;
         margin-left: 1px;
         left: 100%;
         z-index: 1;
+
+        @include respond-to(print) {
+          border: none;
+          clear: both;
+          float: none;
+        }
+
       }
       &:after {
         content: " ";
@@ -49,6 +69,10 @@ $side-width: 24px;
 
         left: 100%;
         z-index: 2;
+
+        @include respond-to(print) {
+          border: none;
+        }
       }
       &:hover {
         background: darken($base-lightest, 20%);
@@ -66,7 +90,23 @@ $side-width: 24px;
         border-top: $top-bottom-width solid transparent;           /* Go big on the size, and let overflow hide */
         border-bottom: $top-bottom-width solid transparent;
         border-left: $side-width solid $base-darkest;
+
+        @include respond-to(print) {
+          border: none;
+          clear: both;
+          float: none;
+        }
+
       }
+    }
+  }
+}
+
+.paging {
+  .prev,
+  .next {
+    @include respond-to(print) {
+      display: none;
     }
   }
 }

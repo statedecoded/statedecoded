@@ -53,6 +53,9 @@
 /* Load font stacks and baseline type work */
 @import "base/tables/_tables.css.scss";
 
+/* Load Print stylesheet */
+@import "base/_print.css.scss";
+
 /* Components */
 @import "components/_lists-collapseable.scss";
 @import "components/_modal.scss";

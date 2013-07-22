@@ -25,6 +25,10 @@ footer#page_footer {
   @include respond-to(tablet) {
     padding: 0 10px;
   }
+
+  @include respond-to(print) {
+    position: relative;
+  }
   p {
     font-size: 75%;
 

@@ -436,12 +436,20 @@ body {
   margin: 0;
   padding: 0;
   height: 100%; }
+  @media only print {
+    /* line 11, ../scss/base/_default.scss */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      width: 100%; } }
 
-/* line 17, ../scss/base/_default.scss */
+/* line 24, ../scss/base/_default.scss */
 html {
   text-align: center; }
 
-/* line 20, ../scss/base/_default.scss */
+/* line 27, ../scss/base/_default.scss */
 body {
   background-color: white;
   color: #62615e;
@@ -451,137 +459,142 @@ body {
   margin: auto;
   min-height: 100%;
   text-align: left; }
-  /* line 29, ../scss/base/_default.scss */
+  /* line 36, ../scss/base/_default.scss */
   body.preload * {
     transition: none !important; }
+  @media only print {
+    /* line 27, ../scss/base/_default.scss */
+    body {
+      background-color: white;
+      color: #000; } }
 
-/* line 33, ../scss/base/_default.scss */
+/* line 45, ../scss/base/_default.scss */
 p {
   font-size: 16px;
   line-height: 24px; }
 
-/* line 37, ../scss/base/_default.scss */
+/* line 49, ../scss/base/_default.scss */
 h1, h2, h3 {
   color: "";
   font-family: "adobe-jenson-pro", Georgia, "Times New Roman", Times, serif;
   font-weight: normal; }
 
-/* line 42, ../scss/base/_default.scss */
+/* line 54, ../scss/base/_default.scss */
 h4, h5, h6 {
   color: "";
   font-family: "ff-meta-serif-web-pro", Georgia, "Times New Roman", Times, serif;
   font-weight: normal; }
 
-/* line 47, ../scss/base/_default.scss */
+/* line 59, ../scss/base/_default.scss */
 a, a:link {
   color: #558fae; }
 
-/* line 50, ../scss/base/_default.scss */
+/* line 62, ../scss/base/_default.scss */
 a:hover {
   color: #0da6da; }
 
-/* line 53, ../scss/base/_default.scss */
+/* line 65, ../scss/base/_default.scss */
 a:active {
   color: #0da6da; }
 
-/* line 56, ../scss/base/_default.scss */
+/* line 68, ../scss/base/_default.scss */
 a:visited {
   color: #2e4a53; }
 
-/* line 62, ../scss/base/_default.scss */
+/* line 74, ../scss/base/_default.scss */
 ::-moz-selection {
   background-color: #558fae;
   color: white;
   text-shadow: none; }
 
-/* line 68, ../scss/base/_default.scss */
+/* line 80, ../scss/base/_default.scss */
 ::selection {
   background-color: #558fae;
   color: white;
   text-shadow: none; }
 
-/* line 74, ../scss/base/_default.scss */
+/* line 86, ../scss/base/_default.scss */
 hr {
   border: 0;
   border-bottom: 1px solid white;
   border-top: 1px solid #faf9f6;
   margin: 24px 0; }
 
-/* line 82, ../scss/base/_default.scss */
+/* line 94, ../scss/base/_default.scss */
 img {
   vertical-align: middle; }
 
-/* line 87, ../scss/base/_default.scss */
+/* line 99, ../scss/base/_default.scss */
 fieldset {
   border: 0;
   margin: 0;
   padding: 0; }
 
-/* line 94, ../scss/base/_default.scss */
+/* line 106, ../scss/base/_default.scss */
 textarea {
   resize: vertical; }
 
-/* line 98, ../scss/base/_default.scss */
+/* line 110, ../scss/base/_default.scss */
 #main_content {
   padding: 20px 0; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 98, ../scss/base/_default.scss */
+    /* line 110, ../scss/base/_default.scss */
     #main_content {
       padding: 0 10px; } }
 
-/* line 108, ../scss/base/_default.scss */
+/* line 120, ../scss/base/_default.scss */
 ul, ol {
   padding: 0;
   margin: 0 0 12px 25px; }
-  /* line 111, ../scss/base/_default.scss */
+  /* line 123, ../scss/base/_default.scss */
   ul ul, ul ol, ol ul, ol ol {
     margin-bottom: 0; }
 
-/* line 116, ../scss/base/_default.scss */
+/* line 128, ../scss/base/_default.scss */
 ul {
   list-style: disc; }
 
-/* line 120, ../scss/base/_default.scss */
+/* line 132, ../scss/base/_default.scss */
 ol, ol ol ol ol, ol ol ol ol ol ol ol {
   list-style: decimal; }
-  /* line 122, ../scss/base/_default.scss */
+  /* line 134, ../scss/base/_default.scss */
   ol ol, ol ol ol ol ol, ol ol ol ol ol ol ol ol {
     list-style-type: lower-alpha; }
-    /* line 124, ../scss/base/_default.scss */
+    /* line 136, ../scss/base/_default.scss */
     ol ol ol, ol ol ol ol ol ol, ol ol ol ol ol ol ol ol ol {
       list-style-type: lower-roman; }
 
-/* line 130, ../scss/base/_default.scss */
+/* line 142, ../scss/base/_default.scss */
 li {
   line-height: 24px; }
 
-/* line 136, ../scss/base/_default.scss */
+/* line 148, ../scss/base/_default.scss */
 .chromeframe {
   background-color: #ccc;
   color: black;
   margin: 0.2em 0;
   padding: 0.2em 0; }
 
-/* line 143, ../scss/base/_default.scss */
+/* line 155, ../scss/base/_default.scss */
 .nest {
   margin: auto;
   position: relative; }
 
-/* line 148, ../scss/base/_default.scss */
+/* line 160, ../scss/base/_default.scss */
 .wide, .law .nest {
   max-width: none;
   padding: 0 40px;
   width: 100%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 148, ../scss/base/_default.scss */
+    /* line 160, ../scss/base/_default.scss */
     .wide, .law .nest {
       padding: 0; } }
 
-/* line 157, ../scss/base/_default.scss */
+/* line 169, ../scss/base/_default.scss */
 .narrow {
   max-width: 960px; }
 
-/* line 161, ../scss/base/_default.scss */
+/* line 173, ../scss/base/_default.scss */
 p {
   hyphenate: auto;
   /* http://webtypography.net/Rhythm_and_Proportion/Etiquette_of_Hyphenation_and_Pagination/2.4.3/ */
@@ -590,29 +603,29 @@ p {
   orphans: 4;
   widows: 4; }
 
-/* line 169, ../scss/base/_default.scss */
+/* line 181, ../scss/base/_default.scss */
 small {
   font-size: 85%; }
 
-/* line 171, ../scss/base/_default.scss */
+/* line 183, ../scss/base/_default.scss */
 strong, th {
   font-weight: bold; }
 
-/* line 173, ../scss/base/_default.scss */
+/* line 185, ../scss/base/_default.scss */
 td, td img {
   vertical-align: top; }
 
-/* line 175, ../scss/base/_default.scss */
+/* line 187, ../scss/base/_default.scss */
 sub {
   vertical-align: sub;
   font-size: smaller; }
 
-/* line 177, ../scss/base/_default.scss */
+/* line 189, ../scss/base/_default.scss */
 sup {
   vertical-align: super;
   font-size: smaller; }
 
-/* line 179, ../scss/base/_default.scss */
+/* line 191, ../scss/base/_default.scss */
 pre {
   padding: 15px;
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
@@ -1518,6 +1531,76 @@ colgroup.is-active {
 tbody .is-active td {
   background-color: rgba(233, 186, 38, 0.3) !important; }
 
+/* Load Print stylesheet */
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+@media print {
+  /* line 7, ../scss/base/_print.css.scss */
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    /* Black prints faster: h5bp.com/s */
+    box-shadow: none !important;
+    text-shadow: none !important; }
+
+  /* line 15, ../scss/base/_print.css.scss */
+  a,
+  a:visited {
+    text-decoration: underline; }
+
+  /* line 19, ../scss/base/_print.css.scss */
+  a[href]:after {
+    content: " (" attr(href) ")"; }
+
+  /* line 23, ../scss/base/_print.css.scss */
+  abbr[title]:after {
+    content: " (" attr(title) ")"; }
+
+  /*
+   * Don't show links for images, or javascript/internal links
+   */
+  /* line 33, ../scss/base/_print.css.scss */
+  .ir a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: ""; }
+
+  /* line 38, ../scss/base/_print.css.scss */
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid; }
+
+  /* line 43, ../scss/base/_print.css.scss */
+  thead {
+    display: table-header-group;
+    /* h5bp.com/t */ }
+
+  /* line 48, ../scss/base/_print.css.scss */
+  tr,
+  img {
+    page-break-inside: avoid; }
+
+  /* line 52, ../scss/base/_print.css.scss */
+  img {
+    max-width: 100% !important; }
+
+  @page {
+    margin: 0.5cm; }
+
+  /* line 62, ../scss/base/_print.css.scss */
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3; }
+
+  /* line 68, ../scss/base/_print.css.scss */
+  h2,
+  h3 {
+    page-break-after: avoid; } }
 /* Components */
 /* line 6, ../scss/components/_lists-collapseable.scss */
 .collapse-list li {
@@ -1867,7 +1950,7 @@ section#sidebar section#keyboard-guide {
 /* Applied to 'focused' tooltips e.g. most recently displayed/interacted with */
 /* Applied on hover of tooltips i.e. added/removed on mouseenter/mouseleave respectively */
 /* Default tooltip style */
-/* line 115, ../scss/vendor/_jquery.qtip.scss */
+/* line 105, ../scss/vendor/_jquery.qtip.scss */
 .qtip-default {
   border-width: 1px;
   border-style: solid;
@@ -1875,127 +1958,127 @@ section#sidebar section#keyboard-guide {
   background-color: #ffffa3;
   color: #555555; }
 
-/* line 124, ../scss/vendor/_jquery.qtip.scss */
+/* line 114, ../scss/vendor/_jquery.qtip.scss */
 .qtip-default .qtip-titlebar {
   background-color: #ffef93; }
 
-/* line 128, ../scss/vendor/_jquery.qtip.scss */
+/* line 118, ../scss/vendor/_jquery.qtip.scss */
 .qtip-default .qtip-icon {
   border-color: #cccccc;
   background: #f1f1f1;
   color: #777777; }
 
-/* line 134, ../scss/vendor/_jquery.qtip.scss */
+/* line 124, ../scss/vendor/_jquery.qtip.scss */
 .qtip-default .qtip-titlebar .qtip-close {
   border-color: #aaaaaa;
   color: #111111; }
 
 /* Light tooltip style */
-/* line 142, ../scss/vendor/_jquery.qtip.scss */
+/* line 132, ../scss/vendor/_jquery.qtip.scss */
 .qtip-light {
   background-color: white;
   border-color: #E2E2E2;
   color: #454545; }
 
-/* line 148, ../scss/vendor/_jquery.qtip.scss */
+/* line 138, ../scss/vendor/_jquery.qtip.scss */
 .qtip-light .qtip-titlebar {
   background-color: #f1f1f1; }
 
 /* Dark tooltip style */
-/* line 154, ../scss/vendor/_jquery.qtip.scss */
+/* line 144, ../scss/vendor/_jquery.qtip.scss */
 .qtip-dark {
   background-color: #505050;
   border-color: #303030;
   color: #f3f3f3; }
 
-/* line 160, ../scss/vendor/_jquery.qtip.scss */
+/* line 150, ../scss/vendor/_jquery.qtip.scss */
 .qtip-dark .qtip-titlebar {
   background-color: #404040; }
 
-/* line 164, ../scss/vendor/_jquery.qtip.scss */
+/* line 154, ../scss/vendor/_jquery.qtip.scss */
 .qtip-dark .qtip-icon {
   border-color: #444; }
 
-/* line 168, ../scss/vendor/_jquery.qtip.scss */
+/* line 158, ../scss/vendor/_jquery.qtip.scss */
 .qtip-dark .qtip-titlebar .ui-state-hover {
   border-color: #303030; }
 
 /* Cream tooltip style */
-/* line 174, ../scss/vendor/_jquery.qtip.scss */
+/* line 164, ../scss/vendor/_jquery.qtip.scss */
 .qtip-cream {
   background-color: #FBF7AA;
   border-color: #F9E98E;
   color: #A27D35; }
 
-/* line 180, ../scss/vendor/_jquery.qtip.scss */
+/* line 170, ../scss/vendor/_jquery.qtip.scss */
 .qtip-cream .qtip-titlebar {
   background-color: #F0DE7D; }
 
-/* line 184, ../scss/vendor/_jquery.qtip.scss */
+/* line 174, ../scss/vendor/_jquery.qtip.scss */
 .qtip-cream .qtip-close .qtip-icon {
   background-position: -82px 0; }
 
 /* Red tooltip style */
-/* line 190, ../scss/vendor/_jquery.qtip.scss */
+/* line 180, ../scss/vendor/_jquery.qtip.scss */
 .qtip-red {
   background-color: #F78B83;
   border-color: #D95252;
   color: #912323; }
 
-/* line 196, ../scss/vendor/_jquery.qtip.scss */
+/* line 186, ../scss/vendor/_jquery.qtip.scss */
 .qtip-red .qtip-titlebar {
   background-color: #F06D65; }
 
-/* line 200, ../scss/vendor/_jquery.qtip.scss */
+/* line 190, ../scss/vendor/_jquery.qtip.scss */
 .qtip-red .qtip-close .qtip-icon {
   background-position: -102px 0; }
 
-/* line 204, ../scss/vendor/_jquery.qtip.scss */
+/* line 194, ../scss/vendor/_jquery.qtip.scss */
 .qtip-red .qtip-icon {
   border-color: #D95252; }
 
-/* line 208, ../scss/vendor/_jquery.qtip.scss */
+/* line 198, ../scss/vendor/_jquery.qtip.scss */
 .qtip-red .qtip-titlebar .ui-state-hover {
   border-color: #D95252; }
 
 /* Green tooltip style */
-/* line 214, ../scss/vendor/_jquery.qtip.scss */
+/* line 204, ../scss/vendor/_jquery.qtip.scss */
 .qtip-green {
   background-color: #CAED9E;
   border-color: #90D93F;
   color: #3F6219; }
 
-/* line 220, ../scss/vendor/_jquery.qtip.scss */
+/* line 210, ../scss/vendor/_jquery.qtip.scss */
 .qtip-green .qtip-titlebar {
   background-color: #B0DE78; }
 
-/* line 224, ../scss/vendor/_jquery.qtip.scss */
+/* line 214, ../scss/vendor/_jquery.qtip.scss */
 .qtip-green .qtip-close .qtip-icon {
   background-position: -42px 0; }
 
 /* Blue tooltip style */
-/* line 230, ../scss/vendor/_jquery.qtip.scss */
+/* line 220, ../scss/vendor/_jquery.qtip.scss */
 .qtip-blue {
   background-color: #E5F6FE;
   border-color: #ADD9ED;
   color: #5E99BD; }
 
-/* line 236, ../scss/vendor/_jquery.qtip.scss */
+/* line 226, ../scss/vendor/_jquery.qtip.scss */
 .qtip-blue .qtip-titlebar {
   background-color: #D0E9F5; }
 
-/* line 240, ../scss/vendor/_jquery.qtip.scss */
+/* line 230, ../scss/vendor/_jquery.qtip.scss */
 .qtip-blue .qtip-close .qtip-icon {
   background-position: -2px 0; }
 
-/* line 246, ../scss/vendor/_jquery.qtip.scss */
+/* line 236, ../scss/vendor/_jquery.qtip.scss */
 .qtip-shadow {
   -webkit-box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15); }
 
 /* Add rounded corners to your tooltips in: FF3+, Chrome 2+, Opera 10.6+, IE9+, Safari 2+ */
-/* line 255, ../scss/vendor/_jquery.qtip.scss */
+/* line 245, ../scss/vendor/_jquery.qtip.scss */
 .qtip-rounded,
 .qtip-tipsy,
 .qtip-bootstrap {
@@ -2003,14 +2086,14 @@ section#sidebar section#keyboard-guide {
   -webkit-border-radius: 5px;
   border-radius: 5px; }
 
-/* line 261, ../scss/vendor/_jquery.qtip.scss */
+/* line 251, ../scss/vendor/_jquery.qtip.scss */
 .qtip-rounded .qtip-titlebar {
   -moz-border-radius: 4px 4px 0 0;
   -webkit-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0; }
 
 /* Youtube tooltip style */
-/* line 268, ../scss/vendor/_jquery.qtip.scss */
+/* line 258, ../scss/vendor/_jquery.qtip.scss */
 .qtip-youtube {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -2027,28 +2110,28 @@ section#sidebar section#keyboard-guide {
   background-image: -ms-linear-gradient(top, #4a4a4a 0, black 100%);
   background-image: -o-linear-gradient(top, #4a4a4a 0, black 100%); }
 
-/* line 288, ../scss/vendor/_jquery.qtip.scss */
+/* line 278, ../scss/vendor/_jquery.qtip.scss */
 .qtip-youtube .qtip-titlebar {
   background-color: #4A4A4A;
   background-color: rgba(0, 0, 0, 0); }
 
-/* line 293, ../scss/vendor/_jquery.qtip.scss */
+/* line 283, ../scss/vendor/_jquery.qtip.scss */
 .qtip-youtube .qtip-content {
   padding: .75em;
   font: 12px arial,sans-serif;
   filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr=#4a4a4a,EndColorStr=#000000);
   -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr=#4a4a4a,EndColorStr=#000000);"; }
 
-/* line 301, ../scss/vendor/_jquery.qtip.scss */
+/* line 291, ../scss/vendor/_jquery.qtip.scss */
 .qtip-youtube .qtip-icon {
   border-color: #222; }
 
-/* line 305, ../scss/vendor/_jquery.qtip.scss */
+/* line 295, ../scss/vendor/_jquery.qtip.scss */
 .qtip-youtube .qtip-titlebar .ui-state-hover {
   border-color: #303030; }
 
 /* jQuery TOOLS Tooltip style */
-/* line 311, ../scss/vendor/_jquery.qtip.scss */
+/* line 301, ../scss/vendor/_jquery.qtip.scss */
 .qtip-jtools {
   background: #232323;
   background: rgba(0, 0, 0, 0.7);
@@ -2067,34 +2150,34 @@ section#sidebar section#keyboard-guide {
   box-shadow: 0 0 12px #333; }
 
 /* IE Specific */
-/* line 333, ../scss/vendor/_jquery.qtip.scss */
+/* line 323, ../scss/vendor/_jquery.qtip.scss */
 .qtip-jtools .qtip-titlebar {
   background-color: transparent;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#717171,endColorstr=#4A4A4A);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#717171,endColorstr=#4A4A4A)"; }
 
-/* line 338, ../scss/vendor/_jquery.qtip.scss */
+/* line 328, ../scss/vendor/_jquery.qtip.scss */
 .qtip-jtools .qtip-content {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#4A4A4A,endColorstr=#232323);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#4A4A4A,endColorstr=#232323)"; }
 
-/* line 344, ../scss/vendor/_jquery.qtip.scss */
+/* line 334, ../scss/vendor/_jquery.qtip.scss */
 .qtip-jtools .qtip-titlebar,
 .qtip-jtools .qtip-content {
   background: transparent;
   color: white;
   border: 0 dashed transparent; }
 
-/* line 350, ../scss/vendor/_jquery.qtip.scss */
+/* line 340, ../scss/vendor/_jquery.qtip.scss */
 .qtip-jtools .qtip-icon {
   border-color: #555; }
 
-/* line 354, ../scss/vendor/_jquery.qtip.scss */
+/* line 344, ../scss/vendor/_jquery.qtip.scss */
 .qtip-jtools .qtip-titlebar .ui-state-hover {
   border-color: #333; }
 
 /* Cluetip style */
-/* line 360, ../scss/vendor/_jquery.qtip.scss */
+/* line 350, ../scss/vendor/_jquery.qtip.scss */
 .qtip-cluetip {
   -webkit-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.4);
@@ -2103,23 +2186,23 @@ section#sidebar section#keyboard-guide {
   color: #111;
   border: 0 dashed transparent; }
 
-/* line 370, ../scss/vendor/_jquery.qtip.scss */
+/* line 360, ../scss/vendor/_jquery.qtip.scss */
 .qtip-cluetip .qtip-titlebar {
   background-color: #87876A;
   color: white;
   border: 0 dashed transparent; }
 
-/* line 376, ../scss/vendor/_jquery.qtip.scss */
+/* line 366, ../scss/vendor/_jquery.qtip.scss */
 .qtip-cluetip .qtip-icon {
   border-color: #808064; }
 
-/* line 380, ../scss/vendor/_jquery.qtip.scss */
+/* line 370, ../scss/vendor/_jquery.qtip.scss */
 .qtip-cluetip .qtip-titlebar .ui-state-hover {
   border-color: #696952;
   color: #696952; }
 
 /* Tipsy style */
-/* line 387, ../scss/vendor/_jquery.qtip.scss */
+/* line 377, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipsy {
   background: black;
   background: rgba(0, 0, 0, 0.87);
@@ -2131,26 +2214,26 @@ section#sidebar section#keyboard-guide {
   line-height: 16px;
   text-shadow: 0 1px black; }
 
-/* line 401, ../scss/vendor/_jquery.qtip.scss */
+/* line 391, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipsy .qtip-titlebar {
   padding: 6px 35px 0 10px;
   background-color: transparent; }
 
-/* line 406, ../scss/vendor/_jquery.qtip.scss */
+/* line 396, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipsy .qtip-content {
   padding: 6px 10px; }
 
-/* line 410, ../scss/vendor/_jquery.qtip.scss */
+/* line 400, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipsy .qtip-icon {
   border-color: #222;
   text-shadow: none; }
 
-/* line 415, ../scss/vendor/_jquery.qtip.scss */
+/* line 405, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipsy .qtip-titlebar .ui-state-hover {
   border-color: #303030; }
 
 /* Tipped style */
-/* line 421, ../scss/vendor/_jquery.qtip.scss */
+/* line 411, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipped {
   border: 3px solid #959FA9;
   -moz-border-radius: 3px;
@@ -2161,7 +2244,7 @@ section#sidebar section#keyboard-guide {
   font-weight: normal;
   font-family: serif; }
 
-/* line 435, ../scss/vendor/_jquery.qtip.scss */
+/* line 425, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipped .qtip-titlebar {
   border-bottom-width: 0;
   color: white;
@@ -2174,12 +2257,12 @@ section#sidebar section#keyboard-guide {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#3A79B8,endColorstr=#2E629D);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#3A79B8,endColorstr=#2E629D)"; }
 
-/* line 449, ../scss/vendor/_jquery.qtip.scss */
+/* line 439, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipped .qtip-icon {
   border: 2px solid #285589;
   background: #285589; }
 
-/* line 454, ../scss/vendor/_jquery.qtip.scss */
+/* line 444, ../scss/vendor/_jquery.qtip.scss */
 .qtip-tipped .qtip-icon .ui-icon {
   background-color: #FBFBFB;
   color: #555; }
@@ -2190,7 +2273,7 @@ section#sidebar section#keyboard-guide {
  * Tested with IE 8, IE 9, Chrome 18, Firefox 9, Opera 11.
  * Does not work with IE 7.
  */
-/* line 466, ../scss/vendor/_jquery.qtip.scss */
+/* line 456, ../scss/vendor/_jquery.qtip.scss */
 .qtip-bootstrap {
   /** Taken from Bootstrap body */
   font-size: 14px;
@@ -2211,7 +2294,7 @@ section#sidebar section#keyboard-guide {
   -moz-background-clip: padding;
   background-clip: padding-box; }
 
-/* line 488, ../scss/vendor/_jquery.qtip.scss */
+/* line 478, ../scss/vendor/_jquery.qtip.scss */
 .qtip-bootstrap .qtip-titlebar {
   /** Taken from Bootstrap .popover-title */
   padding: 8px 14px;
@@ -2225,7 +2308,7 @@ section#sidebar section#keyboard-guide {
   -moz-border-radius: 5px 5px 0 0;
   border-radius: 5px 5px 0 0; }
 
-/* line 502, ../scss/vendor/_jquery.qtip.scss */
+/* line 492, ../scss/vendor/_jquery.qtip.scss */
 .qtip-bootstrap .qtip-titlebar .qtip-close {
   /**
    * Overrides qTip2:
@@ -2241,12 +2324,12 @@ section#sidebar section#keyboard-guide {
   top: 45%;
   border-style: none; }
 
-/* line 518, ../scss/vendor/_jquery.qtip.scss */
+/* line 508, ../scss/vendor/_jquery.qtip.scss */
 .qtip-bootstrap .qtip-content {
   /** Taken from Bootstrap .popover-content */
   padding: 9px 14px; }
 
-/* line 523, ../scss/vendor/_jquery.qtip.scss */
+/* line 513, ../scss/vendor/_jquery.qtip.scss */
 .qtip-bootstrap .qtip-icon {
   /**
    * Overrides qTip2:
@@ -2258,7 +2341,7 @@ section#sidebar section#keyboard-guide {
    */
   background: transparent; }
 
-/* line 535, ../scss/vendor/_jquery.qtip.scss */
+/* line 525, ../scss/vendor/_jquery.qtip.scss */
 .qtip-bootstrap .qtip-icon .ui-icon {
   /**
    * Overrides qTip2:
@@ -2279,7 +2362,7 @@ section#sidebar section#keyboard-guide {
   opacity: 0.2;
   filter: alpha(opacity=20); }
 
-/* line 557, ../scss/vendor/_jquery.qtip.scss */
+/* line 547, ../scss/vendor/_jquery.qtip.scss */
 .qtip-bootstrap .qtip-icon .ui-icon:hover {
   /* Taken from Bootstrap .close:hover */
   color: black;
@@ -2289,13 +2372,13 @@ section#sidebar section#keyboard-guide {
   filter: alpha(opacity=40); }
 
 /* IE9 fix - removes all filters */
-/* line 569, ../scss/vendor/_jquery.qtip.scss */
+/* line 559, ../scss/vendor/_jquery.qtip.scss */
 .qtip:not(.ie9haxors) div.qtip-content,
 .qtip:not(.ie9haxors) div.qtip-titlebar {
   filter: none;
   -ms-filter: none; }
 
-/* line 576, ../scss/vendor/_jquery.qtip.scss */
+/* line 566, ../scss/vendor/_jquery.qtip.scss */
 .qtip .qtip-tip {
   margin: 0 auto;
   overflow: hidden;
@@ -2303,11 +2386,11 @@ section#sidebar section#keyboard-guide {
 
 /* Opera bug #357 - Incorrect tip position
 https://github.com/Craga89/qTip2/issues/367 */
-/* line 585, ../scss/vendor/_jquery.qtip.scss */
+/* line 575, ../scss/vendor/_jquery.qtip.scss */
 x:-o-prefocus, .qtip .qtip-tip {
   visibility: hidden; }
 
-/* line 591, ../scss/vendor/_jquery.qtip.scss */
+/* line 581, ../scss/vendor/_jquery.qtip.scss */
 .qtip .qtip-tip,
 .qtip .qtip-tip .qtip-vml,
 .qtip .qtip-tip canvas {
@@ -2316,30 +2399,30 @@ x:-o-prefocus, .qtip .qtip-tip {
   background: transparent;
   border: 0 dashed transparent; }
 
-/* line 599, ../scss/vendor/_jquery.qtip.scss */
+/* line 589, ../scss/vendor/_jquery.qtip.scss */
 .qtip .qtip-tip canvas {
   top: 0;
   left: 0; }
 
-/* line 601, ../scss/vendor/_jquery.qtip.scss */
+/* line 591, ../scss/vendor/_jquery.qtip.scss */
 .qtip .qtip-tip .qtip-vml {
   behavior: url(#default#VML);
   display: inline-block;
   visibility: visible; }
 
-/* line 607, ../scss/vendor/_jquery.qtip.scss */
+/* line 597, ../scss/vendor/_jquery.qtip.scss */
 #qtip-overlay {
   position: fixed;
   left: -10000em;
   top: -10000em; }
 
 /* Applied to modals with show.modal.blur set to true */
-/* line 614, ../scss/vendor/_jquery.qtip.scss */
+/* line 604, ../scss/vendor/_jquery.qtip.scss */
 #qtip-overlay.blurs {
   cursor: pointer; }
 
 /* Change opacity of overlay here */
-/* line 617, ../scss/vendor/_jquery.qtip.scss */
+/* line 607, ../scss/vendor/_jquery.qtip.scss */
 #qtip-overlay div {
   position: absolute;
   left: 0;
@@ -2351,7 +2434,7 @@ x:-o-prefocus, .qtip .qtip-tip {
   filter: alpha(opacity=70);
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)"; }
 
-/* line 631, ../scss/vendor/_jquery.qtip.scss */
+/* line 621, ../scss/vendor/_jquery.qtip.scss */
 .qtipmodal-ie6fix {
   position: absolute !important; }
 
@@ -2372,9 +2455,15 @@ header#page_header {
     header#page_header {
       padding-top: 0;
       height: 190px; } }
-  /* line 20, ../scss/areas/_header.scss */
+  @media only print {
+    /* line 1, ../scss/areas/_header.scss */
+    header#page_header {
+      margin: 0;
+      padding: 0;
+      height: 0.5in; } }
+  /* line 26, ../scss/areas/_header.scss */
   header#page_header hgroup#place_logo {
-    background-image: url('/static/images/faux_seal.png?1371848835');
+    background-image: url('/static/images/faux_seal.png?1372785059');
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -2388,7 +2477,7 @@ header#page_header {
     top: 70px;
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.35); }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 20, ../scss/areas/_header.scss */
+      /* line 26, ../scss/areas/_header.scss */
       header#page_header hgroup#place_logo {
         background-position: 0 10px;
         background-size: 88px 88px;
@@ -2398,7 +2487,7 @@ header#page_header {
         position: absolute;
         top: 0; } }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 20, ../scss/areas/_header.scss */
+      /* line 26, ../scss/areas/_header.scss */
       header#page_header hgroup#place_logo {
         background-size: 88px 88px;
         float: left;
@@ -2407,7 +2496,18 @@ header#page_header {
         top: 15px;
         left: 0;
         width: 40%; } }
-    /* line 55, ../scss/areas/_header.scss */
+    @media only print {
+      /* line 26, ../scss/areas/_header.scss */
+      header#page_header hgroup#place_logo {
+        background-image: none;
+        clear: both;
+        height: 0.5in;
+        margin: 0;
+        padding-left: 0.5in;
+        position: absolute;
+        top: 0;
+        left: 0; } }
+    /* line 72, ../scss/areas/_header.scss */
     header#page_header hgroup#place_logo h1 {
       font-family: "adobe-jenson-pro", Georgia, "Times New Roman", Times, serif;
       font-size: 65px;
@@ -2415,18 +2515,24 @@ header#page_header {
       font-weight: normal;
       margin: 0; }
       @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-        /* line 55, ../scss/areas/_header.scss */
+        /* line 72, ../scss/areas/_header.scss */
         header#page_header hgroup#place_logo h1 {
           font-size: 50px;
           line-height: 60px;
           margin: 0; } }
       @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-        /* line 55, ../scss/areas/_header.scss */
+        /* line 72, ../scss/areas/_header.scss */
         header#page_header hgroup#place_logo h1 {
           font-size: 50px;
           line-height: 60px;
           margin: 0; } }
-    /* line 75, ../scss/areas/_header.scss */
+      @media only print {
+        /* line 72, ../scss/areas/_header.scss */
+        header#page_header hgroup#place_logo h1 {
+          font-size: 0.3in;
+          line-height: 0.35in;
+          margin: 0; } }
+    /* line 98, ../scss/areas/_header.scss */
     header#page_header hgroup#place_logo h2 {
       font-family: "proxima-nova", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-size: 150%;
@@ -2435,18 +2541,25 @@ header#page_header {
       margin: 10px 0 0 5px;
       text-transform: uppercase; }
       @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-        /* line 75, ../scss/areas/_header.scss */
+        /* line 98, ../scss/areas/_header.scss */
         header#page_header hgroup#place_logo h2 {
           font-size: 125%;
           margin: 0; } }
       @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-        /* line 75, ../scss/areas/_header.scss */
+        /* line 98, ../scss/areas/_header.scss */
         header#page_header hgroup#place_logo h2 {
           font-size: 120%;
           font-weight: 400;
           letter-spacing: 0.7em;
           margin: 0; } }
-  /* line 97, ../scss/areas/_header.scss */
+      @media only print {
+        /* line 98, ../scss/areas/_header.scss */
+        header#page_header hgroup#place_logo h2 {
+          font-size: 0.15in;
+          letter-spacing: 0.6em;
+          position: absolute;
+          top: 0.22in; } }
+  /* line 127, ../scss/areas/_header.scss */
   header#page_header nav#main_navigation {
     background-color: #105c80;
     font-family: "proxima-nova", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -2459,27 +2572,31 @@ header#page_header {
     left: 0;
     width: 100%; }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 97, ../scss/areas/_header.scss */
+      /* line 127, ../scss/areas/_header.scss */
       header#page_header nav#main_navigation {
         height: 200px;
         position: absolute;
         top: 130px;
         left: 0; } }
-    /* line 117, ../scss/areas/_header.scss */
+    @media only print {
+      /* line 127, ../scss/areas/_header.scss */
+      header#page_header nav#main_navigation {
+        display: none; } }
+    /* line 151, ../scss/areas/_header.scss */
     header#page_header nav#main_navigation ul {
       height: 70px;
       list-style-type: none;
       margin: 0;
       padding: 0; }
       @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-        /* line 117, ../scss/areas/_header.scss */
+        /* line 151, ../scss/areas/_header.scss */
         header#page_header nav#main_navigation ul {
           height: auto; } }
       @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-        /* line 117, ../scss/areas/_header.scss */
+        /* line 151, ../scss/areas/_header.scss */
         header#page_header nav#main_navigation ul {
           text-align: center; } }
-      /* line 131, ../scss/areas/_header.scss */
+      /* line 165, ../scss/areas/_header.scss */
       header#page_header nav#main_navigation ul li {
         display: inline-block;
         float: left;
@@ -2490,7 +2607,7 @@ header#page_header {
         text-align: center;
         width: 11%; }
         @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-          /* line 131, ../scss/areas/_header.scss */
+          /* line 165, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li {
             border-bottom: 1px solid #137da1;
             display: block;
@@ -2500,10 +2617,10 @@ header#page_header {
             text-align: left;
             width: 100%; } }
         @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-          /* line 131, ../scss/areas/_header.scss */
+          /* line 165, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li {
             width: 22%; } }
-        /* line 155, ../scss/areas/_header.scss */
+        /* line 189, ../scss/areas/_header.scss */
         header#page_header nav#main_navigation ul li a {
           background-repeat: no-repeat;
           background-position: center 10px;
@@ -2518,11 +2635,11 @@ header#page_header {
           text-transform: uppercase;
           text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.5);
           width: 100%; }
-          /* line 169, ../scss/areas/_header.scss */
+          /* line 203, ../scss/areas/_header.scss */
           .lt-ie8 header#page_header nav#main_navigation ul li a {
             background-size: auto !important; }
           @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-            /* line 155, ../scss/areas/_header.scss */
+            /* line 189, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a {
               background-position: 20px center;
               height: 50px;
@@ -2530,53 +2647,53 @@ header#page_header {
               padding: 0 0 0 75px;
               text-align: left;
               width: 100%; } }
-          /* line 181, ../scss/areas/_header.scss */
+          /* line 215, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#browse {
-            background-image: url('/static/images/nav-icons/nav_browse.svg?1371848835'); }
-            /* line 183, ../scss/areas/_header.scss */
-            header#page_header nav#main_navigation ul li a#browse:hover {
-              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1371848835'); }
-            /* line 186, ../scss/areas/_header.scss */
-            .lt-ie9 header#page_header nav#main_navigation ul li a#browse {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1371848835'); }
-          /* line 191, ../scss/areas/_header.scss */
-          header#page_header nav#main_navigation ul li a#court_cases {
-            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1371848835'); }
-            /* line 193, ../scss/areas/_header.scss */
-            header#page_header nav#main_navigation ul li a#court_cases:hover {
-              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1371848835'); }
-            /* line 196, ../scss/areas/_header.scss */
-            .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1371848835'); }
-          /* line 201, ../scss/areas/_header.scss */
-          header#page_header nav#main_navigation ul li a#about_us {
-            background-image: url('/static/images/nav-icons/nav_about-us.svg?1371848835'); }
-            /* line 204, ../scss/areas/_header.scss */
-            header#page_header nav#main_navigation ul li a#about_us:hover {
-              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1371848835'); }
-            /* line 207, ../scss/areas/_header.scss */
-            .lt-ie9 header#page_header nav#main_navigation ul li a#about_us {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1371848835'); }
-          /* line 212, ../scss/areas/_header.scss */
-          header#page_header nav#main_navigation ul li a#download {
-            background-image: url('/static/images/nav-icons/nav_download.svg?1371848835'); }
-            /* line 214, ../scss/areas/_header.scss */
-            header#page_header nav#main_navigation ul li a#download:hover {
-              background-image: url('/static/images/nav-icons/nav_nav_download-hover.svg'); }
+            background-image: url('/static/images/nav-icons/nav_browse.svg?1372785059'); }
             /* line 217, ../scss/areas/_header.scss */
+            header#page_header nav#main_navigation ul li a#browse:hover {
+              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1372785059'); }
+            /* line 220, ../scss/areas/_header.scss */
+            .lt-ie9 header#page_header nav#main_navigation ul li a#browse {
+              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1372785059'); }
+          /* line 225, ../scss/areas/_header.scss */
+          header#page_header nav#main_navigation ul li a#court_cases {
+            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1372785059'); }
+            /* line 227, ../scss/areas/_header.scss */
+            header#page_header nav#main_navigation ul li a#court_cases:hover {
+              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1372785059'); }
+            /* line 230, ../scss/areas/_header.scss */
+            .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
+              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1372785059'); }
+          /* line 235, ../scss/areas/_header.scss */
+          header#page_header nav#main_navigation ul li a#about_us {
+            background-image: url('/static/images/nav-icons/nav_about-us.svg?1372785059'); }
+            /* line 238, ../scss/areas/_header.scss */
+            header#page_header nav#main_navigation ul li a#about_us:hover {
+              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1372785059'); }
+            /* line 241, ../scss/areas/_header.scss */
+            .lt-ie9 header#page_header nav#main_navigation ul li a#about_us {
+              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1372785059'); }
+          /* line 246, ../scss/areas/_header.scss */
+          header#page_header nav#main_navigation ul li a#download {
+            background-image: url('/static/images/nav-icons/nav_download.svg?1372785059'); }
+            /* line 248, ../scss/areas/_header.scss */
+            header#page_header nav#main_navigation ul li a#download:hover {
+              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1372785059'); }
+            /* line 251, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#download {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_nav_download.png'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1372785059'); }
   @media only screen and (min-width: 769px) {
-    /* line 226, ../scss/areas/_header.scss */
+    /* line 260, ../scss/areas/_header.scss */
     .inside header#page_header {
       border-bottom: 10px solid #105c80;
       height: 75px; }
-      /* line 237, ../scss/areas/_header.scss */
+      /* line 271, ../scss/areas/_header.scss */
       .inside header#page_header .nest {
         max-width: none;
         padding: 0 40px;
         width: 100%; }
-      /* line 243, ../scss/areas/_header.scss */
+      /* line 277, ../scss/areas/_header.scss */
       .inside header#page_header hgroup#place_logo {
         background-size: 50px 50px;
         height: 50px;
@@ -2584,31 +2701,31 @@ header#page_header {
         position: absolute;
         top: 8px;
         left: 40px; }
-        /* line 251, ../scss/areas/_header.scss */
+        /* line 285, ../scss/areas/_header.scss */
         .inside header#page_header hgroup#place_logo h1 {
           font-size: 35px;
           line-height: 35px;
           margin: 0 0 0 55px; }
-        /* line 257, ../scss/areas/_header.scss */
+        /* line 291, ../scss/areas/_header.scss */
         .inside header#page_header hgroup#place_logo h2 {
           font-size: 12px;
           font-weight: 400;
           letter-spacing: 0.5em;
           margin: -5px 0 0 120px; }
-      /* line 265, ../scss/areas/_header.scss */
+      /* line 299, ../scss/areas/_header.scss */
       .inside header#page_header section#search {
         margin-top: 0;
         width: 25%; }
-        /* line 269, ../scss/areas/_header.scss */
+        /* line 303, ../scss/areas/_header.scss */
         .inside header#page_header section#search label {
           display: none; }
-        /* line 273, ../scss/areas/_header.scss */
+        /* line 307, ../scss/areas/_header.scss */
         .inside header#page_header section#search input[type="search"] {
           width: 70%; }
-        /* line 277, ../scss/areas/_header.scss */
+        /* line 311, ../scss/areas/_header.scss */
         .inside header#page_header section#search input[type="submit"] {
           padding: 2px 10px; }
-      /* line 283, ../scss/areas/_header.scss */
+      /* line 317, ../scss/areas/_header.scss */
       .inside header#page_header nav#main_navigation {
         background-color: transparent;
         margin-left: 250px;
@@ -2617,15 +2734,15 @@ header#page_header {
         top: -5px;
         width: 35%;
         min-width: 450px; }
-        /* line 292, ../scss/areas/_header.scss */
+        /* line 326, ../scss/areas/_header.scss */
         .inside header#page_header nav#main_navigation li {
           width: 24%; }
-          /* line 294, ../scss/areas/_header.scss */
+          /* line 328, ../scss/areas/_header.scss */
           .inside header#page_header nav#main_navigation li a {
             background-size: 25px 25px;
             background-position: center 15px;
             padding-top: 45px; }
-            /* line 298, ../scss/areas/_header.scss */
+            /* line 332, ../scss/areas/_header.scss */
             .inside header#page_header nav#main_navigation li a#about_us {
               background-size: 40px 40px;
               background-position: center 8px; } }
@@ -2638,10 +2755,21 @@ header#page_header {
   font: 18px Helvetica, Arial, Sans-Serif;
   overflow: hidden;
   *zoom: 1; }
-  /* line 13, ../scss/areas/_breadcrumbs.scss */
+  @media only print {
+    /* line 7, ../scss/areas/_breadcrumbs.scss */
+    .breadcrumbs ul {
+      margin: 0;
+      padding: 0; } }
+  /* line 19, ../scss/areas/_breadcrumbs.scss */
   .breadcrumbs ul li {
     float: left; }
-    /* line 15, ../scss/areas/_breadcrumbs.scss */
+    @media only print {
+      /* line 19, ../scss/areas/_breadcrumbs.scss */
+      .breadcrumbs ul li {
+        border: none;
+        clear: both;
+        float: none; } }
+    /* line 28, ../scss/areas/_breadcrumbs.scss */
     .breadcrumbs ul li a {
       font-size: 12px;
       height: 24px;
@@ -2653,7 +2781,7 @@ header#page_header {
       position: relative;
       display: block;
       float: left; }
-      /* line 26, ../scss/areas/_breadcrumbs.scss */
+      /* line 39, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:before {
         content: " ";
         display: block;
@@ -2666,7 +2794,13 @@ header#page_header {
         margin-left: 1px;
         left: 100%;
         z-index: 1; }
-      /* line 39, ../scss/areas/_breadcrumbs.scss */
+        @media only print {
+          /* line 39, ../scss/areas/_breadcrumbs.scss */
+          .breadcrumbs ul li a:before {
+            border: none;
+            clear: both;
+            float: none; } }
+      /* line 59, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:after {
         content: " ";
         display: block;
@@ -2679,24 +2813,40 @@ header#page_header {
         top: 0;
         left: 100%;
         z-index: 2; }
-      /* line 53, ../scss/areas/_breadcrumbs.scss */
+        @media only print {
+          /* line 59, ../scss/areas/_breadcrumbs.scss */
+          .breadcrumbs ul li a:after {
+            border: none; } }
+      /* line 77, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:hover {
         background: #597782; }
-      /* line 56, ../scss/areas/_breadcrumbs.scss */
+      /* line 80, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:hover:after {
         border-left-color: #597782; }
-    /* line 60, ../scss/areas/_breadcrumbs.scss */
+    /* line 84, ../scss/areas/_breadcrumbs.scss */
     .breadcrumbs ul li:first-child a {
       padding-left: 5px; }
-    /* line 63, ../scss/areas/_breadcrumbs.scss */
+    /* line 87, ../scss/areas/_breadcrumbs.scss */
     .breadcrumbs ul li:last-child a {
       background: #526166; }
-      /* line 65, ../scss/areas/_breadcrumbs.scss */
+      /* line 89, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li:last-child a:after {
         border-top: 12px solid transparent;
         /* Go big on the size, and let overflow hide */
         border-bottom: 12px solid transparent;
         border-left: 24px solid #526166; }
+        @media only print {
+          /* line 89, ../scss/areas/_breadcrumbs.scss */
+          .breadcrumbs ul li:last-child a:after {
+            border: none;
+            clear: both;
+            float: none; } }
+
+@media only print {
+  /* line 107, ../scss/areas/_breadcrumbs.scss */
+  .paging .prev,
+  .paging .next {
+    display: none; } }
 
 /* line 3, ../scss/areas/_title-list.scss */
 .title-list li, .title-list dd, .title-list dt {
@@ -2745,43 +2895,47 @@ footer#page_footer {
     /* line 10, ../scss/areas/_footer.scss */
     footer#page_footer {
       padding: 0 10px; } }
-  /* line 28, ../scss/areas/_footer.scss */
+  @media only print {
+    /* line 10, ../scss/areas/_footer.scss */
+    footer#page_footer {
+      position: relative; } }
+  /* line 32, ../scss/areas/_footer.scss */
   footer#page_footer p {
     font-size: 75%; }
-    /* line 31, ../scss/areas/_footer.scss */
+    /* line 35, ../scss/areas/_footer.scss */
     footer#page_footer p a {
       color: #d9d8d6; }
-    /* line 35, ../scss/areas/_footer.scss */
+    /* line 39, ../scss/areas/_footer.scss */
     footer#page_footer p.downloads, footer#page_footer p.credits {
       width: 20%; }
       @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-        /* line 35, ../scss/areas/_footer.scss */
+        /* line 39, ../scss/areas/_footer.scss */
         footer#page_footer p.downloads, footer#page_footer p.credits {
           width: 100%; } }
       @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-        /* line 35, ../scss/areas/_footer.scss */
+        /* line 39, ../scss/areas/_footer.scss */
         footer#page_footer p.downloads, footer#page_footer p.credits {
           width: 30%; } }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 47, ../scss/areas/_footer.scss */
+      /* line 51, ../scss/areas/_footer.scss */
       footer#page_footer p.credits {
         width: 100%; } }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 47, ../scss/areas/_footer.scss */
+      /* line 51, ../scss/areas/_footer.scss */
       footer#page_footer p.credits {
         width: 30%; } }
-    /* line 59, ../scss/areas/_footer.scss */
+    /* line 63, ../scss/areas/_footer.scss */
     footer#page_footer p.legalese {
       float: right;
       font-size: 68.75%;
       width: 75%; }
       @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-        /* line 59, ../scss/areas/_footer.scss */
+        /* line 63, ../scss/areas/_footer.scss */
         footer#page_footer p.legalese {
           float: none;
           width: 100%; } }
       @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-        /* line 59, ../scss/areas/_footer.scss */
+        /* line 63, ../scss/areas/_footer.scss */
         footer#page_footer p.legalese {
           width: 70%; } }
 
@@ -2874,42 +3028,46 @@ section#search {
       font-size: 75%;
       margin: 15px 10px 0 0;
       width: 55%; } }
-  /* line 37, ../scss/areas/_search.scss */
+  @media only print {
+    /* line 1, ../scss/areas/_search.scss */
+    section#search {
+      display: none; } }
+  /* line 42, ../scss/areas/_search.scss */
   section#search label {
     display: block;
     font-size: 13px;
     margin-bottom: 8px; }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 37, ../scss/areas/_search.scss */
+      /* line 42, ../scss/areas/_search.scss */
       section#search label {
         display: none; } }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 37, ../scss/areas/_search.scss */
+      /* line 42, ../scss/areas/_search.scss */
       section#search label {
         font-size: 12px;
         margin-bottom: 0; }
-        /* line 47, ../scss/areas/_search.scss */
+        /* line 52, ../scss/areas/_search.scss */
         .inside section#search label {
           display: none; } }
-  /* line 53, ../scss/areas/_search.scss */
+  /* line 58, ../scss/areas/_search.scss */
   section#search input[type="search"] {
     width: 65%; }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 53, ../scss/areas/_search.scss */
+      /* line 58, ../scss/areas/_search.scss */
       section#search input[type="search"] {
         font-size: 100%;
         width: 250px; } }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 53, ../scss/areas/_search.scss */
+      /* line 58, ../scss/areas/_search.scss */
       section#search input[type="search"] {
         font-size: 125%;
         width: 250px; } }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 65, ../scss/areas/_search.scss */
+    /* line 70, ../scss/areas/_search.scss */
     section#search input[type="submit"] {
       font-size: 12px;
       padding: 0 8px; } }
-  /* line 72, ../scss/areas/_search.scss */
+  /* line 77, ../scss/areas/_search.scss */
   section#search a {
     color: white;
     font-size: 10px;
@@ -3066,22 +3224,37 @@ section.feature-content {
 .law section#main_content {
   overflow: hidden;
   padding-bottom: 150px; }
-/* line 17, ../scss/areas/_page-law-show.scss */
+  @media only print {
+    /* line 8, ../scss/areas/_page-law-show.scss */
+    .law section#main_content {
+      padding-bottom: 0; } }
+@media only print {
+  /* line 17, ../scss/areas/_page-law-show.scss */
+  .law .nest {
+    margin: 0 0 0 0.25in;
+    padding: 0;
+    width: 7in; } }
+/* line 27, ../scss/areas/_page-law-show.scss */
 .law #main_content heading {
   display: block;
   padding: 20px; }
-/* line 22, ../scss/areas/_page-law-show.scss */
+/* line 32, ../scss/areas/_page-law-show.scss */
 .law .primary-content {
   float: left;
   margin-right: 1%;
   padding: 20px;
   width: 49%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 22, ../scss/areas/_page-law-show.scss */
+    /* line 32, ../scss/areas/_page-law-show.scss */
     .law .primary-content {
       float: none;
       width: 100%; } }
-  /* line 33, ../scss/areas/_page-law-show.scss */
+  @media only print {
+    /* line 32, ../scss/areas/_page-law-show.scss */
+    .law .primary-content {
+      float: none;
+      width: 100%; } }
+  /* line 48, ../scss/areas/_page-law-show.scss */
   .law .primary-content h1 {
     font-family: "adobe-jenson-pro", Georgia, "Times New Roman", Times, serif;
     font-size: 125%;
@@ -3089,68 +3262,74 @@ section.feature-content {
     letter-spacing: 0.05em;
     margin: 0 0 10px 0;
     text-transform: small-caps; }
-  /* line 42, ../scss/areas/_page-law-show.scss */
+  /* line 57, ../scss/areas/_page-law-show.scss */
   .law .primary-content h2 {
     font-family: "adobe-jenson-pro", Georgia, "Times New Roman", Times, serif;
     font-size: 200%;
     line-height: 105%;
     font-weight: 100;
     margin: 0 0 20px 0; }
-  /* line 50, ../scss/areas/_page-law-show.scss */
+  /* line 65, ../scss/areas/_page-law-show.scss */
   .law .primary-content h3 {
     margin: 40px 0 10px 0;
     text-transform: uppercase; }
-  /* line 56, ../scss/areas/_page-law-show.scss */
+  /* line 71, ../scss/areas/_page-law-show.scss */
   .law .primary-content section.indent, .law .primary-content section.indent-1 {
     margin-left: 15px; }
-  /* line 60, ../scss/areas/_page-law-show.scss */
+  /* line 75, ../scss/areas/_page-law-show.scss */
   .law .primary-content section.indent-2 {
     margin-left: 30px; }
-  /* line 64, ../scss/areas/_page-law-show.scss */
+  /* line 79, ../scss/areas/_page-law-show.scss */
   .law .primary-content section.indent-3 {
     margin-left: 45px; }
-  /* line 68, ../scss/areas/_page-law-show.scss */
+  /* line 83, ../scss/areas/_page-law-show.scss */
   .law .primary-content section.indent-4 {
     margin-left: 60px; }
-  /* line 72, ../scss/areas/_page-law-show.scss */
+  /* line 87, ../scss/areas/_page-law-show.scss */
   .law .primary-content p {
     margin: 0 0 20px 0; }
-  /* line 76, ../scss/areas/_page-law-show.scss */
+  /* line 91, ../scss/areas/_page-law-show.scss */
   .law .primary-content pre.table {
     margin: 0 0 20px 0;
     font-size: .75em;
     overflow-x: scroll;
     white-space: pre; }
-/* line 85, ../scss/areas/_page-law-show.scss */
+/* line 100, ../scss/areas/_page-law-show.scss */
 .law .secondary-content {
   float: right;
   padding: 20px;
   width: 44%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 85, ../scss/areas/_page-law-show.scss */
+    /* line 100, ../scss/areas/_page-law-show.scss */
     .law .secondary-content {
       float: none;
       width: 100%; } }
-  /* line 96, ../scss/areas/_page-law-show.scss */
+  @media only print {
+    /* line 100, ../scss/areas/_page-law-show.scss */
+    .law .secondary-content {
+      float: none;
+      padding: 0;
+      width: 100%; } }
+  /* line 117, ../scss/areas/_page-law-show.scss */
   .law .secondary-content ul {
     list-style: none; }
-  /* line 101, ../scss/areas/_page-law-show.scss */
+  /* line 122, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .identifier,
   .law .secondary-content .title {
     display: block;
     margin: 1em 0 0; }
-  /* line 106, ../scss/areas/_page-law-show.scss */
+  /* line 127, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .ad {
     margin: 0 auto 20px auto; }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 106, ../scss/areas/_page-law-show.scss */
+      /* line 127, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .ad {
         max-width: 100%; } }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 106, ../scss/areas/_page-law-show.scss */
+      /* line 127, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .ad {
         max-width: 100%; } }
-  /* line 120, ../scss/areas/_page-law-show.scss */
+  /* line 141, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .grouping,
   .law .secondary-content .related-group {
     float: left;
@@ -3158,21 +3337,21 @@ section.feature-content {
     text-align: left;
     width: 32.5%; }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 120, ../scss/areas/_page-law-show.scss */
+      /* line 141, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping,
       .law .secondary-content .related-group {
         float: none;
         width: 100%; } }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 120, ../scss/areas/_page-law-show.scss */
+      /* line 141, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping,
       .law .secondary-content .related-group {
         float: none;
         width: 100%; } }
-  /* line 138, ../scss/areas/_page-law-show.scss */
+  /* line 159, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .grouping.last {
     margin-right: 0; }
-  /* line 144, ../scss/areas/_page-law-show.scss */
+  /* line 165, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .grouping > section,
   .law .secondary-content .related-group,
   .law .secondary-content .info-box {
@@ -3182,7 +3361,7 @@ section.feature-content {
     margin-bottom: 1em;
     padding: 0;
     text-align: left; }
-    /* line 154, ../scss/areas/_page-law-show.scss */
+    /* line 175, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section h1,
     .law .secondary-content .related-group h1,
     .law .secondary-content .info-box h1 {
@@ -3192,26 +3371,26 @@ section.feature-content {
       margin: 0.5em 0;
       padding: 0 10px;
       text-transform: capitalize; }
-    /* line 163, ../scss/areas/_page-law-show.scss */
+    /* line 184, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section > h1,
     .law .secondary-content .related-group > h1,
     .law .secondary-content .info-box > h1 {
       font-style: normal;
       text-transform: uppercase; }
-    /* line 168, ../scss/areas/_page-law-show.scss */
+    /* line 189, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section p, .law .secondary-content .grouping > section h2,
     .law .secondary-content .related-group p,
     .law .secondary-content .related-group h2,
     .law .secondary-content .info-box p,
     .law .secondary-content .info-box h2 {
       padding: 0 10px; }
-    /* line 172, ../scss/areas/_page-law-show.scss */
+    /* line 193, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section.header-bar-full,
     .law .secondary-content .related-group.header-bar-full,
     .law .secondary-content .info-box.header-bar-full {
       float: none;
       width: 100%; }
-      /* line 176, ../scss/areas/_page-law-show.scss */
+      /* line 197, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping > section.header-bar-full > h1,
       .law .secondary-content .related-group.header-bar-full > h1,
       .law .secondary-content .info-box.header-bar-full > h1 {
@@ -3225,17 +3404,17 @@ section.feature-content {
         text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.4);
         text-transform: uppercase;
         width: 100%; }
-      /* line 189, ../scss/areas/_page-law-show.scss */
+      /* line 210, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping > section.header-bar-full p,
       .law .secondary-content .related-group.header-bar-full p,
       .law .secondary-content .info-box.header-bar-full p {
         margin: 0 0 10px 0; }
-    /* line 195, ../scss/areas/_page-law-show.scss */
+    /* line 216, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#legal_self_help,
     .law .secondary-content .related-group#legal_self_help,
     .law .secondary-content .info-box#legal_self_help {
       overflow: hidden; }
-      /* line 198, ../scss/areas/_page-law-show.scss */
+      /* line 219, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping > section#legal_self_help ul,
       .law .secondary-content .related-group#legal_self_help ul,
       .law .secondary-content .info-box#legal_self_help ul {
@@ -3243,7 +3422,7 @@ section.feature-content {
         list-style-type: none;
         padding: 0 10px;
         margin: 0; }
-        /* line 205, ../scss/areas/_page-law-show.scss */
+        /* line 226, ../scss/areas/_page-law-show.scss */
         .law .secondary-content .grouping > section#legal_self_help ul li,
         .law .secondary-content .related-group#legal_self_help ul li,
         .law .secondary-content .info-box#legal_self_help ul li {
@@ -3252,25 +3431,25 @@ section.feature-content {
           margin-bottom: 15px;
           width: 49%; }
           @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-            /* line 205, ../scss/areas/_page-law-show.scss */
+            /* line 226, ../scss/areas/_page-law-show.scss */
             .law .secondary-content .grouping > section#legal_self_help ul li,
             .law .secondary-content .related-group#legal_self_help ul li,
             .law .secondary-content .info-box#legal_self_help ul li {
               float: none;
               width: 100%; } }
           @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-            /* line 205, ../scss/areas/_page-law-show.scss */
+            /* line 226, ../scss/areas/_page-law-show.scss */
             .law .secondary-content .grouping > section#legal_self_help ul li,
             .law .secondary-content .related-group#legal_self_help ul li,
             .law .secondary-content .info-box#legal_self_help ul li {
               float: none;
               width: 100%; } }
-          /* line 223, ../scss/areas/_page-law-show.scss */
+          /* line 244, ../scss/areas/_page-law-show.scss */
           .law .secondary-content .grouping > section#legal_self_help ul li article h1,
           .law .secondary-content .related-group#legal_self_help ul li article h1,
           .law .secondary-content .info-box#legal_self_help ul li article h1 {
             font-family: "ff-meta-serif-web-pro", Georgia, "Times New Roman", Times, serif; }
-          /* line 230, ../scss/areas/_page-law-show.scss */
+          /* line 251, ../scss/areas/_page-law-show.scss */
           .law .secondary-content .grouping > section#legal_self_help ul li article.pdf,
           .law .secondary-content .related-group#legal_self_help ul li article.pdf,
           .law .secondary-content .info-box#legal_self_help ul li article.pdf {
@@ -3278,25 +3457,25 @@ section.feature-content {
             background-repeat: no-repeat;
             background-position: top left;
             padding-left: 42px; }
-    /* line 244, ../scss/areas/_page-law-show.scss */
+    /* line 265, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#amendment_attempts h2,
     .law .secondary-content .related-group#amendment_attempts h2,
     .law .secondary-content .info-box#amendment_attempts h2 {
       font-size: 125%; }
-    /* line 248, ../scss/areas/_page-law-show.scss */
+    /* line 269, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#amendment_attempts a,
     .law .secondary-content .related-group#amendment_attempts a,
     .law .secondary-content .info-box#amendment_attempts a {
       font-size: 18px;
       font-style: italic;
       font-weight: bold; }
-    /* line 258, ../scss/areas/_page-law-show.scss */
+    /* line 279, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#court_decisions article.court-decision h1,
     .law .secondary-content .related-group#court_decisions article.court-decision h1,
     .law .secondary-content .info-box#court_decisions article.court-decision h1 {
       font-family: "ff-meta-serif-web-pro", Georgia, "Times New Roman", Times, serif;
       margin: 1em 0 0 0; }
-    /* line 263, ../scss/areas/_page-law-show.scss */
+    /* line 284, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#court_decisions article.court-decision h2,
     .law .secondary-content .related-group#court_decisions article.court-decision h2,
     .law .secondary-content .info-box#court_decisions article.court-decision h2 {
@@ -3304,14 +3483,20 @@ section.feature-content {
       font-weight: normal;
       font-variant: uppercase;
       margin: 0;
-      text-transform: uppsercase; }
-  /* line 275, ../scss/areas/_page-law-show.scss */
+      text-transform: uppercase; }
+    @media only print {
+      /* line 295, ../scss/areas/_page-law-show.scss */
+      .law .secondary-content .grouping > section a#keyhelp,
+      .law .secondary-content .related-group a#keyhelp,
+      .law .secondary-content .info-box a#keyhelp {
+        display: none; } }
+  /* line 302, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .dark {
     background-color: #656358;
     color: #fff;
     overflow: hidden;
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.4); }
-    /* line 281, ../scss/areas/_page-law-show.scss */
+    /* line 308, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .dark > h1 {
       float: left;
       font-size: 24px;
@@ -3321,19 +3506,19 @@ section.feature-content {
       padding: 10px;
       text-transform: uppercase;
       width: 50%; }
-    /* line 292, ../scss/areas/_page-law-show.scss */
+    /* line 319, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .dark dl {
       float: right;
       margin: 1em 0 0 0;
       padding: 0;
       width: 49%; }
-      /* line 298, ../scss/areas/_page-law-show.scss */
+      /* line 325, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .dark dl dt {
         font-size: 85%;
         margin: 0;
         padding: 0;
         text-transform: uppercase; }
-      /* line 299, ../scss/areas/_page-law-show.scss */
+      /* line 326, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .dark dl dd {
         margin: 0 0 1em 0;
         padding: 0; }

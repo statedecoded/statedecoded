@@ -34,6 +34,11 @@
       width: 55%;
     }
 
+    @include respond-to(print) {
+      display: none;
+    }
+
+
     label {
       display: block;
       font-size: 13px;

@@ -12,6 +12,13 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+
+  @include respond-to(print) {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
 }
 
 html {
@@ -28,6 +35,11 @@ body {
     text-align: left;
     &.preload * {
       transition: none !important;
+    }
+
+    @include respond-to(print) {
+      background-color: white;
+      color: #000;
     }
 }
 p {

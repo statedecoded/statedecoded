@@ -17,6 +17,12 @@
     height: 190px;
   }
 
+  @include respond-to(print) {
+    margin: 0;
+    padding: 0;
+    height: 0.5in;
+  }
+
   hgroup#place_logo {
     @include background-image(image-url("faux_seal.png"));
     background-repeat: no-repeat;
@@ -52,6 +58,17 @@
       width: 40%;
     }
 
+    @include respond-to(print) {
+      background-image: none;
+      clear: both;
+      height: 0.5in;
+      margin: 0;
+      padding-left: 0.5in;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
     h1 {
       font-family: $statedecoded-stack1;
       font-size: 65px;
@@ -68,6 +85,12 @@
       @include respond-to(tablet) {
         font-size: 50px;
         line-height: 60px;
+        margin: 0;
+      }
+
+      @include respond-to(print) {
+        font-size: 0.3in;
+        line-height: 0.35in;
         margin: 0;
       }
     } //h1
@@ -91,6 +114,13 @@
         letter-spacing: 0.7em;
         margin: 0;
       }
+
+      @include respond-to(print) {
+        font-size: 0.15in;
+        letter-spacing: 0.6em;
+        position: absolute;
+        top: 0.22in;
+      }
     } //h2
   } // hgroup#place_logo
 
@@ -111,6 +141,10 @@
       position: absolute;
         top: 130px;
         left: 0;
+    }
+
+    @include respond-to(print) {
+      display: none;
     }
 
     $nav-height: 70px;
@@ -212,10 +246,10 @@
           &#download {
             @include background-image(image-url("nav-icons/nav_download.svg"));
             &:hover {
-              @include background-image(image-url("nav-icons/nav_nav_download-hover.svg"));
+              @include background-image(image-url("nav-icons/nav_download-hover.svg"));
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_nav_download.png"));
+              @include background-image(image-url("nav-icons/fallbacks/nav_download.png"));
             }
           } // &#browse
         } // a
