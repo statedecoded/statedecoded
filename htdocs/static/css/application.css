@@ -471,130 +471,144 @@ body {
 /* line 45, ../scss/base/_default.scss */
 p {
   font-size: 16px;
-  line-height: 24px; }
+  hyphenate: auto;
+  hyphenate-lines: 3;
+  hyphenate-before: 2;
+  hyphenate-after: 3;
+  line-height: 24px;
+  widows: 4;
+  orphans: 4; }
 
-/* line 49, ../scss/base/_default.scss */
+/* line 56, ../scss/base/_default.scss */
+.section {
+  page-break-after: auto; }
+
+/* line 60, ../scss/base/_default.scss */
 h1, h2, h3 {
   color: "";
   font-family: "adobe-jenson-pro", Georgia, "Times New Roman", Times, serif;
-  font-weight: normal; }
+  font-weight: normal;
+  page-break-before: auto;
+  page-break-inside: never; }
 
-/* line 54, ../scss/base/_default.scss */
+/* line 67, ../scss/base/_default.scss */
 h4, h5, h6 {
   color: "";
   font-family: "ff-meta-serif-web-pro", Georgia, "Times New Roman", Times, serif;
-  font-weight: normal; }
+  font-weight: normal;
+  page-break-before: auto;
+  page-break-inside: never; }
 
-/* line 59, ../scss/base/_default.scss */
+/* line 74, ../scss/base/_default.scss */
 a, a:link {
   color: #558fae; }
 
-/* line 62, ../scss/base/_default.scss */
+/* line 77, ../scss/base/_default.scss */
 a:hover {
   color: #0da6da; }
 
-/* line 65, ../scss/base/_default.scss */
+/* line 80, ../scss/base/_default.scss */
 a:active {
   color: #0da6da; }
 
-/* line 68, ../scss/base/_default.scss */
+/* line 83, ../scss/base/_default.scss */
 a:visited {
   color: #2e4a53; }
 
-/* line 74, ../scss/base/_default.scss */
+/* line 89, ../scss/base/_default.scss */
 ::-moz-selection {
   background-color: #558fae;
   color: white;
   text-shadow: none; }
 
-/* line 80, ../scss/base/_default.scss */
+/* line 95, ../scss/base/_default.scss */
 ::selection {
   background-color: #558fae;
   color: white;
   text-shadow: none; }
 
-/* line 86, ../scss/base/_default.scss */
+/* line 101, ../scss/base/_default.scss */
 hr {
   border: 0;
   border-bottom: 1px solid white;
   border-top: 1px solid #faf9f6;
   margin: 24px 0; }
 
-/* line 94, ../scss/base/_default.scss */
+/* line 109, ../scss/base/_default.scss */
 img {
   vertical-align: middle; }
 
-/* line 99, ../scss/base/_default.scss */
+/* line 114, ../scss/base/_default.scss */
 fieldset {
   border: 0;
   margin: 0;
   padding: 0; }
 
-/* line 106, ../scss/base/_default.scss */
+/* line 121, ../scss/base/_default.scss */
 textarea {
   resize: vertical; }
 
-/* line 110, ../scss/base/_default.scss */
+/* line 125, ../scss/base/_default.scss */
 #main_content {
   padding: 20px 0; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 110, ../scss/base/_default.scss */
+    /* line 125, ../scss/base/_default.scss */
     #main_content {
       padding: 0 10px; } }
 
-/* line 120, ../scss/base/_default.scss */
+/* line 135, ../scss/base/_default.scss */
 ul, ol {
   padding: 0;
   margin: 0 0 12px 25px; }
-  /* line 123, ../scss/base/_default.scss */
+  /* line 138, ../scss/base/_default.scss */
   ul ul, ul ol, ol ul, ol ol {
     margin-bottom: 0; }
 
-/* line 128, ../scss/base/_default.scss */
+/* line 143, ../scss/base/_default.scss */
 ul {
   list-style: disc; }
 
-/* line 132, ../scss/base/_default.scss */
+/* line 147, ../scss/base/_default.scss */
 ol, ol ol ol ol, ol ol ol ol ol ol ol {
   list-style: decimal; }
-  /* line 134, ../scss/base/_default.scss */
+  /* line 149, ../scss/base/_default.scss */
   ol ol, ol ol ol ol ol, ol ol ol ol ol ol ol ol {
     list-style-type: lower-alpha; }
-    /* line 136, ../scss/base/_default.scss */
+    /* line 151, ../scss/base/_default.scss */
     ol ol ol, ol ol ol ol ol ol, ol ol ol ol ol ol ol ol ol {
       list-style-type: lower-roman; }
 
-/* line 142, ../scss/base/_default.scss */
+/* line 157, ../scss/base/_default.scss */
 li {
   line-height: 24px; }
 
-/* line 148, ../scss/base/_default.scss */
+/* line 163, ../scss/base/_default.scss */
 .chromeframe {
   background-color: #ccc;
   color: black;
   margin: 0.2em 0;
   padding: 0.2em 0; }
 
-/* line 155, ../scss/base/_default.scss */
+/* line 170, ../scss/base/_default.scss */
 .nest {
   margin: auto;
   position: relative; }
 
-/* line 160, ../scss/base/_default.scss */
+/* line 175, ../scss/base/_default.scss */
 .wide, .law .nest {
   max-width: none;
   padding: 0 40px;
   width: 100%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 160, ../scss/base/_default.scss */
+    /* line 175, ../scss/base/_default.scss */
     .wide, .law .nest {
       padding: 0; } }
 
-/* line 169, ../scss/base/_default.scss */
+/* line 184, ../scss/base/_default.scss */
 .narrow {
   max-width: 960px; }
 
-/* line 173, ../scss/base/_default.scss */
+/* line 188, ../scss/base/_default.scss */
 p {
   hyphenate: auto;
   /* http://webtypography.net/Rhythm_and_Proportion/Etiquette_of_Hyphenation_and_Pagination/2.4.3/ */
@@ -603,29 +617,29 @@ p {
   orphans: 4;
   widows: 4; }
 
-/* line 181, ../scss/base/_default.scss */
+/* line 196, ../scss/base/_default.scss */
 small {
   font-size: 85%; }
 
-/* line 183, ../scss/base/_default.scss */
+/* line 198, ../scss/base/_default.scss */
 strong, th {
   font-weight: bold; }
 
-/* line 185, ../scss/base/_default.scss */
+/* line 200, ../scss/base/_default.scss */
 td, td img {
   vertical-align: top; }
 
-/* line 187, ../scss/base/_default.scss */
+/* line 202, ../scss/base/_default.scss */
 sub {
   vertical-align: sub;
   font-size: smaller; }
 
-/* line 189, ../scss/base/_default.scss */
+/* line 204, ../scss/base/_default.scss */
 sup {
   vertical-align: super;
   font-size: smaller; }
 
-/* line 191, ../scss/base/_default.scss */
+/* line 206, ../scss/base/_default.scss */
 pre {
   padding: 15px;
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
@@ -2463,7 +2477,7 @@ header#page_header {
       height: 0.5in; } }
   /* line 26, ../scss/areas/_header.scss */
   header#page_header hgroup#place_logo {
-    background-image: url('/static/images/faux_seal.png?1372785059');
+    background-image: url('/static/images/faux_seal.png?1374500988');
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -2649,40 +2663,40 @@ header#page_header {
               width: 100%; } }
           /* line 215, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#browse {
-            background-image: url('/static/images/nav-icons/nav_browse.svg?1372785059'); }
+            background-image: url('/static/images/nav-icons/nav_browse.svg?1374500988'); }
             /* line 217, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#browse:hover {
-              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1372785059'); }
+              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1374500988'); }
             /* line 220, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#browse {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1372785059'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1374500988'); }
           /* line 225, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#court_cases {
-            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1372785059'); }
+            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1374500988'); }
             /* line 227, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#court_cases:hover {
-              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1372785059'); }
+              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1374500988'); }
             /* line 230, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1372785059'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1374500988'); }
           /* line 235, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#about_us {
-            background-image: url('/static/images/nav-icons/nav_about-us.svg?1372785059'); }
+            background-image: url('/static/images/nav-icons/nav_about-us.svg?1374500988'); }
             /* line 238, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#about_us:hover {
-              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1372785059'); }
+              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1374500988'); }
             /* line 241, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#about_us {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1372785059'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1374500988'); }
           /* line 246, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#download {
-            background-image: url('/static/images/nav-icons/nav_download.svg?1372785059'); }
+            background-image: url('/static/images/nav-icons/nav_download.svg?1374500988'); }
             /* line 248, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#download:hover {
-              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1372785059'); }
+              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1374500988'); }
             /* line 251, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#download {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1372785059'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1374500988'); }
   @media only screen and (min-width: 769px) {
     /* line 260, ../scss/areas/_header.scss */
     .inside header#page_header {

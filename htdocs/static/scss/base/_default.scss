@@ -44,17 +44,32 @@ body {
 }
 p {
   font-size: $base-font-size;
+  hyphenate: auto;
+  hyphenate-lines: 3;
+  hyphenate-before: 2;
+  hyphenate-after: 3;
   line-height: $base-line-height;
+  widows: 4;
+  orphans: 4;
 }
+
+.section {
+  page-break-after: auto;
+}
+
 h1, h2, h3 {
   color: $headings-font-color;
   font-family: $headings-font-family;
   font-weight: $headings-font-weight;
+  page-break-before: auto;
+  page-break-inside: never;
 } // h1, h2, h3
 h4, h5, h6 {
   color: $subheadings-font-color;
   font-family: $subheadings-font-family;
   font-weight: $subheadings-font-weight;
+  page-break-before: auto;
+  page-break-inside: never;
 } // h4, h5, h6
 a, a:link {
 	color: $link-color;
