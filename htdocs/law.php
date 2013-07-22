@@ -112,35 +112,36 @@ if (is_object($law->dublin_core))
 /*
  * Define the breadcrumb trail text.
  */
-$template->field->heading = '';
+$template->field->breadcrumbs = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->heading .= '<li><a href="' . $ancestor->url . '">' . $ancestor->identifier . ' '
-		. $ancestor->name . '</a></li>';
+	$template->field->breadcrumbs .= '<a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
+		.$ancestor->name.'</a> → ';
 }
-$template->field->heading .= '<li class="active"><a href="/' . $law->section_number . '/">'
-	. $law->section_number
-	. ' ' . $law->catch_line . '</a></li>';
+$template->field->breadcrumbs .= '<a href="/'.$law->section_number.'/">§&nbsp;'.$law->section_number
+	.' '.$law->catch_line.'</a>';
 
-$template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">' . $template->field->heading . '</ul></nav>';
-
+/*
+ * If there is a prior section in this structural unit, provide a back arrow.
+ */
 if (isset($law->previous_section))
 {
-	$template->field->heading = '<a href="' . $law->previous_section->url . '" class="prev" title="Previous section">Previous: '
-		. $law->previous_section->catch_line . '</a>' . $template->field->heading;
-	$template->field->link_rel .= '<link rel="prev" title="Previous: ' . $law->previous_section->catch_line . '" 
-		href="' . $law->previous_section->url . '" />';
+	$template->field->breadcrumbs = '<a href="'.$law->previous_section->url.'" class="prev"
+		title="Previous section">←</a>&nbsp;'.$template->field->breadcrumbs;
+	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
 }
 
+/*
+ * If there is a next section in this chapter, provide a forward arrow.
+ */
 if (isset($law->next_section))
 {
-	$template->field->heading .= '<a href="' . $law->next_section->url . '" class="next" '
-		.'title="Next section">Next: ' . $law->next_section->catch_line . '</a>';
-	$template->field->link_rel .= '<link rel="next" title="Next: ' . $law->next_section->catch_line . '" 
-		href="' . $law->next_section->url . '" />';
+	$template->field->breadcrumbs .= '&nbsp;<a href="'.$law->next_section->url.'" class="next"
+		title="Next section">→</a>';
+	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
 }
 
-$template->field->heading = '<nav class="paging">' . $template->field->heading . '</nav>';
+$template->field->heading = '<nav class="paging">' . $template->field->breadcrumbs . '</nav>';
 
 /*
  * Store the URL for the containing structural unit.
