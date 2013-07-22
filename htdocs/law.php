@@ -48,17 +48,17 @@ $laws->record_view();
  */
 if (isset($_GET['plain_text']))
 {
-	
+
 	/*
 	 * Instruct the browser that this is plain text.
 	 */
 	header("Content-Type: text/plain");
-		
+
 	/*
 	 * Send the text, which is already formatted properly.
 	 */
 	echo $law->plain_text;
-	
+
 	/*
 	 * End processing and exit.
 	 */
@@ -129,8 +129,8 @@ $template->field->breadcrumbs = '<nav class="breadcrumbs"><ul class="steps-nav">
  */
 if (isset($law->previous_section))
 {
-	$template->field->prev_next = '<a href="'.$law->previous_section->url.'" class="prev"
-		title="Previous section">←</a>';
+	$template->field->prev_next = '<li><a href="'.$law->previous_section->url.'" class="prev"
+		title="Previous section"><span>&larr; Previous</span>'.$law->previous_section->section_number.' '.$law->previous_section->catch_line.'</a></li>';
 	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
 }
 
@@ -139,13 +139,13 @@ if (isset($law->previous_section))
  */
 if (isset($law->next_section))
 {
-	$template->field->prev_next .= '&nbsp;<a href="'.$law->next_section->url.'" class="next"
-		title="Next section">→</a>';
+	$template->field->prev_next .= '<li><a href="'.$law->next_section->url.'" class="next"
+		title="Next section"><span>Next &rarr;</span>'.$law->next_section->section_number.' '.$law->next_section->catch_line.'</a></li>';
 	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
 }
 
-$template->field->heading = '<nav class="linear">' . $template->field->prev_next . '</nav>
-							<nav class="breadcrumbs">' . $template->field->breadcrumbs . '</nav>';
+$template->field->heading = '<nav class="prevnext" role="navigation"><ul>' . $template->field->prev_next . '</ul></nav>
+							<nav class="breadcrumbs" role="navigation">' . $template->field->breadcrumbs . '</nav>';
 
 /*
  * Store the URL for the containing structural unit.
@@ -197,7 +197,7 @@ if ( isset($law->amendment_years) )
 	if (count((array) $law->amendment_years) > 1)
 	{
 		$sidebar .= ' It was updated in ';
-	
+
 		/*
 		 * Iterate through every year in which this bill has been amended and list them.
 		 */
@@ -239,7 +239,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 		<div id="disqus_thread"></div>
 		<script>
 			var disqus_shortname = 'vacode'; // required: replace example with your forum shortname
-		
+
 			/* * * DON'T EDIT BELOW THIS LINE * * */
 			(function() {
 				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -252,7 +252,7 @@ EOD;
 }
 
 /*
- * General info 
+ * General info
  */
 $sidebar .= '<section class="info-box" id="elsewhere">
 				<h1>Trust, But Verify</h1>
@@ -300,7 +300,7 @@ if ($law->references !== FALSE)
 	{
 		$sidebar .= '<li><span class="identifier">'
 			. SECTION_SYMBOL . '&nbsp;<a href="' . $reference->url . '" class="law">'
-			. $reference->section_number . '</a></span> 
+			. $reference->section_number . '</a></span>
 			<span class="title">' . $reference->catch_line . '</li>';
 	}
 	$sidebar .= '</ul>
@@ -312,7 +312,7 @@ if ($law->references !== FALSE)
  */
 if (isset($law->related) && (count((array) $law->related) > 0))
 {
-	$sidebar .= '			  
+	$sidebar .= '
 			<section class="related-group" id="related-links">
 				<h1>Related Laws</h1>
 				<ul id="related">';
@@ -331,7 +331,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
  */
 if ( isset($law->citation) && is_object($law->citation) )
 {
-	
+
 	$sidebar .= '<section class="related-group dark" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';
@@ -342,7 +342,7 @@ if ( isset($law->citation) && is_object($law->citation) )
 	}
 	$sidebar .= '</ul>
 			</section>';
-	
+
 }
 
 /*

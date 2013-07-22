@@ -2477,7 +2477,7 @@ header#page_header {
       height: 0.5in; } }
   /* line 26, ../scss/areas/_header.scss */
   header#page_header hgroup#place_logo {
-    background-image: url('/static/images/faux_seal.png?1374500988');
+    background-image: url('/static/images/faux_seal.png?1374502908');
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -2663,40 +2663,40 @@ header#page_header {
               width: 100%; } }
           /* line 215, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#browse {
-            background-image: url('/static/images/nav-icons/nav_browse.svg?1374500988'); }
+            background-image: url('/static/images/nav-icons/nav_browse.svg?1374502908'); }
             /* line 217, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#browse:hover {
-              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1374500988'); }
+              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1374502908'); }
             /* line 220, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#browse {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1374500988'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1374502908'); }
           /* line 225, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#court_cases {
-            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1374500988'); }
+            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1374502908'); }
             /* line 227, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#court_cases:hover {
-              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1374500988'); }
+              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1374502908'); }
             /* line 230, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1374500988'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1374502908'); }
           /* line 235, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#about_us {
-            background-image: url('/static/images/nav-icons/nav_about-us.svg?1374500988'); }
+            background-image: url('/static/images/nav-icons/nav_about-us.svg?1374502908'); }
             /* line 238, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#about_us:hover {
-              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1374500988'); }
+              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1374502908'); }
             /* line 241, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#about_us {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1374500988'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1374502908'); }
           /* line 246, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#download {
-            background-image: url('/static/images/nav-icons/nav_download.svg?1374500988'); }
+            background-image: url('/static/images/nav-icons/nav_download.svg?1374502908'); }
             /* line 248, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#download:hover {
-              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1374500988'); }
+              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1374502908'); }
             /* line 251, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#download {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1374500988'); }
+              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1374502908'); }
   @media only screen and (min-width: 769px) {
     /* line 260, ../scss/areas/_header.scss */
     .inside header#page_header {
@@ -2762,6 +2762,45 @@ header#page_header {
               background-position: center 8px; } }
 
 /* line 7, ../scss/areas/_breadcrumbs.scss */
+nav.prevnext {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin: 0 0 0.5em 0;
+  padding: 0.25em 0; }
+  /* line 13, ../scss/areas/_breadcrumbs.scss */
+  nav.prevnext ul {
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0; }
+    /* line 19, ../scss/areas/_breadcrumbs.scss */
+    nav.prevnext ul li {
+      font-size: 0.8em;
+      display: inline-block;
+      list-style-type: none;
+      line-height: 1.2em;
+      margin: 0;
+      padding: 0.25em 0.75em;
+      vertical-align: top;
+      width: 49%; }
+      /* line 29, ../scss/areas/_breadcrumbs.scss */
+      nav.prevnext ul li a {
+        text-decoration: none; }
+      /* line 33, ../scss/areas/_breadcrumbs.scss */
+      nav.prevnext ul li span {
+        display: block;
+        font-size: 0.8em;
+        text-transform: uppercase; }
+      /* line 39, ../scss/areas/_breadcrumbs.scss */
+      nav.prevnext ul li:first-child {
+        border-right: 1px solid #eee;
+        text-align: left; }
+      /* line 44, ../scss/areas/_breadcrumbs.scss */
+      nav.prevnext ul li:nth-child(2) {
+        float: right;
+        text-align: right; }
+
+/* line 52, ../scss/areas/_breadcrumbs.scss */
 .breadcrumbs ul {
   list-style: none;
   margin: 0 0 1em;
@@ -2770,20 +2809,20 @@ header#page_header {
   overflow: hidden;
   *zoom: 1; }
   @media only print {
-    /* line 7, ../scss/areas/_breadcrumbs.scss */
+    /* line 52, ../scss/areas/_breadcrumbs.scss */
     .breadcrumbs ul {
       margin: 0;
       padding: 0; } }
-  /* line 19, ../scss/areas/_breadcrumbs.scss */
+  /* line 64, ../scss/areas/_breadcrumbs.scss */
   .breadcrumbs ul li {
     float: left; }
     @media only print {
-      /* line 19, ../scss/areas/_breadcrumbs.scss */
+      /* line 64, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li {
         border: none;
         clear: both;
         float: none; } }
-    /* line 28, ../scss/areas/_breadcrumbs.scss */
+    /* line 73, ../scss/areas/_breadcrumbs.scss */
     .breadcrumbs ul li a {
       font-size: 12px;
       height: 24px;
@@ -2795,7 +2834,7 @@ header#page_header {
       position: relative;
       display: block;
       float: left; }
-      /* line 39, ../scss/areas/_breadcrumbs.scss */
+      /* line 84, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:before {
         content: " ";
         display: block;
@@ -2809,12 +2848,12 @@ header#page_header {
         left: 100%;
         z-index: 1; }
         @media only print {
-          /* line 39, ../scss/areas/_breadcrumbs.scss */
+          /* line 84, ../scss/areas/_breadcrumbs.scss */
           .breadcrumbs ul li a:before {
             border: none;
             clear: both;
             float: none; } }
-      /* line 59, ../scss/areas/_breadcrumbs.scss */
+      /* line 104, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:after {
         content: " ";
         display: block;
@@ -2828,36 +2867,36 @@ header#page_header {
         left: 100%;
         z-index: 2; }
         @media only print {
-          /* line 59, ../scss/areas/_breadcrumbs.scss */
+          /* line 104, ../scss/areas/_breadcrumbs.scss */
           .breadcrumbs ul li a:after {
             border: none; } }
-      /* line 77, ../scss/areas/_breadcrumbs.scss */
+      /* line 122, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:hover {
         background: #597782; }
-      /* line 80, ../scss/areas/_breadcrumbs.scss */
+      /* line 125, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li a:hover:after {
         border-left-color: #597782; }
-    /* line 84, ../scss/areas/_breadcrumbs.scss */
+    /* line 129, ../scss/areas/_breadcrumbs.scss */
     .breadcrumbs ul li:first-child a {
       padding-left: 5px; }
-    /* line 87, ../scss/areas/_breadcrumbs.scss */
+    /* line 132, ../scss/areas/_breadcrumbs.scss */
     .breadcrumbs ul li:last-child a {
       background: #526166; }
-      /* line 89, ../scss/areas/_breadcrumbs.scss */
+      /* line 134, ../scss/areas/_breadcrumbs.scss */
       .breadcrumbs ul li:last-child a:after {
         border-top: 12px solid transparent;
         /* Go big on the size, and let overflow hide */
         border-bottom: 12px solid transparent;
         border-left: 24px solid #526166; }
         @media only print {
-          /* line 89, ../scss/areas/_breadcrumbs.scss */
+          /* line 134, ../scss/areas/_breadcrumbs.scss */
           .breadcrumbs ul li:last-child a:after {
             border: none;
             clear: both;
             float: none; } }
 
 @media only print {
-  /* line 107, ../scss/areas/_breadcrumbs.scss */
+  /* line 152, ../scss/areas/_breadcrumbs.scss */
   .paging .prev,
   .paging .next {
     display: none; } }
