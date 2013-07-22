@@ -144,7 +144,8 @@ if (isset($law->next_section))
 	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
 }
 
-$template->field->heading = '<nav class="paging">' . $template->field->breadcrumbs . '</nav>';
+$template->field->heading = '<nav class="linear">' . $template->field->prev_next . '</nav>
+							<nav class="breadcrumbs">' . $template->field->breadcrumbs . '</nav>';
 
 /*
  * Store the URL for the containing structural unit.
