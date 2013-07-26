@@ -20,6 +20,8 @@
         content: " (" attr(href) ")";
     }
 
+    a.noprint:after { content: ""; }
+
     abbr[title]:after {
         content: " (" attr(title) ")";
     }

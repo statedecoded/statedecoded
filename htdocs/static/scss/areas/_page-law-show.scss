@@ -24,9 +24,13 @@
     }
   }
 
-  #main_content heading {
+  #main_content header {
     display: block;
     padding: 20px;
+
+    @include respond-to(print) {
+      padding: 0;
+    }
   }
 
   .primary-content {

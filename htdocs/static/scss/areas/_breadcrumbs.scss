@@ -47,6 +47,10 @@ nav.prevnext {
       }
     }
   }
+
+  @include respond-to(print) {
+    display: none;
+  }
 }
 
 .breadcrumbs ul {

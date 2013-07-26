@@ -32,7 +32,7 @@
   <div id="container"><!-- Hack for footer lock -->
 	<header id="page_header">
 		<div class="nest">
-			<a href="/">
+			<a href="/" class="noprint">
 				<hgroup id="place_logo">
 					<h1>{{place_name}}</h1>
 					<h2>Decoded</h2>
@@ -66,9 +66,9 @@
 
 	<section id="main_content" role="main">
 		<div class="{{content_class}}">
-			<heading>
+			<header>
 				{{heading}}
-			</heading>
+			</header>
 
 			<section class="primary-content">
 
