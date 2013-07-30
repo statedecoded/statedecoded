@@ -96,11 +96,11 @@ elseif ($_POST['action'] == 'parse')
 	/*
 	 * Step through each parser method.
 	 */
+	$parser->clear_apc();
 	$parser->parse();
 	$parser->write_api_key();
 	$parser->export();
 	$parser->structural_stats_generate();
-	$parser->clear_apc();
 	$parser->prune_views();
 	
 	/*
