@@ -495,6 +495,14 @@ class Law
 	 */
 	function record_view()
 	{
+		
+		/*
+		 * If configured not to record views, then quietly exit.
+		 */
+		if ( defined('RECORD_VIEWS') && (RECORD_VIEWS === FALSE) )
+		{
+			return TRUE;
+		}
 	
 		/*
 		 * We're going to need access to the database connection throughout this class.

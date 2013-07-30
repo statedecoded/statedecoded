@@ -124,12 +124,21 @@ define('SECTION_PCRE_STRUCTURE','title,title,section,section');
  */
 // define('ERROR_PAGE_DB', '')
 
-/**
+/*
  * When there is cause to send an e-mail (e.g., API registration), what "From" address should be
  * used? And what name should appear in the "From" field?
  */
 define('EMAIL_ADDRESS', '');
 define('EMAIL_NAME', SITE_TITLE);
+
+/*
+ * Record each view of each law in the laws_views table? Doing so provides a corpus of data that can
+ * be useful for analysis, data that will be drawn on in future releases of The State Decoded, but
+ * that at present is not used for anything. This is done via MySQL's INSERT DELAYED, so it will not
+ * slow down page rendering time, but it does require a certain amount of system resources and
+ * storage.
+ */
+define('RECORD_VIEWS', TRUE);
 
 
 /**
