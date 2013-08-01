@@ -785,4 +785,65 @@ class ParserController
 		
 	} // end structural_stats_recurse()
 	
+	
+	/**
+	 * Test whether the server environment is configured properly.
+	 *
+	 * Run a series of tests to determine whether the correct software is installed, permissions
+	 * are correct, and settings are enabled.
+	 */
+	function test_environment()
+	{
+	
+		/*
+		 * Make sure that the PHP Data Objects extension is enabled.
+		 */
+		if (!defined('PDO::ATTR_DRIVER_NAME'))
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Make sure that PDO MySQL support exists.
+		 */
+		if (!in_array('mysql', PDO::getAvailableDrivers())
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Make sure that HTML Tidy is available within PHP or, failing that, at the command line.
+		 */
+		if (class_exists('tidy', FALSE) == FALSE)
+		{
+			
+			/*
+			 * A non-zero return status from a program called via exec() indicates an error.
+			 */
+			exec('which tidy', $result);
+			if ($result != 0)
+			{
+				return FALSE;
+			}
+			
+		}
+		
+		/*
+		 * Make sure that the configuration file is writable.
+		 */
+		if (is_writable(INCLUDE_PATH . '/config.inc.php') !== TRUE)
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Make sure that mod_rewrite is available.
+		 */
+		if (in_array('mod_rewrite', apache_get_modules()) !== TRUE)
+		{
+			return FALSE;
+		}
+		
+	}
+	
 }
