@@ -837,6 +837,33 @@ class ParserController
 		}
 		
 		/*
+		 * If the Downloads directory exists, make sure that it's writable.
+		 */
+		if (file_exists(WEB_ROOT . '/downloads'))
+		{
+			if (is_writable(WEB_ROOT . '/downloads') !== TRUE)
+			{
+				return FALSE;
+			}
+		}
+		
+		/*
+		 * If the Downloads directory doesn't exist, test that it can be created by creating it, and
+		 * then deleting it.
+		 */
+		else
+		{
+			if (mkdir(WEB_ROOT . '/downloads/') === FALSE)
+			{
+				return FALSE;
+			}
+			else
+			{
+				unlink(WEB_ROOT . '/downloads/');
+			}
+		}
+		
+		/*
 		 * Make sure that mod_rewrite is available.
 		 */
 		if (in_array('mod_rewrite', apache_get_modules()) !== TRUE)
