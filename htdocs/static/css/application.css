@@ -2909,23 +2909,31 @@ nav.prevnext {
   .paging .next {
     display: none; } }
 
-/* line 3, ../scss/areas/_title-list.scss */
-.title-list li, .title-list dd, .title-list dt {
-  list-style: none;
-  padding: 5px; }
+/* line 2, ../scss/areas/_title-list.scss */
+.title-list {
+  margin-bottom: 200px;
+  overflow: hidden; }
   /* line 6, ../scss/areas/_title-list.scss */
-  .title-list li a, .title-list dd a, .title-list dt a {
-    text-decoration: none; }
-/* line 11, ../scss/areas/_title-list.scss */
-.title-list li:nth-child(even),
-.title-list .even {
-  background-color: #f2f1ee; }
-/* line 14, ../scss/areas/_title-list.scss */
-.title-list dt {
-  float: left;
-  display: block;
-  margin-right: 10px;
-  width: 100px; }
+  .title-list li, .title-list dd, .title-list dt {
+    list-style: none;
+    padding: 5px; }
+    /* line 9, ../scss/areas/_title-list.scss */
+    .title-list li a, .title-list dd a, .title-list dt a {
+      text-decoration: none; }
+  /* line 14, ../scss/areas/_title-list.scss */
+  .title-list li:nth-child(even),
+  .title-list .even {
+    background-color: #f2f1ee; }
+  /* line 17, ../scss/areas/_title-list.scss */
+  .title-list dt {
+    clear: both;
+    display: block;
+    float: left;
+    margin-right: 10px;
+    width: 120px; }
+  /* line 25, ../scss/areas/_title-list.scss */
+  .title-list dd {
+    margin-left: 120px; }
 
 /* line 1, ../scss/areas/_footer.scss */
 #container {
