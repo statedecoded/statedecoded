@@ -265,8 +265,10 @@ if (isset($law->official_url))
 }
 $sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
-				<p><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>
 			</section>';
+
+$sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>';
+
 
 /*
  * If this section has been cited in any court decisions, list them.

@@ -3581,19 +3581,22 @@ section.feature-content {
       font-variant: uppercase;
       margin: 0;
       text-transform: uppercase; }
+  /* line 307, ../scss/areas/_page-law-show.scss */
+  .law .secondary-content p.keyboard {
+    font-family: "proxima-nova", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.9em;
+    text-transform: uppercase; }
     @media only print {
-      /* line 305, ../scss/areas/_page-law-show.scss */
-      .law .secondary-content .grouping > section a#keyhelp,
-      .law .secondary-content .related-group a#keyhelp,
-      .law .secondary-content .info-box a#keyhelp {
+      /* line 312, ../scss/areas/_page-law-show.scss */
+      .law .secondary-content p.keyboard a#keyhelp {
         display: none; } }
-  /* line 312, ../scss/areas/_page-law-show.scss */
+  /* line 319, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .dark {
     background-color: #656358;
     color: #fff;
     overflow: hidden;
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.4); }
-    /* line 318, ../scss/areas/_page-law-show.scss */
+    /* line 325, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .dark > h1 {
       float: left;
       font-size: 24px;
@@ -3603,19 +3606,19 @@ section.feature-content {
       padding: 10px;
       text-transform: uppercase;
       width: 50%; }
-    /* line 329, ../scss/areas/_page-law-show.scss */
+    /* line 336, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .dark dl {
       float: right;
       margin: 1em 0 0 0;
       padding: 0;
       width: 49%; }
-      /* line 335, ../scss/areas/_page-law-show.scss */
+      /* line 342, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .dark dl dt {
         font-size: 85%;
         margin: 0;
         padding: 0;
         text-transform: uppercase; }
-      /* line 336, ../scss/areas/_page-law-show.scss */
+      /* line 343, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .dark dl dd {
         margin: 0 0 1em 0;
         padding: 0; }

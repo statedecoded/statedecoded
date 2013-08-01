@@ -302,6 +302,13 @@
 
       }
 
+    }
+
+    p.keyboard {
+      font-family: $statedecoded-stack3;
+      font-size: 0.9em;
+      text-transform: uppercase;
+
       a#keyhelp {
         @include respond-to(print) {
           display: none;
