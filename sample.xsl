@@ -8,7 +8,7 @@
 	a sample for others to modify, to transform their own legal code's XML into The State Decoded's
 	format.
 	
-	Created as a work-for-hire by Josh Brown, LightCastle Technical Consulting.
+	Created by Josh Brown, LightCastle Technical Consulting.
 	Released under the GNU Public License v3.0.
 -->
 
