@@ -874,12 +874,16 @@ class ParserController
 		}
 		
 		/*
-		 * Make sure that mod_rewrite is available.
+		 * Make sure that mod_rewrite is loaded.
 		 */
 		if (in_array('mod_rewrite', apache_get_modules()) !== TRUE)
 		{
-			$this->logger->message('Apache’s mod_rewrite module must be installed.', 10);
-			$error = TRUE;
+			if (getenv('HTTP_MOD_REWRITE') != TRUE)
+			{
+				$this->logger->message('Apache’s mod_rewrite module must be installed and enabled'
+					. ' for this host.', 10);
+				$error = TRUE;
+			}
 		}
 		
 		if (isset($error))
