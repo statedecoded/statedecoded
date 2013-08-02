@@ -1,3 +1,5 @@
+Options -Multiviews
+
 RewriteEngine On
 RewriteBase /api/
 
