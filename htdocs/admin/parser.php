@@ -6,20 +6,12 @@
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
- * @copyright		2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.1
  *
  */
-
-
-/*
- * During this import phase, report all errors.
- */
-//ini_set('display_errors', 1);
-//error_reporting(E_ALL);
 
 /*
  * Include the PHP declarations that drive this page.
