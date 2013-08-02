@@ -4,6 +4,9 @@ ErrorDocument 404 /404.php
 RewriteEngine On
 RewriteBase /
 
+# Provide an aliased URL to test during setup whether RewriteRule works.
+RewriteRule ^index.php.test$ /index.php [QSA]
+
 ### SAMPLE REWRITERULES ###
 
 # Requests for the code page.
