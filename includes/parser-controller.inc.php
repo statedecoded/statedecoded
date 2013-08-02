@@ -880,16 +880,45 @@ class ParserController
 		{
 			if (getenv('HTTP_MOD_REWRITE') != TRUE)
 			{
-				$this->logger->message('Apache’s mod_rewrite module must be installed and enabled'
-					. ' for this host.', 10);
+				$this->logger->message('The web server’s mod_rewrite module must be installed and'
+					. ' enabled for this host.', 10);
 				$error = TRUE;
 			}
+		}
+		
+		/*
+		 * Make sure that RewriteRules are respected.
+		 *
+		 * To accomplish this, we use cURL to make a request to the server, using a test URL that
+		 * we allow via an .htaccesss RewriteRule. If it fails, then we know that RewriteRules are
+		 * being ignored.
+		 */
+		$request = parse_url($_SERVER['REQUEST_URI']);
+		$protocol = $request['scheme'];
+		$domain = $_SERVER['SERVER_NAME'];
+		$port = $_SERVER['SERVER_PORT'];
+		$path = '/index.php.test';
+		$url = $protocol . $domain . ':' . $port . $path;
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HEADER, TRUE);
+		curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		
+		if ($http_code != 200)
+		{
+			$this->logger->message('The web server does not permit .htaccess files to contain'
+				.' RewriteRules. This can be fixed via the AllowOverrides All directive.', 10);
+			$error = TRUE;
 		}
 		
 		if (isset($error))
 		{
 			return FALSE;
 		}
+		
 		return TRUE;
 		
 	}
