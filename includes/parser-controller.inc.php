@@ -893,8 +893,14 @@ class ParserController
 		 * we allow via an .htaccesss RewriteRule. If it fails, then we know that RewriteRules are
 		 * being ignored.
 		 */
-		$request = parse_url($_SERVER['REQUEST_URI']);
-		$protocol = $request['scheme'];
+		if (empty($_SERVER['HTTPS']))
+		{
+			$protocol = 'http://';
+		}
+		else
+		{
+			$protocol = 'https://';
+		}
 		$domain = $_SERVER['SERVER_NAME'];
 		$port = $_SERVER['SERVER_PORT'];
 		$path = '/index.php.test';
