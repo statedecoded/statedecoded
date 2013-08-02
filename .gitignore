@@ -1,4 +1,3 @@
 .DS_Store
-htdocs/admin/.htaccess
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
