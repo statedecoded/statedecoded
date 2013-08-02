@@ -809,7 +809,7 @@ class ParserController
 		/*
 		 * Make sure that PDO MySQL support exists.
 		 */
-		if (!in_array('mysql', PDO::getAvailableDrivers())
+		if (!in_array('mysql', PDO::getAvailableDrivers()))
 		{
 			$this->logger->message('PHP Data Objects (PDO) must have a MySQL driver enabled.', 10);
 			$error = TRUE;
