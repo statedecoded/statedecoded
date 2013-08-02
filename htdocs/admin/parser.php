@@ -14,13 +14,6 @@
  *
  */
 
-
-/*
- * During this import phase, report all errors.
- */
-//ini_set('display_errors', 1);
-//error_reporting(E_ALL);
-
 /*
  * Include the PHP declarations that drive this page.
  */
