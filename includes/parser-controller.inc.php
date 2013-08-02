@@ -904,7 +904,7 @@ class ParserController
 		$domain = $_SERVER['SERVER_NAME'];
 		$port = $_SERVER['SERVER_PORT'];
 		$path = '/index.php.test';
-		$url = $protocol . $domain . ':' . $port . $path;
+		$url = $protocol . '://' . $domain . ':' . $port . $path;
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
