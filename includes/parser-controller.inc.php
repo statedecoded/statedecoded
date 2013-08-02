@@ -791,16 +791,19 @@ class ParserController
 	 *
 	 * Run a series of tests to determine whether the correct software is installed, permissions
 	 * are correct, and settings are enabled.
+	 *
+	 * @throws Exception if the environment test fails
 	 */
 	function test_environment()
 	{
-	
+		
 		/*
 		 * Make sure that the PHP Data Objects extension is enabled.
 		 */
 		if (!defined('PDO::ATTR_DRIVER_NAME'))
 		{
-			return FALSE;
+			$this->logger->message('PHP Data Objects (PDO) must be enabled.', 10);
+			$error = TRUE;
 		}
 		
 		/*
@@ -808,7 +811,8 @@ class ParserController
 		 */
 		if (!in_array('mysql', PDO::getAvailableDrivers())
 		{
-			return FALSE;
+			$this->logger->message('PHP Data Objects (PDO) must have a MySQL driver enabled.', 10);
+			$error = TRUE;
 		}
 		
 		/*
@@ -823,7 +827,8 @@ class ParserController
 			exec('which tidy', $result);
 			if ($result != 0)
 			{
-				return FALSE;
+				$this->logger->message('HTML Tidy must be installed.', 10);
+				$error = TRUE;
 			}
 			
 		}
@@ -833,7 +838,8 @@ class ParserController
 		 */
 		if (is_writable(INCLUDE_PATH . '/config.inc.php') !== TRUE)
 		{
-			return FALSE;
+			$this->logger->message('config.inc.php must be writable by the server.', 10);
+			$error = TRUE;
 		}
 		
 		/*
@@ -843,7 +849,9 @@ class ParserController
 		{
 			if (is_writable(WEB_ROOT . '/downloads') !== TRUE)
 			{
-				return FALSE;
+				$this->logger->message('The downloads directory (' . WEB_ROOT . '/downloads/'
+					. ') must be writable by the server.', 10);
+				$error = TRUE;
 			}
 		}
 		
@@ -855,7 +863,9 @@ class ParserController
 		{
 			if (mkdir(WEB_ROOT . '/downloads/') === FALSE)
 			{
-				return FALSE;
+				$this->logger->message('Could not create the downloads directory (' . WEB_ROOT
+					. '/downloads/'. ').', 10);
+				$error = TRUE;
 			}
 			else
 			{
@@ -868,8 +878,15 @@ class ParserController
 		 */
 		if (in_array('mod_rewrite', apache_get_modules()) !== TRUE)
 		{
+			$this->logger->message('Apache’s mod_rewrite module must be installed.', 10);
+			$error = TRUE;
+		}
+		
+		if (isset($error))
+		{
 			return FALSE;
 		}
+		return TRUE;
 		
 	}
 	
