@@ -1,3 +1,5 @@
 .DS_Store
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
+includes/config.inc.php
+includes/class.Virginia.inc.php
