@@ -134,6 +134,8 @@ class ParserController
 	 */
 	public function clear_db()
 	{
+		
+		$this->logger->message('Clearing out the database', 5);
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections', 'structure');
 		foreach ($tables as $table)
 		{
@@ -166,6 +168,8 @@ class ParserController
 	
 	public function prune_views()
 	{
+		
+		$this->logger->message('Pruning view records greater than one year old', 5);
 		$sql = 'DELETE FROM
 				laws_views
 				WHERE DATEDIFF(now(), date) > 365';
@@ -390,18 +394,18 @@ class ParserController
 		}
 		else
 		{
-			$this->logger->message('Nothing to do', 5);
+			$this->logger->message('The API key was already created and stored', 5);
 		}
 	}
 
 	public function export()
 	{
 
-		$this->logger->message('Preparing ZIP exports', 5);
 
 		/*
 		 * Prepare exports
 		 */
+		$this->logger->message('Preparing to export bulk downloads', 5);
 
 		/*
 		 * Define the location of the downloads directory.
