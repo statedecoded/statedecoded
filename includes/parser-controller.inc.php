@@ -479,19 +479,6 @@ class ParserController
 		$downloads_dir = WEB_ROOT . '/downloads/';
 		
 		/*
-		 * If the downloads directory doesn't already exist, create it.
-		 */
-		if (!file_exists($downloads_dir))
-		{
-			if (mkdir(WEB_ROOT . '/downloads/') === FALSE)
-			{
-				$this->logger->message('Error: '.$downloads_dir.' could not be created, so bulk
-					download files could not be exported.', 10);
-				return FALSE;
-			}
-		}
-		
-		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
 		 */
 		if (is_writable($downloads_dir) === FALSE)
@@ -656,7 +643,7 @@ class ParserController
 			{
 				$this->logger->message('Creating code JSON ZIP file', 3);
 				$output = array();
-				exec('cd '.$downloads_dir.'; zip -9rq code.json.zip code-json');
+				exec('cd ' . $downloads_dir . '; zip -9rq code.json.zip code-json');
 			}
 			
 			/*
@@ -666,7 +653,7 @@ class ParserController
 			{
 				$this->logger->message('Creating code text ZIP file', 3);
 				$output = array();
-				exec('cd '.$downloads_dir.'; zip -9rq code.txt.zip code-text');
+				exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
 			}
 			
 		}
@@ -977,32 +964,11 @@ class ParserController
 		/*
 		 * If the Downloads directory exists, make sure that it's writable.
 		 */
-		if (file_exists(WEB_ROOT . '/downloads'))
+		if (is_writable(WEB_ROOT . '/downloads') !== TRUE)
 		{
-			if (is_writable(WEB_ROOT . '/downloads') !== TRUE)
-			{
-				$this->logger->message('The downloads directory (' . WEB_ROOT . '/downloads/'
-					. ') must be writable by the server.', 10);
-				$error = TRUE;
-			}
-		}
-		
-		/*
-		 * If the Downloads directory doesn't exist, test that it can be created by creating it, and
-		 * then deleting it.
-		 */
-		else
-		{
-			if (mkdir(WEB_ROOT . '/downloads/') === FALSE)
-			{
-				$this->logger->message('Could not create the downloads directory (' . WEB_ROOT
-					. '/downloads/'. ').', 10);
-				$error = TRUE;
-			}
-			else
-			{
-				unlink(WEB_ROOT . '/downloads/');
-			}
+			$this->logger->message('The downloads directory (' . WEB_ROOT . '/downloads/'
+				. ') must be writable by the server.', 10);
+			$error = TRUE;
 		}
 		
 		/*
