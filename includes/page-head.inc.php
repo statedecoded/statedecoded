@@ -67,25 +67,53 @@ else
 /*
  * Connect to the database.
  */
-$db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
-if ($db === FALSE)
+try
 {
+	$db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+}
 
+/*
+ * If we cannot connect.
+ */
+catch (PDOException $e)
+{
+	
 	/*
-	 * If a specific error page has been created for database connection failures, display that.
+	 * If we get error 1049, that means that no database of this name could be found. This means
+	 * that The State Decoded has not yet been installed. Redirect to the admin section.
 	 */
-	if (defined('ERROR_PAGE_DB'))
+	if (strpos($e->getMessage(), '[1049]') !== FALSE)
 	{
-		require($_SERVER['DOCUMENT_ROOT'] . '/' . ERROR_PAGE_DB);
-		exit();
+		if (strpos($_SERVER['REQUEST_URI'], '/admin') === FALSE)
+		{
+			header('Location: /admin/');
+			exit;
+		}
 	}
 	
 	/*
-	 * If no special error page exists, display a generic error.
+	 * Else it's a generic database problem.
 	 */
 	else
 	{
-		die(SITE_TITLE . ' is having some database trouble right now. Please check back in a few minutes.');
+	
+		/*
+		 * A specific error page has been created for database connection failures, display that.
+		 */
+		if (defined('ERROR_PAGE_DB'))
+		{
+			require($_SERVER['DOCUMENT_ROOT'] . '/' . ERROR_PAGE_DB);
+			exit();
+		}
+		
+		/*
+		 * If no special error page exists, display a generic error.
+		 */
+		else
+		{
+			die(SITE_TITLE . ' is having some database trouble right now. Please check back in a few minutes.');
+		}
+		
 	}
 	
 }
