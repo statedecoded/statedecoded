@@ -164,8 +164,6 @@ $(document).ready(function () {
 		}
 	})
 	
-<<<<<<< HEAD:htdocs/js/functions.js
-=======
 	/* Get each permalink and add a copy function on it */
 	$('a.section-permalink').each(function(i, elm) {
 		var elm = $(elm);
@@ -188,7 +186,6 @@ $(document).ready(function () {
 		});
 	});
 	
->>>>>>> Move static assets to new directory:htdocs/static/js/vendor/functions.js
 	/* Mentions of other sections of the code. */
 	$("a.law").each(function() {
 		var section_number = $(this).text();
