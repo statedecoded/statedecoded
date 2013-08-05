@@ -91,12 +91,15 @@ elseif ($_POST['action'] == 'parse')
 	 */
 	if ($parser->test_environment() !== FALSE)
 	{
-		$parser->clear_apc();
-		$parser->parse();
-		$parser->write_api_key();
-		$parser->export();
-		$parser->structural_stats_generate();
-		$parser->prune_views();
+		if ($parser->populate_db() !== FALSE)
+		{
+			$parser->clear_apc();
+			$parser->parse();
+			$parser->write_api_key();
+			$parser->export();
+			$parser->structural_stats_generate();
+			$parser->prune_views();
+		}
 	}
 	
 	/*
