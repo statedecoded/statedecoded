@@ -129,7 +129,7 @@ class ParserController
 		
 	}
 
-	/*
+	/**
 	 * Clear out our database
 	 */
 	public function clear_db()
@@ -166,6 +166,9 @@ class ParserController
 		$result = $this->db->exec($sql);
 	}
 	
+	/**
+	 * Remove law-view records greater than one year old.
+	 */
 	public function prune_views()
 	{
 		
@@ -175,7 +178,10 @@ class ParserController
 				WHERE DATEDIFF(now(), date) > 365';
 		$result = $this->db->exec($sql);
 	}
-
+	
+	/**
+	 * Parse the provided legal code
+	 */
 	public function parse()
 	{
 		$this->logger->message('Parsing', 5);
@@ -352,7 +358,13 @@ class ParserController
 
 		$this->logger->message('Done', 5);
 	}
-
+	
+	/**
+	 * Generate an API key and store it
+	 *
+	 * See if an API key needs to be created. If it does, create it in the database, and then write
+	 * it to the config file.
+	 */
 	public function write_api_key()
 	{
 
@@ -398,6 +410,13 @@ class ParserController
 		}
 	}
 
+
+	/**
+	 * Create exports
+	 *
+	 * There are a handful of bulk downloads that are created. This gathers up the data and creates
+	 * those files. It also creates the downloads directory, if it doesn't exist.
+	 */
 	public function export()
 	{
 
@@ -426,6 +445,10 @@ class ParserController
 				return FALSE;
 			}
 		}
+		
+		/*
+		 * If we cannot write files to the downloads directory, then we can't export anything.
+		 */
 		if (is_writable($downloads_dir) === FALSE)
 		{
 			$this->logger->message('Error: '.$downloads_dir.' could not be written to, so bulk
@@ -664,7 +687,10 @@ class ParserController
 
 		$this->logger->message('Done', 5);
 	}
-
+	
+	/**
+	 * Clear out the APC cache, if it exists
+	 */
 	public function clear_apc()
 	{
 	
