@@ -409,6 +409,19 @@ class ParserController
 
 		$downloads_dir = WEB_ROOT . '/downloads/';
 
+		
+		/*
+		 * If the downloads directory doesn't already exist, create it.
+		 */
+		if (!file_exists($downloads_dir))
+		{
+			if (mkdir(WEB_ROOT . '/downloads/') === FALSE)
+			{
+				$this->logger->message('Error: '.$downloads_dir.' could not be created, so bulk
+					download files could not be exported.', 10);
+				return FALSE;
+			}
+		}
 		if (is_writable($downloads_dir) === FALSE)
 		{
 			$this->logger->message('Error: '.$downloads_dir.' could not be written to, so bulk
