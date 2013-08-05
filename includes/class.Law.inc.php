@@ -830,7 +830,7 @@ class Law
 			}
 			elseif ($paragraph->type == 'table')
 			{
-				$html .= '<div class="tabular"><pre></pre></div>';
+				$html .= '<div class="tabular"><pre>';
 			}
 			
 			/*
