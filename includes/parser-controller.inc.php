@@ -382,10 +382,12 @@ class ParserController
 		$this->logger->message('Writing API key', 5);
 
 		/*
-		 * If the site's internal API key is undefined, register a new key and activate it.
+		 * If the site's internal API key is undefined in the config file, register a new key and
+		 * activate it.
 		 */
 		if (API_KEY == '')
 		{
+		
 			$api = new API();
 			$api->form->email = EMAIL_ADDRESS;
 			$api->form->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
@@ -408,16 +410,54 @@ class ParserController
 			else
 			{
 				$this->logger->message('Your includes/config.inc.php file could not be modified
-					automatically. Please edit that file and set the value of <code>API_KEY</code> to
-					'.$api->key, 10);
+					automatically. Please edit that file and set the value of <code>API_KEY</code>
+					to ' . $api->key, 10);
 			}
 
-
 			$this->logger->message('Done', 5);
+			
+			return TRUE;
+			
 		}
+		
+		/*
+		 * If the internal API key is defined in the config file, make sure it actually exists in
+		 * the database.
+		 */
 		else
 		{
-			$this->logger->message('The API key was already created and stored', 5);
+			
+			/*
+			 * Check the database for the API key in the config file.
+			 */
+			$api = new API();
+			$api->key = API_KEY;
+			$registered = $api->get_key();
+			
+			/*
+			 * If the key isn't in the database, create a new one. It might be trouble to try to
+			 * overwrite the key already listed in config.inc.php, so the safe thing to do is to
+			 * report the new key to the user, and let her sort it out.
+			 */
+			if ($registered === FALSE)
+			{
+				
+				$api->form->email = EMAIL_ADDRESS;
+				$api->form->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
+				$api->suppress_activation_email = TRUE;
+				$api->register_key();
+				$api->activate_key();
+				
+				$this->logger->message('The API key in <code>config.inc.php</code> does not exist in
+					the database. A new key, <code>' . $api->key . '</code>, has been registered,
+					but you must add it to <code>config.inc.php</code> manually.', 5);
+				
+				return TRUE;
+				
+			}
+			
+			$this->logger->message('Using the existing API key', 5);
+			
 		}
 	}
 
