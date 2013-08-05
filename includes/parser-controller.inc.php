@@ -17,8 +17,10 @@ require_once INCLUDE_PATH . '/logger.inc.php';
 
 class ParserController
 {
+
 	public function __construct($args)
 	{
+	
 		/*
 		 * Set our defaults
 		 */
@@ -54,6 +56,7 @@ class ParserController
 		 * Set our default execution limits.
 		 */
 		$this->set_execution_limits();
+		
 	}
 
     // {{{ init_logger()
@@ -71,7 +74,7 @@ class ParserController
 			$this->logger = new Logger();
 		}
 	}
-
+	
 	public function set_execution_limits()
 	{
 		/*
@@ -136,6 +139,7 @@ class ParserController
 	{
 		
 		$this->logger->message('Clearing out the database', 5);
+		
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections', 'structure');
 		foreach ($tables as $table)
 		{
@@ -153,7 +157,6 @@ class ParserController
 		/*
 		 * Reset the auto-increment counter, to avoid unreasonably large numbers.
 		 */
-
 		$sql = 'ALTER TABLE structure
 				AUTO_INCREMENT=1';
 		$result = $this->db->exec($sql);
@@ -164,6 +167,9 @@ class ParserController
 		$sql = 'DELETE FROM laws_meta
 				WHERE meta_key = "history" OR meta_key = "repealed"';
 		$result = $this->db->exec($sql);
+		
+		return TRUE;
+		
 	}
 	
 	/**
@@ -173,10 +179,14 @@ class ParserController
 	{
 		
 		$this->logger->message('Pruning view records greater than one year old', 5);
+		
 		$sql = 'DELETE FROM
 				laws_views
 				WHERE DATEDIFF(now(), date) > 365';
 		$result = $this->db->exec($sql);
+		
+		return TRUE;
+		
 	}
 	
 	/**
@@ -184,6 +194,7 @@ class ParserController
 	 */
 	public function parse()
 	{
+	
 		$this->logger->message('Parsing', 5);
 
 		/*
@@ -420,18 +431,12 @@ class ParserController
 	public function export()
 	{
 
-
-		/*
-		 * Prepare exports
-		 */
 		$this->logger->message('Preparing to export bulk downloads', 5);
 
 		/*
 		 * Define the location of the downloads directory.
 		 */
-
 		$downloads_dir = WEB_ROOT . '/downloads/';
-
 		
 		/*
 		 * If the downloads directory doesn't already exist, create it.
