@@ -153,3 +153,10 @@ define('API_KEY', '');
  * content, provide the URL (including the port number) here.
  */
 // define('VARNISH_HOST', 'http://127.0.0.1:80/');
+
+/*
+ * If you want to track traffic stats with Google Analytics, provide your site's web property ID
+ * here.
+ */
+// define('GOOGLE_ANALYTICS_ID', 'UA-XXXXX-X');
+

@@ -112,6 +112,7 @@
 	{{javascript_files}}
 	<script>
 		{{javascript}}
+		{{google_analytics}}
 	</script>
 	<script src="/static/js/vendor/jquery.qtip.min.js"></script>
 	<script src="/static/js/vendor/modernizr.min.js"></script>
