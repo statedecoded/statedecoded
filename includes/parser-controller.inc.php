@@ -84,6 +84,50 @@ class ParserController
 		 */
 		ini_set('memory_limit', '128M');
 	}
+	
+	/**
+	 * Populate the database
+	 */
+	public function populate_db()
+	{
+		
+		/*
+		 * To see if the database tables have exist, just issue a query to the laws table.
+		 */
+		$sql = 'SELECT 1
+				FROM laws
+				LIMIT 1';
+		$result = $this->db->query($sql);
+		if ($result !== FALSE)
+		{
+			return TRUE;
+		}
+		
+		$this->logger->message('Creating the database tables', 5);
+		
+		/*
+		 * Because the database tables do not exist, see if the MySQL import file can be found.
+		 */
+		if (file_exists(BASE_PATH . '/statedecoded.sql') === FALSE)
+		{
+			$this->logger->message('Could not read find ' . BASE_PATH . '/statedecoded.sql to '
+				. 'populate the database. Database tables could not be created.', 10);
+			return FALSE;
+		}
+			
+		/*
+		 * Load the MySQL import file into MySQL.
+		 */
+		$sql = file_get_contents(BASE_PATH . '/statedecoded.sql');
+		$result = $db->exec($sql);
+		if ($result === FALSE)
+		{
+			return FALSE;
+		}
+		
+		return TRUE;
+		
+	}
 
 	/*
 	 * Clear out our database
