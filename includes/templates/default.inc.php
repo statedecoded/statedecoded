@@ -17,7 +17,6 @@
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
 	<link rel="stylesheet" href="/static/css/application.css">
-	<link rel="stylesheet" href="/static/css/jquery.qtip.css">
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
 	{{css}}
 	{{inline_css}}
