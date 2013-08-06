@@ -97,6 +97,7 @@ elseif ($_POST['action'] == 'parse')
 			$parser->parse();
 			$parser->write_api_key();
 			$parser->export();
+			$parser->generate_sitemap();
 			$parser->structural_stats_generate();
 			$parser->prune_views();
 		}

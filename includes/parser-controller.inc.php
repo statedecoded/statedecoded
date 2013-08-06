@@ -721,6 +721,94 @@ class ParserController
 	}
 	
 	/**
+	 * Create and save a sitemap.xml
+	 *
+	 * List every law in this legal code and create an XML file with an entry for every one of them.
+	 */
+	function generate_sitemap()
+	{
+	
+		$this->logger->message('Generating sitemap.xml', 3);
+		
+		/*
+		 * The sitemap.xml file must be kept in the site root, as per the standard.
+		 */
+		$sitemap_file = WEB_ROOT . '/sitemap.xml';
+		
+		if (!is_writable($sitemap_file))
+		{
+			$this->logger->message('Do not have permissions to write to sitemap.xml', 3);
+			return FALSE;
+		}
+		
+		/*
+		 * List the ID of every law in the current edition. We cut it off at 50,000 laws because
+		 * that is the sitemap.xml limit.
+		 */
+		$sql = 'SELECT id
+				FROM laws
+				WHERE edition_id = ' . EDITION_ID . '
+				LIMIT 50000';
+		$result = $this->db->query($sql);
+		if ($result->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Create a new XML file, using the sitemap.xml schema.
+		 */
+		$xml = new SimpleXMLElement('<xml/>');
+		$urlset = $xml->addChild('urlset');
+		$urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+		
+		/*
+		 * Create a new instance of the class that handles information about individual laws.
+		 */
+		$laws = new Law();
+
+		/*
+		 * Instruct the Law class on what, specifically, it should retrieve. (Very little.)
+		 */
+		$laws->config->get_text = FALSE;
+		$laws->config->get_structure = FALSE;
+		$laws->config->get_amendment_attempts = FALSE;
+		$laws->config->get_court_decisions = FALSE;
+		$laws->config->get_metadata = FALSE;
+		$laws->config->get_references = FALSE;
+		$laws->config->get_related_laws = FALSE;
+		
+		/*
+		 * Iterate through every section ID.
+		 */
+		while ($section = $result->fetch(PDO::FETCH_OBJ))
+		{
+		
+			/*
+			 * Get the law in question.
+			 */
+			$laws->law_id = $section->id;
+			$law = $laws->get_law();
+			
+			/*
+			 * Add a record of this law to the XML.
+			 */
+			$url = $urlset->addChild('url');
+			$url->addchild('loc', $law->url);
+			$url->addchild('changefreq', 'monthly');
+			
+		}
+		
+		/*
+		 * Save the resulting file.
+		 */
+		file_put_contents($sitemap_file, $xml->asXML());
+		
+		return TRUE;
+		
+	}
+	
+	/**
 	 * Clear out the APC cache, if it exists
 	 */
 	public function clear_apc()
@@ -958,6 +1046,15 @@ class ParserController
 		if (is_writable(INCLUDE_PATH . '/config.inc.php') !== TRUE)
 		{
 			$this->logger->message('config.inc.php must be writable by the server.', 10);
+			$error = TRUE;
+		}
+		
+		/*
+		 * Make sure that sitemap.xml is writable.
+		 */
+		if (is_writable(WEB_ROOT . '/sitemap.xml') !== TRUE)
+		{
+			$this->logger->message('sitemap.xml must be writable by the server', 3);
 			$error = TRUE;
 		}
 		
