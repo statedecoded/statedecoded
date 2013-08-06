@@ -133,6 +133,10 @@ if (isset($law->previous_section))
 		title="Previous section"><span>&larr; Previous</span>'.$law->previous_section->section_number.' '.$law->previous_section->catch_line.'</a></li>';
 	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
 }
+else
+{
+	$template->field->prev_next = '<li></li>';
+}
 
 /*
  * If there is a next section in this chapter, provide a forward arrow.
@@ -142,6 +146,10 @@ if (isset($law->next_section))
 	$template->field->prev_next .= '<li><a href="'.$law->next_section->url.'" class="next"
 		title="Next section"><span>Next &rarr;</span>'.$law->next_section->section_number.' '.$law->next_section->catch_line.'</a></li>';
 	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
+}
+else
+{
+	$template->field->prev_next .= '<li></li>';
 }
 
 $template->field->heading = '<nav class="prevnext" role="navigation"><ul>' . $template->field->prev_next . '</ul></nav>
