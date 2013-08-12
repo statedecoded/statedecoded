@@ -67,28 +67,6 @@
 
 	<section id="main_content" role="main">
 		<div class="{{content_class}}">
-			<header>
-				{{heading}}
-			</header>
-
-			<section class="primary-content">
-	
-				<nav id="intercode">
-					{{intercode}}
-				</nav> <!-- // #intercode -->
-
-				<h1>{{page_title}}</h1>
-	
-				{{body}}
-			</section>
-
-			<aside id="sidebar" class="secondary-content">
-			{{sidebar}}
-			</aside>
-		</div>
-
-	<section id="main_content" role="main">
-		<div class="{{content_class}}">
 			<nav id="breadcrumbs">
 				{{breadcrumbs}}
 			</nav>
@@ -100,7 +78,7 @@
 			<h1>{{page_title}}</h1>
 	
 			<section id="sidebar">
-			{{sidebar}}
+				{{sidebar}}
 			</section>
 	
 			{{body}}
