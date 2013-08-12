@@ -27,6 +27,7 @@ html {
       line-height: $base-line-height;
     }
     h1, h2, h3 {
+      clear: both;
       color: $headings-font-color;
       font-family: $headings-font-family;
       font-weight: $headings-font-weight;
