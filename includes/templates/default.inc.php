@@ -52,14 +52,15 @@
 						<a href="/browse/" id="browse">Browse</a>
 					</li>
 					<li>
-						<a href="/download/" id="download">Download</a>
+						<a href="#" id="court_cases">Court Cases</a>
 					</li>
 					<li>
 						<a href="/about/" id="about_us">About Us</a>
 					</li>
 					<li>
-						<a href="/api-key/" id="use_the_api">Use The API</a>
+						<a href="/api-key/" id="download">Download</a>
 					</li>
+
 				</ul>
 			</div> <!-- // .nest -->
 		</nav> <!-- // #main_navigation -->
@@ -70,21 +71,21 @@
 			<nav id="breadcrumbs">
 				{{breadcrumbs}}
 			</nav>
-	
+
 			<nav id="intercode">
 				{{intercode}}
 			</nav> <!-- // #intercode -->
 
 			<h1>{{page_title}}</h1>
-	
+
 			<section id="sidebar">
 				{{sidebar}}
 			</section>
-	
+
 			{{body}}
 		</div>
 	</section> <!-- // #page -->
-	
+
     <footer id="page_footer">
       <div class="nest">
         <p class="legalese">
