@@ -4,6 +4,9 @@ ErrorDocument 404 /404.php
 RewriteEngine On
 RewriteBase /
 
+RewriteRule ^index\.php$ - [L]
+
+
 # Provide an aliased URL to test during setup whether RewriteRule works.
 RewriteRule ^index.php.test$ /index.php [QSA]
 
@@ -17,9 +20,13 @@ RewriteRule ^about/$ /about.php [QSA]
 RewriteRule ^api-key/$ /api-key.php [QSA]
 
 # Requests for a specific law.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([0-9A-Za-z\.]{1,4})-([0-9\.:]{1,10})/$ /law.php?section_number=$1-$2 [QSA]
 
 # Requests for a specific structural unit.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^((([0-9A-Za-z\.]{1,8})/)+)$ /structure.php [QSA]
 
 # If this is a request for a plain-text version of a page, translate the extention into a specific
