@@ -2,21 +2,21 @@
 
 /**
  * Loads the environment for The State Decoded.
- * 
+ *
  * This is called at the head of every .php file.
- * 
+ *
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.1
  *
  */
 
-/* 
+/*
  * If APC is not running.
  */
 if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
@@ -26,9 +26,9 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 	 * Include the site's config file.
 	 */
 	require 'config.inc.php';
-	
+
 	define('APC_RUNNING', FALSE);
-	
+
 }
 
 /*
@@ -41,26 +41,26 @@ else
 	 * Attempt to load the config file constants out of APC.
 	 */
 	$result = apc_load_constants('config');
-	
+
 	/*
 	 * If this attempt did not work.
 	 */
 	if ($result === FALSE)
 	{
-	
+
 		/*
 		 * Load constants from the config file.
 		 */
 		require './config.inc.php';
-	
+
 		define('APC_RUNNING', TRUE);
-		
+
 		/*
 		 * And then save them to APC.
 		 */
 		$constants = get_defined_constants(TRUE);
 		apc_define_constants('config', $constants['user']);
-		
+
 	}
 }
 
@@ -77,7 +77,7 @@ try
  */
 catch (PDOException $e)
 {
-	
+
 	/*
 	 * If we get error 1049, that means that no database of this name could be found. This means
 	 * that The State Decoded has not yet been installed. Redirect to the admin section.
@@ -90,13 +90,13 @@ catch (PDOException $e)
 			exit;
 		}
 	}
-	
+
 	/*
 	 * Else it's a generic database problem.
 	 */
 	else
 	{
-	
+
 		/*
 		 * A specific error page has been created for database connection failures, display that.
 		 */
@@ -105,7 +105,7 @@ catch (PDOException $e)
 			require($_SERVER['DOCUMENT_ROOT'] . '/' . ERROR_PAGE_DB);
 			exit();
 		}
-		
+
 		/*
 		 * If no special error page exists, display a generic error.
 		 */
@@ -113,9 +113,9 @@ catch (PDOException $e)
 		{
 			die(SITE_TITLE . ' is having some database trouble right now. Please check back in a few minutes.');
 		}
-		
+
 	}
-	
+
 }
 
 /*
@@ -126,7 +126,7 @@ if (version_compare(PHP_VERSION, '5.3.6', '<'))
 {
 	$db->exec("SET NAMES utf8");
 }
-		
+
 /*
  * We're going to need access to the database connection throughout the site.
  */

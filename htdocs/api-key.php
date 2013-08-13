@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2012 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.6
 */
@@ -66,7 +66,7 @@ $api = new API();
 $sidebar = '<h1>Nota Bene</h1>
 	<section>
 		<p>'.SITE_TITLE.' is not your database. Cache accordingly.</p>
-		
+
 		<p>Consider whether <a href="/downloads/">a bulk download</a> might be more appropriate
 		for your purposes.</p>
 	</section>';
@@ -81,7 +81,7 @@ if (isset($_POST['form_data']))
 	 * Pass the submitted form data to the API class, as an object rather than as an array.
 	 */
 	$api->form = (object) $_POST['form_data'];
-	
+
 	/*
 	 * If this form hasn't been completed properly, display the errors and re-display the form.
 	 */
@@ -90,13 +90,13 @@ if (isset($_POST['form_data']))
 		$body .= '<p class="error">Error: '.$api->form_errors.'</p>';
 		$body .= $api->display_form();
 	}
-	
+
 	/*
 	 * But if the form has been filled out correctly, then proceed with the registration process.
 	 */
 	else
 	{
-		
+
 		/*
 		 * Register this key.
 		 */
@@ -108,11 +108,11 @@ if (isset($_POST['form_data']))
 		{
 			$body = '<p class="error">Error: ' . $e->getMessage() . '</p>';
 		}
-		
+
 		$body .= '<p>You have been sent an e-mail to verify your e-mail address. Please click the
 					link in that e-mail to activate your API key.</p>';
 	}
-	
+
 }
 
 /*
@@ -133,10 +133,10 @@ elseif (isset($_GET['secret']))
 		$api->secret = $_GET['secret'];
 		$api->activate_key();
 		$body .= '<h2>API Key Activated</h2>
-				
+
 				<p>Your API key has been activated. You may now make requests from the API. Your
 				key is:</p>
-				
+
 				<p><code>'.$api->key.'</code></p>';
 	}
 }

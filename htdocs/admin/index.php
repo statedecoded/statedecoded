@@ -2,13 +2,13 @@
 
 /**
  * The administrative parser page
- * 
+ *
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.1
  *
@@ -70,12 +70,12 @@ elseif ($_POST['action'] == 'empty')
 {
 
 	ob_start();
-	
+
 	$parser->clear_db();
-	
+
 	$body = ob_get_contents();
 	ob_end_clean();
-	
+
 }
 
 /*
@@ -85,7 +85,7 @@ elseif ($_POST['action'] == 'parse')
 {
 
 	ob_start();
-	
+
 	/*
 	 * Step through each parser method.
 	 */
@@ -102,13 +102,13 @@ elseif ($_POST['action'] == 'parse')
 			$parser->prune_views();
 		}
 	}
-	
+
 	/*
 	 * Attempt to purge Varnish's cache. (Fails silently if Varnish isn't installed or running.)
 	 */
 	$varnish = new Varnish;
 	$varnish->purge();
-	
+
 	$body = ob_get_contents();
 	ob_end_clean();
 }

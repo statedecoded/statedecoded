@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.1
 */
@@ -59,17 +59,17 @@ if (count((array) $structure) > 1)
 {
 	foreach ($structure as $level)
 	{
-	
+
 		$active = '';
-		
+
 		if($level == end($structure)) {
 			$active = 'active';
 		}
-		
+
 		$template->field->breadcrumbs .= '<li class="' . $active . '">
 				<a href="' . $level->url . '">' . $level->identifier . ': ' . $level->name . '</a>
 			</li>';
-		
+
 		/*
 		 * If this structural element is the same as the parent container, then use that knowledge
 		 * to populate the link rel="up" tag.
@@ -78,7 +78,7 @@ if (count((array) $structure) > 1)
 		{
 			$template->field->link_rel = '<link rel="up" title="Up" href="' . $level->url . '" />';
 		}
-		
+
 	}
 }
 
@@ -107,10 +107,10 @@ if (isset($struct->siblings))
 
 	/*
 	 * Locate the instant structural unit within the structure listing.
-	 */ 
+	 */
 	$current_structure = end($structure);
 	$i=0;
-	
+
 	/*
 	 * When the present structure is identified, pull out the prior and next ones.
 	 */
@@ -133,7 +133,7 @@ if (isset($struct->siblings))
 				$template->field->link_rel .= '<link rel="next" title="Next" href="' . $tmp->url . '" />';
 			}
 			break;
-			
+
 		}
 		$i++;
 	}
@@ -142,7 +142,6 @@ if (isset($struct->siblings))
 /*
  * Provide a textual introduction to this section.
  */
-
 $body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME . ', titled
 		“'.$struct->name.'.”';
 
@@ -204,7 +203,7 @@ if ($children !== FALSE)
 	$body .= '<dl class="title-list level-' . ($structure->{count($structure)-1}->level + 1) . '">';
 	foreach ($children as $child)
 	{
-	
+
 		/*
 		 * The remainder of the count divided by the number of classes
 		 * yields the proper index for the row class.
@@ -216,10 +215,10 @@ if ($children !== FALSE)
 					<dd class="' . $row_class . '"><a href="' . $child->url . '">' . $child->name . '</a></dd>';
 
 		$counter++;
-		
+
 	}
 	$body .= '</dl>';
-	
+
 }
 
 

@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.1
 */
@@ -24,7 +24,7 @@ function __autoload_libraries($class_name)
 	{
 		throw new Exception("Could not include `$filename'.");
 	}
-	
+
 }
 spl_autoload_register('__autoload_libraries');
 
@@ -57,7 +57,7 @@ function fetch_url($url)
 	$html = curl_exec($ch);
 	curl_close($ch);
 	return $html;
-	
+
 }
 
 
@@ -88,19 +88,19 @@ function json_error($text)
 		)
 	);
 	$error = json_encode($error);
-	
+
 	/*
 	 * Return a 400 "Bad Request" error. This indicates that the request was invalid. Whether this
 	 * is the best HTTP header is unclear.
 	 */
 	header("HTTP/1.0 400 OK");
-	
+
 	/*
 	 * Send an HTTP header defining the content as JSON.
 	 */
 	header('Content-type: application/json');
 	echo $error;
-	
+
 }
 
 
@@ -170,7 +170,7 @@ function wptexturize($text)
 			$cockney = array_keys($wp_cockneyreplace);
 			$cockneyreplace = array_values($wp_cockneyreplace);
 		}
-		
+
 		else
 		{
 			$cockney = array("'tain't","'twere","'twas","'tis","'twill","'til","'bout","'nuff","'round","'cause");
@@ -205,12 +205,12 @@ function wptexturize($text)
 		{
 			_wptexturize_pushpop_element($curl, $no_texturize_tags_stack, $no_texturize_tags, '<', '>');
 		}
-		
+
 		elseif ( '[' === $first )
 		{
 			_wptexturize_pushpop_element($curl, $no_texturize_shortcodes_stack, $no_texturize_shortcodes, '[', ']');
 		}
-		
+
 		elseif ( empty($no_texturize_shortcodes_stack) && empty($no_texturize_tags_stack) )
 		{
 			// This is not a tag, nor is the texturization disabled static strings
@@ -242,7 +242,7 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 	// Check if it is a closing tag -- otherwise assume opening tag
 	if (strncmp($opening . '/', $text, 2))
 	{
-	
+
 		// Opening? Check $text+1 against disabled elements
 		if (preg_match('/^' . $disabled_elements . '\b/', substr($text, 1), $matches))
 		{
@@ -257,7 +257,7 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 			array_push($stack, $matches[1]);
 		}
 	}
-	
+
 	else
 	{
 		// Closing? Check $text+2 against disabled elements
