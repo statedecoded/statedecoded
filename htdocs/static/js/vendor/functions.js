@@ -18,7 +18,7 @@ function truncate(str){
  * console.log(escapeSelector('^')); // returns '\^'
  * console.log(escapeSelector('#(a)')); // returns '#\(a\)'
  */
- 
+
 function escapeSelector(str) {
 	// Find everything but # which we want to leave intact!
 	var find = /([!"$%&'()*+,.\/:;<=>?@\[\]\\^`\{|\}~])/g;
@@ -79,7 +79,7 @@ function showHelp(section) {
 }
 
 $(document).ready(function () {
-	
+
 	/* Provide the ability to navigate with arrow keys. */
 	Mousetrap.bind(['ctrl+left', 'left', 'j', 'a'], function(e) {
 		var url = $('link[rel=prev]').attr('href');
@@ -87,41 +87,41 @@ $(document).ready(function () {
 			window.location = url;
 		}
 	});
-	
+
 	Mousetrap.bind(['ctrl+right', 'right', 'k', 'd'], function(e) {
 		var url = $('link[rel=next]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
-	
+
 	Mousetrap.bind(['ctrl+up', 'w'], function(e) {
 		var url = $('link[rel=up]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
-	
+
 	Mousetrap.bind(['ctrl+down', 's'],  function(e) {
 		var url = $('link[rel=down]').attr('href');
 		if (url) {
 			window.location = url;
 		}
 	});
-	
+
 	Mousetrap.bind(['/', 'ctrl+/'], function(e) {
 		if(!$('#search-input:focus').length) {
 			e.preventDefault();
 			$('#search-input').focus();
 		}
 	});
-	
+
 	Mousetrap.bind(['?', 'h'], function(e) {
 		if($("#keyhelp").length) {
 			$("#keyhelp").click();
 		}
 	});
-	
+
 	/* Highlight a section chosen in an anchor (URL fragment). The first stanza is for externally
 	originating traffic, the second is for when clicking on an anchor link within a page. */
 	if (document.location.hash) {
@@ -129,12 +129,12 @@ $(document).ready(function () {
 		$(id).slideto({
 			slide_duration: 500
 		});
-		
+
 		$(id).show('highlight', {color: '#ffff00'}, 'fast');
 	}
-	
+
 	$('a[href*=#]').click(function(){
-	
+
 		var elemId = '#' + escapeSelector($(this).attr('href').split('#')[1]);
 		console.log(elemId);
 		$(elemId).slideto({
@@ -143,13 +143,13 @@ $(document).ready(function () {
 
 		var id = escapeSelector(document.location.hash);
 		$(id).show('highlight', {color: '#ffff00'}, 'fast');
-		
+
 	});
-	
-		
+
+
 	/* Display a tooltip for permalinks. */
 	$('a.section-permalink').qtip({
-		content: "Permanent link to this subsection",
+		content: "Copy permanent link to this subsection",
 		show: {
 			event: "mouseover"
 		},
@@ -163,29 +163,19 @@ $(document).ready(function () {
 			my: "bottom center"
 		}
 	})
-	
+
 	/* Get each permalink and add a copy function on it */
 	$('a.section-permalink').each(function(i, elm) {
 		var elm = $(elm);
 		var id = escapeSelector(elm.attr('id'));
-		var copy_link = $('<a>copy</a>').attr({
-			'data-target': '#'+id,
-			'title': 'copy to clipboard',
-			'class': 'section-permalink-copy'
-		});
-	
-		elm.after(copy_link);
-		
+
 		/* Permit copying URLs to the clipboard. */
-		copy_link.zclip({
+		elm.zclip({
 			path: '/static/js/vendor/ZeroClipboard.swf',
-			copy: function() {
-				var target = $(this).attr('data-target');
-				return $(target).attr('href');
-			}
+			copy: $(this).attr('href')
 		});
 	});
-	
+
 	/* Mentions of other sections of the code. */
 	$("a.law").each(function() {
 		var section_number = $(this).text();
@@ -225,7 +215,7 @@ $(document).ready(function () {
 			}
 		})
 	});
-	
+
 	/* Words for which we have dictionary terms.*/
 	$("span.dictionary").each(function() {
 		var term = $(this).text();
@@ -265,7 +255,7 @@ $(document).ready(function () {
 			}
 		})
 	});
-	
+
 	/* Modal dialog overlay. */
 	$("#keyhelp").click(function() {
 		showHelp('keyboard');
