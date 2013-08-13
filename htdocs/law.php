@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.6
+ * @version		0.7
  * @link		http://www.statedecoded.com/
  * @since		0.1
 */
@@ -112,35 +112,48 @@ if (is_object($law->dublin_core))
 /*
  * Define the breadcrumb trail text.
  */
-$template->field->heading = '';
+$template->field->breadcrumbs = '';
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->heading .= '<li><a href="' . $ancestor->url . '">' . $ancestor->identifier . ' '
-		. $ancestor->name . '</a></li>';
+	$template->field->breadcrumbs .= '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
+		.$ancestor->name.'</a></li>';
 }
-$template->field->heading .= '<li class="active"><a href="/' . $law->section_number . '/">'
-	. $law->section_number
-	. ' ' . $law->catch_line . '</a></li>';
+$template->field->breadcrumbs .= '<li class="active"><a href="/'.$law->section_number.'/">§&nbsp;'
+	.$law->section_number.' '.$law->catch_line.'</a></li>';
 
-$template->field->heading = '<nav class="breadcrumbs"><ul class="steps-nav">' . $template->field->heading . '</ul></nav>';
+$template->field->breadcrumbs = '<nav class="breadcrumbs"><ul class="steps-nav">'
+	.$template->field->breadcrumbs.'</ul></nav>';
 
+/*
+ * If there is a prior section in this structural unit, provide a back arrow.
+ */
 if (isset($law->previous_section))
 {
-	$template->field->heading = '<a href="' . $law->previous_section->url . '" class="prev" title="Previous section">Previous: '
-		. $law->previous_section->catch_line . '</a>' . $template->field->heading;
-	$template->field->link_rel .= '<link rel="prev" title="Previous: ' . $law->previous_section->catch_line . '" 
-		href="' . $law->previous_section->url . '" />';
+	$template->field->prev_next = '<li><a href="'.$law->previous_section->url.'" class="prev"
+		title="Previous section"><span>&larr; Previous</span>'.$law->previous_section->section_number.' '.$law->previous_section->catch_line.'</a></li>';
+	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
+}
+else
+{
+	$template->field->prev_next = '<li></li>';
 }
 
+/*
+ * If there is a next section in this chapter, provide a forward arrow.
+ */
 if (isset($law->next_section))
 {
-	$template->field->heading .= '<a href="' . $law->next_section->url . '" class="next" '
-		.'title="Next section">Next: ' . $law->next_section->catch_line . '</a>';
-	$template->field->link_rel .= '<link rel="next" title="Next: ' . $law->next_section->catch_line . '" 
-		href="' . $law->next_section->url . '" />';
+	$template->field->prev_next .= '<li><a href="'.$law->next_section->url.'" class="next"
+		title="Next section"><span>Next &rarr;</span>'.$law->next_section->section_number.' '.$law->next_section->catch_line.'</a></li>';
+	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
+}
+else
+{
+	$template->field->prev_next .= '<li></li>';
 }
 
-$template->field->heading = '<nav class="paging">' . $template->field->heading . '</nav>';
+$template->field->heading = '<nav class="prevnext" role="navigation"><ul>' . $template->field->prev_next . '</ul></nav>
+							<nav class="breadcrumbs" role="navigation">' . $template->field->breadcrumbs . '</nav>';
 
 /*
  * Store the URL for the containing structural unit.
@@ -247,7 +260,7 @@ EOD;
 }
 
 /*
- * General info 
+ * General info
  */
 $sidebar .= '<section class="info-box" id="elsewhere">
 				<h1>Trust, But Verify</h1>
@@ -260,8 +273,10 @@ if (isset($law->official_url))
 }
 $sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
-				<p><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>
 			</section>';
+
+$sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>';
+
 
 /*
  * If this section has been cited in any court decisions, list them.
@@ -295,7 +310,7 @@ if ($law->references !== FALSE)
 	{
 		$sidebar .= '<li><span class="identifier">'
 			. SECTION_SYMBOL . '&nbsp;<a href="' . $reference->url . '" class="law">'
-			. $reference->section_number . '</a></span> 
+			. $reference->section_number . '</a></span>
 			<span class="title">' . $reference->catch_line . '</li>';
 	}
 	$sidebar .= '</ul>
@@ -307,7 +322,7 @@ if ($law->references !== FALSE)
  */
 if (isset($law->related) && (count((array) $law->related) > 0))
 {
-	$sidebar .= '			  
+	$sidebar .= '
 			<section class="related-group" id="related-links">
 				<h1>Related Laws</h1>
 				<ul id="related">';
@@ -326,7 +341,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
  */
 if ( isset($law->citation) && is_object($law->citation) )
 {
-	
+
 	$sidebar .= '<section class="related-group dark" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';

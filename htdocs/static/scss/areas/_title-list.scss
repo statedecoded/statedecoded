@@ -1,5 +1,8 @@
 
 .title-list {
+  margin-bottom: 200px;
+  overflow: hidden;
+
   li,dd,dt {
     list-style: none;
     padding: 5px;
@@ -12,9 +15,14 @@
     background-color: $gray-lighter;
   }
   dt {
-    float: left;
+    clear: both;
     display: block;
+    float: left;
     margin-right: 10px;
-    width: 100px;
+    width: 120px;
+  }
+
+  dd {
+    margin-left: 120px;
   }
 }

@@ -1,3 +1,11 @@
+#container {
+  min-height: 100%;
+  position: relative;
+}
+
+.lt-ie7 #container {
+  height: 100%;
+}
 
 footer#page_footer {
   @extend %clearfix;
@@ -5,7 +13,12 @@ footer#page_footer {
   background-color: $gray-darkest;
   color: $gray;
   font-family: $statedecoded-stack3;
+  height: 150px;
+  margin-top: 20px;
   overflow: hidden;
+  position: absolute;
+    bottom: 0;
+  width: 100%;
   @include respond-to(smartphone) {
     padding: 0 10px;
   }

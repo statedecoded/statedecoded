@@ -5,7 +5,7 @@
  *
  * Displays a list of the top-level structural units. May be customized to display introductory
  * text, sidebar content, etc.
- * 
+ *
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
@@ -50,7 +50,7 @@ $body .= '
 	<article>
 	<h1>' . ucwords($structures->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
 	<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
-	
+
 /*
  * Row classes and row counter
  */
@@ -93,7 +93,7 @@ unset($sidebar);
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'inside law';
+$template->field->body_class = 'inside';
 $template->field->content_class = 'nest narrow';
 
 /*
