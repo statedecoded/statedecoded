@@ -53,11 +53,11 @@ if (count($_POST) === 0)
 {
 	$body = '
 		<p>What do you want to do?</p>
-		<form method="post" action="/admin/parser.php">
+		<form method="post" action="/admin/">
 			<input type="hidden" name="action" value="parse" />
 			<input type="submit" value="Parse" />
 		</form>
-		<form method="post" action="/admin/parser.php">
+		<form method="post" action="/admin/">
 			<input type="hidden" name="action" value="empty" />
 			<input type="submit" value="Empty the DB" />
 		</form>';
