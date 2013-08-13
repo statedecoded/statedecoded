@@ -39,7 +39,7 @@
 			</a>
 			<section id="search">
 				<form id="search_form" method="get" action="/search/">
-					<label for="search">Search the code by title name, common phrase, or associated court cases</label>
+					<label for="search">Search the code by keyword, phrase, or title</label>
 					<input type="search" name="q" value="" id="search" placeholder="Search the Laws">
 					<input type="submit" name="" value="Search" id="submit" class="btn btn-success">
 					<!--a class="advanced" href="#">Advanced</a-->
@@ -53,13 +53,10 @@
 						<a href="/browse/" id="browse">Browse</a>
 					</li>
 					<li>
-						<a href="#" id="court_cases">Court Cases</a>
+						<a href="/about/" id="about">About Us</a>
 					</li>
 					<li>
-						<a href="/about/" id="about_us">About Us</a>
-					</li>
-					<li>
-						<a href="/api-key/" id="download">Download</a>
+						<a href="/download/" id="download">Download</a>
 					</li>
 
 				</ul>
