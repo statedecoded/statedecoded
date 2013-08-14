@@ -86,6 +86,7 @@ class Logger
 			 * Flush the buffer, just to get the content out ASAP
 			 */
 			flush();
+			ob_flush();
 		}
 	}
 
