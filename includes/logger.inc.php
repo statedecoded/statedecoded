@@ -69,18 +69,18 @@ class Logger
 	{
 		if($level >= $this->level)
 		{
-			print $msg;
+			echo $msg;
 
 			/**
 			 * Handle line endings
 			 */
 			if($this->html === TRUE)
 			{
-				print '<br />';
+				echo '<br />';
 			}
 			else
 			{
-				print "\n";
+				echo "\n";
 			}
 			/**
 			 * Flush the buffer, just to get the content out ASAP
@@ -146,8 +146,8 @@ class DebugLogger extends Logger
 	 */
 	public function message($msg, $level)
 	{
-		print $this->get_time_elapsed() . "ms ";
-		print memory_get_usage() . "b : ";
+		echo $this->get_time_elapsed() . "ms ";
+		echo memory_get_usage() . "b : ";
 
 		parent::message($msg, $level);
 	}

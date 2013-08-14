@@ -73,10 +73,10 @@ if (count($_POST) === 0)
  */
 elseif ($_POST['action'] == 'empty')
 {
-	print 'Emptying the database.<br>';
+	echo 'Emptying the database.<br />';
 	flush();
 	$parser->clear_db();
-	print 'Done.<br>';
+	echo 'Done.<br />';
 }
 
 /*
@@ -84,7 +84,7 @@ elseif ($_POST['action'] == 'empty')
  */
 elseif ($_POST['action'] == 'parse')
 {
-	print 'Beginning parse.<br>';
+	echo 'Beginning parse.<br />';
 	flush();
 	ob_flush();
 	/*
@@ -110,7 +110,7 @@ elseif ($_POST['action'] == 'parse')
 	$varnish = new Varnish;
 	$varnish->purge();
 
-	print 'Done.<br>';
+	echo 'Done.<br />';
 }
 
 
@@ -118,7 +118,7 @@ elseif ($_POST['action'] == 'parse')
  * If this is an AJAX request
  */
 if(isset($_GET['noframe'])) {
-	print $body;
+	echo $body;
 }
 else
 {
