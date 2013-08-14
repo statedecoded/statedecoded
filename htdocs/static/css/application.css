@@ -2685,13 +2685,13 @@ header#page_header {
             .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
               background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1376337970'); }
           /* line 235, ../scss/areas/_header.scss */
-          header#page_header nav#main_navigation ul li a#about_us {
+          header#page_header nav#main_navigation ul li a#about {
             background-image: url('/static/images/nav-icons/nav_about-us.svg?1376337970'); }
             /* line 238, ../scss/areas/_header.scss */
-            header#page_header nav#main_navigation ul li a#about_us:hover {
+            header#page_header nav#main_navigation ul li a#about:hover {
               background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1376337970'); }
             /* line 241, ../scss/areas/_header.scss */
-            .lt-ie9 header#page_header nav#main_navigation ul li a#about_us {
+            .lt-ie9 header#page_header nav#main_navigation ul li a#about {
               background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1376337970'); }
           /* line 246, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#download {
@@ -2762,7 +2762,7 @@ header#page_header {
             background-position: center 15px;
             padding-top: 45px; }
             /* line 332, ../scss/areas/_header.scss */
-            .inside header#page_header nav#main_navigation li a#about_us {
+            .inside header#page_header nav#main_navigation li a#about {
               background-size: 40px 40px;
               background-position: center 8px; } }
 

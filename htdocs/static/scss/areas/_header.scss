@@ -232,7 +232,7 @@
             }
           } // &#browse
 
-          &#about_us {
+          &#about {
             @include background-image(image-url("nav-icons/nav_about-us.svg"));
             //background-size: 50px 50px;
             &:hover {
@@ -329,7 +329,7 @@
             background-size: 25px 25px;
             background-position: center 15px;
             padding-top: 45px;
-             &#about_us {
+             &#about {
               background-size: 40px 40px;
               background-position: center 8px;
              }
