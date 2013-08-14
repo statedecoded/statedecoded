@@ -35,32 +35,35 @@ $logger = new Logger(array('html' => true));
  */
 $parser = new ParserController(array('logger' => $logger));
 
-/*
- * Fire up our templating engine.
- */
-$template = new Page;
-
-/*
- * Define some page elements.
- */
-$template->field->browser_title = 'Parser';
-$template->field->page_title = 'Parser';
+if (isset($_GET['noframe']))
+{
+	// Begin the flush immediately, by sending the content type header.
+	header( 'Content-type: text/html; charset=utf-8' );
+}
 
 /*
  * When first loading the page, show options.
  */
 if (count($_POST) === 0)
 {
-	$body = '
-		<p>What do you want to do?</p>
-		<form method="post" action="/admin/">
+	if (count($_GET) === 0)
+	{
+		$body = '<iframe id="content" src="?page=parse&noframe=1"></iframe>';
+	}
+	elseif ($_GET['page'] == 'parse' )
+	{
+		$body = '<p>What do you want to do?</p>
+		<nav id="parse-options">
+		<form method="post" action="/admin/?page=parse&noframe=1">
 			<input type="hidden" name="action" value="parse" />
 			<input type="submit" value="Parse" />
 		</form>
-		<form method="post" action="/admin/">
+		<form method="post" action="/admin/?page=parse&noframe=1">
 			<input type="hidden" name="action" value="empty" />
 			<input type="submit" value="Empty the DB" />
-		</form>';
+		</form>
+		</nav>';
+	}
 }
 
 /*
@@ -68,14 +71,10 @@ if (count($_POST) === 0)
  */
 elseif ($_POST['action'] == 'empty')
 {
-
-	ob_start();
-
+	print 'Emptying the database.<br>';
+	flush();
 	$parser->clear_db();
-
-	$body = ob_get_contents();
-	ob_end_clean();
-
+	print 'Done.<br>';
 }
 
 /*
@@ -83,9 +82,9 @@ elseif ($_POST['action'] == 'empty')
  */
 elseif ($_POST['action'] == 'parse')
 {
-
-	ob_start();
-
+	print 'Beginning parse.<br>';
+	flush();
+	ob_flush();
 	/*
 	 * Step through each parser method.
 	 */
@@ -109,19 +108,38 @@ elseif ($_POST['action'] == 'parse')
 	$varnish = new Varnish;
 	$varnish->purge();
 
-	$body = ob_get_contents();
-	ob_end_clean();
+	print 'Done.<br>';
 }
 
 
 /*
- * Put the shorthand $body variable into its proper place.
+ * If this is an AJAX request
  */
-$template->field->body = $body;
-unset($body);
+if(isset($_GET['noframe'])) {
+	print $body;
+}
+else
+{
+	/*
+	 * Fire up our templating engine.
+	 */
+	$template = new Page;
 
-/*
- * Parse the template, which is a shortcut for a few steps that culminate in sending the content
- * to the browser.
- */
-$template->parse();
+	/*
+	 * Define some page elements.
+	 */
+	$template->field->browser_title = 'Parser';
+	$template->field->page_title = 'Parser';
+
+	/*
+	 * Put the shorthand $body variable into its proper place.
+	 */
+	$template->field->body = $body;
+	unset($body);
+
+	/*
+	 * Parse the template, which is a shortcut for a few steps that culminate in sending the content
+	 * to the browser.
+	 */
+	$template->parse();
+}
