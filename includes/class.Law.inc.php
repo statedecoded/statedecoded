@@ -886,10 +886,12 @@ e;
 				 */
 
 				$permalink = 'http://';
-				if($_SERVER['HTTPS']) {
+				if ($_SERVER['HTTPS'])
+				{
 					$permalink = 'https://';
 				}
-				$permalink .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . '#' . $paragraph->prefix_anchor;
+				$permalink .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . '#'
+					. $paragraph->prefix_anchor;
 
 				$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
 					.'href="' . $permalink . '"><i class="icon-link"></i></a>';
