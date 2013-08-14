@@ -37,7 +37,9 @@ $parser = new ParserController(array('logger' => $logger));
 
 if (isset($_GET['noframe']))
 {
-	// Begin the flush immediately, by sending the content type header.
+	/*
+	 * Begin the flush immediately, by sending the content type header.
+	 */
 	header( 'Content-type: text/html; charset=utf-8' );
 }
 
