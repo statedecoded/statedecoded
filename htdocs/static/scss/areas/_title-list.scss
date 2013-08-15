@@ -6,8 +6,15 @@
   li,dd,dt {
     list-style: none;
     padding: 5px;
+    height: 34px;
+    line-height: 30px;
+    overflow: hidden;
     a {
       text-decoration: none;
+    }
+    .child-details {
+    	margin: 10px;
+    	opacity: 0.7;
     }
   }
   li:nth-child(even),

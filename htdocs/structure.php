@@ -53,6 +53,21 @@ $template->field->browser_title = $struct->name . '—' . SITE_TITLE;
 $template->field->page_title = '<h2>' . $struct->name . '</h2>';
 
 /*
+ * Make some section information available globally to JavaScript.
+ */
+
+$template->field->javascript = "var section_number = '" . $structure->identifier . "';";
+$template->field->javascript .= "var api_key = '" . API_KEY . "';";
+
+$template->field->javascript_files = '
+	<script src="/static/js/vendor/jquery.qtip.min.js"></script>
+	<script src="/static/js/vendor/jquery.slideto.min.js"></script>
+	<script src="/static/js/vendor/jquery.color-2.1.1.min.js"></script>
+	<script src="/static/js/vendor/mousetrap.min.js"></script>
+	<script src="/static/js/vendor/jquery.zclip.min.js"></script>
+	<script src="/static/js/vendor/functions.js"></script>';
+
+/*
  * Define the breadcrumb trail.
  */
 if (count((array) $structure) > 1)
@@ -211,8 +226,10 @@ if ($children !== FALSE)
 		$class_index = $counter % count($row_classes);
 		$row_class = $row_classes[$class_index];
 
-		$body .= '	<dt class="' . $row_class . '"><a href="' . $child->url . '">' . $child->identifier . '</a></dt>
-					<dd class="' . $row_class . '"><a href="' . $child->url . '">' . $child->name . '</a></dd>';
+		$body .= '	<dt class="' . $row_class . '"><a href="' . $child->url . '" data-identifier="'
+			. $child->url_identifier . '">' . $child->identifier . '</a></dt>
+					<dd class="' . $row_class . '"><a href="' . $child->url . '" data-identifier="'
+			. $child->url_identifier . '">' . $child->name . '</a></dd>';
 
 		$counter++;
 
@@ -251,8 +268,10 @@ if ($laws !== FALSE)
 		$row_class = $row_classes[$class_index];
 
 		$body .= '
-				<dt class="' . $row_class.'"><a href="' . $law->url . '">' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</a></dt>
-				<dd class="' . $row_class.'"><a href="' . $law->url . '">' . $law->catch_line . '</a></dd>';
+				<dt class="' . $row_class.'"><a href="' . $law->url . '" data-identifier="'
+			. $child->url_identifier . '">' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</a></dt>
+				<dd class="' . $row_class.'"><a href="' . $law->url . '" data-identifier="'
+			. $child->url_identifier . '">' . $law->catch_line . '</a></dd>';
 
 		$counter++;
 	}
@@ -277,7 +296,7 @@ if (!empty($sidebar))
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'inside';
+$template->field->body_class = 'inside structure';
 $template->field->content_class = 'nest narrow';
 
 # Parse the template, which is a shortcut for a few steps that culminate in sending the content

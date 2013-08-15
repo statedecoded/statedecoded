@@ -260,4 +260,43 @@ $(document).ready(function () {
 	$("#keyhelp").click(function() {
 		showHelp('keyboard');
 	});
+
+	/* If we are on any structural page, show the sub-items. */
+	if( $('body.structure').length ) {
+        console.log('structure');
+	    $('.title-list').children('dd').each(function(i, elm) {
+            /* Setup */
+	        elm = $(elm);
+	        var link = $(elm.children('a').first());
+	        var elm_identifier = link.data('identifier');
+
+	        /* Hover state */
+	        elm.hover(function() { /* In */
+	            var child_details = $(this).find('.child-details');
+	            if(!child_details.text().length) {
+    	            var child_details =  $('<span class="child-details"></span>' );
+        	        $(this).append(child_details);
+
+	                var url = '/api/1.0/structure.php?identifier='+elm_identifier+'&key='+api_key;
+	                $.get(url, {}, function(data, textStatus, jqXHR) {
+                        for(i in data.laws) {
+                            var law = data.laws[i];
+                            var text = law.section_number+' '+law.catch_line;
+                            console.log(text);
+                            child_details.append(text + '&nbsp;&nbsp;&nbsp;');
+                        }
+	                });
+	            }
+	            else {
+                    child_details.show();
+	            }
+	        },
+	        function() { /* Out */
+	            console.log('test');
+	            $(this).find('.child-details').hide();
+	        }
+
+	        );
+	    });
+	}
 });

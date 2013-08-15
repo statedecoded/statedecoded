@@ -2917,22 +2917,29 @@ nav.prevnext {
   /* line 6, ../scss/areas/_title-list.scss */
   .title-list li, .title-list dd, .title-list dt {
     list-style: none;
-    padding: 5px; }
-    /* line 9, ../scss/areas/_title-list.scss */
+    padding: 5px;
+    height: 34px;
+    line-height: 30px;
+    overflow: hidden; }
+    /* line 12, ../scss/areas/_title-list.scss */
     .title-list li a, .title-list dd a, .title-list dt a {
       text-decoration: none; }
-  /* line 14, ../scss/areas/_title-list.scss */
+    /* line 15, ../scss/areas/_title-list.scss */
+    .title-list li .child-details, .title-list dd .child-details, .title-list dt .child-details {
+      margin: 10px;
+      opacity: 0.7; }
+  /* line 21, ../scss/areas/_title-list.scss */
   .title-list li:nth-child(even),
   .title-list .even {
     background-color: #f2f1ee; }
-  /* line 17, ../scss/areas/_title-list.scss */
+  /* line 24, ../scss/areas/_title-list.scss */
   .title-list dt {
     clear: both;
     display: block;
     float: left;
     margin-right: 10px;
     width: 120px; }
-  /* line 25, ../scss/areas/_title-list.scss */
+  /* line 32, ../scss/areas/_title-list.scss */
   .title-list dd {
     margin-left: 120px; }
 
