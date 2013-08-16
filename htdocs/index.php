@@ -1,10 +1,7 @@
 <?php
 
 /**
- * The site home page.
- *
- * Displays a list of the top-level structural units. May be customized to display introductory
- * text, sidebar content, etc.
+ * The "Home" page, displaying the front page of the site.
  *
  * PHP version 5
  *
@@ -13,7 +10,7 @@
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.8
  * @link		http://www.statedecoded.com/
- * @since		0.1
+ * @since		0.8
  *
  */
 
@@ -27,82 +24,77 @@ require $_SERVER['DOCUMENT_ROOT'] . '/../includes/page-head.inc.php';
  */
 $template = new Page;
 
-$template->field->browser_title = SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.';
-
 /*
- * Initialize the body variable.
+ * Define some page elements.
  */
-$body = '';
+$template->field->browser_title = '';
+$template->field->page_title = '';
 
-/*
- * Provide an introduction on the sidebar.
- */
-$sidebar = '<section id="intro">
-				<h1>Welcome</h1>
-				<p>' . SITE_TITLE . ' provides the ' . LAWS_NAME .' on one friendly website. A
-				modern API, bulk downloads, inline definitions, cross-references, a responsive
-				design, and all of the niceties of a modern website. It’s like the expensive
-				software that lawyers use, but free and much better.</p>';
+//body class="preload"?
 
-/*
- * If Disqus-based comments are enabled, display the most recent X comments.
- */
-if (defined('DISQUS_SHORTNAME') === TRUE)
-{
+$body = '
+	<div class="nest video">
+		<div class="video-frame">
+			<div class="video-container">
+				<iframe width="560" height="315" src="http://www.youtube.com/embed/4HPxQHBFjcg" frameborder="0" allowfullscreen></iframe>
+				<!-- <video width="" height="" controls="controls">
+					<source src="" type="video/mp4">
+					<source src="" type="video/webm">
+				</video> -->
+			</div>
+		</div>
+	</div> <!-- // .nest -->
 
-	/*
-	 * Show these many comments.
-	 */
-	$comments = 3;
+	<section id="main_content" class="homepage" role="main">
+		<div class="nest">
+			<section class="feature-content">
+				<hgroup>
+					<h1>Discover the ' . LAWS_NAME . '</h1>
+					<h2>The laws of ' . PLACE_NAME . ', for non-lawyers.</h2>
+				</hgroup>
+				
+				<p>' . SITE_NAME . ' provides the ' . LAWS_NAME . ' on one friendly website. Inline
+				definitions, cross-references, bulk downloads, a modern API, and all of the niceties
+				of modern website design. It’s like the expensive software lawyers use, but free and
+				wonderful.</p>
+				
+				<p>This is a public beta test of Virginia Decoded, which is to say that everything
+				is under development. Things are funny looking, broken, and generally unreliable
+				right now.</p>
+				
+				<p>This site is powered by <a href="http://www.statedecoded.com/">The State
+				Decoded</a></p>
 
-	$sidebar .= '<section id="recent-comments">
-				<h1>Recent Comments</h1>
-				<div id="recentcomments" class="dsq-widget">
-					<script src="http://' . DISQUS_SHORTNAME . '.disqus.com/recent_comments_widget.js?num_items=' . $comments . '&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=200"></script>
-				</div>
-			</section>';
+			</section> <!-- // .feature -->
 
-}
+			<section class="secondary-content">
+				
+				<article class="abstract">
+					<h1>Feature Code Callout</h1>
+					<p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris in erat justo. Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi. Proin condimentum fermentum nunc. Etiam pharetra, erat sed fermentum feugiat, velit mauris egestas quam, ut aliquam massa nisl quis neque.</p>
+				</article>
+				
+				<article class="abstract">
+					<h1>Feature Code Callout</h1>
+					<p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris in erat justo. Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi. Proin condimentum fermentum nunc. Etiam pharetra, erat sed fermentum feugiat, velit mauris egestas quam, ut aliquam massa nisl quis neque.</p>
+				</article>
+				
+				<article class="abstract">
 
-
-/*
- * Get an object containing a listing of the fundamental units of the code.
- */
-$struct = new Structure();
-$structures = $struct->list_children();
-
-$body .= '
-	<article>
-	<h1>' . ucwords($structures->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
-
-	<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
-
-/*
- * Row classes and row counter
- */
-$row_classes = array('odd', 'even');
-$counter = 0;
-
-if ( !empty($structures) )
-{
-	$body .= '<dl class="title-list">';
-	foreach ($structures as $structure)
-	{
-		/*
-		 * The remainder of the count divided by the number of classes
-		 * yields the proper index for the row class.
-		 */
-		$class_index = $counter % count($row_classes);
-		$row_class = $row_classes[$class_index];
-
-		$body .= '	<dt class="' . $row_class . '"><a href="' . $structure->url . '">' . $structure->identifier . '</a></dt>
-					<dd class="' . $row_class . '"><a href="' . $structure->url . '">' . $structure->name . '</a></dd>';
-
-		$counter++;
-	}
-	$body .= '</dl>';
-}
-$body .= '</article>';
+					<figure>
+						<img src="/public/images/richmond_capitol.jpg" alt="The Richmond Capitol Building">
+					</figure>
+			
+					<h1>The Capitol File</h1>
+					<p>Want to know more about what’s going on in the State Legislature? Check our our sister site, <a href="http://www.richmondsunlight.com">Richmond Sunlight</a>, to find out about the changes that are being proposed to the Commonwealth’s code.</p>
+					
+				</article>
+				
+			</section> <!-- // .secondary-content -->
+			
+		</div> <!-- // .nest -->
+		
+	</section>';
 
 /*
  * Put the shorthand $body variable into its proper place.
@@ -119,8 +111,7 @@ unset($sidebar);
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'inside';
-$template->field->content_class = 'nest narrow';
+$template->field->body_class = 'preload';
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
