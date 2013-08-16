@@ -169,3 +169,13 @@ define('API_KEY', '');
  */
 // define('GOOGLE_ANALYTICS_ID', 'UA-XXXXX-X');
 
+/*
+ * If you have a Portfolio-level Typekit account, enter the Typekit ID for your website here. The
+ * Typekit ID is found in the HTML snippet that Typekit provides you with, like such:
+ *
+ * <script type="text/javascript" src="http://use.typekit.net/abc1efg.js"></script>
+ * <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+ *
+ * The Typekit ID is "abc1efg".
+ */
+// define('TYPEKIT_ID', 'abc1efg');

@@ -97,6 +97,15 @@ class Page
 
 		}
 
+		/*
+		 * If a Typekit ID has been provided, insert the JavaScript.
+		 */
+		if (defined('TYPEKIT_ID'))
+		{
+			$this->field->typekit =
+				'<script src="//use.typekit.net/' .  TYPEKIT_ID . '.js"></script>
+				<script >try{Typekit.load();}catch(e){}</script>';
+		}
 
 		/*
 		 * Replace all of our in-page tokens with our defined variables.

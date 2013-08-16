@@ -116,8 +116,6 @@
 	</script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/jquery.qtip.min.js"></script>
 	<script src="/static/js/vendor/modernizr.min.js"></script>
-	<!-- TypeKit Font loading -->
-	<script type="text/javascript" src="//use.typekit.net/djv6ymt.js"></script>
-	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	{{typekit}}
 </body>
 </html>
