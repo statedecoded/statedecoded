@@ -620,7 +620,6 @@ class Law
 			}
 
 			$rotated->{stripslashes($field->meta_key)} = $field->meta_value;
-e;
 
 		}
 		return $rotated;
