@@ -57,9 +57,9 @@ class Page
 		/*
 		 * Create the browser title.
 		 */
-		if (!isset($this->field->browser_title))
+		if (empty($this->field->browser_title))
 		{
-			if (isset($this->field->page_title))
+			if (!empty($this->field->page_title))
 			{
 				$this->field->browser_title .= $this->field->page_title;
 				$this->field->browser_title .= '—' . SITE_TITLE;
