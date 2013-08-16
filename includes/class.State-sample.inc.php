@@ -1026,8 +1026,8 @@ class Parser
 					{
 						/*
 						 * Now figure out the specified scope by examining the text that appears
-						 * immediately after the scope indicator. Pull out as many character as the
-						 * longest structural label.
+						 * immediately after the scope indicator. Pull out as many characters as the
+						 * length of the longest structural label.
 						 */
 						$phrase = substr( $paragraph, ($pos + strlen($scope_indicator)), $longest_label );
 
