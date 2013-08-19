@@ -97,9 +97,6 @@
 					provide legal advice. While every effort is made to keep all information
 					up-to-date and accurate, no guarantee is made as to its accuracy.
 				</p>
-				<p class="downloads">
-					<a href="" title="">Bulk Downloads</a>
-				</p>
 				<p class="credits">
 					Powered by <a href="http://www.statedecoded.com/">The State Decoded</a><br>
 					Copyright 2011–2013 <a href="http://waldo.jaquith.org/">Waldo Jaquith</a><br>
