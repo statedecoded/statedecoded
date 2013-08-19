@@ -243,13 +243,13 @@
             }
           } // &#browse
 
-          &#download {
-            @include background-image(image-url("nav-icons/nav_download.svg"));
+          &#downloads {
+            @include background-image(image-url("nav-icons/nav_downloads.svg"));
             &:hover {
-              @include background-image(image-url("nav-icons/nav_download-hover.svg"));
+              @include background-image(image-url("nav-icons/nav_downloads-hover.svg"));
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_download.png"));
+              @include background-image(image-url("nav-icons/fallbacks/nav_downloads.png"));
             }
           } // &#browse
         } // a
