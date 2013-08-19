@@ -2694,14 +2694,14 @@ header#page_header {
             .lt-ie9 header#page_header nav#main_navigation ul li a#about {
               background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1376337970'); }
           /* line 246, ../scss/areas/_header.scss */
-          header#page_header nav#main_navigation ul li a#download {
-            background-image: url('/static/images/nav-icons/nav_download.svg?1376337970'); }
+          header#page_header nav#main_navigation ul li a#downloads {
+            background-image: url('/static/images/nav-icons/nav_downloads.svg?1376337970'); }
             /* line 248, ../scss/areas/_header.scss */
-            header#page_header nav#main_navigation ul li a#download:hover {
-              background-image: url('/static/images/nav-icons/nav_download-hover.svg?1376337970'); }
+            header#page_header nav#main_navigation ul li a#downloads:hover {
+              background-image: url('/static/images/nav-icons/nav_downloads-hover.svg?1376337970'); }
             /* line 251, ../scss/areas/_header.scss */
-            .lt-ie9 header#page_header nav#main_navigation ul li a#download {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_download.png?1376337970'); }
+            .lt-ie9 header#page_header nav#main_navigation ul li a#downloads {
+              background-image: url('/static/images/nav-icons/fallbacks/nav_downloads.png?1376337970'); }
   @media only screen and (min-width: 769px) {
     /* line 260, ../scss/areas/_header.scss */
     .inside header#page_header {
