@@ -127,6 +127,17 @@ CREATE TABLE IF NOT EXISTS `structure` (
   KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Titles, chapters, parts, articles, etc.';
 
+CREATE TABLE IF NOT EXISTS `tags` (
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `law_id` mediumint(8) unsigned NOT NULL,
+  `section_number` varchar(16) collate utf8_bin NOT NULL,
+  `text` varchar(36) collate utf8_bin NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `law_id` (`law_id`,`text`),
+  KEY `main_select` (`law_id`),
+  KEY `text` (`text`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Terms that optionally describe each law.';
+
 CREATE TABLE IF NOT EXISTS `text` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `law_id` int(10) unsigned NOT NULL,
