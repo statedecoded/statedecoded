@@ -313,6 +313,27 @@ class Parser
 				$this->prefix_hierarchy = array();
 			}
 		}
+		
+		/*
+		 * If there any tags, store those, too.
+		 */
+		if (isset($this->section->tags))
+		{
+		
+			/*
+			 * Create an object to store the tags.
+			 */
+			$this->code->tags = new stdClass();
+			
+			/*
+			 * Iterate through each of the tags and move them over to $this->code.
+			 */
+			foreach ($this->section->tags->tag as $tag)
+			{
+				$this->code->tags->tag = trim($tag);
+			}
+			
+		}
 
 		return TRUE;
 	}
@@ -495,6 +516,25 @@ class Parser
 				}
 			}
 			
+		}
+		
+		// Store any tags associated with this law.
+		if (isset($this->code->tags))
+		{
+			foreach ($this->code->tags as $tag)
+			{
+				$sql = 'INSERT INTO tags
+						SET law_id = ' . $law_id . ',
+						section_number = ' . $this->db->quote($this->code->section_number) . ',
+						text = ' . $this->db->quote($tag);
+				
+				$result = $this->db->exec($sql);
+				if ($result === FALSE)
+				{
+					echo '<p>'.$sql.'</p>';
+					die($result->getMessage());
+				}
+			}
 		}
 
 		// Step through each section.
