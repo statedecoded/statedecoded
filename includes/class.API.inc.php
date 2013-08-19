@@ -144,7 +144,7 @@ class API
 	{
 
 		$form = '
-			<form method="post" action="/api-key/" id="api-registration">
+			<form method="post" action="/downloads/" id="api-registration">
 
 				<label for="name">Your Name</label>
 				<input type="name" id="name" name="form_data[name]" placeholder="John Doe" value="'.$this->form->name.'" />
@@ -326,7 +326,7 @@ class API
 
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
 			. "\r\r"
-			. 'http://' . $_SERVER['SERVER_NAME'] . '/api-key/?secret=' . $this->secret;
+			. 'http://' . $_SERVER['SERVER_NAME'] . '/downloads/?secret=' . $this->secret;
 		$email->subject = SITE_TITLE . ' API Registration';
 		$email->headers = 'From: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
 						.'Return-Path: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
