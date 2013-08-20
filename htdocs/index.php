@@ -17,6 +17,77 @@
  */
 
 /*
+ * If we have not defined the include path yet, then try to do so automatically. (Once we have
+ * automatically defined the include path, the text of this file is modified to prevent the below
+ * stanza from running.)
+ */
+$include_path_defined = FALSE;
+if ($include_path_defined === FALSE)
+{
+	
+	/*
+	 * Try a couple of likely locations.
+	 */
+	if (file_exists('includes'))
+	{
+		$include_path = dirname(__FILE__) . '/includes/';
+	}
+	elseif (file_exists('../includes'))
+	{
+		$include_path = dirname(dirname(__FILE__)) . '/includes/';
+	}
+	
+	/*
+	 * Since we have not found it, recurse through the directories to locate it.
+	 */
+	else
+	{
+		
+		/*
+		 * These are the directories that we want to peer into the child directories of -- the
+		 * current directory and its parent directory.
+		 */
+		$parent_directories = array('.', '..');
+		foreach ($parent_directories as $parent_directory)
+		{
+			
+			/*
+			 * Iterate through all of the parent directory's contents.
+			 */
+			$files = scandir($parent_directory);
+			foreach ($files as $file)
+			{
+				
+				/*
+				 * If this file is a directory, peer into its contents.
+				 */
+				if ( ($file != '.') && ($file != '..') && is_dir($parent_directory . '/' . $file) )
+				{
+				
+					$child_files = scandir($parent_directory . '/' . $file);
+					
+					if (in_array('class.Law.inc.php', $child_files) === TRUE)
+					{
+						$include_path = realpath(dirname(__FILE__) . '/' . $parent_directory . '/' . $file . '/');
+						break(2);
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+}
+
+/*
+ * Define the path to the includes library.
+ */
+define('INCLUDE_PATH', $include_path);
+
+/*
  * If APC is not running.
  */
 if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
@@ -25,7 +96,7 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 	/*
 	 * Include the site's config file.
 	 */
-	require 'config.inc.php';
+	require INCLUDE_PATH . '/config.inc.php';
 
 	define('APC_RUNNING', FALSE);
 
@@ -51,7 +122,7 @@ else
 		/*
 		 * Load constants from the config file.
 		 */
-		require './config.inc.php';
+		require INCLUDE_PATH . '/config.inc.php';
 
 		define('APC_RUNNING', TRUE);
 
