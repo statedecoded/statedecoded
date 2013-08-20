@@ -57,62 +57,30 @@ class Structure
 		$tmp = parse_url($this->url);
 		$this->path = $tmp['path'];
 
-		/*
-		 * Turn the URL into an array.
-		 */
-		$components = explode('/', $this->path);
 
 		/*
-		 * Leading and trailing slashes in the path result in blank array elements. Remove them.
-	 	 * A path component may reasonably be "0" (in the case of a structural unit numbered "0,"
-		 * as exists in Virginia), so allow those.
+		 * Get the url from the permalinks table
 		 */
-		foreach ($components as $key => $component)
-		{
-			if ( empty($component) && (strlen($component) == 0) )
-			{
-				unset($components[$key]);
-			}
-		}
+		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE url = :url';
+		$permalink_args = array('url' => $this->path);
+		$permalink_statement = $db->prepare($permalink_sql);
 
-		/*
-		 * Reverse the components.
-		 */
-		$components = array_reverse($components);
+		$result = $permalink_statement->execute($permalink_args);
 
-		/*
-		 * Retrieve this structural unit's ancestry.
-		 */
-		$sql = 'SELECT s1_id
-				FROM structure_unified
-				WHERE ';
-		$i=1;
-		foreach ($components as $component)
-		{
-			$sql .= 's'.$i.'_identifier = ' . $db->quote($component) ;
-			if ($i < count($components))
-			{
-				$sql .= ' AND ';
-			}
-			$i++;
-		}
-
-		$result = $db->query($sql);
-
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($permalink_statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 
 		/*
-		 * Get the result as an object.
+		 * Get the result
 		 */
-		$structure_row = $result->fetch(PDO::FETCH_OBJ);
+		$structure_row = $permalink_statement->fetch(PDO::FETCH_ASSOC);
 
 		/*
 		 * Save the variable within the class scope.
 		 */
-		$this->structure_id = $structure_row->s1_id;
+		$this->structure_id = $structure_row['relational_id'];
 
 		/*
 		 * Pass the request off to the get_current() method.
