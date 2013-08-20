@@ -20,7 +20,7 @@ class ParserController
 
 	public function __construct($args)
 	{
-	
+
 		/*
 		 * Set our defaults
 		 */
@@ -56,7 +56,7 @@ class ParserController
 		 * Set our default execution limits.
 		 */
 		$this->set_execution_limits();
-		
+
 	}
 
     // {{{ init_logger()
@@ -74,7 +74,7 @@ class ParserController
 			$this->logger = new Logger();
 		}
 	}
-	
+
 	public function set_execution_limits()
 	{
 		/*
@@ -87,13 +87,13 @@ class ParserController
 		 */
 		ini_set('memory_limit', '128M');
 	}
-	
+
 	/**
 	 * Populate the database
 	 */
 	public function populate_db()
 	{
-		
+
 		/*
 		 * To see if the database tables have exist, just issue a query to the laws table.
 		 */
@@ -105,9 +105,9 @@ class ParserController
 		{
 			return TRUE;
 		}
-		
+
 		$this->logger->message('Creating the database tables', 5);
-		
+
 		/*
 		 * Because the database tables do not exist, see if the MySQL import file can be found.
 		 */
@@ -117,7 +117,7 @@ class ParserController
 				. 'populate the database. Database tables could not be created.', 10);
 			return FALSE;
 		}
-			
+
 		/*
 		 * Load the MySQL import file into MySQL.
 		 */
@@ -127,9 +127,9 @@ class ParserController
 		{
 			return FALSE;
 		}
-		
+
 		return TRUE;
-		
+
 	}
 
 	/**
@@ -137,10 +137,10 @@ class ParserController
 	 */
 	public function clear_db()
 	{
-		
+
 		$this->logger->message('Clearing out the database', 5);
-		
-		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections', 'structure');
+
+		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections', 'structure', 'permalinks');
 		foreach ($tables as $table)
 		{
 			$sql = 'TRUNCATE '.$table;
@@ -167,34 +167,34 @@ class ParserController
 		$sql = 'DELETE FROM laws_meta
 				WHERE meta_key = "history" OR meta_key = "repealed"';
 		$result = $this->db->exec($sql);
-		
+
 		return TRUE;
-		
+
 	}
-	
+
 	/**
 	 * Remove law-view records greater than one year old.
 	 */
 	public function prune_views()
 	{
-		
+
 		$this->logger->message('Pruning view records greater than one year old', 5);
-		
+
 		$sql = 'DELETE FROM
 				laws_views
 				WHERE DATEDIFF(now(), date) > 365';
 		$result = $this->db->exec($sql);
-		
+
 		return TRUE;
-		
+
 	}
-	
+
 	/**
 	 * Parse the provided legal code
 	 */
 	public function parse()
 	{
-	
+
 		$this->logger->message('Parsing', 5);
 
 		/*
@@ -276,7 +276,7 @@ class ParserController
 				 */
 				$parser->history = $law->history;
 				$history = $parser->extract_history();
-				
+
 				if ($history !== FALSE)
 				{
 
@@ -288,7 +288,7 @@ class ParserController
 							meta_key="history", meta_value=' . $this->db->quote(serialize($history)) . ',
 							date_created=now();';
 					$this->db->exec($sql);
-				
+
 				}
 			}
 
@@ -369,7 +369,36 @@ class ParserController
 
 		$this->logger->message('Done', 5);
 	}
-	
+
+	/**
+	 * Build the permalinks
+	 */
+	public function build_permalinks() {
+		$this->logger->message('Building Permalinks', 5);
+
+		/*
+		 * Create a new instance of Parser.
+		 */
+		$parser = new Parser(
+			array(
+				/*
+				 * Tell the parser what the working directory
+				 * should be for the XML files.
+				 */
+
+				'directory' => WEB_ROOT . '/admin/xml/',
+
+				/*
+				 * Set the database
+				 */
+
+				'db' => $this->db
+			)
+		);
+
+		$parser->build_permalinks();
+	}
+
 	/**
 	 * Generate an API key and store it
 	 *
@@ -387,7 +416,7 @@ class ParserController
 		 */
 		if (API_KEY == '')
 		{
-		
+
 			$api = new API();
 			$api->form->email = EMAIL_ADDRESS;
 			$api->form->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
@@ -400,7 +429,7 @@ class ParserController
 			 * screen, along with instructions.
 			 */
 			$config_file = INCLUDE_PATH.'/config.inc.php';
-			
+
 			if (is_writable($config_file))
 			{
 				$config = file_get_contents($config_file);
@@ -415,25 +444,25 @@ class ParserController
 			}
 
 			$this->logger->message('Done', 5);
-			
+
 			return TRUE;
-			
+
 		}
-		
+
 		/*
 		 * If the internal API key is defined in the config file, make sure it actually exists in
 		 * the database.
 		 */
 		else
 		{
-			
+
 			/*
 			 * Check the database for the API key in the config file.
 			 */
 			$api = new API();
 			$api->key = API_KEY;
 			$registered = $api->get_key();
-			
+
 			/*
 			 * If the key isn't in the database, create a new one. It might be trouble to try to
 			 * overwrite the key already listed in config.inc.php, so the safe thing to do is to
@@ -441,23 +470,23 @@ class ParserController
 			 */
 			if ($registered === FALSE)
 			{
-				
+
 				$api->form->email = EMAIL_ADDRESS;
 				$api->form->url = 'http://'.$_SERVER['SERVER_NAME'].'/';
 				$api->suppress_activation_email = TRUE;
 				$api->register_key();
 				$api->activate_key();
-				
+
 				$this->logger->message('The API key in <code>config.inc.php</code> does not exist in
 					the database. A new key, <code>' . $api->key . '</code>, has been registered,
 					but you must add it to <code>config.inc.php</code> manually.', 5);
-				
+
 				return TRUE;
-				
+
 			}
-			
+
 			$this->logger->message('Using the existing API key', 5);
-			
+
 		}
 	}
 
@@ -477,7 +506,7 @@ class ParserController
 		 * Define the location of the downloads directory.
 		 */
 		$downloads_dir = WEB_ROOT . '/downloads/';
-		
+
 		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
 		 */
@@ -487,12 +516,12 @@ class ParserController
 				download files could not be exported.', 10);
 			return FALSE;
 		}
-		
+
 		/*
 		 * Get a listing of all laws, to be exported in various formats.
 		 */
 		$this->logger->message('Querying laws', 3);
-		
+
 		/*
 		 * Only get section numbers. We them pass each one to the Laws class to get each law's
 		 * data.
@@ -504,12 +533,12 @@ class ParserController
 		$result = $this->db->query($sql);
 		if ($result->rowCount() > 0)
 		{
-			
+
 			/*
 			 * Establish the path of our code JSON storage directory.
 			 */
 			$json_dir = $downloads_dir . 'code-json/';
-			
+
 			/*
 			 * If the JSON directory doesn't exist, create it.
 			 */
@@ -517,7 +546,7 @@ class ParserController
 			{
 				mkdir($json_dir);
 			}
-			
+
 			/*
 			 * If we cannot write to the JSON directory, log an error.
 			 */
@@ -526,17 +555,17 @@ class ParserController
 				$this->logger->message('Cannot write to '.$json_dir.' to export files.', 10);
 				break;
 			}
-			
+
 			/*
 			 * Set a flag telling us that we may write JSON.
 			 */
 			$write_json = TRUE;
-			
+
 			/*
 			 * Establish the path of our code text storage directory.
 			 */
 			$text_dir = $downloads_dir . 'code-text/';
-			
+
 			/*
 			 * If the text directory doesn't exist, create it.
 			 */
@@ -544,7 +573,7 @@ class ParserController
 			{
 				mkdir($text_dir);
 			}
-			
+
 			/*
 			 * If we cannot write to the text directory, log an error.
 			 */
@@ -553,12 +582,12 @@ class ParserController
 				$this->logger->message('Cannot open '.$text_dir.' to export files.', 10);
 				break;
 			}
-			
+
 			/*
 			 * Set a flag telling us that we may write text.
 			 */
 			$write_text = TRUE;
-			
+
 			/*
 			 * Create a new instance of the class that handles information about individual laws.
 			 */
@@ -592,9 +621,9 @@ class ParserController
 				 * Pass the requested section number to Law.
 				 */
 				$laws->section_number = $section->number;
-				
+
 				unset($law);
-				
+
 				/*
 				 * Get a list of all of the basic information that we have about this section.
 				 */
@@ -603,9 +632,9 @@ class ParserController
 				/*
 				 * Eliminate colons from section numbers, since some OSes can't handle colons in
 				 * filenames.
-				 */		
+				 */
 				$filename = str_replace(':', '_', $law->section_number);
-				
+
 				/*
 				 * Store the JSON file.
 				 */
@@ -618,7 +647,7 @@ class ParserController
 						break;
 					}
 				}
-				
+
 				/*
 				 * Store the text file.
 				 */
@@ -631,9 +660,9 @@ class ParserController
 						break;
 					}
 				}
-				
+
 			} // end the while() law iterator
-			
+
 			/*
 			 * Zip up all of the JSON files into a single file. We do this via exec(), rather than
 			 * PHP's ZIP extension, because doing it within PHP requires far too much memory. Using
@@ -645,7 +674,7 @@ class ParserController
 				$output = array();
 				exec('cd ' . $downloads_dir . '; zip -9rq code.json.zip code-json');
 			}
-			
+
 			/*
 			 * Zip up all of the text into a single file.
 			 */
@@ -655,7 +684,7 @@ class ParserController
 				$output = array();
 				exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
 			}
-			
+
 		}
 
 
@@ -672,7 +701,7 @@ class ParserController
 		$result = $this->db->query($sql);
 		if ($result->rowCount() > 0)
 		{
-		
+
 			/*
 			 * Retrieve the entire dictionary as a single object.
 			 */
@@ -700,7 +729,7 @@ class ParserController
 			{
 				$this->logger->message('Cannot open ' . $filename . ' to create a new ZIP file.', 10);
 			}
-			
+
 			else
 			{
 
@@ -713,13 +742,13 @@ class ParserController
 				 * Close out our ZIP file.
 				 */
 				$zip->close();
-				
+
 			}
 		}
 
 		$this->logger->message('Done', 5);
 	}
-	
+
 	/**
 	 * Create and save a sitemap.xml
 	 *
@@ -727,20 +756,20 @@ class ParserController
 	 */
 	function generate_sitemap()
 	{
-	
+
 		$this->logger->message('Generating sitemap.xml', 3);
-		
+
 		/*
 		 * The sitemap.xml file must be kept in the site root, as per the standard.
 		 */
 		$sitemap_file = WEB_ROOT . '/sitemap.xml';
-		
+
 		if (!is_writable($sitemap_file))
 		{
 			$this->logger->message('Do not have permissions to write to sitemap.xml', 3);
 			return FALSE;
 		}
-		
+
 		/*
 		 * List the ID of every law in the current edition. We cut it off at 50,000 laws because
 		 * that is the sitemap.xml limit.
@@ -754,14 +783,14 @@ class ParserController
 		{
 			return FALSE;
 		}
-		
+
 		/*
 		 * Create a new XML file, using the sitemap.xml schema.
 		 */
 		$xml = new SimpleXMLElement('<xml/>');
 		$urlset = $xml->addChild('urlset');
 		$urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-		
+
 		/*
 		 * Create a new instance of the class that handles information about individual laws.
 		 */
@@ -777,43 +806,43 @@ class ParserController
 		$laws->config->get_metadata = FALSE;
 		$laws->config->get_references = FALSE;
 		$laws->config->get_related_laws = FALSE;
-		
+
 		/*
 		 * Iterate through every section ID.
 		 */
 		while ($section = $result->fetch(PDO::FETCH_OBJ))
 		{
-		
+
 			/*
 			 * Get the law in question.
 			 */
 			$laws->law_id = $section->id;
 			$law = $laws->get_law();
-			
+
 			/*
 			 * Add a record of this law to the XML.
 			 */
 			$url = $urlset->addChild('url');
 			$url->addchild('loc', $law->url);
 			$url->addchild('changefreq', 'monthly');
-			
+
 		}
-		
+
 		/*
 		 * Save the resulting file.
 		 */
 		file_put_contents($sitemap_file, $xml->asXML());
-		
+
 		return TRUE;
-		
+
 	}
-	
+
 	/**
 	 * Clear out the APC cache, if it exists
 	 */
 	public function clear_apc()
 	{
-	
+
 		/*
 		 * If APC exists on this server, clear everything in the user space. That consists of
 		 * information that the State Decoded has stored in APC, which is now suspect, as a result
@@ -828,7 +857,7 @@ class ParserController
 			$this->logger->message('Done', 5);
 		}
 	}
-	
+
 	/**
 	 * Generate statistics about structural units
 	 *
@@ -838,20 +867,20 @@ class ParserController
 	 */
 	function structural_stats_generate()
 	{
-		
+
 		$this->logger->message('Generating structural statistics', 3);
-		
+
 		/*
 		 * List all of the top-level structural units.
 		 */
 		$struct = new Structure();
 		$structures = $struct->list_children();
-		
+
 		/*
 		 * Create an object to store structural statistics.
 		 */
 		$this->stats = new stdClass();
-		
+
 		/*
 		 * Iterate through each of those units.
 		 */
@@ -861,15 +890,15 @@ class ParserController
 			$this->structure_id = $structure->id;
 			$this->structural_stats_recurse();
 		}
-		
+
 		$code_structures = explode(',', STRUCTURE);
-		
+
 		/*
 		 * Iterate through every primary structural unit.
 		 */
 		foreach ($this->stats as $structure_id => $structure)
 		{
-		
+
 			/*
 			 * If this is more than 1 level deep.
 			 */
@@ -881,34 +910,34 @@ class ParserController
 				for ($i=0; $i < (count($structure->ancestry) - 1); $i++)
 				{
 					$ancestor_id = $structure->ancestry[$i];
-					
+
 					if (!isset($this->stats->{$ancestor_id}->child_laws))
 					{
 						$this->stats->{$ancestor_id}->child_laws = 0;
 					}
-					
+
 					if (!isset($this->stats->{$ancestor_id}->child_structures))
 					{
 						$this->stats->{$ancestor_id}->child_structures = 0;
 					}
-					
+
 					if (isset($structure->child_laws))
 					{
 						$this->stats->{$ancestor_id}->child_laws = $this->stats->{$ancestor_id}->child_laws + $structure->child_laws;
 					}
-					
+
 					if (isset($structure->child_structures))
 					{
 						$this->stats->{$ancestor_id}->child_structures = $this->stats->{$ancestor_id}->child_structures + $structure->child_structures;
 					}
 				}
 			}
-		
+
 		}
-		
+
 		foreach ($this->stats as $structure_id => $structure)
 		{
-			
+
 			if (!isset($structure->child_laws))
 			{
 				$structure->child_laws = 0;
@@ -917,21 +946,21 @@ class ParserController
 			{
 				$structure->child_structures = 0;
 			}
-			
+
 			$metadata = new stdClass();
 			$metadata->child_laws = $structure->child_laws;
 			$metadata->child_structures = $structure->child_structures;
-			
+
 			$sql = 'UPDATE structure
 					SET metadata = ' . $this->db->quote(serialize($metadata)) . '
 					WHERE id = ' . $structure_id;
 			$result = $this->db->exec($sql);
-		
+
 		}
-		
+
 	} // end structural_stats_generate()
-	
-	
+
+
 	/**
 	 * Recurse through structural information
 	 *
@@ -939,7 +968,7 @@ class ParserController
 	 */
 	function structural_stats_recurse()
 	{
-		
+
 		/*
 		 * Retrieve basic stats about the children of this structural unit.
 		 */
@@ -947,7 +976,7 @@ class ParserController
 		$struct->id = $this->structure_id;
 		$child_structures = $struct->list_children();
 		$child_laws = $struct->list_laws();
-		
+
 		/*
 		 * Append the structure's ID to the structural ancestry.
 		 */
@@ -967,7 +996,7 @@ class ParserController
 		}
 		$this->stats->{$this->structure_id}->depth = $this->depth;
 		$this->stats->{$this->structure_id}->ancestry = $this->ancestry;
-		
+
 		/*
 		 * If this structural unit has child structural units of its own, recurse into those.
 		 */
@@ -980,19 +1009,19 @@ class ParserController
 				$this->structure_id = $child_structure->id;
 				$this->structural_stats_recurse();
 			}
-			
+
 		}
-		
+
 		/*
 		 * Having just finished a recursion, we can remove the last member of the ancestry array
 		 * and eliminate one level of the depth tracking.
 		 */
 		$this->ancestry = array_slice($this->ancestry, 0, -1);
 		$this->depth--;
-		
+
 	} // end structural_stats_recurse()
-	
-	
+
+
 	/**
 	 * Test whether the server environment is configured properly.
 	 *
@@ -1003,7 +1032,7 @@ class ParserController
 	 */
 	function test_environment()
 	{
-		
+
 		/*
 		 * Make sure that the PHP Data Objects extension is enabled.
 		 */
@@ -1012,7 +1041,7 @@ class ParserController
 			$this->logger->message('PHP Data Objects (PDO) must be enabled.', 10);
 			$error = TRUE;
 		}
-		
+
 		/*
 		 * Make sure that PDO MySQL support exists.
 		 */
@@ -1021,13 +1050,13 @@ class ParserController
 			$this->logger->message('PHP Data Objects (PDO) must have a MySQL driver enabled.', 10);
 			$error = TRUE;
 		}
-		
+
 		/*
 		 * Make sure that HTML Tidy is available within PHP or, failing that, at the command line.
 		 */
 		if (class_exists('tidy', FALSE) == FALSE)
 		{
-			
+
 			/*
 			 * A non-zero return status from a program called via exec() indicates an error.
 			 */
@@ -1037,9 +1066,9 @@ class ParserController
 				$this->logger->message('HTML Tidy must be installed.', 10);
 				$error = TRUE;
 			}
-			
+
 		}
-		
+
 		/*
 		 * Make sure that the configuration file is writable.
 		 */
@@ -1048,7 +1077,7 @@ class ParserController
 			$this->logger->message('config.inc.php must be writable by the server.', 10);
 			$error = TRUE;
 		}
-		
+
 		/*
 		 * Make sure that sitemap.xml is writable.
 		 */
@@ -1057,7 +1086,7 @@ class ParserController
 			$this->logger->message('sitemap.xml must be writable by the server', 3);
 			$error = TRUE;
 		}
-		
+
 		/*
 		 * If the Downloads directory exists, make sure that it's writable.
 		 */
@@ -1067,7 +1096,7 @@ class ParserController
 				. ') must be writable by the server.', 10);
 			$error = TRUE;
 		}
-		
+
 		/*
 		 * Make sure that mod_rewrite is loaded.
 		 */
@@ -1080,7 +1109,7 @@ class ParserController
 				$error = TRUE;
 			}
 		}
-		
+
 		/*
 		 * Make sure that cURL is installed.
 		 */
@@ -1089,7 +1118,7 @@ class ParserController
 			$this->logger->message('PHP must have cURL support enabled.', 10);
 			$error = TRUE;
 		}
-		
+
 		/*
 		 * Make sure that RewriteRules are respected.
 		 *
@@ -1108,7 +1137,7 @@ class ParserController
 		$domain = $_SERVER['SERVER_NAME'];
 		$path = '/index.php.test';
 		$url = $protocol . $domain . ':' . $path;
-		
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HEADER, TRUE);
@@ -1116,21 +1145,21 @@ class ParserController
 		curl_exec($ch);
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
-		
+
 		if ($http_code != 200)
 		{
 			$this->logger->message('The web server does not permit .htaccess files to contain'
 				.' RewriteRules. This can be fixed via the AllowOverrides All directive.', 10);
 			$error = TRUE;
 		}
-		
+
 		if (isset($error))
 		{
 			return FALSE;
 		}
-		
+
 		return TRUE;
-		
+
 	}
-	
+
 }

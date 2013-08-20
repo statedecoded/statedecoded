@@ -286,7 +286,7 @@ class Parser
 				 * as those that are purely structural, existing to hold sub-subsections, but
 				 * containing no text themselves.
 				 */
-				if ( !empty( $this->code->section->{$this->$i}->text ) )
+				if ( !empty( $this->code->section->{$this->i}->text ) )
 				{
 					$this->code->text .= (string) $subsection['prefix'] . ' '
 						. trim((string) $subsection) . "\r\r";
@@ -321,18 +321,18 @@ class Parser
 				$this->prefix_hierarchy = array();
 			}
 		}
-		
+
 		/*
 		 * If there any tags, store those, too.
 		 */
 		if (isset($this->section->tags))
 		{
-		
+
 			/*
 			 * Create an object to store the tags.
 			 */
 			$this->code->tags = new stdClass();
-			
+
 			/*
 			 * Iterate through each of the tags and move them over to $this->code.
 			 */
@@ -340,12 +340,212 @@ class Parser
 			{
 				$this->code->tags->tag = trim($tag);
 			}
-			
+
 		}
 
 		return TRUE;
 	}
 
+	/**
+	 * Create permalinks from what's in the database
+	 */
+	public function build_permalinks() {
+		$this->move_old_permalinks();
+		$this->build_permalink_subsections();
+	}
+
+	/*
+	 * Remove all old permalinks
+	 */
+	// TODO: eventually, we'll want to keep these and have multiple versions.
+	// See issues #314 #362 #363
+
+	public function move_old_permalinks() {
+
+		$sql = 'DELETE FROM permalinks';
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
+		{
+			echo '<p>'.$sql.'</p>';
+			echo '<p>'.$result->getMessage().'</p>';
+			return;
+		}
+	}
+
+	/**
+	 * Recurse through all subsections to build permalink data.
+	 */
+	public function build_permalink_subsections($parent_id = null) {
+
+		$structure_sql = 'SELECT structure_unified.*
+			FROM structure
+			LEFT JOIN structure_unified
+				ON structure.id = structure_unified.s1_id';
+
+		/*
+		 * We use prepared statements for efficiency.  As a result,
+		 * we need to keep an array of our arguments rather than
+		 * hardcoding them in the SQL.
+		 */
+		$structure_args = array();
+
+		if (isset($parent_id))
+		{
+			$structure_sql .= ' WHERE parent_id = :parent_id';
+			$structure_args[':parent_id'] = $parent_id;
+		}
+		else
+		{
+			$structure_sql .= ' WHERE parent_id IS NULL';
+		}
+
+		if (INCLUDES_REPEALED === TRUE)
+		{
+			$structure_sql .= ' AND
+					(SELECT COUNT(*)
+					FROM laws
+					LEFT OUTER JOIN laws_meta
+						ON laws.id = laws_meta.law_id AND laws_meta.meta_key = "repealed"
+					WHERE laws.structure_id=structure_unified.s1_id
+					AND ((laws_meta.meta_value = "n") OR laws_meta.meta_value IS NULL)  ) > 0';
+		}
+
+		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_result = $structure_statement->execute($structure_args);
+
+		if ($structure_result === FALSE)
+		{
+			echo '<p>'.$structure_sql.'</p>';
+			echo '<p>'.$structure_result->getMessage().'</p>';
+			return;
+		}
+
+		/*
+		 * Get results as an array to save memory
+		 */
+		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
+		{
+			/*
+			 * Figure out the URL for this structural unit by iterating through the "identifier"
+			 * columns in this row.
+			 */
+			$identifier_parts = array();
+
+			foreach ($item as $key => $value)
+			{
+				if (preg_match('/s[0-9]_identifier/', $key) == 1)
+				{
+					/*
+					 * Higher-level structural elements (e.g., titles) will have blank columns in
+					 * structure_unified, so we want to omit any blank values. Because a valid
+					 * structural unit identifier is "0" (Virginia does this), we check the string
+					 * length, rather than using empty().
+					 */
+					if (strlen($value) > 0)
+					{
+						$identifier_parts[] = urlencode($value);
+					}
+				}
+			}
+			$identifier_parts = array_reverse($identifier_parts);
+			$token = implode('/', $identifier_parts);
+			$url = '/'.$token.'/';
+
+			/*
+			 * Insert the structure
+			 */
+			$insert_sql = 'INSERT INTO permalinks SET
+				object_type = :object_type,
+				relational_id = :relational_id,
+				identifier = :identifier,
+				token = :token,
+				url = :url';
+			$insert_statement = $this->db->prepare($insert_sql);
+			$insert_data = array(
+				':object_type' => 'section',
+				':relational_id' => $item['s1_id'],
+				':identifier' => $item['s1_identifier'],
+				':token' => $token,
+				':url' => $url,
+			);
+
+			$insert_result = $insert_statement->execute($insert_data);
+			if ($insert_result === FALSE)
+			{
+				echo '<p>'.$sql.'</p>';
+				echo '<p>'.$structure_result->getMessage().'</p>';
+				return;
+			}
+
+			/*
+			 * Now we can use our data to build the child law identifiers
+			 */
+
+			if (INCLUDES_REPEALED !== TRUE)
+			{
+				$laws_sql = 'SELECT id, structure_id, section AS section_number, catch_line
+						FROM laws
+						WHERE structure_id = :s_id
+						ORDER BY order_by, section';
+			}
+			else
+			{
+				$laws_sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line
+						FROM laws
+						LEFT OUTER JOIN laws_meta
+						ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
+						WHERE structure_id = :s_id
+						AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
+						ORDER BY order_by, section';
+			}
+			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+			$laws_result = $laws_statement->execute( array( ':s_id' => $item['s1_id'] ) );
+
+			if ($structure_result === FALSE)
+			{
+				echo '<p>'.$laws_sql.'</p>';
+				echo '<p>'.$laws_result->getMessage().'</p>';
+				return;
+			}
+
+
+			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
+			{
+				$law_token = $law['section_number'];
+				$law_url = '/' . $law['section_number'] . '/';
+				/*
+				 * Insert the structure
+				 */
+				$insert_sql = 'INSERT INTO permalinks SET
+					object_type = :object_type,
+					relational_id = :relational_id,
+					identifier = :identifier,
+					token = :token,
+					url = :url';
+				$insert_statement = $this->db->prepare($insert_sql);
+				$insert_data = array(
+					':object_type' => 'law',
+					':relational_id' => $law['id'],
+					':identifier' => $law['section_number'],
+					':token' => $law_token,
+					':url' => $law_url,
+				);
+
+				$insert_result = $insert_statement->execute($insert_data);
+
+				if ($insert_result === FALSE)
+				{
+					echo '<p>'.$insert_sql.'</p>';
+					echo '<p>'.$insert_result->getMessage().'</p>';
+					return;
+				}
+			}
+
+
+
+			$this->build_permalink_subsections($item['s1_id']);
+		}
+	}
 
 	/**
 	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
@@ -547,7 +747,7 @@ class Parser
 			}
 
 		}
-		
+
 		/*
 		 * Store any tags associated with this law.
 		 */
@@ -559,7 +759,7 @@ class Parser
 						SET law_id = ' . $law_id . ',
 						section_number = ' . $this->db->quote($this->code->section_number) . ',
 						text = ' . $this->db->quote($tag);
-				
+
 				$result = $this->db->exec($sql);
 				if ($result === FALSE)
 				{

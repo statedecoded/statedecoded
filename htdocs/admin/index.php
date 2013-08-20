@@ -64,6 +64,10 @@ if (count($_POST) === 0)
 			<input type="hidden" name="action" value="empty" />
 			<input type="submit" value="Empty the DB" />
 		</form>
+		<form method="post" action="/admin/?page=parse&noframe=1">
+			<input type="hidden" name="action" value="permalinks" />
+			<input type="submit" value="Rebuild Permalinks" />
+		</form>
 		</nav>';
 	}
 }
@@ -101,6 +105,7 @@ elseif ($_POST['action'] == 'parse')
 			$parser->generate_sitemap();
 			$parser->structural_stats_generate();
 			$parser->prune_views();
+			$parser->build_permalinks();
 		}
 	}
 
@@ -113,6 +118,15 @@ elseif ($_POST['action'] == 'parse')
 	echo 'Done.<br />';
 }
 
+elseif ($_POST['action'] == 'permalinks')
+{
+	ob_start();
+
+	$parser->build_permalinks();
+
+	$body = ob_get_contents();
+	ob_end_clean();
+}
 
 /*
  * If this is an AJAX request
