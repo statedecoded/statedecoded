@@ -58,6 +58,7 @@ class Law
 			$this->config->get_metadata = TRUE;
 			$this->config->get_references = TRUE;
 			$this->config->get_related_laws = TRUE;
+			$this->config->get_tags = TRUE;
 			$this->config->render_html = TRUE;
 		}
 		
@@ -282,6 +283,32 @@ class Law
 		if ($this->config->get_metadata == TRUE)
 		{
 			$this->metadata = Law::get_metadata();
+		}
+		
+		/*
+		 * Gather any tags applied to this law.
+		 */
+		if ($this->config->get_tags == TRUE)
+		{
+			$sql = 'SELECT text
+					FROM tags
+					WHERE law_id = ' . $db->quote($this->section_id);
+					
+			$result = $db->query($sql);
+			
+			if ( ($result !== TRUE) && ($result->rowCount() > 0) )
+			{
+				
+				$this->tags = new stdClass();
+				
+				$i = 0;
+				while ($tag = $result->fetch(PDO::FETCH_OBJ))
+				{
+					$this->tags->{$i} = $tag->text;
+					$i++;
+				}
+				
+			}
 		}
 
 		/*
