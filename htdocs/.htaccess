@@ -9,6 +9,9 @@ RewriteBase /
 # request.
 RewriteRule ^(.*)\.txt$ /$1/?plain_text=y [PT]
 
+# Provide an aliased URL to test during setup whether RewriteRule works.
+RewriteRule ^index.php.test$ /index.php [QSA]
+
 RewriteRule ^index\.php$ - [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
