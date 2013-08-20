@@ -100,12 +100,12 @@ elseif ($_POST['action'] == 'parse')
 		{
 			$parser->clear_apc();
 			$parser->parse();
+			$parser->build_permalinks();
 			$parser->write_api_key();
 			$parser->export();
 			$parser->generate_sitemap();
 			$parser->structural_stats_generate();
 			$parser->prune_views();
-			$parser->build_permalinks();
 		}
 	}
 
