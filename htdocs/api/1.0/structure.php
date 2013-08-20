@@ -35,7 +35,7 @@ elseif (!isset($api->all_keys->$key))
 if (isset($_REQUEST['callback']))
 {
 	$callback = $_REQUEST['callback'];
-	
+
 	# If this callback contains any reserved terms that raise XSS concerns, refuse to proceed.
 	if (valid_jsonp_callback($callback) === false)
 	{
@@ -62,11 +62,9 @@ else
 # Create a new instance of the class that handles information about individual laws.
 $struct = new Structure();
 
-# Pass the requested URL to Structure, and then get structural data from that URL. We're faking the
-# URL to emulate the public listing (e.g., <http://example.com/12/6/>), which is what is expected
-# by the url_to_structure() method.
-$struct->url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$identifier;
-$struct->url_to_structure();
+
+# Get the structure based on our identifier
+$struct->token_to_structure($identifier);
 $response = $struct->structure;
 
 # If this structural element does not exist.
@@ -91,10 +89,10 @@ if (isset($_GET['fields']))
 	{
 		$field = trim($field);
 	}
-	
+
 	# It's essential to unset $field at the conclusion of the prior loop.
 	unset($field);
-	
+
 	# Step through our response fields and eliminate those that aren't in the requested list.
 	foreach($response as $field => &$value)
 	{

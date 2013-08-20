@@ -91,6 +91,46 @@ class Structure
 
 	}
 
+	/**
+	 * Easier way to get structure for API
+	 */
+	function token_to_structure($token)
+	{
+
+		/*
+		 * We're going to need access to the database connection throughout this class.
+		 */
+		global $db;
+
+		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE token = :token';
+		$permalink_args = array(':token' => $token);
+		$permalink_statement = $db->prepare($permalink_sql);
+
+		$result = $permalink_statement->execute($permalink_args);
+
+		if ( ($result === FALSE) || ($permalink_statement->rowCount() == 0) )
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Get the result
+		 */
+		$structure_row = $permalink_statement->fetch(PDO::FETCH_ASSOC);
+
+		/*
+		 * Save the variable within the class scope.
+		 */
+		$this->structure_id = $structure_row['relational_id'];
+
+		/*
+		 * Pass the request off to the get_current() method.
+		 */
+		$this->get_current();
+
+		return TRUE;
+	}
+
 
 	/**
 	 * Get all of the metadata for the specified structural element (title, chapter, etc.).
@@ -115,8 +155,12 @@ class Structure
 		/*
 		 * Retrieve this structural unit's ancestry.
 		 */
-		$sql = 'SELECT *
+		$sql = 'SELECT structure_unified.*,
+				permalinks.url, permalinks.token
 				FROM structure_unified
+					LEFT JOIN permalinks
+						ON structure_unified.s1_id = permalinks.relational_id and
+						object_type = ' . $db->quote('section') . '
 				WHERE
 				s1_id = '.$this->structure_id;
 
@@ -188,20 +232,6 @@ class Structure
 		unset($structure);
 
 		/*
-		 * Iterate through the levels and build up the URLs recursively.
-		 */
-		$i=0;
-		$url = 'http://' . $_SERVER['SERVER_NAME']
-			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
-		$url_suffix = '';
-		foreach ($this->structure as &$level)
-		{
-			$url_suffix .= urlencode($level->identifier) . '/';
-			$level->url = $url . $url_suffix;
-			$i++;
-		}
-
-		/*
 		 * We set these variables for the convenience of other functions in this class.
 		 */
 		$tmp = end($this->structure);
@@ -241,19 +271,13 @@ class Structure
 		if (!empty($this->parent_id))
 		{
 			$sql = 'SELECT s1_id AS id, s1_name AS name, s1_identifier AS identifier,
-					CONCAT("/", ';
-			for ($i=count((array) $this->structure); $i > 0; $i--)
-			{
-				$sql .= 's'.$i.'_identifier, "/"';
-				if ($i != 1)
-				{
-					$sql .= ', ';
-				}
-			}
-			$sql .= ') AS url
+					permalinks.url, permalinks.token
 					FROM structure_unified
 					LEFT JOIN structure
 						ON structure_unified.s1_id = structure.id
+					LEFT JOIN permalinks
+						ON structure.id = permalinks.relational_id and
+						object_type = ' . $db->quote('section') . '
 					WHERE s2_id = ' . $db->quote($this->parent_id) . '
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
 		}
@@ -264,8 +288,12 @@ class Structure
 		else
 		{
 
-			$sql = 'SELECT id, name, identifier, CONCAT(identifier, "/") AS url
+			$sql = 'SELECT id, name, identifier,
+					permalinks.url, permalinks.token
 					FROM structure
+					LEFT JOIN permalinks
+						ON structure.id = permalinks.relational_id and
+						object_type = ' . $db->quote('section') . '
 					WHERE parent_id IS NULL';
 
 			/*
@@ -295,11 +323,13 @@ class Structure
 		 */
 		if ( ($result === FALSE) || ($result->rowCount() == 0) )
 		{
-			/*
-			 * Get the result as an object.
-			 */
-			$this->siblings = $result->fetchAll(PDO::FETCH_OBJ);
+			return FALSE;
 		}
+
+		/*
+		 * Get the result as an object.
+		 */
+		$this->siblings = $result->fetchAll(PDO::FETCH_OBJ);
 
 		return TRUE;
 
@@ -323,10 +353,14 @@ class Structure
 		 * Assemble the SQL query. The subselect is to avoid getting structural units that contain
 		 * only repealed (that is, unlisted) laws.
 		 */
-		$sql = 'SELECT structure_unified.*
+		$sql = 'SELECT structure_unified.*,
+				permalinks.url, permalinks.token
 				FROM structure
 				LEFT JOIN structure_unified
 					ON structure.id = structure_unified.s1_id
+				LEFT JOIN permalinks
+					ON structure.id = permalinks.relational_id and
+					object_type = ' . $db->quote('section') . '
 				WHERE structure.parent_id';
 		if (!isset($this->id))
 		{
@@ -397,45 +431,6 @@ class Structure
 			$child->name = $child->s1_name;
 			$child->identifier = $child->s1_identifier;
 
-			/*
-			 * Figure out the URL for this structural unit by iterating through the "identifier"
-			 * columns in this row.
-			 */
-			$child->url = '//' . $_SERVER['SERVER_NAME'] .
-				( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
-			$identifier_parts = array();
-			foreach ($child as $key => $value)
-			{
-				if (preg_match('/s[0-9]_identifier/', $key) == 1)
-				{
-					/*
-					 * Higher-level structural elements (e.g., titles) will have blank columns in
-					 * structure_unified, so we want to omit any blank values. Because a valid
-					 * structural unit identifier is "0" (Virginia does this), we check the string
-					 * length, rather than using empty().
-					 */
-					if (strlen($value) > 0)
-					{
-						$identifier_parts[] = urlencode($value);
-					}
-				}
-
-				/*
-				 * We no longer have any need for these "s#_" fields. Eliminate them. (This is
-				 * helpful to save memory, but it also allows this object to be delivered directly
-				 * via the API, without modification.)
-				 */
-				if (preg_match('/s[0-9]_([a-z]+)/', $key) == 1)
-				{
-					unset($child->$key);
-				}
-			}
-			$identifier_parts = array_reverse($identifier_parts);
-			$child->url .= implode('/', $identifier_parts).'/';
-			$child->url_identifier = implode('/', $identifier_parts);
-			$child->api_url = 'http://' . $_SERVER['SERVER_NAME']
-				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
-				. '/api/structure/' . implode('/', $tmp) . '/';
 			$children->$i = $child;
 			$i++;
 		}
@@ -473,7 +468,7 @@ class Structure
 		 * structure of the table, and that might be a worthy modification at some point. But, for
 		 * now, this will do.
 		 */
-		$sql = 'SELECT *
+		$sql = 'SELECT structure_unified.*,
 				FROM structure_unified
 				WHERE s1_id='.$this->id;
 
@@ -655,8 +650,11 @@ class Structure
 		if (INCLUDES_REPEALED !== TRUE)
 		{
 
-			$sql = 'SELECT id, structure_id, section AS section_number, catch_line
+			$sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line,
+					permalinks.url, permalinks.token
 					FROM laws
+					LEFT JOIN permalinks ON laws.id = permalinks.relational_id
+						AND permalinks.object_type = ' . $db->quote('law') . '
 					WHERE structure_id=' . $db->quote($this->id) . '
 					ORDER BY order_by, section';
 		}
@@ -691,21 +689,6 @@ class Structure
 		$i=0;
 		while ($section = $result->fetch(PDO::FETCH_OBJ))
 		{
-
-			/*
-			 * Figure out the URL and include that.
-			 */
-			$section->url = 'http://'.$_SERVER['SERVER_NAME']
-				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
-				. '/'.$section->section_number.'/';
-
-			/*
-			 * Ditto for the API URL.
-			 */
-			$section->api_url = 'http://'.$_SERVER['SERVER_NAME']
-				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
-				. '/api/law/'.$section->section_number.'/';
-
 			/*
 			 * Sometimes there are laws that lack titles. We've got to put something in that field.
 			 */
