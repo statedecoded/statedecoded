@@ -17,12 +17,11 @@
  */
 
 /*
- * If we have not defined the include path yet, then try to do so automatically. (Once we have
- * automatically defined the include path, the text of this file is modified to prevent the below
- * stanza from running.)
+ * If we have not defined the include path yet, then try to do so automatically. Once we have
+ * automatically defined the include path, we store it in .htaccess, where it becomes available
+ * within the scope of $_SERVER.
  */
-$include_path_defined = FALSE;
-if ($include_path_defined === FALSE)
+if ( !isset($_SERVER['INCLUDE_PATH']) )
 {
 	
 	/*
@@ -66,6 +65,9 @@ if ($include_path_defined === FALSE)
 				
 					$child_files = scandir($parent_directory . '/' . $file);
 					
+					/*
+					 * To pick a file more or less at random, we look for class.Law.inc.php.
+					 */
 					if (in_array('class.Law.inc.php', $child_files) === TRUE)
 					{
 						$include_path = realpath(dirname(__FILE__) . '/' . $parent_directory . '/' . $file . '/');
@@ -80,12 +82,31 @@ if ($include_path_defined === FALSE)
 		
 	}
 	
+	/*
+	 * If we've defined our include path, then modify this file to store it permanently.
+	 */
+	if (isset($include_path))
+	{
+		
+		/*
+		 * If possible, modify the .htaccess file, to store permanently the include path.
+		 */
+		if (is_writable('.htaccess') == TRUE)
+		{
+			
+			$htaccess = PHP_EOL . PHP_EOL . 'SetEnv INCLUDE_PATH ' . $include_path . PHP_EOL;
+			$result = file_put_contents('.htaccess' , $htaccess, FILE_APPEND);
+			
+		}
+		
+	}
+	
 }
 
 /*
- * Define the path to the includes library.
+ * Store the include path as a constant.
  */
-define('INCLUDE_PATH', $include_path);
+define('INCLUDE_PATH', $_SERVER['INCLUDE_PATH']);
 
 /*
  * If APC is not running.
