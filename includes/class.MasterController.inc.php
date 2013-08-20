@@ -49,11 +49,12 @@ class MasterController
 
 	public function parseRequest()
 	{
-		// Reformat the results slightly.
-		if(isset($_SERVER['REDIRECT_URL']) && !empty($_SERVER['REDIRECT_URL'])) {
+		if(isset($_SERVER['REDIRECT_URL']) && !empty($_SERVER['REDIRECT_URL']))
+		{
 			$url = $_SERVER['REDIRECT_URL'];
 		}
-		else {
+		else
+		{
 			$url = $_SERVER['REQUEST_URI'];
 		}
 

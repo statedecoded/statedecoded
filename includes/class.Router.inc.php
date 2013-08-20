@@ -25,7 +25,8 @@ class Router
 
 	public static function addRoute($route, $handler)
 	{
-		if (self::$handlers[$route]) {
+		if (self::$handlers[$route])
+		{
 			trigger_error(
 				'The route "'.$route.'" already exists and will be replaced.',
 				E_USER_WARNING
@@ -42,12 +43,14 @@ class Router
 		return self::$routes;
 	}
 
-	public static function getRoute($url) {
+	public static function getRoute($url)
+	{
 		foreach(self::$routes as $route) {
 			// Escape slashes
 			$route_regex = str_replace('/', '\\/', $route);
 
-			if (preg_match('/'.$route_regex.'/', $url, $matches)) {
+			if (preg_match('/'.$route_regex.'/', $url, $matches))
+			{
 				return array(self::$handlers[$route], $matches);
 			}
 		}
