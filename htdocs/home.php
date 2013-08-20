@@ -15,11 +15,6 @@
  */
 
 /*
- * Include the PHP declarations that drive this page.
- */
-require $_SERVER['DOCUMENT_ROOT'] . '/../includes/page-head.inc.php';
-
-/*
  * Fire up our templating engine.
  */
 $template = new Page;
@@ -52,48 +47,48 @@ $body = '
 					<h1>Discover the ' . LAWS_NAME . '</h1>
 					<h2>The laws of ' . PLACE_NAME . ', for non-lawyers.</h2>
 				</hgroup>
-				
+
 				<p>' . SITE_NAME . ' provides the ' . LAWS_NAME . ' on one friendly website. Inline
 				definitions, cross-references, bulk downloads, a modern API, and all of the niceties
 				of modern website design. It’s like the expensive software lawyers use, but free and
 				wonderful.</p>
-				
+
 				<p>This is a public beta test of Virginia Decoded, which is to say that everything
 				is under development. Things are funny looking, broken, and generally unreliable
 				right now.</p>
-				
+
 				<p>This site is powered by <a href="http://www.statedecoded.com/">The State
 				Decoded</a></p>
 
 			</section> <!-- // .feature -->
 
 			<section class="secondary-content">
-				
+
 				<article class="abstract">
 					<h1>Feature Code Callout</h1>
 					<p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris in erat justo. Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi. Proin condimentum fermentum nunc. Etiam pharetra, erat sed fermentum feugiat, velit mauris egestas quam, ut aliquam massa nisl quis neque.</p>
 				</article>
-				
+
 				<article class="abstract">
 					<h1>Feature Code Callout</h1>
 					<p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris in erat justo. Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi. Proin condimentum fermentum nunc. Etiam pharetra, erat sed fermentum feugiat, velit mauris egestas quam, ut aliquam massa nisl quis neque.</p>
 				</article>
-				
+
 				<article class="abstract">
 
 					<figure>
 						<img src="/public/images/richmond_capitol.jpg" alt="The Richmond Capitol Building">
 					</figure>
-			
+
 					<h1>The Capitol File</h1>
 					<p>Want to know more about what’s going on in the State Legislature? Check our our sister site, <a href="http://www.richmondsunlight.com">Richmond Sunlight</a>, to find out about the changes that are being proposed to the Commonwealth’s code.</p>
-					
+
 				</article>
-				
+
 			</section> <!-- // .secondary-content -->
-			
+
 		</div> <!-- // .nest -->
-		
+
 	</section>';
 
 /*

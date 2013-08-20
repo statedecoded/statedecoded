@@ -1,34 +1,17 @@
 # Specify our error pages.
 ErrorDocument 404 /404.php
 
+<IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
 
-RewriteRule ^index\.php$ - [L]
-
-
-# Provide an aliased URL to test during setup whether RewriteRule works.
-RewriteRule ^index.php.test$ /index.php [QSA]
-
-# Requests for the code page.
-RewriteRule ^browse/$ /browse.php [QSA]
-
-# Requests for the about page.
-RewriteRule ^about/$ /about.php [QSA]
-
-# Requests for the API key registration page.
-RewriteRule ^api-key/$ /api-key.php [QSA]
-
-# Requests for a specific law.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([0-9A-Za-z\.]{1,4})-([0-9\.:]{1,10})/$ /law.php?section_number=$1-$2 [QSA]
-
-# Requests for a specific structural unit.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^((([0-9A-Za-z\.]{1,8})/)+)$ /structure.php [QSA]
-
 # If this is a request for a plain-text version of a page, translate the extention into a specific
 # request.
-RewriteRule ^(.*)\.txt$ /$1/?plain_text=y
+RewriteRule ^(.*)\.txt$ /$1/?plain_text=y [PT]
+
+RewriteRule ^index\.php$ - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>

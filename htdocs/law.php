@@ -14,11 +14,6 @@
 */
 
 /*
- * Include the PHP declarations that drive this page.
- */
-require '../includes/page-head.inc.php';
-
-/*
  * Create a new instance of Law.
  */
 $laws = new Law();
@@ -26,7 +21,7 @@ $laws = new Law();
 /*
  * Use the section number in the URL as the section number that we're looking up.
  */
-$laws->section_number = urldecode($_GET['section_number']);
+$laws->section_number = urldecode($args['section_number']);
 
 /*
  * Retrieve a copy of the law.
@@ -274,6 +269,14 @@ if (isset($law->official_url))
 $sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
 			</section>';
+
+
+/*
+ * Get the help text for the requested page.
+ */
+$help = new Help();
+
+// The help text is now available, as a JSON object, as $help->get_text()
 
 $sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>';
 
