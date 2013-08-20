@@ -561,16 +561,13 @@ class Structure
 		 * To assign URLs, we iterate through the object in reverse, and build up the URLs from
 		 * their structure identifiers.
 		 */
-		$ancestry->$key->url = 'http://' . $_SERVER['SERVER_NAME']
+		$url = 'http://' . $_SERVER['SERVER_NAME']
 			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
-		$identifier_parts = array();
-		foreach ((array) $ancestry as $key => $level)
+		foreach (array_reverse((array) $ancestry) as $key => $level)
 		{
-			$identifier_parts[] = urlencode($level->identifier);
+			$url .= urlencode($level->identifier).'/';
+			$ancestry->$key->url = $url;
 		}
-		$identifier_parts = array_reverse($identifier_parts);
-		$ancestry->$key->url .= implode('/', $identifier_parts) . '/';
-		$ancestry->$key->url_identifier = implode('/', $identifier_parts);
 
 		unset($structure);
 		unset($label);
