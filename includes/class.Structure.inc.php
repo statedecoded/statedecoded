@@ -160,13 +160,20 @@ class Structure
 				FROM structure_unified
 					LEFT JOIN permalinks
 						ON structure_unified.s1_id = permalinks.relational_id and
-						object_type = ' . $db->quote('section') . '
+						object_type = :object_type
 				WHERE
-				s1_id = '.$this->structure_id;
+				s1_id = :id
+				LIMIT 1';
+		$sql_args = array(
+			':object_type'=> 'section',
+			':id' => $this->structure_id
+		);
+		$statement = $db->prepare($sql);
 
-		$result = $db->query($sql);
 
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		$result = $statement->execute($sql_args);
+
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -174,7 +181,7 @@ class Structure
 		/*
 		 * Get the result as an object.
 		 */
-		$structure_row = $result->fetch(PDO::FETCH_OBJ);
+		$structure_row = $statement->fetch(PDO::FETCH_OBJ);
 
 		/*
 		 * Pivot this into a multidimensional object. That is, it's presently stored in multiple
@@ -250,14 +257,18 @@ class Structure
 		 */
 		$sql = 'SELECT metadata
 				FROM structure
-				WHERE id=' . $this->id . '
+				WHERE id=:id
 				AND metadata IS NOT NULL';
+		$sql_args = array(
+			':id' => $this->id
+		);
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if ( ($result !== FALSE) && ($result->rowCount() >= 1) )
+		if ( ($result !== FALSE) && ($statement->rowCount() >= 1) )
 		{
-			$structure_row = $result->fetch(PDO::FETCH_OBJ);
+			$structure_row = $statement->fetch(PDO::FETCH_OBJ);
 			$this->metadata = unserialize(stripslashes($structure_row->metadata));
 		}
 
@@ -268,6 +279,7 @@ class Structure
 		 * stored in structure_unified (the most specific structural units are in s1), the parent
 		 * is always found in s2.
 		 */
+		$sql_args = array();
 		if (!empty($this->parent_id))
 		{
 			$sql = 'SELECT s1_id AS id, s1_name AS name, s1_identifier AS identifier,
@@ -277,9 +289,11 @@ class Structure
 						ON structure_unified.s1_id = structure.id
 					LEFT JOIN permalinks
 						ON structure.id = permalinks.relational_id and
-						object_type = ' . $db->quote('section') . '
-					WHERE s2_id = ' . $db->quote($this->parent_id) . '
+						object_type = :object_type
+					WHERE s2_id = :parent_id
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
+			$sql_args[':object_type'] = 'section';
+			$sql_args[':parent_id'] = $this->parent_id;
 		}
 
 		/*
@@ -293,8 +307,9 @@ class Structure
 					FROM structure
 					LEFT JOIN permalinks
 						ON structure.id = permalinks.relational_id and
-						object_type = ' . $db->quote('section') . '
+						object_type = :object_type
 					WHERE parent_id IS NULL';
+			$sql_args[':object_type'] = 'section';
 
 			/*
 			 * Order these by the order_by column, which may or may not be populated.
@@ -316,12 +331,13 @@ class Structure
 			}
 		}
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		/*
 		 * If the query fails, or if no results are found, return false -- we can't make a match.
 		 */
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -329,7 +345,7 @@ class Structure
 		/*
 		 * Get the result as an object.
 		 */
-		$this->siblings = $result->fetchAll(PDO::FETCH_OBJ);
+		$this->siblings = $statement->fetchAll(PDO::FETCH_OBJ);
 
 		return TRUE;
 
@@ -360,15 +376,18 @@ class Structure
 					ON structure.id = structure_unified.s1_id
 				LEFT JOIN permalinks
 					ON structure.id = permalinks.relational_id and
-					object_type = ' . $db->quote('section') . '
-				WHERE structure.parent_id';
+					object_type = :object_type';
+		$sql_args = array(
+			':object_type' => 'section'
+		);
 		if (!isset($this->id))
 		{
-			$sql .= ' IS NULL';
+			$sql .= ' WHERE structure.parent_id IS NULL';
 		}
 		else
 		{
-			$sql .= '='.$db->quote($this->id);
+			$sql .= ' WHERE structure.parent_id = :parent_id';
+			$sql_args[':parent_id'] = $this->id;
 
 			/*
 			 * If this legal code continues to print repealed laws, then make sure that we're not
@@ -406,12 +425,13 @@ class Structure
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		/*
 		 * If the query fails, or if no results are found, return false -- we can't make a match.
 		 */
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -420,7 +440,7 @@ class Structure
 		 * Return the result as an object, built up as we loop through the results.
 		 */
 		$i=0;
-		while ($child = $result->fetch(PDO::FETCH_OBJ))
+		while ($child = $statement->fetch(PDO::FETCH_OBJ))
 		{
 
 			/*
@@ -468,18 +488,22 @@ class Structure
 		 * structure of the table, and that might be a worthy modification at some point. But, for
 		 * now, this will do.
 		 */
-		$sql = 'SELECT structure_unified.*,
+		$sql = 'SELECT structure_unified.*
 				FROM structure_unified
-				WHERE s1_id='.$this->id;
+				WHERE s1_id = :id';
+		$sql_args = array(
+			':id' => $this->id
+		);
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 
-		$structure = $result->fetch(PDO::FETCH_OBJ);
+		$structure = $statement->fetch(PDO::FETCH_OBJ);
 
 		/*
 		 * Create a new, blank object.
@@ -524,6 +548,11 @@ class Structure
 		 * To assign URLs, we iterate through the object in reverse, and build up the URLs from
 		 * their structure identifiers.
 		 */
+
+		// TODO: Fix this!
+		// 1. Use the permalink url.
+		// 2. We should be adding the domain name in the view code.
+
 		$url = 'http://' . $_SERVER['SERVER_NAME']
 			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
 		foreach (array_reverse((array) $ancestry) as $key => $level)
@@ -565,16 +594,21 @@ class Structure
 		 */
 		$sql = 'SELECT identifier
 				FROM structure
-				WHERE id='.$db->quote($this->id);
+				WHERE id = :id';
+		$sql_args = array(
+			':id' => $this->id
+		);
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 
-		$structure = $result->fetch(PDO::FETCH_OBJ);
+		$structure = $statement->fetch(PDO::FETCH_OBJ);
 
 		return $structure->identifier;
 
@@ -606,16 +640,21 @@ class Structure
 		 */
 		$sql = 'SELECT id
 				FROM structure
-				WHERE identifier = ' . $db->quote($this->identifier);
+				WHERE identifier = :identifier';
+		$sql_args = array(
+			':identifier' => $this->identifier
+		);
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
 
-		$structure = $result->fetch(PDO::FETCH_OBJ);
+		$structure = $statement->fetch(PDO::FETCH_OBJ);
 
 		return $structure->id;
 
@@ -654,9 +693,13 @@ class Structure
 					permalinks.url, permalinks.token
 					FROM laws
 					LEFT JOIN permalinks ON laws.id = permalinks.relational_id
-						AND permalinks.object_type = ' . $db->quote('law') . '
-					WHERE structure_id=' . $db->quote($this->id) . '
+						AND permalinks.object_type = :object_type
+					WHERE structure_id = :id
 					ORDER BY order_by, section';
+			$sql_args = array(
+				':object_type' => 'law',
+				':id' => $this->id
+			);
 		}
 
 		else
@@ -666,14 +709,18 @@ class Structure
 					FROM laws
 					LEFT OUTER JOIN laws_meta
 					ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
-					WHERE structure_id=' . $db->quote($this->id) . '
+					WHERE structure_id = :id
 					AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
 					ORDER BY order_by, section';
+			$sql_args = array(
+				':id' => $this->id
+			);
 		}
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -687,7 +734,7 @@ class Structure
 		 * Return the result as an object, built up as we loop through the results.
 		 */
 		$i=0;
-		while ($section = $result->fetch(PDO::FETCH_OBJ))
+		while ($section = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			/*
 			 * Sometimes there are laws that lack titles. We've got to put something in that field.
