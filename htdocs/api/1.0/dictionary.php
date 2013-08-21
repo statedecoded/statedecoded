@@ -3,15 +3,6 @@
 header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
 
-# Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
-
-if (!isset($_GET['term']) || empty($_GET['term']))
-{
-	json_error('Dictionary term not provided.');
-	die();
-}
-
 $api = new API;
 $api->list_all_keys();
 
@@ -41,7 +32,7 @@ elseif (!isset($api->all_keys->$key))
 if (isset($_REQUEST['callback']))
 {
 	$callback = $_REQUEST['callback'];
-	
+
 	# If this callback contains any reserved terms that raise XSS concerns, refuse to proceed.
 	if (valid_jsonp_callback($callback) === false)
 	{
@@ -50,8 +41,15 @@ if (isset($_REQUEST['callback']))
 	}
 }
 
+# Make sure we have a term.
+if (!isset($args['term']) || empty($args['term']))
+{
+	json_error('Dictionary term not provided.');
+	die();
+}
+
 # Clean up the term.
-$term = filter_input(INPUT_GET, 'term', FILTER_SANITIZE_STRING);
+$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
 
 # If a section has been specified, then clean that up.
 if (isset($_GET['section']))
@@ -98,10 +96,10 @@ else
 		{
 			$field = trim($field);
 		}
-		
+
 		# It's essential to unset $field at the conclusion of the prior loop.
 		unset($field);
-		
+
 		foreach ($dictionary as &$term)
 		{
 			# Step through our response fields and eliminate those that aren't in the requested
@@ -122,14 +120,13 @@ else
 	{
 		$dictionary = $dictionary->{0};
 	}
-	
+
 	# Rename this variable to use the expected name.
 	$response = $dictionary;
 }
 
-# Include the API version in this response, by pulling it out of the path.
-$tmp = explode('/', $_SERVER['SCRIPT_NAME']);
-$response->api_version = $tmp[2];
+# Include the API version in this response.
+$response->api_version = filter_var($args['api_version'], FILTER_SANITIZE_STRING);
 
 if (isset($callback))
 {

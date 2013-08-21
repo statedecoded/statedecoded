@@ -3,9 +3,6 @@
 header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
 
-# Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
-
 $api = new API;
 $api->list_all_keys();
 
@@ -46,7 +43,7 @@ if (isset($_REQUEST['callback']))
 
 # If no identifier has been specified, explicitly make it a null variable. This is when the request
 # is for the top level -- that is, a listing of the fundamental units of the code (e.g., titles).
-if ( !isset($_GET['identifier']) || empty($_GET['identifier']) )
+if ( !isset($args['identifier']) || empty($args['identifier']) )
 {
 	$identifier = '';
 }
@@ -56,7 +53,7 @@ if ( !isset($_GET['identifier']) || empty($_GET['identifier']) )
 else
 {
 	# Localize the identifier, filtering out unsafe characters.
-	$identifier = filter_input(INPUT_GET, 'identifier', FILTER_SANITIZE_STRING);
+	$identifier = filter_var($args['identifier'], FILTER_SANITIZE_STRING);
 }
 
 # Create a new instance of the class that handles information about individual laws.
@@ -103,9 +100,8 @@ if (isset($_GET['fields']))
 	}
 }
 
-# Include the API version in this response, by pulling it out of the path.
-$tmp = explode('/', $_SERVER['SCRIPT_NAME']);
-$response->api_version = $tmp[2];
+# Include the API version in this response.
+$response->api_version = filter_var($args['api_version'], FILTER_SANITIZE_STRING);
 
 if (isset($callback))
 {
