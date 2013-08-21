@@ -14,19 +14,40 @@
 */
 
 /*
- * Create a new instance of Structure.
+ * If no identifier has been specified, explicitly make it a null variable. This is when the request
+ * is for the top level -- that is, a listing of the fundamental units of the code (e.g., titles).
+ */
+if ( !isset($args['identifier']) || empty($args['identifier']) )
+{
+	$identifier = '';
+}
+/*
+ * If an identifier has been specified (which may come in the form of multiple identifiers, separated
+ * by slashes), localize that variable.
+ */
+else
+{
+	/*
+	 * Localize the identifier, filtering out unsafe characters.
+	 */
+	$identifier = filter_var($args['identifier'], FILTER_SANITIZE_STRING);
+}
+/*
+ * Create a new instance of the class that handles information about individual laws.
  */
 $struct = new Structure();
 
+
 /*
- * Use the URL to identify the requested structural unit.
+ * Get the structure based on our identifier
  */
-$result = $struct->url_to_structure();
+$struct->token_to_structure($identifier);
+$response = $struct->structure;
 
 /*
  * If the URL doesn't represent a valid structural portion of the code, then bail.
  */
-if ( $result === FALSE)
+if ( $response === FALSE)
 {
 	send_404();
 }
@@ -167,7 +188,9 @@ if (count((array) $structure) > 1)
 	}
 }
 
-# If we have any metadata about this structural unit.
+/*
+ * If we have any metadata about this structural unit.
+ */
 if (isset($struct->metadata))
 {
 	if (isset($struct->metadata->child_laws) && ($struct->metadata->child_laws > 0) )
@@ -235,8 +258,8 @@ if ($children !== FALSE)
 		 */
 		$class_index = $counter % count($row_classes);
 		$row_class = $row_classes[$class_index];
-		$api_url = $base_url . '/api/1.0/structure.php?identifier=' . $child->token
-			 . '&key=' . API_KEY;
+		$api_url = $base_url . '/api/1.0/structure/' . $child->token
+			 . '/?key=' . API_KEY;
 
 		$body .= '	<dt class="' . $row_class . '"><a href="' . $base_url . $child->url . '"
 				data-identifier="' . $child->token . '"
