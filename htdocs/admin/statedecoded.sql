@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `dictionary_general` (
 
 CREATE TABLE IF NOT EXISTS `editions` (
   `id` tinyint(3) unsigned NOT NULL auto_increment,
-  `year` year(4) NOT NULL,
+  `year` varchar(16) collate utf8_bin NOT NULL,
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
