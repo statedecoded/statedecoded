@@ -50,8 +50,13 @@ class API
 		 */
 		$sql = 'SELECT api_key
 				FROM api_keys
-				WHERE verified="y"';
-		$result = $db->query($sql);
+				WHERE verified=:verified';
+		$sql_args = array(
+			':verified' => 'y'
+		);
+
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		/* If the database has returned an error. */
 		if ($result === FALSE)
@@ -68,7 +73,7 @@ class API
 		/*
 		 * If no API keys have been registered.
 		 */
-		if ($result->rowCount() == 0)
+		if ($statement->rowCount() == 0)
 		{
 			return TRUE;
 		}
@@ -77,7 +82,7 @@ class API
 		 * If API keys have been registered, iterate through them and store them.
 		 */
 		$i=0;
-		while ($key = $result->fetch(PDO::FETCH_OBJ))
+		while ($key = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			$this->all_keys->{$key->api_key} = TRUE;
 			$i++;
@@ -110,16 +115,21 @@ class API
 		 */
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
-				WHERE api_key = ' . $db->quote($this->key);
-		$result = $db->query($sql);
+				WHERE api_key = :key';
+		$sql_args = array(
+			':key' => $this->key
+		);
+
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		/*
 		 * If the query succeeds then retrieve the result.
 		 */
-		if ($result != FALSE)
+		if ($result != FALSE && $statement->rowCount() > 0)
 		{
 
-			$api_key = $result->fetch(PDO::FETCH_OBJ);
+			$api_key = $statement->fetch(PDO::FETCH_OBJ);
 
 			/*
 			 * Bring the result into the scope of the object.
@@ -228,23 +238,34 @@ class API
 		 * Assemble the SQL query.
 		 */
 		$sql = 'INSERT INTO api_keys
-				SET api_key = ' . $db->quote($this->key) . ',
-				email = ' . $db->quote($this->email) . ',
-				secret = ' . $db->quote($this->secret) . ',
+				SET api_key = :key,
+				email = :email,
+				secret = :secret,
 				date_created = now()';
+		$sql_args = array(
+			':key' => $this->key,
+			':email' => $this->email,
+			':secret' => $this->secret
+		);
+
 		if (!empty($this->name))
 		{
-			$sql .= ', name=' . $db->quote($this->name);
+			$sql .= ', name = :name';
+			$sql_args[':name'] = $this->name;
 		}
 		if (!empty($this->url))
 		{
-			$sql .= ', url=' . $db->quote($this->url);
+			$sql .= ', url = :url';
+			$sql_args[':url'] = $this->url;
 		}
 
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
+		var_dump($sql, $result);
 		/*
 		 * Insert this record.
 		 */
-		$result = $db->exec($sql);
+
 		if ($result === FALSE)
 		{
 			throw new Exception('API key could not be created.');
@@ -277,8 +298,13 @@ class API
 		 */
 		$sql = 'UPDATE api_keys
 				SET verified = "y"
-				WHERE secret = ' . $db->quote($this->secret);
-		$result = $db->exec($sql);
+				WHERE secret = :secret';
+		$sql_args = array(
+			':secret' => $this->secret
+		);
+
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		if ($result === FALSE)
 		{
@@ -287,11 +313,17 @@ class API
 
 		$sql = 'SELECT api_key
 				FROM api_keys
-				WHERE secret = ' . $db->quote($this->secret);
-		$result = $db->query($sql);
+				WHERE secret = :secret';
+		$sql_args = array(
+			':secret' => $this->secret
+		);
+
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
 		if ($result !== FALSE)
 		{
-			$api_key = $result->fetch(PDO::FETCH_OBJ);
+			$api_key = $statement->fetch(PDO::FETCH_OBJ);
 			$this->key = $api_key->api_key;
 		}
 
