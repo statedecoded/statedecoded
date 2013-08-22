@@ -15,11 +15,6 @@
  */
 
 /*
- * Include the PHP declarations that drive this page.
- */
-require dirname(dirname(dirname(__FILE__))).'/includes/page-head.inc.php';
-
-/*
  * Include the code with the functions that drive this parser.
  */
 require_once INCLUDE_PATH . '/parser-controller.inc.php';
@@ -122,7 +117,11 @@ elseif ($_POST['action'] == 'permalinks')
 {
 	ob_start();
 
+	echo 'Beginning permalinks.<br />';
+
 	$parser->build_permalinks();
+
+	echo 'Done.<br />';
 
 	$body = ob_get_contents();
 	ob_end_clean();

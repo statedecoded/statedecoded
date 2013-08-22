@@ -14,6 +14,8 @@ Router::addRoute('^/$', 'home.php');
 // About page
 Router::addRoute('^/about/(.*)', 'about.php');
 
+Router::addRoute('^/admin/(.*)', 'admin/index.php');
+
 // Browse
 Router::addRoute('^/browse/(.*)', 'browse.php');
 
