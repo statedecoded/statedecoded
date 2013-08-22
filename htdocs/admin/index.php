@@ -72,10 +72,12 @@ if (count($_POST) === 0)
  */
 elseif ($_POST['action'] == 'empty')
 {
+
 	echo 'Emptying the database.<br />';
 	flush();
 	$parser->clear_db();
 	echo 'Done.<br />';
+	
 }
 
 /*
@@ -83,6 +85,7 @@ elseif ($_POST['action'] == 'empty')
  */
 elseif ($_POST['action'] == 'parse')
 {
+
 	echo 'Beginning parse.<br />';
 	flush();
 	ob_flush();
@@ -112,30 +115,36 @@ elseif ($_POST['action'] == 'parse')
 	$varnish->purge();
 
 	echo 'Done.<br />';
+	
 }
 
 elseif ($_POST['action'] == 'permalinks')
 {
+
 	ob_start();
-
+	
 	echo 'Beginning permalinks.<br />';
-
+	
 	$parser->build_permalinks();
-
+	
 	echo 'Done.<br />';
-
+	
 	$body = ob_get_contents();
 	ob_end_clean();
+	
 }
 
 /*
  * If this is an AJAX request
  */
-if(isset($_GET['noframe'])) {
+if(isset($_GET['noframe']))
+{
 	echo $body;
 }
+
 else
 {
+
 	/*
 	 * Fire up our templating engine.
 	 */
@@ -158,4 +167,5 @@ else
 	 * to the browser.
 	 */
 	$template->parse();
+	
 }
