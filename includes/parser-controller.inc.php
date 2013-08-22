@@ -95,7 +95,7 @@ class ParserController
 	{
 
 		/*
-		 * To see if the database tables have exist, just issue a query to the laws table.
+		 * To see if the database tables exist, just issue a query to the laws table.
 		 */
 		$sql = 'SELECT 1
 				FROM laws
@@ -109,7 +109,7 @@ class ParserController
 		$this->logger->message('Creating the database tables', 5);
 
 		/*
-		 * Because the database tables do not exist, see if the MySQL import file can be found.
+		 * The database tables do not exist, so see if the MySQL import file can be found.
 		 */
 		if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === FALSE)
 		{
@@ -133,7 +133,7 @@ class ParserController
 	}
 
 	/**
-	 * Clear out our database
+	 * Clear out our database.
 	 */
 	public function clear_db()
 	{
