@@ -2,7 +2,7 @@
 
 /**
  * The "Downloads" page, listing all of the bulk download files.
- * 
+ *
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
@@ -13,11 +13,6 @@
  * @since		0.8
  *
  */
-
-/*
- * Include the PHP declarations that drive this page.
- */
-require $_SERVER['DOCUMENT_ROOT'] . '/../includes/page-head.inc.php';
 
 /*
  * Fire up our templating engine.
@@ -63,13 +58,13 @@ $body = '
 	line, text, history, and structural ancestry (i.e., title number/name and chapter number/name).
 	Note that any sections that contain colons (e.g., § 8.01-581.12:2) have an underscore in place
 	of the colon in the filename, because neither Windows nor Mac OS support colons in filenames.</p>
-	
+
 	<h2>Laws as Plain Text</h2>
 	<p><a href="code.txt.zip">code.txt.zip</a><br />
 	This is the basic data about every law, one plain text file per law. Note that any sections that
 	contain colons (e.g., § 8.01-581.12:2) have an underscore in place of the colon in the filename,
 	because neither Windows nor Mac OS support colons in filenames.</p>
-	
+
 	<h2>Dictionary as JSON</h2>
 	<p><a href="dictionary.json.zip">dictionary.json.zip</a><br />
 	All terms defined in the laws, with each term’s definition, the section in which it is defined,
@@ -129,36 +124,36 @@ if (isset($_POST['form_data']))
  */
 elseif (isset($_GET['secret']))
 {
-	
+
 	/*
 	 * If this isn't a five-character string, bail -- something's not right.
 	 */
 	if (strlen($_GET['secret']) != 5)
 	{
 		$body = '<h2>Error</h2>
-		
+
 				<p>Invalid API key.</p>';
 	}
 	else
 	{
-	
+
 		/*
 		 * Import the variable into the class scope.
 		 */
 		$api->secret = filter_input(INPUT_GET, 'secret', FILTER_SANITIZE_SPECIAL_CHARS);
-		
+
 		/*
 		 * Activate the key.
 		 */
 		$api->activate_key();
-		
+
 		$body = '<h2>API Key Activated</h2>
 
 				<p>Your API key has been activated. You may now make requests from the API. Your key
 				is:</p>
 
 				<p><code>'.$api->key.'</code></p>';
-		
+
 	}
 }
 
@@ -168,17 +163,17 @@ elseif (isset($_GET['secret']))
 else
 {
 	$sidebar = '<h1>Register for the API</h1>
-				
+
 				<p>' . SITE_TITLE . ' has a rich application programming interface (API). To use it,
 				simply register for a key and confirm your e-mail address. You can be using it
 				within a minute or so. See the project’s
 				<a href="http://statedecoded.github.io/documentation/api.html">API
 				documentation</a> for details.</p>';
-	
+
 	$sidebar .= $api->display_form();
-	
+
 	$sidebar .= '<h1>Documentation</h1>
-				
+
 				<p>A great deal of information is available about how to use ' . SITE_TITLE .'’s
 				API and downloads, plus much more, within
 				<a href="http://statedecoded.github.io/documentation/">the documentation</a> for

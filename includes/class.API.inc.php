@@ -356,9 +356,16 @@ class API
 			return FALSE;
 		}
 
+		$url = 'http://';
+		if ($_SERVER['HTTPS'])
+		{
+			$url = 'https://';
+		}
+		$url .= $_SERVER['SERVER_NAME'] . '/downloads/?secret=' . $this->secret;
+
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
 			. "\r\r"
-			. 'http://' . $_SERVER['SERVER_NAME'] . '/downloads/?secret=' . $this->secret;
+			. $url;
 		$email->subject = SITE_TITLE . ' API Registration';
 		$email->headers = 'From: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
 						.'Return-Path: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"

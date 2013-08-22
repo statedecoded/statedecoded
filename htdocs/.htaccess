@@ -15,8 +15,12 @@ RewriteRule ^index.php.test$ /index.php [QSA]
 RewriteRule ^index\.php$ - [L]
 
 RewriteRule ^admin/ /index.php [L]
+RewriteRule ^downloads/ /index.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
+
+
+SetEnv INCLUDE_PATH /Users/krues8dr/Sites/statedecoded.localhost/master/includes/
