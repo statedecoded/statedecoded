@@ -111,9 +111,9 @@ class ParserController
 		/*
 		 * Because the database tables do not exist, see if the MySQL import file can be found.
 		 */
-		if (file_exists(BASE_PATH . '/statedecoded.sql') === FALSE)
+		if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === FALSE)
 		{
-			$this->logger->message('Could not read find ' . BASE_PATH . '/statedecoded.sql to '
+			$this->logger->message('Could not read find ' . WEB_ROOT . '/admin/statedecoded.sql to '
 				. 'populate the database. Database tables could not be created.', 10);
 			return FALSE;
 		}
