@@ -111,6 +111,20 @@ CREATE TABLE IF NOT EXISTS `laws_views` (
   KEY `section_2` (`section`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
+CREATE TABLE IF NOT EXISTS `permalinks` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `object_type` varchar(10) NOT NULL,
+  `relational_id` int(10) unsigned NOT NULL,
+  `identifier` varchar(64) NOT NULL,
+  `token` varchar(128) NOT NULL,
+  `url` varchar(256) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `object_type` (`object_type`),
+  KEY `relational_id` (`relational_id`),
+  KEY `identifier` (`identifier`),
+  KEY `url` (`url`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin  COMMENT='Lookup table of all urls and identifiers for laws and sections';
+
 CREATE TABLE IF NOT EXISTS `structure` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `name` varchar(128) collate utf8_bin default NULL COMMENT 'Textual description of this structural unit',
