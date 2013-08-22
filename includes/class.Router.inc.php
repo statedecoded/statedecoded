@@ -31,7 +31,7 @@ class Router
 	public static function addRoute($route, $handler)
 	{
 	
-		if (self::$handlers[$route])
+		if (isset(self::$handlers[$route]))
 		{
 			trigger_error(
 				'The route "' . $route . '" already exists and will be replaced.',
