@@ -131,6 +131,78 @@ class ParserController
 		return TRUE;
 
 	}
+	
+	/**
+	 * If the "editions" table lacks any entries, create a stock one within the database and within
+	 * the configuration file.
+	 */
+	public function populate_editions()
+	{
+		
+		$this->logger->message('Checking for an existing edition in the database', 5);
+		
+		/*
+		 * If we have an entries in the editions table, then return true, indicating that the
+		 * editions table has been populated.
+		 */
+		$sql = 'SELECT *
+				FROM editions
+				LIMIT 1';
+		$result = $this->db->query($sql);
+		if ($result !== FALSE)
+		{
+			return TRUE;
+		}
+		
+		$this->logger->message('Adding an inaugural editions record to the database', 5);
+		
+		/*
+		 * Add a record to editions, setting the label to today's date.
+		 */
+		$sql = 'INSERT INTO
+				editions
+				SET year="' . date('Y-M-d') . '", date_created=now()';
+		$result = $this->db->exec($sql);
+		
+		/*
+		 * If we could not add the record to the database.
+		 */
+		if ($result === FALSE)
+		{
+			$this->logger->message('Could not add an editions record to the database', 5);
+			return FALSE;
+		}
+		
+		/*
+		 * Modify config.inc.php to include this edition.
+		 */
+		if (!is_writable(INCLUDE_PATH . '/config.inc.php'))
+		{
+			$this->logger->message('Could not store the editions record in config.inc.php', 5);
+			return FALSE;
+		}
+		
+		/*
+		 * Update the EDITION_YEAR definition in config.inc.php. Don't bother with EDITION_ID,
+		 * since that's 1 by default, which is also the ID of our newly inserted MySQL record in
+		 * the editions table.
+		 */
+		$config = file_get_contents(INCLUDE_PATH . '/config.inc.php');
+		$config = str_replace(
+									'define(\'EDITION_YEAR\', 1)',
+									'define(\'EDITION_YEAR\', ' . date('Y-M-d') . ')',
+									$config);
+		$result = file_put_contents(INCLUDE_PATH . '/config.inc.php', $config);
+		
+		if ($result === FALSE)
+		{
+			$this->logger->message('Could not store the editions record in config.inc.php', 5);
+			return FALSE;
+		}
+		
+		return TRUE;
+		
+	}
 
 	/**
 	 * Clear out our database.

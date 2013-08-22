@@ -94,6 +94,7 @@ elseif ($_POST['action'] == 'parse')
 		if ($parser->populate_db() !== FALSE)
 		{
 			$parser->clear_apc();
+			$parser->populate_editions();
 			$parser->parse();
 			$parser->build_permalinks();
 			$parser->write_api_key();
