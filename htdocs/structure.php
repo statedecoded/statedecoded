@@ -22,8 +22,8 @@ if ( !isset($args['identifier']) || empty($args['identifier']) )
 	$identifier = '';
 }
 /*
- * If an identifier has been specified (which may come in the form of multiple identifiers, separated
- * by slashes), localize that variable.
+ * If an identifier has been specified (which may come in the form of multiple identifiers,
+ * separated by slashes), localize that variable.
  */
 else
 {
@@ -214,13 +214,13 @@ if (isset($struct->metadata))
 }
 
 /*
- * Row classes and row counter
+ * Row classes and row counter.
  */
 $row_classes = array('odd', 'even');
 $counter = 0;
 
  /*
-  * Append the full url to the base url
+  * Append the full URL to the base URL..
   */
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'])
 {
