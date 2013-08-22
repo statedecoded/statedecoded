@@ -705,14 +705,18 @@ class Structure
 		else
 		{
 
-			$sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line
+			$sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line,
+					permalinks.url, permalinks.token
 					FROM laws
 					LEFT OUTER JOIN laws_meta
-					ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
+						ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
+					LEFT JOIN permalinks ON laws.id = permalinks.relational_id
+						AND permalinks.object_type = :object_type
 					WHERE structure_id = :id
 					AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
 					ORDER BY order_by, section';
 			$sql_args = array(
+				':object_type' => 'law',
 				':id' => $this->id
 			);
 		}
