@@ -67,6 +67,7 @@ class Law
 		$sql = 'SELECT id AS section_id, structure_id, section AS section_number, catch_line,
 				history, text AS full_text
 				FROM laws';
+		$sql_args = array();
 
 		/*
 		 * If we're requesting a specific law by ID.
@@ -78,12 +79,15 @@ class Law
 			 */
 			if (!is_array($this->law_id))
 			{
-				$sql .= ' WHERE id=' . $db->quote($this->law_id);
+				$sql .= ' WHERE id = :id';
+				$sql_args[':id'] = $this->law_id;
 			}
 
 			/*
 			 * But if it's an array of law IDs, request all of them.
 			 */
+			// TODO: Fix Me
+			// We allow an array of ids to be given, but we only return one record!
 			elseif (is_array($this->law_id))
 			{
 				$sql .= ' WHERE (';
@@ -91,15 +95,17 @@ class Law
 				/*
 				 * Step through the list.
 				 */
-				foreach ($this->law_id as $id)
+				$law_count = count($this->law_id);
+				for($i = 0; $i < $law_count; $i++)
 				{
-					$sql .= ' id=' . $db->quote($id);
-					if (end($this->law_id) != $id)
+					$sql .= ' id = :id' . $i;
+					$sql_args[':id' . $i] = $this->law_id[$i];
+
+					if ($i < ($law_count - 1))
 					{
 						$sql .= ' OR';
 					}
 				}
-
 				$sql .= ')';
 			}
 		}
@@ -110,13 +116,16 @@ class Law
 		 */
 		else
 		{
-			$sql .= ' WHERE section=' . $db->quote($this->section_number) . '
-					AND edition_id=' . EDITION_ID;
+			$sql .= ' WHERE section = :section_number
+					AND edition_id = :edition_id';
+			$sql_args[':section_number'] = $this->section_number;
+			$sql_args[':edition_id'] = EDITION_ID;
 		}
 
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -124,7 +133,9 @@ class Law
 		/*
 		 * Return the result as an object.
 		 */
-		$tmp = $result->fetch(PDO::FETCH_OBJ);
+		// TODO: Fix Me
+		// We allow an array of ids to be given, but we only return one record!
+		$tmp = $statement->fetch(PDO::FETCH_OBJ);
 
 		/*
 		 * Bring this law into the object scope.
@@ -163,16 +174,20 @@ class Law
 						WHERE text_id=text.id
 						GROUP BY text_id) AS prefixes
 					FROM text
-					WHERE law_id='.$db->quote($this->section_id).'
+					WHERE law_id = :law_id
 					ORDER BY text.sequence ASC';
+			$sql_args = array(
+				':law_id' => $this->section_id
+			);
 
-			$result = $db->query($sql);
+			$statement = $db->prepare($sql);
+			$result = $statement->execute($sql_args);
 
 			/*
 			 * If the query fails, or if no results are found, return false -- we can't make a
 			 * match.
 			 */
-			if ( ($result === FALSE) || ($result->rowCount() == 0) )
+			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 			{
 				return FALSE;
 			}
@@ -181,7 +196,7 @@ class Law
 			 * Iterate through all of the sections of text to save to our object.
 			 */
 			$i=0;
-			while ($tmp = $result->fetch(PDO::FETCH_OBJ))
+			while ($tmp = $statement->fetch(PDO::FETCH_OBJ))
 			{
 
 				$tmp->prefixes = explode('|', $tmp->prefixes);
@@ -211,7 +226,7 @@ class Law
 		/*
 		 * Determine this law's structural position.
 		 */
-		if ($this->config->get_structure == TRUE)
+		if ($this->config->get_structure = TRUE)
 		{
 
 			/*
@@ -379,6 +394,8 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
+		// TODO: Fix Me
+		// Use the url from the permalinks table.
 		$this->url = 'http://' . $_SERVER['SERVER_NAME']
 			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
 			. '/' . $this->section_number . '/';
@@ -453,19 +470,22 @@ class Law
 				FROM laws
 				INNER JOIN laws_references
 					ON laws.id = laws_references.law_id
-				WHERE laws_references.target_law_id =  '.$db->quote($this->section_id).'
+				WHERE laws_references.target_law_id =  :law_id
 				ORDER BY laws.order_by, laws.section ASC';
-
+		$sql_args = array(
+			':law_id' => $this->section_id
+		);
 		/*
 		 * Execute the query.
 		 */
-		$result = $db->query($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		/*
 		 * If the query fails, or if no results are found, return false -- no sections refer to
 		 * this one.
 		 */
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -475,7 +495,7 @@ class Law
 		 */
 		$references = new stdClass();
 		$i = 0;
-		while ($reference = $result->fetch(PDO::FETCH_OBJ))
+		while ($reference = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
 			$reference->url = 'http://' . $_SERVER['SERVER_NAME']
@@ -521,16 +541,21 @@ class Law
 		 * Record the view.
 		 */
 		$sql = 'INSERT DELAYED INTO laws_views
-				SET section="'.$this->section_number.'"';
+				SET section = :section';
+		$sql_args = array(
+			':section' => $this->section_number
+		);
 		if (!empty($_SERVER['REMOTE_ADDR']))
 		{
-			$sql .= ', ip_address=INET_ATON("'.$_SERVER['REMOTE_ADDR'].'")';
+			$sql .= ', ip_address=INET_ATON(:ip)';
+			$sql_args[':ip'] = $_SERVER['REMOTE_ADDR'];
 		}
 
 		/*
 		 * Execute the query.
 		 */
-		$result = $db->exec($sql);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		/*
 		 * If the query fails, return false.
@@ -568,14 +593,18 @@ class Law
 		 */
 		$sql = 'SELECT id, meta_key, meta_value
 				FROM laws_meta
-				WHERE law_id=' . $db->quote($this->section_id);
-		$result = $db->query($sql);
+				WHERE law_id = :law_id';
+		$sql_args = array(
+			':law_id' => $this->section_id
+		);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		/*
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 		{
 			return FALSE;
 		}
@@ -583,7 +612,7 @@ class Law
 		/*
 		 * Return the result as an object.
 		 */
-		$metadata = $result->fetchAll(PDO::FETCH_OBJ);
+		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
 
 		/*
 		 * Create a new object, to which we will port a rotated version of this object.
@@ -660,11 +689,17 @@ class Law
 		 */
 		$sql = 'SELECT *
 				FROM laws
-				WHERE section=' . $db->quote($this->section_number) . '
-				AND edition_id=' . EDITION_ID;
-		$result = $db->query($sql);
+				WHERE section = :section
+				AND edition_id = :edition_id';
+		$sql_args = array(
+			':section' => $this->section_number,
+			':edition_id' => EDITION_ID
+		);
 
-		if ( ($result === FALSE) || ($result->rowCount() < 1) )
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ( ($result === FALSE) || ($statement->rowCount() < 1) )
 		{
 			return FALSE;
 		}
