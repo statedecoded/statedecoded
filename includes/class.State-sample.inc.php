@@ -399,17 +399,6 @@ class Parser
 			$structure_sql .= ' WHERE parent_id IS NULL';
 		}
 
-		if (INCLUDES_REPEALED === TRUE)
-		{
-			$structure_sql .= ' AND
-					(SELECT COUNT(*)
-					FROM laws
-					LEFT OUTER JOIN laws_meta
-						ON laws.id = laws_meta.law_id AND laws_meta.meta_key = "repealed"
-					WHERE laws.structure_id=structure_unified.s1_id
-					AND ((laws_meta.meta_value = "n") OR laws_meta.meta_value IS NULL)  ) > 0';
-		}
-
 		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 		$structure_result = $structure_statement->execute($structure_args);
 
