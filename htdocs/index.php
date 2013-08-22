@@ -99,6 +99,16 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 			
 		}
 		
+		/*
+		 * We cannot modify the .htaccess file, so we define the constant on the fly. This is really
+		 * quite undesirable, because it will slow down the site non-trivially, but it's better
+		 * than not working at all.
+		 */
+		else
+		{
+			define('INCLUDE_PATH', $include_path);
+		}
+		
 	}
 	
 }
@@ -106,7 +116,10 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 /*
  * Save the include path as a constant.
  */
-define('INCLUDE_PATH', $_SERVER['INCLUDE_PATH']);
+if (isset($_SERVER['INCLUDE_PATH']))
+{
+	define('INCLUDE_PATH', $_SERVER['INCLUDE_PATH']);
+}
 
 /*
  * If APC is not running.
