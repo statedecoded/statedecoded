@@ -3,7 +3,7 @@
 /**
  * Index
  *
- * Routes all the main requests.
+ * Routes all the main requests. The site's home page can be found at home.php.
  * 
  * PHP version 5
  *
@@ -104,7 +104,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 }
 
 /*
- * Store the include path as a constant.
+ * Save the include path as a constant.
  */
 define('INCLUDE_PATH', $_SERVER['INCLUDE_PATH']);
 
