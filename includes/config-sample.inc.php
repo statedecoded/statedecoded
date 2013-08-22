@@ -21,11 +21,6 @@
 define('BASE_PATH', dirname(dirname(__FILE__)));
 
 /*
- * Define the path to the includes library.
- */
-define('INCLUDE_PATH', BASE_PATH . '/includes');
-
-/*
  * Append "/includes/" to the include path.
  */
 set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
