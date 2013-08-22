@@ -140,7 +140,8 @@ class ParserController
 
 		$this->logger->message('Clearing out the database', 5);
 
-		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views', 'text_sections', 'structure', 'permalinks');
+		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
+			'text_sections', 'structure', 'permalinks');
 		foreach ($tables as $table)
 		{
 			$sql = 'TRUNCATE '.$table;
@@ -148,10 +149,10 @@ class ParserController
 			$result = $this->db->exec($sql);
 			if ($result === FALSE)
 			{
-				$this->logger->message("Error in SQL: $sql", 10);
+				$this->logger->message('Error in SQL: '. $sql, 10);
 				die($result->getMessage());
 			}
-			$this->logger->message('Deleted '.$table, 5);
+			$this->logger->message('Deleted ' . $table, 5);
 		}
 
 		/*
