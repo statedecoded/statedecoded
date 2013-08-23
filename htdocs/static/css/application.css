@@ -3407,6 +3407,8 @@ section.feature-content {
     font-size: .75em;
     overflow-x: scroll;
     white-space: pre; }
+  .law .primary-content span.dictionary {
+    border-bottom: 1px dotted #558fae; }
 /* line 110, ../scss/areas/_page-law-show.scss */
 .law .secondary-content {
   float: right;
