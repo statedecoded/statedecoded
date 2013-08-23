@@ -98,8 +98,8 @@ class Law
 				$law_count = count($this->law_id);
 				for($i = 0; $i < $law_count; $i++)
 				{
-					$sql .= ' id = :id' . $i;
-					$sql_args[':id' . $i] = $this->law_id[$i];
+					$sql .= " id = :id$i";
+					$sql_args[":id$i"] = $this->law_id[$i];
 
 					if ($i < ($law_count - 1))
 					{
