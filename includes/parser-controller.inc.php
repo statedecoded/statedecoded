@@ -1164,6 +1164,15 @@ class ParserController
 		}
 
 		/*
+		 * Make sure that .htaccess is writable.
+		 */
+		if (is_writable(WEB_ROOT . '/.htaccess') !== TRUE)
+		{
+			$this->logger->message('.htaccess must be writable by the server', 3);
+			$error = TRUE;
+		}
+
+		/*
 		 * If the Downloads directory exists, make sure that it's writable.
 		 */
 		if (is_writable(WEB_ROOT . '/downloads') !== TRUE)
