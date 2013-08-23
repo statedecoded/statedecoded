@@ -349,18 +349,19 @@ class Parser
 	/**
 	 * Create permalinks from what's in the database
 	 */
-	public function build_permalinks() {
+	public function build_permalinks()
+	{
 		$this->move_old_permalinks();
 		$this->build_permalink_subsections();
 	}
 
-	/*
+	/**
 	 * Remove all old permalinks
 	 */
 	// TODO: eventually, we'll want to keep these and have multiple versions.
 	// See issues #314 #362 #363
-
-	public function move_old_permalinks() {
+	public function move_old_permalinks()
+	{
 
 		$sql = 'DELETE FROM permalinks';
 		$result = $this->db->exec($sql);
@@ -375,12 +376,13 @@ class Parser
 	/**
 	 * Recurse through all subsections to build permalink data.
 	 */
-	public function build_permalink_subsections($parent_id = null) {
+	public function build_permalink_subsections($parent_id = null)
+	{
 
-		$structure_sql = 'SELECT structure_unified.*
-			FROM structure
-			LEFT JOIN structure_unified
-				ON structure.id = structure_unified.s1_id';
+		$structure_sql = '	SELECT structure_unified.*
+							FROM structure
+							LEFT JOIN structure_unified
+								ON structure.id = structure_unified.s1_id';
 
 		/*
 		 * We use prepared statements for efficiency.  As a result,
@@ -404,8 +406,8 @@ class Parser
 
 		if ($structure_result === FALSE)
 		{
-			echo '<p>'.$structure_sql.'</p>';
-			echo '<p>'.$structure_result->getMessage().'</p>';
+			echo '<p>' . $structure_sql . '</p>';
+			echo '<p>' . $structure_result->getMessage() . '</p>';
 			return;
 		}
 
@@ -414,6 +416,7 @@ class Parser
 		 */
 		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
 		{
+		
 			/*
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
@@ -469,13 +472,14 @@ class Parser
 			/*
 			 * Now we can use our data to build the child law identifiers
 			 */
-
 			if (INCLUDES_REPEALED !== TRUE)
 			{
+			
 				$laws_sql = 'SELECT id, structure_id, section AS section_number, catch_line
 						FROM laws
 						WHERE structure_id = :s_id
 						ORDER BY order_by, section';
+			
 			}
 			else
 			{
@@ -486,6 +490,7 @@ class Parser
 						WHERE structure_id = :s_id
 						AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
 						ORDER BY order_by, section';
+						
 			}
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 			$laws_result = $laws_statement->execute( array( ':s_id' => $item['s1_id'] ) );
@@ -496,7 +501,6 @@ class Parser
 				echo '<p>'.$laws_result->getMessage().'</p>';
 				return;
 			}
-
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
 			{
@@ -530,9 +534,8 @@ class Parser
 				}
 			}
 
-
-
 			$this->build_permalink_subsections($item['s1_id']);
+			
 		}
 	}
 
