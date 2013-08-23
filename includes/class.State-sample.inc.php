@@ -219,6 +219,7 @@ class Parser
 		 */
 		if (isset($this->section->metadata))
 		{
+		
 			foreach ($this->section->metadata as $field)
 			{
 
@@ -351,8 +352,10 @@ class Parser
 	 */
 	public function build_permalinks()
 	{
+	
 		$this->move_old_permalinks();
 		$this->build_permalink_subsections();
+		
 	}
 
 	/**
@@ -371,6 +374,7 @@ class Parser
 			echo '<p>'.$result->getMessage().'</p>';
 			return;
 		}
+		
 	}
 
 	/**
@@ -474,23 +478,21 @@ class Parser
 			 */
 			if (INCLUDES_REPEALED !== TRUE)
 			{
-
-				$laws_sql = 'SELECT id, structure_id, section AS section_number, catch_line
-						FROM laws
-						WHERE structure_id = :s_id
-						ORDER BY order_by, section';
-
+				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
+								FROM laws
+								WHERE structure_id = :s_id
+								ORDER BY order_by, section';
 			}
 			else
 			{
-				$laws_sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line
-						FROM laws
-						LEFT OUTER JOIN laws_meta
-						ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
-						WHERE structure_id = :s_id
-						AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
-						ORDER BY order_by, section';
-
+				$laws_sql = '	SELECT laws.id, laws.structure_id, laws.section AS section_number,
+								laws.catch_line
+								FROM laws
+								LEFT OUTER JOIN laws_meta
+									ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
+								WHERE structure_id = :s_id
+								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
+								ORDER BY order_by, section';
 			}
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 			$laws_result = $laws_statement->execute( array( ':s_id' => $item['s1_id'] ) );
@@ -509,12 +511,12 @@ class Parser
 				/*
 				 * Insert the structure
 				 */
-				$insert_sql = 'INSERT INTO permalinks SET
-					object_type = :object_type,
-					relational_id = :relational_id,
-					identifier = :identifier,
-					token = :token,
-					url = :url';
+				$insert_sql = '	INSERT INTO permalinks SET
+								object_type = :object_type,
+								relational_id = :relational_id,
+								identifier = :identifier,
+								token = :token,
+								url = :url';
 				$insert_statement = $this->db->prepare($insert_sql);
 				$insert_data = array(
 					':object_type' => 'law',
