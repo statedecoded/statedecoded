@@ -219,7 +219,7 @@ class Parser
 		 */
 		if (isset($this->section->metadata))
 		{
-		
+
 			foreach ($this->section->metadata as $field)
 			{
 
@@ -352,10 +352,10 @@ class Parser
 	 */
 	public function build_permalinks()
 	{
-	
+
 		$this->move_old_permalinks();
 		$this->build_permalink_subsections();
-		
+
 	}
 
 	/**
@@ -374,7 +374,7 @@ class Parser
 			echo '<p>'.$result->getMessage().'</p>';
 			return;
 		}
-		
+
 	}
 
 	/**
@@ -686,7 +686,6 @@ class Parser
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
-		var_dump($sql, $sql_args, $result);
 
 		if ($result === FALSE)
 		{
@@ -744,7 +743,6 @@ class Parser
 					':meta_value' => $value
 				);
 				$result = $statement->execute($sql_args);
-				var_dump($sql, $sql_args, $result);
 
 				if ($result === FALSE)
 				{
@@ -773,7 +771,6 @@ class Parser
 					':tag' => $tag
 				);
 				$result = $statement->execute($sql_args);
-				var_dump($sql, $sql_args, $result);
 
 				if ($result === FALSE)
 				{
@@ -818,7 +815,6 @@ class Parser
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
-			var_dump($sql, $sql_args, $result);
 
 			if ($result === FALSE)
 			{
@@ -857,7 +853,6 @@ class Parser
 
 					$statement = $this->db->prepare($sql);
 					$result = $statement->execute($sql_args);
-					var_dump($sql, $sql_args, $result);
 
 					if ($result === FALSE)
 					{
@@ -1153,7 +1148,6 @@ class Parser
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
-			var_dump($sql, $sql_args, $result);
 
 			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 			{
@@ -1605,7 +1599,6 @@ class Parser
 				':structure_id' => $this->structure_id
 			);
 			$result = $statement->execute($sql_args);
-			var_dump($sql, $sql_args, $result);
 
 		}
 
@@ -1625,7 +1618,6 @@ class Parser
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
-			var_dump($this->db->errorInfo());
 			return $this->db->errorInfo();
 		}
 		else
@@ -1725,7 +1717,6 @@ class Parser
 			);
 
 			$result = $statement->execute($sql_args);
-			var_dump($sql, $sql_args, $result);
 
 			if ($result === FALSE)
 			{
