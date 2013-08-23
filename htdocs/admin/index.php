@@ -62,8 +62,21 @@ if (count($_POST) === 0)
 		<form method="post" action="/admin/?page=parse&noframe=1">
 			<input type="hidden" name="action" value="permalinks" />
 			<input type="submit" value="Rebuild Permalinks" />
-		</form>
-		</nav>';
+		</form>';
+		
+		/*
+		 * If APC is running, provide an option to clear the cache.
+		 */
+		if (APC_RUNNING === TRUE)
+		{
+			$body .= '
+				<form method="post" action="/admin/?page=parse&noframe=1">
+					<input type="hidden" name="action" value="apc" />
+					<input type="submit" value="Clear APC Cache" />
+				</form>';
+		}
+		
+		$body .= '</nav>';
 	}
 }
 
@@ -126,6 +139,22 @@ elseif ($_POST['action'] == 'permalinks')
 	echo 'Beginning permalinks.<br />';
 	
 	$parser->build_permalinks();
+	
+	echo 'Done.<br />';
+	
+	$body = ob_get_contents();
+	ob_end_clean();
+	
+}
+
+elseif ($_POST['action'] == 'apc')
+{
+
+	ob_start();
+	
+	echo 'Clearing APC cache.<br />';
+	
+	$parser->clear_apc();
 	
 	echo 'Done.<br />';
 	
