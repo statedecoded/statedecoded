@@ -416,7 +416,7 @@ class Parser
 		 */
 		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
 		{
-		
+
 			/*
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
@@ -454,7 +454,7 @@ class Parser
 				url = :url';
 			$insert_statement = $this->db->prepare($insert_sql);
 			$insert_data = array(
-				':object_type' => 'section',
+				':object_type' => 'structure',
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
 				':token' => $token,
@@ -474,12 +474,12 @@ class Parser
 			 */
 			if (INCLUDES_REPEALED !== TRUE)
 			{
-			
+
 				$laws_sql = 'SELECT id, structure_id, section AS section_number, catch_line
 						FROM laws
 						WHERE structure_id = :s_id
 						ORDER BY order_by, section';
-			
+
 			}
 			else
 			{
@@ -490,7 +490,7 @@ class Parser
 						WHERE structure_id = :s_id
 						AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
 						ORDER BY order_by, section';
-						
+
 			}
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 			$laws_result = $laws_statement->execute( array( ':s_id' => $item['s1_id'] ) );
@@ -535,7 +535,7 @@ class Parser
 			}
 
 			$this->build_permalink_subsections($item['s1_id']);
-			
+
 		}
 	}
 

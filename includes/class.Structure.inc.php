@@ -165,7 +165,7 @@ class Structure
 				s1_id = :id
 				LIMIT 1';
 		$sql_args = array(
-			':object_type'=> 'section',
+			':object_type'=> 'structure',
 			':id' => $this->structure_id
 		);
 		$statement = $db->prepare($sql);
@@ -292,7 +292,7 @@ class Structure
 						object_type = :object_type
 					WHERE s2_id = :parent_id
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
-			$sql_args[':object_type'] = 'section';
+			$sql_args[':object_type'] = 'structure';
 			$sql_args[':parent_id'] = $this->parent_id;
 		}
 
@@ -309,7 +309,7 @@ class Structure
 						ON structure.id = permalinks.relational_id and
 						object_type = :object_type
 					WHERE parent_id IS NULL';
-			$sql_args[':object_type'] = 'section';
+			$sql_args[':object_type'] = 'structure';
 
 			/*
 			 * Order these by the order_by column, which may or may not be populated.
@@ -378,7 +378,7 @@ class Structure
 					ON structure.id = permalinks.relational_id and
 					object_type = :object_type';
 		$sql_args = array(
-			':object_type' => 'section'
+			':object_type' => 'structure'
 		);
 		if (!isset($this->id))
 		{
