@@ -446,7 +446,9 @@ class ParserController
 	/**
 	 * Build the permalinks
 	 */
-	public function build_permalinks() {
+	public function build_permalinks()
+	{
+	
 		$this->logger->message('Building Permalinks', 5);
 
 		/*
@@ -470,6 +472,7 @@ class ParserController
 		);
 
 		$parser->build_permalinks();
+		
 	}
 
 	/**
