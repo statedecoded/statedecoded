@@ -671,21 +671,26 @@ class Parser
 		 * Create the beginning of the insertion statement.
 		 */
 		$sql = 'INSERT INTO laws
-				SET date_created=now(), edition_id='.EDITION_ID;
+				SET date_created=now()';
+		$sql_args = array();
+		$query['edition_id'] = EDITION_ID;
 
 		/*
 		 * Iterate through the array and turn it into SQL.
 		 */
 		foreach ($query as $name => $value)
 		{
-			$sql .= ', ' . $name . '=' . $this->db->quote($value);
+			$sql .= ', ' . $name . ' = :' . $name;
+			$sql_args[':' . $name] = $value;
 		}
 
-		$result = $this->db->exec($sql);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+		var_dump($sql, $sql_args, $result);
+
 		if ($result === FALSE)
 		{
-			echo '<p>'.$sql.'</p>';
-			die($result->getMessage());
+			echo '<p>Failure: ' . $sql . '</p>';
 		}
 
 		/*
@@ -725,18 +730,25 @@ class Parser
 			/*
 			 * Step through every metadata field and add it.
 			 */
+			$sql = 'INSERT INTO laws_meta
+					SET law_id = :law_id,
+					meta_key = :meta_key,
+					meta_value = :meta_value';
+			$statement = $this->db->prepare($sql);
+
 			foreach ($this->code->metadata as $key => $value)
 			{
-				$sql = 'INSERT INTO laws_meta
-						SET law_id = ' . $law_id . ',
-						meta_key = ' . $this->db->quote($key) . ',
-						meta_value = ' . $this->db->quote($value);
+				$sql_args = array(
+					':law_id' => $law_id,
+					':meta_key' => $key,
+					':meta_value' => $value
+				);
+				$result = $statement->execute($sql_args);
+				var_dump($sql, $sql_args, $result);
 
-				$result = $this->db->exec($sql);
 				if ($result === FALSE)
 				{
-					echo '<p>'.$sql.'</p>';
-					die($result->getMessage());
+					echo '<p>Failure: '.$sql.'</p>';
 				}
 			}
 
@@ -747,18 +759,25 @@ class Parser
 		 */
 		if (isset($this->code->tags))
 		{
+			$sql = 'INSERT INTO tags
+					SET law_id = :law_id,
+					section_number = :section_number,
+					text = :tag';
+			$statement = $this->db->prepare($sql);
+
 			foreach ($this->code->tags as $tag)
 			{
-				$sql = 'INSERT INTO tags
-						SET law_id = ' . $law_id . ',
-						section_number = ' . $this->db->quote($this->code->section_number) . ',
-						text = ' . $this->db->quote($tag);
+				$sql_args = array(
+					':law_id' => $law_id,
+					':section_number' => $this->code->section_number,
+					':tag' => $tag
+				);
+				$result = $statement->execute($sql_args);
+				var_dump($sql, $sql_args, $result);
 
-				$result = $this->db->exec($sql);
 				if ($result === FALSE)
 				{
-					echo '<p>'.$sql.'</p>';
-					die($result->getMessage());
+					echo '<p>Failure: '.$sql.'</p>';
 				}
 			}
 		}
@@ -782,20 +801,28 @@ class Parser
 			 * Insert this subsection into the text table.
 			 */
 			$sql = 'INSERT INTO text
-					SET law_id='.$law_id.',
-					sequence='.$i.',
-					type=' . $this->db->quote($section->type) . ',
+					SET law_id = :law_id,
+					sequence = :sequence,
+					type = :type,
 					date_created=now()';
+			$sql_args = array(
+				':law_id' => $law_id,
+				':sequence' => $i,
+				':type' => $section->type
+			);
 			if (!empty($section->text))
 			{
-				$sql .= ', text=' . $this->db->quote($section->text);
+				$sql .= ', text = :text';
+				$sql_args[':text'] = $section->text;
 			}
 
-			$result = $this->db->exec($sql);
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute($sql_args);
+			var_dump($sql, $sql_args, $result);
+
 			if ($result === FALSE)
 			{
-				echo '<p>'.$sql.'</p>';
-				die($result->getMessage());
+				echo '<p>Failure: '.$sql.'</p>';
 			}
 
 			/*
@@ -818,16 +845,23 @@ class Parser
 				foreach ($section->prefix_hierarchy as $prefix)
 				{
 					$sql = 'INSERT INTO text_sections
-							SET text_id=' . $text_id . ',
-							identifier=' . $this->db->quote($prefix) . ',
-							sequence=' . $j . ',
+							SET text_id = :text_id,
+							identifier = :identifier,
+							sequence = :sequence,
 							date_created=now()';
+					$sql_args = array(
+						':text_id' => $text_id,
+						':identifier' => $prefix,
+						':sequence' => $j
+					);
 
-					$result = $this->db->exec($sql);
+					$statement = $this->db->prepare($sql);
+					$result = $statement->execute($sql_args);
+					var_dump($sql, $sql_args, $result);
+
 					if ($result === FALSE)
 					{
-						echo '<p>' . $sql . '</p>';
-						die($result->getMessage());
+						echo '<p>Failure: ' . $sql . '</p>';
 					}
 
 					$j++;
@@ -966,7 +1000,10 @@ class Parser
 		 */
 		$sql = 'SELECT id
 				FROM structure
-				WHERE identifier="' . $this->identifier . '"';
+				WHERE identifier = :identifier';
+		$sql_args = array(
+			':identifier' => $this->identifier
+		);
 
 		/*
 		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
@@ -974,21 +1011,23 @@ class Parser
 		 */
 		if ( !empty($this->parent_id) )
 		{
-			$sql .= ' AND parent_id=' . $this->parent_id;
+			$sql .= ' AND parent_id = :parent_id';
+			$sql_args[':parent_id'] = $this->parent_id;
 		}
 		else
 		{
 			$sql .= ' AND parent_id IS NULL';
 		}
 
-		$result = $this->db->query($sql);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($result->rowCount() === 0) )
+		if ( ($result === FALSE) || ($statement->rowCount() === 0) )
 		{
 			return FALSE;
 		}
 
-		$structure = $result->fetch(PDO::FETCH_OBJ);
+		$structure = $statement->fetch(PDO::FETCH_OBJ);
 		return $structure->id;
 	}
 
@@ -1041,18 +1080,26 @@ class Parser
 		 * every time, since the former approach will require many less queries than the latter.
 		 */
 		$sql = 'INSERT INTO structure
-				SET identifier=' . $this->db->quote($this->identifier);
+				SET identifier = :identifier';
+		$sql_args = array(
+			':identifier' => $this->identifier
+		);
 		if (!empty($this->name))
 		{
-			$sql .= ', name=' . $this->db->quote($this->name);
+			$sql .= ', name = :name';
+			$sql_args[':name'] = $this->name;
 		}
-		$sql .= ', label=' . $this->db->quote($this->label) . ', date_created=now()';
+		$sql .= ', label = :label, date_created=now()';
+		$sql_args[':label'] = $this->label;
 		if (isset($this->parent_id))
 		{
-			$sql .= ', parent_id=' . $this->parent_id;
+			$sql .= ', parent_id = :parent_id';
+			$sql_args[':parent_id'] = $this->parent_id;
 		}
 
-		$result = $this->db->exec($sql);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
 		if ($result === FALSE)
 		{
 			return FALSE;
@@ -1099,10 +1146,16 @@ class Parser
 
 			$sql = 'SELECT id, parent_id, label
 					FROM structure
-					WHERE id = '.$parent_id;
+					WHERE id = :id';
+			$sql_args = array(
+				':id' => $parent_id
+			);
 
-			$result = $this->db->query($sql);
-			if ( ($result === FALSE) || ($result->rowCount() == 0) )
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute($sql_args);
+			var_dump($sql, $sql_args, $result);
+
+			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 			{
 				echo '<p>Query failed: '.$sql.'</p>';
 				return FALSE;
@@ -1111,7 +1164,7 @@ class Parser
 			/*
 			 * Return the result as an object.
 			 */
-			$structure = $result->fetch(PDO::FETCH_OBJ);
+			$structure = $statement->fetch(PDO::FETCH_OBJ);
 
 			/*
 			 * If the label of this structural unit matches the label that we're looking for, return
@@ -1530,22 +1583,29 @@ class Parser
 		/*
 		 * Iterate through our definitions to build up our SQL.
 		 */
+
+		/*
+		 * Start assembling our SQL string.
+		 */
+		$sql = 'INSERT INTO dictionary (law_id, term, definition, scope, scope_specificity,
+				structure_id, date_created)
+				VALUES (:law_id, :term, :definition, :scope, :scope_specificity,
+				:structure_id, now())';
+		$statement = $this->db->prepare($sql);
+
 		foreach ($this->terms as $term => $definition)
 		{
 
-			/*
-			 * Start assembling our SQL string.
-			 */
-			$sql = 'INSERT INTO dictionary (law_id, term, definition, scope, scope_specificity,
-					structure_id, date_created)
-					VALUES ';
-
-			$sql .= '('.$this->law_id.', ' . $this->db->quote($term) . ',
-				' . $this->db->quote($definition) . ', ' . $this->db->quote($this->scope) . ',
-				' . $this->db->quote($this->scope_specificity) . ', ' . $this->structure_id . ',
-				now())';
-
-			$result = $this->query($sql);
+			$sql_args = array(
+				':law_id' => $this->law_id,
+				':term' => $term,
+				':definition' => $definition,
+				':scope' => $this->scope,
+				':scope_specificity' => $this->scope_specificity,
+				':structure_id' => $this->structure_id
+			);
+			$result = $statement->execute($sql_args);
+			var_dump($sql, $sql_args, $result);
 
 		}
 
@@ -1652,28 +1712,26 @@ class Parser
 		 */
 		$sql = 'INSERT INTO laws_references
 				(law_id, target_section_number, mentions, date_created)
-				VALUES ';
+				VALUES (:law_id, :section_number, :mentions, now())
+				ON DUPLICATE KEY UPDATE mentions=mentions';
+				$statement = $this->db->prepare($sql);
 		$i=0;
 		foreach ($this->sections as $section => $mentions)
 		{
-			$sql .= '(' . $this->section_id . ', "' . $section . '", ' . $mentions . ', now())';
-			$i++;
-			if ($i < count($this->sections))
+			$sql_args = array(
+				':law_id' => $this->section_id,
+				':section_number' => $section,
+				':mentions' => $mentions
+			);
+
+			$result = $statement->execute($sql_args);
+			var_dump($sql, $sql_args, $result);
+
+			if ($result === FALSE)
 			{
-				$sql .= ', ';
+				echo '<p>Failed: '.$sql.'</p>';
+				return FALSE;
 			}
-		}
-
-		/*
-		 * If we already have this record, then just refresh it with a requisite update.
-		 */
-		$sql .= ' ON DUPLICATE KEY UPDATE mentions=mentions';
-
-		$result = $this->db->exec($sql);
-		if ($result === FALSE)
-		{
-			echo '<p>Failed: '.$sql.'</p>';
-			return FALSE;
 		}
 
 		return TRUE;
