@@ -3,7 +3,8 @@
 /**
  * Default comes first
  */
-Router::addRoute('.*', array('ContentController', 'notFound'));
+// Anything else gets passed to the Permalink Controller to determine the correct handler.
+Router::addRoute('^(?P<route>.*)$', array('PermalinkController', 'handle'));
 
 /**
  * Specific routes next
@@ -59,9 +60,4 @@ Router::addRoute('^/api/dictionary/(?P<term>.*)',
 Router::addRoute('^/api/(?P<api_version>1.0)/dictionary/(?P<term>.*)',
 	'api/1.0/dictionary.php');
 
-// The important stuff: Structures and Laws
-Router::addRoute('^/(?P<section_number>[0-9A-Za-z\.]{1,4}-[0-9\.:]{1,10})/',
-	'law.php');
 
-Router::addRoute('^/(?P<identifier>([0-9A-Za-z\.]{1,8}/)*([0-9A-Za-z\.]{1,8}))/',
-	'structure.php');

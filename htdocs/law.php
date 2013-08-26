@@ -19,16 +19,18 @@
 $laws = new Law();
 
 /*
- * Use the section number in the URL as the section number that we're looking up.
+ * Use the id passed to lookup the law
  */
-$laws->section_number = urldecode($args['section_number']);
+if ( isset($args['relational_id']) )
+{
+	$laws->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+	/*
+	 * Retrieve a copy of the law.
+	 */
+	$law = $laws->get_law();
+}
 
-/*
- * Retrieve a copy of the law.
- */
-$law = $laws->get_law();
-
-if ($law === FALSE)
+if (!isset($law) || $law === FALSE)
 {
 	send_404();
 }

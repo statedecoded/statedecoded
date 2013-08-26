@@ -17,9 +17,9 @@
  * If no identifier has been specified, explicitly make it a null variable. This is when the request
  * is for the top level -- that is, a listing of the fundamental units of the code (e.g., titles).
  */
-if ( !isset($args['identifier']) || empty($args['identifier']) )
+if ( !isset($args['relational_id']) || empty($args['relational_id']) )
 {
-	$identifier = '';
+	$structure_id = '';
 }
 /*
  * If an identifier has been specified (which may come in the form of multiple identifiers,
@@ -30,7 +30,7 @@ else
 	/*
 	 * Localize the identifier, filtering out unsafe characters.
 	 */
-	$identifier = filter_var($args['identifier'], FILTER_SANITIZE_STRING);
+	$structure_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
 }
 /*
  * Create a new instance of the class that handles information about individual laws.
@@ -41,7 +41,8 @@ $struct = new Structure();
 /*
  * Get the structure based on our identifier
  */
-$struct->token_to_structure($identifier);
+$struct->structure_id = $structure_id;
+$struct->get_current();
 $response = $struct->structure;
 
 /*
