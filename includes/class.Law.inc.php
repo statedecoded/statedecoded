@@ -919,12 +919,7 @@ class Law
 				 * Assemble the permalink
 				 */
 
-				$permalink = 'http://';
-				if ($_SERVER['HTTPS'])
-				{
-					$permalink = 'https://';
-				}
-				$permalink .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . '#'
+				$permalink = $_SERVER['REQUEST_URI'] . '#'
 					. $paragraph->prefix_anchor;
 
 				$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '

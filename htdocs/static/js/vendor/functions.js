@@ -164,6 +164,19 @@ $(document).ready(function () {
 		}
 	})
 
+    // Set the base url once for use later.
+    // Note that document.location.origin is a chrome-only thing
+    // so far, so we can't use it.
+    var base_url;
+    if ('https:' == document.location.protocol) {
+        base_url = 'https://';
+    }
+    else {
+        base_url = 'http://';
+    }
+    // We want the port if it is set, so don't use hostname
+    base_url += document.location.host;
+
 	/* Get each permalink and add a copy function on it */
 	$('a.section-permalink').each(function(i, elm) {
 		var elm = $(elm);
@@ -172,7 +185,7 @@ $(document).ready(function () {
 		/* Permit copying URLs to the clipboard. */
 		elm.zclip({
 			path: '/static/js/vendor/ZeroClipboard.swf',
-			copy: $(this).attr('href')
+			copy: function() { return base_url + $(this).attr('href'); }
 		});
 	});
 

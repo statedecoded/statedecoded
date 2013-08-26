@@ -219,21 +219,6 @@ if (isset($struct->metadata))
 $row_classes = array('odd', 'even');
 $counter = 0;
 
- /*
-  * Append the full URL to the base URL..
-  */
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'])
-{
-	$base_url = 'https://';
-}
-else
-{
-	$base_url = 'http://';
-}
-$base_url .= $_SERVER['SERVER_NAME'];
-
-
-
 /*
  * Get a listing of all the structural children of this portion of the structure.
  */
@@ -258,14 +243,14 @@ if ($children !== FALSE)
 		 */
 		$class_index = $counter % count($row_classes);
 		$row_class = $row_classes[$class_index];
-		$api_url = $base_url . '/api/1.0/structure/' . $child->token
+		$api_url = '/api/1.0/structure/' . $child->token
 			 . '/?key=' . API_KEY;
 
-		$body .= '	<dt class="' . $row_class . '"><a href="' . $base_url . $child->url . '"
+		$body .= '	<dt class="' . $row_class . '"><a href="' . $child->url . '"
 				data-identifier="' . $child->token . '"
 				data-api-url="' . $api_url . '"
 				>' . $child->identifier . '</a></dt>
-			<dd class="' . $row_class . '"><a href="' . $base_url . $child->url . '"
+			<dd class="' . $row_class . '"><a href="' . $child->url . '"
 				data-identifier="' . $child->token . '"
 				data-api-url="' . $api_url . '"
 				>' . $child->name . '</a></dd>';
@@ -307,9 +292,9 @@ if ($laws !== FALSE)
 		$row_class = $row_classes[$class_index];
 
 		$body .= '
-				<dt class="' . $row_class.'"><a href="' . $base_url . $law->url . '">'
+				<dt class="' . $row_class.'"><a href="' . $law->url . '">'
 					. SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</a></dt>
-				<dd class="' . $row_class.'"><a href="' . $base_url . $law->url . '">'
+				<dd class="' . $row_class.'"><a href="' . $law->url . '">'
 					. $law->catch_line . '</a></dd>';
 
 		$counter++;
