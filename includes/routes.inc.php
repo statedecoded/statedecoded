@@ -44,11 +44,11 @@ Router::addRoute('^/api/(?P<api_version>1.0)/structure/(?P<identifier>([0-9A-Za-
 	'api/1.0/structure.php');
 
 // Latest version
-Router::addRoute('^/api/law/(?P<section>[0-9A-Za-z\.]{1,4}-[0-9\.:]{1,10})/',
+Router::addRoute('^/api/law/(?P<section>[0-9A-Za-z\.]{1,4}-[0-9\.:]{1,10})/?',
 	'api/1.0/law.php');
 
 // Other version
-Router::addRoute('^/api/(?P<api_version>1.0)/law/(?P<section>[0-9A-Za-z\.]{1,4}-[0-9\.:]{1,10})/',
+Router::addRoute('^/api/(?P<api_version>1.0)/law/?(?P<section>[0-9A-Za-z\.]{1,4}-[0-9\.:]{1,10})/',
 	'api/1.0/law.php');
 
 // Latest version
