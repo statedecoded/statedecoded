@@ -261,7 +261,7 @@ class API
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
-		var_dump($sql, $result);
+
 		/*
 		 * Insert this record.
 		 */
