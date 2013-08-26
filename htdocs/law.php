@@ -73,7 +73,6 @@ $template->field->javascript .= "var section_id = '" . $law->section_id . "';";
 $template->field->javascript .= "var api_key = '" . API_KEY . "';";
 
 $template->field->javascript_files = '
-	<script src="/static/js/vendor/jquery.qtip.min.js"></script>
 	<script src="/static/js/vendor/jquery.slideto.min.js"></script>
 	<script src="/static/js/vendor/jquery.color-2.1.1.min.js"></script>
 	<script src="/static/js/vendor/mousetrap.min.js"></script>
