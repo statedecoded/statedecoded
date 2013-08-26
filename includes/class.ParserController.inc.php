@@ -13,8 +13,6 @@
  * @since		0.7
 */
 
-require_once INCLUDE_PATH . '/logger.inc.php';
-
 class ParserController
 {
 

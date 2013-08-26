@@ -17,8 +17,6 @@
 /*
  * Include the code with the functions that drive this parser.
  */
-require_once INCLUDE_PATH . '/parser-controller.inc.php';
-require_once INCLUDE_PATH . '/logger.inc.php';
 
 /*
  * Log parser output.
@@ -63,7 +61,7 @@ if (count($_POST) === 0)
 			<input type="hidden" name="action" value="permalinks" />
 			<input type="submit" value="Rebuild Permalinks" />
 		</form>';
-		
+
 		/*
 		 * If APC is running, provide an option to clear the cache.
 		 */
@@ -75,7 +73,7 @@ if (count($_POST) === 0)
 					<input type="submit" value="Clear APC Cache" />
 				</form>';
 		}
-		
+
 		$body .= '</nav>';
 	}
 }
@@ -90,7 +88,7 @@ elseif ($_POST['action'] == 'empty')
 	flush();
 	$parser->clear_db();
 	echo 'Done.<br />';
-	
+
 }
 
 /*
@@ -128,39 +126,39 @@ elseif ($_POST['action'] == 'parse')
 	$varnish->purge();
 
 	echo 'Done.<br />';
-	
+
 }
 
 elseif ($_POST['action'] == 'permalinks')
 {
 
 	ob_start();
-	
+
 	echo 'Beginning permalinks.<br />';
-	
+
 	$parser->build_permalinks();
-	
+
 	echo 'Done.<br />';
-	
+
 	$body = ob_get_contents();
 	ob_end_clean();
-	
+
 }
 
 elseif ($_POST['action'] == 'apc')
 {
 
 	ob_start();
-	
+
 	echo 'Clearing APC cache.<br />';
-	
+
 	$parser->clear_apc();
-	
+
 	echo 'Done.<br />';
-	
+
 	$body = ob_get_contents();
 	ob_end_clean();
-	
+
 }
 
 /*
@@ -196,5 +194,5 @@ else
 	 * to the browser.
 	 */
 	$template->parse();
-	
+
 }
