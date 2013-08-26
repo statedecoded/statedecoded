@@ -123,7 +123,8 @@ class ParserController
 		/*
 		 * Load the MySQL import file into MySQL.
 		 */
-		$sql = file_get_contents(BASE_PATH . '/statedecoded.sql');
+		$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
+
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 		if ($result === FALSE)
