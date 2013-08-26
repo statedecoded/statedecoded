@@ -100,7 +100,9 @@ class ParserController
 		$sql = 'SELECT 1
 				FROM laws
 				LIMIT 1';
-		$result = $this->db->query($sql);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
 		if ($result !== FALSE)
 		{
 			return TRUE;
@@ -122,7 +124,8 @@ class ParserController
 		 * Load the MySQL import file into MySQL.
 		 */
 		$sql = file_get_contents(BASE_PATH . '/statedecoded.sql');
-		$result = $db->exec($sql);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
 		if ($result === FALSE)
 		{
 			return FALSE;
@@ -131,16 +134,16 @@ class ParserController
 		return TRUE;
 
 	}
-	
+
 	/**
 	 * If the "editions" table lacks any entries, create a stock one within the database and within
 	 * the configuration file.
 	 */
 	public function populate_editions()
 	{
-		
+
 		$this->logger->message('Checking for an existing edition in the database', 5);
-		
+
 		/*
 		 * If we have an entries in the editions table, then return true, indicating that the
 		 * editions table has been populated.
@@ -148,22 +151,27 @@ class ParserController
 		$sql = 'SELECT *
 				FROM editions
 				LIMIT 1';
-		$result = $this->db->query($sql);
-		if ($result !== FALSE)
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+		if ($result !== FALSE && $statement->rowCount() > 0)
 		{
 			return TRUE;
 		}
-		
+
 		$this->logger->message('Adding an inaugural editions record to the database', 5);
-		
+
 		/*
 		 * Add a record to editions, setting the label to today's date.
 		 */
 		$sql = 'INSERT INTO
 				editions
-				SET year="' . date('Y-M-d') . '", date_created=now()';
-		$result = $this->db->exec($sql);
-		
+				SET year = :date, date_created=now()';
+		$sql_args = array(
+			':date' => date('Y-M-d')
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
 		/*
 		 * If we could not add the record to the database.
 		 */
@@ -172,7 +180,7 @@ class ParserController
 			$this->logger->message('Could not add an editions record to the database', 5);
 			return FALSE;
 		}
-		
+
 		/*
 		 * Modify config.inc.php to include this edition.
 		 */
@@ -181,7 +189,7 @@ class ParserController
 			$this->logger->message('Could not store the editions record in config.inc.php', 5);
 			return FALSE;
 		}
-		
+
 		/*
 		 * Update the EDITION_YEAR definition in config.inc.php. Don't bother with EDITION_ID,
 		 * since that's 1 by default, which is also the ID of our newly inserted MySQL record in
@@ -193,15 +201,15 @@ class ParserController
 									'define(\'EDITION_YEAR\', ' . date('Y-M-d') . ')',
 									$config);
 		$result = file_put_contents(INCLUDE_PATH . '/config.inc.php', $config);
-		
+
 		if ($result === FALSE)
 		{
 			$this->logger->message('Could not store the editions record in config.inc.php', 5);
 			return FALSE;
 		}
-		
+
 		return TRUE;
-		
+
 	}
 
 	/**
@@ -216,13 +224,17 @@ class ParserController
 			'text_sections', 'structure', 'permalinks');
 		foreach ($tables as $table)
 		{
-			$sql = 'TRUNCATE '.$table;
+			// Note that we *cannot* prepare the table name as an argument here.
+			// PDO doesn't work that way.
+			$sql = 'TRUNCATE ' . $table;
 
-			$result = $this->db->exec($sql);
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute();
+
 			if ($result === FALSE)
 			{
-				$this->logger->message('Error in SQL: '. $sql, 10);
-				die($result->getMessage());
+				$this->logger->message('Error in SQL: ' . $sql, 10);
+				die();
 			}
 			$this->logger->message('Deleted ' . $table, 5);
 		}
@@ -232,14 +244,21 @@ class ParserController
 		 */
 		$sql = 'ALTER TABLE structure
 				AUTO_INCREMENT=1';
-		$result = $this->db->exec($sql);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
 
 		/*
 		 * Delete law histories.
 		 */
 		$sql = 'DELETE FROM laws_meta
-				WHERE meta_key = "history" OR meta_key = "repealed"';
-		$result = $this->db->exec($sql);
+				WHERE meta_key = :meta_key_history
+				OR meta_key = :meta_key_repealed';
+		$sql_args = array(
+			':meta_key_history' => 'history',
+			':meta_key_repealed' => 'repealed'
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		return TRUE;
 
@@ -255,8 +274,12 @@ class ParserController
 
 		$sql = 'DELETE FROM
 				laws_views
-				WHERE DATEDIFF(now(), date) > 365';
-		$result = $this->db->exec($sql);
+				WHERE DATEDIFF(now(), date) > :date_diff';
+		$sql_args = array(
+			':date_diff' => 365
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		return TRUE;
 
@@ -313,8 +336,13 @@ class ParserController
 					(SELECT laws.id
 					FROM laws
 					WHERE section = laws_references.target_section_number)
-				WHERE target_law_id = 0';
-		$this->db->exec($sql);
+				WHERE target_law_id = :target_law_id';
+		$sql_args = array(
+			':target_law_id' => 0
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
 
 		/*
 		 * Any unresolved target section numbers are spurious (strings that happen to match our
@@ -323,8 +351,13 @@ class ParserController
 		$this->logger->message('Deleting unresolved laws_references', 3);
 
 		$sql = 'DELETE FROM laws_references
-				WHERE target_law_id = 0';
-		$this->db->exec($sql);
+				WHERE target_law_id = :target_law_id';
+		$sql_args = array(
+			':target_law_id' => 0
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
 
 		/*
 		 * Break up law histories into their components and save those.
@@ -333,15 +366,24 @@ class ParserController
 
 		$sql = 'SELECT id, history
 				FROM laws';
-		$result = $this->db->query($sql);
-		if ($result->rowCount() > 0)
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
+		if ($result !== FALSE && $statement->rowCount() > 0)
 		{
 
 			/*
 			 * Step through the history of every law that we have a record of.
 			 */
 
-			while ($law = $result->fetch(PDO::FETCH_OBJ))
+			$sql = 'INSERT INTO laws_meta
+					SET law_id = :law_id,
+					meta_key = :meta_key,
+					meta_value = :meta_value,
+					date_created=now()';
+			$statement = $this->db->prepare($sql);
+
+			while ($law = $statement->fetch(PDO::FETCH_OBJ))
 			{
 				/*
 				 * Turn the string of text that comprises the history into an object of atomic
@@ -356,12 +398,12 @@ class ParserController
 					/*
 					 * Save this object to the metadata table pair.
 					 */
-					$sql = 'INSERT INTO laws_meta
-							SET law_id=' . $this->db->quote($law->id).',
-							meta_key="history", meta_value=' . $this->db->quote(serialize($history)) . ',
-							date_created=now();';
-					$this->db->exec($sql);
-
+					$sql_args = array(
+						':law_id' => $law->id,
+						':meta_key' => 'history',
+						':meta_value' => serialize($history)
+					);
+					$result = $statement->execute($sql_args);
 				}
 			}
 
@@ -373,7 +415,8 @@ class ParserController
 		$this->logger->message('Replace old view', 3);
 
 		$sql = 'DROP VIEW IF EXISTS structure_unified';
-		$this->db->exec($sql);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
 
 		/*
 		 * The depth of the structure is the number of entries in STRUCTURE, minus one.
@@ -438,7 +481,11 @@ class ParserController
 		 */
 		$sql .= ' ORDER BY '.implode(',', $order);
 
-		$this->db->exec($sql);
+
+		// Again, nothing here that we can actually prepare.
+		// Column names aren't allowed.
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
 
 		$this->logger->message('Done', 5);
 	}
@@ -448,7 +495,7 @@ class ParserController
 	 */
 	public function build_permalinks()
 	{
-	
+
 		$this->logger->message('Building Permalinks', 5);
 
 		/*
@@ -472,7 +519,7 @@ class ParserController
 		);
 
 		$parser->build_permalinks();
-		
+
 	}
 
 	/**
@@ -604,10 +651,15 @@ class ParserController
 		 */
 		$sql = 'SELECT laws.section AS number
 				FROM laws
-				WHERE edition_id=' . EDITION_ID . '
+				WHERE edition_id = :edition_id
 				ORDER BY order_by ASC';
-		$result = $this->db->query($sql);
-		if ($result->rowCount() > 0)
+		$sql_args = array(
+			':edition_id' => EDITION_ID
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result !== FALSE && $statement->rowCount() > 0)
 		{
 
 			/*
@@ -690,7 +742,7 @@ class ParserController
 			/*
 			 * Iterate through every section number, to pass to the Laws class.
 			 */
-			while ($section = $result->fetch(PDO::FETCH_OBJ))
+			while ($section = $statement->fetch(PDO::FETCH_OBJ))
 			{
 
 				/*
@@ -774,14 +826,16 @@ class ParserController
 				LEFT JOIN laws
 					ON dictionary.law_id = laws.id
 				ORDER BY dictionary.term ASC, laws.order_by ASC';
-		$result = $this->db->query($sql);
-		if ($result->rowCount() > 0)
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
+		if ($result !== FALSE && $statement->rowCount() > 0)
 		{
 
 			/*
 			 * Retrieve the entire dictionary as a single object.
 			 */
-			$dictionary = $result->fetchAll(PDO::FETCH_OBJ);
+			$dictionary = $statement->fetchAll(PDO::FETCH_OBJ);
 
 			/*
 			 * Define the filename for our dictionary.
@@ -852,10 +906,15 @@ class ParserController
 		 */
 		$sql = 'SELECT id
 				FROM laws
-				WHERE edition_id = ' . EDITION_ID . '
+				WHERE edition_id = :edition_id
 				LIMIT 50000';
-		$result = $this->db->query($sql);
-		if ($result->rowCount() == 0)
+		$sql_args = array(
+			':edition_id' => EDITION_ID
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE || $statement->rowCount() == 0)
 		{
 			return FALSE;
 		}
@@ -886,7 +945,7 @@ class ParserController
 		/*
 		 * Iterate through every section ID.
 		 */
-		while ($section = $result->fetch(PDO::FETCH_OBJ))
+		while ($section = $statement->fetch(PDO::FETCH_OBJ))
 		{
 
 			/*
@@ -1011,6 +1070,11 @@ class ParserController
 
 		}
 
+		$sql = 'UPDATE structure
+				SET metadata = :metadata
+				WHERE id = :structure_id';
+		$statement = $this->db->prepare($sql);
+
 		foreach ($this->stats as $structure_id => $structure)
 		{
 
@@ -1027,10 +1091,11 @@ class ParserController
 			$metadata->child_laws = $structure->child_laws;
 			$metadata->child_structures = $structure->child_structures;
 
-			$sql = 'UPDATE structure
-					SET metadata = ' . $this->db->quote(serialize($metadata)) . '
-					WHERE id = ' . $structure_id;
-			$result = $this->db->exec($sql);
+			$sql_args = array(
+				':metadata' => serialize($metadata),
+				':structure_id' => $structure_id
+			);
+			$result = $statement->execute($sql_args);
 
 		}
 
