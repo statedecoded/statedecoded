@@ -69,6 +69,11 @@ define('EDITION_ID', 1);
 define('EDITION_YEAR', 2012);
 
 /*
+ * Establish the latest API version
+ */
+define('CURRENT_API_VERSION', '1.0');
+
+/*
  * Does this state's code include laws that have been repealed formally, and that are marked as
  * such?
  */

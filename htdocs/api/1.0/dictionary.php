@@ -126,7 +126,13 @@ else
 }
 
 # Include the API version in this response.
-$response->api_version = filter_var($args['api_version'], FILTER_SANITIZE_STRING);
+if(isset($args['api_version'])) {
+	$response->api_version = filter_var($args['api_version'], FILTER_SANITIZE_STRING);
+}
+else {
+	$response->api_version = CURRENT_API_VERSION;
+}
+
 
 if (isset($callback))
 {
