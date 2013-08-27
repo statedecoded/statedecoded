@@ -101,7 +101,7 @@ if (isset($_GET['fields']))
 }
 
 # Include the API version in this response.
-if(isset($args['api_version'])) {
+if(isset($args['api_version']) && strlen($args['api_version'])) {
 	$response->api_version = filter_var($args['api_version'], FILTER_SANITIZE_STRING);
 }
 else {
