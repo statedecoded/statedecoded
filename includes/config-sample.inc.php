@@ -15,12 +15,6 @@
  */
 
 /*
- * Define base path
- */
-
-define('BASE_PATH', dirname(dirname(__FILE__)));
-
-/*
  * Append "/includes/" to the include path.
  */
 set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
@@ -28,7 +22,7 @@ set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
 /*
  * Define web root.
  */
-define('WEB_ROOT', BASE_PATH . '/htdocs');
+define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
 
 /*
  * The file in the /includes/ directory that contains functions custom to this installation.
