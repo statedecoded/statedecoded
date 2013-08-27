@@ -101,9 +101,9 @@ $negative-red: #c83434 !default;
 
 // QTip Specific Colors
 // ------------------------------------------------------------------
-$qtip-border-color: #f1d031;
-$qtip-bkgnd-color: #ffffa3;
-$qtip-color: #555;
+$qtip-border-color: $gray-dark;
+$qtip-bkgnd-color: $gray-light;
+$qtip-color: inherit;
 $qtip-titlebar-bkgnd-color: #ffef93;
 $qtip-icon-border-color: #ccc;
 $qtip-icon-bkgnd: #f1f1f1;
