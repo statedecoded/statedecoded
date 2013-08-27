@@ -649,9 +649,7 @@ pre {
   white-space: pre-wrap;
   /* CSS 2.1 */
   white-space: pre-line;
-  /* CSS 3 (and 2.1 as well, actually) */
-  word-wrap: break-word;
-  /* IE */ }
+  /* CSS 3 (and 2.1 as well, actually) */ }
 
 /* Load font stacks and baseline type work */
 /* line 67, ../scss/base/_buttons.css.scss */
@@ -3370,82 +3368,85 @@ section.feature-content {
   .law .primary-content h3 {
     margin: 40px 0 10px 0;
     text-transform: uppercase; }
-  /* line 84, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent {
-    margin-left: 1em;
-    /* 16px */ }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-1 {
-    margin-left: 1em; }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-2 {
-    margin-left: 2em; }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-3 {
-    margin-left: 3em; }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-4 {
-    margin-left: 4em; }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-5 {
-    margin-left: 5em; }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-6 {
-    margin-left: 6em; }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-7 {
-    margin-left: 7em; }
-  /* line 90, ../scss/areas/_page-law-show.scss */
-  .law .primary-content section.indent-8 {
-    margin-left: 8em; }
-  /* line 97, ../scss/areas/_page-law-show.scss */
+  /* line 79, ../scss/areas/_page-law-show.scss */
+  .law .primary-content section {
+    max-width: 100%;
+    overflow: auto; }
+    /* line 86, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent {
+      margin-left: 1em;
+      /* 16px */ }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-1 {
+      margin-left: 1em; }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-2 {
+      margin-left: 2em; }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-3 {
+      margin-left: 3em; }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-4 {
+      margin-left: 4em; }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-5 {
+      margin-left: 5em; }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-6 {
+      margin-left: 6em; }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-7 {
+      margin-left: 7em; }
+    /* line 92, ../scss/areas/_page-law-show.scss */
+    .law .primary-content section.indent-8 {
+      margin-left: 8em; }
+  /* line 99, ../scss/areas/_page-law-show.scss */
   .law .primary-content p {
     margin: 0 0 1.25em 0; }
-  /* line 101, ../scss/areas/_page-law-show.scss */
+  /* line 103, ../scss/areas/_page-law-show.scss */
   .law .primary-content pre.table {
     margin: 0 0 20px 0;
     font-size: .75em;
-    overflow-x: scroll;
     white-space: pre; }
-  /* line 108, ../scss/areas/_page-law-show.scss */
+  /* line 109, ../scss/areas/_page-law-show.scss */
   .law .primary-content span.dictionary {
     border-bottom: 1px dotted #558fae; }
-/* line 114, ../scss/areas/_page-law-show.scss */
+/* line 115, ../scss/areas/_page-law-show.scss */
 .law .secondary-content {
   float: right;
   padding: 20px;
   width: 44%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 114, ../scss/areas/_page-law-show.scss */
+    /* line 115, ../scss/areas/_page-law-show.scss */
     .law .secondary-content {
       float: none;
       width: 100%; } }
   @media only print {
-    /* line 114, ../scss/areas/_page-law-show.scss */
+    /* line 115, ../scss/areas/_page-law-show.scss */
     .law .secondary-content {
       float: none;
       padding: 0;
       width: 100%; } }
-  /* line 131, ../scss/areas/_page-law-show.scss */
+  /* line 132, ../scss/areas/_page-law-show.scss */
   .law .secondary-content ul {
     list-style: none; }
-  /* line 136, ../scss/areas/_page-law-show.scss */
+  /* line 137, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .identifier,
   .law .secondary-content .title {
     display: block;
     margin: 1em 0 0; }
-  /* line 141, ../scss/areas/_page-law-show.scss */
+  /* line 142, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .ad {
     margin: 0 auto 20px auto; }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 141, ../scss/areas/_page-law-show.scss */
+      /* line 142, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .ad {
         max-width: 100%; } }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 141, ../scss/areas/_page-law-show.scss */
+      /* line 142, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .ad {
         max-width: 100%; } }
-  /* line 155, ../scss/areas/_page-law-show.scss */
+  /* line 156, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .grouping,
   .law .secondary-content .related-group {
     float: left;
@@ -3453,21 +3454,21 @@ section.feature-content {
     text-align: left;
     width: 32.5%; }
     @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-      /* line 155, ../scss/areas/_page-law-show.scss */
+      /* line 156, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping,
       .law .secondary-content .related-group {
         float: none;
         width: 100%; } }
     @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-      /* line 155, ../scss/areas/_page-law-show.scss */
+      /* line 156, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping,
       .law .secondary-content .related-group {
         float: none;
         width: 100%; } }
-  /* line 173, ../scss/areas/_page-law-show.scss */
+  /* line 174, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .grouping.last {
     margin-right: 0; }
-  /* line 179, ../scss/areas/_page-law-show.scss */
+  /* line 180, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .grouping > section,
   .law .secondary-content .related-group,
   .law .secondary-content .info-box {
@@ -3477,7 +3478,7 @@ section.feature-content {
     margin-bottom: 1em;
     padding: 0;
     text-align: left; }
-    /* line 189, ../scss/areas/_page-law-show.scss */
+    /* line 190, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section h1,
     .law .secondary-content .related-group h1,
     .law .secondary-content .info-box h1 {
@@ -3487,26 +3488,26 @@ section.feature-content {
       margin: 0.5em 0;
       padding: 0 10px;
       text-transform: capitalize; }
-    /* line 198, ../scss/areas/_page-law-show.scss */
+    /* line 199, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section > h1,
     .law .secondary-content .related-group > h1,
     .law .secondary-content .info-box > h1 {
       font-style: normal;
       text-transform: uppercase; }
-    /* line 203, ../scss/areas/_page-law-show.scss */
+    /* line 204, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section p, .law .secondary-content .grouping > section h2,
     .law .secondary-content .related-group p,
     .law .secondary-content .related-group h2,
     .law .secondary-content .info-box p,
     .law .secondary-content .info-box h2 {
       padding: 0 10px; }
-    /* line 207, ../scss/areas/_page-law-show.scss */
+    /* line 208, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section.header-bar-full,
     .law .secondary-content .related-group.header-bar-full,
     .law .secondary-content .info-box.header-bar-full {
       float: none;
       width: 100%; }
-      /* line 211, ../scss/areas/_page-law-show.scss */
+      /* line 212, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping > section.header-bar-full > h1,
       .law .secondary-content .related-group.header-bar-full > h1,
       .law .secondary-content .info-box.header-bar-full > h1 {
@@ -3520,17 +3521,17 @@ section.feature-content {
         text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.4);
         text-transform: uppercase;
         width: 100%; }
-      /* line 224, ../scss/areas/_page-law-show.scss */
+      /* line 225, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping > section.header-bar-full p,
       .law .secondary-content .related-group.header-bar-full p,
       .law .secondary-content .info-box.header-bar-full p {
         margin: 0 0 10px 0; }
-    /* line 230, ../scss/areas/_page-law-show.scss */
+    /* line 231, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#legal_self_help,
     .law .secondary-content .related-group#legal_self_help,
     .law .secondary-content .info-box#legal_self_help {
       overflow: hidden; }
-      /* line 233, ../scss/areas/_page-law-show.scss */
+      /* line 234, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .grouping > section#legal_self_help ul,
       .law .secondary-content .related-group#legal_self_help ul,
       .law .secondary-content .info-box#legal_self_help ul {
@@ -3538,7 +3539,7 @@ section.feature-content {
         list-style-type: none;
         padding: 0 10px;
         margin: 0; }
-        /* line 240, ../scss/areas/_page-law-show.scss */
+        /* line 241, ../scss/areas/_page-law-show.scss */
         .law .secondary-content .grouping > section#legal_self_help ul li,
         .law .secondary-content .related-group#legal_self_help ul li,
         .law .secondary-content .info-box#legal_self_help ul li {
@@ -3547,25 +3548,25 @@ section.feature-content {
           margin-bottom: 15px;
           width: 49%; }
           @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-            /* line 240, ../scss/areas/_page-law-show.scss */
+            /* line 241, ../scss/areas/_page-law-show.scss */
             .law .secondary-content .grouping > section#legal_self_help ul li,
             .law .secondary-content .related-group#legal_self_help ul li,
             .law .secondary-content .info-box#legal_self_help ul li {
               float: none;
               width: 100%; } }
           @media only screen and (min-device-width: 768px) and (max-device-width: 1024px), only screen and (min-width: 768px) and (max-width: 1024px) {
-            /* line 240, ../scss/areas/_page-law-show.scss */
+            /* line 241, ../scss/areas/_page-law-show.scss */
             .law .secondary-content .grouping > section#legal_self_help ul li,
             .law .secondary-content .related-group#legal_self_help ul li,
             .law .secondary-content .info-box#legal_self_help ul li {
               float: none;
               width: 100%; } }
-          /* line 258, ../scss/areas/_page-law-show.scss */
+          /* line 259, ../scss/areas/_page-law-show.scss */
           .law .secondary-content .grouping > section#legal_self_help ul li article h1,
           .law .secondary-content .related-group#legal_self_help ul li article h1,
           .law .secondary-content .info-box#legal_self_help ul li article h1 {
             font-family: "ff-meta-serif-web-pro", Georgia, "Times New Roman", Times, serif; }
-          /* line 265, ../scss/areas/_page-law-show.scss */
+          /* line 266, ../scss/areas/_page-law-show.scss */
           .law .secondary-content .grouping > section#legal_self_help ul li article.pdf,
           .law .secondary-content .related-group#legal_self_help ul li article.pdf,
           .law .secondary-content .info-box#legal_self_help ul li article.pdf {
@@ -3573,25 +3574,25 @@ section.feature-content {
             background-repeat: no-repeat;
             background-position: top left;
             padding-left: 42px; }
-    /* line 279, ../scss/areas/_page-law-show.scss */
+    /* line 280, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#amendment_attempts h2,
     .law .secondary-content .related-group#amendment_attempts h2,
     .law .secondary-content .info-box#amendment_attempts h2 {
       font-size: 125%; }
-    /* line 283, ../scss/areas/_page-law-show.scss */
+    /* line 284, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#amendment_attempts a,
     .law .secondary-content .related-group#amendment_attempts a,
     .law .secondary-content .info-box#amendment_attempts a {
       font-size: 18px;
       font-style: italic;
       font-weight: bold; }
-    /* line 293, ../scss/areas/_page-law-show.scss */
+    /* line 294, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#court_decisions article.court-decision h1,
     .law .secondary-content .related-group#court_decisions article.court-decision h1,
     .law .secondary-content .info-box#court_decisions article.court-decision h1 {
       font-family: "ff-meta-serif-web-pro", Georgia, "Times New Roman", Times, serif;
       margin: 1em 0 0 0; }
-    /* line 298, ../scss/areas/_page-law-show.scss */
+    /* line 299, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .grouping > section#court_decisions article.court-decision h2,
     .law .secondary-content .related-group#court_decisions article.court-decision h2,
     .law .secondary-content .info-box#court_decisions article.court-decision h2 {
@@ -3600,22 +3601,22 @@ section.feature-content {
       font-variant: uppercase;
       margin: 0;
       text-transform: uppercase; }
-  /* line 311, ../scss/areas/_page-law-show.scss */
+  /* line 312, ../scss/areas/_page-law-show.scss */
   .law .secondary-content p.keyboard {
     font-family: "proxima-nova", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 0.9em;
     text-transform: uppercase; }
     @media only print {
-      /* line 316, ../scss/areas/_page-law-show.scss */
+      /* line 317, ../scss/areas/_page-law-show.scss */
       .law .secondary-content p.keyboard a#keyhelp {
         display: none; } }
-  /* line 323, ../scss/areas/_page-law-show.scss */
+  /* line 324, ../scss/areas/_page-law-show.scss */
   .law .secondary-content .dark {
     background-color: #656358;
     color: #fff;
     overflow: hidden;
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.4); }
-    /* line 329, ../scss/areas/_page-law-show.scss */
+    /* line 330, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .dark > h1 {
       float: left;
       font-size: 24px;
@@ -3625,19 +3626,19 @@ section.feature-content {
       padding: 10px;
       text-transform: uppercase;
       width: 50%; }
-    /* line 340, ../scss/areas/_page-law-show.scss */
+    /* line 341, ../scss/areas/_page-law-show.scss */
     .law .secondary-content .dark dl {
       float: right;
       margin: 1em 0 0 0;
       padding: 0;
       width: 49%; }
-      /* line 346, ../scss/areas/_page-law-show.scss */
+      /* line 347, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .dark dl dt {
         font-size: 85%;
         margin: 0;
         padding: 0;
         text-transform: uppercase; }
-      /* line 347, ../scss/areas/_page-law-show.scss */
+      /* line 348, ../scss/areas/_page-law-show.scss */
       .law .secondary-content .dark dl dd {
         margin: 0 0 1em 0;
         padding: 0; }

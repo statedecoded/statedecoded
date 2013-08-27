@@ -77,6 +77,8 @@
     // that wrote that. You can also change your indent depth globally with the
     // $indent variable.
     section {
+	  max-width: 100%;
+	  overflow: auto;
 
       $num: 1;
       $indent: 1em;
@@ -101,10 +103,9 @@
     pre.table {
       margin: 0 0 20px 0;
       font-size: .75em;
-      overflow-x: scroll;
       white-space: pre;
     }
-    
+
     span.dictionary {
       border-bottom: 1px dotted #558fae;
     }
