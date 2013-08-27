@@ -775,6 +775,7 @@ class Parser
 				if ($result === FALSE)
 				{
 					echo '<p>Failure: '.$sql.'</p>';
+					var_dump($sql_args);
 				}
 			}
 		}

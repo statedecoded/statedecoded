@@ -220,7 +220,7 @@ class ParserController
 		$this->logger->message('Clearing out the database', 5);
 
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
-			'text_sections', 'structure', 'permalinks');
+			'tags', 'text_sections', 'structure', 'permalinks');
 		foreach ($tables as $table)
 		{
 			// Note that we *cannot* prepare the table name as an argument here.
