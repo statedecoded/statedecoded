@@ -1203,13 +1203,14 @@ class Parser
 
 		/*
 		 * The candidate phrases that indicate that the scope of one or more definitions are about
-		 * to be provided.
+		 * to be provided. Some phrases are left-padded with a space if they would never occur
+		 * without being preceded by a space; this is to prevent over-broad matches.
 		 */
 		$scope_indicators = array(	' are used in this ',
-									' when used in this ',
-									' for purposes of this ',
-									' for the purpose of this ',
-									' in this ',
+									'when used in this ',
+									'for purposes of this ',
+									'for the purpose of this ',
+									'in this ',
 								);
 
 		/*
