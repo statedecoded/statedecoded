@@ -109,7 +109,7 @@ class Parser
 
 			if (file_exists($this->directory) && is_dir($this->directory))
 			{
-				chdir($this->directory);
+				$directory = dir($this->directory);
 			}
 			else
 			{
@@ -117,20 +117,27 @@ class Parser
 					$this->directory . '"');
 			}
 
-			if (count(glob('*.xml')))
+			while (false !== ($filename = $directory->read()))
 			{
 				/*
-				 * Iterate through every XML file in this directory and build up an array of them.
+				 * We should make sure we've got an actual file that's readable.
+				 * Ignore anything that starts with a dot.
 				 */
-
-				foreach (glob('*.xml') as $filename)
+				$filepath = $this->directory . $filename;
+				if (is_file($filepath) &&
+					is_readable($filepath) &&
+					substr($filename, 0, 1) !== '.')
 				{
-					$this->files[] = $filename;
+					$this->files[] = $filepath;
 				}
 			}
-			else
+
+			/*
+			 * Check that we found at least one file
+			 */
+			if (count($this->files) < 1)
 			{
-				throw new Exception('No XML Files found in path "' .
+				throw new Exception('No Import Files found in path "' .
 					$this->directory . '"');
 			}
 
@@ -156,37 +163,26 @@ class Parser
 			$filename = $this->files[$i];
 
 			/*
-			 * Store the contents of the file as a string.
+			 * Determine data type and import
 			 */
-			$xml = file_get_contents($filename);
+			// TODO : Make this smarter.  We can use the PECL Fileinfo package
+			// instead, but I'd rather not have to require that at this point. -BH
 
-			/*
-			 * Convert the XML into an object.
-			 */
-			try
-			{
-				$this->section = new SimpleXMLElement($xml);
-			}
-			catch(Exception $e)
-			{
-				/*
-				 * If we can't convert to XML, try cleaning the data first.
-				 */
-				if (class_exists('tidy', FALSE))
-				{
-					$tidy_config = array('input-xml' => TRUE);
-					$tidy = new tidy();
-					$tidy->parseString($xml, $tidy_config, 'utf8');
-					$tidy->cleanRepair();
+			$extension = substr($filename, strrpos($filename, '.')+1);
 
-					$xml = (string) $tidy;
-				}
-				elseif (exec('which tidy'))
-				{
-					exec('tidy -xml '.$filename, $output);
-					$xml = join('', $output);
-				}
-				$this->section = new SimpleXMLElement($xml);
+			switch($extension)
+			{
+				case 'xml' :
+					$this->import_xml($filename);
+					break;
+
+				case 'json' :
+					$this->import_json($filename);
+					break;
+
+				// TODO: Fix this.
+				default:
+					// Anything else, we can't handle.
 			}
 
 			/*
@@ -201,6 +197,64 @@ class Parser
 		}
 
 	} // end iterate() function
+
+
+	/**
+	 * Convert the XML into an object.
+	 */
+	public function import_xml($filename)
+	{
+		$xml = file_get_contents($filename);
+
+		try
+		{
+			$this->section = new SimpleXMLElement($xml);
+		}
+		catch(Exception $e)
+		{
+			/*
+			 * If we can't convert to XML, try cleaning the data first.
+			 */
+			if (class_exists('tidy', FALSE))
+			{
+				$tidy_config = array('input-xml' => TRUE);
+				$tidy = new tidy();
+				$tidy->parseString($xml, $tidy_config, 'utf8');
+				$tidy->cleanRepair();
+
+				$xml = (string) $tidy;
+			}
+			elseif (exec('which tidy'))
+			{
+				exec('tidy -xml '.$filename, $output);
+				$xml = join('', $output);
+			}
+			$this->section = new SimpleXMLElement($xml);
+		}
+
+		/*
+		 * Increment our placeholder counter.
+		 */
+		$this->file++;
+
+		/*
+		 * Send this object back, out of the iterator.
+		 */
+		return $this->section;
+	}
+
+
+	/**
+	 * Convert the JSON into an object.
+	 */
+	public function import_json($filename)
+	{
+		$section_data = file_get_contents($filename);
+
+		$this->section = json_decode($section_data);
+
+		return $this->section;
+	}
 
 
 	/**

@@ -25,6 +25,11 @@ set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
 define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
 
 /*
+ * Define location of all of the files to import.
+ */
+define('IMPORT_DATA_DIRECTORY', WEB_ROOT . '/admin/import-data/');
+
+/*
  * The file in the /includes/ directory that contains functions custom to this installation.
  */
 define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
