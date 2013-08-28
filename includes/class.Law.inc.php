@@ -868,16 +868,14 @@ class Law
 			/*
 			 * Start a paragraph of the appropriate type.
 			 */
-			$html .= '<';
 			if ($paragraph->type == 'section')
 			{
-				$html .= 'p';
+				$html .= '<p>';
 			}
 			elseif ($paragraph->type == 'table')
 			{
-				$html .= 'pre class="table"';
+				$html .= '<div class="tabular"><pre class="table">';
 			}
-			$html .= '>';
 
 			/*
 			 * If we've got a section prefix, and it's not the same as the last one, then display
@@ -931,7 +929,7 @@ class Law
 			}
 			elseif ($paragraph->type == 'table')
 			{
-				$html .= '</pre>';
+				$html .= '</pre></div>';
 			}
 
 			/*
