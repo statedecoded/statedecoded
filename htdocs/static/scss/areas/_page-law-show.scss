@@ -77,8 +77,7 @@
     // that wrote that. You can also change your indent depth globally with the
     // $indent variable.
     section {
-	  max-width: 100%;
-	  overflow: auto;
+	  position: relative;
 
       $num: 1;
       $indent: 1em;
@@ -99,12 +98,26 @@
     p {
       margin: 0 0 1.25em 0;
     }
+	.tabular {
+	  max-width: 100%;
+	  overflow: auto;
+	}
 
     pre.table {
       margin: 0 0 20px 0;
       font-size: .75em;
       white-space: pre;
     }
+    /* White fade */
+	.tabular:before {
+		content: ' ';
+		position: absolute;
+		right: 0;
+		top: 0;
+		height: 100%;
+		width: 30px;
+		@include background-image(linear-gradient(right, rgba(255,255,255,1), rgba(255,255,255,0.7) 50%, rgba(255,255,255,0)));
+	}
 
     span.dictionary {
       border-bottom: 1px dotted #558fae;
