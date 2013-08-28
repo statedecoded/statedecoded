@@ -1284,7 +1284,7 @@ class Parser
 			{
 
 				/*
-				 * Gather up a list of structural labels is, and determine the length of the longest
+				 * Gather up a list of structural labels and determine the length of the longest
 				 * one, which we'll use to narrow the scope of our search for the use of structural
 				 * labels within the text.
 				 */
