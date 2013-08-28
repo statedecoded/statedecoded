@@ -109,13 +109,18 @@ elseif ($_POST['action'] == 'parse')
 		{
 			$parser->clear_apc();
 			$parser->populate_editions();
-			$parser->parse();
-			$parser->build_permalinks();
-			$parser->write_api_key();
-			$parser->export();
-			$parser->generate_sitemap();
-			$parser->structural_stats_generate();
-			$parser->prune_views();
+			/*
+			 * We should only continue if parsing was successful.
+			 */
+			if ($parser->parse())
+			{
+				$parser->build_permalinks();
+				$parser->write_api_key();
+				$parser->export();
+				$parser->generate_sitemap();
+				$parser->structural_stats_generate();
+				$parser->prune_views();
+			}
 		}
 	}
 

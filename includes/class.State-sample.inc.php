@@ -107,16 +107,33 @@ class Parser
 				$this->directory = getcwd();
 			}
 
-			chdir($this->directory);
-
-			/*
-			 * Iterate through every XML file in this directory and build up an array of them.
-			 */
-
-			foreach (glob('*.xml') as $filename)
+			if (file_exists($this->directory) && is_dir($this->directory))
 			{
-				$this->files[] = $filename;
+				chdir($this->directory);
 			}
+			else
+			{
+				throw new Exception('Import directory does not exist "' .
+					$this->directory . '"');
+			}
+
+			if (count(glob('*.xml')))
+			{
+				/*
+				 * Iterate through every XML file in this directory and build up an array of them.
+				 */
+
+				foreach (glob('*.xml') as $filename)
+				{
+					$this->files[] = $filename;
+				}
+			}
+			else
+			{
+				throw new Exception('No XML Files found in path "' .
+					$this->directory . '"');
+			}
+
 		}
 
 	}
@@ -1310,7 +1327,7 @@ class Parser
 					 */
 					if ($pos !== FALSE)
 					{
-					
+
 						/*
 						 * Now figure out the specified scope by examining the text that appears
 						 * immediately after the scope indicator. Pull out as many characters as the
@@ -1324,7 +1341,7 @@ class Parser
 						 */
 						foreach ($structure_labels as $structure_label)
 						{
-						
+
 							if (stripos($phrase, $structure_label) !== FALSE)
 							{
 
@@ -1339,7 +1356,7 @@ class Parser
 								 * foreach() and its parent foreach().
 								 */
 								break(2);
-								
+
 							}
 
 							/*
@@ -1348,11 +1365,11 @@ class Parser
 							 * of caution. We pull that off of the end of the STRUCTURE constant.
 							 */
 							$scope = array_shift(array_reverse(explode(',', STRUCTURE)));
-							
+
 						}
-						
+
 					}
-					
+
 				}
 
 				/*

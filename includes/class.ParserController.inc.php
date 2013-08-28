@@ -294,34 +294,44 @@ class ParserController
 
 		/*
 		 * Create a new instance of Parser.
+		 * Check for obvious errors (files not present, etc);
 		 */
-		$parser = new Parser(
-			array(
-				/*
-				 * Tell the parser what the working directory
-				 * should be for the XML files.
-				 */
 
-				'directory' => WEB_ROOT . '/admin/xml/',
-
-				/*
-				 * Set the database
-				 */
-
-				'db' => $this->db
-			)
-		);
-
-		/*
-		 * Iterate through the files.
-		 */
-		$this->logger->message('Parsing XML', 3);
-
-		while ($section = $parser->iterate())
+		try
 		{
-			$parser->section = $section;
-			$parser->parse();
-			$parser->store();
+			$parser = new Parser(
+				array(
+					/*
+					 * Tell the parser what the working directory
+					 * should be for the XML files.
+					 */
+
+					'directory' => WEB_ROOT . '/admin/xml/',
+
+					/*
+					 * Set the database
+					 */
+
+					'db' => $this->db
+				)
+			);
+
+			/*
+			 * Iterate through the files.
+			 */
+			$this->logger->message('Parsing XML', 3);
+
+			while ($section = $parser->iterate())
+			{
+				$parser->section = $section;
+				$parser->parse();
+				$parser->store();
+			}
+		}
+		catch(Exception $e)
+		{
+			$this->logger->message('ERROR: ' . $e->getMessage(), 10);
+			return false;
 		}
 
 		/*
@@ -487,6 +497,8 @@ class ParserController
 		$result = $statement->execute();
 
 		$this->logger->message('Done', 5);
+
+		return true;
 	}
 
 	/**
