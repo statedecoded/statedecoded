@@ -59,6 +59,11 @@ if ( $response === FALSE)
 $structure = $struct->structure;
 
 /*
+ * Get a listing of all the structural children of this portion of the structure.
+ */
+$children = $struct->list_children();
+
+/*
  * Fire up our templating engine.
  */
 $template = new Page;
@@ -66,8 +71,16 @@ $template = new Page;
 /*
  * Define the title page elements.
  */
-$template->field->browser_title = $struct->name . '—' . SITE_TITLE;
-$template->field->page_title = '<h2>' . $struct->name . '</h2>';
+
+if(strlen($structure_id) > 0)
+{
+	$template->field->browser_title = $struct->name . '—' . SITE_TITLE;
+	$template->field->page_title = '<h2>' . $struct->name . '</h2>';
+}
+else
+{
+	$template->field->browser_title = SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.';
+}
 
 /*
  * Make some section information available globally to JavaScript.
@@ -173,19 +186,29 @@ if (isset($struct->siblings))
 /*
  * Provide a textual introduction to this section.
  */
-$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME . ', titled
-		“'.$struct->name.'.”';
-
-if (count((array) $structure) > 1)
+if(strlen($structure_id) > 0)
 {
-	foreach ($structure as $level)
+	$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME . ', titled
+			“'.$struct->name.'.”';
+
+	if (count((array) $structure) > 1)
 	{
-		if ($level->label !== $struct->label)
+		foreach ($structure as $level)
 		{
-			$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ', '
-			.'titled “' . $level->name . '.”';
+			if ($level->label !== $struct->label)
+			{
+				$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ', '
+				.'titled “' . $level->name . '.”';
+			}
 		}
 	}
+}
+else
+{
+$body = '
+	<article>
+	<h1>' . ucwords($children->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
+	<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
 }
 
 /*
@@ -218,11 +241,6 @@ if (isset($struct->metadata))
  */
 $row_classes = array('odd', 'even');
 $counter = 0;
-
-/*
- * Get a listing of all the structural children of this portion of the structure.
- */
-$children = $struct->list_children();
 
 /*
  * If we have successfully gotten a list of child structural units, display them.

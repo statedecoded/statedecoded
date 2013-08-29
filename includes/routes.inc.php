@@ -19,7 +19,7 @@ Router::addRoute('^/admin/(.*)', 'admin/index.php');
 Router::addRoute('^/downloads/(.*)', 'downloads/index.php');
 
 // Browse
-Router::addRoute('^/browse/(.*)', 'browse.php');
+Router::addRoute('^/browse/(.*)', 'structure.php');
 
 
 // New activation
