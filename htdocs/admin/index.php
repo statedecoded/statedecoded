@@ -43,7 +43,7 @@ if (count($_POST) === 0)
 {
 	if (count($_GET) === 0)
 	{
-		$body = '<iframe id="content" src="?page=parse&noframe=1"></iframe>';
+		$body = '<iframe id="content" src="?page=parse&noframe=1" style="width:95%; height: 600px;"></iframe>';
 	}
 	elseif ($_GET['page'] == 'parse' )
 	{
