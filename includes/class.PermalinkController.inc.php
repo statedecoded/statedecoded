@@ -77,8 +77,9 @@ class PermalinkController extends BaseController
 		$body = '<h1>Content Not Found</h1>
 			<p>We were unable to find the content you requested.</p>';
 
-		$this->setContent('body', $body);
+		$content = new Content();
+		$content->set('body', $body);
 
-		return $this->renderContent();
+		return $this->render($content);
 	}
 }

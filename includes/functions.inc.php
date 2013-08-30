@@ -274,3 +274,75 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 		}
 	}
 }
+
+/**
+ * Check that a file is available and safe to use
+ * Throws catchable exceptions if not.
+ * Optionally check if the file is writable.
+ */
+function check_file_available($filename, $writable=false)
+{
+	if (!file_exists($filename))
+	{
+		throw new Exception('File does not exist. "' .
+			$filename . '"');
+		return false;
+	}
+	elseif (!is_file($filename))
+	{
+		throw new Exception('File does not exist. "' .
+			$filename . '"');
+		return false;
+	}
+	elseif (!is_readable($filename))
+	{
+		throw new Exception('File is not readable: "' .
+			$filename . '"');
+		return false;
+	}
+	elseif ($writable && !is_writable($filename))
+	{
+		throw new Exception('File is not writable: "' .
+			$filename . '"');
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+/**
+ * Check that a directory is available and safe to use
+ * Throws catchable exceptions if not.
+ * Optionally check if the directory is writable.
+ */
+function check_dir_available($dirname, $writable=false)
+{
+	if (!file_exists($dirname))
+	{
+		throw new Exception('Directory does not exist. "' .
+			$dirname . '"');
+		return false;
+	}
+	elseif (!is_dir($dirname))
+	{
+		throw new Exception('Directory does not exist. "' .
+			$dirname . '"');
+		return false;
+	}
+	elseif (!is_readable($dirname))
+	{
+		throw new Exception('Directory is not readable: "' .
+			$dirname . '"');
+		return false;
+	}
+	elseif ($writable && !is_writable($dirname))
+	{
+		throw new Exception('Directory is not writable: "' .
+			$dirname . '"');
+		return false;
+	}
+	else {
+		return true;
+	}
+}

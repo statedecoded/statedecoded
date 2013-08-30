@@ -5,7 +5,7 @@
  *
  * All of the help text that drives the pop-up explanations throughout the website, and the methods
  * that convert and display that text.
- * 
+ *
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
@@ -17,7 +17,7 @@
  *
  */
 
-class Help extends Content
+class Help extends ContentData
 {
 	/*
 	 * Specify the help content to include
@@ -26,5 +26,5 @@ class Help extends Content
 	{
 		parent::__construct('help');
 	}
-	
+
 }

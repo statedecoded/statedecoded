@@ -16,10 +16,12 @@
  *
  */
 
-class StructureController
+class StructureController extends BaseController
 {
 	public function handle($args)
 	{
 		require(WEB_ROOT.'/structure.php');
+
+		return $this->render($content);
 	}
 }

@@ -63,75 +63,78 @@ if (isset($_GET['plain_text']))
 }
 
 /*
- * Fire up our templating engine.
+ * Create a container for our content.
  */
-$template = new Page;
+$content = new Content();
 
 /*
  * Make some section information available globally to JavaScript.
  */
-$template->field->javascript = "var section_number = '" . $law->section_number . "';";
-$template->field->javascript .= "var section_id = '" . $law->section_id . "';";
-$template->field->javascript .= "var api_key = '" . API_KEY . "';";
+$content->set('javascript', "var section_number = '" . $law->section_number . "';");
+$content->append('javascript', "var section_id = '" . $law->section_id . "';");
+$content->append('javascript', "var api_key = '" . API_KEY . "';");
 
-$template->field->javascript_files = '
+$content->set('javascript_files', '
 	<script src="/static/js/vendor/jquery.slideto.min.js"></script>
 	<script src="/static/js/vendor/jquery.color-2.1.1.min.js"></script>
 	<script src="/static/js/vendor/mousetrap.min.js"></script>
 	<script src="/static/js/vendor/jquery.zclip.min.js"></script>
-	<script src="/static/js/vendor/functions.js"></script>';
+	<script src="/static/js/vendor/functions.js"></script>');
 
 /*
  * Define the browser title.
  */
-$template->field->browser_title = $law->catch_line . ' (' . SECTION_SYMBOL . ' '
-	. $law->section_number . ')—' . SITE_TITLE;
+$content->set('browser_title', $law->catch_line . ' (' . SECTION_SYMBOL . ' '
+	. $law->section_number . ')—' . SITE_TITLE);
 
 /*
  * Define the page title.
  */
-$template->field->page_title .= '<h1>' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</h1>';
-$template->field->page_title .= '<h2>' . $law->catch_line . '</h2>';
+$content->set('page_title', '<h1>' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</h1>');
+$content->append('page_title', '<h2>' . $law->catch_line . '</h2>');
 
 /*
  * If we have Dublin Core metadata, display it.
  */
 if (is_object($law->dublin_core))
 {
-	$template->field->meta_tags = '';
+	$content->set('meta_tags', '');
 	foreach ($law->dublin_core AS $name => $value)
 	{
-		$template->field->meta_tags .= '<meta name="DC.' . $name . '" content="' . $value . '" />';
+		$content->append('meta_tags', '<meta name="DC.' . $name . '" content="' . $value . '" />');
 	}
 }
 
 /*
  * Define the breadcrumb trail text.
  */
-$template->field->breadcrumbs = '';
+$content->set('breadcrumbs', '');
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->breadcrumbs .= '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
-		.$ancestor->name.'</a></li>';
+	$content->append('breadcrumbs', '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
+		.$ancestor->name.'</a></li>');
 }
-$template->field->breadcrumbs .= '<li class="active"><a href="/'.$law->section_number.'/">§&nbsp;'
-	.$law->section_number.' '.$law->catch_line.'</a></li>';
+$content->append('breadcrumbs', '<li class="active"><a href="/'.$law->section_number.'/">§&nbsp;' .
+	 $law->section_number.' '.$law->catch_line.'</a></li>');
 
-$template->field->breadcrumbs = '<nav class="breadcrumbs"><ul class="steps-nav">'
-	.$template->field->breadcrumbs.'</ul></nav>';
+$content->prepend('breadcrumbs', '<nav class="breadcrumbs"><ul class="steps-nav">');
+$content->append('breadcrumbs', '</ul></nav>');
 
 /*
  * If there is a prior section in this structural unit, provide a back arrow.
  */
 if (isset($law->previous_section))
 {
-	$template->field->prev_next = '<li><a href="'.$law->previous_section->url.'" class="prev"
-		title="Previous section"><span>&larr; Previous</span>'.$law->previous_section->section_number.' '.$law->previous_section->catch_line.'</a></li>';
-	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
+	$content->set('prev_next', '<li><a href="' . $law->previous_section->url .
+		'" class="prev" title="Previous section"><span>&larr; Previous</span>' .
+		$law->previous_section->section_number . ' ' .
+		$law->previous_section->catch_line . '</a></li>');
+	$content->append('link_rel', '<link rel="prev" title="Previous" href="' .
+		$law->previous_section->url . '" />');
 }
 else
 {
-	$template->field->prev_next = '<li></li>';
+	$content->set('prev_next', '<li></li>');
 }
 
 /*
@@ -139,22 +142,25 @@ else
  */
 if (isset($law->next_section))
 {
-	$template->field->prev_next .= '<li><a href="'.$law->next_section->url.'" class="next"
-		title="Next section"><span>Next &rarr;</span>'.$law->next_section->section_number.' '.$law->next_section->catch_line.'</a></li>';
-	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
+	$content->append('prev_next', '<li><a href="' . $law->next_section->url .
+		'" class="next" title="Next section"><span>Next &rarr;</span>' .
+		$law->next_section->section_number . ' ' .
+		$law->next_section->catch_line . '</a></li>');
+	$content->append('link_rel', '<link rel="next" title="Next" href="' . $law->next_section->url . '" />');
 }
 else
 {
-	$template->field->prev_next .= '<li></li>';
+	$content->append('prev_next', '<li></li>');
 }
 
-$template->field->heading = '<nav class="prevnext" role="navigation"><ul>' . $template->field->prev_next . '</ul></nav>
-							<nav class="breadcrumbs" role="navigation">' . $template->field->breadcrumbs . '</nav>';
+$content->set('heading', '<nav class="prevnext" role="navigation"><ul>' .
+	$content->get('prev_next') . '</ul></nav><nav class="breadcrumbs" role="navigation">' .
+	$content->get('breadcrumbs') . '</nav>');
 
 /*
  * Store the URL for the containing structural unit.
  */
-$template->field->link_rel .= '<link rel="up" title="Up" href="'.$law->ancestry->{1}->url.'" />';
+$content->append('link_rel', '<link rel="up" title="Up" href="' . $law->ancestry->{1}->url . '" />');
 
 /*
  * Start assembling the body of this page by indicating the beginning of the text of the section.
@@ -362,23 +368,18 @@ if ( isset($law->citation) && is_object($law->citation) )
 /*
  * Put the shorthand $body variable into its proper place.
  */
-$template->field->body = $body;
+$content->set('body', $body);
 unset($body);
 
 /*
  * Put the shorthand $sidebar variable into its proper place.
  */
-$template->field->sidebar = $sidebar;
+$content->set('sidebar', $sidebar);
 unset($sidebar);
 
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'law inside';
-$template->field->content_class = 'nest wide';
+$content->set('body_class', 'law inside');
+$content->set('content_class', 'nest wide');
 
-/*
- * Parse the template, which is a shortcut for a few steps that culminate in sending the content
- * to the browser.
- */
-$template->parse();

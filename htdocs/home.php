@@ -17,18 +17,18 @@
 /*
  * Fire up our templating engine.
  */
-$template = new Page;
+$content = new Content();
 
 /*
  * Define some page elements.
  */
-$template->field->browser_title = '';
-$template->field->page_title = '';
+$content->set('browser_title', '');
+$content->set('page_title', '');
 
 //body class="preload"?
 
-$body = '
-	<div class="nest video">
+$content->set('body',
+	'<div class="nest video">
 		<div class="video-frame">
 			<div class="video-container">
 				<iframe width="560" height="315" src="http://www.youtube.com/embed/4HPxQHBFjcg" frameborder="0" allowfullscreen></iframe>
@@ -89,27 +89,21 @@ $body = '
 
 		</div> <!-- // .nest -->
 
-	</section>';
-
-/*
- * Put the shorthand $body variable into its proper place.
- */
-$template->field->body = $body;
-unset($body);
+	</section>');
 
 /*
  * Put the shorthand $sidebar variable into its proper place.
  */
-$template->field->sidebar = $sidebar;
-unset($sidebar);
+$content->set('sidebar', '');
 
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'preload';
+$content->set('body_class', 'preload');
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
  * to the browser.
  */
-$template->parse();
+$template = Template::create();
+$template->parse($content);

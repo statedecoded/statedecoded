@@ -64,9 +64,9 @@ $structure = $struct->structure;
 $children = $struct->list_children();
 
 /*
- * Fire up our templating engine.
+ * Create a container for our content.
  */
-$template = new Page;
+$content = new Content();
 
 /*
  * Define the title page elements.
@@ -74,27 +74,27 @@ $template = new Page;
 
 if(strlen($structure_id) > 0)
 {
-	$template->field->browser_title = $struct->name . '—' . SITE_TITLE;
-	$template->field->page_title = '<h2>' . $struct->name . '</h2>';
+	$content->set('browser_title', $struct->name . '—' . SITE_TITLE);
+	$content->set('page_title', '<h2>' . $struct->name . '</h2>');
 }
 else
 {
-	$template->field->browser_title = SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.';
+	$content->set('browser_title', SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.');
 }
 
 /*
  * Make some section information available globally to JavaScript.
  */
 
-$template->field->javascript = "var section_number = '" . $structure->identifier . "';";
-$template->field->javascript .= "var api_key = '" . API_KEY . "';";
+$content->set('javascript', "var section_number = '" . $structure->identifier . "';");
+$content->append('javascript', "var api_key = '" . API_KEY . "';");
 
-$template->field->javascript_files = '
+$content->append('javascript_files', '
 	<script src="/static/js/vendor/jquery.slideto.min.js"></script>
 	<script src="/static/js/vendor/jquery.color-2.1.1.min.js"></script>
 	<script src="/static/js/vendor/mousetrap.min.js"></script>
 	<script src="/static/js/vendor/jquery.zclip.min.js"></script>
-	<script src="/static/js/vendor/functions.js"></script>';
+	<script src="/static/js/vendor/functions.js"></script>');
 
 /*
  * Define the breadcrumb trail.
@@ -110,9 +110,9 @@ if (count((array) $structure) > 1)
 			$active = 'active';
 		}
 
-		$template->field->breadcrumbs .= '<li class="' . $active . '">
+		$content->set('breadcrumbs', '<li class="' . $active . '">
 				<a href="' . $level->url . '">' . $level->identifier . ': ' . $level->name . '</a>
-			</li>';
+			</li>');
 
 		/*
 		 * If this structural element is the same as the parent container, then use that knowledge
@@ -120,15 +120,16 @@ if (count((array) $structure) > 1)
 		 */
 		if ($level->id == $struct->parent_id)
 		{
-			$template->field->link_rel = '<link rel="up" title="Up" href="' . $level->url . '" />';
+			$content->set('link_rel', '<link rel="up" title="Up" href="' . $level->url . '" />');
 		}
 
 	}
 }
 
-if (isset($template->field->breadcrumbs))
+if (strlen($content->get('breadcrumbs')) > 0)
 {
-	$template->field->breadcrumbs = '<ul class="steps-nav">' . $template->field->breadcrumbs . '</ul>';
+	$content->prepend('breadcrumbs', '<ul class="steps-nav">');
+	$content->append('breadcrumbs', '</ul>');
 }
 
 /*
@@ -140,7 +141,7 @@ else
 	/*
 	* Make the "up" link a link to the home page.
 	*/
-	$template->field->link_rel = '<link rel="up" title="Up" href="/" />';
+	$content->set('link_rel', '<link rel="up" title="Up" href="/" />');
 }
 
 /*
@@ -167,14 +168,14 @@ if (isset($struct->siblings))
 			{
 				prev($struct->siblings);
 				$tmp = prev($struct->siblings);
-				$template->field->link_rel .= '<link rel="prev" title="Previous" href="' . $tmp->url . '" />';
+				$content->append('link_rel', '<link rel="prev" title="Previous" href="' . $tmp->url . '" />');
 			}
 
 			if ( $i < (count($struct->siblings)-1) )
 			{
 				next($struct->siblings);
 				$tmp = next($struct->siblings);
-				$template->field->link_rel .= '<link rel="next" title="Next" href="' . $tmp->url . '" />';
+				$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
 			}
 			break;
 
@@ -323,7 +324,7 @@ if ($laws !== FALSE)
 /*
  * Put the shorthand $body variable into its proper place.
  */
-$template->field->body = $body;
+$content->set('body', $body);
 unset($body);
 
 /*
@@ -331,16 +332,12 @@ unset($body);
  */
 if (!empty($sidebar))
 {
-	$template->field->sidebar = $sidebar;
+	$content->set('sidebar', $sidebar);
 	unset($sidebar);
 }
 
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'inside structure';
-$template->field->content_class = 'nest narrow';
-
-# Parse the template, which is a shortcut for a few steps that culminate in sending the content
-# to the browser.
-$template->parse();
+$content->set('body_class', 'inside structure');
+$content->set('content_class', 'nest narrow');

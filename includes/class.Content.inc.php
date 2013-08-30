@@ -1,58 +1,78 @@
 <?php
 
 /**
- * The Autolinker class, for identifying linkable text and turn it into links
- * 
+ * The Content class, a simple holder of content
+ *
  * PHP version 5
  *
  * @author		Bill Hunt <bill at krues8dr.com>
  * @copyright	2013 Bill Hunt
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.7
+ * @version		0.8
  * @link		http://www.statedecoded.com/
- * @since		0.2
+ * @since		0.7
  *
  */
 
-/*
- * Reads a JSON file to load content.
- * Later, this could read from a database, if need be.
- */
 class Content
 {
+	public $data = array();
 
-	public $content;
-	public $json;
-	public $filename;
-	
-	/*
-	 * Initialize our object
+	/**
+	 * Add a property to our content.
 	 */
-	public function __construct($type) 
+	public function set($field, $content = null)
 	{
-		/*
-		 * Require something that resembles a filename.
-		 */
-		if (preg_match('/^([a-zA-Z0-9-_]+)$/', $type)) 
+		return $this->data[$field] = $content;
+	}
+
+	/**
+	 * Append to existing content.
+	 */
+	public function append($field, $content = null)
+	{
+		return $this->data[$field] .= $content;
+	}
+
+	/**
+	 * Prepend to existing content.
+	 */
+	public function prepend($field, $content = null)
+	{
+		return $this->data[$field] = $content . $this->data[$field];
+	}
+
+	/**
+	 * Add several properties to our content.
+	 */
+	public function set_many($data) {
+		foreach ($data as $name => $value)
 		{
-			$this->filename = WEB_ROOT . '/content/' . $type . '.json';
-			$this->json = file_get_contents($this->filename);
-			$this->content = json_decode($this->json);
+			$this->data[$name] = $value;
 		}
 	}
-	
-	/*
-	 * Retrieve all text relevant to a given section
-	 */
-	public function get_text($section)
+
+	public function get($field=null)
 	{
-		if (!$section)
+		if (isset($field))
 		{
-			return $this->content;
+			if(isset($this->data[$field]))
+			{
+				return $this->data[$field];
+			}
+			else
+			{
+				/*
+				 * We return an empty string so we can easily check strlen() .
+				 * Using empty() will throw an error:
+				 *  "Can't use method return value in write context"
+				 */
+				return '';
+			}
 		}
-		elseif (isset($this->content->$section))
+		else
 		{
-			return $this->content->$section;
+			return $this->data;
 		}
 	}
 }

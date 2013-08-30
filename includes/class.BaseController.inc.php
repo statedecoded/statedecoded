@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 /**
  * BaseController class
  *
  * Base for controllers.  Abstract only.
- * 
+ *
  * PHP version 5
  *
  * @author		Bill Hunt <bill at krues8dr dot com>
@@ -18,33 +18,24 @@
 abstract class BaseController
 {
 	protected $template;
-	
+
 	public function __construct()
 	{
 		/**
 		 * Fire up our templating engine.
 		 */
-		$this->template = new Page;
-	}
-	
-	
-	/**
-	 * Add a property to our controller.
-	 */
-	public function setContent($name, $content)
-	{
-		$this->template->field->$name = $content;
+		$this->template = Template::create();
 	}
 
 	/**
 	 * Render the template.
 	 */
-	public function renderContent()
+	public function render($content)
 	{
 		/*
 		 * Parse the template, which is a shortcut for a few steps that culminate in sending the content
 		 * to the browser.
 		 */
-		return $this->template->parse();
+		return $this->template->parse($content);
 	}
 }

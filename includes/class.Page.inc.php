@@ -8,9 +8,13 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.7
+ * @version		0.8
  * @link		http://www.statedecoded.com/
  * @since		0.1
+ *
+ * Since all rendering occurs in-class, you can override the rendering method
+ * in your theme's Page class to use a totally different rendering engine (Twig,
+ * Smarty, or straight PHP) if you'd like!
  *
  */
 
@@ -19,127 +23,137 @@
  */
 class Page
 {
+	public $html;
+	public $page = 'default';
+	public $template_file = '';
+	public $theme_name = '';
+	public $theme_dir = '';
+
+
+	public function __construct($page=null)
+	{
+		if(strlen($this->theme_name) === 0)
+		{
+			$this->theme_name = THEME_NAME;
+		}
+		if(strlen($this->theme_dir) === 0)
+		{
+			$this->theme_dir = THEME_DIR;
+		}
+
+		if (isset($page))
+		{
+			$this->page = $page;
+		}
+		$this->template_file = $this->theme_dir . $this->page . '.inc.php';
+
+		$this->html = $this->load_template($this->template_file);
+	}
+
+	/**
+	 * Get our template data
+	 */
+	function load_template($template_file)
+	{
+		/*
+		 * Save the contents of the template file to a variable. First check APC and see if it's
+		 * stored there.
+		 */
+		$storage_name = 'template-'.$this->theme_name.'-'.$this->page;
+		if ( APC_RUNNING === TRUE)
+		{
+			$html = apc_fetch($storage_name);
+			if ($html === FALSE)
+			{
+
+
+				if (check_file_available($template_file))
+				{
+					$html = file_get_contents($template_file);
+				}
+
+				apc_store($storage_name, $html);
+			}
+		}
+		else
+		{
+			$html = file_get_contents($template_file);
+		}
+
+		return $html;
+	}
+
 
 	/**
 	 * A shortcut for all steps necessary to turn variables into an output page.
 	 */
-	function parse()
+	public function parse($content)
 	{
-		Page::render();
-		Page::display();
+		return $this->display($this->render($content));
 	}
 
 
 	/**
 	 * Combine the populated variables with the template.
 	 */
-	function render()
+	public function render($content)
 	{
-
 		/*
-		 * Save the contents of the template file to a variable. First check APC and see if it's
-		 * stored there.
+		 * Make a copy of the template here, so we can re-render as often
+		 * as we like with new content.
 		 */
-		if ( APC_RUNNING === TRUE)
-		{
-			$this->html = apc_fetch('template-'.TEMPLATE);
-			if ($this->html === FALSE)
-			{
-				$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
-				apc_store('template-'.TEMPLATE, $this->html);
-			}
-		}
-		else
-		{
-			$this->html = file_get_contents(INCLUDE_PATH . '/templates/' . TEMPLATE . '.inc.php');
-		}
+		$template = $this->html;
 
-		/*
-		 * Create the browser title.
-		 */
-		if (empty($this->field->browser_title))
-		{
-			if (!empty($this->field->page_title))
-			{
-				$this->field->browser_title .= $this->field->page_title;
-				$this->field->browser_title .= '—' . SITE_TITLE;
-			}
-			else
-			{
-				$this->field->browser_title .= SITE_TITLE;
-			}
-		}
-		else
-		{
-			$this->field->browser_title .= '—' . SITE_TITLE;
-		}
-
-		/*
-		 * Include the place name (e.g., "Washington," "Texas," "United States").
-		 */
-		$this->field->place_name = PLACE_NAME;
-
-		/*
-		 * If a Google Analytics Web Property ID has been provided, insert the tracking code.
-		 */
-		if (defined('GOOGLE_ANALYTICS_ID'))
-		{
-
-			$this->field->google_analytics =
-				  "var _gaq = _gaq || [];
-				  _gaq.push(['_setAccount', '" . GOOGLE_ANALYTICS_ID . "']);
-				  _gaq.push(['_trackPageview']);
-				  (function() {
-					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-				  })();";
-
-		}
-
-		/*
-		 * If a Typekit ID has been provided, insert the JavaScript.
-		 */
-		if (defined('TYPEKIT_ID'))
-		{
-			$this->field->typekit =
-				'<script src="//use.typekit.net/' .  TYPEKIT_ID . '.js"></script>
-				<script >try{Typekit.load();}catch(e){}</script>';
-		}
+		$this->before_render($template, $content);
 
 		/*
 		 * Replace all of our in-page tokens with our defined variables.
 		 */
-		foreach ($this->field as $field=>$contents)
+		foreach ($content->get() as $field=>$value)
 		{
-			$this->html = str_replace('{{' . $field . '}}', $contents, $this->html);
+			$template = str_replace('{{' . $field . '}}', $value, $template);
 		}
 
+		$this->after_render($template, $content);
+
+		return $template;
+	}
+
+
+	/**
+	 * Pre-rendering.
+	 */
+	public function before_render(&$template, &$content)
+	{
+
+	}
+
+
+	/**
+	 * Post-rendering.
+	 */
+	public function after_render(&$template, &$content)
+	{
 		/*
 		 * Erase any unpopulated tokens that remain in our template.
 		 */
-		$this->html = preg_replace('/{{[0-9a-z_]+}}/', '', $this->html);
+		$template = preg_replace('/{{[0-9a-z_]+}}/', '', $template);
 
-		/*
-		 * Erase selected containers, if they're empty.
-		 */
-		$this->html = preg_replace('/<section id="sidebar">(\s*)<\/section>/', '', $this->html);
-		$this->html = preg_replace('/<nav id="intercode">(\s*)<\/nav>/', '', $this->html);
-		$this->html = preg_replace('/<nav id="breadcrumbs">(\s*)<\/nav>/', '', $this->html);
 	}
+
 
 	/**
 	 * Send the page to the browser.
 	 */
-	function display()
+	function display($content)
 	{
 
-		if (!isset($this->html))
+		if (!isset($content))
 		{
 			return FALSE;
 		}
 
-		echo $this->html;
+		echo $content;
 		return TRUE;
 
 	}

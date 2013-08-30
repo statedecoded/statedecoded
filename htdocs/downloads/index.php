@@ -15,21 +15,21 @@
  */
 
 /*
- * Fire up our templating engine.
+ * Create a container for our content.
  */
-$template = new Page;
+$content = new Content();
 
 /*
  * Define some page elements.
  */
-$template->field->browser_title = 'Downloads';
-$template->field->page_title = 'Downloads';
+$content->set('browser_title', 'Downloads');
+$content->set('page_title', 'Downloads');
 
 /*
  * Provide some custom CSS for this form.
  */
-$template->field->inline_css = '
-	<style>
+$content->set('inline_css',
+	'<style>
 		#required-note {
 			font-size: .85em;
 			margin-top: 2em;
@@ -49,7 +49,7 @@ $template->field->inline_css = '
 			clear: left;
 			margin-top: 1em;
 		}
-	</style>';
+	</style>');
 
 $body = '
 	<h2>Laws as JSON</h2>
@@ -183,22 +183,27 @@ else
 /*
  * Put the shorthand $body variable into its proper place.
  */
-$template->field->body = $body;
+$content->set('body', $body);
 unset($body);
 
 /*
  * Put the shorthand $sidebar variable into its proper place.
  */
-$template->field->sidebar = $sidebar;
+$content->set('sidebar', $sidebar);
 unset($sidebar);
 
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'law inside';
+$content->set('body_class', 'law inside');
+
+/*
+ * Fire up our templating engine.
+ */
+$template = new Page;
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
  * to the browser.
  */
-$template->parse();
+$template->parse($content);

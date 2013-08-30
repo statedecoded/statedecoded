@@ -15,15 +15,15 @@
  */
 
 /*
- * Fire up our templating engine.
+ * Create a container for our content.
  */
-$template = new Page;
+$content = new Content();
 
 /*
  * Define some page elements.
  */
-$template->field->browser_title = 'About';
-$template->field->page_title = 'About';
+$content->set('browser_title', 'About');
+$content->set('page_title', 'About');
 
 $body = '';
 
@@ -32,22 +32,28 @@ $sidebar = '';
 /*
  * Put the shorthand $body variable into its proper place.
  */
-$template->field->body = $body;
+$content->set('body', $body);
 unset($body);
 
 /*
  * Put the shorthand $sidebar variable into its proper place.
  */
-$template->field->sidebar = $sidebar;
+$content->set('sidebar', $sidebar);
 unset($sidebar);
 
 /*
  * Add the custom classes to the body.
  */
-$template->field->body_class = 'law inside';
+$content->set('body_class', 'law inside');
+
+
+/*
+ * Fire up our templating engine.
+ */
+$template = Template::create();
 
 /*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
  * to the browser.
  */
-$template->parse();
+$template->parse($content);

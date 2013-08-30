@@ -16,10 +16,12 @@
  *
  */
 
-class LawController
+class LawController extends BaseController
 {
 	public function handle($args)
 	{
 		require(WEB_ROOT.'/law.php');
+
+		return $this->render($content);
 	}
 }
