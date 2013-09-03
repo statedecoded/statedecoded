@@ -25,6 +25,12 @@ set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
 define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
 
 /*
+ * Define template Directory
+ */
+
+define('TEMPLATE_DIR', WEB_ROOT . '/themes/');
+
+/*
  * Define location of all of the files to import.
  */
 define('IMPORT_DATA_DIRECTORY', WEB_ROOT . '/admin/import-data/');
@@ -35,9 +41,15 @@ define('IMPORT_DATA_DIRECTORY', WEB_ROOT . '/admin/import-data/');
 define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
 
 /*
- * Which template to use.
+ * Which theme to use.
  */
-define('TEMPLATE', 'default');
+
+// Edit this to change your theme!
+define('THEME_NAME', 'StateDecoded2013');
+
+define('THEME_DIR', TEMPLATE_DIR . THEME_NAME . '/');
+
+define('THEME_WEB_PATH', '/themes/' . THEME_NAME . '/');
 
 /*
  * What is the title of the website?
