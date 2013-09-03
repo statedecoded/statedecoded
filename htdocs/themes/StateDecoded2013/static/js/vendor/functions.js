@@ -184,7 +184,7 @@ $(document).ready(function () {
 
 		/* Permit copying URLs to the clipboard. */
 		elm.zclip({
-			path: '/static/js/vendor/ZeroClipboard.swf',
+			path: zclip_swf_file,
 			copy: function() { return base_url + $(this).attr('href'); }
 		});
 	});

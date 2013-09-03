@@ -22,6 +22,6 @@ class LawController extends BaseController
 	{
 		require(WEB_ROOT.'/law.php');
 
-		return $this->render($content);
+		$this->render($content);
 	}
 }

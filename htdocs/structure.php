@@ -86,15 +86,7 @@ else
  * Make some section information available globally to JavaScript.
  */
 
-$content->set('javascript', "var section_number = '" . $structure->identifier . "';");
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
-
-$content->append('javascript_files', '
-	<script src="/static/js/vendor/jquery.slideto.min.js"></script>
-	<script src="/static/js/vendor/jquery.color-2.1.1.min.js"></script>
-	<script src="/static/js/vendor/mousetrap.min.js"></script>
-	<script src="/static/js/vendor/jquery.zclip.min.js"></script>
-	<script src="/static/js/vendor/functions.js"></script>');
 
 /*
  * Define the breadcrumb trail.

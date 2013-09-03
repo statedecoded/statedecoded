@@ -2480,7 +2480,7 @@ header#page_header {
       height: 0.5in; } }
   /* line 26, ../scss/areas/_header.scss */
   header#page_header hgroup#place_logo {
-    background-image: url('/static/images/faux_seal.png?1376337970');
+    background-image: url('../images/faux_seal.png?1378239129');
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -2666,40 +2666,40 @@ header#page_header {
               width: 100%; } }
           /* line 215, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#browse {
-            background-image: url('/static/images/nav-icons/nav_browse.svg?1376337970'); }
+            background-image: url('../images/nav-icons/nav_browse.svg?1378239129'); }
             /* line 217, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#browse:hover {
-              background-image: url('/static/images/nav-icons/nav_browse-hover.svg?1376337970'); }
+              background-image: url('../images/nav-icons/nav_browse-hover.svg?1378239129'); }
             /* line 220, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#browse {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_browse.png?1376337970'); }
+              background-image: url('../images/nav-icons/fallbacks/nav_browse.png?1378239129'); }
           /* line 225, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#court_cases {
-            background-image: url('/static/images/nav-icons/nav_court-cases.svg?1376337970'); }
+            background-image: url('../images/nav-icons/nav_court-cases.svg?1378239129'); }
             /* line 227, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#court_cases:hover {
-              background-image: url('/static/images/nav-icons/nav_court-cases-hover.svg?1376337970'); }
+              background-image: url('../images/nav-icons/nav_court-cases-hover.svg?1378239129'); }
             /* line 230, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#court_cases {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_court-cases.png?1376337970'); }
+              background-image: url('../images/nav-icons/fallbacks/nav_court-cases.png?1378239129'); }
           /* line 235, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#about {
-            background-image: url('/static/images/nav-icons/nav_about-us.svg?1376337970'); }
+            background-image: url('../images/nav-icons/nav_about-us.svg?1378239129'); }
             /* line 238, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#about:hover {
-              background-image: url('/static/images/nav-icons/nav_about-us-hover.svg?1376337970'); }
+              background-image: url('../images/nav-icons/nav_about-us-hover.svg?1378239129'); }
             /* line 241, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#about {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_about-us.png?1376337970'); }
+              background-image: url('../images/nav-icons/fallbacks/nav_about-us.png?1378239129'); }
           /* line 246, ../scss/areas/_header.scss */
           header#page_header nav#main_navigation ul li a#downloads {
-            background-image: url('/static/images/nav-icons/nav_downloads.svg?1377004328'); }
+            background-image: url('../images/nav-icons/nav_downloads.svg?1378239129'); }
             /* line 248, ../scss/areas/_header.scss */
             header#page_header nav#main_navigation ul li a#downloads:hover {
-              background-image: url('/static/images/nav-icons/nav_downloads-hover.svg?1377004328'); }
+              background-image: url('../images/nav-icons/nav_downloads-hover.svg?1378239129'); }
             /* line 251, ../scss/areas/_header.scss */
             .lt-ie9 header#page_header nav#main_navigation ul li a#downloads {
-              background-image: url('/static/images/nav-icons/fallbacks/nav_downloads.png?1377004328'); }
+              background-image: url('../images/nav-icons/fallbacks/nav_downloads.png?1378239129'); }
   @media only screen and (min-width: 769px) {
     /* line 260, ../scss/areas/_header.scss */
     .inside header#page_header {

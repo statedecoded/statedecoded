@@ -22,6 +22,6 @@ class StructureController extends BaseController
 	{
 		require(WEB_ROOT.'/structure.php');
 
-		return $this->render($content);
+		$this->render($content);
 	}
 }

@@ -74,13 +74,6 @@ $content->set('javascript', "var section_number = '" . $law->section_number . "'
 $content->append('javascript', "var section_id = '" . $law->section_id . "';");
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
 
-$content->set('javascript_files', '
-	<script src="/static/js/vendor/jquery.slideto.min.js"></script>
-	<script src="/static/js/vendor/jquery.color-2.1.1.min.js"></script>
-	<script src="/static/js/vendor/mousetrap.min.js"></script>
-	<script src="/static/js/vendor/jquery.zclip.min.js"></script>
-	<script src="/static/js/vendor/functions.js"></script>');
-
 /*
  * Define the browser title.
  */

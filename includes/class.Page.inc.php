@@ -28,10 +28,22 @@ class Page
 	public $template_file = '';
 	public $theme_name = '';
 	public $theme_dir = '';
+	public $theme_web_path = '';
+	public $static_path = '';
 
+	public $assets = array(
+		/* 'asset_name' => array(
+				'path' => '/relative/path/to/file.css',
+				'resolved_path' => '/absolute/path/to/file.css', // This is generated.
+				'type' => 'stylesheet', // or javascript or whatever.
+				'requires' => array('first_asset_name', 'second_asset_name')) */
+	);
 
 	public function __construct($page=null)
 	{
+		/*
+		 * Set defaults
+		 */
 		if(strlen($this->theme_name) === 0)
 		{
 			$this->theme_name = THEME_NAME;
@@ -40,6 +52,19 @@ class Page
 		{
 			$this->theme_dir = THEME_DIR;
 		}
+		if(strlen($this->theme_web_path) == 0)
+		{
+			$this->theme_web_path = THEME_WEB_PATH;
+		}
+		if(strlen($this->static_path) == 0)
+		{
+			$this->static_path = $this->theme_web_path . 'static/';
+		}
+
+		/*
+		 * Pre-parse assets to set the full path.
+		 */
+		$this->add_assets($this->assets);
 
 		if (isset($page))
 		{
@@ -53,7 +78,7 @@ class Page
 	/**
 	 * Get our template data
 	 */
-	function load_template($template_file)
+	public function load_template($template_file)
 	{
 		/*
 		 * Save the contents of the template file to a variable. First check APC and see if it's
@@ -134,10 +159,6 @@ class Page
 	 */
 	public function after_render(&$template, &$content)
 	{
-		/*
-		 * Erase any unpopulated tokens that remain in our template.
-		 */
-		$template = preg_replace('/{{[0-9a-z_]+}}/', '', $template);
 
 	}
 
@@ -145,7 +166,7 @@ class Page
 	/**
 	 * Send the page to the browser.
 	 */
-	function display($content)
+	public function display($content)
 	{
 
 		if (!isset($content))
@@ -157,4 +178,115 @@ class Page
 		return TRUE;
 
 	}
+
+
+	/**
+	 * Add a new asset.
+	 */
+	public function add_asset($name, $asset = array())
+	{
+		/*
+		 * If we have a local path.
+		 */
+		if (substr($asset['path'], 0, 1) === '/' && substr($asset['path'], 0, 2) !== '//')
+		{
+			/*
+			 * Drop the leading slash.
+			 */
+			$asset['resolved_path'] = $this->static_path . substr($asset['path'], 1);
+		}
+		else
+		{
+			$asset['resolved_path'] = $asset['path'];
+		}
+
+		if(isset($requires))
+		{
+			$asset['requires'] = $requires;
+		}
+		$this->assets[$name] = $asset;
+	}
+
+
+	/**
+	 * Add an array of assets.
+	 */
+	public function add_assets($assets)
+	{
+		foreach ($assets as $name => $asset)
+		{
+			$this->add_asset($name, $asset);
+		}
+	}
+
+
+	/**
+	 * Parse through assets and resolve dependencies.
+	 */
+	public function parse_assets()
+	{
+		$collated_assets = array();
+
+		foreach ($this->assets as $name => $asset)
+		{
+			$this->build_asset($collated_assets, $name, $asset);
+		}
+
+		return $collated_assets;
+	}
+
+
+	/**
+	 * Internal asset builder for final asset rendering
+	 * Edits $collated_assets in place!
+	 */
+	public function build_asset(&$collated_assets, $name, $asset)
+	{
+		$type = $asset['type'];
+		/*
+		 * Resolve requirements.
+		 */
+		if (isset($asset['requires']))
+		{
+			foreach ($asset['requires'] as $required)
+			{
+				if(!in_array($required, array_keys($this->assets)))
+				{
+					throw new Exception('Required asset "' . $required .
+						'" not defined, from parent "' . $name .'"');
+				}
+				else
+				{
+
+					/*
+					 * If the requirement has not yet been satisfied, we recurse to add it.
+					 */
+					$resolved_path = $this->assets[$required]['resolved_path'];
+					$asset_type = $this->assets[$required]['type'];
+					if(!isset($collated_assets[$type]))
+					{
+						$collated_assets[$type] = array();
+					}
+
+					if (!in_array(
+						$resolved_path,
+						$collated_assets[$type]))
+					{
+						$collated_assets = $this->build_asset($collated_assets, $required,
+							$this->assets[$required]);
+					}
+				} /* !in_array($required ... */
+			} /* foreach ($asset['requires'] */
+		} /* if (isset($asset['requires'] .. */
+
+		/*
+		 * The easy part - just add the asset.
+		 * We collate these into types, for ease of display.
+		 */
+		$collated_assets[ $type ][] = $asset['resolved_path'];
+
+		return $collated_assets;
+
+	} /* function build_asset */
+
 }

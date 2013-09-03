@@ -31,6 +31,10 @@ class Content
 	 */
 	public function append($field, $content = null)
 	{
+		if(!isset($this->data[$field]))
+		{
+			$this->data[$field] = '';
+		}
 		return $this->data[$field] .= $content;
 	}
 

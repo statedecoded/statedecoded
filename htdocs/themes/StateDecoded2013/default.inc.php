@@ -16,12 +16,8 @@
 
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-	<link rel="stylesheet" href="/static/css/application.css">
-	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
 	{{css}}
 	{{inline_css}}
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
 
 </head>
 <body class="preload {{body_class}}">
@@ -105,14 +101,9 @@
 			</div> <!-- // .nest -->
 		</footer> <!-- // #page_footer -->
   </div> <!-- // #container -->
-
 	{{javascript_files}}
-	<script>
-		{{javascript}}
-		{{google_analytics}}
-	</script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/jquery.qtip.min.js"></script>
-	<script src="/static/js/vendor/modernizr.min.js"></script>
-	{{typekit}}
+  <script type="text/javascript">
+	{{javascript}}
+  </script>
 </body>
 </html>
