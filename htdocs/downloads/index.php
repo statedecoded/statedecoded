@@ -198,12 +198,8 @@ unset($sidebar);
 $content->set('body_class', 'law inside');
 
 /*
- * Fire up our templating engine.
- */
-$template = new Page;
-
-/*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
  * to the browser.
  */
+$template = Template::create();
 $template->parse($content);
