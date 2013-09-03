@@ -177,27 +177,30 @@ if(isset($_GET['noframe']))
 else
 {
 
+
 	/*
-	 * Fire up our templating engine.
+	 * Create a container for our content.
 	 */
-	$template = new Page;
+	$content = new Content;
 
 	/*
 	 * Define some page elements.
 	 */
-	$template->field->browser_title = 'Parser';
-	$template->field->page_title = 'Parser';
+	$content->set('browser_title', 'Parser');
+	$content->set('page_title', 'Parser');
 
 	/*
 	 * Put the shorthand $body variable into its proper place.
 	 */
-	$template->field->body = $body;
+	$content->set('body', $body);
 	unset($body);
+
 
 	/*
 	 * Parse the template, which is a shortcut for a few steps that culminate in sending the content
 	 * to the browser.
 	 */
-	$template->parse();
+	$template = Template::create();
+	$template->parse($content);
 
 }
