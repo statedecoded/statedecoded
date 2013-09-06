@@ -551,65 +551,71 @@ textarea {
 
 /* line 125, ../scss/base/_default.scss */
 #main_content {
-  padding: 20px 0; }
+  padding: 20px 0;
+  *zoom: 1; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
     /* line 125, ../scss/base/_default.scss */
     #main_content {
       padding: 0 10px; } }
+  /* line 38, ../../../../../../../../.rvm/gems/ruby-1.9.3-p194/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+  #main_content:after {
+    content: "";
+    display: table;
+    clear: both; }
 
-/* line 135, ../scss/base/_default.scss */
+/* line 136, ../scss/base/_default.scss */
 ul, ol {
   padding: 0;
   margin: 0 0 12px 25px; }
-  /* line 138, ../scss/base/_default.scss */
+  /* line 139, ../scss/base/_default.scss */
   ul ul, ul ol, ol ul, ol ol {
     margin-bottom: 0; }
 
-/* line 143, ../scss/base/_default.scss */
+/* line 144, ../scss/base/_default.scss */
 ul {
   list-style: disc; }
 
-/* line 147, ../scss/base/_default.scss */
+/* line 148, ../scss/base/_default.scss */
 ol, ol ol ol ol, ol ol ol ol ol ol ol {
   list-style: decimal; }
-  /* line 149, ../scss/base/_default.scss */
+  /* line 150, ../scss/base/_default.scss */
   ol ol, ol ol ol ol ol, ol ol ol ol ol ol ol ol {
     list-style-type: lower-alpha; }
-    /* line 151, ../scss/base/_default.scss */
+    /* line 152, ../scss/base/_default.scss */
     ol ol ol, ol ol ol ol ol ol, ol ol ol ol ol ol ol ol ol {
       list-style-type: lower-roman; }
 
-/* line 157, ../scss/base/_default.scss */
+/* line 158, ../scss/base/_default.scss */
 li {
   line-height: 24px; }
 
-/* line 163, ../scss/base/_default.scss */
+/* line 164, ../scss/base/_default.scss */
 .chromeframe {
   background-color: #ccc;
   color: black;
   margin: 0.2em 0;
   padding: 0.2em 0; }
 
-/* line 170, ../scss/base/_default.scss */
+/* line 171, ../scss/base/_default.scss */
 .nest {
   margin: auto;
   position: relative; }
 
-/* line 175, ../scss/base/_default.scss */
+/* line 176, ../scss/base/_default.scss */
 .wide, .law .nest {
   max-width: none;
   padding: 0 40px;
   width: 100%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 175, ../scss/base/_default.scss */
+    /* line 176, ../scss/base/_default.scss */
     .wide, .law .nest {
       padding: 0; } }
 
-/* line 184, ../scss/base/_default.scss */
+/* line 185, ../scss/base/_default.scss */
 .narrow {
   max-width: 960px; }
 
-/* line 188, ../scss/base/_default.scss */
+/* line 189, ../scss/base/_default.scss */
 p {
   hyphenate: auto;
   /* http://webtypography.net/Rhythm_and_Proportion/Etiquette_of_Hyphenation_and_Pagination/2.4.3/ */
@@ -618,29 +624,29 @@ p {
   orphans: 4;
   widows: 4; }
 
-/* line 196, ../scss/base/_default.scss */
+/* line 197, ../scss/base/_default.scss */
 small {
   font-size: 85%; }
 
-/* line 198, ../scss/base/_default.scss */
+/* line 199, ../scss/base/_default.scss */
 strong, th {
   font-weight: bold; }
 
-/* line 200, ../scss/base/_default.scss */
+/* line 201, ../scss/base/_default.scss */
 td, td img {
   vertical-align: top; }
 
-/* line 202, ../scss/base/_default.scss */
+/* line 203, ../scss/base/_default.scss */
 sub {
   vertical-align: sub;
   font-size: smaller; }
 
-/* line 204, ../scss/base/_default.scss */
+/* line 205, ../scss/base/_default.scss */
 sup {
   vertical-align: super;
   font-size: smaller; }
 
-/* line 206, ../scss/base/_default.scss */
+/* line 207, ../scss/base/_default.scss */
 pre {
   padding: 15px;
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */

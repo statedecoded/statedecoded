@@ -40,7 +40,7 @@ $content->set('body',
 		</div>
 	</div> <!-- // .nest -->
 
-	<section id="main_content" class="homepage" role="main">
+	<section class="homepage" role="main">
 		<div class="nest">
 			<section class="feature-content">
 				<hgroup>
