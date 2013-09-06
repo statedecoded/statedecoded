@@ -361,7 +361,14 @@ class API
 		{
 			$url = 'https://';
 		}
-		$url .= $_SERVER['SERVER_NAME'] . '/downloads/?secret=' . $this->secret;
+		$url .= $_SERVER['SERVER_NAME'];
+
+		if($_SERVER['SERVER_PORT'] != '80')
+		{
+			$url .= ':80';
+		}
+
+		$url .= '/downloads/?secret=' . $this->secret;
 
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
 			. "\r\r"
