@@ -60,6 +60,10 @@ if (count($_POST) === 0)
 		<form method="post" action="/admin/?page=parse&noframe=1">
 			<input type="hidden" name="action" value="permalinks" />
 			<input type="submit" value="Rebuild Permalinks" />
+		</form>
+		<form method="post" action="/admin/?page=parse&noframe=1">
+			<input type="hidden" name="action" value="test_environment" />
+			<input type="submit" value="Test Environment" />
 		</form>';
 
 		/*
@@ -132,6 +136,8 @@ elseif ($_POST['action'] == 'parse')
 
 	echo 'Done.<br />';
 
+	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
+
 }
 
 elseif ($_POST['action'] == 'permalinks')
@@ -144,6 +150,8 @@ elseif ($_POST['action'] == 'permalinks')
 	$parser->build_permalinks();
 
 	echo 'Done.<br />';
+
+	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
 
 	$body = ob_get_contents();
 	ob_end_clean();
@@ -160,6 +168,35 @@ elseif ($_POST['action'] == 'apc')
 	$parser->clear_apc();
 
 	echo 'Done.<br />';
+
+	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
+
+	$body = ob_get_contents();
+	ob_end_clean();
+
+}
+
+elseif ($_POST['action'] == 'test_environment')
+{
+
+	ob_start();
+
+	echo 'Testing environment.<br />';
+
+	$result = $parser->test_environment();
+
+	echo 'Done.  ';
+
+	if($result)
+	{
+		echo 'No errors detected.<br/>';
+	}
+	else
+	{
+		echo 'Errors encountered.<br />';
+	}
+
+	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
 
 	$body = ob_get_contents();
 	ob_end_clean();
