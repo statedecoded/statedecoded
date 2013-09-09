@@ -563,59 +563,70 @@ textarea {
     display: table;
     clear: both; }
 
-/* line 136, ../scss/base/_default.scss */
+/* line 133, ../scss/base/_default.scss */
+.primary-content {
+  /* Clear room for the footer */
+  margin-bottom: 200px;
+  *zoom: 1; }
+  /* line 38, ../../../../../../../../.rvm/gems/ruby-1.9.3-p194/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+  .primary-content:after {
+    content: "";
+    display: table;
+    clear: both; }
+
+/* line 142, ../scss/base/_default.scss */
 ul, ol {
   padding: 0;
   margin: 0 0 12px 25px; }
-  /* line 139, ../scss/base/_default.scss */
+  /* line 145, ../scss/base/_default.scss */
   ul ul, ul ol, ol ul, ol ol {
     margin-bottom: 0; }
 
-/* line 144, ../scss/base/_default.scss */
+/* line 150, ../scss/base/_default.scss */
 ul {
   list-style: disc; }
 
-/* line 148, ../scss/base/_default.scss */
+/* line 154, ../scss/base/_default.scss */
 ol, ol ol ol ol, ol ol ol ol ol ol ol {
   list-style: decimal; }
-  /* line 150, ../scss/base/_default.scss */
+  /* line 156, ../scss/base/_default.scss */
   ol ol, ol ol ol ol ol, ol ol ol ol ol ol ol ol {
     list-style-type: lower-alpha; }
-    /* line 152, ../scss/base/_default.scss */
+    /* line 158, ../scss/base/_default.scss */
     ol ol ol, ol ol ol ol ol ol, ol ol ol ol ol ol ol ol ol {
       list-style-type: lower-roman; }
 
-/* line 158, ../scss/base/_default.scss */
+/* line 164, ../scss/base/_default.scss */
 li {
   line-height: 24px; }
 
-/* line 164, ../scss/base/_default.scss */
+/* line 170, ../scss/base/_default.scss */
 .chromeframe {
   background-color: #ccc;
   color: black;
   margin: 0.2em 0;
   padding: 0.2em 0; }
 
-/* line 171, ../scss/base/_default.scss */
+/* line 177, ../scss/base/_default.scss */
 .nest {
   margin: auto;
   position: relative; }
 
-/* line 176, ../scss/base/_default.scss */
+/* line 182, ../scss/base/_default.scss */
 .wide, .law .nest {
   max-width: none;
   padding: 0 40px;
   width: 100%; }
   @media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (min-width: 320px) and (max-width: 480px) {
-    /* line 176, ../scss/base/_default.scss */
+    /* line 182, ../scss/base/_default.scss */
     .wide, .law .nest {
       padding: 0; } }
 
-/* line 185, ../scss/base/_default.scss */
+/* line 191, ../scss/base/_default.scss */
 .narrow {
   max-width: 960px; }
 
-/* line 189, ../scss/base/_default.scss */
+/* line 195, ../scss/base/_default.scss */
 p {
   hyphenate: auto;
   /* http://webtypography.net/Rhythm_and_Proportion/Etiquette_of_Hyphenation_and_Pagination/2.4.3/ */
@@ -624,29 +635,29 @@ p {
   orphans: 4;
   widows: 4; }
 
-/* line 197, ../scss/base/_default.scss */
+/* line 203, ../scss/base/_default.scss */
 small {
   font-size: 85%; }
 
-/* line 199, ../scss/base/_default.scss */
+/* line 205, ../scss/base/_default.scss */
 strong, th {
   font-weight: bold; }
 
-/* line 201, ../scss/base/_default.scss */
+/* line 207, ../scss/base/_default.scss */
 td, td img {
   vertical-align: top; }
 
-/* line 203, ../scss/base/_default.scss */
+/* line 209, ../scss/base/_default.scss */
 sub {
   vertical-align: sub;
   font-size: smaller; }
 
-/* line 205, ../scss/base/_default.scss */
+/* line 211, ../scss/base/_default.scss */
 sup {
   vertical-align: super;
   font-size: smaller; }
 
-/* line 207, ../scss/base/_default.scss */
+/* line 213, ../scss/base/_default.scss */
 pre {
   padding: 15px;
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
@@ -2916,34 +2927,33 @@ nav.prevnext {
 
 /* line 2, ../scss/areas/_title-list.scss */
 .title-list {
-  margin-bottom: 200px;
   overflow: hidden; }
-  /* line 6, ../scss/areas/_title-list.scss */
+  /* line 5, ../scss/areas/_title-list.scss */
   .title-list li, .title-list dd, .title-list dt {
     list-style: none;
     padding: 5px;
     height: 34px;
     line-height: 30px;
     overflow: hidden; }
-    /* line 12, ../scss/areas/_title-list.scss */
+    /* line 11, ../scss/areas/_title-list.scss */
     .title-list li a, .title-list dd a, .title-list dt a {
       text-decoration: none; }
-    /* line 15, ../scss/areas/_title-list.scss */
+    /* line 14, ../scss/areas/_title-list.scss */
     .title-list li .child-details, .title-list dd .child-details, .title-list dt .child-details {
       margin: 10px;
       opacity: 0.7; }
-  /* line 21, ../scss/areas/_title-list.scss */
+  /* line 20, ../scss/areas/_title-list.scss */
   .title-list li:nth-child(even),
   .title-list .even {
     background-color: #f2f1ee; }
-  /* line 24, ../scss/areas/_title-list.scss */
+  /* line 23, ../scss/areas/_title-list.scss */
   .title-list dt {
     clear: both;
     display: block;
     float: left;
     margin-right: 10px;
     width: 120px; }
-  /* line 32, ../scss/areas/_title-list.scss */
+  /* line 31, ../scss/areas/_title-list.scss */
   .title-list dd {
     margin-left: 120px; }
 
