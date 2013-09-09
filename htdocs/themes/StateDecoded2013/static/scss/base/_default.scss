@@ -130,6 +130,12 @@ textarea {
   @include pie-clearfix;
 }
 
+.primary-content {
+	/* Clear room for the footer */
+	margin-bottom: 200px;
+  @include pie-clearfix;
+}
+
 // Unordered and Ordered - <ol> & <ul>
 // ------------------------------------------------------------------
 
