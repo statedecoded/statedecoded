@@ -17,7 +17,7 @@
 /*
  * Append the includes directory to the include path.
  */
-set_include_path(get_include_path() . PATH_SEPARATOR  . INCLUDE_PATH);
+set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
 
 /*
  * Define web root.
@@ -25,13 +25,12 @@ set_include_path(get_include_path() . PATH_SEPARATOR  . INCLUDE_PATH);
 define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
 
 /*
- * Define template Directory
+ * The directory in which templates are stored.
  */
-
 define('TEMPLATE_DIR', WEB_ROOT . '/themes/');
 
 /*
- * Define location of all of the files to import.
+ * Define the location of the files to import.
  */
 define('IMPORT_DATA_DIRECTORY', WEB_ROOT . '/admin/import-data/');
 
@@ -58,7 +57,7 @@ define('SITE_TITLE', 'The State Decoded');
 define('PLACE_NAME', 'State');
 
 /*
- * What does this state call its laws?
+ * What does this place call its laws?
  */
 define('LAWS_NAME', 'Code of State');
 
@@ -73,7 +72,7 @@ define('SECTION_SYMBOL', '§');
  * "editions" table.
  */
 define('EDITION_ID', 1);
-define('EDITION_YEAR', 2012);
+define('EDITION_YEAR', 2013);
 
 /*
  * Establish the latest API version
@@ -87,8 +86,10 @@ define('CURRENT_API_VERSION', '1.0');
 define('INCLUDES_REPEALED', TRUE);
 
 /*
- * Should we use short urls or long urls for laws?  If there are duplicate
- * section numbers, you should probably use long urls to differentiate them.
+ * Should we use short URLs or long URLs for laws? Short URLs are the default (e.g.,
+ * <http://example.com/12.3-45:67/>), but if laws have non-unique identifiers, then you'll need to
+ * use long URLs (e.g. <http://example.com/56/21/12.3-45:67/>), which are URLs that incorporate
+ * the structures that contain each law.
  */
 define('LAW_LONG_URLS', FALSE);
 
