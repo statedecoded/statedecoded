@@ -545,20 +545,30 @@ class Structure
 		}
 
 		/*
-		 * To assign URLs, we iterate through the object in reverse, and build up the URLs from
-		 * their structure identifiers.
+		 * Go get our urls from the permalinks table.
 		 */
+		$sql = 'SELECT permalinks.url
+				FROM permalinks
+				WHERE relational_id = :id
+				AND object_type = :object_type';
+		$statement = $db->prepare($sql);
 
-		// TODO: Fix this!
-		// 1. Use the permalink url.
-		// 2. We should be adding the domain name in the view code.
-
-		$url = 'http://' . $_SERVER['SERVER_NAME']
-			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] ) . '/';
-		foreach (array_reverse((array) $ancestry) as $key => $level)
+		foreach ((array) $ancestry as $key => $level)
 		{
-			$url .= urlencode($level->identifier).'/';
-			$ancestry->$key->url = $url;
+
+			$sql_args = array(
+				':id' => $ancestry->$key->id,
+				':object_type' => 'structure'
+			);
+
+			$result = $statement->execute($sql_args);
+
+			if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+			{
+				$permalink = $statement->fetch(PDO::FETCH_OBJ);
+
+				$ancestry->$key->url = $permalink->url;
+			}
 		}
 
 		unset($structure);

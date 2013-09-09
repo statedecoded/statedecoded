@@ -394,11 +394,25 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-		// TODO: Fix Me
-		// Use the url from the permalinks table.
-		$this->url = 'http://' . $_SERVER['SERVER_NAME']
-			. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
-			. '/' . $this->section_number . '/';
+
+		$sql = 'SELECT url FROM permalinks
+				WHERE relational_id = :id
+				AND object_type = :object_type';
+		$statement = $db->prepare($sql);
+
+		$sql_args = array(
+			':id' => $this->law_id,
+			':object_type' => 'law'
+		);
+
+		$result = $statement->execute($sql_args);
+
+		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+		{
+			$permalink = $statement->fetch(PDO::FETCH_OBJ);
+
+			$this->url = $permalink->url;
+		}
 
 		/*
 		 * Create metadata in the Dublin Core format.
