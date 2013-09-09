@@ -106,6 +106,8 @@
 	border-width: 1px;
 	border-style: solid;
 	border-color: $qtip-border-color;
+  box-shadow: 0 2px 5px rgba(111,114,117,.15); // drop shadow
+
 
 	background-color: $qtip-bkgnd-color;
 	color: $qtip-color;
