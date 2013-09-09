@@ -20,33 +20,6 @@
 set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
 
 /*
- * Define web root.
- */
-define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
-
-/*
- * The directory in which templates are stored.
- */
-define('TEMPLATE_DIR', WEB_ROOT . '/themes/');
-
-/*
- * Define the location of the files to import.
- */
-define('IMPORT_DATA_DIR', WEB_ROOT . '/admin/import-data/');
-
-/*
- * The file in the /includes/ directory that contains functions custom to this installation.
- */
-define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
-
-/*
- * Which theme to use.
- */
-define('THEME_NAME', 'StateDecoded2013');
-define('THEME_DIR', TEMPLATE_DIR . THEME_NAME . '/');
-define('THEME_WEB_PATH', '/themes/' . THEME_NAME . '/');
-
-/*
  * What is the title of the website?
  */
 define('SITE_TITLE', 'The State Decoded');
@@ -68,16 +41,43 @@ define('LAWS_NAME', 'Code of State');
 define('SECTION_SYMBOL', '§');
 
 /*
+ * Define the web root -- the directory in which index.php is found.
+ */
+define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
+
+/*
+ * Define the location of the files to import.
+ */
+define('IMPORT_DATA_DIR', WEB_ROOT . '/admin/import-data/');
+
+/*
+ * The file in the /includes/ directory that contains functions custom to this installation.
+ */
+define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
+
+/*
+ * The directory in which templates are stored.
+ */
+define('TEMPLATE_DIR', WEB_ROOT . '/themes/');
+
+/*
+ * Which theme to use.
+ */
+define('THEME_NAME', 'StateDecoded2013');
+define('THEME_DIR', TEMPLATE_DIR . THEME_NAME . '/');
+define('THEME_WEB_PATH', '/themes/' . THEME_NAME . '/');
+
+/*
+ * Define the default version of the API to send requests to, if a version isn't othewise specified.
+ */
+define('CURRENT_API_VERSION', '1.0');
+
+/*
  * Establish which version of the code that's in effect sitewide. The ID is the database ID in the
  * "editions" table.
  */
 define('EDITION_ID', 1);
 define('EDITION_YEAR', 2013);
-
-/*
- * Establish the latest API version
- */
-define('CURRENT_API_VERSION', '1.0');
 
 /*
  * Does this state's code include laws that have been repealed formally, and that are marked as
