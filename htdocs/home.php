@@ -58,26 +58,36 @@ $content->set('body',
 				right now.</p>
 
 				<p>This site is powered by <a href="http://www.statedecoded.com/">The State
-				Decoded</a></p>
+				Decoded</a>.</p>
 
 			</section> <!-- // .feature -->
 
 			<section class="secondary-content">
 
 				<article class="abstract">
-					<h1>Feature Code Callout</h1>
-					<p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris in erat justo. Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi. Proin condimentum fermentum nunc. Etiam pharetra, erat sed fermentum feugiat, velit mauris egestas quam, ut aliquam massa nisl quis neque.</p>
+					<h1>Inline Definitions</h1>
+					<p>Throughout the ' . LAWS_NAME . ', very specific legal definitions are
+					provided for terminology both specialized and mundane. If you don’t know which
+					words have special definitions, and what those definitions are, then you can’t
+					understand what a law <em>really</em> means. ' . SITE_TITLE . ' solves this
+					problem neatly, by identifying every definition in the  ' . LAWS_NAME . ' and
+					providing a pop-up definition every time that a defined word appears.</p>
 				</article>
 
 				<article class="abstract">
-					<h1>Feature Code Callout</h1>
-					<p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris in erat justo. Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi. Proin condimentum fermentum nunc. Etiam pharetra, erat sed fermentum feugiat, velit mauris egestas quam, ut aliquam massa nisl quis neque.</p>
+					<h1>Bulk Downloads</h1>
+					<p>' . SITE_TITLE . ' isn’t just a pretty website—you can take the laws with
+					you, too. On <a href="/downloads/">our downloads page</a> you can get copies
+					of all of the laws of ' . PLACE_NAME . ' in any format that you like, to do
+					whatever you like with. They’re available in formats meant for you to read
+					and in formats meant for software to read, too. If you’re a software developer,
+					you’ll love our API!</p>
 				</article>
 
 				<article class="abstract">
 
 					<figure>
-						<img src="/public/images/richmond_capitol.jpg" alt="The Richmond Capitol Building">
+						<img src="/public/images/richmond_capitol.jpg" alt="The Richmond Capitol Building" />
 					</figure>
 
 					<h1>The Capitol File</h1>
