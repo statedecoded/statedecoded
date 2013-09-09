@@ -32,7 +32,7 @@ define('TEMPLATE_DIR', WEB_ROOT . '/themes/');
 /*
  * Define the location of the files to import.
  */
-define('IMPORT_DATA_DIRECTORY', WEB_ROOT . '/admin/import-data/');
+define('IMPORT_DATA_DIR', WEB_ROOT . '/admin/import-data/');
 
 /*
  * The file in the /includes/ directory that contains functions custom to this installation.

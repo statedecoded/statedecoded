@@ -305,7 +305,7 @@ class ParserController
 					 * Tell the parser what the working directory
 					 * should be for the data files to import.
 					 */
-					'directory' => IMPORT_DATA_DIRECTORY,
+					'directory' => IMPORT_DATA_DIR,
 
 					/*
 					 * Set the database
