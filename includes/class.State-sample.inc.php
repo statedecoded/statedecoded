@@ -578,7 +578,15 @@ class Parser
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
 			{
 				$law_token = $law['section_number'];
-				$law_url = '/' . $law['section_number'] . '/';
+
+				if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
+				{
+					$law_url = $url . $law['section_number'];
+				}
+				else
+				{
+					$law_url = '/' . $law['section_number'] . '/';
+				}
 				/*
 				 * Insert the structure
 				 */

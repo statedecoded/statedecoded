@@ -91,6 +91,12 @@ define('CURRENT_API_VERSION', '1.0');
 define('INCLUDES_REPEALED', TRUE);
 
 /*
+ * Should we use short urls or long urls for laws?  If there are duplicate
+ * section numbers, you should probably use long urls to differentiate them.
+ */
+define('LAW_LONG_URLS', FALSE);
+
+/*
  * The DSN to connect to MySQL.
  */
 define('PDO_DSN', 'mysql:dbname=statedecoded;host=localhost;charset=utf8');
