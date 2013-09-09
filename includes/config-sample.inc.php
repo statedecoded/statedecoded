@@ -17,7 +17,7 @@
 /*
  * Append "/includes/" to the include path.
  */
-set_include_path(get_include_path().PATH_SEPARATOR.INCLUDE_PATH);
+set_include_path(get_include_path() . PATH_SEPARATOR  .INCLUDE_PATH);
 
 /*
  * Define web root.
@@ -43,12 +43,8 @@ define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
 /*
  * Which theme to use.
  */
-
-// Edit this to change your theme!
 define('THEME_NAME', 'StateDecoded2013');
-
 define('THEME_DIR', TEMPLATE_DIR . THEME_NAME . '/');
-
 define('THEME_WEB_PATH', '/themes/' . THEME_NAME . '/');
 
 /*
