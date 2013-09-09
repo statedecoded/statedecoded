@@ -15,9 +15,9 @@
  */
 
 /*
- * Append "/includes/" to the include path.
+ * Append the includes directory to the include path.
  */
-set_include_path(get_include_path() . PATH_SEPARATOR  .INCLUDE_PATH);
+set_include_path(get_include_path() . PATH_SEPARATOR  . INCLUDE_PATH);
 
 /*
  * Define web root.
