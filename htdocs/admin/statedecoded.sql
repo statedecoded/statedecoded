@@ -48,18 +48,23 @@ CREATE TABLE IF NOT EXISTS `dictionary_general` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Glossary of generally applicable legal terms';
 
 CREATE TABLE IF NOT EXISTS `editions` (
-  `id` tinyint(3) unsigned NOT NULL auto_increment,
-  `year` varchar(16) collate utf8_bin NOT NULL,
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(32) collate utf8_bin NOT NULL,
+  `slug` varchar(32) collate utf8_bin NOT NULL,
   `date_created` datetime NOT NULL,
   `date_modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `current` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Boolean to determine if this is the current edition or not.',
+  `order_by` int(10) unsigned,
   PRIMARY KEY  (`id`),
-  KEY `year` (`year`)
+  KEY `slug` (`slug`),
+  KEY `current` (`current`),
+  KEY `order_by` (`order_by`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='An entry for every revision of the legal code';
 
 CREATE TABLE IF NOT EXISTS `laws` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `structure_id` smallint(3) unsigned default NULL COMMENT 'The containing structure',
-  `edition_id` tinyint(3) unsigned NOT NULL COMMENT 'The release of the legal code to which this law belongs',
+  `edition_id` int(10) unsigned NOT NULL COMMENT 'The release of the legal code to which this law belongs',
   `section` varchar(16) collate utf8_bin NOT NULL COMMENT 'The unique identifier for this law (e.g., 12-95.2)',
   `catch_line` varchar(255) collate utf8_bin NOT NULL COMMENT 'The title of the law',
   `history` text collate utf8_bin COMMENT 'Optional history of this law',
@@ -127,6 +132,7 @@ CREATE TABLE IF NOT EXISTS `permalinks` (
 
 CREATE TABLE IF NOT EXISTS `structure` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
+  `edition_id` int(10) unsigned NOT NULL COMMENT 'The release of the legal code to which this law belongs',
   `name` varchar(128) collate utf8_bin default NULL COMMENT 'Textual description of this structural unit',
   `identifier` varchar(16) collate utf8_bin NOT NULL COMMENT 'The public-facing unique identifier, often a number',
   `label` varchar(32) collate utf8_bin NOT NULL COMMENT 'What this level of structural unit is called',
@@ -138,6 +144,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
   PRIMARY KEY  (`id`),
   KEY `order_by` (`order_by`),
   KEY `number` (`identifier`,`label`),
+  KEY `edition_id` (`edition_id`),
   KEY `parent_id` (`parent_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Titles, chapters, parts, articles, etc.';
 

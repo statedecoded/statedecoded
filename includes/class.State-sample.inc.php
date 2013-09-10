@@ -454,10 +454,14 @@ class Parser
 	public function build_permalink_subsections($parent_id = null)
 	{
 
-		$structure_sql = '	SELECT structure_unified.*
+		$structure_sql = '	SELECT structure_unified.*,
+							editions.current AS current_edition,
+							editions.slug AS edition_slug
 							FROM structure
 							LEFT JOIN structure_unified
-								ON structure.id = structure_unified.s1_id';
+								ON structure.id = structure_unified.s1_id
+							LEFT JOIN editions
+								ON structure.edition_id = editions.id';
 
 		/*
 		 * We use prepared statements for efficiency.  As a result,
@@ -516,7 +520,16 @@ class Parser
 			}
 			$identifier_parts = array_reverse($identifier_parts);
 			$token = implode('/', $identifier_parts);
-			$url = '/'.$token.'/';
+
+
+			if ($item['current_edition'])
+			{
+				$url = '/' . $token . '/';
+			}
+			else
+			{
+				$url = '/' . $item['edition_slug'] . '/' . $token .'/';
+			}
 
 			/*
 			 * Insert the structure
@@ -535,6 +548,7 @@ class Parser
 				':token' => $token,
 				':url' => $url,
 			);
+
 
 			$insert_result = $insert_statement->execute($insert_data);
 			if ($insert_result === FALSE)
@@ -585,12 +599,19 @@ class Parser
 				}
 				else
 				{
-					$law_url = '/' . $law['section_number'] . '/';
+					if ($item['current_edition'])
+					{
+						$law_url = '/' . $law['section_number'] . '/';
+					}
+					else
+					{
+						$law_url = '/' . $item['edition_slug'] . '/' . $law['section_number'] . '/';
+					}
 				}
 				/*
 				 * Insert the structure
 				 */
-				$insert_sql = '	INSERT INTO permalinks SET
+				$insert_sql =  'INSERT INTO permalinks SET
 								object_type = :object_type,
 								relational_id = :relational_id,
 								identifier = :identifier,
@@ -708,6 +729,7 @@ class Parser
 		 * create_structure() will handle that silently. Either way a structural ID gets returned.
 		 */
 		$structure = new Parser(array('db' => $this->db));
+		$structure->edition_id = $this->edition_id;
 
 		foreach ($this->code->structure as $struct)
 		{
@@ -752,7 +774,7 @@ class Parser
 		$sql = 'INSERT INTO laws
 				SET date_created=now()';
 		$sql_args = array();
-		$query['edition_id'] = EDITION_ID;
+		$query['edition_id'] = $this->edition_id;
 
 		/*
 		 * Iterate through the array and turn it into SQL.
@@ -769,6 +791,7 @@ class Parser
 		if ($result === FALSE)
 		{
 			echo '<p>Failure: ' . $sql . '</p>';
+			var_dump($sql_args);
 		}
 
 		/*
@@ -785,6 +808,7 @@ class Parser
 		 * save a record of those, for crossreferencing purposes.
 		 */
 		$references = new Parser(array('db' => $this->db));
+		$references->edition_id = $this->edition_id;
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
 		if ( ($sections !== FALSE) && (count($sections) > 0) )
@@ -952,6 +976,7 @@ class Parser
 		 * Trawl through the text for definitions.
 		 */
 		$dictionary = new Parser(array('db' => $this->db));
+		$dictionary->edition_id = $this->edition_id;
 
 		/*
 		 * Pass this section of text to $dictionary.
@@ -1010,6 +1035,7 @@ class Parser
 			if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
 			{
 				$find_scope = new Parser(array('db' => $this->db));
+				$find_scope->edition_id = $this->edition_id;
 				$find_scope->label = $dictionary->scope;
 				$find_scope->structure_id = $dictionary->structure_id;
 				$dictionary->structure_id = $find_scope->find_structure_parent();
@@ -1075,9 +1101,11 @@ class Parser
 		 */
 		$sql = 'SELECT id
 				FROM structure
-				WHERE identifier = :identifier';
+				WHERE identifier = :identifier
+				AND edition_id = :edition_id';
 		$sql_args = array(
-			':identifier' => $this->identifier
+			':identifier' => $this->identifier,
+			':edition_id' => $this->edition_id
 		);
 
 		/*
@@ -1141,7 +1169,7 @@ class Parser
 		/*
 		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
 		 */
-		$structure_id = Parser::structure_exists();
+		$structure_id = $this->structure_exists();
 		if ($structure_id !== FALSE)
 		{
 			return $structure_id;
@@ -1164,8 +1192,9 @@ class Parser
 			$sql .= ', name = :name';
 			$sql_args[':name'] = $this->name;
 		}
-		$sql .= ', label = :label, date_created=now()';
+		$sql .= ', label = :label, edition_id = :edition_id, date_created=now()';
 		$sql_args[':label'] = $this->label;
+		$sql_args[':edition_id'] = $this->edition_id;
 		if (isset($this->parent_id))
 		{
 			$sql .= ', parent_id = :parent_id';
@@ -1232,6 +1261,7 @@ class Parser
 			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 			{
 				echo '<p>Query failed: '.$sql.'</p>';
+				var_dump($sql_args);
 				return FALSE;
 			}
 

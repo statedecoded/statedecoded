@@ -622,10 +622,14 @@ li {
       padding: 0; } }
 
 /* line 191, ../scss/base/_default.scss */
+.code {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace; }
+
+/* line 195, ../scss/base/_default.scss */
 .narrow {
   max-width: 960px; }
 
-/* line 195, ../scss/base/_default.scss */
+/* line 199, ../scss/base/_default.scss */
 p {
   hyphenate: auto;
   /* http://webtypography.net/Rhythm_and_Proportion/Etiquette_of_Hyphenation_and_Pagination/2.4.3/ */
@@ -634,29 +638,29 @@ p {
   orphans: 4;
   widows: 4; }
 
-/* line 203, ../scss/base/_default.scss */
+/* line 207, ../scss/base/_default.scss */
 small {
   font-size: 85%; }
 
-/* line 205, ../scss/base/_default.scss */
+/* line 209, ../scss/base/_default.scss */
 strong, th {
   font-weight: bold; }
 
-/* line 207, ../scss/base/_default.scss */
+/* line 211, ../scss/base/_default.scss */
 td, td img {
   vertical-align: top; }
 
-/* line 209, ../scss/base/_default.scss */
+/* line 213, ../scss/base/_default.scss */
 sub {
   vertical-align: sub;
   font-size: smaller; }
 
-/* line 211, ../scss/base/_default.scss */
+/* line 215, ../scss/base/_default.scss */
 sup {
   vertical-align: super;
   font-size: smaller; }
 
-/* line 213, ../scss/base/_default.scss */
+/* line 217, ../scss/base/_default.scss */
 pre {
   padding: 15px;
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
@@ -3706,3 +3710,60 @@ section.feature-content {
       /* line 27, ../scss/areas/_page-search-results.scss */
       .search-results li .result p {
         margin: 0; }
+
+/* line 1, ../scss/areas/_page-admin.scss */
+.admin {
+  /* Force the scrollbar to show up - it's hard to tell
+  	we have other options on the main admin page.*/ }
+  /* line 2, ../scss/areas/_page-admin.scss */
+  .admin iframe {
+    border: none;
+    width: 95%;
+    height: 600px; }
+  /* line 10, ../scss/areas/_page-admin.scss */
+  .admin ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px; }
+  /* line 14, ../scss/areas/_page-admin.scss */
+  .admin ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5); }
+
+/* line 21, ../scss/areas/_page-admin.scss */
+.admin_frame {
+  padding: 10px;
+  /* Fake fieldsets */ }
+  /* line 24, ../scss/areas/_page-admin.scss */
+  .admin_frame form {
+    border: 2px solid #000;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    padding: 20px;
+    margin: 30px 0 40px; }
+  /* line 31, ../scss/areas/_page-admin.scss */
+  .admin_frame .option, .admin_frame .suboption {
+    margin-bottom: 1em; }
+    /* line 35, ../scss/areas/_page-admin.scss */
+    .admin_frame .option .checkbox + label,
+    .admin_frame .option .radio + label, .admin_frame .suboption .checkbox + label,
+    .admin_frame .suboption .radio + label {
+      margin-left: 10px; }
+  /* line 40, ../scss/areas/_page-admin.scss */
+  .admin_frame .suboption {
+    margin-top: 1em;
+    margin-left: 60px; }
+  /* line 46, ../scss/areas/_page-admin.scss */
+  .admin_frame form {
+    position: relative; }
+    /* line 48, ../scss/areas/_page-admin.scss */
+    .admin_frame form h3 {
+      padding: 5px;
+      margin: 0;
+      background-color: #fff;
+      display: inline-block;
+      position: absolute;
+      top: -18px; }

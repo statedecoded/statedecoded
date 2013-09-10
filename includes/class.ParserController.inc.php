@@ -211,6 +211,159 @@ class ParserController
 
 	}
 
+	/*
+	 * Get a list of all editions
+	 */
+	public function get_editions()
+	{
+		$sql = 'SELECT * FROM editions ORDER BY order_by';
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$editions = array();
+			$editions = $statement->fetchAll(PDO::FETCH_OBJ);
+		}
+		return $editions;
+	}
+
+	public function handle_editions($post_data)
+	{
+		$errors = array();
+
+		if ($post_data['edition_option'] == 'new')
+		{
+			$create_data = array();
+
+			if ($name = filter_var($post_data['new_edition_name'], FILTER_SANITIZE_STRING))
+			{
+				$create_data['name'] = $name;
+			}
+			else
+			{
+				$errors[] = 'Please enter a valid name.';
+			}
+
+			if ($slug = filter_var($post_data['new_edition_slug'], FILTER_SANITIZE_STRING))
+			{
+				$create_data['slug'] = $slug;
+			}
+			else
+			{
+				$errors[] = 'Please enter a valid url.';
+			}
+
+			if (strlen($post_data['make_current']))
+			{
+				if($current = filter_var($post_data['make_current'], FILTER_VALIDATE_INT))
+				{
+					$create_data['current'] = (int) $current;
+				}
+				else
+				{
+					$errors[] = 'Unexpected value for "make this edition current".';
+				}
+			}
+			else
+			{
+				$create_data['current'] = 0;
+			}
+
+			if(count($errors) === 0)
+			{
+				$edition_id = $this->create_edition($create_data);
+
+				if($edition_id)
+				{
+					$this->edition_id = $edition_id;
+				}
+				else
+				{
+					$errors[] = 'Unable to create edition at this time.';
+				}
+			}
+
+		}
+		elseif ($post_data['edition_option'] == 'existing')
+		{
+			if ($edition_id = filter_var($post_data['edition'], FILTER_VALIDATE_INT))
+			{
+				$this->edition_id = $edition_id;
+			}
+			else
+			{
+				$errors[] = 'Please select an edition to update.';
+			}
+		}
+		else
+		{
+			$errors[] = 'Please select if you would like to create a new edition or ' .
+				 'update an existing one.';
+		}
+
+		return $errors;
+	}
+	/**
+	 * Create a new edition.  (Cool it now.)
+	 */
+	public function create_edition($edition = array())
+	{
+		if (!isset($edition['order_by']))
+		{
+			$sql = 'SELECT MAX(order_by) AS order_by FROM editions ORDER BY order_by';
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute();
+			if ($result !== FALSE && $statement->rowCount() > 0)
+			{
+				$edition_row = $statement->fetch(PDO::FETCH_ASSOC);
+				$edition['order_by'] = (int) $edition_row['order_by'] + 1;
+			}
+		}
+
+		if(!isset($edition['order_by']))
+		{
+			$edition['order_by'] = 1;
+		}
+
+		/*
+		 * If we have a new current edition, make the older ones not current.
+		 */
+		if($edition['current'] == 1)
+		{
+			$sql = 'UPDATE editions SET current = 0';
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute();
+		}
+
+		$sql = 'INSERT INTO editions SET
+			name=:name,
+			slug=:slug,
+			current=:current,
+			order_by=:order_by';
+		$statement = $this->db->prepare($sql);
+
+		$sql_args = array(
+			':name' => $edition['name'],
+			':slug' => $edition['slug'],
+			':current' => $edition['current'],
+			':order_by' => $edition['order_by']
+		);
+		$result = $statement->execute($sql_args);
+
+		if ($result !== FALSE)
+		{
+			return $this->db->lastInsertId();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	/**
 	 * Clear out our database.
 	 */
@@ -314,6 +467,7 @@ class ParserController
 					'db' => $this->db
 				)
 			);
+			$parser->edition_id = $this->edition_id;
 
 			/*
 			 * Iterate through the files.

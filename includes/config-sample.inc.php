@@ -73,13 +73,6 @@ define('THEME_WEB_PATH', '/themes/' . THEME_NAME . '/');
 define('CURRENT_API_VERSION', '1.0');
 
 /*
- * Establish which version of the code that's in effect sitewide. The ID is the database ID in the
- * "editions" table.
- */
-define('EDITION_ID', 1);
-define('EDITION_YEAR', 2013);
-
-/*
  * Does this state's code include laws that have been repealed formally, and that are marked as
  * such?
  */
