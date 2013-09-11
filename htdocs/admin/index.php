@@ -39,7 +39,6 @@ if (isset($_GET['noframe']))
 	 * Then we get the template (which contains just the head)
 	 * much earlier than usual.
 	 */
-
 	$content = new Content;
 
 	$template = Template::create('admin_frame');
@@ -51,14 +50,16 @@ if (isset($_GET['noframe']))
  */
 if (count($_POST) === 0)
 {
+
 	if (count($_GET) === 0)
 	{
-		$body = '<iframe id="content" src="?page=parse&noframe=1"></iframe>';
+		$body = '<iframe id="content" src="?page=parse&amp;noframe=1"></iframe>';
 	}
 	elseif ($_GET['page'] == 'parse' )
 	{
 		$body = show_admin_forms();
 	}
+	
 }
 
 /*
@@ -83,6 +84,7 @@ elseif ($_POST['action'] == 'parse')
 	echo 'Beginning parse.<br />';
 	flush();
 	ob_flush();
+	
 	/*
 	 * Step through each parser method.
 	 */
@@ -104,21 +106,28 @@ elseif ($_POST['action'] == 'parse')
 			
 			else
 			{
+			
 				$parser->clear_apc();
+				
 				/*
 				 * We should only continue if parsing was successful.
 				 */
 				if ($parser->parse())
 				{
+				
 					$parser->build_permalinks();
 					$parser->write_api_key();
 					$parser->export();
 					$parser->generate_sitemap();
 					$parser->structural_stats_generate();
 					$parser->prune_views();
+					
 				}
+				
 			}
+			
 		}
+		
 	}
 
 	/*
@@ -129,7 +138,7 @@ elseif ($_POST['action'] == 'parse')
 
 	echo 'Done.<br />';
 
-	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
+	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
 
 }
 
@@ -144,7 +153,7 @@ elseif ($_POST['action'] == 'permalinks')
 
 	echo 'Done.<br />';
 
-	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
+	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
 
 	$body = ob_get_contents();
 	ob_end_clean();
@@ -162,7 +171,7 @@ elseif ($_POST['action'] == 'apc')
 
 	echo 'Done.<br />';
 
-	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
+	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
 
 	$body = ob_get_contents();
 	ob_end_clean();
@@ -189,7 +198,7 @@ elseif ($_POST['action'] == 'test_environment')
 		echo 'Errors encountered.<br />';
 	}
 
-	echo '<br /><a href="/admin/?page=parse&noframe=1">Back</a>';
+	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
 
 	$body = ob_get_contents();
 	ob_end_clean();
