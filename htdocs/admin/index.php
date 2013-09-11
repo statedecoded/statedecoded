@@ -88,19 +88,21 @@ elseif ($_POST['action'] == 'parse')
 	 */
 	if ($parser->test_environment() !== FALSE)
 	{
-
-		$edition_errors = $parser->handle_editions($_POST);
-
-		if (count($edition_errors) >0)
+			
+		if ($parser->populate_db() !== FALSE)
 		{
-			$args = $_POST;
-			$args['import_errors'] = $edition_errors;
 
-			echo show_admin_forms($args);
-		}
-		else {
-
-			if ($parser->populate_db() !== FALSE)
+			$edition_errors = $parser->handle_editions($_POST);
+	
+			if (count($edition_errors) > 0)
+			{
+				$args = $_POST;
+				$args['import_errors'] = $edition_errors;
+	
+				echo show_admin_forms($args);
+			}
+			
+			else
 			{
 				$parser->clear_apc();
 				/*
