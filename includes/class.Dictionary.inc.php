@@ -239,6 +239,7 @@ class Dictionary
 		 */
 		if (isset($this->structure_id))
 		{
+		
 			$heritage = new Structure;
 			$heritage->id = $this->structure_id;
 			$ancestry = $heritage->id_ancestry();
@@ -249,6 +250,7 @@ class Dictionary
 			}
 			$ancestry = $tmp;
 			unset($tmp);
+			
 		}
 
 		/*
@@ -259,11 +261,13 @@ class Dictionary
 		);
 		if ( isset($this->scope) && ($this->scope == 'global') )
 		{
+		
 			$sql = 'SELECT dictionary.term
 					FROM dictionary
 					LEFT JOIN laws
 						ON dictionary.law_id=laws.id
 					 WHERE scope = :global_scope';
+					 
 		}
 
 		/*
@@ -273,6 +277,7 @@ class Dictionary
 		 */
 		else
 		{
+		
 			$sql = 'SELECT DISTINCT dictionary.term
 					FROM dictionary
 					LEFT JOIN laws
@@ -294,6 +299,7 @@ class Dictionary
 				$sql_args[":structure$i"] = $ancestry[$i];
 			}
 			$sql .= ' OR (scope=:global_scope)';
+			
 		}
 
 		$statement = $db->prepare($sql);
@@ -329,6 +335,7 @@ class Dictionary
 
 		if ($result !== FALSE && $statement->rowCount() > 0)
 		{
+		
 			/*
 			* Append these results to the existing $terms object, continuing to use the previously-
 			* defined $i counter.
@@ -338,6 +345,7 @@ class Dictionary
 				$terms->$i = $term->term;
 				$i++;
 			}
+			
 		}
 
 		$tmp = (array) $terms;
@@ -345,5 +353,7 @@ class Dictionary
 		$terms = (object) $tmp;
 
 		return $terms;
+		
 	}
+	
 }
