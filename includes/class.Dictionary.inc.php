@@ -227,7 +227,12 @@ class Dictionary
 		{
 			$this->scope = 'global';
 		}
-
+		
+		/*
+		 * Create an object in which we'll store terms that are identified.
+		 */
+		$terms = new stdClass();
+		
 		/*
 		 * Get a listing of all structural units that contain the current structural unit -- that is,
 		 * if this is a chapter, get the ID of both the chapter and the title. And so on.
@@ -295,22 +300,21 @@ class Dictionary
 		$result = $statement->execute($sql_args);
 
 		/*
-		 * If the query fails, or if no results are found, return false -- we have no terms for this
-		 * structural unit.
+		 * If any terms are found, then add them to our $terms object.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() < 1) )
+		if ( ($statement->rowCount() > 1) )
 		{
-			return FALSE;
-		}
 
-		/*
-		 * Build up the result as an object as we loop through the results.
-		 */
-		$i=0;
-		while ($term = $statement->fetch(PDO::FETCH_OBJ))
-		{
-			$terms->$i = $term->term;
-			$i++;
+			/*
+			 * Build up the result as an object as we loop through the results.
+			 */
+			$i=0;
+			while ($term = $statement->fetch(PDO::FETCH_OBJ))
+			{
+				$terms->$i = $term->term;
+				$i++;
+			}
+
 		}
 
 		/*
