@@ -45,6 +45,7 @@ class Dictionary
 		 */
 		if (isset($this->section_number))
 		{
+		
 			$heritage = new Law;
 			$heritage->config->get_structure = TRUE;
 			$heritage->section_number = $this->section_number;
@@ -54,6 +55,7 @@ class Dictionary
 			{
 				$ancestry[] = $tmp->id;
 			}
+			
 		}
 
 		/*
@@ -63,6 +65,7 @@ class Dictionary
 		 */
 		for ($i=0; $i<strlen($this->term); $i++)
 		{
+		
 			/*
 			 * If there are any uppercase characters, then make this PCRE string case
 			 * sensitive.
@@ -72,6 +75,7 @@ class Dictionary
 				$lowercase = TRUE;
 				break;
 			}
+			
 		}
 
 		if ($lowercase === TRUE)
@@ -134,9 +138,10 @@ class Dictionary
 
 			$sql .= 'LIMIT 1';
 		}
-
+		
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
+		
 		/*
 		 * If the query succeeds, great, retrieve it.
 		 */
