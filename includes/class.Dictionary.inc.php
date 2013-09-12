@@ -114,8 +114,8 @@ class Dictionary
 		{
 			$sql .= 'AND (';
 
-			$ancester_count = count($ancestry);
-			for ($i = 0; $i < $ancester_count; $i++)
+			$ancestor_count = count($ancestry);
+			for ($i = 0; $i < $ancestor_count; $i++)
 			{
 				$sql .= "(dictionary.structure_id = :structure_id$i) OR ";
 				$sql_args[":structure_id$i"] = $ancestry[$i];
