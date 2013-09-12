@@ -373,8 +373,7 @@ function show_admin_forms($args = array())
 
 	<form method="post" action="/admin/?page=parse&noframe=1">
 		<h3>Empty the Database</h3>
-		<p>Remove all data from the database.  This will leave table
-			structures intact, but remove all records.</p>
+		<p>Remove all data from the database. (This leaves database tables intact.)</p>
 
 		<input type="hidden" name="action" value="empty" />
 		<input type="submit" value="Empty the Database" />
