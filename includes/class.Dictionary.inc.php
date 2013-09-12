@@ -124,7 +124,7 @@ class Dictionary
 					OR
 						(laws.section = :section_number)
 					) ';
-			$sql_args['scope'] = 'global';
+			$sql_args[':scope'] = 'global';
 			$sql_args[':section_number'] = $this->section_number;
 		}
 
