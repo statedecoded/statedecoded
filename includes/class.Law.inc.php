@@ -734,8 +734,13 @@ class Law
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
-		$terms = (array) $dictionary->term_list();
-
+		$tmp = $dictionary->term_list();
+		if ($tmp !== FALSE)
+		{
+			$terms = (array) $tmp;
+			unset($tmp);
+		}
+		
 		/*
 		 * If we've gotten a list of dictionary terms.
 		 */
