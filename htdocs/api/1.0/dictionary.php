@@ -34,7 +34,7 @@ if (isset($_REQUEST['callback']))
 	$callback = $_REQUEST['callback'];
 
 	# If this callback contains any reserved terms that raise XSS concerns, refuse to proceed.
-	if (valid_jsonp_callback($callback) === false)
+	if (valid_jsonp_callback($callback) === FALSE)
 	{
 		json_error('The provided JSONP callback uses a reserved word.');
 		die();
@@ -67,7 +67,7 @@ $dict->term = $term;
 $dictionary = $dict->define_term();
 
 # If, for whatever reason, this word is not found, return an error.
-if ($dictionary === false)
+if ($dictionary === FALSE)
 {
 	$response = array('definition' => 'Definition not available.');
 }
@@ -106,7 +106,7 @@ else
 			# list.
 			foreach($term as $field => &$value)
 			{
-				if (in_array($field, $returned_fields) === false)
+				if (in_array($field, $returned_fields) === FALSE)
 				{
 					unset($term->$field);
 				}
