@@ -311,7 +311,7 @@ function show_admin_forms($args = array())
 					</div>
 				</div>
 				<div class="suboption">
-					<label for="new_edition_slug">... and the url for this edition will be</label>
+					<label for="new_edition_slug">... and the URL for this edition will be</label>
 					<div class="edition_url">' . $edition_url_base . '
 						<input type="text" class="text" name="new_edition_slug"
 							id="new_edition_slug" placeholder="' . date('Y-m') . '"
