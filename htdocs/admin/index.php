@@ -95,7 +95,7 @@ elseif ($_POST['action'] == 'parse')
 			
 		if ($parser->populate_db() !== FALSE)
 		{
-
+			
 			$edition_errors = $parser->handle_editions($_POST);
 	
 			if (count($edition_errors) > 0)
@@ -191,7 +191,7 @@ elseif ($_POST['action'] == 'test_environment')
 
 	echo 'Done. ';
 
-	if ($result)
+	if ($result === TRUE)
 	{
 		echo 'No errors detected.<br/>';
 	}
@@ -216,6 +216,7 @@ if (isset($_GET['noframe']))
 
 else
 {
+
 	/*
 	 * Create a container for our content.
 	 */
@@ -250,6 +251,7 @@ else
 
 function show_admin_forms($args = array())
 {
+
 	$parser = new ParserController();
 
 	$editions = $parser->get_editions();
@@ -316,15 +318,16 @@ function show_admin_forms($args = array())
 							value="'. $args['new_edition_slug'] . '"
 							/> /
 					</div>
-					<p class="note">Note: in general, try to only use letters, numbers,
-					and hyphens, and avoid using anything that might conflict with a
-					section or structure name!</p>
+					<p class="note">Note: In general, try to only use letters, numbers, and hyphens,
+					and avoid using anything that might conflict with a section number or structure
+					name.</p>
 				</div>
 			</div>
 			<div class="option">
 				<input type="radio" class="radio" name="edition_option"
 					id="edition_option_new" value="existing"';
-	if (!$editions)
+
+	if ( !isset($editions) || ($editions === FALSE) )
 	{
 		$body .= 'disabled="disabled"';
 	}
@@ -335,11 +338,11 @@ function show_admin_forms($args = array())
 
 	$body .= '/><label for="edition_option_new">I want to update an existing edition of the laws.</label>';
 
-	if ($editions)
+	if ($editions === TRUE)
 	{
 		$body .= '<div class="suboption">
 					<select name="edition" value="edition">
-						<option value="">Choose Edition...</option>';
+						<option value="">Choose Edition .&thinsp;.&thinsp;.</option>';
 		foreach($editions as $edition)
 		{
 			$body .= '<option value="' . $edition->id . '"';
@@ -355,7 +358,7 @@ function show_admin_forms($args = array())
 	}
 	else {
 		$body .= '<div class="suboption">
-			You don\'t have any editions yet, you\'ll need to create a new one.
+			You don’t have any editions yet, you’ll need to create a new one.
 		</div>';
 	}
 
