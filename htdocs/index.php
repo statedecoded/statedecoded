@@ -122,6 +122,14 @@ if (isset($_SERVER['INCLUDE_PATH']))
 }
 
 /*
+ * If the edition ID was provided by the .htaccess file, save it as a constant.
+ */
+if (isset($_SERVER['EDITION_ID']))
+{
+	define('EDITION_ID', $_SERVER['EDITION_ID']);
+}
+
+/*
  * If APC is not running.
  */
 if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )

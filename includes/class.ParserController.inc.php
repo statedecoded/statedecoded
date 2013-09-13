@@ -356,6 +356,31 @@ class ParserController
 
 		if ($result !== FALSE)
 		{
+		
+			/*
+			 * If possible, modify the .htaccess file, to store permanently the edition ID.
+			 */
+			if (is_writable(WEB_ROOT . '/.htaccess') == TRUE)
+			{
+				
+				$htaccess = file_get_contents(WEB_ROOT . '/.htaccess');
+				
+				/*
+				 * If there isn't already an edition ID in .htaccess, then write a new record.
+				 * Otherwise, update the existing record.
+				 */
+				if (strpos($htaccess, ' EDITION_ID ') === FALSE)
+				{
+					$htaccess .= PHP_EOL . PHP_EOL . 'SetEnv EDITION_ID ' . $this->db->lastInsertId() . PHP_EOL;
+				}
+				else
+				{
+					$htaccess = preg_replace('/SetEnv EDITION_ID (\d+)/', 'SetEnv EDITION_ID ' . $this->db->lastInsertId(), $htaccess);
+				}
+				$result = file_put_contents(WEB_ROOT . '/.htaccess', $htaccess);
+				
+			}
+			
 			return $this->db->lastInsertId();
 		}
 		else
