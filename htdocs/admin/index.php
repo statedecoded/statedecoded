@@ -68,10 +68,10 @@ if (count($_POST) === 0)
 elseif ($_POST['action'] == 'empty')
 {
 
-	echo 'Emptying the database.<br />';
+	echo 'Emptying the database<br />';
 	flush();
 	$parser->clear_db();
-	echo 'Done.<br />';
+	echo 'Done<br />';
 
 }
 
@@ -81,7 +81,7 @@ elseif ($_POST['action'] == 'empty')
 elseif ($_POST['action'] == 'parse')
 {
 
-	echo 'Beginning parse.<br />';
+	echo 'Beginning import<br />';
 	flush();
 	ob_flush();
 	
@@ -90,6 +90,8 @@ elseif ($_POST['action'] == 'parse')
 	 */
 	if ($parser->test_environment() !== FALSE)
 	{
+	
+		echo 'Environment test succeeded<br />';
 			
 		if ($parser->populate_db() !== FALSE)
 		{
@@ -136,7 +138,7 @@ elseif ($_POST['action'] == 'parse')
 	$varnish = new Varnish;
 	$varnish->purge();
 
-	echo 'Done.<br />';
+	echo 'Done<br />';
 
 	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
 
@@ -147,11 +149,11 @@ elseif ($_POST['action'] == 'permalinks')
 
 	ob_start();
 
-	echo 'Beginning permalinks.<br />';
+	echo 'Beginning permalinks<br />';
 
 	$parser->build_permalinks();
 
-	echo 'Done.<br />';
+	echo 'Done<br />';
 
 	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
 
@@ -165,11 +167,11 @@ elseif ($_POST['action'] == 'apc')
 
 	ob_start();
 
-	echo 'Clearing APC cache.<br />';
+	echo 'Clearing APC cache<br />';
 
 	$parser->clear_apc();
 
-	echo 'Done.<br />';
+	echo 'Done<br />';
 
 	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
 
@@ -183,11 +185,11 @@ elseif ($_POST['action'] == 'test_environment')
 
 	ob_start();
 
-	echo 'Testing environment.<br />';
+	echo 'Testing environment<br />';
 
 	$result = $parser->test_environment();
 
-	echo 'Done.  ';
+	echo 'Done. ';
 
 	if ($result)
 	{
