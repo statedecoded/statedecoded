@@ -28,17 +28,17 @@ $content->set('page_title', '');
 //body class="preload"?
 
 $content->set('body',
-	'<div class="nest video">
+	'<!-- UNCOMMENT TO DISPLAY AN INTRODUCTORY VIDEO HERE
+	<div class="nest video">
 		<div class="video-frame">
 			<div class="video-container">
-				<iframe width="560" height="315" src="http://www.youtube.com/embed/4HPxQHBFjcg" frameborder="0" allowfullscreen></iframe>
-				<!-- <video width="" height="" controls="controls">
+				<video width="" height="" controls="controls">
 					<source src="" type="video/mp4">
 					<source src="" type="video/webm">
-				</video> -->
+				</video>
 			</div>
 		</div>
-	</div> <!-- // .nest -->
+	</div>--> <!-- // .nest -->
 
 	<section class="homepage" role="main">
 		<div class="nest">
