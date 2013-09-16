@@ -338,7 +338,7 @@ function show_admin_forms($args = array())
 
 	$body .= '/><label for="edition_option_new">I want to update an existing edition of the laws.</label>';
 
-	if ($editions === TRUE)
+	if ($editions !== FALSE)
 	{
 		$body .= '<div class="suboption">
 					<select name="edition" value="edition">
