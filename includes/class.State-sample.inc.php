@@ -233,11 +233,6 @@ class Parser
 		}
 
 		/*
-		 * Increment our placeholder counter.
-		 */
-		$this->file++;
-
-		/*
 		 * Send this object back, out of the iterator.
 		 */
 		return $this->section;
