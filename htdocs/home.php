@@ -84,17 +84,6 @@ $content->set('body',
 					you’ll love our API!</p>
 				</article>
 
-				<article class="abstract">
-
-					<figure>
-						<img src="/public/images/richmond_capitol.jpg" alt="The Richmond Capitol Building" />
-					</figure>
-
-					<h1>The Capitol File</h1>
-					<p>Want to know more about what’s going on in the State Legislature? Check our our sister site, <a href="http://www.richmondsunlight.com">Richmond Sunlight</a>, to find out about the changes that are being proposed to the Commonwealth’s code.</p>
-
-				</article>
-
 			</section> <!-- // .secondary-content -->
 
 		</div> <!-- // .nest -->
