@@ -520,6 +520,57 @@ class Law
 
 		return $references;
 	}
+	
+	/**
+	 * Return the URL for a given section number or law ID.
+	 *
+	 * This is meant to be invoked inline (see its use in the get_related method), which is why it
+	 * takes a section number as a parameter and returns a URL, rather than getting and setting
+	 * those as object properties.
+	 */
+	function get_url($section_number)
+	{
+		
+		/*
+		 * If a section number hasn't been passed to this function, then there's nothing to do.
+		 */
+		if (empty($section_number))
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Prepare our SQL query.
+		 */
+		$sql = 'SELECT url
+				FROM permalinks
+				WHERE object_type="law"
+				AND 
+				identifier = :identifier';
+				
+		$sql_args = array(
+			':identifier' => $section_number
+		);
+
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Return the result as an object.
+		 */
+		$permalink = $statement->fetch(PDO::FETCH_OBJ);
+		
+		/*
+		 * Return the permalink URL.
+		 */
+		return $permalink->url;
+		
+	}
 
 
 	/**
