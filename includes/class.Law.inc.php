@@ -385,6 +385,14 @@ class Law
 		}
 
 		/*
+		 * Gather all laws that are textually similar to this law.
+		 */
+		if ($this->config->get_related_laws == TRUE)
+		{
+			$this->metadata = Law::get_related();
+		}
+
+		/*
 		 * Pretty up the text for the catch line.
 		 */
 		$this->catch_line = wptexturize($this->catch_line);
