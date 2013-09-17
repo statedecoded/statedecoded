@@ -17,6 +17,7 @@ Router::addRoute('^/about/(.*)', 'about.php');
 
 Router::addRoute('^/admin/(.*)', 'admin/index.php');
 Router::addRoute('^/downloads/(.*)', 'downloads/index.php');
+Router::addRoute('^/search/(.*)', 'search.php');
 
 // Browse
 Router::addRoute('^/browse/(.*)', array('StructureController', 'handle'));
