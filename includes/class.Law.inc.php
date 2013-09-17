@@ -133,8 +133,6 @@ class Law
 		/*
 		 * Return the result as an object.
 		 */
-		// TODO: Fix Me
-		// We allow an array of ids to be given, but we only return one record!
 		$tmp = $statement->fetch(PDO::FETCH_OBJ);
 
 		/*
