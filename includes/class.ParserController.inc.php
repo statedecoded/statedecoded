@@ -371,6 +371,12 @@ class ParserController
 				
 			}
 			
+			/*
+			 * Store the edition ID as a constant, so that we can use it elsewhere in the import
+			 * process.
+			 */
+			define('EDITION_ID', $this->db->lastInsertId());
+			
 			return $this->db->lastInsertId();
 			
 		}
