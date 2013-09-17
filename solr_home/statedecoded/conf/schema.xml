@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+TODO - rm statedec_section type and fields
+TODO - make sure proper storing and indexing of fields
+TODO - remove text_pure
+TODO - remove term_exact
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!--  
+ This is the Solr schema file. This file should be named "schema.xml" and
+ should be in the conf directory under the solr home
+ (i.e. ./solr/conf/schema.xml by default) 
+ or located where the classloader for the Solr webapp can find it.
+
+ This example schema is the recommended starting point for users.
+ It should be kept correct and concise, usable out-of-the-box.
+
+ For more information, on how to customize this file, please see
+ http://wiki.apache.org/solr/SchemaXml
+
+ PERFORMANCE NOTE: this schema includes many optional features and should not
+ be used for benchmarking.  To improve performance one could
+  - set stored="false" for all fields possible (esp large fields) when you
+    only need to search on the field but don't need to return the original
+    value.
+  - set indexed="false" if you don't need to search on the field, but only
+    return the field as a result of searching on other indexed fields.
+  - remove all unneeded copyField statements
+  - for best index size and searching performance, set "index" to false
+    for all general text fields, use copyField to copy them to the
+    catchall "text" field, and use that for searching.
+  - For maximum indexing performance, use the StreamingUpdateSolrServer
+    java client.
+  - Remember to run the JVM in server mode, and use a higher logging level
+    that avoids logging every request
+-->
+
+<schema name="statedecoded" version="1.5">
+  <!-- attribute "name" is the name of this schema and is only used for display purposes.
+       version="x.y" is Solr's version number for the schema syntax and 
+       semantics.  It should not normally be changed by applications.
+
+       1.0: multiValued attribute did not exist, all fields are multiValued 
+            by nature
+       1.1: multiValued attribute introduced, false by default 
+       1.2: omitTermFreqAndPositions attribute introduced, true by default 
+            except for text fields.
+       1.3: removed optional field compress feature
+       1.4: autoGeneratePhraseQueries attribute introduced to drive QueryParser
+            behavior when a single string produces multiple tokens.  Defaults 
+            to off for version >= 1.4
+       1.5: omitNorms defaults to true for primitive field types 
+            (int, float, boolean, string...)
+     -->
+
+ <fields>
+   <!-- State Decoded Law Fields ==
+        taken from law table tsv dump
+     -->
+   <field name="_version_" type="long" indexed="true" stored="true"/>
+   <field name="id" type="string" indexed="true" stored="true" required="true" /> 
+   <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
+
+   <field name="catch_line" type="statedec_text_en" indexed="true" stored="true"/>
+   <field name="tags" type="statedec_text_en" indexed="true" stored="true" multiValued="true" />
+   <field name="tags_facet" type="string" indexed="true" stored="false" multiValued="true" />
+   <copyField source="tags" dest="tags_facet" />
+   
+   <field name="text" type="statedec_text_en" indexed="true" stored="true"/>
+   <field name="repealed" type="string" indexed="true" stored="true" />
+
+   <field name="structure" type="string" indexed="true" stored="true" />
+   <field name="structure_facet_hierarchical" type="descendent_facet_hierarchical" indexed="true" stored="false" />
+   <field name="structure_descendent" type="descendent_path" indexed="true" stored="false" />
+   <field name="structure_ancestor" type="ancestor_path" indexed="true" stored="false" />
+   <copyField source= "structure" dest="structure_descendent"/>
+   <copyField source= "structure" dest="structure_ancestor"/>
+   <copyField source= "structure" dest="structure_facet_hierarchical"/>
+
+   <field name="section" type="string" indexed="true" stored="true"/>
+   <field name="section_descendent" type="statedec_descendent_section" indexed="true" stored="false"/>
+   <field name="section_ancestor" type="statedec_ancestor_section" indexed="true" stored="false"/>
+   <field name="section_facet_hierarchical" type="statedec_facet_hierarchical" indexed="true" stored="false"/>
+   <field name="section_facet" type="string" indexed="true" stored="false"/><!--TODO should probable be deleted--> 
+   <copyField source= "section" dest="section_descendent"/>
+   <copyField source= "section" dest="section_ancestor"/>
+   <copyField source= "section" dest="section_facet_hierarchical"/>
+   <copyField source= "section" dest="section_facet"/>
+
+   <field name="refers_to" type="string" indexed="false" stored="true" multiValued="true"/>
+   <field name="refers_to_descendent" type="statedec_descendent_section" indexed="true" stored="false" multiValued="true"/>
+   <field name="refers_to_ancestor" type="statedec_ancestor_section" indexed="true" stored="false" multiValued="true"/>
+   <copyField source= "refers_to" dest="refers_to_descendent"/>
+   <copyField source= "refers_to" dest="refers_to_ancestor"/>
+   
+   <field name="referred_to_by" type="string" indexed="false" stored="true" multiValued="true"/>
+   <field name="referred_to_by_descendent" type="statedec_descendent_section" indexed="true" stored="false" multiValued="true"/>
+   <field name="referred_to_by_ancestor" type="statedec_ancestor_section" indexed="true" stored="false" multiValued="true"/>
+   <copyField source= "referred_to_by" dest="referred_to_by_descendent"/>
+   <copyField source= "referred_to_by" dest="referred_to_by_ancestor"/>
+
+   <!-- State Decoded Dictionary Fields ==
+        taken from law dict table tsv dump -->
+   <field name="term" type="statedec_text_en" indexed="true" stored="true"/>
+   <field name="definition" type="statedec_text_en" indexed="true" stored="true" termVectors="true"/>
+
+
+   <!-- Other -->
+   <field name="type" type="lowercase" indexed="true" stored="true"/> 
+   <field name="spelling" type="statedec_text_pure" indexed="true" stored="false" multiValued="true"/> 
+   <copyField source= "text" dest="spelling"/>
+   <copyField source= "tags" dest="spelling"/>
+   <copyField source= "structure" dest="spelling"/>
+   <copyField source= "term" dest="spelling"/>
+   <copyField source= "definition" dest="spelling"/>
+
+    <!-- Valid attributes for fields:
+     name: mandatory - the name for the field
+     type: mandatory - the name of a field type from the 
+       <types> fieldType section
+     indexed: true if this field should be indexed (searchable or sortable)
+     stored: true if this field should be retrievable
+     multiValued: true if this field may contain multiple values per document
+     omitNorms: (expert) set to true to omit the norms associated with
+       this field (this disables length normalization and index-time
+       boosting for the field, and saves some memory).  Only full-text
+       fields or fields that need an index-time boost need norms.
+       Norms are omitted for primitive (non-analyzed) types by default.
+     termVectors: [false] set to true to store the term vector for a
+       given field.
+       When using MoreLikeThis, fields used for similarity should be
+       stored for best performance.
+     termPositions: Store position information with the term vector.  
+       This will increase storage costs.
+     termOffsets: Store offset information with the term vector. This 
+       will increase storage costs.
+     required: The field is required.  It will throw an error if the
+       value does not exist
+     default: a value that should be used if no value is specified
+       when adding a document.
+   -->
+
+   <!-- field names should consist of alphanumeric or underscore characters only and
+      not start with a digit.  This is not currently strictly enforced,
+      but other field names will not have first class support from all components
+      and back compatibility is not guaranteed.  Names with both leading and
+      trailing underscores (e.g. _version_) are reserved.
+   -->
+   <dynamicField name="*" type="ignored" multiValued="true" />
+
+
+ </fields>
+
+
+ <!-- Field to use to determine and enforce document uniqueness. 
+      Unless this field is marked with required="false", it will be a required field
+   -->
+ <uniqueKey>id</uniqueKey>
+
+ <types>
+   <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+    
+   <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+
+   <!-- FIELD TYPES FOR STATE DECODED -->  
+
+    <!-- A text field with defaults appropriate for English: it
+         tokenizes with StandardTokenizer, removes English stop words
+         (lang/stopwords_en.txt), down cases, protects words from protwords.txt, and
+         finally applies Porter's stemming.  The query time analyzer
+         also applies synonyms from synonyms.txt. -->
+    <fieldType name="statedec_text_en" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <charFilter class="solr.HTMLStripCharFilterFactory"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <!-- in this example, we will only use synonyms at query time
+        <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
+        -->
+        <!-- Case insensitive stop word removal.
+          add enablePositionIncrements=true in both the index and query
+          analyzers to leave a 'gap' for more accurate phrase queries.
+        -->
+        <filter class="solr.StopFilterFactory"
+          ignoreCase="true"
+          words="lang/stopwords_en.txt"
+          enablePositionIncrements="true"
+          />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.EnglishPossessiveFilterFactory"/>
+        <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+        <!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
+        <filter class="solr.EnglishMinimalStemFilterFactory"/>
+  -->
+        <filter class="solr.PorterStemFilterFactory"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory"
+          ignoreCase="true"
+          words="lang/stopwords_en.txt"
+          enablePositionIncrements="true"
+          />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.EnglishPossessiveFilterFactory"/>
+        <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+        <!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
+        <filter class="solr.EnglishMinimalStemFilterFactory"/>
+  -->
+        <filter class="solr.PorterStemFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <!-- A much less heavily analyzed version of statedec_text_en for boosting higher-->
+    <fieldType name="statedec_text_pure" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <charFilter class="solr.HTMLStripCharFilterFactory"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" enablePositionIncrements="true"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <!-- The StrField type is not analyzed, but indexed/stored verbatim. -->
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+
+
+    <!-- lowercases the entire field value, keeping it as a single token.  -->
+    <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory" />
+      </analyzer>
+    </fieldType>
+
+
+
+
+
+
+
+
+
+    <!-- 
+      Example of using PathHierarchyTokenizerFactory at index time, so
+      queries for paths match documents at that path, or in descendent paths
+    -->
+    <fieldType name="descendent_path" class="solr.TextField">
+      <analyzer type="index">
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/" />
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.KeywordTokenizerFactory" />
+      </analyzer>
+    </fieldType>
+    
+    <fieldType name="descendent_facet_hierarchical" class="solr.TextField">
+      <analyzer type="index">
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*$)" replacement="1|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*$)" replacement="2|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*$)" replacement="3|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*/[^/]*$)" replacement="4|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*/[^/]*/[^/]*$)" replacement="5|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*$)" replacement="6|$1" />
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.KeywordTokenizerFactory" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*$)" replacement="1|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*$)" replacement="2|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*$)" replacement="3|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*/[^/]*$)" replacement="4|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*/[^/]*/[^/]*$)" replacement="5|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^/]*/[^/]*/[^/]*/[^/]*/[^/]*/[^/]*$)" replacement="6|$1" />
+      </analyzer>
+    </fieldType>
+    <!-- 
+      Example of using PathHierarchyTokenizerFactory at query time, so
+      queries for paths match documents at that path, or in ancestor paths
+    -->
+    <fieldType name="ancestor_path" class="solr.TextField">
+      <analyzer type="index">
+        <tokenizer class="solr.KeywordTokenizerFactory" />
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/" />
+      </analyzer>
+    </fieldType>
+
+
+
+    <fieldType name="statedec_ancestor_section" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <!-- remove () or [] that somebody might use to identify a chapter -->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+        <tokenizer class="solr.KeywordTokenizerFactory" />
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <!-- remove () or [] that somebody might use to identify a chapter -->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
+        <filter class="solr.LowerCaseFilterFactory" />
+      </analyzer>
+    </fieldType>
+
+    <fieldType name="statedec_descendent_section" class="solr.TextField" positionIncrementGap="100">
+     <analyzer type="index">
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <!-- remove () or [] that somebody might use to identify a chapter -->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
+        <filter class="solr.LowerCaseFilterFactory" />
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <!-- remove () or [] that somebody might use to identify a chapter -->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+        <tokenizer class="solr.KeywordTokenizerFactory" />
+      </analyzer>
+    </fieldType>
+
+    <fieldType name="statedec_facet_hierarchical" class="solr.TextField" positionIncrementGap="100">
+     <analyzer type="index">
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <!-- remove () or [] that somebody might use to identify a chapter -->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+        <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*$)" replacement="1|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*$)" replacement="2|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*$)" replacement="3|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*~[^~]*$)" replacement="4|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*~[^~]*~[^~]*$)" replacement="5|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*~[^~]*~[^~]*~[^~]*$)" replacement="6|$1" />
+        <filter class="solr.LowerCaseFilterFactory" />
+      </analyzer>
+      <analyzer type="query">
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+        <!-- remove () or [] that somebody might use to identify a chapter -->
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+        <tokenizer class="solr.KeywordTokenizerFactory" delimiter="~" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*$)" replacement="1|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*$)" replacement="2|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*$)" replacement="3|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*~[^~]*$)" replacement="4|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*~[^~]*~[^~]*$)" replacement="5|$1" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="(^[^~]*~[^~]*~[^~]*~[^~]*~[^~]*~[^~]*$)" replacement="6|$1" />
+        <filter class="solr.LowerCaseFilterFactory" />
+      </analyzer>
+
+    </fieldType>
+
+
+
+
+  </types>
+
+</schema>
