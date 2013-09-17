@@ -466,7 +466,7 @@ class ParserController
 	public function parse()
 	{
 
-		$this->logger->message('Parsing', 5);
+		$this->logger->message('Importing', 5);
 
 		/*
 		 * Create a new instance of Parser.
@@ -495,7 +495,7 @@ class ParserController
 			/*
 			 * Iterate through the files.
 			 */
-			$this->logger->message('Parsing Data Files', 3);
+			$this->logger->message('Parsing data files', 3);
 
 			while ($section = $parser->iterate())
 			{
@@ -859,7 +859,7 @@ class ParserController
 			 */
 			if (!is_writable($json_dir))
 			{
-				$this->logger->message('Cannot write to '.$json_dir.' to export files.', 10);
+				$this->logger->message('Cannot write to ' . $json_dir . ' to export files.', 10);
 				break;
 			}
 
@@ -886,7 +886,7 @@ class ParserController
 			 */
 			if (!is_writable($text_dir))
 			{
-				$this->logger->message('Cannot open '.$text_dir.' to export files.', 10);
+				$this->logger->message('Cannot open ' . $text_dir . ' to export files.', 10);
 				break;
 			}
 
@@ -1095,6 +1095,7 @@ class ParserController
 
 		if ($result === FALSE || $statement->rowCount() == 0)
 		{
+			$this->logger->message('No laws could be found to export to the sitemap', 3);
 			return FALSE;
 		}
 
