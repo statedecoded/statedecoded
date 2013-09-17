@@ -250,6 +250,12 @@ global $db;
  */
 require('functions.inc.php');
 
+
+/*
+ * Include Solarium's autoloader, for queries to Solr.
+ */
+require('solarium/Autoloader.php');
+
 /*
  * Include the custom functions file.
  */
