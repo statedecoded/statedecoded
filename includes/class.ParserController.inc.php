@@ -180,33 +180,6 @@ class ParserController
 			return FALSE;
 		}
 
-		/*
-		 * Modify config.inc.php to include this edition.
-		 */
-		if (!is_writable(INCLUDE_PATH . '/config.inc.php'))
-		{
-			$this->logger->message('Could not store the editions record in config.inc.php', 5);
-			return FALSE;
-		}
-
-		/*
-		 * Update the EDITION_YEAR definition in config.inc.php. Don't bother with EDITION_ID,
-		 * since that's 1 by default, which is also the ID of our newly inserted MySQL record in
-		 * the editions table.
-		 */
-		$config = file_get_contents(INCLUDE_PATH . '/config.inc.php');
-		$config = str_replace(
-									'define(\'EDITION_YEAR\', 1)',
-									'define(\'EDITION_YEAR\', ' . date('Y-M-d') . ')',
-									$config);
-		$result = file_put_contents(INCLUDE_PATH . '/config.inc.php', $config);
-
-		if ($result === FALSE)
-		{
-			$this->logger->message('Could not store the editions record in config.inc.php', 5);
-			return FALSE;
-		}
-
 		return TRUE;
 
 	}
