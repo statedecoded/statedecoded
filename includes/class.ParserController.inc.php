@@ -503,6 +503,7 @@ class ParserController
 				$parser->parse();
 				$parser->store();
 			}
+			
 		}
 		catch(Exception $e)
 		{
@@ -665,7 +666,6 @@ class ParserController
 		 * Finally, construct the ORDER BY statement.
 		 */
 		$sql .= ' ORDER BY '.implode(',', $order);
-
 
 		// Again, nothing here that we can actually prepare.
 		// Column names aren't allowed.
@@ -835,12 +835,13 @@ class ParserController
 		$sql_args = array(
 			':edition_id' => EDITION_ID
 		);
+		
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 		if ($result !== FALSE && $statement->rowCount() > 0)
 		{
-
+			
 			/*
 			 * Establish the path of our code JSON storage directory.
 			 */
@@ -880,7 +881,7 @@ class ParserController
 			{
 				mkdir($text_dir);
 			}
-
+			
 			/*
 			 * If we cannot write to the text directory, log an error.
 			 */
@@ -1072,7 +1073,7 @@ class ParserController
 		 * The sitemap.xml file must be kept in the site root, as per the standard.
 		 */
 		$sitemap_file = WEB_ROOT . '/sitemap.xml';
-
+		
 		if (!is_writable($sitemap_file))
 		{
 			$this->logger->message('Do not have permissions to write to sitemap.xml', 3);
@@ -1087,9 +1088,11 @@ class ParserController
 				FROM laws
 				WHERE edition_id = :edition_id
 				LIMIT 50000';
+		
 		$sql_args = array(
 			':edition_id' => EDITION_ID
 		);
+		
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -1098,42 +1101,43 @@ class ParserController
 			$this->logger->message('No laws could be found to export to the sitemap', 3);
 			return FALSE;
 		}
-
+		
 		/*
 		 * Create a new XML file, using the sitemap.xml schema.
 		 */
 		$xml = new SimpleXMLElement('<xml/>');
 		$urlset = $xml->addChild('urlset');
 		$urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-
+		
 		/*
 		 * Create a new instance of the class that handles information about individual laws.
 		 */
 		$laws = new Law();
-
-		/*
-		 * Instruct the Law class on what, specifically, it should retrieve. (Very little.)
-		 */
-		$laws->config->get_text = FALSE;
-		$laws->config->get_structure = FALSE;
-		$laws->config->get_amendment_attempts = FALSE;
-		$laws->config->get_court_decisions = FALSE;
-		$laws->config->get_metadata = FALSE;
-		$laws->config->get_references = FALSE;
-		$laws->config->get_related_laws = FALSE;
-
 		/*
 		 * Iterate through every section ID.
 		 */
 		while ($section = $statement->fetch(PDO::FETCH_OBJ))
 		{
+			
+			/*
+			 * Instruct the Law class on what, specifically, it should retrieve. (Very little.)
+			 */
+			$laws->config->get_all = FALSE;
+			$laws->config->get_text = FALSE;
+			$laws->config->get_structure = FALSE;
+			$laws->config->get_amendment_attempts = FALSE;
+			$laws->config->get_court_decisions = FALSE;
+			$laws->config->get_metadata = FALSE;
+			$laws->config->get_references = FALSE;
+			$laws->config->get_related_laws = FALSE;
+			$laws->config->render_html = FALSE;
 
 			/*
 			 * Get the law in question.
 			 */
 			$laws->law_id = $section->id;
 			$law = $laws->get_law();
-
+			
 			/*
 			 * Add a record of this law to the XML.
 			 */
@@ -1142,12 +1146,12 @@ class ParserController
 			$url->addchild('changefreq', 'monthly');
 
 		}
-
+		
 		/*
 		 * Save the resulting file.
 		 */
 		file_put_contents($sitemap_file, $xml->asXML());
-
+		
 		return TRUE;
 
 	}
