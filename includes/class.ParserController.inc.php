@@ -190,7 +190,9 @@ class ParserController
 	public function get_editions()
 	{
 	
-		$sql = 'SELECT * FROM editions ORDER BY order_by';
+		$sql = 'SELECT *
+				FROM editions
+				ORDER BY order_by';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 		if ($result === FALSE || $statement->rowCount() == 0)
@@ -299,7 +301,9 @@ class ParserController
 	
 		if (!isset($edition['order_by']))
 		{
-			$sql = 'SELECT MAX(order_by) AS order_by FROM editions ORDER BY order_by';
+			$sql = 'SELECT MAX(order_by) AS order_by
+					FROM editions
+					ORDER BY order_by';
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute();
 			if ($result !== FALSE && $statement->rowCount() > 0)
@@ -319,7 +323,8 @@ class ParserController
 		 */
 		if ($edition['current'] == 1)
 		{
-			$sql = 'UPDATE editions SET current = 0';
+			$sql = 'UPDATE editions
+					SET current = 0';
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute();
 		}
