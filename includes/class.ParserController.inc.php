@@ -1495,5 +1495,119 @@ class ParserController
 		return TRUE;
 
 	}
+	
+	/*
+	 * Pass each of the laws to Solr to be indexed.
+	 *
+	 * This code indexes each XML file, one at a time, by POSTing them to Solr.
+	 *
+	 * Although all other Solr-based functionality on the site is built on the Solarium library,
+	 * we do not use Solarium to index laws. That's because Solarium has no ability to post XML
+	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
+	 * instead, we do this via cURL.
+	 */
+	function index_laws()
+	{
+	
+		/*
+		 * Define the Solr URL to which the XML files will be posted.
+		 */
+		$solr_update_url = SOLR_URL . 'update';
+		
+		/*
+		 * Generate a list of all of the XML files.
+		 */
+		$files = array();
+		$path = WEB_ROOT . '/downloads/code-xml/';
+		
+		if (file_exists($path) && is_dir($path))
+		{
+			$directory = dir($path);
+		}
+		else
+		{
+			throw new Exception('XML output directory ' . $path . ' does not exist—'.
+				. 'could not index laws with Solr.');
+		}
+		
+		/*
+		 * Create an array, $files, with a list of every XML file.
+		 */
+		$files = array();
+		while (FALSE !== ($filename = $directory->read()))
+		{
+// SOMEHOW WE NEED TO OMIT ANY FILES THAT TIDY COULDN'T CLEAN UP.
+			$file_path = $this->directory . $filename;
+			if (is_file($file_path) && is_readable($file_path) && substr($filename, 0, 1) !== '.')
+			{
+				$files[] = $file_path;
+			}
+			
+		}
+		
+		if (count($files) == 0)
+		{
+			throw new Exception('No XML files were found in ' . $path . '—could not index laws '
+				.'with Solr.');
+		}
+		
+		/*
+		 * Post each of the files to Solr, in batches of 10,000.
+		 */
+		$file_count = count($files);
+		$batch_size = 10000;
+		for ($i = 0; $i < $file_count; $i+=$batch_size)
+		{
+		
+			$file_slice = array_slice($files, $i, $batch_size);
+			
+			/*
+			 * Instruct Solr to return its response as JSON, and to apply the specified XSL
+			 * transformation on the provided XML files.
+			 */
+// WHAT'S THE PATH FOR THE XSL FILE? WHERE WILL WE KEEP IT?
+			$queryParams = array('wt' => 'json', 
+								 'tr' => 'stateDecodedXml.xsl');
+			
+			$numFiles = 0;
+			$url = $this->fullUrl($queryParams);
+			curl_setopt($this->ch, CURLOPT_URL, $url);
+			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, TRUE);
+			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, TRUE);
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, 'Content-Type: multipart/form; charset=US-ASCII');
+			$params = array();
+			foreach ($files as $key=>$filename)
+			{
+				$params[$filename] = '@' . realpath($filename) . ';type=application/xml';
+				++$numFiles;
+			}
+			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $params);
+			
+			/*
+			 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
+			 */
+			$response_json = $this->handleResponse(curl_exec($this->ch));
+			
+			if (!is_string($response_json))
+			{
+				throw new Exception('Could not connect to Solr.');
+			}
+			
+			$response = json_decode(response_json);
+			
+			if (empty($response))
+			{
+				throw new Exception('Solr returned invalid JSON.');
+			}
+			
+			if (isset($response->error))
+			{
+				throw new Exception('Solr error: ' . $response->error);
+			}
+			
+			
+		}
+	
+	}
 
 }
