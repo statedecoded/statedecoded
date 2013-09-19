@@ -150,7 +150,7 @@ define('RECORD_VIEWS', TRUE);
 /*
  * The URL for your installation of Solr. End with a trailing slash.
  */
-define('SOLR_URL', 'http://localhost:8983/solr/statedecoded/');
+define('SOLR_URL', 'http://localhost:8080/solr/statedecoded/');
 
 
 /**
