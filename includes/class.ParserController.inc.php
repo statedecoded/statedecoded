@@ -1526,7 +1526,7 @@ class ParserController
 		}
 		else
 		{
-			throw new Exception('XML output directory ' . $path . ' does not exist—'.
+			throw new Exception('XML output directory ' . $path . ' does not exist—'
 				. 'could not index laws with Solr.');
 		}
 		
