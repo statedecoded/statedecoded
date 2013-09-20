@@ -565,8 +565,8 @@ class Law
 		/*
 		 * Note that we have to escape colons in this query.
 		 */
-		$query->setQuery('law_location:'.str_replace(':', '\:', $this->section_number));
-		$query->setMltFields('law_text,tags,law_title');
+		$query->setQuery('section:'.str_replace(':', '\:', $this->section_number));
+		$query->setMltFields('text,tags,catch_line');
 		$query->setMatchInclude(TRUE);
 		$query->setStart(0)->setRows($this->num_results);
 		
@@ -596,10 +596,10 @@ class Law
 		{	
 		
 			$related->{$i}->id = $document->id;
-			$related->{$i}->catch_line = $document->law_title;
-			$related->{$i}->section_number = $document->law_section;
-			$related->{$i}->text = $document->law_text;
-			$related->{$i}->url = $this->get_url($document->law_section);
+			$related->{$i}->catch_line = $document->catch_line;
+			$related->{$i}->section_number = $document->section;
+			$related->{$i}->text = $document->text;
+			$related->{$i}->url = $this->get_url($document->section);
 			$i++;
 		
 		}
