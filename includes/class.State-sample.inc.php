@@ -221,6 +221,24 @@ class Parser
 				$tidy = new tidy();
 				$tidy->parseString($xml, $tidy_config, 'utf8');
 				$tidy->cleanRepair();
+				
+				/*
+				 * If Tidy cannot clean up this file, then add it to our list of invalid files.
+				 */
+				if ($result === FALSE)
+				{
+				
+					/*
+					 * If we don't have a list of invalid files, start a new one.
+					 */
+					if (!isset($this->invalid_xml))
+					{
+						$this->invalid_xml = new ArrayObject(array());
+					}
+					
+					$this->invalid_xml->append($filename);
+					
+				}
 
 				$xml = (string) $tidy;
 			}
