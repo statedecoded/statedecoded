@@ -226,12 +226,12 @@ if ( (INCLUDES_REPEALED == TRUE) && (empty($law->repealed) || ($law->repealed !=
  */
 if (defined('DISQUS_SHORTNAME') === TRUE)
 {
-	$body .= <<<EOD
-	<section id="comments">
+	$body .= "
+	<section id=\"comments\">
 		<h2>Comments</h2>
-		<div id="disqus_thread"></div>
+		<div id=\"disqus_thread\"></div>
 		<script>
-			var disqus_shortname = 'vacode'; // required: replace example with your forum shortname
+			var disqus_shortname = '" . DISQUS_SHORTNAME . "'; // required: replace example with your forum shortname
 		
 			/* * * DON'T EDIT BELOW THIS LINE * * */
 			(function() {
@@ -240,8 +240,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 			})();
 		</script>
-	</section>
-EOD;
+	</section>"
 }
 
 /*
