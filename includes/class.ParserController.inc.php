@@ -1545,8 +1545,8 @@ class ParserController
 		$files = array();
 		while (FALSE !== ($filename = $directory->read()))
 		{
-// SOMEHOW WE NEED TO OMIT ANY FILES THAT TIDY COULDN'T CLEAN UP.
-			$file_path = $this->directory . $filename;
+			
+			$file_path = $path . $filename;
 			if (is_file($file_path) && is_readable($file_path) && substr($filename, 0, 1) !== '.')
 			{
 				$files[] = $file_path;
