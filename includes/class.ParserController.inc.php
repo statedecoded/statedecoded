@@ -504,6 +504,14 @@ class ParserController
 				$parser->store();
 			}
 			
+			/*
+			 * If any files contained invalid XML, bring that list into the local scope.
+			 */
+			if (isset($parser->invalid_xml))
+			{
+				$this->invalid_xml = $parser->invalid_xml;
+			}
+			
 		}
 		catch(Exception $e)
 		{
@@ -1550,6 +1558,25 @@ class ParserController
 		{
 			$this->logger->message('No files were found in ' . $path . '—could not index laws with Solr.', 10);
 			return FALSE;
+		}
+		
+		/*
+		 * If we have a list of files with XML problems, then remove those from the list of files
+		 * to import. If a single file in a batch has XML errors, then the entire batch is rejected,
+		 * so it's better to omit a file than to risk that.
+		 */
+		if (!isset($this->invalid_xml))
+		{
+			
+			$blacklist = array_intersect((array) $this->valid_xml, $files);
+			if (count($blacklist) > 0)
+			{
+				foreach ($blacklist as $entry)
+				{
+					$key = array_search($entry, $files);
+					unset($blacklist[$key]);
+				}
+			}
 		}
 		
 		/*
