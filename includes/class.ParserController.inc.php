@@ -1591,19 +1591,22 @@ class ParserController
 			
 			if (!is_string($response_json))
 			{
-				throw new Exception('Could not connect to Solr.');
+				$this->logger->message('Could not connect to Solr.', 10);
+				return FALSE;
 			}
 			
 			$response = json_decode(response_json);
 			
 			if (empty($response))
 			{
-				throw new Exception('Solr returned invalid JSON.');
+				$this->logger->message('Solr returned invalid JSON.', 8);
+				return FALSE;
 			}
 			
 			if (isset($response->error))
 			{
-				throw new Exception('Solr error: ' . $response->error);
+				$this->logger->message('Solr error: ' . $response->error, 8);
+				return FALSE;
 			}
 			
 			
