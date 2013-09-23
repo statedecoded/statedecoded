@@ -1548,8 +1548,8 @@ class ParserController
 		
 		if (count($files) == 0)
 		{
-			throw new Exception('No XML files were found in ' . $path . '—could not index laws '
-				.'with Solr.');
+			$this->logger->message('No files were found in ' . $path . '—could not index laws with Solr.', 10);
+			return FALSE;
 		}
 		
 		/*
