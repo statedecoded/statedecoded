@@ -1599,23 +1599,24 @@ class ParserController
 				'tr' => '/vagrant/statedecoded/solr_home/statedecoded/conf/xslt/stateDecodedXml.xsl');
 			
 			$numFiles = 0;
-			$url = $this->fullUrl($queryParams);
-			curl_setopt($this->ch, CURLOPT_URL, $url);
-			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, TRUE);
-			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, TRUE);
-			curl_setopt($this->ch, CURLOPT_HTTPHEADER, 'Content-Type: multipart/form; charset=US-ASCII');
+			$url = $solr_update_url . '?' . http_build_query($solr_parameters);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
 			$params = array();
 			foreach ($files as $key=>$filename)
 			{
 				$params[$filename] = '@' . realpath($filename) . ';type=application/xml';
 				++$numFiles;
 			}
-			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $params);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 			
 			/*
 			 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
 			 */
-			$response_json = $this->handleResponse(curl_exec($this->ch));
+			$response_json = curl_exec($ch);
 			
 			if (!is_string($response_json))
 			{
