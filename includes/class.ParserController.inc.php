@@ -1594,8 +1594,9 @@ class ParserController
 			 * transformation on the provided XML files.
 			 */
 // WHAT'S THE PATH FOR THE XSL FILE? WHERE WILL WE KEEP IT?
-			$queryParams = array('wt' => 'json', 
-								 'tr' => 'stateDecodedXml.xsl');
+			$solr_parameters = array(
+				'wt' => 'json', 
+				'tr' => '/vagrant/statedecoded/solr_home/statedecoded/conf/xslt/stateDecodedXml.xsl');
 			
 			$numFiles = 0;
 			$url = $this->fullUrl($queryParams);
