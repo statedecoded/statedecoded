@@ -84,8 +84,8 @@ if (!empty($_GET['q']))
 // create search CSS that styles <em></em> to highlight matches
 	$hl = $query->getHighlighting();
 	$hl->setFields('catch_line, text');
-	$hl->setSimplePrefix('<em>');
-	$hl->setSimplePostfix('</em>');
+	$hl->setSimplePrefix('<span>');
+	$hl->setSimplePostfix('</span>');
 	
 	/*
 	 * Specify which page we want, and how many results.
@@ -124,9 +124,10 @@ if (!empty($_GET['q']))
 		/*
 		 * Start the DIV that stores all of the search results.
 		 */
-		$body .= '<div id="search-results">';
-		
-		$body .= '<p>' . number_format($total_results) . ' results found.</p>';
+		$body .= '
+			<div id="search-results">
+			<p>' . number_format($total_results) . ' results found.</p>
+			<ul>';
 		
 		/*
 		 * Iterate through the results.
@@ -134,7 +135,7 @@ if (!empty($_GET['q']))
 		foreach ($results as $result)
 		{
 			
-			$body .= '<div class="result">';
+			$body .= '<li><div class="result">';
 			$body .= '<h1>' . $result->catch_line . ' (' . SECTION_SYMBOL . '&nbsp;'
 				. $result->section . ')</h1>';
 			
@@ -147,7 +148,7 @@ if (!empty($_GET['q']))
 			{
 				foreach ($snippet as $field => $highlight)
 				{
-					$body .= implode(' [.&thinsp;.&thinsp;.] ', $highlight) . '<br />';
+					$body .= '<p>' . implode(' [.&thinsp;.&thinsp;.] ', $highlight) . '</p>';
 				}
 			}
 			
@@ -158,7 +159,8 @@ if (!empty($_GET['q']))
 			{
 				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
 			}
-			$body .= '</div>';
+			$body .= '</div></li>';
+// include breadcrumbs (class "breadcrumb")
 		
 		}
 		
