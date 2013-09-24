@@ -170,9 +170,27 @@ if (!empty($_GET['q']))
 		$body .= '<div id="paging">';
 		
 		/*
+		 * How many pages are there in all?
+		 */
+		$total_pages = ceil($total_results / $per_page);
+		
+		/*
+		 * Figure out the window for search results. That is, if there are more than 10 pages, then
+		 * we need to start someplace 
+		 */
+		if ( ($total_pages > 10) && ($page > 5) )
+		{
+			$first_page = $page - 4;
+		}
+		else
+		{
+			$first_page = 0;
+		}
+		
+		/*
 		 * Iterate through each page of results.
 		 */
-		for ($i=0; $i<ceil($total_results / $per_page); $i+=$per_page)
+		for ($i = $first_page; $i < $total_pages; $i+=$per_page)
 		{
 			
 			/*
