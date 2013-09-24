@@ -167,7 +167,8 @@ if (!empty($_GET['q']))
 		/*
 		 * Display paging.
 		 */
-		$body .= '<div id="paging">';
+// Create CSS to style paging.
+		$body .= '<ul id="paging">';
 		
 		/*
 		 * How many pages are there in all?
@@ -197,21 +198,46 @@ if (!empty($_GET['q']))
 			 * Assemble the URL for this result.
 			 */
 			$url = '?q=' . $q;
+			
+			/*
+			 * Embed a page number in the URL for every page after the first one.
+			 */
 			if ($i > 0)
 			{
 				$url .= '&amp;p=' . $i + 1;
 			}
-			if (isset($per_page))
+			
+			/*
+			 * And if the number of results per page is something other than the default of 10, then
+			 * include that in the URL, too.
+			 */
+			if ($per_page <> 10)
 			{
 				$url .= '&amp;per_page=' . $per_page;
 			}
-			$body .= '<a href="' . $url . '">' . ($i + 1) . '</a>';
+			
+			/*
+			 * If this is not the current page, display a linked number.
+			 */
+			if ( ($i + 1) != $page)
+			{
+				$body .= '<li><a href="' . $url . '">' . ($i + 1) . '</a></li>';
+			}
+			
+			/*
+			 * If this is the page that we're on right now, display an unlinked number.
+			 */
+			else
+			{
+				$body .= '<li>' .  ($i + 1) . '</li>';
+			}
+			
 		}
 		
 		/*
 		 * Close the #paging DIV.
 		 */
-		$body .= '</div>';
+		$body .= '</ul>';
 		
 		/*
 		 * Close the #search-results div.
