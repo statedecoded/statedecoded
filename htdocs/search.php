@@ -17,7 +17,8 @@
 /*
  * Intialize Solarium.
  */
-$client = new Solarium_Client($config);
+Solarium_Autoloader::register();
+$client = new Solarium_Client($GLOBALS['solr_config']);
 
 /*
  * Create a container for our content.
