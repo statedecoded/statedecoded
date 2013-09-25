@@ -20,6 +20,7 @@ function __autoload_libraries($class_name)
 {
 
 	$filename = 'class.' . $class_name . '.inc.php';
+	include_once INCLUDE_PATH . '/' . $filename;
 
 }
 spl_autoload_register('__autoload_libraries');
