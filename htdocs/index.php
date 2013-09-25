@@ -254,7 +254,22 @@ require('functions.inc.php');
 /*
  * Include Solarium's autoloader, for queries to Solr.
  */
-require('solarium/Autoloader.php');
+require('Solarium/Autoloader.php');
+Solarium_Autoloader::register();
+
+/*
+ * Turn the Solr URL constant into a configuration array that we can use anywhere we need to use
+ * Solarium.
+ */
+$solr_url = parse_url(SOLR_URL);
+
+$GLOBALS['solr_config'] = array(
+    'adapteroptions' => array(
+        'host' => $solr_url['host'],
+        'port' => $solr_url['port'],
+        'path' => $solr_url['path'],
+    )
+);
 
 /*
  * Include the custom functions file.
