@@ -20,10 +20,6 @@ function __autoload_libraries($class_name)
 {
 
 	$filename = 'class.' . $class_name . '.inc.php';
-	if ((include_once INCLUDE_PATH . '/' . $filename) === FALSE)
-	{
-		throw new Exception("Could not include `$filename'.");
-	}
 
 }
 spl_autoload_register('__autoload_libraries');
