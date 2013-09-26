@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * The API's structure method
+ *
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.7
+ * @link		http://www.statedecoded.com/
+ * @since		0.6
+ *
+ */
+
 header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
 
