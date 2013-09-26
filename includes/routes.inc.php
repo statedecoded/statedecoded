@@ -53,3 +53,7 @@ Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?law/(?P<section>[
 // Dictionary
 Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?dictionary/(?P<term>.*)',
 	'api/1.0/dictionary.php');
+
+// Dictionary
+Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?search/(?P<term>.*)',
+	'api/1.0/search.php');
