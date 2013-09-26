@@ -103,7 +103,6 @@ if (!empty($_GET['q']))
 	/*
 	 * We want the most useful bits highlighted as search results snippets.
 	 */
-// create search CSS that styles <em></em> to highlight matches
 	$hl = $query->getHighlighting();
 	$hl->setFields('catch_line, text');
 	$hl->setSimplePrefix('<span>');
