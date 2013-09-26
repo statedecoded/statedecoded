@@ -1453,6 +1453,22 @@ class ParserController
 		}
 
 		/*
+		 * Make sure that Solr is responsive.
+		 */
+		Solarium_Autoloader::register();
+		$client = new Solarium_Client($GLOBALS['solr_config']);
+		$ping = $client->createPing();
+		try
+		{
+			$result = $client->ping($ping);
+		}
+		catch(Solarium_Exception $e)
+		{
+			$this->logger->message('Solr must be installed, configured in config.inc.php, and running.', 10);
+			$error = TRUE;
+		}
+
+		/*
 		 * Make sure that cURL is installed.
 		 */
 		if (function_exists('curl_version') === FALSE)
