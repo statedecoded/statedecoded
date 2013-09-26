@@ -15,8 +15,13 @@ Router::addRoute('^/$', 'home.php');
 // About page
 Router::addRoute('^/about/(.*)', 'about.php');
 
+// Admin section
 Router::addRoute('^/admin/(.*)', 'admin/index.php');
+
+// Downloads and API
 Router::addRoute('^/downloads/(.*)', 'downloads/index.php');
+
+// Search
 Router::addRoute('^/search/(.*)', 'search.php');
 
 // Browse
