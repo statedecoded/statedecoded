@@ -37,6 +37,22 @@ $content->set('page_title', 'Search');
 $body = '';
 $sidebar = '';
 
+// THIS IS JUST A WORKING CONCEPT. This needs to be turned into a method within a class, with
+// the ability to dynamically adjust the values of the form based 
+function search_form($q='')
+{
+	
+	$form = '
+		<form method="get" action="/search/">
+			<input type="text" name="q" value="' .  $q . '" size="50" />
+			<input type="submit" value="Search" />
+		</form>
+	';
+	
+	return $form;
+	
+}
+
 /*
  * If a search is being submitted.
  */
@@ -72,6 +88,11 @@ if (!empty($_GET['q']))
 	{
 		$per_page = 10;
 	}
+	
+	/*
+	 * Display our search form.
+	 */
+	$body .= search_form($q);
 	
 	/*
 	 * Set up our query.
@@ -255,7 +276,7 @@ if (!empty($_GET['q']))
 else
 {
 
-	
+	$body .= search_form();
 
 }
 
