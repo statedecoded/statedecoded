@@ -1631,15 +1631,25 @@ $this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 			 */
 			$response_json = curl_exec($ch);
 			
-			if (!is_string($response_json))
+			/*
+			 * If cURL returned an error.
+			 */
+			if (curl_errno($ch) > 0)
+			{
+				$this->logger->message('The attempt to post files to Solr via cURL returned an '
+					. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
+				return FALSE;
+			}
+			
+			if ( (FALSE === $response_json) || !is_string($response_json) )
 			{
 				$this->logger->message('Could not connect to Solr.', 10);
 				return FALSE;
 			}
 			
-			$response = json_decode(response_json);
+			$response = json_decode($response_json);
 			
-			if (empty($response))
+			if ( ($response === FALSE) || empty($response) )
 			{
 				$this->logger->message('Solr returned invalid JSON.', 8);
 				return FALSE;
@@ -1650,7 +1660,6 @@ $this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 				$this->logger->message('Solr error: ' . $response->error, 8);
 				return FALSE;
 			}
-			
 			
 		}
 	
