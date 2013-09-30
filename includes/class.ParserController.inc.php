@@ -1548,13 +1548,17 @@ class ParserController
 		
 		/*
 		 * Create an array, $files, with a list of every XML file.
+		 * 
+		 * We don't bother to check whether each file is readable because a) these files were just
+		 * created by the exporter and b) it's really too slow on the order of tens or hundreds of
+		 * thousands of files.
 		 */
 		$files = array();
 		while (FALSE !== ($filename = $directory->read()))
 		{
 			
 			$file_path = $path . $filename;
-			if (is_file($file_path) && is_readable($file_path) && substr($filename, 0, 1) !== '.')
+			if (substr($filename, 0, 1) !== '.')
 			{
 				$files[] = $file_path;
 			}
