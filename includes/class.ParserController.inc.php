@@ -1469,15 +1469,6 @@ class ParserController
 		}
 
 		/*
-		 * Make sure that cURL is installed.
-		 */
-		if (function_exists('curl_version') === FALSE)
-		{
-			$this->logger->message('PHP must have cURL support enabled.', 10);
-			$error = TRUE;
-		}
-
-		/*
 		 * Make sure that RewriteRules are respected.
 		 *
 		 * To accomplish this, we use cURL to make a request to the server, using a test URL that
