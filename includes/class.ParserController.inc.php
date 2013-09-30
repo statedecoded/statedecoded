@@ -1576,12 +1576,6 @@ class ParserController
 		 * to import. If a single file in a batch has XML errors, then the entire batch is rejected,
 		 * so it's better to omit a file than to risk that.
 		 */
-// WE NEED A LINTER! xmllint comes with Ubuntu. Maybe we need to lint the whole directory, with the
-// --noout flag, pull a list of files out of that, and that'll be our blacklist? Make sure to make
-// that list unique, because xmllint returns multiple results per file.
-$this->invalid_xml->{0} = '/var/www/downloads/code-xml/38.2-3556.xml';
-$this->invalid_xml->{1} = '/var/www/downloads/code-xml/46.2-1927.xml';
-$this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 		if (isset($this->invalid_xml))
 		{
 			foreach ($this->invalid_xml as $entry)
