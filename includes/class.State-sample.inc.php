@@ -217,30 +217,13 @@ class Parser
 			 */
 			if (class_exists('tidy', FALSE))
 			{
+			
 				$tidy_config = array('input-xml' => TRUE);
 				$tidy = new tidy();
 				$tidy->parseString($xml, $tidy_config, 'utf8');
-				$tidy->cleanRepair();
-				
-				/*
-				 * If Tidy cannot clean up this file, then add it to our list of invalid files.
-				 */
-				if ($result === FALSE)
-				{
-				
-					/*
-					 * If we don't have a list of invalid files, start a new one.
-					 */
-					if (!isset($this->invalid_xml))
-					{
-						$this->invalid_xml = new ArrayObject(array());
-					}
-					
-					$this->invalid_xml->append($filename);
-					
-				}
-
+				$tidy->cleanRepair()
 				$xml = (string) $tidy;
+				
 			}
 			elseif (exec('which tidy'))
 			{
