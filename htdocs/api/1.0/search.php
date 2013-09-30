@@ -164,6 +164,38 @@ $response->total_records = $search_results->getNumFound();
 
 
 /*
+ * If the request contains a specific list of fields to be returned.
+ */
+if (isset($args['fields']))
+{
+	
+	/*
+	 * Turn that list into an array.
+	 */
+	$returned_fields = explode(',', urldecode(filter_var($args['fields'], FILTER_SANITIZE_STRING)));
+	foreach ($returned_fields as &$field)
+	{
+		$field = trim($field);
+	}
+
+	/*
+	 * It's essential to unset $field at the conclusion of the prior loop.
+	 */
+	unset($field);
+
+	/*
+	 * Step through our response fields and eliminate those that aren't in the requested list.
+	 */
+	foreach($response as $field => &$value)
+	{
+		if (in_array($field, $returned_fields) === false)
+		{
+			unset($response->$field);
+		}
+	}
+}
+
+/*
  * Include the API version in this response.
  */
 if(isset($args['api_version']) && strlen($args['api_version']))
