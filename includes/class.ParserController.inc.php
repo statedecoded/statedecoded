@@ -1682,7 +1682,11 @@ $this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 				. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
 			return FALSE;
 		}
-	
+		
+		$this->logger->message('Laws indexed with Solr successfully.', 7);
+		
+		return TRUE;
+		
 	}
 
 }
