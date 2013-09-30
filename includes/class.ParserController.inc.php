@@ -1606,10 +1606,9 @@ $this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 			 * Instruct Solr to return its response as JSON, and to apply the specified XSL
 			 * transformation on the provided XML files.
 			 */
-// WHAT'S THE PATH FOR THE XSL FILE? WHERE WILL WE KEEP IT?
 			$solr_parameters = array(
 				'wt' => 'json', 
-				'tr' => '/vagrant/statedecoded/solr_home/statedecoded/conf/xslt/stateDecodedXml.xsl');
+				'tr' => 'stateDecodedXml.xsl');
 			
 			$numFiles = 0;
 			$url = $solr_update_url . '?' . http_build_query($solr_parameters);
