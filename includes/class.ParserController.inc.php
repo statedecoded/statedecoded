@@ -1623,6 +1623,7 @@ $this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 				$params[$filename] = '@' . realpath($filename) . ';type=application/xml';
 				++$numFiles;
 			}
+			curl_setopt($ch, CURLOPT_POST, TRUE);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 			
 			/*
