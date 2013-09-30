@@ -1661,6 +1661,26 @@ $this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 				return FALSE;
 			}
 			
+		} // end for() loop
+		
+		/*
+		 * Files aren't searchable until Solr is told to commit them.
+		 */
+		$url = $solr_update_url . '?commit=true';
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $solr_update_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		$results = curl_exec($ch);
+					
+		/*
+		 * If cURL returned an error.
+		 */
+		if (curl_errno($ch) > 0)
+		{
+			$this->logger->message('The attempt to commit files to Solr via cURL returned an '
+				. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
+			return FALSE;
 		}
 	
 	}
