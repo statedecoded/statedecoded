@@ -1618,7 +1618,7 @@ $this->invalid_xml->{2} = '/var/www/downloads/code-xml/46.2-694.1.xml';
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
 			$params = array();
-			foreach ($files as $key=>$filename)
+			foreach ($file_slice as $key=>$filename)
 			{
 				$params[$filename] = '@' . realpath($filename) . ';type=application/xml';
 				++$numFiles;
