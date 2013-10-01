@@ -615,6 +615,11 @@ class Law
 	 */
 	function get_url($section_number)
 	{
+
+		/*
+		 * We're going to need access to the database connection throughout this class.
+		 */
+		global $db;
 		
 		/*
 		 * If a section number hasn't been passed to this function, then there's nothing to do.
@@ -630,13 +635,12 @@ class Law
 		$sql = 'SELECT url
 				FROM permalinks
 				WHERE object_type="law"
-				AND 
-				identifier = :identifier';
+				AND identifier = :identifier';
 				
 		$sql_args = array(
 			':identifier' => $section_number
 		);
-
+		
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
