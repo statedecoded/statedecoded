@@ -545,12 +545,10 @@ class Law
 			$this->num_results = 5;
 		}
 		
-		Solarium_Autoloader::register();
-		
 		/*
-		 * Create a client instance.
+		 * Intialize Solarium.
 		 */
-		$client = new Solarium_Client();
+		$client = new Solarium_Client($GLOBALS['solr_config']);
 		
 		if ($client === FALSE)
 		{
