@@ -187,79 +187,19 @@ if (!empty($_GET['q']))
 		}
 		
 		/*
-		 * Display paging.
 		 */
-// Create CSS to style paging.
-		$body .= '<ul id="paging">';
 		
 		/*
-		 * How many pages are there in all?
+		 * Display page numbers at the bottom, if we have more than one page of results.
 		 */
-		$total_pages = ceil($total_results / $per_page);
-		
-		/*
-		 * Figure out the window for search results. That is, if there are more than 10 pages, then
-		 * we need to start someplace 
-		 */
-		if ( ($total_pages > 10) && ($page > 5) )
+		if ($total_results > $per_page)
 		{
-			$first_page = $page - 4;
+			$search->total_results = $total_results;
+			$search->per_page = $per_page;
+			$search->page = $page;
+			$search->query = $q;
+			$body .= $search->display_paging();
 		}
-		else
-		{
-			$first_page = 0;
-		}
-		
-		/*
-		 * Iterate through each page of results.
-		 */
-		for ($i = $first_page; $i < $total_pages; $i+=$per_page)
-		{
-			
-			/*
-			 * Assemble the URL for this result.
-			 */
-			$url = '?q=' . $q;
-			
-			/*
-			 * Embed a page number in the URL for every page after the first one.
-			 */
-			if ($i > 0)
-			{
-				$url .= '&amp;p=' . $i + 1;
-			}
-			
-			/*
-			 * And if the number of results per page is something other than the default of 10, then
-			 * include that in the URL, too.
-			 */
-			if ($per_page <> 10)
-			{
-				$url .= '&amp;per_page=' . $per_page;
-			}
-			
-			/*
-			 * If this is not the current page, display a linked number.
-			 */
-			if ( ($i + 1) != $page)
-			{
-				$body .= '<li><a href="' . $url . '">' . ($i + 1) . '</a></li>';
-			}
-			
-			/*
-			 * If this is the page that we're on right now, display an unlinked number.
-			 */
-			else
-			{
-				$body .= '<li>' .  ($i + 1) . '</li>';
-			}
-			
-		}
-		
-		/*
-		 * Close the #paging DIV.
-		 */
-		$body .= '</ul>';
 		
 		/*
 		 * Close the #search-results div.

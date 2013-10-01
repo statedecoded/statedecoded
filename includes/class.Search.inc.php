@@ -51,4 +51,110 @@ class Search
 		
 	}
 	
+	/**
+	 * Display the links to each page of search results.
+	 */
+	function display_paging()
+	{
+		
+		/*
+		 * Require these properties to be set.
+		 */
+		if ( empty($this->total_results) || empty($this->per_page)  || empty($this->query) )
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Start our list of pages.
+		 */
+		$this->paging = '<ul id="paging">';
+		
+		/*
+		 * How many pages are there in all?
+		 */
+		$total_pages = ceil($this->total_results / $this->per_page);
+		
+		/*
+		 * Figure out the window for search results. That is, if there are more than 12 pages, then
+		 * we need to start someplace other than at the first page.
+		 */
+		if ( ($total_pages > 12) && ($this->page > 6) )
+		{
+			$first_page = $this->page - 6;
+		}
+		else
+		{
+			$first_page = 0;
+		}
+		
+		/*
+		 * Iterate through each page of results.
+		 */
+		$j=0;
+		for ($i = $first_page; $i < $total_pages; $i++)
+		{
+			
+			/*
+			 * Assemble the URL for this page.
+			 */
+			$url = '?q=' . $this->query;
+			
+			/*
+			 * Embed a page number in the URL for every page after the first one.
+			 */
+			if ($i > 0)
+			{
+				$url .= '&amp;p=' . ($i + 1);
+			}
+			
+			/*
+			 * And if the number of results per page is something other than the default of 10, then
+			 * include that in the URL, too.
+			 */
+			if ($this->per_page <> 10)
+			{
+				$url .= '&amp;per_page=' . $this->per_page;
+			}
+			
+			/*
+			 * If this is not the current page, display a linked number.
+			 */
+			if ( ($i + 1) != $this->page)
+			{
+				$this->paging .= '<li><a href="' . $url . '">' . ($i + 1) . '</a></li>';
+			}
+			
+			/*
+			 * If this is the page that we're on right now, display an unlinked number.
+			 */
+			else
+			{
+				$this->paging .= '<li>' .  ($i + 1) . '</li>';
+			}
+			
+			/*
+			 * Increment our page counter.
+			 */
+			$j++;
+			
+			/*
+			 * Once we reach eleven pages, stop.
+			 */
+			if ($j == 11)
+			{
+				break;
+			}
+			
+		}
+		
+		/*
+		 * Close the #paging DIV.
+		 */
+		$this->paging .= '</ul>';
+		
+		return $this->paging;
+		
+	}
+	
 }
