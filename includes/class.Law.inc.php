@@ -40,7 +40,7 @@ class Law
 		/*
 		 * If we haven't specified which fields that we want, then assume that we want all of them.
 		 */
-		if (!is_object($this->config))
+		if (!isset($this->config) || !is_object($this->config) )
 		{
 			$this->config->get_all = TRUE;
 		}
