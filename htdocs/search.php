@@ -129,7 +129,7 @@ if (!empty($_GET['q']))
 	 */
 	if (count($results) == 0)
 	{
-		$body .= '<p>No results found.';
+		$body .= '<p>No results found. [suggestions for better results]';
 	}
 	
 	/*
@@ -147,19 +147,22 @@ if (!empty($_GET['q']))
 		 * Start the DIV that stores all of the search results.
 		 */
 		$body .= '
-			<div id="search-results">
+			<div class="search-results">
 			<p>' . number_format($total_results) . ' results found.</p>
 			<ul>';
 		
 		/*
 		 * Iterate through the results.
 		 */
+		$law = new Law;
 		foreach ($results as $result)
 		{
 			
+			$url = $law->get_url($result->section);
+			
 			$body .= '<li><div class="result">';
-			$body .= '<h1>' . $result->catch_line . ' (' . SECTION_SYMBOL . '&nbsp;'
-				. $result->section . ')</h1>';
+			$body .= '<h1><a href="' . $url . '">' . $result->catch_line . ' (' . SECTION_SYMBOL . '&nbsp;'
+				. $result->section . ')</a></h1>';
 			
 			/*
 			 * Attempt to display a snippet of the indexed law, highlighting the use of the search
@@ -170,7 +173,8 @@ if (!empty($_GET['q']))
 			{
 				foreach ($snippet as $field => $highlight)
 				{
-					$body .= '<p>' . implode(' [.&thinsp;.&thinsp;.] ', $highlight) . '</p>';
+					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
+						. ' [.&thinsp;.&thinsp;.] ';
 				}
 			}
 			
@@ -187,7 +191,9 @@ if (!empty($_GET['q']))
 		}
 		
 		/*
+		 * End the UL that lists the search results.
 		 */
+		$body .= '</ul>';
 		
 		/*
 		 * Display page numbers at the bottom, if we have more than one page of results.
@@ -216,7 +222,7 @@ if (!empty($_GET['q']))
 else
 {
 
-	$body .= search_form();
+	$body .= $search->display_form();
 
 }
 
