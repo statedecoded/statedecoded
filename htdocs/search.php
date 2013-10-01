@@ -44,6 +44,10 @@ $content->set('inline_css', '
 			ul#paging li + li {
 				margin-left: 1em;
 			}
+		form input[type=text] {
+			width: 70%;
+			margin-right: 5%;
+		}
 	</style>');
 
 /*
