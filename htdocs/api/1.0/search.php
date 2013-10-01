@@ -131,6 +131,7 @@ if (count($search_results) == 0)
 /*
  * If we have results, iterate through them and include them in our output.
  */
+$law = new Law;
 $i=0;
 foreach ($search_results as $document)
 {
@@ -138,19 +139,24 @@ foreach ($search_results as $document)
 	/*
 	 * Attempt to display a snippet of the indexed law.
 	 */
-	$snippet = $highlighted->getResult($result->id);
+	$snippet = $highlighted->getResult($document->id);
 	if ($snippet != FALSE)
 	{
-		$response->results->{$i}->text = '';
 		foreach ($snippet as $field => $highlight)
 		{
-			$response->results->{$i}->text .= implode(' [...] ', $highlight);
+			$response->results->{$i}->excerpt .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight) )
+				. ' ... ';
 		}
 	}
-
-	$response->results->{$i}->section = $response->section;
-	$response->results->{$i}->catch_line = $response->catch_line;
-	$response->results->{$i}->text = $response->text;
+	
+	/*
+	 * Store the relevant fields within the response we'll send.
+	 */
+	$response->results->{$i}->section_number = $document->section;
+	$response->results->{$i}->catch_line = $document->catch_line;
+	$response->results->{$i}->text = $document->text;
+	$response->results->{$i}->url = $law->get_url($document->section);
+	$response->results->{$i}->score = $document->score;
 	$i++;
 	
 }
