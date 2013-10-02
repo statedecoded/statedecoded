@@ -389,7 +389,7 @@ class Law
 		 */
 		if ($this->config->get_related_laws == TRUE)
 		{
-			$this->metadata = Law::get_related();
+			//$this->metadata = Law::get_related();
 		}
 
 		/*
@@ -563,7 +563,7 @@ class Law
 		/*
 		 * Note that we have to escape colons in this query.
 		 */
-		$query->setQuery('section:'.str_replace(':', '\:', $this->section_number));
+		$query->setQuery('section:' . str_replace(':', '\:', $this->section_number));
 		$query->setMltFields('text,tags,catch_line');
 		$query->setMatchInclude(TRUE);
 		$query->setStart(0)->setRows($this->num_results);
