@@ -57,6 +57,12 @@ $body = '';
 $sidebar = '';
 
 /*
+ * Create a new instance of our search class. We use this to display the search form and the result
+ * page numbers.
+ */
+$search = new Search();
+
+/*
  * If a search is being submitted.
  */
 if (!empty($_GET['q']))
@@ -95,7 +101,6 @@ if (!empty($_GET['q']))
 	/*
 	 * Display our search form.
 	 */
-	$search = new Search();
 	$search->query = $q;
 	$body .= $search->display_form();
 	
