@@ -117,6 +117,16 @@ if (!empty($_GET['q']))
 	$hl->setFields('catch_line, text');
 	$hl->setSimplePrefix('<span>');
 	$hl->setSimplePostfix('</span>');
+
+	/*
+	 * Check the spelling of the query and suggest alternates.
+	 */
+	$spellcheck = $query->getSpellcheck();
+	$spellcheck->setQuery($q);
+	$spellcheck->setBuild(TRUE);
+	$spellcheck->setCollate(TRUE);
+	$spellcheck->setExtendedResults(TRUE);
+	$spellcheck->setCollateExtendedResults(TRUE);
 	
 	/*
 	 * Specify which page we want, and how many results.
@@ -129,16 +139,39 @@ if (!empty($_GET['q']))
 	$results = $client->select($query);
 	
 	/*
-	 * Display highlighted uses of the search terms in a preview of the result.
+	 * Gather highlighted uses of the search terms, which we may use in display results.
 	 */
 	$highlighted = $results->getHighlighting();
 	
 	/*
+	 * If this search term appears to be misspelled, gather a list of alternatives.
+	 */
+// Commented out temporarily, per issue #437
+//	$spelling = $results->getSpellcheck();
+//	
+//	if ($spelling->getCorrectlySpelled() == FALSE)
+//	{
+//		
+//		$body .= '<h1>Suggestions</h1>';
+//		foreach($spelling as $suggestion)
+//		{
+//			$body .= 'NumFound: '.$suggestion->getNumFound().'<br/>';
+//			$body .= 'StartOffset: '.$suggestion->getStartOffset().'<br/>';
+//			$body .= 'EndOffset: '.$suggestion->getEndOffset().'<br/>';
+//			$body .= 'OriginalFrequency: '.$suggestion->getOriginalFrequency().'<br/>';
+//			$body .= 'Frequency: '.$suggestion->getFrequency().'<br/>';
+//			$body .= 'Word: '.$suggestion->getWord().'<br/>';
+//		}
+//	}
+	
+	/*
 	 * If there are no results.
 	 */
-	if (count($results) == 0)
+	if (count($results) == FALSE)
 	{
+		
 		$body .= '<p>No results found. [suggestions for better results]';
+		
 	}
 	
 	/*
