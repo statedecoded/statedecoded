@@ -221,7 +221,7 @@ class Parser
 				$tidy_config = array('input-xml' => TRUE);
 				$tidy = new tidy();
 				$tidy->parseString($xml, $tidy_config, 'utf8');
-				$tidy->cleanRepair()
+				$tidy->cleanRepair();
 				$xml = (string) $tidy;
 				
 			}
