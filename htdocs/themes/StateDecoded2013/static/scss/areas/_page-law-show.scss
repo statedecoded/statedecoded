@@ -4,6 +4,31 @@
 ################################################################################
 */
 
+.grid-sizer {
+  // Width for right column Masonry.js stuff
+  width: 100%;
+
+  @include respond-to(desktop) {
+    width: 13%;
+  }
+
+  @include respond-to(laptop) {
+    width: 13%;
+  }
+
+  @include respond-to(tablet-portrait) {
+    width: 26%;
+  }
+
+  @include respond-to(tablet-landscape) {
+    width: 26%;
+  }
+
+  @include respond-to(smartphone) {
+    width: 40%;
+  }
+}
+
 .law {
   section#main_content {
     overflow: hidden;
@@ -167,10 +192,9 @@
 
     .grouping,
     .related-group {
-      float: left;
       margin-right:1%;
       text-align: left;
-      width: 32.5%;
+      width: 101.5%;
 
       @include respond-to(tablet) {
         float: none;
@@ -196,9 +220,35 @@
       border: 1px solid #e4e9e7; // stroke
       background-color: #fcfdfa; // layer fill content + color overlay
       box-shadow:inset 0 2px 20px rgba(111,114,117,.15); // inner shadow
-      margin-bottom: 1em;
+      margin: 0 0 1em 0;
       padding: 0;
+      position: relative;
       text-align: left;
+      width: 100%;
+
+      @include respond-to(desktop) {
+        width: 32%;
+      }
+
+      @include respond-to(laptop) {
+        width: 32%;
+      }
+
+      @include respond-to(tablet-landscape) {
+        width: 100%;
+      }
+
+      @include respond-to(tablet-portrait) {
+        width: 100%;
+      }
+
+      @include respond-to(smartphone) {
+        width: 100%;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
 
       h1 {
         font-family: $statedecoded-stack3;

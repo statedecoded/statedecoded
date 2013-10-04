@@ -65,6 +65,14 @@ class StateDecoded2013__Page extends Page
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),
+		'polyfiller' => array(
+			'path' => '/js/vendor/js-webshim/minified/polyfiller.js',
+			'type' => 'javascript'
+		),
+		'masonry_js' => array(
+			'path' => '/js/vendor/masonry.pkgd.min.js',
+			'type' => 'javascript'
+		),
 		'main_js' => array(
 			'path' => '/js/vendor/functions.js',
 			'type' => 'javascript',

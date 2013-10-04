@@ -269,6 +269,14 @@ $sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
 			</section>';
 
+/*
+ * Start the Masonry.js wrapper
+ */
+$sidebar .= '<div class="grouping js-masonry"
+                  data-masonry-options=\'{
+                    "itemSelector": ".grid-box",
+                    "columnWidth": ".grid-sizer",
+                    "gutter": 10 }\'>';
 
 /*
  * Get the help text for the requested page.
@@ -285,7 +293,7 @@ $sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')
  */
 if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 {
-	$sidebar .= '<section id="court-decisions">
+	$sidebar .= '<section class="grid-box grid-sizer" id="court-decisions">
 				<h1>Court Decisions</h1>
 				<ul>';
 	foreach ($law->court_decisions as $decision)
@@ -305,7 +313,7 @@ if ($law->references !== FALSE)
 {
 
 	$sidebar .= '
-			<section class="related-group" id="cross_references">
+			<section class="related-group grid-box" id="cross_references">
 				<h1>Cross References</h1>
 				<ul>';
 	foreach ($law->references as $reference)
@@ -325,7 +333,7 @@ if ($law->references !== FALSE)
 if (isset($law->related) && (count((array) $law->related) > 0))
 {
 	$sidebar .= '
-			<section class="related-group" id="related-links">
+			<section class="related-group grid-box" id="related-links">
 				<h1>Related Laws</h1>
 				<ul id="related">';
 	foreach ($law->related as $related)
@@ -344,7 +352,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 if ( isset($law->citation) && is_object($law->citation) )
 {
 
-	$sidebar .= '<section class="related-group dark" id="cite-as">
+	$sidebar .= '<section class="related-group dark grid-box" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';
 	foreach ($law->citation as $citation)
@@ -356,6 +364,11 @@ if ( isset($law->citation) && is_object($law->citation) )
 			</section>';
 
 }
+
+/*
+ * End Masonry.js wrapper
+ */
+$sidebar .= '</section>';
 
 /*
  * Put the shorthand $body variable into its proper place.
