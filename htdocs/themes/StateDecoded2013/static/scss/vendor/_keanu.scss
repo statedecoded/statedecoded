@@ -13,7 +13,7 @@
 // ------------------------------------------------------------------
 
 $smartphone-width-min: 320px;
-$smartphone-width-max: 480px;
+$smartphone-width-max: 768px;
 
 $tablet-width-min: 768px;
 $tablet-width-max: 1024px;
@@ -94,7 +94,7 @@ $desktop-apple-monitor: 2300px;
 
   @if $breakpoint == desktop {
     @media
-      only screen and (min-width : ($tablet-width-min + 1))
+      only screen and (min-width : ($tablet-width-max + 1))
       { @content; }
   }
 

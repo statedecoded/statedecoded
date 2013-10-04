@@ -136,6 +136,9 @@
       left: 0;
     width: 100%;
 
+    @include respond-to(tablet) {
+    }
+
     @include respond-to(smartphone) {
       height: 200px;
       position: absolute;
@@ -259,9 +262,6 @@
 
 .inside & {
 
- @include respond-to(tablet) {
-
-  }
 
  @include respond-to(desktop) {
       // Style for the small header
@@ -337,5 +337,7 @@
         }
       } // nav#main_navigation
     } // .inside nav
+  }
+  @include respond-to(tablet) {
   }
 } // header#page_header
