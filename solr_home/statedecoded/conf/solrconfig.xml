@@ -35,7 +35,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>LUCENE_41</luceneMatchVersion>
+  <luceneMatchVersion>LUCENE_43</luceneMatchVersion>
 
 
 
@@ -852,7 +852,6 @@
      </lst>
   </requestHandler>
 
-
   <requestHandler name="/search" class="solr.SearchHandler">
     <lst name="defaults">
        <str name="echoParams">explicit</str>
@@ -971,42 +970,16 @@
        <str name="echoParams">explicit</str>
 
        <!-- Query settings -->
-       <str name="defType">edismax</str><!--Use the Google-like query parser. Users just type keywords.-->
-       <str name="qf"><!--Query fields. Change the weighting as you please.-->
-                         catch_line
-                               tags^0.1 <!--Low weighting on this field ensures text will have higher impact on score.-->
-                               text
-                          structure
-                   section_ancestor^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
-                 section_descendent^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
-               refers_to_descendent
-                 refers_to_ancestor
-          referred_to_by_descendent
-            referred_to_by_ancestor
-                               term
-                         definition
-       </str>
+       <str name="defType">lucene</str><!--Use the Google-like query parser. Users just type keywords.-->
        <str name="rows">0</str>
-       <str name="df">text</str><!--Default search field. Shouldn't matter, but has to be included.-->
+       <str name="df">spelling</str><!--Default search field. Shouldn't matter, but has to be included.-->
        <str name="mm">33%</str><!--How many terms must match. Confusing syntax isn't it?-->
        <str name="wt">json</str><!--Return results as json -->
        <str name="q.alt">*:*</str><!--If no search is submitted, this one is used.-->
 
        <!--Result settings-->
-       <str name="rows">10</str><!--Return 10 rows.-->
-       <str name="fl"><!--Field list. These fields are returned in results.-->
-         id
-         catch_line
-         text
-         type
-         section
-         refers_to
-         referred_to_by
-         term
-         definition
-         score <!--The score field is calculated at query time. Results are sorted by the score, e.g. how well they matched the query.-->
-       </str>
-
+       <str name="rows">0</str><!--Return 10 rows.-->
+       
        <!--Facet settings-->
        <str name="facet">true</str>
        <str name="facet.limit">10</str>
@@ -1091,102 +1064,35 @@
 
 
 
-  <!-- A Robust Example 
-       
-       This example SearchHandler declaration shows off usage of the
-       SearchHandler with many defaults declared
 
-       Note that multiple instances of the same Request Handler
-       (SearchHandler) can be registered multiple times with different
-       names (and different init parameters)
-    -->
-  <requestHandler name="/browse" class="solr.SearchHandler">
-     <lst name="defaults">
-       <str name="echoParams">explicit</str>
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
+  <!-- STATE DECODED -->
 
-       <!-- VelocityResponseWriter settings -->
-       <str name="wt">velocity</str>
-       <str name="v.template">browse</str>
-       <str name="v.layout">layout</str>
-       <str name="title">Solritas</str>
 
-       <!-- Query settings -->
-       <str name="defType">edismax</str>
-       <str name="qf">
-          text^0.5 features^1.0 name^1.2 sku^1.5 id^10.0 manu^1.1 cat^1.4
-          title^10.0 description^5.0 keywords^5.0 author^2.0 resourcename^1.0
-       </str>
-       <str name="df">text</str>
-       <str name="mm">100%</str>
-       <str name="q.alt">*:*</str>
-       <str name="rows">10</str>
-       <str name="fl">*,score</str>
 
-       <str name="mlt.qf">
-         text^0.5 features^1.0 name^1.2 sku^1.5 id^10.0 manu^1.1 cat^1.4
-         title^10.0 description^5.0 keywords^5.0 author^2.0 resourcename^1.0
-       </str>
-       <str name="mlt.fl">text,features,name,sku,id,manu,cat,title,description,keywords,author,resourcename</str>
-       <int name="mlt.count">3</int>
 
-       <!-- Faceting defaults -->
-       <str name="facet">on</str>
-       <str name="facet.field">cat</str>
-       <str name="facet.field">manu_exact</str>
-       <str name="facet.field">content_type</str>
-       <str name="facet.field">author_s</str>
-       <str name="facet.query">ipod</str>
-       <str name="facet.query">GB</str>
-       <str name="facet.mincount">1</str>
-       <str name="facet.pivot">cat,inStock</str>
-       <str name="facet.range.other">after</str>
-       <str name="facet.range">price</str>
-       <int name="f.price.facet.range.start">0</int>
-       <int name="f.price.facet.range.end">600</int>
-       <int name="f.price.facet.range.gap">50</int>
-       <str name="facet.range">popularity</str>
-       <int name="f.popularity.facet.range.start">0</int>
-       <int name="f.popularity.facet.range.end">10</int>
-       <int name="f.popularity.facet.range.gap">3</int>
-       <str name="facet.range">manufacturedate_dt</str>
-       <str name="f.manufacturedate_dt.facet.range.start">NOW/YEAR-10YEARS</str>
-       <str name="f.manufacturedate_dt.facet.range.end">NOW</str>
-       <str name="f.manufacturedate_dt.facet.range.gap">+1YEAR</str>
-       <str name="f.manufacturedate_dt.facet.range.other">before</str>
-       <str name="f.manufacturedate_dt.facet.range.other">after</str>
 
-       <!-- Highlighting defaults -->
-       <str name="hl">on</str>
-       <str name="hl.fl">content features title name</str>
-       <str name="hl.encoder">html</str>
-       <str name="hl.simple.pre">&lt;b&gt;</str>
-       <str name="hl.simple.post">&lt;/b&gt;</str>
-       <str name="f.title.hl.fragsize">0</str>
-       <str name="f.title.hl.alternateField">title</str>
-       <str name="f.name.hl.fragsize">0</str>
-       <str name="f.name.hl.alternateField">name</str>
-       <str name="f.content.hl.snippets">3</str>
-       <str name="f.content.hl.fragsize">200</str>
-       <str name="f.content.hl.alternateField">content</str>
-       <str name="f.content.hl.maxAlternateFieldLength">750</str>
 
-       <!-- Spell checking defaults -->
-       <str name="spellcheck">on</str>
-       <str name="spellcheck.extendedResults">false</str>       
-       <str name="spellcheck.count">5</str>
-       <str name="spellcheck.alternativeTermCount">2</str>
-       <str name="spellcheck.maxResultsForSuggest">5</str>       
-       <str name="spellcheck.collate">true</str>
-       <str name="spellcheck.collateExtendedResults">true</str>  
-       <str name="spellcheck.maxCollationTries">5</str>
-       <str name="spellcheck.maxCollations">3</str>           
-     </lst>
 
-     <!-- append spellchecking to our list of components -->
-     <arr name="last-components">
-       <str>spellcheck</str>
-     </arr>
-  </requestHandler>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

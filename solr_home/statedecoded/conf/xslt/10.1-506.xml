@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<law id="5715">
+  <section_number>10.1-506</section_number>
+  <catch_line>Power to create new districts and to relocate or define district boundaries; composition of districts.</catch_line>
+  <history>Code 1950, &#xA7; 21-2; 1956, c. 654; 1970, c. 480, &#xA7; 21-12.1; 1988, c. 891.</history>
+  <order_by>00000000006032510.1</order_by>
+  <text>
+    <section prefix="A">The Board shall have the power to (i) create a new district from territory not previously within an existing district, (ii) merge or divide existing districts, (iii) transfer territory from an existing district to another district, (iv) modify or create a district by a combination of the above and (v) relocate or define the boundaries of soil and water conservation districts in the manner hereinafter prescribed.</section>
+    <section prefix="B">An incorporated town within any county having a soil and water conservation district shall be a part of that district. If a town lies within the boundaries of more than one county, it shall be considered to be wholly within the county in which the larger portion of the town lies.</section>
+  </text>
+  <refers_to>
+    <reference>8.2-402</reference>
+    <reference>8.2-403</reference>
+  </refers_to>
+  <referred_to_by>
+    <reference>10.1-560</reference>
+    <reference>24.2-506</reference>
+    <reference>58.1-609.1</reference>
+  </referred_to_by>
+  <structure>
+    <unit label="title" identifier="10.1" level="1">Conservation</unit>
+    <unit label="chapter" identifier="5" level="2">Soil and Water Conservation</unit>
+  </structure>
+</law>
