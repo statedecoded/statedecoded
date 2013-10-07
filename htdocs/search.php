@@ -30,25 +30,6 @@ $content = new Content();
 $content->set('browser_title', 'Search');
 $content->set('page_title', 'Search');
 
-// Move this into sitewide CSS
-$content->set('inline_css', '
-	<style>
-		ul#paging {
-			margin: 0 auto;
-			text-align: center;
-		}
-		ul#paging li {
-			display: inline;
-			list-style-type: none;
-		}
-				margin-left: 1em;
-			}
-		form input[type=text] {
-			width: 70%;
-			margin-right: 5%;
-		}
-	</style>');
-
 /*
  * Initialize our two primary content variables.
  */
