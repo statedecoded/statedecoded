@@ -33,7 +33,7 @@ class Search
 		{
 			$this->form .= 'value="' . $this->query . '"';
 		}
-		$this->form .= ' size="50" />';
+		$this->form .= ' />';
 		
 		/*
 		 * If we've specified the number of results that we want to display per page, instead of
