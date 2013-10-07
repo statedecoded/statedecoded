@@ -41,7 +41,6 @@ $content->set('inline_css', '
 			display: inline;
 			list-style-type: none;
 		}
-			ul#paging li + li {
 				margin-left: 1em;
 			}
 		form input[type=text] {
@@ -227,8 +226,22 @@ if (!empty($_GET['q']))
 			{
 				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
 			}
+			
+			/*
+			 * Display this law's structural ancestry.
+			 */
+			$body .= '<div class="breadcrumbs"><ul>';
+			$ancestry = explode('/', $result->structure);
+			foreach ($ancestry as $structure)
+			{
+				$body .= '<li><a>' . $structure . '</a></li>';
+			}
+			$body .= '</ul></div>';
+			
+			// include breadcrumbs (class "breadcrumb")
+			//     [structure] => Agriculture, Animal Care, and Food/Milk, Milk Products, and Dairies
+			
 			$body .= '</div></li>';
-// include breadcrumbs (class "breadcrumb")
 		
 		}
 		
