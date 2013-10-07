@@ -435,7 +435,12 @@ class Structure
 		{
 			return FALSE;
 		}
-
+		
+		/*
+		 * Instantiate the object we'll use to store and return the list of child structures.
+		 */
+		$children = new stdClass();
+		
 		/*
 		 * Return the result as an object, built up as we loop through the results.
 		 */
