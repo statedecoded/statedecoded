@@ -71,6 +71,22 @@ else
 }
 
 # Create a new instance of the class that handles information about individual laws.
+/*
+ * If the request is for the structural units sorted by a specific criteria.
+ */
+if (isset($args['sort']))
+{
+
+	/*
+	 * Explicitly reassign the external value to an internal one, for safety's sake.
+	 */
+	if ($args['sort'] == 'views')
+	{
+		$order_by = 'views';
+	}
+	
+}
+
 $struct = new Structure();
 
 
@@ -86,6 +102,10 @@ if ($response === false)
 }
 
 # List all child structural units.
+/*
+ * List all child structural units.
+ */
+$struct->order_by = $order_by;
 $response->children = $struct->list_children();
 
 # List all laws.
