@@ -209,7 +209,7 @@ if (!empty($_GET['q']))
 			}
 			
 			/*
-			 * Display this law's structural ancestry.
+			 * Display this law's structural ancestry as a breadcrumb trail.
 			 */
 			$body .= '<div class="breadcrumbs"><ul>';
 			$ancestry = explode('/', $result->structure);
@@ -219,9 +219,9 @@ if (!empty($_GET['q']))
 			}
 			$body .= '</ul></div>';
 			
-			// include breadcrumbs (class "breadcrumb")
-			//     [structure] => Agriculture, Animal Care, and Food/Milk, Milk Products, and Dairies
-			
+			/*
+			 * End the display of this single result.
+			 */
 			$body .= '</div></li>';
 		
 		}
