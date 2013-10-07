@@ -114,7 +114,7 @@ class Search
 			 */
 			if ($this->per_page <> 10)
 			{
-				$url .= '&amp;per_page=' . $this->per_page;
+				$url .= '&amp;num=' . $this->per_page;
 			}
 			
 			/*
