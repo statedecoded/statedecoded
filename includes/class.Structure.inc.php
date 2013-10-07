@@ -370,16 +370,44 @@ class Structure
 		 * only repealed (that is, unlisted) laws.
 		 */
 		$sql = 'SELECT structure_unified.*,
-				permalinks.url, permalinks.token
+				permalinks.url, permalinks.token';
+		
+		/*
+		 * If we're ordering by views, select that data.
+		 */
+		if ( isset($this->order_by) && ($this->order_by == 'views') )
+		{
+			$sql .= ', COUNT( laws_views.id ) AS view_count';
+		}
+		
+		$sql .= '
 				FROM structure
 				LEFT JOIN structure_unified
 					ON structure.id = structure_unified.s1_id
 				LEFT JOIN permalinks
 					ON structure.id = permalinks.relational_id and
 					object_type = :object_type';
+		
+		/*
+		 * If we're ordering children by views, we need to join the structural table to the
+		 * laws_views table.
+		 */
+		if ( isset($this->order_by) && ($this->order_by == 'views') )
+		{
+			$sql .= '	LEFT JOIN laws
+							ON structure.id = laws.structure_id
+						LEFT JOIN laws_views
+							ON laws.section = laws_views.section';
+		}
+		
 		$sql_args = array(
 			':object_type' => 'structure'
 		);
+		
+		/*
+		 * If a structural ID hasn't been provided, then this request is for the root node -- that
+		 * is, the top level of the legal code.
+		 */
 		if (!isset($this->id))
 		{
 			$sql .= ' WHERE structure.parent_id IS NULL';
@@ -405,11 +433,25 @@ class Structure
 			}
 
 		}
-
+		
 		/*
-		 * Order these by the order_by column, which may or may not be populated.
+		 * If we're sorting children by views, we need to insert a GROUP BY and ORDER BY statement
+		 * here.
 		 */
-		$sql .= ' ORDER BY structure.order_by ASC, ';
+		if ( isset($this->order_by) && ($this->order_by == 'views') )
+		{
+			$sql .= '	GROUP BY structure.id
+						ORDER BY view_count DESC, structure.order_by ASC, ';
+		}
+		
+		/*
+		 * Otherwise, by default, order children by the order_by column, which may or may not be
+		 * populated.
+		 */
+		else
+		{
+			$sql .= ' ORDER BY structure.order_by ASC, ';
+		}
 
 		/*
 		 * In case the order_by column is not populated, we go on to sort by the structure
@@ -424,7 +466,7 @@ class Structure
 			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
-
+		
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -455,9 +497,18 @@ class Structure
 			$child->label = $child->s1_label;
 			$child->name = $child->s1_name;
 			$child->identifier = $child->s1_identifier;
-
+			
+			/*
+			 *We don't need to display the aggregate view count -- we only use that for sorting.
+			 */
+			unset($child->view_count);
+			
+			/*
+			 * Append this child to our list.
+			 */
 			$children->$i = $child;
 			$i++;
+			
 		}
 
 		return $children;
