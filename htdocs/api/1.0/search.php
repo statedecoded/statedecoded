@@ -170,11 +170,27 @@ foreach ($search_results as $document)
 	$snippet = $highlighted->getResult($document->id);
 	if ($snippet != FALSE)
 	{
+		
+		/*
+		 * Build the snippet up from the snippet object.
+		 */
 		foreach ($snippet as $field => $highlight)
 		{
 			$response->results->{$i}->excerpt .= strip_tags( implode(' ... ', $highlight) )
 				. ' ... ';
 		}
+		
+		/*
+		 * Use an appropriate closing ellipsis.
+		 */
+		if (substr($response->results->{$i}->excerpt, -6) == '. ... ')
+		{
+			$response->results->{$i}->excerpt = substr($response->results->{$i}->excerpt, 0, -6)
+				. '....';
+		}
+		
+		$response->results->{$i}->excerpt = trim($response->results->{$i}->excerpt);
+		
 	}
 	
 	/*
