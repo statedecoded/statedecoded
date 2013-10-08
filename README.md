@@ -3,7 +3,7 @@
 A free, open source, PHP- and MySQL-based application to parse and display laws. This project can be seen in action on the under-development [Virginia](http://vacode.org/), [Maryland](http://marylandcode.org/), or [Florida](http://www.sunshinestatutes.com/) sites.
 
 ## Documentation
-Project documentation can be found at [statedecoded.github.com/documentation](http://statedecoded.github.com/documentation/). It is [its own GitHub project](http://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](http://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it.
+Project documentation can be found at [statedecoded.github.io/documentation](http://statedecoded.github.io/documentation/). It is [its own GitHub project](http://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](http://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it.
 
 ## Notes
 This is a *pre-1.0 release*, which is to say that it is an incompete product. A capable PHP developer who is familiar and comfortable with her state legal code should be able to wrangle their laws into this release with a couple of hours of work. All others should wait for v1.0.
