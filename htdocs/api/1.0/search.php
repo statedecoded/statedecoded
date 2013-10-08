@@ -85,19 +85,29 @@ if (!isset($args['term']) || empty($args['term']))
 $term = filter_var($args['term'], FILTER_SANITIZE_STRING);
 
 /*
- * Determine how verbose the search results should be.
+ * Determine if the search results should display detailed information about each law.
  */
-if (!isset($_GET['verbose']) || empty($_GET['verbose']))
+if (!isset($_GET['detailed']) || empty($_GET['detailed']))
 {
-	$verbose = TRUE;
+	$detailed = FALSE;
 }
 else
 {
-	$verbose = filter_var($_GET['verbose'], FILTER_SANITIZE_STRING);
-	if ( ($verbose != TRUE) && ($verbose != FALSE) )
+
+	$detailed = filter_var($_GET['detailed'], FILTER_SANITIZE_STRING);
+	if ($detailed == "true")
 	{
-		$verbose = FALSE;
+		$detailed = TRUE;
 	}
+	elseif ($detailed != "false")
+	{
+		$detailed = FALSE;
+	}
+	else
+	{
+		$detailed = FALSE;
+	}
+	
 }
 
 /*
@@ -196,7 +206,7 @@ foreach ($search_results as $document)
 	/*
 	 * At the default level of verbosity, just give the data indexed by Solr, plus the URL.
 	 */
-	if ($verbose === FALSE)
+	if ($detailed === FALSE)
 	{
 		
 		/*
