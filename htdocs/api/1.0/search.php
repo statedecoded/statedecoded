@@ -85,6 +85,22 @@ if (!isset($args['term']) || empty($args['term']))
 $term = filter_var($args['term'], FILTER_SANITIZE_STRING);
 
 /*
+ * Determine how verbose the search results should be.
+ */
+if (!isset($_GET['verbose']) || empty($_GET['verbose']))
+{
+	$verbose = TRUE;
+}
+else
+{
+	$verbose = filter_var($_GET['verbose'], FILTER_SANITIZE_STRING);
+	if ( ($verbose != TRUE) && ($verbose != FALSE) )
+	{
+		$verbose = FALSE;
+	}
+}
+
+/*
  * Intialize Solarium.
  */
 Solarium_Autoloader::register();
@@ -129,9 +145,21 @@ if (count($search_results) == 0)
 }
 
 /*
- * If we have results, iterate through them and include them in our output.
+ * If we have results.
+ */
+ 
+/*
+ * Instantiate the Law class.
  */
 $law = new Law;
+
+/*
+ * Save an array of the legal code's structure, which we'll use to properly identify the structural
+ * data returned by Solr. We hack off the last element of the array, since that identifies the laws
+ * themselves, not a structural unit.
+ */
+$code_structures = array_slice(explode(',', STRUCTURE), 0, -1);
+
 $i=0;
 foreach ($search_results as $document)
 {
@@ -144,19 +172,39 @@ foreach ($search_results as $document)
 	{
 		foreach ($snippet as $field => $highlight)
 		{
-			$response->results->{$i}->excerpt .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight) )
+			$response->results->{$i}->excerpt .= strip_tags( implode(' ... ', $highlight) )
 				. ' ... ';
 		}
 	}
 	
 	/*
-	 * Store the relevant fields within the response we'll send.
+	 * At the default level of verbosity, just give the data indexed by Solr, plus the URL.
 	 */
-	$response->results->{$i}->section_number = $document->section;
-	$response->results->{$i}->catch_line = $document->catch_line;
-	$response->results->{$i}->text = $document->text;
-	$response->results->{$i}->url = $law->get_url($document->section);
-	$response->results->{$i}->score = $document->score;
+	if ($verbose === FALSE)
+	{
+		
+		/*
+		 * Store the relevant fields within the response we'll send.
+		 */
+		$response->results->{$i}->section_number = $document->section;
+		$response->results->{$i}->catch_line = $document->catch_line;
+		$response->results->{$i}->text = $document->text;
+		$response->results->{$i}->url = $law->get_url($document->section);
+		$response->results->{$i}->score = $document->score;
+		$response->results->{$i}->ancestry = (object) array_combine($code_structures, explode('/', $document->structure));
+	
+	}
+	
+	/*
+	 * At a higher level of verbosity, replace the data indexed by Solr with the data provided
+	 * by Law::get_law(), at *its* default level of verbosity.
+	 */
+	else
+	{
+		$law->section_number = $document->section;
+		$response->results->{$i} = $law->get_law();	
+	}
+	
 	$i++;
 	
 }
