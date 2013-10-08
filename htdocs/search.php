@@ -193,11 +193,22 @@ if (!empty($_GET['q']))
 			$snippet = $highlighted->getResult($result->id);
 			if ($snippet != FALSE)
 			{
+			
 				foreach ($snippet as $field => $highlight)
 				{
 					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
-						. ' [.&thinsp;.&thinsp;.] ';
+						. ' .&thinsp;.&thinsp;. ';
 				}
+						
+				/*
+				 * Use an appropriate closing ellipsis.
+				 */
+				if (substr($body, -22) == '. .&thinsp;.&thinsp;. ')
+				{
+					$body = substr($body, 0, -22) . '.&thinsp;.&thinsp;.&thinsp;.';
+				}
+				$body = trim($body);
+				
 			}
 			
 			/*
