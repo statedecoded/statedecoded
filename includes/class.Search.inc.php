@@ -33,7 +33,7 @@ class Search
 		{
 			$this->form .= 'value="' . $this->query . '"';
 		}
-		$this->form .= ' size="50" />';
+		$this->form .= ' />';
 		
 		/*
 		 * If we've specified the number of results that we want to display per page, instead of
@@ -114,7 +114,7 @@ class Search
 			 */
 			if ($this->per_page <> 10)
 			{
-				$url .= '&amp;per_page=' . $this->per_page;
+				$url .= '&amp;num=' . $this->per_page;
 			}
 			
 			/*

@@ -30,4 +30,21 @@
     }
 
   }
+  
+  ul#paging {
+    margin: 0 auto;
+    text-align: center;
+  }
+    li {
+      display: inline;
+      list-style-type: none;
+    }
+    li + li {
+	  margin-left: 1em;
+    }
+  form input[type=text] {
+    width: 70%;
+    margin-right: 5%;
+  }
+  
 }

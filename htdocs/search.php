@@ -30,26 +30,6 @@ $content = new Content();
 $content->set('browser_title', 'Search');
 $content->set('page_title', 'Search');
 
-// Move this into sitewide CSS
-$content->set('inline_css', '
-	<style>
-		ul#paging {
-			margin: 0 auto;
-			text-align: center;
-		}
-		ul#paging li {
-			display: inline;
-			list-style-type: none;
-		}
-			ul#paging li + li {
-				margin-left: 1em;
-			}
-		form input[type=text] {
-			width: 70%;
-			margin-right: 5%;
-		}
-	</style>');
-
 /*
  * Initialize our two primary content variables.
  */
@@ -227,8 +207,22 @@ if (!empty($_GET['q']))
 			{
 				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
 			}
+			
+			/*
+			 * Display this law's structural ancestry as a breadcrumb trail.
+			 */
+			$body .= '<div class="breadcrumbs"><ul>';
+			$ancestry = explode('/', $result->structure);
+			foreach ($ancestry as $structure)
+			{
+				$body .= '<li><a>' . $structure . '</a></li>';
+			}
+			$body .= '</ul></div>';
+			
+			/*
+			 * End the display of this single result.
+			 */
 			$body .= '</div></li>';
-// include breadcrumbs (class "breadcrumb")
 		
 		}
 		
