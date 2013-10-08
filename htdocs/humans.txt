@@ -1,0 +1,32 @@
+/* TEAM */
+
+    Lead Developer: Waldo Jaquith
+    Twitter: @waldojaquith
+
+    Developer: Bill Hunt
+    Twitter: @krues8dr
+
+    Designer/Front-end Developer: John Athayde
+    Company: Meticulous
+    Twitter: @boboroshi
+
+    Front-end Developer: Lynn Wallenstein
+    Twitter: @lynnwallenstein
+
+    Solr Developer: Doug Turnbull
+    Company: OpenSource Connections, Inc.
+    Twitter: @softwaredoug
+
+    Solr Developer: John Berryman
+    Company: OpenSource Connections, Inc.
+    Twitter: @JnBrymn
+
+/* THANKS */
+
+	Project Funder: The John S. and James L. Knight Foundation News Challenge
+	URL: https://www.newschallenge.org/
+
+/* TECHNOLOGY COLOPHON */
+
+    HTML5, CSS3
+    jQuery, Modernizr

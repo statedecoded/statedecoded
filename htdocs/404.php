@@ -5,7 +5,7 @@
  * This file is only meant to be included within other files. As a result, it lacks the preamble
  * of includes, etc., since those will have already been done in the files within which this is
  * invoked.
- * 
+ *
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
@@ -18,15 +18,15 @@
  */
 
 /*
- * Fire up our templating engine.
+ * Create a container for our content.
  */
-$template = new Page;
+$content = new Content();
 
 /*
  * Define some page elements.
  */
-$template->field->browser_title = '404, Not Found';
-$template->field->page_title = '404, Not Found';
+$content->set('browser_title', '404, Not Found');
+$content->set('page_title', '404, Not Found');
 
 /*
  * Send a 404 header to the browser.
@@ -50,11 +50,21 @@ solutions to the problem:</p>
 /*
  * Put the shorthand $body variable into its proper place.
  */
-$template->field->body = $body;
+$content->set('body', $body);
 unset($body);
 
-/* 
+/*
+ * Add the custom classes to the body.
+ */
+$content->set('body_class', 'law inside');
+
+/*
+ * Fire up our templating engine.
+ */
+$template = Template::create();
+
+/*
  * Parse the template, which is a shortcut for a few steps that culminate in sending the content
  * to the browser.
  */
-$template->parse();
+$template->parse($content);

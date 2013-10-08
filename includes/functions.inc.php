@@ -20,11 +20,12 @@ function __autoload_libraries($class_name)
 {
 
 	$filename = 'class.' . $class_name . '.inc.php';
-	if ((include_once INCLUDE_PATH . '/' . $filename) === FALSE)
+	if (file_exists(INCLUDE_PATH . $filename) == TRUE)
 	{
-		throw new Exception("Could not include `$filename'.");
+		$result = include_once $filename;
 	}
-	
+	return;
+
 }
 spl_autoload_register('__autoload_libraries');
 
@@ -57,7 +58,7 @@ function fetch_url($url)
 	$html = curl_exec($ch);
 	curl_close($ch);
 	return $html;
-	
+
 }
 
 
@@ -88,19 +89,19 @@ function json_error($text)
 		)
 	);
 	$error = json_encode($error);
-	
+
 	/*
 	 * Return a 400 "Bad Request" error. This indicates that the request was invalid. Whether this
 	 * is the best HTTP header is unclear.
 	 */
 	header("HTTP/1.0 400 OK");
-	
+
 	/*
 	 * Send an HTTP header defining the content as JSON.
 	 */
 	header('Content-type: application/json');
 	echo $error;
-	
+
 }
 
 
@@ -148,12 +149,14 @@ function sort_by_length($a, $b)
  * @param string $text The text to be formatted
  * @return string The string replaced with html entities
  */
-function wptexturize($text) {
+function wptexturize($text)
+{
 	global $wp_cockneyreplace;
 	//static $opening_quote, $closing_quote, $default_no_texturize_tags, $default_no_texturize_shortcodes, $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements;
 
 	// No need to set up these static variables more than once
-	if ( empty( $opening_quote ) ) {
+	if ( empty( $opening_quote ) )
+	{
 		/* translators: opening curly quote */
 		$opening_quote = '“';
 		/* translators: closing curly quote */
@@ -163,10 +166,14 @@ function wptexturize($text) {
 		$default_no_texturize_shortcodes = array('code');
 
 		// if a plugin has provided an autocorrect array, use it
-		if ( isset($wp_cockneyreplace) ) {
+		if ( isset($wp_cockneyreplace) )
+		{
 			$cockney = array_keys($wp_cockneyreplace);
 			$cockneyreplace = array_values($wp_cockneyreplace);
-		} else {
+		}
+
+		else
+		{
 			$cockney = array("'tain't","'twere","'twas","'tis","'twill","'til","'bout","'nuff","'round","'cause");
 			$cockneyreplace = array("’tain’t","’twere","’twas","’tis","’twill","’til","’bout","’nuff","’round","’cause");
 		}
@@ -188,17 +195,25 @@ function wptexturize($text) {
 
 	$textarr = preg_split('/(<.*>|\[.*\])/Us', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-	foreach ( $textarr as &$curl ) {
+	foreach ( $textarr as &$curl )
+	{
 		if ( empty( $curl ) )
 			continue;
 
 		// Only call _wptexturize_pushpop_element if first char is correct tag opening
 		$first = $curl[0];
-		if ( '<' === $first ) {
+		if ( '<' === $first )
+		{
 			_wptexturize_pushpop_element($curl, $no_texturize_tags_stack, $no_texturize_tags, '<', '>');
-		} elseif ( '[' === $first ) {
+		}
+
+		elseif ( '[' === $first )
+		{
 			_wptexturize_pushpop_element($curl, $no_texturize_shortcodes_stack, $no_texturize_shortcodes, '[', ']');
-		} elseif ( empty($no_texturize_shortcodes_stack) && empty($no_texturize_tags_stack) ) {
+		}
+
+		elseif ( empty($no_texturize_shortcodes_stack) && empty($no_texturize_tags_stack) )
+		{
 			// This is not a tag, nor is the texturization disabled static strings
 			$curl = str_replace($static_characters, $static_replacements, $curl);
 			// regular expressions
@@ -223,11 +238,15 @@ function wptexturize($text) {
  * @param string $opening Tag closing  character
  * @return object
  */
-function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $opening = '<', $closing = '>') {
+function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $opening = '<', $closing = '>')
+{
 	// Check if it is a closing tag -- otherwise assume opening tag
-	if (strncmp($opening . '/', $text, 2)) {
+	if (strncmp($opening . '/', $text, 2))
+	{
+
 		// Opening? Check $text+1 against disabled elements
-		if (preg_match('/^' . $disabled_elements . '\b/', substr($text, 1), $matches)) {
+		if (preg_match('/^' . $disabled_elements . '\b/', substr($text, 1), $matches))
+		{
 			/*
 			 * This disables texturize until we find a closing tag of our type
 			 * (e.g. <pre>) even if there was invalid nesting before that
@@ -238,113 +257,93 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 
 			array_push($stack, $matches[1]);
 		}
-	} else {
+	}
+
+	else
+	{
 		// Closing? Check $text+2 against disabled elements
 		$c = preg_quote($closing, '/');
-		if (preg_match('/^' . $disabled_elements . $c . '/', substr($text, 2), $matches)) {
+		if (preg_match('/^' . $disabled_elements . $c . '/', substr($text, 2), $matches))
+		{
 			$last = array_pop($stack);
 
 			// Make sure it matches the opening tag
 			if ($last != $matches[1])
+			{
 				array_push($stack, $last);
-		}
-	}
-}
-
-/**
- * Replaces double line-breaks with paragraph elements.
- *
- * A group of regex replaces used to identify text formatted with newlines and
- * replace double line-breaks with HTML paragraph tags. The remaining
- * line-breaks after conversion become <<br />> tags, unless $br is set to '0'
- * or 'false'.
- *
- * @since 0.71
- *
- * @param string $pee The text which has to be formatted.
- * @param bool $br Optional. If set, this will convert all remaining line-breaks after paragraphing. Default true.
- * @return string Text which has been converted into correct paragraph tags.
- */
-function wpautop($pee, $br = true) {
-	$pre_tags = array();
-
-	if ( trim($pee) === '' )
-		return '';
-
-	$pee = $pee . "\n"; // just to make things a little easier, pad the end
-
-	if ( strpos($pee, '<pre') !== false ) {
-		$pee_parts = explode( '</pre>', $pee );
-		$last_pee = array_pop($pee_parts);
-		$pee = '';
-		$i = 0;
-
-		foreach ( $pee_parts as $pee_part ) {
-			$start = strpos($pee_part, '<pre');
-
-			// Malformed html?
-			if ( $start === false ) {
-				$pee .= $pee_part;
-				continue;
 			}
-
-			$name = "<pre wp-pre-tag-$i></pre>";
-			$pre_tags[$name] = substr( $pee_part, $start ) . '</pre>';
-
-			$pee .= substr( $pee_part, 0, $start ) . $name;
-			$i++;
 		}
-
-		$pee .= $last_pee;
 	}
-
-	$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
-	// Space things out a little
-	$allblocks = '(?:table|thead|tfoot|caption|col|colgroup|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|select|option|form|map|area|blockquote|address|math|style|p|h[1-6]|hr|fieldset|noscript|samp|legend|section|article|aside|hgroup|header|footer|nav|figure|figcaption|details|menu|summary)';
-	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
-	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
-	$pee = str_replace(array("\r\n", "\r"), "\n", $pee); // cross-platform newlines
-	if ( strpos($pee, '<object') !== false ) {
-		$pee = preg_replace('|\s*<param([^>]*)>\s*|', "<param$1>", $pee); // no pee inside object/embed
-		$pee = preg_replace('|\s*</embed>\s*|', '</embed>', $pee);
-	}
-	$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
-	// make paragraphs, including one at the end
-	$pees = preg_split('/\n\s*\n/', $pee, -1, PREG_SPLIT_NO_EMPTY);
-	$pee = '';
-	foreach ( $pees as $tinkle )
-		$pee .= '<p>' . trim($tinkle, "\n") . "</p>\n";
-	$pee = preg_replace('|<p>\s*</p>|', '', $pee); // under certain strange conditions it could create a P of entirely whitespace
-	$pee = preg_replace('!<p>([^<]+)</(div|address|form)>!', "<p>$1</p></$2>", $pee);
-	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee); // don't pee all over a tag
-	$pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee); // problem with nested lists
-	$pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee);
-	$pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
-	$pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
-	$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
-	if ( $br ) {
-		$pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', '_autop_newline_preservation_helper', $pee);
-		$pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee); // optionally make line breaks
-		$pee = str_replace('<WPPreserveNewline />', "\n", $pee);
-	}
-	$pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*<br />!', "$1", $pee);
-	$pee = preg_replace('!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $pee);
-	$pee = preg_replace( "|\n</p>$|", '</p>', $pee );
-
-	if ( !empty($pre_tags) )
-		$pee = str_replace(array_keys($pre_tags), array_values($pre_tags), $pee);
-
-	return $pee;
 }
 
 /**
- * Newline preservation help function for wpautop
- *
- * @since 3.1.0
- * @access private
- * @param array $matches preg_replace_callback matches array
- * @return string
+ * Check that a file is available and safe to use
+ * Throws catchable exceptions if not.
+ * Optionally check if the file is writable.
  */
-function _autop_newline_preservation_helper( $matches ) {
-	return str_replace("\n", "<WPPreserveNewline />", $matches[0]);
+function check_file_available($filename, $writable=false)
+{
+	if (!file_exists($filename))
+	{
+		throw new Exception('File does not exist. "' .
+			$filename . '"');
+		return false;
+	}
+	elseif (!is_file($filename))
+	{
+		throw new Exception('File does not exist. "' .
+			$filename . '"');
+		return false;
+	}
+	elseif (!is_readable($filename))
+	{
+		throw new Exception('File is not readable: "' .
+			$filename . '"');
+		return false;
+	}
+	elseif ($writable && !is_writable($filename))
+	{
+		throw new Exception('File is not writable: "' .
+			$filename . '"');
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+/**
+ * Check that a directory is available and safe to use
+ * Throws catchable exceptions if not.
+ * Optionally check if the directory is writable.
+ */
+function check_dir_available($dirname, $writable=false)
+{
+	if (!file_exists($dirname))
+	{
+		throw new Exception('Directory does not exist. "' .
+			$dirname . '"');
+		return false;
+	}
+	elseif (!is_dir($dirname))
+	{
+		throw new Exception('Directory does not exist. "' .
+			$dirname . '"');
+		return false;
+	}
+	elseif (!is_readable($dirname))
+	{
+		throw new Exception('Directory is not readable: "' .
+			$dirname . '"');
+		return false;
+	}
+	elseif ($writable && !is_writable($dirname))
+	{
+		throw new Exception('Directory is not writable: "' .
+			$dirname . '"');
+		return false;
+	}
+	else {
+		return true;
+	}
 }

@@ -14,26 +14,23 @@
 */
 
 /*
- * Include the PHP declarations that drive this page.
- */
-require '../includes/page-head.inc.php';
-
-/*
  * Create a new instance of Law.
  */
 $laws = new Law();
 
 /*
- * Use the section number in the URL as the section number that we're looking up.
+ * Use the id passed to lookup the law
  */
-$laws->section_number = urldecode($_GET['section_number']);
+if ( isset($args['relational_id']) )
+{
+	$laws->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+	/*
+	 * Retrieve a copy of the law.
+	 */
+	$law = $laws->get_law();
+}
 
-/*
- * Retrieve a copy of the law.
- */
-$law = $laws->get_law();
-
-if ($law === FALSE)
+if (!isset($law) || $law === FALSE)
 {
 	send_404();
 }
@@ -48,17 +45,17 @@ $laws->record_view();
  */
 if (isset($_GET['plain_text']))
 {
-	
+
 	/*
 	 * Instruct the browser that this is plain text.
 	 */
 	header("Content-Type: text/plain");
-		
+
 	/*
 	 * Send the text, which is already formatted properly.
 	 */
 	echo $law->plain_text;
-	
+
 	/*
 	 * End processing and exit.
 	 */
@@ -66,67 +63,71 @@ if (isset($_GET['plain_text']))
 }
 
 /*
- * Fire up our templating engine.
+ * Create a container for our content.
  */
-$template = new Page;
+$content = new Content();
 
 /*
  * Make some section information available globally to JavaScript.
  */
-$template->field->javascript = "var section_number = '".$law->section_number."';";
-$template->field->javascript .= "var section_id = '".$law->section_id."';";
-$template->field->javascript .= "var api_key = '".API_KEY."';";
-
-$template->field->javascript_files = '
-	<script src="/js/jquery.qtip.min.js"></script>
-	<script src="/js/jquery.slideto.min.js"></script>
-	<script src="/js/jquery.color-2.1.1.min.js"></script>
-	<script src="/js/mousetrap.min.js"></script>
-	<script src="/js/jquery.zclip.min.js"></script>
-	<script src="/js/functions.js"></script>';
+$content->set('javascript', "var section_number = '" . $law->section_number . "';");
+$content->append('javascript', "var section_id = '" . $law->section_id . "';");
+$content->append('javascript', "var api_key = '" . API_KEY . "';");
 
 /*
  * Define the browser title.
  */
-$template->field->browser_title = $law->catch_line.' ('.SECTION_SYMBOL.' '.$law->section_number.')—'.SITE_TITLE;
+$content->set('browser_title', $law->catch_line . ' (' . SECTION_SYMBOL . ' '
+	. $law->section_number . ')—' . SITE_TITLE);
 
 /*
  * Define the page title.
  */
-$template->field->page_title = SECTION_SYMBOL.'&nbsp;'.$law->section_number.' '.$law->catch_line;
+$content->set('page_title', '<h1>' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</h1>');
+$content->append('page_title', '<h2>' . $law->catch_line . '</h2>');
 
 /*
- * If we have Dublin Core metadata, then display it.
+ * If we have Dublin Core metadata, display it.
  */
 if (is_object($law->dublin_core))
 {
-	$template->field->meta_tags = '';
+	$content->set('meta_tags', '');
 	foreach ($law->dublin_core AS $name => $value)
 	{
-		$template->field->meta_tags .= '<meta name="DC.'.$name.'" content="' . $value . '" />';
+		$content->append('meta_tags', '<meta name="DC.' . $name . '" content="' . $value . '" />');
 	}
 }
 
 /*
  * Define the breadcrumb trail text.
  */
-$template->field->breadcrumbs = '';
+$content->set('breadcrumbs', '');
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$template->field->breadcrumbs .= '<a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
-		.$ancestor->name.'</a> → ';
+	$content->append('breadcrumbs', '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
+		.$ancestor->name.'</a></li>');
 }
-$template->field->breadcrumbs .= '<a href="/'.$law->section_number.'/">§&nbsp;'.$law->section_number
-	.' '.$law->catch_line.'</a>';
+$content->append('breadcrumbs', '<li class="active"><a href="/'.$law->section_number.'/">§&nbsp;' .
+	 $law->section_number.' '.$law->catch_line.'</a></li>');
+
+$content->prepend('breadcrumbs', '<nav class="breadcrumbs"><ul class="steps-nav">');
+$content->append('breadcrumbs', '</ul></nav>');
 
 /*
  * If there is a prior section in this structural unit, provide a back arrow.
  */
 if (isset($law->previous_section))
 {
-	$template->field->breadcrumbs = '<a href="'.$law->previous_section->url.'" class="prev"
-		title="Previous section">←</a>&nbsp;'.$template->field->breadcrumbs;
-	$template->field->link_rel .= '<link rel="prev" title="Previous" href="'.$law->previous_section->url.'" />';
+	$content->set('prev_next', '<li><a href="' . $law->previous_section->url .
+		'" class="prev" title="Previous section"><span>&larr; Previous</span>' .
+		$law->previous_section->section_number . ' ' .
+		$law->previous_section->catch_line . '</a></li>');
+	$content->append('link_rel', '<link rel="prev" title="Previous" href="' .
+		$law->previous_section->url . '" />');
+}
+else
+{
+	$content->set('prev_next', '<li></li>');
 }
 
 /*
@@ -134,15 +135,25 @@ if (isset($law->previous_section))
  */
 if (isset($law->next_section))
 {
-	$template->field->breadcrumbs .= '&nbsp;<a href="'.$law->next_section->url.'" class="next"
-		title="Next section">→</a>';
-	$template->field->link_rel .= '<link rel="next" title="Next" href="'.$law->next_section->url.'" />';
+	$content->append('prev_next', '<li><a href="' . $law->next_section->url .
+		'" class="next" title="Next section"><span>Next &rarr;</span>' .
+		$law->next_section->section_number . ' ' .
+		$law->next_section->catch_line . '</a></li>');
+	$content->append('link_rel', '<link rel="next" title="Next" href="' . $law->next_section->url . '" />');
 }
+else
+{
+	$content->append('prev_next', '<li></li>');
+}
+
+$content->set('heading', '<nav class="prevnext" role="navigation"><ul>' .
+	$content->get('prev_next') . '</ul></nav><nav class="breadcrumbs" role="navigation">' .
+	$content->get('breadcrumbs') . '</nav>');
 
 /*
  * Store the URL for the containing structural unit.
  */
-$template->field->link_rel .= '<link rel="up" title="Up" href="'.$law->ancestry->{1}->url.'" />';
+$content->append('link_rel', '<link rel="up" title="Up" href="' . $law->ancestry->{1}->url . '" />');
 
 /*
  * Start assembling the body of this page by indicating the beginning of the text of the section.
@@ -177,20 +188,19 @@ $body .= '</article>';
 $sidebar = '';
 
 /*
- * Only show the history if the law hasn't been repealed. (If it has been, then the history text
- * generally disappears along with it, meaning that the below code can behave unpredictably.)
+ * Only show the history if the law has a list of amendment years.
  */
-if ( (INCLUDES_REPEALED == TRUE) && (empty($law->repealed) || ($law->repealed !== true)) )
+if ( isset($law->amendment_years) )
 {
 	$sidebar .= '
 			<section id="history-description">
 				<h1>History</h1>
 				<p>
-					This law was first passed in '.reset($law->amendment_years).'.';
+					This law was first passed in ' . reset($law->amendment_years) . '.';
 	if (count((array) $law->amendment_years) > 1)
 	{
 		$sidebar .= ' It was updated in ';
-	
+
 		/*
 		 * Iterate through every year in which this bill has been amended and list them.
 		 */
@@ -232,7 +242,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 		<div id=\"disqus_thread\"></div>
 		<script>
 			var disqus_shortname = '" . DISQUS_SHORTNAME . "'; // required: replace example with your forum shortname
-		
+
 			/* * * DON'T EDIT BELOW THIS LINE * * */
 			(function() {
 				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -244,18 +254,53 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 }
 
 /*
+ * General info
+ */
+$sidebar .= '<section class="info-box" id="elsewhere">
+				<h1>Trust, But Verify</h1>
+				<p>If you’re reading this for anything important, you should double-check its
+				accuracy';
+if (isset($law->official_url))
+{
+	$sidebar .= '—<a href="' . $law->official_url . '">read ' . SECTION_SYMBOL . '&nbsp;'
+		. $law->section_number . ' ';
+}
+$sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
+				</p>
+			</section>';
+
+/*
+ * Start the Masonry.js wrapper
+ */
+$sidebar .= '<div class="grouping js-masonry"
+                  data-masonry-options=\'{
+                    "itemSelector": ".grid-box",
+                    "columnWidth": ".grid-sizer",
+                    "gutter": 10 }\'>';
+
+/*
+ * Get the help text for the requested page.
+ */
+$help = new Help();
+
+// The help text is now available, as a JSON object, as $help->get_text()
+
+$sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>';
+
+
+/*
  * If this section has been cited in any court decisions, list them.
  */
 if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 {
-	$sidebar .= '<section id="court-decisions">
+	$sidebar .= '<section class="grid-box grid-sizer" id="court-decisions">
 				<h1>Court Decisions</h1>
 				<ul>';
 	foreach ($law->court_decisions as $decision)
 	{
-		$sidebar .= '<li><a href="'.$decision->url.'"><em>'.$decision->name.'</em></a> ('
-			.$decision->type_html.', '.date('m/d/y', strtotime($decision->date)).')<br />'
-			.$decision->abstract.'</li>';
+		$sidebar .= '<li><a href="' . $decision->url . '"><em>' . $decision->name . '</em></a> ('
+			. $decision->type_html . ', ' . date('m/d/y', strtotime($decision->date)) . ')<br />'
+			. $decision->abstract . '</li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
@@ -268,13 +313,15 @@ if ($law->references !== FALSE)
 {
 
 	$sidebar .= '
-			<section id="references">
+			<section class="related-group grid-box" id="cross_references">
 				<h1>Cross References</h1>
 				<ul>';
 	foreach ($law->references as $reference)
 	{
-		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$reference->url.'" class="law">'
-			.$reference->section_number.'</a> '.$reference->catch_line.'</li>';
+		$sidebar .= '<li><span class="identifier">'
+			. SECTION_SYMBOL . '&nbsp;<a href="' . $reference->url . '" class="law">'
+			. $reference->section_number . '</a></span>
+			<span class="title">' . $reference->catch_line . '</li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
@@ -285,14 +332,14 @@ if ($law->references !== FALSE)
  */
 if (isset($law->related) && (count((array) $law->related) > 0))
 {
-	$sidebar .= '			  
-			<section id="related-links">
+	$sidebar .= '
+			<section class="related-group grid-box" id="related-links">
 				<h1>Related Laws</h1>
 				<ul id="related">';
 	foreach ($law->related as $related)
 	{
-		$sidebar .= '<li>'.SECTION_SYMBOL.'&nbsp;<a href="'.$related->url.'">'
-			.$related->section_number.'</a> '.$related->catch_line.'</li>';
+		$sidebar .= '<li>' . SECTION_SYMBOL . '&nbsp;<a href="' . $related->url . '">'
+			. $related->section_number . '</a> ' . $related->catch_line . '</li>';
 	}
 	$sidebar .= '
 				</ul>
@@ -304,47 +351,40 @@ if (isset($law->related) && (count((array) $law->related) > 0))
  */
 if ( isset($law->citation) && is_object($law->citation) )
 {
-	
-	$sidebar .= '<section id="cite-as">
+
+	$sidebar .= '<section class="related-group dark grid-box" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';
 	foreach ($law->citation as $citation)
 	{
-		$sidebar .= '<li>'.$citation->label.': <span class="' . strtolower($citation->label) . '">'
-			. $citation->text .'</span></li>';
+		$sidebar .= '<li>' . $citation->label . ': <span class="' . strtolower($citation->label) . '">'
+			. $citation->text . '</span></li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
-	
+
 }
 
-$sidebar .= '<section id="elsewhere">
-				<h1>Trust, But Verify</h1>
-				<p>If you’re reading this for anything important, you should double-check its
-				accuracy';
-if (isset($law->official_url))
-{
-	$sidebar .= '—<a href="'.$law->official_url.'">read '.SECTION_SYMBOL.'&nbsp;'.$law->section_number.' ';
-}
-$sidebar .= ' on the official '.LAWS_NAME.' website</a>.
-			</section>';
-
-$sidebar .= '<section id="keyboard-guide"><a id="keyhelp">'.$help->get_text('keyboard')->title.'</a></section>';
+/*
+ * End Masonry.js wrapper
+ */
+$sidebar .= '</section>';
 
 /*
  * Put the shorthand $body variable into its proper place.
  */
-$template->field->body = $body;
+$content->set('body', $body);
 unset($body);
 
 /*
  * Put the shorthand $sidebar variable into its proper place.
  */
-$template->field->sidebar = $sidebar;
+$content->set('sidebar', $sidebar);
 unset($sidebar);
 
 /*
- * Parse the template, which is a shortcut for a few steps that culminate in sending the content
- * to the browser.
+ * Add the custom classes to the body.
  */
-$template->parse();
+$content->set('body_class', 'law inside');
+$content->set('content_class', 'nest wide');
+

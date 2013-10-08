@@ -1,0 +1,107 @@
+// *****************************************************************************
+// Responsive Design
+// *****************************************************************************
+
+// Breakpoints are:
+// Smartphones Devices: smartphone, smartphone-landscape, smartphone-portrait,  smartphone-hires, smartphone-iphone4
+// Tablets: tablet, tablet-portrait, tablet-landscape, tablet-hires,
+// Laptop/Desktop: TBD
+
+
+// ------------------------------------------------------------------
+//  VARIABLES
+// ------------------------------------------------------------------
+
+$smartphone-width-min: 320px;
+$smartphone-width-max: 768px;
+
+$tablet-width-min: 768px;
+$tablet-width-max: 1024px;
+
+$laptop-netbook-width: 1024px;
+$laptop-width: 1280px;
+$laptop-mac-air-width: 1366px;
+$laptop-mac-15-width: 1680px;
+
+$desktop-hd-monitor: 1920px;
+$desktop-apple-monitor: 2300px;
+
+// ------------------------------------------------------------------
+//  MIXIN
+// ------------------------------------------------------------------
+
+@mixin respond-to($breakpoint) {
+
+  // SMARTPHONES
+  @if $breakpoint == smartphone { // Smartphones (portrait and landscape) : Android, iPhone and Palm Pre
+    @media
+      only screen and (min-device-width : $smartphone-width-min) and (max-device-width : $smartphone-width-max),
+      only screen and (min-width : $smartphone-width-min) and (max-width : $smartphone-width-max)
+      { @content; }
+  }
+  @if $breakpoint == smartphone-landscape { // Smartphones (landscape) : Android, iPhone and Palm Pre
+    $smartphone-width-min-landscape: $smartphone-width-min + 1;
+    @media
+      only screen and (min-width : $smartphone-width-min-landscape)
+      { @content; }
+  }
+  @if $breakpoint == smartphone-portrait { // Smartphones (portrait) : Android, iPhone and Palm Pre
+    @media
+      only screen and (max-width : $smartphone-width-min)
+      { @content; }
+  }
+  @if $breakpoint == smartphone-hires { // Smartphone + HiRes/Retina Screen
+    @media
+      only screen and (-webkit-min-device-pixel-ratio: 2) and (min-width : $smartphone-width-min) and (max-width : $smartphone-width-max),
+      only screen and ( min--moz-device-pixel-ratio: 2) and (min-width : $smartphone-width-min) and (max-width : $smartphone-width-max),
+      only screen and ( -o-min-device-pixel-ratio: 2/1) and (min-width : $smartphone-width-min) and (max-width : $smartphone-width-max),
+      only screen and ( min-device-pixel-ratio: 2)  and (min-width : $smartphone-width-min) and (max-width : $smartphone-width-max),
+      only screen and ( min-resolution: 192dpi) and (min-width : $smartphone-width-min) and (max-width : $smartphone-width-max),
+      only screen and ( min-resolution: 2dppx) and (min-width : $smartphone-width-min) and (max-width : $smartphone-width-max)
+      { @content; }
+  }
+  @if $breakpoint == smartphone-iphone4 { // Smartphone - iPhone 4 Specific
+    @media
+      only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5)
+      { @content; }
+  }
+
+  // TABLETS
+  @if $breakpoint == tablet { // Tablet, iPad
+    @media
+      only screen and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max),
+      only screen and (min-width : $tablet-width-min) and (max-width : $tablet-width-max)
+       { @content; }
+  }
+  @else if $breakpoint == tablet-landscape { // iPads (landscape)
+    @media only screen and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max) and (orientation : landscape)
+    { @content; }
+  }
+  @else if $breakpoint == tablet-portrait { // Tablet, iPads (portrait)
+    @media only screen and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max) and (orientation : portrait)
+    { @content; }
+  }
+  @if $breakpoint == tablet-hires { // Tablet, iPad + Retina
+    @media
+      only screen and (-webkit-min-device-pixel-ratio: 2) and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max),
+      only screen and ( min--moz-device-pixel-ratio: 2) and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max),
+      only screen and ( -o-min-device-pixel-ratio: 2/1) and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max),
+      only screen and ( min-device-pixel-ratio: 2)  and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max),
+      only screen and ( min-resolution: 192dpi) and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max),
+      only screen and ( min-resolution: 2dppx) and (min-device-width : $tablet-width-min) and (max-device-width : $tablet-width-max)
+      { @content; }
+  }
+
+  @if $breakpoint == desktop {
+    @media
+      only screen and (min-width : ($tablet-width-max + 1))
+      { @content; }
+  }
+
+  // PRINT
+  @if $breakpoint == print {
+    @media
+      only print
+      { @content; }
+  }
+}

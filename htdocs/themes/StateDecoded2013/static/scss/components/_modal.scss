@@ -1,0 +1,132 @@
+// *****************************************************************************
+// MODALS
+// *****************************************************************************
+
+$modal-width: 560px;
+$modal-height: 500px;
+
+.modal-open {
+  .dropdown-menu {  z-index: $zindex-drop-down + $zindex-modal; }
+  .dropdown.open { *z-index: $zindex-drop-down + $zindex-modal; }
+  .popover {  z-index: $zindex-popover  + $zindex-modal; }
+  .tooltip  {  z-index: $zindex-tooltip  + $zindex-modal; }
+} // .modal-open
+
+// Background
+.modal-backdrop {
+  opacity: .8;
+  background-color: $black;
+  position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+  z-index: $zindex-modal-backdrop-hidden;
+  // Fade for backdrop
+  &.fade {
+    opacity: 0;
+    &.in {
+       opacity: .8;
+    } // &.in
+  } // fade
+  &.in {
+     z-index: $zindex-modal-backdrop;
+     ~ .modal {
+        z-index: $zindex-modal;
+     }
+  } // in
+} // .modal-backgdrop
+
+// Base Modal
+.modal {
+  background-clip: padding-box;
+  background-color: $white;
+  border: 1px solid $shadow-lighter;
+  border-radius: 6px;
+  box-shadow: 0 3px 7px $shadow-lighter;
+  display: none;
+  left: 50%;
+  margin-left: -($modal-width/2);
+  margin-top: -($modal-height/2);
+  overflow: auto;
+  padding: 10px;
+  position: fixed;
+  top: 50%;
+  width: $modal-width;
+  z-index: $zindex-modal-hidden;
+  &.in {
+    display: block;
+    z-index: $zindex-modal;
+  }
+  &.fade {
+    top: -25%;
+    &.in {
+      top: 50%;
+    } // &.in
+  } // .fade
+
+  .modal-header {
+    background: $gray-lighter;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid $gray-lightest;
+    padding: 9px 15px;
+    text-transform: uppercase;
+    h3 {
+      font-size: $base-font-size * 2;
+      font-weight: normal;
+      line-height: $base-line-height * 2;
+      margin: 0;
+      text-transform: none;
+    } // h3
+    .close {
+      -webkit-appearance: none;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      color: $gray-darkest;
+      cursor: pointer;
+      float: right;
+      font-size: $base-line-height * 2;
+      line-height: $base-line-height * 2;
+      margin-top: 2px;
+      opacity: .7;
+      padding: 0;
+      &:hover {
+        opacity: 1;
+      } // &:hover
+    } // button.close
+  } // .modal-header
+
+  .modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+  } // .modal-body
+
+  // Remove bottom margin if need be
+  .modal-form {
+    margin-bottom: 0;
+  } // .modal-body
+
+  // Footer (for actions)
+  .modal-footer {
+    @extend %clearfix;
+    border-radius: 0 0 6px 6px;
+    background-color: $gray-lightest;
+    border-top: 1px solid #ddd;
+    box-shadow: inset 0 1px 0 $white;
+    margin-bottom: 0;
+    padding: 14px 15px 15px;
+    text-align: right; // right align buttons
+    // Properly space out buttons
+    .btn + .btn {
+      margin-left: 5px;
+      margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
+    } // .btn + .btn
+    // but override that for button groups
+    .btn-group .btn + .btn {
+      margin-left: -1px;
+    } // .btn-group .btn + .btn
+  } // modal-footer
+
+} // modal

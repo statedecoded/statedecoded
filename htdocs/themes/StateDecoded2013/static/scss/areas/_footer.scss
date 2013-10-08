@@ -1,0 +1,96 @@
+#container {
+  min-height: 100%;
+  position: relative;
+}
+
+.lt-ie7 #container {
+  height: 100%;
+}
+
+footer#page_footer {
+  @extend %clearfix;
+  clear: both;
+  background-color: $gray-darkest;
+  color: $gray;
+  font-family: $statedecoded-stack3;
+  height: 150px;
+  margin-top: 20px;
+  overflow: hidden;
+  position: absolute;
+    bottom: 0;
+  width: 100%;
+  @include respond-to(smartphone) {
+    padding: 0 10px;
+  }
+  @include respond-to(tablet) {
+    padding: 0 10px;
+  }
+
+  @include respond-to(print) {
+    position: relative;
+  }
+  p {
+    font-size: 75%;
+
+    a {
+      color: $white-off;
+    } // a
+
+    &.downloads {
+      width: 20%;
+
+      @include respond-to(smartphone) {
+        width: 100%;
+      }
+
+      @include respond-to(tablet) {
+        width: 30%;
+      }
+
+      @include respond-to(print) {
+        display: none;
+      }
+    } // &.downloads
+
+    &.credits {
+      @extend .downloads;
+
+      @include respond-to(smartphone) {
+        width: 100%;
+      }
+
+      @include respond-to(tablet) {
+        width: 30%;
+      }
+
+      @include respond-to(print) {
+        display: none;
+      }
+    } // &.credits
+
+    &.legalese {
+      float: right;
+      font-size: 68.75%;
+      width: 75%;
+
+      @include respond-to(smartphone) {
+        float: none;
+        width: 100%;
+      }
+
+      @include respond-to(tablet) {
+        width: 70%;
+      }
+
+
+      @include respond-to(print) {
+        float: none;
+        font-style: italic;
+        margin: 0 auto;
+        text-align: center;
+        width: 80%;
+      }
+
+    } // &.legalese
+  } // p
+} // footer#page_footer

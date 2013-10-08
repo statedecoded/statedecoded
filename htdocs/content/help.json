@@ -20,7 +20,7 @@
 		"content": "This is a test of help text."
 	},
 	"keyboard": {
-		"title": "Keyboard Guide",
+		"title": "<i class=icon-keyboard></i> Keyboard Guide",
 		"description": "Keyboard navigation instructions",
 		"content": "<dl><dt>Ctrl →</dt><dd>Next law</dd><dt>Ctrl ←</dt><dd>Prior law</dd><dt>Ctrl ↑</dt><dd>Up to parent</dd></dl>"
 	}

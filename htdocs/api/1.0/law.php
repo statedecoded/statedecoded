@@ -1,16 +1,21 @@
 <?php
 
+/**
+ * The API's law method
+ *
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.7
+ * @link		http://www.statedecoded.com/
+ * @since		0.6
+ *
+ */
+
 header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
-
-# Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
-
-if (!isset($_GET['section']) || empty($_GET['section']))
-{
-	json_error('Code section not provided.');
-	die();
-}
 
 $api = new API;
 $api->list_all_keys();
@@ -41,7 +46,7 @@ elseif (!isset($api->all_keys->$key))
 if (isset($_REQUEST['callback']))
 {
 	$callback = $_REQUEST['callback'];
-	
+
 	# If this callback contains any reserved terms that raise XSS concerns, refuse to proceed.
 	if (valid_jsonp_callback($callback) === false)
 	{
@@ -50,8 +55,14 @@ if (isset($_REQUEST['callback']))
 	}
 }
 
+# Make sure we have a esction.
+if (!isset($args['section']) || empty($args['section']))
+{
+	json_error('Code section not provided.');
+	die();
+}
 # Localize the section identifier, filtering out unsafe characters.
-$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
+$section = filter_var($args['section'], FILTER_SANITIZE_STRING);
 
 # If there's a trailing slash, remove it.
 if (substr($section, -1) == '/')
@@ -101,10 +112,10 @@ if (isset($_GET['fields']))
 	{
 		$field = trim($field);
 	}
-	
+
 	# It's essential to unset $field at the conclusion of the prior loop.
 	unset($field);
-	
+
 	# Step through our response fields and eliminate those that aren't in the requested list.
 	foreach($response as $field => &$value)
 	{
@@ -115,9 +126,13 @@ if (isset($_GET['fields']))
 	}
 }
 
-# Include the API version in this response, by pulling it out of the path.
-$tmp = explode('/', $_SERVER['SCRIPT_NAME']);
-$response->api_version = $tmp[2];
+# Include the API version in this response.
+if(isset($args['api_version']) && strlen($args['api_version'])) {
+	$response->api_version = filter_var($args['api_version'], FILTER_SANITIZE_STRING);
+}
+else {
+	$response->api_version = CURRENT_API_VERSION;
+}
 
 if (isset($callback))
 {

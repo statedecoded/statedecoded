@@ -1,0 +1,82 @@
+/* Application SCSS for The State Decoded
+
+   To use this file, you need to use some kind of Sass processor. THe easiest
+   way to do this is to use the Gemfile in this application and then use Ruby
+   and bundler to install it. If you're using OS X, Ruby should be built in. If
+   not, you may want to search around for the best way to use this file.
+
+   The CSS in the /css directory is generated from this file. While you can edit
+   the standard CSS, any changes made there will not be saved if you edit and
+   later reprocess this file.
+
+   The easiest setup is to use 'sass --watch' or an application like CodeKit to
+   automatically process this file.
+
+   Typically, you would not write styles in this file, but include files here
+   in order to make for an easier to manage development environment.
+
+   Remember, attributes are one per line and in alphabetical order. We use
+   combination attributes whenever possible for conciseness.
+
+   - John Athayde, Nov 2012
+     jmpa@meticulous.com
+*/
+
+
+/* Import the Compass Library */
+@import "compass";
+@import "compass/css3/opacity";
+@import "compass/css3/box-shadow";
+
+// Vendor
+@import "vendor/_normalize.scss"; // Standardize between browsers/reset built in stylesheets
+@import "vendor/_keanu.scss"; // Standardize between browsers/reset built in stylesheets
+
+/* Functions not in Compass */
+@import "dependencies/mixins/_non-semantic-helpers.scss";
+@import "dependencies/mixins/_gradient-overrides.css.scss";
+
+/* Setup Paths */
+@import "dependencies/variables/_paths.css.scss";
+@import "dependencies/variables/_typography.css.scss";
+
+/* Variables, etc */
+@import "dependencies/variables/_colors.css.scss";
+@import "dependencies/variables/_drop-downs.css.scss";
+@import "dependencies/variables/_z-index.css.scss";
+
+/* Load site styles */
+@import "base/_default.scss";
+
+/* Load font stacks and baseline type work */
+@import "base/_buttons.css.scss";
+/* Load font stacks and baseline type work */
+@import "base/tables/_tables.css.scss";
+
+/* Load Print stylesheet */
+@import "base/_print.css.scss";
+
+/* Components */
+@import "components/_lists-collapseable.scss";
+@import "components/_modal.scss";
+@import "components/_keyboard-shortcuts.scss";
+
+/* Jquery Plugins */
+@import "vendor/jquery.qtip";
+
+// Areas
+@import "areas/_header.scss";
+@import "areas/_breadcrumbs.scss";
+@import "areas/_title-list.scss";
+@import "areas/_footer.scss";
+@import "areas/_video-frame.scss";
+@import "areas/_search.scss";
+
+@import "areas/_page-homepage.scss";
+@import "areas/_page-homepage-feature-content.scss";
+
+@import "areas/_page-law-show.scss";
+
+@import "areas/_page-search-results.scss";
+
+@import "areas/_page-admin.scss";

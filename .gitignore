@@ -1,5 +1,10 @@
 .DS_Store
+.vagrant/
+Vagrantfile
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
-includes/config.inc.php
+htdocs/admin/import-data/
 includes/class.Virginia.inc.php
+includes/config.inc.php
+htdocs/.sass-cache/
+package.box

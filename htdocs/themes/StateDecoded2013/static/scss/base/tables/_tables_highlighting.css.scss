@@ -1,0 +1,23 @@
+// *****************************************************************************
+// TABLES  - Highlighting
+// *****************************************************************************
+
+.table-highlighting {
+  colgroup.is-active {
+    background-color: $highlight !important;
+    td, th {
+      background-color: $highlight !important;
+    }  // td, th
+  } // colgroup.is-active
+  tbody {
+    .is-active {
+      td {
+        background-color: $highlight !important;
+      } // td
+    } // &.is-active
+  } // tbody
+} //  .table-highlighting
+
+.highlighting {// TOREMOVE: version 1.0;
+  @extend .table-highlighting;
+} // .like-a-list

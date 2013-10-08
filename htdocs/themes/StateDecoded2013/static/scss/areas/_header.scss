@@ -1,0 +1,343 @@
+  header#page_header {
+    // This is the big header. Small header is below
+    background-color: $base;
+    height: 345px;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+
+
+  @include respond-to(smartphone) {
+    padding-top: 10px;
+    height: 400px;
+  }
+
+  @include respond-to(tablet) {
+    padding-top: 0;
+    height: 190px;
+  }
+
+  @include respond-to(print) {
+    margin: 0;
+    padding: 0;
+    height: 0.5in;
+  }
+
+  hgroup#place_logo {
+    @include background-image(image-url("faux_seal.png"));
+    background-repeat: no-repeat;
+    background-position: top left;
+    background-size: auto;
+    color: $white;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    height: 117px;
+    padding-left: 125px;
+    position: absolute;
+      left: 2.5em;
+      top: 70px;
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.35);
+
+    @include respond-to(smartphone) {
+      background-position: 0 10px;
+      background-size: 88px 88px; //~75%
+      clear: both;
+      margin: 0;
+      padding: 10px 0 0 100px;
+      position: absolute;
+        top: 0;
+    }
+
+    @include respond-to(tablet) {
+      background-size: 88px 88px; //~75%
+      float: left;
+      padding-left: 100px;
+      position: relative;
+        top: 15px;
+        left: 0;
+      width: 40%;
+    }
+
+    @include respond-to(print) {
+      background-image: none;
+      clear: both;
+      height: 0.5in;
+      margin: 0;
+      padding-left: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    h1 {
+      font-family: $statedecoded-stack1;
+      font-size: 65px;
+      line-height: 75px;
+      font-weight: normal;
+      margin: 0;
+
+      @include respond-to(smartphone) {
+        font-size: 50px;
+        line-height: 60px;
+        margin: 0;
+      }
+
+      @include respond-to(tablet) {
+        font-size: 50px;
+        line-height: 60px;
+        margin: 0;
+      }
+
+      @include respond-to(print) {
+        font-size: 0.3in;
+        line-height: 0.35in;
+        margin: 0;
+      }
+    } //h1
+
+    h2 {
+      font-family: $statedecoded-stack3;
+      font-size: 150%;
+      font-weight: 100;
+      letter-spacing: 0.75em;
+      margin: 10px 0 0 5px ; // Override system-wide typography
+      text-transform: uppercase;
+
+      @include respond-to(smartphone) {
+        font-size: 125%;
+        margin: 0;
+      }
+
+      @include respond-to(tablet) {
+        font-size: 120%;
+        font-weight: 400;
+        letter-spacing: 0.7em;
+        margin: 0;
+      }
+
+      @include respond-to(print) {
+        font-size: 0.15in;
+        letter-spacing: 0.6em;
+        position: absolute;
+        top: 0.22in;
+      }
+    } //h2
+  } // hgroup#place_logo
+
+  nav#main_navigation {
+    background-color: $base-dark;
+    font-family: $statedecoded-stack3;
+    font-size: 68.75%;
+    height: 70px;
+    letter-spacing: 0.1em;
+    padding: 0;
+    position: absolute;
+      bottom: 0;
+      left: 0;
+    width: 100%;
+
+    @include respond-to(tablet) {
+    }
+
+    @include respond-to(smartphone) {
+      height: 200px;
+      position: absolute;
+        top: 130px;
+        left: 0;
+    }
+
+    @include respond-to(print) {
+      display: none;
+    }
+
+    $nav-height: 70px;
+    ul {
+      height: $nav-height;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+
+      @include respond-to(smartphone) {
+        height: auto;
+      }
+
+      @include respond-to(tablet) {
+        text-align: center;
+      }
+
+      li {
+        display: inline-block;
+        float: left;
+        height: $nav-height;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        width: 11%; // Not 12.5% due to video margin requirements
+
+        @include respond-to(smartphone) {
+          border-bottom: 1px solid $base;
+          display: block;
+          font-size: 150%;
+          height: 50px;
+          padding: 0;
+          text-align: left;
+          width: 100%;
+        }
+
+        @include respond-to(tablet) {
+          width: 22%;
+        }
+
+        a {
+          background-repeat: no-repeat;
+          background-position: center 10px;
+          background-size: 30px 30px;
+          color: $white;
+          display: block;
+          font-weight: bold;
+          height: $nav-height;
+          padding-top: 45px;
+          text-align: center;
+          text-decoration: none;
+          text-transform: uppercase;
+          text-shadow: 0 -1px 1px $shadow-light;
+          width: 100%;
+          .lt-ie8 & {
+            background-size: auto !important;
+          }
+          @include respond-to(smartphone) {
+            background-position: 20px center;
+            height: 50px;
+            line-height: 50px;
+            padding: 0 0 0 75px;
+            text-align: left;
+            width: 100%;
+          }
+
+          &#browse {
+            @include background-image(image-url("nav-icons/nav_browse.svg"));
+            &:hover {
+              @include background-image(image-url("nav-icons/nav_browse-hover.svg"));
+            }
+            .lt-ie9 & {
+              @include background-image(image-url("nav-icons/fallbacks/nav_browse.png"));
+            }
+          } // &#browse
+
+          &#court_cases {
+            @include background-image(image-url("nav-icons/nav_court-cases.svg"));
+            &:hover {
+              @include background-image(image-url("nav-icons/nav_court-cases-hover.svg"));
+            }
+            .lt-ie9 & {
+              @include background-image(image-url("nav-icons/fallbacks/nav_court-cases.png"));
+            }
+          } // &#browse
+
+          &#about {
+            @include background-image(image-url("nav-icons/nav_about-us.svg"));
+            //background-size: 50px 50px;
+            &:hover {
+              @include background-image(image-url("nav-icons/nav_about-us-hover.svg"));
+            }
+            .lt-ie9 & {
+              @include background-image(image-url("nav-icons/fallbacks/nav_about-us.png"));
+            }
+          } // &#browse
+
+          &#downloads {
+            @include background-image(image-url("nav-icons/nav_downloads.svg"));
+            &:hover {
+              @include background-image(image-url("nav-icons/nav_downloads-hover.svg"));
+            }
+            .lt-ie9 & {
+              @include background-image(image-url("nav-icons/fallbacks/nav_downloads.png"));
+            }
+          } // &#browse
+        } // a
+      } // li
+    } // ul
+  } // nav
+
+.inside & {
+
+
+ @include respond-to(desktop) {
+      // Style for the small header
+      border-bottom: 10px solid $base-dark;
+      height: 75px;
+
+      .nest {
+        max-width: none;
+        padding: 0 40px;
+        width: 100%;
+      }
+
+      hgroup#place_logo {
+        background-size: 50px 50px;
+        height: 50px;
+        padding-left: 0;
+        position: absolute;
+          top: 8px;
+          left: 40px;
+
+        h1 {
+          font-size: 35px;
+          line-height: 35px;
+          margin: 0 0 0 55px;
+        } // h1
+
+        h2 {
+          font-size: 12px;
+          font-weight: 400;
+          letter-spacing: 0.5em;
+          margin: -5px 0 0 120px;
+        }
+      } // hgroup#place_logo
+
+      section#search {
+        margin-top: 0;
+        width: 25%;
+
+        label {
+          display: none;
+        }
+
+        input[type="search"] {
+          width: 70%;
+        }
+
+        input[type="submit"] {
+          padding: 2px 10px;
+        }
+
+      } // section#search
+
+      nav#main_navigation {
+        background-color: transparent;
+        margin-left: 250px;
+        padding: 0;
+        position: relative;
+        top: -5px;
+        width: 35%;
+        min-width: 450px;
+
+        li {
+          width: 24%;
+          a {
+            background-size: 25px 25px;
+            background-position: center 15px;
+            padding-top: 45px;
+             &#about {
+              background-size: 40px 40px;
+              background-position: center 8px;
+             }
+          }
+        }
+      } // nav#main_navigation
+    } // .inside nav
+  }
+  @include respond-to(tablet) {
+  }
+} // header#page_header

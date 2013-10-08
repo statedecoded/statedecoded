@@ -1,0 +1,84 @@
+  section#search {
+    background-color: $base-light;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: $white;
+    float: right;
+    font-family: $statedecoded-stack3;
+    margin: 70px 20px 0 0 ;
+    padding: 10px;
+    width: 50%;
+
+    @include respond-to(smartphone) {
+      background-color: transparent;
+      border: none;
+      float: none;
+      font-size: 70%;
+      height: 50px;
+      margin: 0 20px;
+      position: absolute;
+        top: 330px;
+        left: 0;
+      width: 90%;
+      .advanced {
+        display: none;
+      }
+    }
+
+    @include respond-to(desktop) {
+      min-width: 300px;
+    }
+
+    @include respond-to(tablet) {
+      font-size: 75%;
+      margin: 15px 10px 0 0 ;
+      width: 55%;
+    }
+
+    @include respond-to(print) {
+      display: none;
+    }
+
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px;
+      @include respond-to(smartphone) {
+        display: none;
+      }
+      @include respond-to(tablet) {
+        font-size: 12px;
+        margin-bottom: 0;
+        .inside & {
+          display: none;
+        }
+      }
+    }
+
+    input[type="search"] {
+      width: 65%;
+      @include respond-to(smartphone) {
+        font-size: 100%;
+        width: 250px;
+      }
+      @include respond-to(tablet) {
+        font-size: 125%;
+        width: 250px;
+      }
+    } // input
+
+    input[type="submit"] {
+      @include respond-to(smartphone) {
+        font-size: 12px;
+        padding: 0 8px;
+      }
+    }
+
+    a {
+      color: $white;
+      font-size: 10px;
+      line-height: 28px;
+      margin-left: 20px;
+    }
+
+  } // section#search

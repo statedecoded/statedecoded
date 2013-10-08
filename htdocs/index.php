@@ -1,84 +1,288 @@
 <?php
 
 /**
- * The site home page.
+ * Index
  *
- * Displays a list of the top-level structural units. May be customized to display introductory
- * text, sidebar content, etc.
+ * Routes all the main requests. The site's home page can be found at home.php.
  * 
  * PHP version 5
  *
- * @author		Waldo Jaquith <waldo at jaquith.org>
- * @copyright	2010-2013 Waldo Jaquith
+ * @author		Bill Hunt <bill at krues8dr dot com>
+ * @copyright	2013 Bill Hunt
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.7
+ * @version		0.8
  * @link		http://www.statedecoded.com/
- * @since		0.1
+ * @since		0.8
  *
  */
 
 /*
- * Include the PHP declarations that drive this page.
+ * If we have not defined the include path yet, then try to do so automatically. Once we have
+ * automatically defined the include path, we store it in .htaccess, where it becomes available
+ * within the scope of $_SERVER.
  */
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
-
-/*
- * Fire up our templating engine.
- */
-$template = new Page;
-
-$template->field->browser_title = SITE_TITLE.': The '.LAWS_NAME.', for Humans.';
-
-/*
- * Initialize the body variable.
- */
-$body = '';
-
-/*
- * Initialize the sidebar variable.
- */
-$sidebar = '
-	<section>
-	<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
-	</section>';
-
-
-/*
- * Get an object containing a listing of the fundamental units of the code.
- */
-$struct = new Structure();
-$structures = $struct->list_children();
-
-$body .= '
-	<article>
-	<h1>'.ucwords($structures->{0}->label).'s of the '.LAWS_NAME.'</h1>
-	<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';
-if ( !empty($structures) )
+if ( !isset($_SERVER['INCLUDE_PATH']) )
 {
-	$body .= '<dl class="level-1">';
-	foreach ($structures as $structure)
+	
+	/*
+	 * Try a couple of likely locations.
+	 */
+	if (file_exists('includes'))
 	{
-		$body .= '	<dt><a href="'.$structure->url.'">'.$structure->identifier.'</a></dt>
-					<dd><a href="'.$structure->url.'">'.$structure->name.'</a></dd>';
+		$include_path = dirname(__FILE__) . '/includes/';
 	}
-	$body .= '</dl>';
+	elseif (file_exists('../includes'))
+	{
+		$include_path = dirname(dirname(__FILE__)) . '/includes/';
+	}
+	
+	/*
+	 * Since we have not found it, recurse through the directories to locate it.
+	 */
+	else
+	{
+		
+		/*
+		 * These are the directories that we want to peer into the child directories of -- the
+		 * current directory and its parent directory.
+		 */
+		$parent_directories = array('.', '..');
+		foreach ($parent_directories as $parent_directory)
+		{
+			
+			/*
+			 * Iterate through all of the parent directory's contents.
+			 */
+			$files = scandir($parent_directory);
+			foreach ($files as $file)
+			{
+				
+				/*
+				 * If this file is a directory, peer into its contents.
+				 */
+				if ( ($file != '.') && ($file != '..') && is_dir($parent_directory . '/' . $file) )
+				{
+				
+					$child_files = scandir($parent_directory . '/' . $file);
+					
+					/*
+					 * To pick a file more or less at random, we look for class.Law.inc.php.
+					 */
+					if (in_array('class.Law.inc.php', $child_files) === TRUE)
+					{
+						$include_path = realpath(dirname(__FILE__) . '/' . $parent_directory . '/' . $file . '/');
+						break(2);
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	/*
+	 * If we've defined our include path, then modify this file to store it permanently.
+	 */
+	if (isset($include_path))
+	{
+		
+		/*
+		 * If possible, modify the .htaccess file, to store permanently the include path.
+		 */
+		if (is_writable('.htaccess') == TRUE)
+		{
+			
+			$htaccess = PHP_EOL . PHP_EOL . 'SetEnv INCLUDE_PATH ' . $include_path . PHP_EOL;
+			$result = file_put_contents('.htaccess' , $htaccess, FILE_APPEND);
+			
+		}
+		
+		/*
+		 * We cannot modify the .htaccess file, so we define the constant on the fly. This is really
+		 * quite undesirable, because it will slow down the site non-trivially, but it's better
+		 * than not working at all.
+		 */
+		else
+		{
+			define('INCLUDE_PATH', $include_path);
+		}
+		
+	}
+	
 }
-$body .= '</article>';
 
 /*
- * Put the shorthand $body variable into its proper place.
+ * Save the include path as a constant.
  */
-$template->field->body = $body;
-unset($body);
+if (isset($_SERVER['INCLUDE_PATH']))
+{
+	define('INCLUDE_PATH', $_SERVER['INCLUDE_PATH']);
+}
 
 /*
- * Put the shorthand $sidebar variable into its proper place.
+ * If the edition ID was provided by the .htaccess file, save it as a constant.
  */
-$template->field->sidebar = $sidebar;
-unset($sidebar);
+if (isset($_SERVER['EDITION_ID']))
+{
+	define('EDITION_ID', $_SERVER['EDITION_ID']);
+}
 
 /*
- * Parse the template, which is a shortcut for a few steps that culminate in sending the content
- * to the browser.
+ * If APC is not running.
  */
-$template->parse();
+if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
+{
+
+	/*
+	 * Include the site's config file.
+	 */
+	require INCLUDE_PATH . 'config.inc.php';
+
+	define('APC_RUNNING', FALSE);
+
+}
+
+/*
+ * Else if APC is running, get data from the cache.
+ */
+else
+{
+
+	/*
+	 * Attempt to load the config file constants out of APC.
+	 */
+	$result = apc_load_constants('config');
+
+	/*
+	 * If this attempt did not work.
+	 */
+	if ($result === FALSE)
+	{
+
+		/*
+		 * Load constants from the config file.
+		 */
+		require INCLUDE_PATH . '/config.inc.php';
+
+		define('APC_RUNNING', TRUE);
+
+		/*
+		 * And then save them to APC.
+		 */
+		$constants = get_defined_constants(TRUE);
+		apc_define_constants('config', $constants['user']);
+
+	}
+}
+
+/*
+ * Connect to the database.
+ */
+try
+{
+	$db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+}
+
+/*
+ * If we cannot connect.
+ */
+catch (PDOException $e)
+{
+
+	/*
+	 * If we get error 1049, that means that no database of this name could be found. This means
+	 * that The State Decoded has not yet been installed. Redirect to the admin section.
+	 */
+	if (strpos($e->getMessage(), '[1049]') !== FALSE)
+	{
+		if (strpos($_SERVER['REQUEST_URI'], '/admin') === FALSE)
+		{
+			header('Location: /admin/');
+			exit;
+		}
+	}
+
+	/*
+	 * Else it's a generic database problem.
+	 */
+	else
+	{
+
+		/*
+		 * A specific error page has been created for database connection failures, display that.
+		 */
+		if (defined('ERROR_PAGE_DB'))
+		{
+			require($_SERVER['DOCUMENT_ROOT'] . '/' . ERROR_PAGE_DB);
+			exit();
+		}
+
+		/*
+		 * If no special error page exists, display a generic error.
+		 */
+		else
+		{
+			die(SITE_TITLE . ' is having some database trouble right now. Please check back in a few minutes.');
+		}
+
+	}
+
+}
+
+/*
+ * Prior to PHP v5.3.6, the PDO does not pass along to MySQL the DSN charset configuration option,
+ * and it must be done manually.
+ */
+if (version_compare(PHP_VERSION, '5.3.6', '<'))
+{
+	$db->exec("SET NAMES utf8");
+}
+
+/*
+ * We're going to need access to the database connection throughout the site.
+ */
+global $db;
+
+/*
+ * Include the functions that drive the site.
+ */
+require('functions.inc.php');
+
+
+/*
+ * Include Solarium's autoloader, for queries to Solr.
+ */
+require('Solarium/Autoloader.php');
+Solarium_Autoloader::register();
+
+/*
+ * Turn the Solr URL constant into a configuration array that we can use anywhere we need to use
+ * Solarium.
+ */
+$solr_url = parse_url(SOLR_URL);
+
+$GLOBALS['solr_config'] = array(
+    'adapteroptions' => array(
+        'host' => $solr_url['host'],
+        'port' => $solr_url['port'],
+        'path' => $solr_url['path'],
+    )
+);
+
+/*
+ * Include the custom functions file.
+ */
+require(CUSTOM_FUNCTIONS);
+
+/*
+ * Establish routes
+ */
+require('routes.inc.php');
+
+/*
+ * Initialize the master controller
+ */
+$mc = new MasterController();
+$mc->execute();

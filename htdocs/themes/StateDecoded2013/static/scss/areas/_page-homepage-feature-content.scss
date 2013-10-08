@@ -1,0 +1,31 @@
+  section.feature-content {
+    float: left;
+    margin-right: 1%;
+    width: 49%;
+
+    p {
+      font-size: 18px;
+      line-height: 28px;
+      padding: 0 20px;
+    }
+
+    @include respond-to(smartphone) {
+      float: none;
+      width: 100%;
+    }
+
+    @include respond-to(tablet) {
+      float: none;
+      width: 100%;
+    }
+
+    img.ad {
+      margin: 20px 0;
+      @include respond-to(smartphone) {
+        max-width: 100%;
+      }
+      @include respond-to(tablet) {
+        margin-left: 20px;
+      }
+    }
+  } // section.feature-content

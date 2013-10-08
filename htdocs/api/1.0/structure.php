@@ -1,10 +1,21 @@
 <?php
 
+/**
+ * The API's structure method
+ *
+ * PHP version 5
+ *
+ * @author		Waldo Jaquith <waldo at jaquith.org>
+ * @copyright	2013 Waldo Jaquith
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.7
+ * @link		http://www.statedecoded.com/
+ * @since		0.6
+ *
+ */
+
 header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
-
-# Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
 
 $api = new API;
 $api->list_all_keys();
@@ -35,7 +46,7 @@ elseif (!isset($api->all_keys->$key))
 if (isset($_REQUEST['callback']))
 {
 	$callback = $_REQUEST['callback'];
-	
+
 	# If this callback contains any reserved terms that raise XSS concerns, refuse to proceed.
 	if (valid_jsonp_callback($callback) === false)
 	{
@@ -46,7 +57,7 @@ if (isset($_REQUEST['callback']))
 
 # If no identifier has been specified, explicitly make it a null variable. This is when the request
 # is for the top level -- that is, a listing of the fundamental units of the code (e.g., titles).
-if ( !isset($_GET['identifier']) || empty($_GET['identifier']) )
+if ( !isset($args['identifier']) || empty($args['identifier']) )
 {
 	$identifier = '';
 }
@@ -56,17 +67,15 @@ if ( !isset($_GET['identifier']) || empty($_GET['identifier']) )
 else
 {
 	# Localize the identifier, filtering out unsafe characters.
-	$identifier = filter_input(INPUT_GET, 'identifier', FILTER_SANITIZE_STRING);
+	$identifier = filter_var($args['identifier'], FILTER_SANITIZE_STRING);
 }
 
 # Create a new instance of the class that handles information about individual laws.
 $struct = new Structure();
 
-# Pass the requested URL to Structure, and then get structural data from that URL. We're faking the
-# URL to emulate the public listing (e.g., <http://example.com/12/6/>), which is what is expected
-# by the url_to_structure() method.
-$struct->url = 'http://'.$_SERVER['HTTP_HOST'].'/'.$identifier;
-$struct->url_to_structure();
+
+# Get the structure based on our identifier
+$struct->token_to_structure($identifier);
 $response = $struct->structure;
 
 # If this structural element does not exist.
@@ -91,10 +100,10 @@ if (isset($_GET['fields']))
 	{
 		$field = trim($field);
 	}
-	
+
 	# It's essential to unset $field at the conclusion of the prior loop.
 	unset($field);
-	
+
 	# Step through our response fields and eliminate those that aren't in the requested list.
 	foreach($response as $field => &$value)
 	{
@@ -105,9 +114,13 @@ if (isset($_GET['fields']))
 	}
 }
 
-# Include the API version in this response, by pulling it out of the path.
-$tmp = explode('/', $_SERVER['SCRIPT_NAME']);
-$response->api_version = $tmp[2];
+# Include the API version in this response.
+if(isset($args['api_version']) && strlen($args['api_version'])) {
+	$response->api_version = filter_var($args['api_version'], FILTER_SANITIZE_STRING);
+}
+else {
+	$response->api_version = CURRENT_API_VERSION;
+}
 
 if (isset($callback))
 {

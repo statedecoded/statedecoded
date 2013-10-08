@@ -1,0 +1,126 @@
+// *****************************************************************************
+// COLORS
+// *****************************************************************************
+
+// Primary Palette
+// ------------------------------------------------------------------
+
+$base:  #137da1; // Blue
+$base-light: adjust-color($base, $saturation: -20%, $lightness: 10%);
+$base-lightest: #8fa9b2;
+$base-dark:  adjust-color(adjust-hue($base, 4deg), $saturation: -1%, $lightness: -7%);
+$base-darkest: #526166;
+// Secondary Palette
+// ------------------------------------------------------------------
+
+
+// ------------------------------------------------------------------
+//  GLOBAL COLORS
+// ------------------------------------------------------------------
+
+// Accent colors
+
+$yellow: #fff200;
+$black: #000;
+$white: #fff;
+  $white-off: #d9d8d6;
+
+
+// The Grays
+// -------------------------------------------------------------------
+
+$gray: #c9c7c3;
+$gray-light: #e2e1df;
+$gray-lighter: #f2f1ee;
+$gray-lightest: #faf9f6;
+$gray-dark: #95928d;
+$gray-darker: #62615e;
+$gray-darkest: #403f3d;
+
+
+// Transparent Colors
+// -------------------------------------------------------------------
+
+$transparent-white: hsla(100,100%,100%,0) !default;
+$transparent-black: hsla(0,0%,0%,0) !default;
+
+$shadow-lightest: hsla(0, 0%, 0%, 0.1) !default;
+$shadow-lighter: hsla(0, 0%, 0%, 0.25) !default;
+$shadow-light: hsla(0, 0%, 0%, 0.5) !default;
+$shadow: hsla(0, 0%, 0%, 0.75) !default;
+
+$glow-lightest: hsla(100,100%,100%,0.1) !default;
+$glow-lighter: hsla(100,100%,100%,0.25) !default;
+$glow-light: hsla(100,100%,100%,0.5) !default;
+$glow: hsla(100,100%,100%,0.75) !default;
+
+$highlight: transparentize(#e9ba26, .7);
+
+// ------------------------------------------------------------------
+//  COLORS 2 THINGS
+// ------------------------------------------------------------------
+
+$site-background-color: $white !default;
+
+// Text Color
+$text-color:  $gray-darker !default;
+$text-color-light: $gray-light !default;
+
+// Input placeholder text color
+$placeholder-text-color: $gray-light !default;
+
+// Links
+$link-color: #558fae;
+$link-color-hover: adjust-color($base, $lightness: 10%, $saturation: 10%) !default;
+$link-color-active: adjust-color($base, $lightness: 10%, $saturation: 10%) !default;
+$link-color-visited: adjust-color($base, $lightness: -10%, $saturation: -50%) !default;
+
+// Form states and alerts
+$warning-text: #c09853 !default;
+$warning-background: #fcf8e3 !default;
+$warning-border: darken(adjust-hue($warning-background, -10), 3%) !default;
+
+$error-text: #b94a48 !default;
+$error-background: #f2dede !default;
+$error-border: darken(adjust-hue($error-background, -10), 3%) !default;
+
+$success-text: #39b54a !default;
+$success-background: mix(white, $success-text, 80%) !default;
+$success-border: darken(adjust-hue($success-text, -10), 5%) !default;
+
+$info-text: #3a87ad !default;
+$info-background: #d9edf7 !default;
+$info-border: darken(adjust-hue($info-background, -10), 7%) !default;
+
+
+// States
+// ------------------------------------------------------------------
+$positive-green: #399e25 !default;
+$negative-red: #c83434 !default;
+
+
+// QTip Specific Colors
+// ------------------------------------------------------------------
+$qtip-border-color: $gray-dark;
+$qtip-bkgnd-color: $gray-lightest;
+$qtip-color: inherit;
+$qtip-titlebar-bkgnd-color: #ffef93;
+$qtip-icon-border-color: #ccc;
+$qtip-icon-bkgnd: #f1f1f1;
+$qtip-icon-color: #777;
+$qtip-close-border-color: #aaa;
+$qtip-close-color: #111;
+
+
+// Tooltips and popovers
+// ------------------------------------------------------------------
+$tooltip-color: $white;
+$tooltip-background: $black;
+$tooltip-arrow-color: $tooltip-background;
+
+$popover-background: $white;
+$popover-arrow-color: $white;
+$popover-title-background:  darken($popover-background, 3%);
+
+// Special enhancement for popovers
+$popover-arrow-outer-color:  rgba(0,0,0,.25);

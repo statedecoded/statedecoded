@@ -1,0 +1,14 @@
+// *****************************************************************************
+// PATHS
+// *****************************************************************************
+
+$root-assets: "/public" !default;
+$font-path: $root-assets !default;
+$image-path: $root-assets+"/images" !default;
+
+
+$image-path-content: $image-path+"/content"  !default;
+$image-path-layout: $image-path+"/layout"  !default;
+$image-path-filler: $image-path+"/filler"  !default;
+$image-path-sprites: $image-path+"/sprites" !default;
+$image-path-vendor: $image-path+"/vendor" !default;

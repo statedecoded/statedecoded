@@ -1,0 +1,13 @@
+// *****************************************************************************
+// TABLES  - Striping
+// *****************************************************************************
+
+// NOTE: ; You should use this via @extend if possible
+
+.table-striped {
+  tbody tr:nth-child(even) { // Table Striping
+    td, th {
+      background-color: transparentize($grayLightest, .4);
+    } // td, th
+  } // tr:nth-child(odd;
+} // .table-striped

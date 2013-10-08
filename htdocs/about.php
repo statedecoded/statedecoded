@@ -2,7 +2,7 @@
 
 /**
  * The "About" page, explaining this State Decoded website.
- * 
+ *
  * PHP version 5
  *
  * @author		Waldo Jaquith <waldo at jaquith.org>
@@ -14,28 +14,46 @@
  *
  */
 
-# Include the PHP declarations that drive this page.
-require $_SERVER['DOCUMENT_ROOT'].'/../includes/page-head.inc.php';
+/*
+ * Create a container for our content.
+ */
+$content = new Content();
 
-# Fire up our templating engine.
-$template = new Page;
-
-# Define some page elements.
-$template->field->browser_title = 'About';
-$template->field->page_title = 'About';
+/*
+ * Define some page elements.
+ */
+$content->set('browser_title', 'About');
+$content->set('page_title', 'About');
 
 $body = '';
 
 $sidebar = '';
 
-# Put the shorthand $body variable into its proper place.
-$template->field->body = $body;
+/*
+ * Put the shorthand $body variable into its proper place.
+ */
+$content->set('body', $body);
 unset($body);
 
-# Put the shorthand $sidebar variable into its proper place.
-$template->field->sidebar = $sidebar;
+/*
+ * Put the shorthand $sidebar variable into its proper place.
+ */
+$content->set('sidebar', $sidebar);
 unset($sidebar);
 
-# Parse the template, which is a shortcut for a few steps that culminate in sending the content
-# to the browser.
-$template->parse();
+/*
+ * Add the custom classes to the body.
+ */
+$content->set('body_class', 'law inside');
+
+
+/*
+ * Fire up our templating engine.
+ */
+$template = Template::create();
+
+/*
+ * Parse the template, which is a shortcut for a few steps that culminate in sending the content
+ * to the browser.
+ */
+$template->parse($content);

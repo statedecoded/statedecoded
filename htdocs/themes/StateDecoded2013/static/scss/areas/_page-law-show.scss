@@ -1,0 +1,418 @@
+/*
+################################################################################
+# Law page
+################################################################################
+*/
+
+.grid-sizer {
+  // Width for right column Masonry.js stuff
+  width: 100%;
+
+  @include respond-to(desktop) {
+    width: 13%;
+  }
+
+  @include respond-to(laptop) {
+    width: 13%;
+  }
+
+  @include respond-to(tablet-portrait) {
+    width: 26%;
+  }
+
+  @include respond-to(tablet-landscape) {
+    width: 26%;
+  }
+
+  @include respond-to(smartphone) {
+    width: 40%;
+  }
+}
+
+.law {
+  section#main_content {
+    overflow: hidden;
+    padding-bottom: 150px; // Footer fixed hack
+
+    @include respond-to(print) {
+      padding-bottom: 0;
+    }
+  }
+
+  .nest {
+    @extend .wide;
+
+    @include respond-to(print) {
+      margin: 0 0 0 0.25in;
+      padding: 0;
+      width: 7in;
+    }
+  }
+
+  #main_content header {
+    display: block;
+    padding: 20px;
+
+    @include respond-to(print) {
+      padding: 0;
+    }
+  }
+
+  .primary-content {
+    float: left;
+    margin-right: 1%;
+    padding: 20px;
+    width: 49%;
+
+    @include respond-to(smartphone) {
+      float: none;
+      width: 100%
+    }
+
+    @include respond-to(print) {
+      float: none;
+      width: 100%;
+    }
+
+    h1 {
+      font-family: $statedecoded-stack1;
+      font-size: 125%;
+      font-variant: small-caps;
+      letter-spacing: 0.05em;
+      margin: 0 0 10px 0;
+      text-transform: small-caps;
+    }
+
+    h2 {
+      font-family: $statedecoded-stack1;
+      font-size: 200%;
+      line-height: 105%;
+      font-weight: 100;
+      margin: 0 0 20px 0;
+    }
+
+    h3 {
+      margin: 40px 0 10px 0;
+      text-transform: uppercase;
+    }
+
+    // This function that follows allows for the indentation up to 9 levels deep
+    // To increase the number of levels, one can add to the @while $num
+    // statement but really, 9 levels of indentation? Go smack the legislator
+    // that wrote that. You can also change your indent depth globally with the
+    // $indent variable.
+    section {
+	  position: relative;
+
+      $num: 1;
+      $indent: 1em;
+
+      &.indent {
+        margin-left: $indent; /* 16px */
+      }
+
+      @while $num < 9 {
+
+        &.indent-#{$num} {
+          margin-left: $num * $indent;
+        } // &-#{num}
+        $num: $num +1;
+      } // @while
+    }
+
+    p {
+      margin: 0 0 1.25em 0;
+    }
+	.tabular {
+	  max-width: 100%;
+	  overflow: auto;
+	}
+
+    pre.table {
+      margin: 0 0 20px 0;
+      font-size: .75em;
+      white-space: pre;
+    }
+    /* White fade */
+	.tabular:before {
+		content: ' ';
+		position: absolute;
+		right: 0;
+		top: 0;
+		height: 100%;
+		width: 30px;
+		@include background-image(linear-gradient(right, rgba(255,255,255,1), rgba(255,255,255,0.7) 50%, rgba(255,255,255,0)));
+	}
+
+    span.dictionary {
+      border-bottom: 1px dotted #558fae;
+    }
+
+  }
+
+  .secondary-content {
+
+    float: right;
+    padding: 20px;
+    width: 44%;
+
+    @include respond-to(smartphone) {
+      float: none;
+      width: 100%;
+    }
+
+    @include respond-to(print) {
+      float: none;
+      padding: 0;
+      width: 100%;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .identifier,
+    .title {
+      display: block;
+      margin: 1em 0 0;
+    }
+
+    .ad {
+      margin: 0 auto 20px auto ;
+
+      @include respond-to(tablet) {
+        max-width: 100%;
+      }
+
+      @include respond-to(smartphone) {
+        max-width: 100%;
+      }
+
+    }
+
+    .grouping,
+    .related-group {
+      margin-right:1%;
+      text-align: left;
+      width: 101.5%;
+
+      @include respond-to(tablet) {
+        float: none;
+        width: 100%;
+      }
+
+      @include respond-to(smartphone) {
+        float: none;
+        width: 100%;
+      }
+
+    }
+
+    .grouping.last {
+      margin-right: 0;
+    }
+
+    .grouping > section,
+    .related-group,
+    .info-box {
+
+  //    @include opacity(.5); // layer alpha
+      border: 1px solid #e4e9e7; // stroke
+      background-color: #fcfdfa; // layer fill content + color overlay
+      box-shadow:inset 0 2px 20px rgba(111,114,117,.15); // inner shadow
+      margin: 0 0 1em 0;
+      padding: 0;
+      position: relative;
+      text-align: left;
+      width: 100%;
+
+      @include respond-to(desktop) {
+        width: 32%;
+      }
+
+      @include respond-to(laptop) {
+        width: 32%;
+      }
+
+      @include respond-to(tablet-landscape) {
+        width: 100%;
+      }
+
+      @include respond-to(tablet-portrait) {
+        width: 100%;
+      }
+
+      @include respond-to(smartphone) {
+        width: 100%;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      h1 {
+        font-family: $statedecoded-stack3;
+        font-size:16px;
+        font-style: italic;
+        margin: 0.5em 0;
+        padding: 0 10px;
+        text-transform: capitalize;
+      }
+
+      > h1 {
+        font-style: normal;
+        text-transform: uppercase;
+      }
+
+      p, h2 {
+        padding: 0 10px;
+      }
+
+      &.header-bar-full {
+        float: none;
+        width: 100%;
+
+        > h1 {
+          background-color: #656358;
+          color: #fff;
+          font-size: 30px;
+          font-weight: 100;
+          font-style: normal;
+          margin: 0;
+          padding: 0.25em 0.5em;
+          text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+          text-transform: uppercase;
+          width: 100%;
+        } // h1
+
+        p {
+          margin: 0 0 10px 0;
+        }
+
+      } // &.header-bar-full
+
+      &#legal_self_help {
+        overflow: hidden;
+
+        ul {
+          @extend %clearfix;
+          clear: both;
+          list-style-type: none;
+          padding: 0 10px;
+          margin: 0;
+
+          li {
+            list-style-type: none;
+            float: left;
+            margin-bottom: 15px;
+            width: 49%;
+
+            @include respond-to(smartphone) {
+              float: none;
+              width: 100%;
+            }
+
+            @include respond-to(tablet) {
+              float: none;
+              width: 100%;
+            }
+
+            article {
+
+              h1 {
+                font-family: $statedecoded-stack2;
+              }
+
+              &.legal-reference {
+              }
+
+              &.pdf {
+                background-image: url("/public/images/icon_pdf_32.png");
+                background-repeat: no-repeat;
+                background-position: top left;
+                padding-left: 42px;
+              } // &.pdf
+            } // article
+          } // li
+        } // ul
+      } // &#legal_self_help
+
+      &#history {}
+
+      &#amendment_attempts {
+        h2 {
+          font-size: 125%;
+        }
+
+        a {
+          font-size: 18px;
+          font-style: italic;
+          font-weight: bold;
+        }
+      }
+
+      &#court_decisions {
+
+        article.court-decision {
+          h1 {
+            font-family: $statedecoded-stack2;
+            margin: 1em 0 0 0;
+          }
+
+          h2 {
+            font-size: 81.25%;
+            font-weight: normal;
+            font-variant: uppercase;
+            margin: 0;
+            text-transform: uppercase;
+          }
+        } // article.court-decision
+
+      }
+
+    }
+
+    p.keyboard {
+      font-family: $statedecoded-stack3;
+      font-size: 0.9em;
+      text-transform: uppercase;
+
+      a#keyhelp {
+        @include respond-to(print) {
+          display: none;
+        }
+      }
+    }
+
+    .dark {
+      background-color: #656358;
+      color: #fff;
+      overflow: hidden;
+      text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+
+      > h1 {
+        float: left;
+        font-size: 24px;
+        font-weight: 100;
+        font-style: normal;
+        margin: 0;
+        padding: 10px;
+        text-transform: uppercase;
+        width: 50%;
+      } // h1
+
+      dl {
+        float: right;
+        margin: 1em 0 0 0;
+        padding: 0;
+        width: 49%;
+
+        dt { font-size: 85%; margin: 0; padding: 0; text-transform: uppercase;}
+        dd { margin: 0 0 1em 0; padding: 0; }
+
+      }
+
+    } // &#cite_as
+  }
+}
+

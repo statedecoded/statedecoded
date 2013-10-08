@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<schema name="statedecoded" version="1.5">
+
+  <fields>
+    <!-- State Decoded Law Fields ==
+        taken from law table tsv dump -->
+   <field name="_version_" type="long" indexed="true" stored="true"/>
+   <field name="id" type="string" indexed="true" stored="true" required="true" /> 
+   <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
+
+   <field name="catch_line" type="html_stripped_text_en" indexed="true" stored="true"/>
+   <field name="tags" type="html_stripped_text_en" indexed="true" stored="true" multiValued="true" />
+   <field name="tags_facet" type="string" indexed="true" stored="false" multiValued="true" />
+   <copyField source="tags" dest="tags_facet" />
+
+   <field name="text" type="html_stripped_text_en" indexed="true" stored="true"/>
+   <field name="repealed" type="string" indexed="true" stored="true" />
+
+   <field name="structure" type="string" indexed="true" stored="true" />
+   <field name="structure_facet_hierarchical" type="descendent_facet_hierarchical" indexed="true" stored="false" />
+   <field name="structure_descendent" type="descendent_path" indexed="true" stored="false" />
+   <field name="structure_ancestor" type="ancestor_path" indexed="true" stored="false" />
+   <copyField source= "structure" dest="structure_descendent"/>
+   <copyField source= "structure" dest="structure_ancestor"/>
+   <copyField source= "structure" dest="structure_facet_hierarchical"/>
+
+   <field name="section" type="string" indexed="true" stored="true"/>
+   <field name="section_descendent" type="section_descendent" indexed="true" stored="false"/>
+   <field name="section_ancestor" type="section_ancestor" indexed="true" stored="false"/>
+   <field name="section_facet_hierarchical" type="descendent_facet_hierarchical" indexed="true" stored="false"/>
+   <copyField source= "section" dest="section_descendent"/>
+   <copyField source= "section" dest="section_ancestor"/>
+   <copyField source= "section" dest="section_facet_hierarchical"/>
+
+   <field name="refers_to" type="string" indexed="false" stored="true" multiValued="true"/>
+   <field name="refers_to_descendent" type="section_descendent" indexed="true" stored="false" multiValued="true"/>
+   <field name="refers_to_ancestor" type="section_ancestor" indexed="true" stored="false" multiValued="true"/>
+   <copyField source= "refers_to" dest="refers_to_descendent"/>
+   <copyField source= "refers_to" dest="refers_to_ancestor"/>
+
+   <field name="referred_to_by" type="string" indexed="false" stored="true" multiValued="true"/>
+   <field name="referred_to_by_descendent" type="section_descendent" indexed="true" stored="false" multiValued="true"/>
+   <field name="referred_to_by_ancestor" type="section_ancestor" indexed="true" stored="false" multiValued="true"/>
+   <copyField source= "referred_to_by" dest="referred_to_by_descendent"/>
+   <copyField source= "referred_to_by" dest="referred_to_by_ancestor"/>
+
+   <!-- State Decoded Dictionary Fields ==
+        taken from law dict table tsv dump -->
+   <field name="term" type="html_stripped_text_en" indexed="true" stored="true"/>
+   <field name="definition" type="html_stripped_text_en" indexed="true" stored="true" termVectors="true"/>
+
+   <!-- Other -->
+   <field name="type" type="lowercase" indexed="true" stored="true"/> 
+   <field name="spelling" type="html_stripped_text" indexed="true" stored="false" multiValued="true"/> 
+   <copyField source= "text" dest="spelling"/>
+   <copyField source= "tags" dest="spelling"/>
+   <copyField source= "structure" dest="spelling"/>
+   <copyField source= "term" dest="spelling"/>
+   <copyField source= "definition" dest="spelling"/>
+
+   <dynamicField name="*" type="ignored" multiValued="true" />
+
+ </fields>
+
+
+ <uniqueKey>id</uniqueKey>
+
+
+
+ <types>
+   <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+
+   <fieldType name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+
+   <fieldType name="html_stripped_text_en" class="solr.TextField" positionIncrementGap="100">
+     <analyzer type="index">
+       <charFilter class="solr.HTMLStripCharFilterFactory"/>
+       <tokenizer class="solr.StandardTokenizerFactory"/>
+       <filter class="solr.StopFilterFactory"
+         ignoreCase="true"
+         words="lang/stopwords_en.txt"
+         enablePositionIncrements="true"
+         />
+       <filter class="solr.LowerCaseFilterFactory"/>
+       <filter class="solr.EnglishPossessiveFilterFactory"/>
+       <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+       <filter class="solr.PorterStemFilterFactory"/>
+     </analyzer>
+     <analyzer type="query">
+       <tokenizer class="solr.StandardTokenizerFactory"/>
+       <filter class="solr.StopFilterFactory"
+         ignoreCase="true"
+         words="lang/stopwords_en.txt"
+         enablePositionIncrements="true"
+         />
+       <filter class="solr.LowerCaseFilterFactory"/>
+       <filter class="solr.EnglishPossessiveFilterFactory"/>
+       <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+       <filter class="solr.PorterStemFilterFactory"/>
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="html_stripped_text" class="solr.TextField" positionIncrementGap="100">
+     <analyzer>
+       <charFilter class="solr.HTMLStripCharFilterFactory"/>
+       <tokenizer class="solr.StandardTokenizerFactory"/>
+       <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" enablePositionIncrements="true"/>
+       <filter class="solr.LowerCaseFilterFactory"/>
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+
+   <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+     <analyzer>
+       <tokenizer class="solr.KeywordTokenizerFactory"/>
+       <filter class="solr.LowerCaseFilterFactory" />
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="descendent_path" class="solr.TextField">
+     <analyzer type="index">
+       <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/" />
+     </analyzer>
+     <analyzer type="query">
+       <tokenizer class="solr.KeywordTokenizerFactory" />
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="descendent_facet_hierarchical" class="solr.TextField">
+     <analyzer type="index">
+       <tokenizer class="com.o19s.RegexPathHierarchyTokenizerFactory" delimiter="[.-/]" depthPrefixNumChars="1" />
+     </analyzer>
+     <analyzer type="query">
+       <tokenizer class="solr.KeywordTokenizerFactory" />
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="ancestor_path" class="solr.TextField">
+     <analyzer type="index">
+       <tokenizer class="solr.KeywordTokenizerFactory" />
+     </analyzer>
+     <analyzer type="query">
+       <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/" />
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="section_ancestor" class="solr.TextField" positionIncrementGap="100">
+     <analyzer type="index">
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+       <!-- remove () or [] that somebody might use to identify a chapter -->
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+       <tokenizer class="solr.KeywordTokenizerFactory" />
+     </analyzer>
+     <analyzer type="query">
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+       <!-- remove () or [] that somebody might use to identify a chapter -->
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+       <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
+       <filter class="solr.LowerCaseFilterFactory" />
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="section_descendent" class="solr.TextField" positionIncrementGap="100">
+     <analyzer type="index">
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+       <!-- remove () or [] that somebody might use to identify a chapter -->
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+       <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
+       <filter class="solr.LowerCaseFilterFactory" />
+     </analyzer>
+     <analyzer type="query">
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
+       <!-- remove () or [] that somebody might use to identify a chapter -->
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
+       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
+       <tokenizer class="solr.KeywordTokenizerFactory" />
+     </analyzer>
+   </fieldType>
+
+   <fieldType name="section_descendent_prefixed" class="solr.TextField">
+     <analyzer type="index">
+       <tokenizer class="com.o19s.RegexPathHierarchyTokenizerFactory" delimiter="[.-]" depthPrefixNumChars="1" />
+     </analyzer>
+     <analyzer type="query">
+       <tokenizer class="solr.KeywordTokenizerFactory" />
+     </analyzer>
+   </fieldType>
+
+ </types>
+
+</schema>
