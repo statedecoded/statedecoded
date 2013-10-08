@@ -371,7 +371,7 @@ class Structure
 		 */
 		$sql = 'SELECT structure_unified.*,
 				permalinks.url, permalinks.token';
-		
+
 		/*
 		 * If we're ordering by views, select that data.
 		 */
@@ -379,7 +379,7 @@ class Structure
 		{
 			$sql .= ', COUNT( laws_views.id ) AS view_count';
 		}
-		
+
 		$sql .= '
 				FROM structure
 				LEFT JOIN structure_unified
@@ -387,7 +387,7 @@ class Structure
 				LEFT JOIN permalinks
 					ON structure.id = permalinks.relational_id and
 					object_type = :object_type';
-		
+
 		/*
 		 * If we're ordering children by views, we need to join the structural table to the
 		 * laws_views table.
@@ -399,11 +399,11 @@ class Structure
 						LEFT JOIN laws_views
 							ON laws.section = laws_views.section';
 		}
-		
+
 		$sql_args = array(
 			':object_type' => 'structure'
 		);
-		
+
 		/*
 		 * If a structural ID hasn't been provided, then this request is for the root node -- that
 		 * is, the top level of the legal code.
@@ -433,7 +433,7 @@ class Structure
 			}
 
 		}
-		
+
 		/*
 		 * If we're sorting children by views, we need to insert a GROUP BY and ORDER BY statement
 		 * here.
@@ -443,7 +443,7 @@ class Structure
 			$sql .= '	GROUP BY structure.id
 						ORDER BY view_count DESC, structure.order_by ASC, ';
 		}
-		
+
 		/*
 		 * Otherwise, by default, order children by the order_by column, which may or may not be
 		 * populated.
@@ -466,7 +466,7 @@ class Structure
 			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
-		
+
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -477,12 +477,12 @@ class Structure
 		{
 			return FALSE;
 		}
-		
+
 		/*
 		 * Instantiate the object we'll use to store and return the list of child structures.
 		 */
 		$children = new stdClass();
-		
+
 		/*
 		 * Return the result as an object, built up as we loop through the results.
 		 */
@@ -497,18 +497,18 @@ class Structure
 			$child->label = $child->s1_label;
 			$child->name = $child->s1_name;
 			$child->identifier = $child->s1_identifier;
-			
+
 			/*
 			 *We don't need to display the aggregate view count -- we only use that for sorting.
 			 */
 			unset($child->view_count);
-			
+
 			/*
 			 * Append this child to our list.
 			 */
 			$children->$i = $child;
 			$i++;
-			
+
 		}
 
 		return $children;
@@ -727,47 +727,6 @@ class Structure
 	}
 
 
-	/**
-	 * Convert a structure's public identifier to its internal ID.
-	 */
-	function identifier_to_id()
-	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-		
-		/*
-		 * If a structural identifier hasn't been passed to this function, then there's nothing to
-		 * do.
-		 */
-		if (!isset($this->identifier))
-		{
-			return FALSE;
-		}
-		
-		/*
-		 * Assemble the SQL query.
-		 */
-		$sql = 'SELECT id
-				FROM structure
-				WHERE identifier = ' . $db->quote($this->identifier);
-		
-		$result = $db->query($sql);
-		
-		if ( ($result === FALSE) || ($result->rowCount() == 0) )
-		{
-			return FALSE;
-		}
-		
-		$structure = $result->fetch(PDO::FETCH_OBJ);
-		
-		return $structure->id;
-		
-	}
-	
-	
 	/**
 	 * Get a listing of all laws for a given structural element.
 	 */
