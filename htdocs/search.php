@@ -128,23 +128,32 @@ if (!empty($_GET['q']))
 	 * If any portion of this search term appears to be misspelled, propose a properly spelled
 	 * version.
 	 */
-// Commented out temporarily, per issue #437
-//	$spelling = $results->getSpellcheck();
-//	
-//	if ($spelling->getCorrectlySpelled() == FALSE)
-//	{
-//		
-//		$body .= '<h1>Suggestions</h1>';
-//		foreach($spelling as $suggestion)
-//		{
-//			$body .= 'NumFound: '.$suggestion->getNumFound().'<br/>';
-//			$body .= 'StartOffset: '.$suggestion->getStartOffset().'<br/>';
-//			$body .= 'EndOffset: '.$suggestion->getEndOffset().'<br/>';
-//			$body .= 'OriginalFrequency: '.$suggestion->getOriginalFrequency().'<br/>';
-//			$body .= 'Frequency: '.$suggestion->getFrequency().'<br/>';
-//			$body .= 'Word: '.$suggestion->getWord().'<br/>';
-//		}
-//	}
+	$spelling = $results->getSpellcheck();
+	if ($spelling->getCorrectlySpelled() == FALSE)
+	{
+		
+		/*
+		 * We're going to modify the provided query to suggest a better one, so duplicate $q.
+		 */
+		$suggested_q = $q;
+		
+		$body .= '<h1>Suggestions</h1>';
+		
+		/*
+		 * Step through each term that appears to be misspelled, and create a modified query string.
+		 */
+		foreach($spelling as $suggestion)
+		{
+			$str_start = $suggestion->getStartOffset();
+			$str_end = $suggestion->getEndOffset();
+			$original_string = substr($q, $str_start, $str_end);
+			$suggested_q = str_replace($original_string, $suggestion->getWord(), $suggested_q);
+		}
+		
+		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q) . '">'
+			. $suggested_q . '</a>”?</p>';
+		
+	}
 	
 	/*
 	 * If there are no results.
