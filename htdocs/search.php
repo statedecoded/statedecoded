@@ -198,6 +198,17 @@ if (!empty($_GET['q']))
 				. $result->section . ')</a></h1>';
 			
 			/*
+			 * Display this law's structural ancestry as a breadcrumb trail.
+			 */
+			$body .= '<div class="breadcrumbs"><ul>';
+			$ancestry = explode('/', $result->structure);
+			foreach ($ancestry as $structure)
+			{
+				$body .= '<li><a>' . $structure . '</a></li>';
+			}
+			$body .= '</ul></div>';
+			
+			/*
 			 * Attempt to display a snippet of the indexed law, highlighting the use of the search
 			 * terms within that text.
 			 */
@@ -229,17 +240,6 @@ if (!empty($_GET['q']))
 			{
 				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
 			}
-			
-			/*
-			 * Display this law's structural ancestry as a breadcrumb trail.
-			 */
-			$body .= '<div class="breadcrumbs"><ul>';
-			$ancestry = explode('/', $result->structure);
-			foreach ($ancestry as $structure)
-			{
-				$body .= '<li><a>' . $structure . '</a></li>';
-			}
-			$body .= '</ul></div>';
 			
 			/*
 			 * End the display of this single result.
