@@ -88,6 +88,7 @@ if (!empty($_GET['q']))
 	 * Set up our query.
 	 */
 	$query = $client->createSelect();
+	$query->setHandler('search');
 	$query->setQuery($q);
 	
 	/*
