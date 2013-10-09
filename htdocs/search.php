@@ -15,7 +15,7 @@
  */
 
 /*
- * Intialize Solarium.
+ * Intialize Solarium and instruct it to use the correct request handler.
  */
 $client = new Solarium_Client($GLOBALS['solr_config']);
 
@@ -124,7 +124,8 @@ if (!empty($_GET['q']))
 	$highlighted = $results->getHighlighting();
 	
 	/*
-	 * If this search term appears to be misspelled, gather a list of alternatives.
+	 * If any portion of this search term appears to be misspelled, propose a properly spelled
+	 * version.
 	 */
 // Commented out temporarily, per issue #437
 //	$spelling = $results->getSpellcheck();
@@ -150,7 +151,7 @@ if (!empty($_GET['q']))
 	if (count($results) == FALSE)
 	{
 		
-		$body .= '<p>No results found. [suggestions for better results]';
+		$body .= '<p>No results found.';
 		
 	}
 	
