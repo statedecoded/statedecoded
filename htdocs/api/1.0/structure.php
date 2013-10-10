@@ -73,15 +73,15 @@ else
 /*
  * If the request is for the structural units sorted by a specific criteria.
  */
-if (isset($args['sort']))
+if (isset($_GET['sort']))
 {
-
+	
 	/*
 	 * Explicitly reassign the external value to an internal one, for safety's sake.
 	 */
-	if ($args['sort'] == 'views')
+	if ($_GET['sort'] == 'views')
 	{
-		$order_by = 'views';
+		$order_by = filter_var($_GET['sort'], FILTER_SANITIZE_STRING);
 	}
 	
 }
