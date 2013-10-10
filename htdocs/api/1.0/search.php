@@ -5,7 +5,7 @@
  *
  * PHP version 5
  *
- * @author		Waldo Jaquith <waldo at krues8dr.com>
+ * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.9
@@ -18,40 +18,18 @@ header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
 
 /*
- * Retrieve a list of all valid API keys.
+ * Validate the provided API key.
  */
 $api = new API;
-$api->list_all_keys();
-
-/*
- * Make sure that the provided API key is the correct length.
  */
-if ( strlen($_GET['key']) != 16 )
+$api->key = $_GET['key'];
+try
 {
-	json_error('Invalid API key.');
-	die();
+	$api->validate_key();
 }
-
-/*
- * Localize the provided API key, filtering out unsafe characters.
- */
-$key = filter_input(INPUT_GET, 'key', FILTER_SANITIZE_STRING);
-
-/*
- * If the provided API key has no content, post-filtering, or if there are no registered API keys.
- */
-if ( empty($key) || (count($api->all_keys) == 0) )
+catch (Exception $e)
 {
-	json_error('API key not provided. Please register for an API key.');
-	die();
-}
-
-/*
- * But if there are API keys, and our key is valid-looking, check whether the key is registered.
- */
-elseif (!isset($api->all_keys->$key))
-{
-	json_error('Invalid API key.');
+	json_error($e->getMessage());
 	die();
 }
 
