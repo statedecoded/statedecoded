@@ -21,7 +21,6 @@ header('Content-type: application/json');
  * Validate the provided API key.
  */
 $api = new API;
- */
 $api->key = $_GET['key'];
 try
 {
@@ -91,7 +90,6 @@ else
 /*
  * Intialize Solarium.
  */
-Solarium_Autoloader::register();
 $client = new Solarium_Client($GLOBALS['solr_config']);
 	
 /*
