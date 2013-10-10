@@ -207,6 +207,7 @@ foreach ($search_results as $document)
 	{
 		$law->section_number = $document->section;
 		$response->results->{$i} = $law->get_law();	
+		$response->results->{$i}->score = $document->score;
 	}
 	
 	$i++;
