@@ -30,6 +30,7 @@ $parser = new ParserController(array('logger' => $logger));
 
 if (isset($_GET['noframe']))
 {
+
 	/*
 	 * Begin the flush immediately, by sending the content type header.
 	 */
@@ -43,6 +44,7 @@ if (isset($_GET['noframe']))
 
 	$template = Template::create('admin_frame');
 	$template->parse($content);
+	
 }
 
 /*
@@ -206,6 +208,7 @@ elseif ($_POST['action'] == 'test_environment')
 	ob_end_clean();
 
 }
+
 /*
  * If this is an AJAX request
  */
@@ -340,6 +343,7 @@ function show_admin_forms($args = array())
 
 	if ($editions !== FALSE)
 	{
+	
 		$body .= '<div class="suboption">
 					<select name="edition" value="edition">
 						<option value="">Choose Edition .&thinsp;.&thinsp;.</option>';
@@ -355,8 +359,10 @@ function show_admin_forms($args = array())
 
 		$body .= '</select>
 			</div>';
+			
 	}
-	else {
+	else
+	{
 		$body .= '<div class="suboption">
 			You don’t have any editions yet, you’ll need to create a new one.
 		</div>';

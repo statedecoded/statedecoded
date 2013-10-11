@@ -25,8 +25,6 @@ $content = new Content();
 $content->set('browser_title', '');
 $content->set('page_title', '');
 
-//body class="preload"?
-
 $content->set('body',
 	'<!-- UNCOMMENT TO DISPLAY AN INTRODUCTORY VIDEO HERE
 	<div class="nest video">

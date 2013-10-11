@@ -19,15 +19,18 @@
 $laws = new Law();
 
 /*
- * Use the id passed to lookup the law
+ * Use the ID passed to look up the law.
  */
 if ( isset($args['relational_id']) )
 {
+
 	$laws->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+	
 	/*
 	 * Retrieve a copy of the law.
 	 */
 	$law = $laws->get_law();
+	
 }
 
 if (!isset($law) || $law === FALSE)
