@@ -37,6 +37,11 @@ $body = '';
 $sidebar = '';
 
 /*
+ * Set our API key as a JavaScript variable, to be used by our autocomplete JavaScript.
+ */
+$content->set('javascript', "var api_key = '" . API_KEY . "';");
+
+/*
  * Create a new instance of our search class. We use this to display the search form and the result
  * page numbers.
  */
