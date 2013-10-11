@@ -28,6 +28,11 @@ class StateDecoded2013__Page extends Page
 			'type' => 'css',
 			'requires' => array('font_awesome_css')
 		),
+		'jquery_ui_css' => array(
+			'path' => '//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css',
+			'type' => 'css',
+			'requires' => array('jquery_ui')
+		),
 		'jquery' => array(
 			'path' => '//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js',
 			'type' => 'javascript'
