@@ -16,6 +16,7 @@
 
 class Content
 {
+
 	public $data = array();
 
 	/**
@@ -31,11 +32,13 @@ class Content
 	 */
 	public function append($field, $content = null)
 	{
+	
 		if(!isset($this->data[$field]))
 		{
 			$this->data[$field] = '';
 		}
 		return $this->data[$field] .= $content;
+		
 	}
 
 	/**
@@ -49,17 +52,22 @@ class Content
 	/**
 	 * Add several properties to our content.
 	 */
-	public function set_many($data) {
+	public function set_many($data)
+	{
+	
 		foreach ($data as $name => $value)
 		{
 			$this->data[$name] = $value;
 		}
+		
 	}
 
 	public function get($field=null)
 	{
+	
 		if (isset($field))
 		{
+		
 			if(isset($this->data[$field]))
 			{
 				return $this->data[$field];
@@ -73,10 +81,13 @@ class Content
 				 */
 				return '';
 			}
+			
 		}
 		else
 		{
 			return $this->data;
 		}
+		
 	}
+	
 }

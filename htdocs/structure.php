@@ -21,6 +21,7 @@ if ( !isset($args['relational_id']) || empty($args['relational_id']) )
 {
 	$structure_id = '';
 }
+
 /*
  * If an identifier has been specified (which may come in the form of multiple identifiers,
  * separated by slashes), localize that variable.
@@ -36,7 +37,6 @@ else
  * Create a new instance of the class that handles information about individual laws.
  */
 $struct = new Structure();
-
 
 /*
  * Get the structure based on our identifier
@@ -71,8 +71,7 @@ $content = new Content();
 /*
  * Define the title page elements.
  */
-
-if(strlen($structure_id) > 0)
+if (strlen($structure_id) > 0)
 {
 	$content->set('browser_title', $struct->name . '—' . SITE_TITLE);
 	$content->set('page_title', '<h2>' . $struct->name . '</h2>');
@@ -85,7 +84,6 @@ else
 /*
  * Make some section information available globally to JavaScript.
  */
-
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
 
 /*
@@ -93,6 +91,7 @@ $content->append('javascript', "var api_key = '" . API_KEY . "';");
  */
 if (count((array) $structure) > 1)
 {
+
 	foreach ($structure as $level)
 	{
 
@@ -116,6 +115,7 @@ if (count((array) $structure) > 1)
 		}
 
 	}
+	
 }
 
 if (strlen($content->get('breadcrumbs')) > 0)
@@ -130,10 +130,12 @@ if (strlen($content->get('breadcrumbs')) > 0)
  */
 else
 {
+
 	/*
 	* Make the "up" link a link to the home page.
 	*/
 	$content->set('link_rel', '<link rel="up" title="Up" href="/" />');
+	
 }
 
 /*
@@ -153,6 +155,7 @@ if (isset($struct->siblings))
 	 */
 	foreach ($struct->siblings as $sibling)
 	{
+	
 		if ($sibling->id === $current_structure->id)
 		{
 
@@ -169,11 +172,14 @@ if (isset($struct->siblings))
 				$tmp = next($struct->siblings);
 				$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
 			}
+			
 			break;
 
 		}
 		$i++;
+		
 	}
+	
 }
 
 /*
@@ -181,27 +187,34 @@ if (isset($struct->siblings))
  */
 if(strlen($structure_id) > 0)
 {
-	$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME . ', titled
-			“'.$struct->name.'.”';
+
+	$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME
+		. ', titled “'.$struct->name.'.”';
 
 	if (count((array) $structure) > 1)
 	{
+	
 		foreach ($structure as $level)
 		{
+		
 			if ($level->label !== $struct->label)
 			{
 				$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ', '
 				.'titled “' . $level->name . '.”';
 			}
+			
 		}
+		
 	}
+	
 }
+
 else
 {
-$body = '
-	<article>
-	<h1>' . ucwords($children->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
-	<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
+	$body = '
+		<article>
+		<h1>' . ucwords($children->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
+		<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
 }
 
 /*
@@ -209,8 +222,10 @@ $body = '
  */
 if (isset($struct->metadata))
 {
+
 	if (isset($struct->metadata->child_laws) && ($struct->metadata->child_laws > 0) )
 	{
+	
 		$body .= ' It contains ' . number_format($struct->metadata->child_laws) . ' laws';
 		if (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
 		{
@@ -221,12 +236,14 @@ if (isset($struct->metadata))
 		{
 			$body .= '.';
 		}
+		
 	}
 	elseif (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
 	{
 		$body .= ' It is divided into ' . number_format($struct->metadata->child_structures)
 			. ' sub-structures.';
 	}
+	
 }
 
 /*
@@ -269,6 +286,7 @@ if ($children !== FALSE)
 		$counter++;
 
 	}
+	
 	$body .= '</dl>';
 
 }
@@ -295,6 +313,7 @@ if ($laws !== FALSE)
 
 	foreach ($laws as $law)
 	{
+	
 		/*
 		 * The remainder of the count divided by the number of classes
 		 * yields the proper index for the row class.
@@ -309,6 +328,7 @@ if ($laws !== FALSE)
 					. $law->catch_line . '</a></dd>';
 
 		$counter++;
+		
 	}
 	$body .= '</dl>';
 }

@@ -27,6 +27,7 @@ function __autoload_libraries($class_name)
 	return;
 
 }
+
 spl_autoload_register('__autoload_libraries');
 
 
@@ -40,14 +41,16 @@ function fetch_url($url)
 	{
 		return FALSE;
 	}
+	
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
 	curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1200);
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-	/* Set CURLOPT_PROTOCOLS to protect against exploitation of CVE-2013-0249 that
-	 * affects cURL 7.26.0 to and including 7.28.1.
+	/* Set CURLOPT_PROTOCOLS to protect against exploitation of CVE-2013-0249 that affects cURL
+	 * v7.26.0 through v7.28.1, inclusive.
+	 * 
 	 * http://curl.haxx.se/docs/adv_20130206.html
 	 * http://www.h-online.com/open/news/item/cURL-goes-wrong-1800880.html
 	 */
@@ -82,6 +85,7 @@ function json_error($text)
 	{
 		return FALSE;
 	}
+	
 	$error = array('error',
 		array(
 			'message' => 'An Error Occurred',
@@ -92,7 +96,7 @@ function json_error($text)
 
 	/*
 	 * Return a 400 "Bad Request" error. This indicates that the request was invalid. Whether this
-	 * is the best HTTP header is unclear.
+	 * is the best HTTP header is subject to debate.
 	 */
 	header("HTTP/1.0 400 OK");
 
@@ -125,7 +129,7 @@ function sort_by_length($a, $b)
 
 
 /**
- * The following four functions were pulled out of WordPress 3.5. They've been modified somewhat, in
+ * The following two functions were pulled out of WordPress 3.5. They've been modified somewhat, in
  * order to remove the use of a pair of internal WordPress functions (_x and apply_filters(), and
  * also to replace WordPress’ use of entities with the use of actual Unicode characters.
  */
@@ -151,6 +155,7 @@ function sort_by_length($a, $b)
  */
 function wptexturize($text)
 {
+
 	global $wp_cockneyreplace;
 	//static $opening_quote, $closing_quote, $default_no_texturize_tags, $default_no_texturize_shortcodes, $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements;
 
@@ -222,6 +227,7 @@ function wptexturize($text)
 		$curl = preg_replace('/&([^#])(?![a-zA-Z1-4]{1,8};)/', '&#038;$1', $curl);
 	}
 	return implode( '', $textarr );
+	
 }
 
 /**
@@ -240,6 +246,7 @@ function wptexturize($text)
  */
 function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $opening = '<', $closing = '>')
 {
+
 	// Check if it is a closing tag -- otherwise assume opening tag
 	if (strncmp($opening . '/', $text, 2))
 	{
@@ -274,15 +281,16 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 			}
 		}
 	}
+	
 }
 
 /**
- * Check that a file is available and safe to use
- * Throws catchable exceptions if not.
- * Optionally check if the file is writable.
+ * Check that a file is available and safe to use. Throws catchable exceptions if not. Optionally
+ * checks if the file is writable.
  */
 function check_file_available($filename, $writable=false)
 {
+
 	if (!file_exists($filename))
 	{
 		throw new Exception('File does not exist. "' .
@@ -310,6 +318,7 @@ function check_file_available($filename, $writable=false)
 	else {
 		return true;
 	}
+	
 }
 
 /**
@@ -319,6 +328,7 @@ function check_file_available($filename, $writable=false)
  */
 function check_dir_available($dirname, $writable=false)
 {
+
 	if (!file_exists($dirname))
 	{
 		throw new Exception('Directory does not exist. "' .
@@ -346,4 +356,5 @@ function check_dir_available($dirname, $writable=false)
 	else {
 		return true;
 	}
+	
 }

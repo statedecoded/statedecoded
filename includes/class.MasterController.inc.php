@@ -17,6 +17,7 @@
 
 class MasterController
 {
+
 	public $routes = array();
 
 	public function __construct()
@@ -26,30 +27,34 @@ class MasterController
 
 	public function execute()
 	{
+	
 		/*
 		 * Explode the request into a method and some args
 		 */
 		list($handler, $args) = $this->parseRequest();
 
-		if(is_array($handler) && isset($handler[0]) && isset($handler[1]))
+		if (is_array($handler) && isset($handler[0]) && isset($handler[1]))
 		{
 			$class = $handler[0];
 			$method = $handler[1];
 			$object = new $class();
 			print $object->$method($args);
 		}
-		elseif(is_string($handler) && strlen($handler) > 0)
+		
+		elseif (is_string($handler) && strlen($handler) > 0)
 		{
 			if(file_exists(WEB_ROOT.'/'.$handler))
 			{
 				require(WEB_ROOT.'/'.$handler);
 			}
 		}
+		
 	}
 
 	public function parseRequest()
 	{
-		if(isset($_SERVER['REDIRECT_URL']) && !empty($_SERVER['REDIRECT_URL']))
+	
+		if (isset($_SERVER['REDIRECT_URL']) && !empty($_SERVER['REDIRECT_URL']))
 		{
 			$url = $_SERVER['REDIRECT_URL'];
 		}
@@ -60,6 +65,7 @@ class MasterController
 
 		list($handler, $args) = Router::getRoute($url);
 		return array($handler, $args);
+		
 	}
 
 	public function fetchRoutes()

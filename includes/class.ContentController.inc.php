@@ -17,6 +17,7 @@
 
 class ContentController extends BaseController
 {
+
 	/**
 	 * ContentController::default()
 	 *
@@ -24,12 +25,14 @@ class ContentController extends BaseController
 	 */
 	public function notFound($args)
 	{
+	
 		$body = '<h1>Content Not Found</h1>
 			<p>We were unable to find the content you requested.</p>';
 	
 		$this->setContent('body', $body);
 		
 		return $this->renderContent();
+		
 	}
 	
 	/**
@@ -39,6 +42,7 @@ class ContentController extends BaseController
 	 */
 	public function index($args)
 	{
+	
 		$this->setContent('browser_title', SITE_TITLE.': The '.LAWS_NAME.', for Humans.');
 
 		/*
@@ -86,6 +90,7 @@ class ContentController extends BaseController
 		unset($body);
 		
 		return $this->renderContent();
+		
 	} /* index() */
 	
 	/**
@@ -95,11 +100,14 @@ class ContentController extends BaseController
 	 */
 	public function about($args)
 	{
+	
 		$this->setContent('browser_title', 'About');
 		$this->setContent('page_title', 'About');
 		$this->setContent('body', '');
 		$this->setContent('sidebar', '');
 		
 		return $this->renderContent();
+		
 	}
+	
 }
