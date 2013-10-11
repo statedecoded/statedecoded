@@ -129,6 +129,7 @@ class Structure
 		$this->get_current();
 
 		return TRUE;
+		
 	}
 
 
@@ -217,6 +218,7 @@ class Structure
 			}
 
 			$structure->{$prefix-1}->$key = $value;
+			
 		}
 
 		/*
@@ -225,9 +227,13 @@ class Structure
 		$j=0;
 		for ($i=count((array) $structure)-1; $i>=0; $i--)
 		{
+		
 			$this->structure->{$j} = $structure->{$i};
-			/* Include the level of this structural element. (e.g., in Virginia, title is 1, chapter
-			   is 2, part is 3.) */
+			
+			/*
+			 * Include the level of this structural element. (e.g., in Virginia, "title" is 1,
+			 * "chapter" is 2, "part" is 3.)
+			 */
 			$this->structure->{$j}->level = $j+1;
 			if (isset($prior_id))
 			{
@@ -235,7 +241,9 @@ class Structure
 			}
 			$j++;
 			$prior_id = $structure->{$i}->id;
+			
 		}
+		
 		unset($structure);
 
 		/*
@@ -282,6 +290,7 @@ class Structure
 		$sql_args = array();
 		if (!empty($this->parent_id))
 		{
+		
 			$sql = 'SELECT s1_id AS id, s1_name AS name, s1_identifier AS identifier,
 					permalinks.url, permalinks.token
 					FROM structure_unified
@@ -294,6 +303,7 @@ class Structure
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
 			$sql_args[':object_type'] = 'structure';
 			$sql_args[':parent_id'] = $this->parent_id;
+			
 		}
 
 		/*
@@ -329,6 +339,7 @@ class Structure
 				$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 					ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 			}
+			
 		}
 
 		$statement = $db->prepare($sql);
@@ -414,6 +425,7 @@ class Structure
 		}
 		else
 		{
+		
 			$sql .= ' WHERE structure.parent_id = :parent_id';
 			$sql_args[':parent_id'] = $this->id;
 
@@ -625,6 +637,7 @@ class Structure
 
 				$ancestry->$key->url = $permalink->url;
 			}
+			
 		}
 
 		unset($structure);
@@ -806,6 +819,7 @@ class Structure
 		$i=0;
 		while ($section = $statement->fetch(PDO::FETCH_OBJ))
 		{
+		
 			/*
 			 * Sometimes there are laws that lack titles. We've got to put something in that field.
 			 */
@@ -818,7 +832,9 @@ class Structure
 			$i++;
 
 		}
+		
 		return $laws;
 
 	}
+	
 }

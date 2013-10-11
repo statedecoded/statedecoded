@@ -17,6 +17,7 @@
 
 class Logger
 {
+
    /**
      * Whether or not to show messages as HTML.
      *
@@ -44,6 +45,7 @@ class Logger
 
 	public function __construct($args = array())
 	{
+	
 		foreach($args as $key=>$value)
 		{
 			$this->$key = $value;
@@ -63,12 +65,14 @@ class Logger
 	 */
 	public function message($msg, $level = 1)
 	{
-		if($level >= $this->level)
+	
+		if ($level >= $this->level)
 		{
+		
 			echo $msg;
 
-			/**
-			 * Handle line endings
+			/*
+			 * Provide the correct line endings.
 			 */
 			if($this->html === TRUE)
 			{
@@ -78,12 +82,15 @@ class Logger
 			{
 				echo "\n";
 			}
-			/**
-			 * Flush the buffer, just to get the content out ASAP
+			
+			/*
+			 * Flush the buffer to send the content to the browse immediately.
 			 */
 			flush();
 			ob_flush();
+			
 		}
+		
 	}
 
 	// }}}
