@@ -27,8 +27,9 @@ class Search
 	{
 		
 		$this->form = '
-			<form method="get" action="/search/">
-				<input type="text" name="q" ';
+			<div class="ui-widget">
+				<form method="get" action="/search/">
+					<input type="text" name="q" id="q" ';
 		if (!empty($this->query))
 		{
 			$this->form .= 'value="' . $this->query . '"';
@@ -45,7 +46,8 @@ class Search
 		}
 		
 		$this->form .= '<input type="submit" value="Search" />
-			</form>';
+				</form>
+			</div>';
 			
 		return $this->form;
 		

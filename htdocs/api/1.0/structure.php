@@ -17,34 +17,18 @@
 header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
 
+/*
+ * Validate the provided API key.
+ */
 $api = new API;
-$api->list_all_keys();
-
-/*
- * Make sure that the key is the correct (safe) length.
- */
-if ( strlen($_GET['key']) != 16 )
+$api->key = $_GET['key'];
+try
 {
-	json_error('Invalid API key.');
-	die();
+	$api->validate_key();
 }
-
-/*
- * Localize the key, filtering out unsafe characters.
- */
-$key = filter_input(INPUT_GET, 'key', FILTER_SANITIZE_STRING);
-
-/*
- * If no key has been passed with this query, or if there are no registered API keys.
- */
-if ( empty($key) || (count($api->all_keys) == 0) )
+catch (Exception $e)
 {
-	json_error('API key not provided. Please register for an API key.');
-	die();
-}
-elseif (!isset($api->all_keys->$key))
-{
-	json_error('Invalid API key.');
+	json_error($e->getMessage());
 	die();
 }
 
@@ -89,15 +73,15 @@ else
 /*
  * If the request is for the structural units sorted by a specific criteria.
  */
-if (isset($args['sort']))
+if (isset($_GET['sort']))
 {
-
+	
 	/*
 	 * Explicitly reassign the external value to an internal one, for safety's sake.
 	 */
-	if ($args['sort'] == 'views')
+	if ($_GET['sort'] == 'views')
 	{
-		$order_by = 'views';
+		$order_by = filter_var($_GET['sort'], FILTER_SANITIZE_STRING);
 	}
 	
 }

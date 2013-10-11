@@ -18,7 +18,6 @@ function truncate(str){
  * console.log(escapeSelector('^')); // returns '\^'
  * console.log(escapeSelector('#(a)')); // returns '#\(a\)'
  */
-
 function escapeSelector(str) {
 	// Find everything but # which we want to leave intact!
 	var find = /([!"$%&'()*+,.\/:;<=>?@\[\]\\^`\{|\}~])/g;
@@ -320,4 +319,64 @@ $(document).ready(function () {
             }
 	    });
 	}
+	
+	
+	
+	/* Search Autocomplete */
+	$(function() {
+	  function split( val ) {
+		return val.split( /\s+/ );
+	  }
+	  function extractLast( term ) {
+		return split( term ).pop();
+	  }
+	
+	  $( "#q" ).autocomplete({
+		source: function( request, response ) {
+		  if(request.term[request.term.length-1]==" ") {
+			response()
+			return;
+		  }
+		  $.ajax({
+			url: "/api/suggest/" + request.term,
+			dataType: "jsonp",
+			cache: true,
+			data: {
+			  key: api_key
+			},
+			success: function( data ) {
+			  response( $.map(data.terms, function(item) { 
+				return {
+					label: item.term,
+					value: item.term
+				}
+			  }));
+			}
+		  });
+		},
+		minLength: 2,
+		focus: function() {
+		  // prevent value inserted on focus
+		  return false;
+		},
+		select: function( event, ui ) {
+		  var terms = split( this.value );
+		  // remove the current input
+		  terms.pop();
+		  // add the selected item
+		  terms.push( ui.item.value );
+		  // add placeholder to get the comma-and-space at the end
+		  terms.push( "" );
+		  this.value = terms.join( " " );
+		  return false;
+		},
+		open: function() {
+		  $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+		},
+		close: function() {
+		  $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+		}
+	  });
+	});
+	
 });
