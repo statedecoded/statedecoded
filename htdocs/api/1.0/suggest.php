@@ -105,10 +105,14 @@ else
 	$response->terms = array();
 	foreach ($search_results as $term => $term_result)
 	{
-		
+		$i=0;
 		foreach ($term_result as $suggestion)
 		{
-			$response->terms[] = $suggestion . ' ';
+			$response->terms[] = array(
+				'id' => $i,
+				'term' => $suggestion
+			);
+			$i++;
 		}
 		
 	}
