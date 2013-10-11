@@ -5,7 +5,7 @@
  *
  * PHP version 5
  *
- * @author		Waldo Jaquith <waldo at krues8dr.com>
+ * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		0.9
@@ -18,40 +18,17 @@ header("HTTP/1.0 200 OK");
 header('Content-type: application/json');
 
 /*
- * Retrieve a list of all valid API keys.
+ * Validate the provided API key.
  */
 $api = new API;
-$api->list_all_keys();
-
-/*
- * Make sure that the provided API key is the correct length.
- */
-if ( strlen($_GET['key']) != 16 )
+$api->key = $_GET['key'];
+try
 {
-	json_error('Invalid API key.');
-	die();
+	$api->validate_key();
 }
-
-/*
- * Localize the provided API key, filtering out unsafe characters.
- */
-$key = filter_input(INPUT_GET, 'key', FILTER_SANITIZE_STRING);
-
-/*
- * If the provided API key has no content, post-filtering, or if there are no registered API keys.
- */
-if ( empty($key) || (count($api->all_keys) == 0) )
+catch (Exception $e)
 {
-	json_error('API key not provided. Please register for an API key.');
-	die();
-}
-
-/*
- * But if there are API keys, and our key is valid-looking, check whether the key is registered.
- */
-elseif (!isset($api->all_keys->$key))
-{
-	json_error('Invalid API key.');
+	json_error($e->getMessage());
 	die();
 }
 
@@ -85,9 +62,34 @@ if (!isset($args['term']) || empty($args['term']))
 $term = filter_var($args['term'], FILTER_SANITIZE_STRING);
 
 /*
+ * Determine if the search results should display detailed information about each law.
+ */
+if (!isset($_GET['detailed']) || empty($_GET['detailed']))
+{
+	$detailed = FALSE;
+}
+else
+{
+
+	$detailed = filter_var($_GET['detailed'], FILTER_SANITIZE_STRING);
+	if ($detailed == "true")
+	{
+		$detailed = TRUE;
+	}
+	elseif ($detailed != "false")
+	{
+		$detailed = FALSE;
+	}
+	else
+	{
+		$detailed = FALSE;
+	}
+	
+}
+
+/*
  * Intialize Solarium.
  */
-Solarium_Autoloader::register();
 $client = new Solarium_Client($GLOBALS['solr_config']);
 	
 /*
@@ -129,9 +131,21 @@ if (count($search_results) == 0)
 }
 
 /*
- * If we have results, iterate through them and include them in our output.
+ * If we have results.
+ */
+ 
+/*
+ * Instantiate the Law class.
  */
 $law = new Law;
+
+/*
+ * Save an array of the legal code's structure, which we'll use to properly identify the structural
+ * data returned by Solr. We hack off the last element of the array, since that identifies the laws
+ * themselves, not a structural unit.
+ */
+$code_structures = array_slice(explode(',', STRUCTURE), 0, -1);
+
 $i=0;
 foreach ($search_results as $document)
 {
@@ -142,21 +156,58 @@ foreach ($search_results as $document)
 	$snippet = $highlighted->getResult($document->id);
 	if ($snippet != FALSE)
 	{
+		
+		/*
+		 * Build the snippet up from the snippet object.
+		 */
 		foreach ($snippet as $field => $highlight)
 		{
-			$response->results->{$i}->excerpt .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight) )
+			$response->results->{$i}->excerpt .= strip_tags( implode(' ... ', $highlight) )
 				. ' ... ';
 		}
+		
+		/*
+		 * Use an appropriate closing ellipsis.
+		 */
+		if (substr($response->results->{$i}->excerpt, -6) == '. ... ')
+		{
+			$response->results->{$i}->excerpt = substr($response->results->{$i}->excerpt, 0, -6)
+				. '....';
+		}
+		
+		$response->results->{$i}->excerpt = trim($response->results->{$i}->excerpt);
+		
 	}
 	
 	/*
-	 * Store the relevant fields within the response we'll send.
+	 * At the default level of verbosity, just give the data indexed by Solr, plus the URL.
 	 */
-	$response->results->{$i}->section_number = $document->section;
-	$response->results->{$i}->catch_line = $document->catch_line;
-	$response->results->{$i}->text = $document->text;
-	$response->results->{$i}->url = $law->get_url($document->section);
-	$response->results->{$i}->score = $document->score;
+	if ($detailed === FALSE)
+	{
+		
+		/*
+		 * Store the relevant fields within the response we'll send.
+		 */
+		$response->results->{$i}->section_number = $document->section;
+		$response->results->{$i}->catch_line = $document->catch_line;
+		$response->results->{$i}->text = $document->text;
+		$response->results->{$i}->url = $law->get_url($document->section);
+		$response->results->{$i}->score = $document->score;
+		$response->results->{$i}->ancestry = (object) array_combine($code_structures, explode('/', $document->structure));
+	
+	}
+	
+	/*
+	 * At a higher level of verbosity, replace the data indexed by Solr with the data provided
+	 * by Law::get_law(), at *its* default level of verbosity.
+	 */
+	else
+	{
+		$law->section_number = $document->section;
+		$response->results->{$i} = $law->get_law();	
+		$response->results->{$i}->score = $document->score;
+	}
+	
 	$i++;
 	
 }

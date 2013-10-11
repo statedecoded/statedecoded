@@ -145,6 +145,67 @@ class API
 			return FALSE;
 		}
 	}
+	
+	
+	/**
+	 * Validate a key.
+	 *
+	 * Accepts a key provided directly from the GET request. Invalid keys yield errors 
+	 */
+	
+	function validate_key()
+	{
+		
+		/*
+		 * Only proceed if a key has been provided.
+		 */
+		if (!isset($this->key))
+		{
+			throw new Exception('No API key provided.');
+			return FALSE;
+		}
+		
+		/*
+		 * Make sure that the provided API key is the correct length.
+		 */
+		if ( strlen($this->key) != 16 )
+		{
+			throw new Exception('Invalid API key.');
+			return FALSE;
+		}
+		
+		/*
+		 * Clean up the API key, filtering out unsafe characters.
+		 */
+		$this->key = filter_var($this->key, FILTER_SANITIZE_STRING);
+		
+		/*
+		 * Retrieve a list of every valid key.
+		 */
+		$this->list_all_keys();
+		
+		/*
+		 * If the provided API key has no content, post-filtering, or if there are no registered API
+		 * keys.
+		 */
+		if ( empty($this->key) || (count($this->all_keys) == 0) )
+		{
+			throw new Exception('API key not provided. Please register for an API key.');
+			return FALSE;
+		}
+		
+		/*
+		 * But if there are API keys, and our key is valid-looking, check whether the key is registered.
+		 */
+		elseif (!isset($this->all_keys->{$this->key}))
+		{
+			throw new Exception('Invalid API key.');
+			return FALSE;
+		}
+		
+		return TRUE;
+		
+	}
 
 
 	/**

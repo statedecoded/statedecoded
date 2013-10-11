@@ -15,7 +15,7 @@
  */
 
 /*
- * Intialize Solarium.
+ * Intialize Solarium and instruct it to use the correct request handler.
  */
 $client = new Solarium_Client($GLOBALS['solr_config']);
 
@@ -35,6 +35,11 @@ $content->set('page_title', 'Search');
  */
 $body = '';
 $sidebar = '';
+
+/*
+ * Set our API key as a JavaScript variable, to be used by our autocomplete JavaScript.
+ */
+$content->set('javascript', "var api_key = '" . API_KEY . "';");
 
 /*
  * Create a new instance of our search class. We use this to display the search form and the result
@@ -88,6 +93,7 @@ if (!empty($_GET['q']))
 	 * Set up our query.
 	 */
 	$query = $client->createSelect();
+	$query->setHandler('search');
 	$query->setQuery($q);
 	
 	/*
@@ -124,25 +130,35 @@ if (!empty($_GET['q']))
 	$highlighted = $results->getHighlighting();
 	
 	/*
-	 * If this search term appears to be misspelled, gather a list of alternatives.
+	 * If any portion of this search term appears to be misspelled, propose a properly spelled
+	 * version.
 	 */
-// Commented out temporarily, per issue #437
-//	$spelling = $results->getSpellcheck();
-//	
-//	if ($spelling->getCorrectlySpelled() == FALSE)
-//	{
-//		
-//		$body .= '<h1>Suggestions</h1>';
-//		foreach($spelling as $suggestion)
-//		{
-//			$body .= 'NumFound: '.$suggestion->getNumFound().'<br/>';
-//			$body .= 'StartOffset: '.$suggestion->getStartOffset().'<br/>';
-//			$body .= 'EndOffset: '.$suggestion->getEndOffset().'<br/>';
-//			$body .= 'OriginalFrequency: '.$suggestion->getOriginalFrequency().'<br/>';
-//			$body .= 'Frequency: '.$suggestion->getFrequency().'<br/>';
-//			$body .= 'Word: '.$suggestion->getWord().'<br/>';
-//		}
-//	}
+	$spelling = $results->getSpellcheck();
+	if ($spelling->getCorrectlySpelled() == FALSE)
+	{
+		
+		/*
+		 * We're going to modify the provided query to suggest a better one, so duplicate $q.
+		 */
+		$suggested_q = $q;
+		
+		$body .= '<h1>Suggestions</h1>';
+		
+		/*
+		 * Step through each term that appears to be misspelled, and create a modified query string.
+		 */
+		foreach($spelling as $suggestion)
+		{
+			$str_start = $suggestion->getStartOffset();
+			$str_end = $suggestion->getEndOffset();
+			$original_string = substr($q, $str_start, $str_end);
+			$suggested_q = str_replace($original_string, $suggestion->getWord(), $suggested_q);
+		}
+		
+		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q) . '">'
+			. $suggested_q . '</a>”?</p>';
+		
+	}
 	
 	/*
 	 * If there are no results.
@@ -150,7 +166,7 @@ if (!empty($_GET['q']))
 	if (count($results) == FALSE)
 	{
 		
-		$body .= '<p>No results found. [suggestions for better results]';
+		$body .= '<p>No results found.';
 		
 	}
 	
@@ -187,28 +203,6 @@ if (!empty($_GET['q']))
 				. $result->section . ')</a></h1>';
 			
 			/*
-			 * Attempt to display a snippet of the indexed law, highlighting the use of the search
-			 * terms within that text.
-			 */
-			$snippet = $highlighted->getResult($result->id);
-			if ($snippet != FALSE)
-			{
-				foreach ($snippet as $field => $highlight)
-				{
-					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
-						. ' [.&thinsp;.&thinsp;.] ';
-				}
-			}
-			
-			/*
-			 * If we can't get a highlighted snippet, just show the first few lines of the law.
-			 */
-			else
-			{
-				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
-			}
-			
-			/*
 			 * Display this law's structural ancestry as a breadcrumb trail.
 			 */
 			$body .= '<div class="breadcrumbs"><ul>';
@@ -218,6 +212,39 @@ if (!empty($_GET['q']))
 				$body .= '<li><a>' . $structure . '</a></li>';
 			}
 			$body .= '</ul></div>';
+			
+			/*
+			 * Attempt to display a snippet of the indexed law, highlighting the use of the search
+			 * terms within that text.
+			 */
+			$snippet = $highlighted->getResult($result->id);
+			if ($snippet != FALSE)
+			{
+			
+				foreach ($snippet as $field => $highlight)
+				{
+					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
+						. ' .&thinsp;.&thinsp;. ';
+				}
+						
+				/*
+				 * Use an appropriate closing ellipsis.
+				 */
+				if (substr($body, -22) == '. .&thinsp;.&thinsp;. ')
+				{
+					$body = substr($body, 0, -22) . '.&thinsp;.&thinsp;.&thinsp;.';
+				}
+				$body = trim($body);
+				
+			}
+			
+			/*
+			 * If we can't get a highlighted snippet, just show the first few lines of the law.
+			 */
+			else
+			{
+				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
+			}
 			
 			/*
 			 * End the display of this single result.
