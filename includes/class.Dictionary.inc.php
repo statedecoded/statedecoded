@@ -116,6 +116,7 @@ class Dictionary
 		$sql .= ') ';
 		if (isset($this->section_number))
 		{
+		
 			$sql .= 'AND (';
 
 			$ancestor_count = count($ancestry);
@@ -130,6 +131,7 @@ class Dictionary
 					) ';
 			$sql_args[':scope'] = 'global';
 			$sql_args[':section_number'] = $this->section_number;
+			
 		}
 
 		$sql .= 'ORDER BY dictionary.scope_specificity ';
@@ -155,12 +157,15 @@ class Dictionary
 			$i=0;
 			while ($term = $statement->fetch(PDO::FETCH_OBJ))
 			{
+			
 				$term->url = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $term->section_number . '/';
 				$term->formatted = wptexturize($term->definition) . ' (<a href="' . $term->url . '">'
 					. $term->section_number . '</a>)';
 				$dictionary->$i = $term;
 				$i++;
+				
 			}
+			
 		}
 
 		/*

@@ -67,14 +67,17 @@ class ParserController
      */
 	public function init_logger()
 	{
+	
 		if (!$this->logger)
 		{
 			$this->logger = new Logger();
 		}
+		
 	}
 
 	public function set_execution_limits()
 	{
+	
 		/*
 		 * Let this script run for as long as is necessary to finish.
 		 */
@@ -84,6 +87,7 @@ class ParserController
 		 * Give PHP lots of RAM.
 		 */
 		ini_set('memory_limit', '128M');
+		
 	}
 
 	/**
@@ -399,8 +403,11 @@ class ParserController
 			'tags', 'text_sections', 'structure', 'permalinks');
 		foreach ($tables as $table)
 		{
-			// Note that we *cannot* prepare the table name as an argument here.
-			// PDO doesn't work that way.
+		
+			/*
+			 * Note that we *cannot* prepare the table name as an argument here.
+			 * PDO doesn't work that way.
+			 */
 			$sql = 'TRUNCATE ' . $table;
 
 			$statement = $this->db->prepare($sql);
@@ -411,7 +418,9 @@ class ParserController
 				$this->logger->message('Error in SQL: ' . $sql, 10);
 				die();
 			}
+			
 			$this->logger->message('Deleted ' . $table, 5);
+			
 		}
 
 		/*
@@ -475,6 +484,7 @@ class ParserController
 
 		try
 		{
+		
 			$parser = new Parser(
 				array(
 					/*
@@ -579,6 +589,7 @@ class ParserController
 
 			while ($law = $statement->fetch(PDO::FETCH_OBJ))
 			{
+			
 				/*
 				 * Turn the string of text that comprises the history into an object of atomic
 				 * history history data.
@@ -598,7 +609,9 @@ class ParserController
 						':meta_value' => serialize($history)
 					);
 					$result = $statement->execute($sql_args);
+					
 				}
+			
 			}
 
 		}
@@ -654,6 +667,7 @@ class ParserController
 		$prev = '';
 		foreach ($from as $table)
 		{
+		
 			if ($table == 's1')
 			{
 				$sql .= $table;
@@ -663,6 +677,7 @@ class ParserController
 				$sql .= ' LEFT JOIN structure AS '.$table.' ON ('.$table.'.id = '.$prev.'.parent_id)';
 			}
 			$prev = $table;
+			
 		}
 
 		/*
@@ -675,8 +690,9 @@ class ParserController
 		 */
 		$sql .= ' ORDER BY '.implode(',', $order);
 
-		// Again, nothing here that we can actually prepare.
-		// Column names aren't allowed.
+		/*
+		 * There's nothing here that we can actually prepare. Column names aren't allowed.
+		 */
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 

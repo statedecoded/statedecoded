@@ -30,6 +30,7 @@ class ContentData
 	 */
 	public function __construct($type)
 	{
+	
 		/*
 		 * Require something that resembles a filename.
 		 */
@@ -39,6 +40,7 @@ class ContentData
 			$this->json = file_get_contents($this->filename);
 			$this->content = json_decode($this->json);
 		}
+		
 	}
 
 	/*
@@ -46,6 +48,7 @@ class ContentData
 	 */
 	public function get_text($section)
 	{
+	
 		if (!$section)
 		{
 			return $this->content;
@@ -54,5 +57,7 @@ class ContentData
 		{
 			return $this->content->$section;
 		}
+		
 	}
+	
 }
