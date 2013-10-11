@@ -17,6 +17,7 @@
 
 class DebugLogger extends Logger
 {
+
    /**
      * Time the logger was first created.
      *
@@ -40,9 +41,11 @@ class DebugLogger extends Logger
 
 	public function __construct($args)
 	{
+	
 		parent::__construct($args);
 
 		$this->start_time = $this->get_time();
+		
 	}
 
 	// {{{ message
@@ -52,10 +55,12 @@ class DebugLogger extends Logger
 	 */
 	public function message($msg, $level)
 	{
+	
 		echo $this->get_time_elapsed() . "ms ";
 		echo memory_get_usage() . "b : ";
 
 		parent::message($msg, $level);
+		
 	}
 
 	// }}}
@@ -83,12 +88,15 @@ class DebugLogger extends Logger
 	 */
 	public function get_time_elapsed($time)
 	{
+	
 		if(!$time)
 		{
 			$time = $this->get_time();
 		}
 		return $time - $this->start_time;
+		
 	}
 
 	// }}}
+	
 }

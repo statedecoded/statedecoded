@@ -16,16 +16,29 @@
 
 class Template
 {
+
 	public static function create($pagename=null)
 	{
-		$theme_class = THEME_NAME . '__Page'; // E.g. 'MyCoolTheme__Page'
-		$theme_file = THEME_DIR . 'class.Page.inc.php'; // E.g. '/themes/class.Page.inc.php'
+	
+		/*
+		 * e.g., 'MyCoolTheme__Page'
+		 */
+		$theme_class = THEME_NAME . '__Page'; 
+		
+		/*
+		 * e.g., '/themes/class.Page.inc.php'
+		 */
+		$theme_file = THEME_DIR . 'class.Page.inc.php';
 
-		if(check_file_available($theme_file))
+		if (check_file_available($theme_file))
 		{
+		
 			require_once($theme_file);
 
 			return new $theme_class($pagename);
+		
 		}
+		
 	}
+	
 }

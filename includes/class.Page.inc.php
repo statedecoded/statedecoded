@@ -23,6 +23,7 @@
  */
 class Page
 {
+
 	public $html;
 	public $page = 'default';
 	public $template_file = '';
@@ -106,6 +107,7 @@ class Page
 		}
 
 		return $html;
+		
 	}
 
 
@@ -123,6 +125,7 @@ class Page
 	 */
 	public function render($content)
 	{
+	
 		/*
 		 * Make a copy of the template here, so we can re-render as often
 		 * as we like with new content.
@@ -142,6 +145,7 @@ class Page
 		$this->after_render($template, $content);
 
 		return $template;
+		
 	}
 
 
@@ -185,6 +189,7 @@ class Page
 	 */
 	public function add_asset($name, $asset = array())
 	{
+	
 		/*
 		 * If we have a local path.
 		 */
@@ -205,6 +210,7 @@ class Page
 			$asset['requires'] = $requires;
 		}
 		$this->assets[$name] = $asset;
+		
 	}
 
 
@@ -213,10 +219,12 @@ class Page
 	 */
 	public function add_assets($assets)
 	{
+	
 		foreach ($assets as $name => $asset)
 		{
 			$this->add_asset($name, $asset);
 		}
+		
 	}
 
 
@@ -225,6 +233,7 @@ class Page
 	 */
 	public function parse_assets()
 	{
+	
 		$collated_assets = array();
 
 		foreach ($this->assets as $name => $asset)
@@ -233,6 +242,7 @@ class Page
 		}
 
 		return $collated_assets;
+		
 	}
 
 
@@ -242,19 +252,24 @@ class Page
 	 */
 	public function build_asset(&$collated_assets, $name, $asset)
 	{
+	
 		$type = $asset['type'];
+		
 		/*
 		 * Resolve requirements.
 		 */
 		if (isset($asset['requires']))
 		{
+		
 			foreach ($asset['requires'] as $required)
 			{
-				if(!in_array($required, array_keys($this->assets)))
+			
+				if (!in_array($required, array_keys($this->assets)))
 				{
 					throw new Exception('Required asset "' . $required .
 						'" not defined, from parent "' . $name .'"');
 				}
+				
 				else
 				{
 
@@ -275,8 +290,11 @@ class Page
 						$collated_assets = $this->build_asset($collated_assets, $required,
 							$this->assets[$required]);
 					}
+					
 				} /* !in_array($required ... */
+				
 			} /* foreach ($asset['requires'] */
+			
 		} /* if (isset($asset['requires'] .. */
 
 		/*

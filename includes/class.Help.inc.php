@@ -19,6 +19,7 @@
 
 class Help extends ContentData
 {
+
 	/*
 	 * Specify the help content to include
 	 */

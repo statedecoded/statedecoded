@@ -55,6 +55,8 @@ class Search
 	
 	/**
 	 * Display the links to each page of search results.
+	 *
+	 * @returns the HTML of the paging links
 	 */
 	function display_paging()
 	{
