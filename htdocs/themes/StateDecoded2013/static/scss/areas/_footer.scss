@@ -16,8 +16,6 @@ footer#page_footer {
   height: 150px;
   margin-top: 20px;
   overflow: hidden;
-  position: absolute;
-    bottom: 0;
   width: 100%;
   @include respond-to(smartphone) {
     padding: 0 10px;
