@@ -138,7 +138,7 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 	/*
 	 * Include the site's config file.
 	 */
-	require INCLUDE_PATH . 'config.inc.php';
+	require INCLUDE_PATH . '/config.inc.php';
 
 	define('APC_RUNNING', FALSE);
 
@@ -262,7 +262,6 @@ Solarium_Autoloader::register();
  * Solarium.
  */
 $solr_url = parse_url(SOLR_URL);
-
 $GLOBALS['solr_config'] = array(
     'adapteroptions' => array(
         'host' => $solr_url['host'],
