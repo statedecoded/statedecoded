@@ -309,7 +309,7 @@ function show_admin_forms($args = array())
 					<div>
 						<input type="text" class="text" name="new_edition_name"
 							id="new_edition_name" placeholder="' . date('Y-m') . '"
-							value="'. ((isset($args['new_edition_name']) ? $args['new_edition_name'] : date('Y-m')) . '"
+							value="' . ( isset($args['new_edition_name']) ? $args['new_edition_name'] ): '' . '"
 							/>
 					</div>
 				</div>
@@ -318,7 +318,7 @@ function show_admin_forms($args = array())
 					<div class="edition_url">' . $edition_url_base . '
 						<input type="text" class="text" name="new_edition_slug"
 							id="new_edition_slug" placeholder="' . date('Y-m') . '"
-							value="'. ((isset($args['new_edition_slug']) ? $args['new_edition_slug']) : date('Y-m')) . '"
+							value="' . ( isset($args['new_edition_slug']) ? $args['new_edition_slug'] ) : '' . '"
 							/> /
 					</div>
 					<p class="note">Note: In general, try to only use letters, numbers, and hyphens,
