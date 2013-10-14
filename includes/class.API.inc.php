@@ -218,13 +218,13 @@ class API
 			<form method="post" action="/downloads/" id="api-registration">
 
 				<label for="name">Your Name</label>
-				<input type="name" id="name" name="form_data[name]" placeholder="John Doe" value="'.$this->form->name.'" />
+				<input type="name" id="name" name="form_data[name]" placeholder="John Doe" value="' . ((isset($this->form)) ? $this->form->name : '' ) . '" />
 
 				<label for="email">E-Mail Address <span class="required">*</span></label>
-				<input type="email" id="email" name="form_data[email]" placeholder="john_doe@example.com" required value="'.$this->form->email.'" />
+				<input type="email" id="email" name="form_data[email]" placeholder="john_doe@example.com" required value="' . ((isset($this->form)) ? $this->form->email : '' ) . '" />
 
 				<label for="url">Website URL</label>
-				<input type="url" id="url" name="form_data[url]" placeholder="http://www.example.com/" value="'.$this->form->url.'" />
+				<input type="url" id="url" name="form_data[url]" placeholder="http://www.example.com/" value="' . ((isset($this->form)) ? $this->form->url : '' ) . '" />
 
 				<input type="submit" value="Submit" />
 
