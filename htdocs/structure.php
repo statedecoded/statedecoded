@@ -73,7 +73,7 @@ $content = new Content();
  */
 if (strlen($structure_id) > 0)
 {
-	$content->set('browser_title', $struct->name . '—' . SITE_TITLE);
+	$content->set('browser_title', $struct->name);
 	$content->set('page_title', '<h2>' . $struct->name . '</h2>');
 }
 else
