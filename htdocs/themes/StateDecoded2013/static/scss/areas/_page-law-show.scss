@@ -58,6 +58,20 @@
     }
   }
 
+  #rep_variant {
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      li {
+        display: inline-block;
+        list-style-type: none;
+        margin: 0 0.25em;
+        padding: 0;
+      } // li
+    } // ul
+  }
+
   .primary-content {
     float: left;
     margin-right: 1%;
