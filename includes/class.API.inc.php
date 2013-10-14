@@ -418,7 +418,7 @@ class API
 		}
 
 		$url = 'http://';
-		if ($_SERVER['HTTPS'])
+		if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
 		{
 			$url = 'https://';
 		}

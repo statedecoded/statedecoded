@@ -1491,7 +1491,7 @@ class ParserController
 		 * we allow via an .htaccesss RewriteRule. If it fails, then we know that RewriteRules are
 		 * being ignored.
 		 */
-		if (empty($_SERVER['HTTPS']))
+		if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
 		{
 			$protocol = 'http://';
 		}
