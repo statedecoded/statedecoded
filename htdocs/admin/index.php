@@ -255,7 +255,7 @@ else
 function show_admin_forms($args = array())
 {
 
-	$parser = new ParserController();
+	$parser = new ParserController($args);
 
 	$editions = $parser->get_editions();
 
