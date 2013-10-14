@@ -189,26 +189,27 @@ if (isset($law->history_text))
 }
 
 /*
- * Representational variants are icons that link to various types of ways to read or download the law.
- */
-
-$body .= '<section id="rep_variant">
-            <p>You can download this file as:</p>
-            <ul>
-              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_doc_32.png" alt="Word Doc"></a></li>
-              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_epub_32.png" alt="ePub"></a></li>
-              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_json_32.png" alt="JSON"></a></li>
-              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_pdf_32.png" alt="PDF"></a></li>
-              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_rtf_32.png" alt="RTF (Rich Text Format)"></a></li>
-              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_txt_32.png" alt="TXT (Text File)"></a></li>
-            </ul>
-          </section>';
-
-/*
  * Indicate the conclusion of the "section" article, which is the container for the text of a
  * section of the code.
  */
 $body .= '</article>';
+
+/*
+ * Display links to representational variants of the text of this law.
+ */
+$formats[] = array('doc' => 'Word doc', 'epub' => 'ePub', 'json' => 'JSON', 'pdf' => 'PDF',
+	'rtf' => 'Rich Text Format', 'txt' => 'Plain Text');
+$body .= '<section id="rep_variant">
+			<h2>Download</h2>
+				<ul>';
+foreach ($law->formats as $type => $url)
+{
+	$body .= '<li><a href="' . $url . '"><img src="/themes/StateDecoded2013/static/images/icon_'
+		. $type . '_32.png" alt="' . $formats[$type] . '"></a></li>';
+}
+$body .= '
+				</ul>
+			</section>';
 
 /*
  * Establish the $sidebar variable, so that we can append to it in conditionals.

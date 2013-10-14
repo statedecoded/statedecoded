@@ -427,7 +427,6 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-
 		$sql = 'SELECT url FROM permalinks
 				WHERE relational_id = :id
 				AND object_type = :object_type';
@@ -446,6 +445,12 @@ class Law
 
 			$this->url = $permalink->url;
 		}
+		
+		/*
+		 * List the URLs for the textual formats in which this section is available.
+		 */
+		$this->formats->txt = substr($this->url, 0, -1) . '.txt';
+		$this->formats->json = substr($this->url, 0, -1) . '.json';
 
 		/*
 		 * Create metadata in the Dublin Core format.
