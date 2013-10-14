@@ -123,12 +123,11 @@ class ParserController
 		}
 
 		/*
-		 * Load the MySQL import file into MySQL.
+		 * Load the MySQL import file into MySQL. We don't prepare this query because PDO_MySQL
+		 * didn't support multiple queries until PHP 5.3.
 		 */
 		$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
-
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute();
+		$result = $this->db->exec($sql);
 		if ($result === FALSE)
 		{
 			return FALSE;
