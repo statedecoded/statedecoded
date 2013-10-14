@@ -197,7 +197,7 @@ if(strlen($structure_id) > 0)
 		foreach ($structure as $level)
 		{
 		
-			if ($level->label !== $struct->label)
+			if ($level->label !== $struct->label && !empty($level->label))
 			{
 				$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ', '
 				.'titled “' . $level->name . '.”';
@@ -308,7 +308,7 @@ $laws = $struct->list_laws();
 if ($laws !== FALSE)
 {
 
-	$body .= 'It’s comprised of the following ' . count((array) $laws) . ' sections.</p>';
+	$body .= ' It’s comprised of the following ' . count((array) $laws) . ' sections.</p>';
 	$body .= '<dl class="title-list laws">';
 
 	foreach ($laws as $law)
