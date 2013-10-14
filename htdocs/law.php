@@ -179,7 +179,12 @@ if (isset($law->history_text))
           <li class="active"><a href="#">Translated</a></li>
           <li class="active"><a href="#">Original</a></li>
         </ul>
-				<p>'.$law->history_text.'</p>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab1">
+    				<p>'.$law->history_text.'</p>
+          </div>
+          <div class="tab-pane" id="tab2">
+          </div>
 				</section>';
 }
 
