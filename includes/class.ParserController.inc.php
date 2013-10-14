@@ -68,7 +68,7 @@ class ParserController
 	public function init_logger()
 	{
 	
-		if (!$this->logger)
+		if (!isset($this->logger))
 		{
 			$this->logger = new Logger();
 		}

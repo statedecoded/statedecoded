@@ -255,11 +255,12 @@ else
 function show_admin_forms($args = array())
 {
 
-	$parser = new ParserController();
+	$parser = new ParserController($args);
 
 	$editions = $parser->get_editions();
 
-	if ($_SERVER['HTTPS'])
+	// Per http://stackoverflow.com/questions/1175096/how-to-find-out-if-you-are-using-https-without-serverhttps
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)
 	{
 		$base_url = 'https://';
 	}
@@ -278,7 +279,7 @@ function show_admin_forms($args = array())
 
 	<form method="post" action="/admin/?page=parse&noframe=1">
 		<h3>Import Data</h3>';
-	if ($args['import_errors'])
+	if (isset($args['import_errors']))
 	{
 		$body .= '<div class="errors">
 			Please fix the following errors:
@@ -309,7 +310,7 @@ function show_admin_forms($args = array())
 					<div>
 						<input type="text" class="text" name="new_edition_name"
 							id="new_edition_name" placeholder="' . date('Y-m') . '"
-							value="'. $args['new_edition_name'] . '"
+							value="'. ((isset($args['new_edition_name']) ? $args['new_edition_name'] : date('Y-m')) . '"
 							/>
 					</div>
 				</div>
@@ -318,7 +319,7 @@ function show_admin_forms($args = array())
 					<div class="edition_url">' . $edition_url_base . '
 						<input type="text" class="text" name="new_edition_slug"
 							id="new_edition_slug" placeholder="' . date('Y-m') . '"
-							value="'. $args['new_edition_slug'] . '"
+							value="'. ((isset($args['new_edition_slug']) ? $args['new_edition_slug']) : date('Y-m')) . '"
 							/> /
 					</div>
 					<p class="note">Note: In general, try to only use letters, numbers, and hyphens,
