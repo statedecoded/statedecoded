@@ -123,6 +123,7 @@ elseif ($_POST['action'] == 'parse')
 					$parser->write_api_key();
 					$parser->export();
 					$parser->generate_sitemap();
+					$parser->index_laws();
 					$parser->structural_stats_generate();
 					$parser->prune_views();
 
