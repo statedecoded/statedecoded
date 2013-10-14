@@ -58,6 +58,20 @@
     }
   }
 
+  #rep_variant {
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      li {
+        display: inline-block;
+        list-style-type: none;
+        margin: 0 0.25em;
+        padding: 0;
+      } // li
+    } // ul
+  }
+
   .primary-content {
     float: left;
     margin-right: 1%;
@@ -416,3 +430,98 @@
   }
 }
 
+.nav {
+  margin-bottom: 0;
+  padding-left: 0; // Override default ul/ol
+  list-style: none;
+  @include clearfix();
+
+  > li {
+    position: relative;
+    display: block;
+
+    > a {
+      position: relative;
+      display: block;
+      padding: 0.25em;
+      &:hover,
+      &:focus {
+        text-decoration: none;
+        background-color: white;
+      }
+    }
+
+    // Disabled state sets text to gray and nukes hover/tab effects
+    &.disabled > a {
+      color: $gray-lightest;
+
+      &:hover,
+      &:focus {
+        color: $gray-lighter;
+        text-decoration: none;
+        background-color: transparent;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  // Open dropdowns
+  .open > a {
+    &,
+    &:hover,
+    &:focus {
+      background-color: white;
+      border-color: $gray-lighter;
+    }
+  }
+
+
+  // Prevent IE8 from misplacing imgs
+  // See https://github.com/h5bp/html5-boilerplate/issues/984#issuecomment-3985989
+  > li > a > img {
+    max-width: none;
+  }
+}
+
+
+// Tabs
+// -------------------------
+$border-radius-base: 6px;
+// Give the tabs something to sit on
+.nav-tabs {
+  border-bottom: 1px solid $gray-lighter;
+  > li {
+    float: left;
+    // Make the list-items overlay the bottom border
+    margin-bottom: -1px;
+
+    // Actual tabs (as links)
+    > a {
+      margin-right: 2px;
+      line-height: 1.4em;
+      border: 1px solid transparent;
+      border-radius: $border-radius-base $border-radius-base 0 0;
+      &:hover {
+        border-color: $gray-lighter $gray-lighter $gray-lighter;
+      }
+    }
+
+    // Active state, and it's :hover to override normal :hover
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        color: $gray-darkest;
+        background-color: white;
+        border: 1px solid $gray;
+        border-bottom-color: transparent;
+        cursor: default;
+      }
+    }
+  }
+  // pulling this in mainly for less shorthand
+  &.nav-justified {
+    @extend .nav-justified;
+    @extend .nav-tabs-justified;
+  }
+}

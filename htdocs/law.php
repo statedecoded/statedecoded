@@ -25,12 +25,12 @@ if ( isset($args['relational_id']) )
 {
 
 	$laws->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
-	
+
 	/*
 	 * Retrieve a copy of the law.
 	 */
 	$law = $laws->get_law();
-	
+
 }
 
 if (!isset($law) || $law === FALSE)
@@ -175,9 +175,34 @@ if (isset($law->history_text))
 {
 	$body .= '<section id="history">
 				<h2>History</h2>
-				<p>'.$law->history_text.'</p>
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#">Translated</a></li>
+          <li class="active"><a href="#">Original</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab1">
+    				<p>'.$law->history_text.'</p>
+          </div>
+          <div class="tab-pane" id="tab2">
+          </div>
 				</section>';
 }
+
+/*
+ * Representational variants are icons that link to various types of ways to read or download the law.
+ */
+
+$body .= '<section id="rep_variant">
+            <p>You can download this file as:</p>
+            <ul>
+              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_doc_32.png" alt="Word Doc"></a></li>
+              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_epub_32.png" alt="ePub"></a></li>
+              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_json_32.png" alt="JSON"></a></li>
+              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_pdf_32.png" alt="PDF"></a></li>
+              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_rtf_32.png" alt="RTF (Rich Text Format)"></a></li>
+              <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_txt_32.png" alt="TXT (Text File)"></a></li>
+            </ul>
+          </section>';
 
 /*
  * Indicate the conclusion of the "section" article, which is the container for the text of a
