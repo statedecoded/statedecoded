@@ -1409,8 +1409,8 @@ class ParserController
 			/*
 			 * A non-zero return status from a program called via exec() indicates an error.
 			 */
-			exec('which tidy', $result);
-			if ($result != 0)
+			exec('which tidy', $result, $status);
+			if ($status != 0)
 			{
 				$this->logger->message('HTML Tidy must be installed.', 10);
 				$error = TRUE;
