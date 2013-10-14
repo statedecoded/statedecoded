@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `laws_meta` (
   PRIMARY KEY  (`id`),
   KEY `law_id` (`law_id`),
   KEY `key` (`meta_key`),
-  KEY `meta_value_short` (`meta_value`(8)) COMMENT 'Just the first bit, for short-text searches'
+  KEY `meta_value_short` (`meta_value`(8))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin  COMMENT='Storage of additional data specific to laws.';
 
 CREATE TABLE IF NOT EXISTS `laws_references` (
