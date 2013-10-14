@@ -83,13 +83,18 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 	}
 	
 	/*
-	 * If we've defined our include path, then modify this file to store it permanently.
+	 * If we've defined our include path, then modify this file to store it permanently and store it
+	 * as a constant.
 	 */
 	if (isset($include_path))
 	{
 		
 		/*
 		 * If possible, modify the .htaccess file, to store permanently the include path.
+		 *
+		 * If we *can't* modify the .htaccess file, then we have to define the constant on the fly,
+		 * with every page view. This is really quite undesirable, because it will slow down the
+		 * site non-trivially, but it's better than not working at all.
 		 */
 		if (is_writable('.htaccess') == TRUE)
 		{
@@ -99,15 +104,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 			
 		}
 		
-		/*
-		 * We cannot modify the .htaccess file, so we define the constant on the fly. This is really
-		 * quite undesirable, because it will slow down the site non-trivially, but it's better
-		 * than not working at all.
-		 */
-		else
-		{
-			define('INCLUDE_PATH', $include_path);
-		}
+		define('INCLUDE_PATH', $include_path);
 		
 	}
 	
@@ -138,7 +135,7 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 	/*
 	 * Include the site's config file.
 	 */
-	require $include_path . '/config.inc.php';
+	require INCLUDE_PATH . '/config.inc.php';
 
 	define('APC_RUNNING', FALSE);
 
