@@ -1456,19 +1456,6 @@ class ParserController
 		}
 
 		/*
-		 * Make sure that mod_rewrite is loaded.
-		 */
-		if (in_array('mod_rewrite', apache_get_modules()) !== TRUE)
-		{
-			if (getenv('HTTP_MOD_REWRITE') != TRUE)
-			{
-				$this->logger->message('The web server’s mod_rewrite module must be installed and'
-					. ' enabled for this host.', 10);
-				$error = TRUE;
-			}
-		}
-
-		/*
 		 * Make sure that Solr is responsive.
 		 */
 		Solarium_Autoloader::register();
@@ -1481,40 +1468,6 @@ class ParserController
 		catch(Solarium_Exception $e)
 		{
 			$this->logger->message('Solr must be installed, configured in config.inc.php, and running.', 10);
-			$error = TRUE;
-		}
-
-		/*
-		 * Make sure that RewriteRules are respected.
-		 *
-		 * To accomplish this, we use cURL to make a request to the server, using a test URL that
-		 * we allow via an .htaccesss RewriteRule. If it fails, then we know that RewriteRules are
-		 * being ignored.
-		 */
-		if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
-		{
-			$protocol = 'http://';
-		}
-		else
-		{
-			$protocol = 'https://';
-		}
-		$domain = $_SERVER['SERVER_NAME'];
-		$path = '/index.php.test';
-		$url = $protocol . $domain . ':' . $path;
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HEADER, TRUE);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_exec($ch);
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-
-		if ($http_code != 200)
-		{
-			$this->logger->message('The web server does not permit .htaccess files to contain'
-				.' RewriteRules. This can be fixed via the AllowOverrides All directive.', 10);
 			$error = TRUE;
 		}
 

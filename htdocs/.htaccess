@@ -15,9 +15,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)\.json$ /downloads/code-json/$1.json [L]
 
-# Provide an aliased URL to test during setup whether RewriteRule works.
-RewriteRule ^index.php.test$ /index.php [QSA]
-
 RewriteRule ^index\.php$ - [L]
 
 RewriteRule ^admin/ /index.php [L]
