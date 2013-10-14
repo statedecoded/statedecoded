@@ -259,7 +259,8 @@ function show_admin_forms($args = array())
 
 	$editions = $parser->get_editions();
 
-	if ($_SERVER['HTTPS'])
+	// Per http://stackoverflow.com/questions/1175096/how-to-find-out-if-you-are-using-https-without-serverhttps
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)
 	{
 		$base_url = 'https://';
 	}
