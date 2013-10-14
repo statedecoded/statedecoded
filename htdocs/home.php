@@ -51,7 +51,7 @@ $content->set('body',
 				of modern website design. It’s like the expensive software lawyers use, but free and
 				wonderful.</p>
 
-				<p>This is a public beta test of Virginia Decoded, which is to say that everything
+				<p>This is a public beta test of ' . SITE_TITLE . ', which is to say that everything
 				is under development. Things are funny looking, broken, and generally unreliable
 				right now.</p>
 
