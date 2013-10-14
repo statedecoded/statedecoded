@@ -175,6 +175,10 @@ if (isset($law->history_text))
 {
 	$body .= '<section id="history">
 				<h2>History</h2>
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#">Translated</a></li>
+          <li class="active"><a href="#">Original</a></li>
+        </ul>
 				<p>'.$law->history_text.'</p>
 				</section>';
 }
@@ -184,7 +188,7 @@ if (isset($law->history_text))
  */
 
 $body .= '<section id="rep_variant">
-            <p>You can download this file as:
+            <p>You can download this file as:</p>
             <ul>
               <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_doc_32.png" alt="Word Doc"></a></li>
               <li><a href=""><img src="/themes/StateDecoded2013/static/images/icon_epub_32.png" alt="ePub"></a></li>
