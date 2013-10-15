@@ -43,7 +43,8 @@ $struct = new Structure();
  */
 $struct->structure_id = $structure_id;
 $struct->get_current();
-$response = $struct->structure;
+// If are at the top level, struct->structure is null
+$response = (isset($struct->structure) ? $struct->structure : '' );
 
 /*
  * If the URL doesn't represent a valid structural portion of the code, then bail.
@@ -56,7 +57,8 @@ if ( $response === FALSE)
 /*
  * Set aside the ancestry for this structural unit, to be accessed separately.
  */
-$structure = $struct->structure;
+// Again, if we at the top level, this will return null
+$structure = (isset($struct->structure) ? $struct->structure : '' );
 
 /*
  * Get a listing of all the structural children of this portion of the structure.
@@ -261,7 +263,7 @@ if ($children !== FALSE)
 	/*
 	 * The level of this child structural unit is that of the current unit, plus one.
 	 */
-	$body .= '<dl class="title-list sections level-' . ($structure->{count($structure)-1}->level + 1) . '">';
+	$body .= '<dl class="title-list sections level-' . ((isset($structure->{count($structure)-1}->level) ? $structure->{count($structure)-1}->level : 0) + 1) . '">';
 	foreach ($children as $child)
 	{
 
