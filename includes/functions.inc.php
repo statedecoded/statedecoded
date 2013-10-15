@@ -358,3 +358,64 @@ function check_dir_available($dirname, $writable=false)
 	}
 	
 }
+
+/**
+ * Recusively travserses through an array to propagate SimpleXML objects.
+ * @param array $array the array to parse
+ * @param object $xml the Simple XML object (must be at least a single empty node)
+ * @return object the Simple XML object (with array objects added)
+ * @author Ben Balter
+ */
+function object_to_xml( $array, $xml )
+{
+
+	/*
+	 * Array of keys that will be treated as attributes, not children.
+	 */
+	$attributes = array( 'id', 'number', 'label', 'prefix' );
+
+	/*
+	 * Recursively loop through each item.
+	 */
+	foreach ( $array as $key => $value )
+	{
+
+		/*
+		 * If this is a numbered array, grab the parent node to determine the node name.
+		 */
+		if ( is_numeric( $key ) )
+		{
+			$key = 'unit';
+		}
+
+		/*
+		 * If this is an attribute, treat as an attribute.
+		 */
+		if ( in_array( $key, $attributes ) )
+		{
+			$xml->addAttribute( $key, $value );
+		}
+		
+		/*
+		 * If this value is an object or array, add a child node and treat recursively.
+		 */
+		else
+		{
+		
+			if ( is_object( $value ) || is_array( $value ) )
+			{
+				$child = $xml->addChild(  $key );
+				$child = object_to_xml( $value, $child );
+			}
+			else
+			{
+				$xml->addChild( $key, $value );
+			}
+			
+		}
+		
+	}
+
+	return $xml;
+
+}

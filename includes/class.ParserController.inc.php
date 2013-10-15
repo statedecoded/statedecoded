@@ -837,7 +837,7 @@ class ParserController
 		 */
 		if (is_writable($downloads_dir) === FALSE)
 		{
-			$this->logger->message('Error: '.$downloads_dir.' could not be written to, so bulk
+			$this->logger->message('Error: ' . $downloads_dir . ' could not be written to, so bulk
 				download files could not be exported.', 10);
 			return FALSE;
 		}
@@ -845,7 +845,7 @@ class ParserController
 		/*
 		 * Get a listing of all laws, to be exported in various formats.
 		 */
-		$this->logger->message('Querying laws', 3);
+		$this->logger->message('Getting a list of all laws', 3);
 
 		/*
 		 * Only get section numbers. We them pass each one to the Laws class to get each law's
@@ -886,7 +886,7 @@ class ParserController
 				$this->logger->message('Cannot write to ' . $json_dir . ' to export files.', 10);
 				break;
 			}
-
+			
 			/*
 			 * Set a flag telling us that we may write JSON.
 			 */
@@ -920,6 +920,33 @@ class ParserController
 			$write_text = TRUE;
 
 			/*
+			 * Establish the path of our code XML storage directory.
+			 */
+			$xml_dir = $downloads_dir . 'code-xml/';
+
+			/*
+			 * If the XML directory doesn't exist, create it.
+			 */
+			if (!file_exists($xml_dir))
+			{
+				mkdir($xml_dir);
+			}
+			
+			/*
+			 * If we cannot write to the text directory, log an error.
+			 */
+			if (!is_writable($xml_dir))
+			{
+				$this->logger->message('Cannot open ' . $xml_dir . ' to export files.', 10);
+				break;
+			}
+
+			/*
+			 * Set a flag telling us that we may write XML.
+			 */
+			$write_xml = TRUE;
+
+			/*
 			 * Create a new instance of the class that handles information about individual laws.
 			 */
 			$laws = new Law();
@@ -934,7 +961,7 @@ class ParserController
 			$laws->config->get_metadata = TRUE;
 			$laws->config->get_references = TRUE;
 			$laws->config->get_related_laws = TRUE;
-
+			
 			/*
 			 * Establish the depth of this code's structure. Though this constant includes
 			 * the laws themselves, we don't subtract 1 from the tally because the
@@ -971,12 +998,34 @@ class ParserController
 				 */
 				if ($write_json === TRUE)
 				{
+				
 					$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
 					if ($success === FALSE)
 					{
-						$this->logger->message('Could not write code JSON files', 9);
+						$this->logger->message('Could not write law JSON files', 9);
 						break;
 					}
+					
+				}
+				
+				/*
+				 * Store the XML file.
+				 */
+				if ($write_xml === TRUE)
+				{
+				
+					$xml = new SimpleXMLElement('<law />');
+					object_to_xml($law, $xml);
+					$dom = dom_import_simplexml($xml)->ownerDocument;
+					$dom->formatOutput = true;
+					
+					$success = file_put_contents($xml_dir . $filename . '.xml', $xml->asXML());
+					if ($success === FALSE)
+					{
+						$this->logger->message('Could not write law XML files', 9);
+						break;
+					}
+					
 				}
 
 				/*
@@ -984,12 +1033,14 @@ class ParserController
 				 */
 				if ($write_text === TRUE)
 				{
+				
 					$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
 					if ($success === FALSE)
 					{
-						$this->logger->message('Could not write code text files', 9);
+						$this->logger->message('Could not write law text files', 9);
 						break;
 					}
+					
 				}
 
 			} // end the while() law iterator
@@ -1016,8 +1067,17 @@ class ParserController
 				exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
 			}
 
-		}
+			/*
+			 * Zip up all of the XML into a single file.
+			 */
+			if ($write_text === TRUE)
+			{
+				$this->logger->message('Creating code XML ZIP file', 3);
+				$output = array();
+				exec('cd ' . $downloads_dir . '; zip -9rq code.xml.zip code-xml');
+			}
 
+		}
 
 		/*
 		 * Save dictionary as JSON.
@@ -1079,7 +1139,8 @@ class ParserController
 			}
 		}
 
-		$this->logger->message('Done', 5);
+		$this->logger->message('Done generating exports', 5);
+		
 	}
 
 	/**
