@@ -433,7 +433,7 @@ class Law
 		$statement = $db->prepare($sql);
 
 		$sql_args = array(
-			':id' => $this->law_id,
+			':id' => $this->section_id,
 			':object_type' => 'law'
 		);
 
@@ -442,7 +442,6 @@ class Law
 		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
 		{
 			$permalink = $statement->fetch(PDO::FETCH_OBJ);
-
 			$this->url = $permalink->url;
 		}
 		
@@ -451,6 +450,7 @@ class Law
 		 */
 		$this->formats->txt = substr($this->url, 0, -1) . '.txt';
 		$this->formats->json = substr($this->url, 0, -1) . '.json';
+		$this->formats->json = substr($this->url, 0, -1) . '.xml';
 
 		/*
 		 * Create metadata in the Dublin Core format.

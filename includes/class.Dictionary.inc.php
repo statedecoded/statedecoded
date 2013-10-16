@@ -314,6 +314,12 @@ class Dictionary
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
+		
+		/*
+		 * Establish the counter we'll use as our object numbering scheme throughout both of our
+		 * queries.
+		 */
+		$i=0;
 
 		/*
 		 * If any terms are found, then add them to our $terms object.
@@ -324,7 +330,6 @@ class Dictionary
 			/*
 			 * Build up the result as an object as we loop through the results.
 			 */
-			$i=0;
 			while ($term = $statement->fetch(PDO::FETCH_OBJ))
 			{
 				$terms->$i = $term->term;
