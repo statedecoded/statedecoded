@@ -67,17 +67,17 @@ class ParserController
      */
 	public function init_logger()
 	{
-	
+
 		if (!isset($this->logger))
 		{
 			$this->logger = new Logger();
 		}
-		
+
 	}
 
 	public function set_execution_limits()
 	{
-	
+
 		/*
 		 * Let this script run for as long as is necessary to finish.
 		 */
@@ -87,7 +87,7 @@ class ParserController
 		 * Give PHP lots of RAM.
 		 */
 		ini_set('memory_limit', '128M');
-		
+
 	}
 
 	/**
@@ -192,13 +192,14 @@ class ParserController
 	 */
 	public function get_editions()
 	{
-	
+
 		$sql = 'SELECT *
 				FROM editions
 				ORDER BY order_by';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
-		if ($result === FALSE || $result->rowCount() == 0)
+
+		if ($result === FALSE || $statement->rowCount() == 0)
 		{
 			return FALSE;
 		}
@@ -208,17 +209,17 @@ class ParserController
 			$editions = $statement->fetchAll(PDO::FETCH_OBJ);
 		}
 		return $editions;
-		
+
 	}
 
 	public function handle_editions($post_data)
 	{
-	
+
 		$errors = array();
 
 		if ($post_data['edition_option'] == 'new')
 		{
-		
+
 			$create_data = array();
 
 			if ($name = filter_var($post_data['new_edition_name'], FILTER_SANITIZE_STRING))
@@ -241,7 +242,7 @@ class ParserController
 
 			if (!empty($post_data['make_current']))
 			{
-			
+
 				if ($current = filter_var($post_data['make_current'], FILTER_VALIDATE_INT))
 				{
 					$create_data['current'] = (int) $current;
@@ -250,7 +251,7 @@ class ParserController
 				{
 					$errors[] = 'Unexpected value for “make this edition current.”';
 				}
-				
+
 			}
 			else
 			{
@@ -259,7 +260,7 @@ class ParserController
 
 			if (count($errors) === 0)
 			{
-			
+
 				$edition_id = $this->create_edition($create_data);
 
 				if ($edition_id)
@@ -270,11 +271,11 @@ class ParserController
 				{
 					$errors[] = 'Unable to create edition.';
 				}
-			
+
 			}
 
 		}
-		
+
 		elseif ($post_data['edition_option'] == 'existing')
 		{
 			if ($edition_id = filter_var($post_data['edition'], FILTER_VALIDATE_INT))
@@ -294,14 +295,14 @@ class ParserController
 
 		return $errors;
 	}
-	
-	
+
+
 	/**
 	 * Create a new edition.
 	 */
 	public function create_edition($edition = array())
 	{
-	
+
 		if (!isset($edition['order_by']))
 		{
 			$sql = 'SELECT MAX(order_by) AS order_by
@@ -349,15 +350,15 @@ class ParserController
 
 		if ($result !== FALSE)
 		{
-		
+
 			/*
 			 * If possible, modify the .htaccess file, to store permanently the edition ID.
 			 */
 			if (is_writable(WEB_ROOT . '/.htaccess') == TRUE)
 			{
-				
+
 				$htaccess = file_get_contents(WEB_ROOT . '/.htaccess');
-				
+
 				/*
 				 * If there isn't already an edition ID in .htaccess, then write a new record.
 				 * Otherwise, update the existing record.
@@ -371,23 +372,23 @@ class ParserController
 					$htaccess = preg_replace('/SetEnv EDITION_ID (\d+)/', 'SetEnv EDITION_ID ' . $this->db->lastInsertId(), $htaccess);
 				}
 				$result = file_put_contents(WEB_ROOT . '/.htaccess', $htaccess);
-				
+
 			}
-			
+
 			/*
 			 * Store the edition ID as a constant, so that we can use it elsewhere in the import
 			 * process.
 			 */
 			define('EDITION_ID', $this->db->lastInsertId());
-			
+
 			return $this->db->lastInsertId();
-			
+
 		}
 		else
 		{
 			return FALSE;
 		}
-		
+
 	}
 
 	/**
@@ -402,7 +403,7 @@ class ParserController
 			'tags', 'text_sections', 'structure', 'permalinks');
 		foreach ($tables as $table)
 		{
-		
+
 			/*
 			 * Note that we *cannot* prepare the table name as an argument here.
 			 * PDO doesn't work that way.
@@ -417,9 +418,9 @@ class ParserController
 				$this->logger->message('Error in SQL: ' . $sql, 10);
 				die();
 			}
-			
+
 			$this->logger->message('Deleted ' . $table, 5);
-			
+
 		}
 
 		/*
@@ -483,7 +484,7 @@ class ParserController
 
 		try
 		{
-		
+
 			$parser = new Parser(
 				array(
 					/*
@@ -512,7 +513,7 @@ class ParserController
 				$parser->parse();
 				$parser->store();
 			}
-			
+
 			/*
 			 * If any files contained invalid XML, bring that list into the local scope.
 			 */
@@ -520,7 +521,7 @@ class ParserController
 			{
 				$this->invalid_xml = $parser->invalid_xml;
 			}
-			
+
 		}
 		catch(Exception $e)
 		{
@@ -588,7 +589,7 @@ class ParserController
 
 			while ($law = $statement->fetch(PDO::FETCH_OBJ))
 			{
-			
+
 				/*
 				 * Turn the string of text that comprises the history into an object of atomic
 				 * history history data.
@@ -608,9 +609,9 @@ class ParserController
 						':meta_value' => serialize($history)
 					);
 					$result = $statement->execute($sql_args);
-					
+
 				}
-			
+
 			}
 
 		}
@@ -666,7 +667,7 @@ class ParserController
 		$prev = '';
 		foreach ($from as $table)
 		{
-		
+
 			if ($table == 's1')
 			{
 				$sql .= $table;
@@ -676,7 +677,7 @@ class ParserController
 				$sql .= ' LEFT JOIN structure AS '.$table.' ON ('.$table.'.id = '.$prev.'.parent_id)';
 			}
 			$prev = $table;
-			
+
 		}
 
 		/*
@@ -858,13 +859,13 @@ class ParserController
 		$sql_args = array(
 			':edition_id' => EDITION_ID
 		);
-		
+
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 		if ($result !== FALSE && $statement->rowCount() > 0)
 		{
-			
+
 			/*
 			 * Establish the path of our code JSON storage directory.
 			 */
@@ -886,7 +887,7 @@ class ParserController
 				$this->logger->message('Cannot write to ' . $json_dir . ' to export files.', 10);
 				break;
 			}
-			
+
 			/*
 			 * Set a flag telling us that we may write JSON.
 			 */
@@ -904,7 +905,7 @@ class ParserController
 			{
 				mkdir($text_dir);
 			}
-			
+
 			/*
 			 * If we cannot write to the text directory, log an error.
 			 */
@@ -931,7 +932,7 @@ class ParserController
 			{
 				mkdir($xml_dir);
 			}
-			
+
 			/*
 			 * If we cannot write to the text directory, log an error.
 			 */
@@ -961,7 +962,7 @@ class ParserController
 			$laws->config->get_metadata = TRUE;
 			$laws->config->get_references = TRUE;
 			$laws->config->get_related_laws = TRUE;
-			
+
 			/*
 			 * Establish the depth of this code's structure. Though this constant includes
 			 * the laws themselves, we don't subtract 1 from the tally because the
@@ -974,7 +975,7 @@ class ParserController
 			 */
 			while ($section = $statement->fetch(PDO::FETCH_OBJ))
 			{
-				
+
 				/*
 				 * Pass the requested section number to Law.
 				 */
@@ -998,34 +999,34 @@ class ParserController
 				 */
 				if ($write_json === TRUE)
 				{
-				
+
 					$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
 					if ($success === FALSE)
 					{
 						$this->logger->message('Could not write law JSON files', 9);
 						break;
 					}
-					
+
 				}
-				
+
 				/*
 				 * Store the XML file.
 				 */
 				if ($write_xml === TRUE)
 				{
-				
+
 					$xml = new SimpleXMLElement('<law />');
 					object_to_xml($law, $xml);
 					$dom = dom_import_simplexml($xml)->ownerDocument;
 					$dom->formatOutput = true;
-					
+
 					$success = file_put_contents($xml_dir . $filename . '.xml', $xml->asXML());
 					if ($success === FALSE)
 					{
 						$this->logger->message('Could not write law XML files', 9);
 						break;
 					}
-					
+
 				}
 
 				/*
@@ -1033,14 +1034,14 @@ class ParserController
 				 */
 				if ($write_text === TRUE)
 				{
-				
+
 					$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
 					if ($success === FALSE)
 					{
 						$this->logger->message('Could not write law text files', 9);
 						break;
 					}
-					
+
 				}
 
 			} // end the while() law iterator
@@ -1140,7 +1141,7 @@ class ParserController
 		}
 
 		$this->logger->message('Done generating exports', 5);
-		
+
 	}
 
 	/**
@@ -1157,7 +1158,7 @@ class ParserController
 		 * The sitemap.xml file must be kept in the site root, as per the standard.
 		 */
 		$sitemap_file = WEB_ROOT . '/sitemap.xml';
-		
+
 		if (!is_writable($sitemap_file))
 		{
 			$this->logger->message('Do not have permissions to write to sitemap.xml', 3);
@@ -1172,11 +1173,11 @@ class ParserController
 				FROM laws
 				WHERE edition_id = :edition_id
 				LIMIT 50000';
-		
+
 		$sql_args = array(
 			':edition_id' => EDITION_ID
 		);
-		
+
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -1185,14 +1186,14 @@ class ParserController
 			$this->logger->message('No laws could be found to export to the sitemap', 3);
 			return FALSE;
 		}
-		
+
 		/*
 		 * Create a new XML file, using the sitemap.xml schema.
 		 */
 		$xml = new SimpleXMLElement('<xml/>');
 		$urlset = $xml->addChild('urlset');
 		$urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-		
+
 		/*
 		 * Create a new instance of the class that handles information about individual laws.
 		 */
@@ -1202,7 +1203,7 @@ class ParserController
 		 */
 		while ($section = $statement->fetch(PDO::FETCH_OBJ))
 		{
-			
+
 			/*
 			 * Instruct the Law class on what, specifically, it should retrieve. (Very little.)
 			 */
@@ -1221,7 +1222,7 @@ class ParserController
 			 */
 			$laws->law_id = $section->id;
 			$law = $laws->get_law();
-			
+
 			/*
 			 * Add a record of this law to the XML.
 			 */
@@ -1230,12 +1231,12 @@ class ParserController
 			$url->addchild('changefreq', 'monthly');
 
 		}
-		
+
 		/*
 		 * Save the resulting file.
 		 */
 		file_put_contents($sitemap_file, $xml->asXML());
-		
+
 		return TRUE;
 
 	}
@@ -1539,7 +1540,7 @@ class ParserController
 		return TRUE;
 
 	}
-	
+
 	/*
 	 * Pass each of the laws to Solr to be indexed.
 	 *
@@ -1552,18 +1553,18 @@ class ParserController
 	 */
 	function index_laws()
 	{
-	
+
 		/*
 		 * Define the Solr URL to which the XML files will be posted.
 		 */
 		$solr_update_url = SOLR_URL . 'update';
-		
+
 		/*
 		 * Generate a list of all of the XML files.
 		 */
 		$files = array();
 		$path = WEB_ROOT . '/downloads/code-xml/';
-		
+
 		if (file_exists($path) && is_dir($path))
 		{
 			$directory = dir($path);
@@ -1574,10 +1575,10 @@ class ParserController
 				. 'index laws with Solr.', 10);
 			return FALSE;
 		}
-		
+
 		/*
 		 * Create an array, $files, with a list of every XML file.
-		 * 
+		 *
 		 * We don't bother to check whether each file is readable because a) these files were just
 		 * created by the exporter and b) it's really too slow on the order of tens or hundreds of
 		 * thousands of files.
@@ -1585,21 +1586,21 @@ class ParserController
 		$files = array();
 		while (FALSE !== ($filename = $directory->read()))
 		{
-			
+
 			$file_path = $path . $filename;
 			if (substr($filename, 0, 1) !== '.')
 			{
 				$files[] = $file_path;
 			}
-			
+
 		}
-		
+
 		if (count($files) == 0)
 		{
 			$this->logger->message('No files were found in ' . $path . '—could not index laws with Solr.', 10);
 			return FALSE;
 		}
-		
+
 		/*
 		 * If we have a list of files with XML problems, then remove those from the list of files
 		 * to import. If a single file in a batch has XML errors, then the entire batch is rejected,
@@ -1614,7 +1615,7 @@ class ParserController
 				unset($files[$key]);
 			}
 		}
-		
+
 		/*
 		 * Post each of the files to Solr, in batches of 10,000.
 		 */
@@ -1622,17 +1623,17 @@ class ParserController
 		$batch_size = 10000;
 		for ($i = 0; $i < $file_count; $i+=$batch_size)
 		{
-		
+
 			$file_slice = array_slice($files, $i, $batch_size);
-			
+
 			/*
 			 * Instruct Solr to return its response as JSON, and to apply the specified XSL
 			 * transformation on the provided XML files.
 			 */
 			$solr_parameters = array(
-				'wt' => 'json', 
+				'wt' => 'json',
 				'tr' => 'stateDecodedXml.xsl');
-			
+
 			$numFiles = 0;
 			$url = $solr_update_url . '?' . http_build_query($solr_parameters);
 			$ch = curl_init();
@@ -1648,12 +1649,12 @@ class ParserController
 			}
 			curl_setopt($ch, CURLOPT_POST, TRUE);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-			
+
 			/*
 			 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
 			 */
 			$response_json = curl_exec($ch);
-			
+
 			/*
 			 * If cURL returned an error.
 			 */
@@ -1663,39 +1664,39 @@ class ParserController
 					. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
 				return FALSE;
 			}
-			
+
 			if ( (FALSE === $response_json) || !is_string($response_json) )
 			{
 				$this->logger->message('Could not connect to Solr.', 10);
 				return FALSE;
 			}
-			
+
 			$response = json_decode($response_json);
-			
+
 			if ( ($response === FALSE) || empty($response) )
 			{
 				$this->logger->message('Solr returned invalid JSON.', 8);
 				return FALSE;
 			}
-			
+
 			if (isset($response->error))
 			{
 				$this->logger->message('Solr error: ' . $response->error, 8);
 				return FALSE;
 			}
-			
+
 		} // end for() loop
-		
+
 		/*
 		 * Files aren't searchable until Solr is told to commit them.
 		 */
 		$url = $solr_update_url . '?commit=true';
-		
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $solr_update_url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		$results = curl_exec($ch);
-					
+
 		/*
 		 * If cURL returned an error.
 		 */
@@ -1705,11 +1706,11 @@ class ParserController
 				. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
 			return FALSE;
 		}
-		
+
 		$this->logger->message('Laws indexed with Solr successfully.', 7);
-		
+
 		return TRUE;
-		
+
 	}
 
 }
