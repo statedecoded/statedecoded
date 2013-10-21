@@ -272,53 +272,6 @@ $(document).ready(function () {
 	$("#keyhelp").click(function() {
 		showHelp('keyboard');
 	});
-
-	/* If we are on any structural page, show the sub-items. */
-	if( $('body.structure').length ) {
-	    $('.title-list.sections').children('dd').each(function(i, elm) {
-            /* Setup */
-	        elm = $(elm);
-	        var link = $(elm.children('a').first());
-	        var elm_identifier = link.data('identifier');
-
-            if(elm_identifier) {
-                /* Hover state */
-                elm.hover(function() { /* In */
-                    var child_details = $(this).find('.child-details');
-                    if(!child_details.text().length) {
-                        var child_details =  $('<span class="child-details"></span>' );
-                        $(this).append(child_details);
-
-                        var url = link.data('api-url');
-                        $.get(url, {}, function(data, textStatus, jqXHR) {
-                            console.log(data);
-                            if(data.laws) {
-                                for(i in data.laws) {
-                                    var law = data.laws[i];
-                                    var text = law.section_number+' '+law.catch_line;
-                                    child_details.append(text + '&nbsp;&nbsp;&nbsp;');
-                                }
-                            }
-                            else if(data.children) {
-                                for(i in data.children) {
-                                    var child = data.children[i];
-                                    console.log(child);
-                                    var text = child.s1_identifier+' '+child.s1_name;
-                                    child_details.append(text + '&nbsp;&nbsp;&nbsp;');
-                                }
-                            }
-                        });
-                    }
-                    else {
-                        child_details.show();
-                    }
-                },
-                function() { /* Out */
-                    $(this).find('.child-details').hide();
-                });
-            }
-	    });
-	}
 	
 	
 	
