@@ -198,7 +198,7 @@ class ParserController
 				ORDER BY order_by';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === FALSE || $result->rowCount() == 0)
 		{
 			return FALSE;
 		}
