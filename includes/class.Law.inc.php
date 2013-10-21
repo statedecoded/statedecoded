@@ -87,8 +87,6 @@ class Law
 			/*
 			 * But if it's an array of law IDs, request all of them.
 			 */
-			// TODO: Fix Me
-			// We allow an array of ids to be given, but we only return one record!
 			elseif (is_array($this->law_id))
 			{
 				$sql .= ' WHERE (';
