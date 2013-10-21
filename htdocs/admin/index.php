@@ -44,7 +44,7 @@ if (isset($_GET['noframe']))
 
 	$template = Template::create('admin_frame');
 	$template->parse($content);
-	
+
 }
 
 /*
@@ -259,7 +259,7 @@ function show_admin_forms($args = array())
 	$parser = new ParserController($args);
 
 	$editions = $parser->get_editions();
-	
+
 	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
 	{
 		$base_url = 'https://';
@@ -329,7 +329,7 @@ function show_admin_forms($args = array())
 			</div>
 			<div class="option">
 				<input type="radio" class="radio" name="edition_option"
-					id="edition_option_new" value="existing"';
+					id="edition_option_existing" value="existing"';
 
 	if ( !isset($editions) || ($editions === FALSE) )
 	{
@@ -340,11 +340,11 @@ function show_admin_forms($args = array())
 		$body .= 'checked="checked"';
 	}
 
-	$body .= '/><label for="edition_option_new">I want to update an existing edition of the laws.</label>';
+	$body .= '/><label for="edition_option_existing">I want to update an existing edition of the laws.</label>';
 
 	if ($editions !== FALSE)
 	{
-	
+
 		$body .= '<div class="suboption">
 					<select name="edition" value="edition">
 						<option value="">Choose Edition .&thinsp;.&thinsp;.</option>';
@@ -360,7 +360,7 @@ function show_admin_forms($args = array())
 
 		$body .= '</select>
 			</div>';
-			
+
 	}
 	else
 	{
