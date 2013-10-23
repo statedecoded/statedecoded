@@ -337,7 +337,9 @@ class ParserController
 				name=:name,
 				slug=:slug,
 				current=:current,
-				order_by=:order_by';
+				order_by=:order_by,
+				date_created=NOW(),
+				date_modified=NOW()';
 		$statement = $this->db->prepare($sql);
 
 		$sql_args = array(
