@@ -136,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `structure` (
   `name` varchar(128) collate utf8_bin default NULL COMMENT 'Textual description of this structural unit',
   `identifier` varchar(16) collate utf8_bin NOT NULL COMMENT 'The public-facing unique identifier, often a number',
   `label` varchar(32) collate utf8_bin NOT NULL COMMENT 'What this level of structural unit is called',
+  `depth` tinyint(3) unsigned DEFAULT NULL,
   `order_by` int(10) unsigned default NULL COMMENT 'Externally provided primary sort attribute',
   `parent_id` smallint(5) unsigned default NULL,
   `metadata` text collate utf8_bin,

@@ -111,25 +111,12 @@ define('PDO_PASSWORD', 'password');
 //define('GLOBAL_DEFINITIONS', '');
 
 /*
- * Create a list of the hiearchy of the code, from the top container to the name of an individual
- * law.
- */
-define('STRUCTURE', 'title,chapter,section');
-
-/*
  * Define the regular expression that identifies section references. It is best to do so without
  * using a section symbol (e.g., §), since section references are frequently made without its
  * presence. A growing collection of per-state regular expressions can be found at
  * <https://github.com/statedecoded/law-identifier>.
  */
 define('SECTION_PCRE', '/([[0-9]{1,})([0-9A-Za-z\-\.]{0,3})-([0-9A-Za-z\-\.:]*)([0-9A-Za-z]{1,})/');
-
-/*
- * Map the above PCRE's stanzas to its corresponding hierarchical labels. It's OK to have duplicates.
- * For example, if the PCRE is broken up like (title)(title)-(part)-(section)(section), then list
- * "title,title,part,section,section".
- */
-define('SECTION_PCRE_STRUCTURE','title,title,section,section');
 
 /*
  * The path, relative to the webroot, to an error page to be displayed if the database connection is

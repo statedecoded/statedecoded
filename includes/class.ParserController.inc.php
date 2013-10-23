@@ -496,11 +496,19 @@ class ParserController
 					/*
 					 * Set the database
 					 */
+					'db' => $this->db,
 
-					'db' => $this->db
+					/*
+					 * Set the edition
+					 */
+					 'edition_id' => $this->edition_id
 				)
 			);
-			$parser->edition_id = $this->edition_id;
+
+			if(method_exists($parser, 'pre_parse'))
+			{
+				$parser->pre_parse();
+			}
 
 			/*
 			 * Iterate through the files.
@@ -512,6 +520,11 @@ class ParserController
 				$parser->section = $section;
 				$parser->parse();
 				$parser->store();
+			}
+
+			if(method_exists($parser, 'post_parse'))
+			{
+				$parser->post_parse();
 			}
 
 			/*
@@ -626,9 +639,10 @@ class ParserController
 		$result = $statement->execute();
 
 		/*
-		 * The depth of the structure is the number of entries in STRUCTURE, minus one.
+		 * The depth of the structure is the number of entries in the structure labels,
+		 * minus one for 'section'.
 		 */
-		$structure_depth = count(explode(',', STRUCTURE))-1;
+		$structure_depth = count($parser->get_structure_labels())-1;
 
 		$select = array();
 		$from = array();
@@ -963,12 +977,7 @@ class ParserController
 			$laws->config->get_references = TRUE;
 			$laws->config->get_related_laws = TRUE;
 
-			/*
-			 * Establish the depth of this code's structure. Though this constant includes
-			 * the laws themselves, we don't subtract 1 from the tally because the
-			 * structural labels start at 1.
-			 */
-			$structure_depth = count(explode(',', STRUCTURE));
+
 
 			/*
 			 * Iterate through every section number, to pass to the Laws class.
@@ -1294,8 +1303,6 @@ class ParserController
 			$this->structure_id = $structure->id;
 			$this->structural_stats_recurse();
 		}
-
-		$code_structures = explode(',', STRUCTURE);
 
 		/*
 		 * Iterate through every primary structural unit.
