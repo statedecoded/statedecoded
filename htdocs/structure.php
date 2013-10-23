@@ -103,7 +103,7 @@ if (count((array) $structure) > 1)
 			$active = 'active';
 		}
 
-		$content->set('breadcrumbs', '<li class="' . $active . '">
+		$content->append('breadcrumbs', '<li class="' . $active . '">
 				<a href="' . $level->url . '">' . $level->identifier . ': ' . $level->name . '</a>
 			</li>');
 
@@ -117,13 +117,17 @@ if (count((array) $structure) > 1)
 		}
 
 	}
-	
+
 }
 
 if (strlen($content->get('breadcrumbs')) > 0)
 {
 	$content->prepend('breadcrumbs', '<ul class="steps-nav">');
 	$content->append('breadcrumbs', '</ul>');
+
+	$content->set('heading', '<nav class="breadcrumbs" role="navigation">' .
+		$content->get('breadcrumbs') . '</nav>');
+
 }
 
 /*
@@ -137,7 +141,7 @@ else
 	* Make the "up" link a link to the home page.
 	*/
 	$content->set('link_rel', '<link rel="up" title="Up" href="/" />');
-	
+
 }
 
 /*
@@ -157,7 +161,7 @@ if (isset($struct->siblings))
 	 */
 	foreach ($struct->siblings as $sibling)
 	{
-	
+
 		if ($sibling->id === $current_structure->id)
 		{
 
@@ -174,14 +178,14 @@ if (isset($struct->siblings))
 				$tmp = next($struct->siblings);
 				$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
 			}
-			
+
 			break;
 
 		}
 		$i++;
-		
+
 	}
-	
+
 }
 
 /*
@@ -195,20 +199,20 @@ if(strlen($structure_id) > 0)
 
 	if (count((array) $structure) > 1)
 	{
-	
+
 		foreach ($structure as $level)
 		{
-		
+
 			if ($level->label !== $struct->label && !empty($level->label))
 			{
 				$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ', '
 				.'titled “' . $level->name . '.”';
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }
 
 else
@@ -227,7 +231,7 @@ if (isset($struct->metadata))
 
 	if (isset($struct->metadata->child_laws) && ($struct->metadata->child_laws > 0) )
 	{
-	
+
 		$body .= ' It contains ' . number_format($struct->metadata->child_laws) . ' laws';
 		if (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
 		{
@@ -238,14 +242,14 @@ if (isset($struct->metadata))
 		{
 			$body .= '.';
 		}
-		
+
 	}
 	elseif (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
 	{
 		$body .= ' It is divided into ' . number_format($struct->metadata->child_structures)
 			. ' sub-structures.';
 	}
-	
+
 }
 
 /*
@@ -288,7 +292,7 @@ if ($children !== FALSE)
 		$counter++;
 
 	}
-	
+
 	$body .= '</dl>';
 
 }
@@ -315,7 +319,7 @@ if ($laws !== FALSE)
 
 	foreach ($laws as $law)
 	{
-	
+
 		/*
 		 * The remainder of the count divided by the number of classes
 		 * yields the proper index for the row class.
@@ -330,7 +334,7 @@ if ($laws !== FALSE)
 					. $law->catch_line . '</a></dd>';
 
 		$counter++;
-		
+
 	}
 	$body .= '</dl>';
 }
