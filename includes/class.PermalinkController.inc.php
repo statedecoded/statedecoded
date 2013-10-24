@@ -50,18 +50,16 @@ class PermalinkController extends BaseController
 				 */
 				$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
 					'Controller';
-				$filename = 'class.' . $object_name . '.inc.php';
-
-				/*
-				 * We use file_exists rather than class_exists, as the latter
-				 * will invoke the autoloader.
-				 */
-				if ( file_exists(INCLUDE_PATH . '/' . $filename) )
+				
+				try
 				{
-					$controller = new $object_name();
-					return $controller->handle($route);
+					if (class_exists($object_name, FALSE) == FALSE)
+					{
+						$controller = new $object_name();
+						return $controller->handle($route);
+					}
 				}
-				else
+				catch(Exception $e)
 				{
 					trigger_error('Cannot find permalink class for object_type "' .
 						$route['object_type'] . '"', E_USER_WARNING);
