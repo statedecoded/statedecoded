@@ -46,7 +46,7 @@ class PermalinkController extends BaseController
 				$route = $statement->fetch(PDO::FETCH_ASSOC);
 
 				/*
-				 * Try to intelligently determine if there's a matching controlelr
+				 * Try to intelligently determine if there's a matching controller
 				 */
 				$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
 					'Controller';
@@ -63,7 +63,7 @@ class PermalinkController extends BaseController
 				}
 				else
 				{
-					trigger_error('Cannot find permalink class for object_type"' .
+					trigger_error('Cannot find permalink class for object_type "' .
 						$route['object_type'] . '"', E_USER_WARNING);
 				}
 
