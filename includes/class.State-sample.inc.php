@@ -85,6 +85,8 @@ class Parser
 	public $directory;
 	public $files = array();
 	public $db;
+	public $edition_id;
+	public $structure_labels;
 
 	public function __construct($options)
 	{
@@ -141,6 +143,11 @@ class Parser
 					$this->directory . '"');
 			}
 
+		}
+
+		if(!$this->structure_labels)
+		{
+			$this->structure_labels = $this->get_structure_labels();
 		}
 
 	}
@@ -318,6 +325,7 @@ class Parser
 			$level = (string) $unit['level'];
 			$this->code->structure->{$level}->name = (string) $unit;
 			$this->code->structure->{$level}->label = (string) $unit['label'];
+			$this->code->structure->{$level}->level = (string) $unit['level'];
 			$this->code->structure->{$level}->identifier = (string) $unit['identifier'];
 			if ( !empty($unit['order_by']) )
 			{
@@ -638,6 +646,19 @@ class Parser
 	}
 
 	/**
+	 * Do any setup.
+	 */
+	public function pre_parse()
+	{
+	}
+	/**
+	 * Do any cleanup.
+	 */
+	public function post_parse()
+	{
+	}
+
+	/**
 	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
 	 * we call this method recursively to gather their content.
 	 */
@@ -727,8 +748,13 @@ class Parser
 		 * Try to create this section's structural element(s). If they already exist,
 		 * create_structure() will handle that silently. Either way a structural ID gets returned.
 		 */
-		$structure = new Parser(array('db' => $this->db));
-		$structure->edition_id = $this->edition_id;
+		$structure = new Parser(
+			array(
+				'db' => $this->db,
+				'edition_id' => $this->edition_id,
+				'structure_labels' => $this->structure_labels
+			)
+		);
 
 		foreach ($this->code->structure as $struct)
 		{
@@ -736,6 +762,8 @@ class Parser
 			$structure->identifier = $struct->identifier;
 			$structure->name = $struct->name;
 			$structure->label = $struct->label;
+			$structure->level = $struct->level;
+
 			/* If we've gone through this loop already, then we have a parent ID. */
 			if (isset($this->code->structure_id))
 			{
@@ -806,8 +834,13 @@ class Parser
 		 * Pull out any mentions of other sections of the code that are found within its text and
 		 * save a record of those, for crossreferencing purposes.
 		 */
-		$references = new Parser(array('db' => $this->db));
-		$references->edition_id = $this->edition_id;
+		$references = new Parser(
+			array(
+				'db' => $this->db,
+				'edition_id' => $this->edition_id,
+				'structure_labels' => $this->structure_labels
+			)
+		);
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
 		if ( ($sections !== FALSE) && (count($sections) > 0) )
@@ -974,8 +1007,13 @@ class Parser
 		/*
 		 * Trawl through the text for definitions.
 		 */
-		$dictionary = new Parser(array('db' => $this->db));
-		$dictionary->edition_id = $this->edition_id;
+		$dictionary = new Parser(
+			array(
+				'db' => $this->db,
+				'edition_id' => $this->edition_id,
+				'structure_labels' => $this->structure_labels
+			)
+		);
 
 		/*
 		 * Pass this section of text to $dictionary.
@@ -1033,8 +1071,13 @@ class Parser
 			 */
 			if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
 			{
-				$find_scope = new Parser(array('db' => $this->db));
-				$find_scope->edition_id = $this->edition_id;
+				$find_scope = new Parser(
+					array(
+						'db' => $this->db,
+						'edition_id' => $this->edition_id,
+						'structure_labels' => $this->structure_labels
+					)
+				);
 				$find_scope->label = $dictionary->scope;
 				$find_scope->structure_id = $dictionary->structure_id;
 				$dictionary->structure_id = $find_scope->find_structure_parent();
@@ -1056,7 +1099,7 @@ class Parser
 			/*
 			 * Determine the position of this structural unit.
 			 */
-			$structure = array_reverse(explode(',', STRUCTURE));
+			$structure = array_reverse($this->structure_labels);
 			array_push($structure, 'global');
 
 			/*
@@ -1191,13 +1234,21 @@ class Parser
 			$sql .= ', name = :name';
 			$sql_args[':name'] = $this->name;
 		}
-		$sql .= ', label = :label, edition_id = :edition_id, date_created=now()';
+		$sql .= ', label = :label, edition_id = :edition_id';
+		$sql .= ', depth = :depth, date_created=now()';
 		$sql_args[':label'] = $this->label;
 		$sql_args[':edition_id'] = $this->edition_id;
+		$sql_args[':depth'] = $this->level;
 		if (isset($this->parent_id))
 		{
 			$sql .= ', parent_id = :parent_id';
 			$sql_args[':parent_id'] = $this->parent_id;
+
+		}
+		if(isset($this->metadata))
+		{
+			$sql .= ', metadata = :metadata';
+			$sql_args[':metadata'] = serialize($this->metadata);
 		}
 
 		$statement = $this->db->prepare($sql);
@@ -1205,6 +1256,8 @@ class Parser
 
 		if ($result === FALSE)
 		{
+			echo '<p>Failure: '.$sql.'</p>';
+			var_dump($sql_args);
 			return FALSE;
 		}
 
@@ -1398,7 +1451,8 @@ class Parser
 				 * one, which we'll use to narrow the scope of our search for the use of structural
 				 * labels within the text.
 				 */
-				$structure_labels = explode(',', STRUCTURE);
+				$structure_labels = $this->structure_labels);
+
 				usort($structure_labels, 'sort_by_length');
 				$longest_label = strlen(current($structure_labels));
 
@@ -1453,9 +1507,9 @@ class Parser
 							/*
 							 * If we can't calculate scope, then let’s assume that it's specific to
 							 * the most basic structural unit -- the individual law -- for the sake
-							 * of caution. We pull that off of the end of the STRUCTURE constant.
+							 * of caution. We pull that off of the end of the structure labels array
 							 */
-							$scope = array_shift(array_reverse(explode(',', STRUCTURE)));
+							$scope = end($structure_labels);
 
 						}
 
@@ -1974,5 +2028,46 @@ class Parser
 		}
 
 	} // end extract_history()
+
+	public function get_structure_labels()
+	{
+		$sql = 'SELECT label FROM structure GROUP BY label ' .
+			'ORDER BY depth ASC';
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
+
+		$structure_labels = array();
+
+		if ( ($result === FALSE) )
+		{
+			echo '<p>Query failed: '.$sql.'</p>';
+			var_dump($sql_args);
+			return FALSE;
+		}
+		else
+		{
+			if($statement->rowCount() == 0)
+			{
+				/*
+				 * We may not have a structure yet.  That's ok.
+				 */
+				return null;
+			}
+			else{
+				while($row = $statement->fetch(PDO::FETCH_ASSOC))
+				{
+					$structure_labels[] = $row['label'];
+				}
+			}
+		}
+
+		/*
+		 * Our lowest level, not represented in the structure table, is 'section'
+		 */
+		$structure_labels[] = 'Section';
+
+		return $structure_labels;
+	} // end get_structure_labels()
 
 } // end Parser class
