@@ -13,19 +13,19 @@ Router::addRoute('^(?P<route>.*)$', array('PermalinkController', 'handle'));
 Router::addRoute('^/$', 'home.php');
 
 // About page
-Router::addRoute('^/about/(.*)', 'about.php');
+Router::addRoute('^/about/?(.*)', 'about.php');
 
 // Admin section
-Router::addRoute('^/admin/(.*)', 'admin/index.php');
+Router::addRoute('^/admin/?(.*)', 'admin/index.php');
 
 // Downloads and API
-Router::addRoute('^/downloads/(.*)', 'downloads/index.php');
+Router::addRoute('^/downloads/?(.*)', 'downloads/index.php');
 
 // Search
-Router::addRoute('^/search/(.*)', 'search.php');
+Router::addRoute('^/search/?(.*)', 'search.php');
 
 // Browse
-Router::addRoute('^/browse/(.*)', array('StructureController', 'handle'));
+Router::addRoute('^/browse/?(.*)', array('StructureController', 'handle'));
 
 
 // New activation
