@@ -38,4 +38,9 @@ abstract class BaseController
 		 */
 		return $this->template->parse($content);
 	}
+
+	public function handleNotFound($content)
+	{
+		include ($_SERVER['DOCUMENT_ROOT'] . '/404.php');
+	}
 }

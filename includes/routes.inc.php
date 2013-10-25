@@ -42,22 +42,14 @@ Router::addRoute('^/api-key/$', array('ApiKeyController', 'requestKey'));
 
 // API
 
-// Structure
-Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?structure/(?P<identifier>([0-9A-Za-z\.]{1,8}/)*([0-9A-Za-z\.]{1,8}))/',
-	'api/1.0/structure.php');
+Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?(?P<operation>structure|law|)(?P<route>/.*)',
+	array('APIPermalinkController', 'handle'));
 
-// Law
-Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?law/(?P<section>[0-9A-Za-z\.]{1,4}-[0-9\.:]{1,10})/?',
-	'api/1.0/law.php');
+Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?dictionary/(?P<term>.*)/',
+	array('APIDictionaryController', 'handle'));
 
-// Dictionary
-Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?dictionary/(?P<term>.*)',
-	'api/1.0/dictionary.php');
+Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?search/(?P<term>.*)/',
+	array('APISearchController', 'handle'));
 
-// Search
-Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?search/(?P<term>.*)',
-	'api/1.0/search.php');
-
-// Suggest
-Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?suggest/(?P<term>.*)',
-	'api/1.0/suggest.php');
+Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?suggest/(?P<term>.*)/',
+	array('APISuggestController', 'handle'));

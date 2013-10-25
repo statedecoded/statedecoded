@@ -21,10 +21,10 @@ class PermalinkController extends BaseController
 
 	function handle($args)
 	{
-	
+
 		if ( $args['route'] )
 		{
-		
+
 			global $db;
 
 			/*
@@ -66,26 +66,14 @@ class PermalinkController extends BaseController
 				}
 
 			}
-			
+
 		}
-		
+
 		/*
 		 * If we haven't found what we're looking for, show the 404 page.
 		 */
-		return $this->notFound($args);
-		
+		return $this->handleNotFound($args);
+
 	}
 
-	function notFound($args)
-	{
-	
-		$body = '<h1>Content Not Found</h1>
-			<p>We were unable to find the content you requested.</p>';
-
-		$content = new Content();
-		$content->set('body', $body);
-
-		return $this->render($content);
-		
-	}
 }
