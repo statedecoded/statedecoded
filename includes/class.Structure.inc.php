@@ -583,9 +583,8 @@ class Structure
 		/*
 		 * We use SELECT * because it's ultimately more efficient. That's because structure_unified
 		 * has a number of columns that varies between states. We could determine how many columns
-		 * based on the number of values in the STRUCTURE constant, or by first querying the
-		 * structure of the table, and that might be a worthy modification at some point. But, for
-		 * now, this will do.
+		 * by first querying the structure of the table, and that might be a worthy modification
+		 * at some point. But, for now, this will do.
 		 */
 		$sql = 'SELECT structure_unified.*
 				FROM structure_unified
