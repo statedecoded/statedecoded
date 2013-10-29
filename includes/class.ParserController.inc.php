@@ -293,6 +293,27 @@ class ParserController
 				 'update an existing one.';
 		}
 
+		if(isset($this->edition_id))
+		{
+			/*
+			 * Get the edition from the database and store a copy locally.
+			 */
+			$edition_query = 'SELECT * FROM editions WHERE id = :edition_id';
+			$edition_args = array(':edition_id' => $this->edition_id);
+
+			$edition_statement = $this->db->prepare($edition_query);
+			$edition_result = $edition_statement->execute($edition_args);
+
+			if ($edition_result !== FALSE && $edition_statement->rowCount() > 0)
+			{
+				$this->edition = $edition_statement->fetch(PDO::FETCH_ASSOC);
+			}
+			else
+			{
+				$errors[] = 'The edition could not be found.';
+			}
+		}
+
 		return $errors;
 	}
 
@@ -849,6 +870,18 @@ class ParserController
 		 */
 		$downloads_dir = WEB_ROOT . '/downloads/';
 
+		if(!isset($this->edition) || !isset($this->edition['slug']))
+		{
+			$this->logger->message('Edition is missing!  Cannot write new files.', 10);
+			throw new Exception('Edition is missing');
+		}
+
+		/*
+		 * Blow away our old directory completely
+		 */
+		$this->logger->message('Removing old downloads folder.', 5);
+		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition['slug']);
+
 		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
 		 */
@@ -860,235 +893,55 @@ class ParserController
 		}
 
 		/*
-		 * Get a listing of all laws, to be exported in various formats.
+		 * Add the proper structure for editions.
 		 */
-		$this->logger->message('Getting a list of all laws', 3);
+		$downloads_dir .= $this->edition['slug'] . '/';
 
 		/*
-		 * Only get section numbers. We them pass each one to the Laws class to get each law's
-		 * data.
+		 * Begin the process of exporting each section.
+		 * We start at the top, with no parents.
 		 */
-		$sql = 'SELECT laws.section AS number
-				FROM laws
-				WHERE edition_id = :edition_id
-				ORDER BY order_by ASC';
-		$sql_args = array(
-			':edition_id' => EDITION_ID
-		);
+		$this->export_structure();
 
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
+		/*
+		 * Zip up all of the JSON files into a single file. We do this via exec(), rather than
+		 * PHP's ZIP extension, because doing it within PHP requires far too much memory. Using
+		 * exec() is faster and more efficient.
+		 */
 
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		/*
+		 * Set a flag telling us that we may write files.
+		 */
+		$write_json = TRUE;
+		$write_text = TRUE;
+		$write_xml = TRUE;
+
+
+		if ($write_json === TRUE)
 		{
+			$this->logger->message('Creating code JSON ZIP file', 3);
+			$output = array();
+			exec('cd ' . $downloads_dir . '; zip -9rq code.json.zip code-json');
+		}
 
-			/*
-			 * Establish the path of our code JSON storage directory.
-			 */
-			$json_dir = $downloads_dir . 'code-json/';
+		/*
+		 * Zip up all of the text into a single file.
+		 */
+		if ($write_text === TRUE)
+		{
+			$this->logger->message('Creating code text ZIP file', 3);
+			$output = array();
+			exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
+		}
 
-			/*
-			 * If the JSON directory doesn't exist, create it.
-			 */
-			if (!file_exists($json_dir))
-			{
-				mkdir($json_dir);
-			}
-
-			/*
-			 * If we cannot write to the JSON directory, log an error.
-			 */
-			if (!is_writable($json_dir))
-			{
-				$this->logger->message('Cannot write to ' . $json_dir . ' to export files.', 10);
-				break;
-			}
-
-			/*
-			 * Set a flag telling us that we may write JSON.
-			 */
-			$write_json = TRUE;
-
-			/*
-			 * Establish the path of our code text storage directory.
-			 */
-			$text_dir = $downloads_dir . 'code-text/';
-
-			/*
-			 * If the text directory doesn't exist, create it.
-			 */
-			if (!file_exists($text_dir))
-			{
-				mkdir($text_dir);
-			}
-
-			/*
-			 * If we cannot write to the text directory, log an error.
-			 */
-			if (!is_writable($text_dir))
-			{
-				$this->logger->message('Cannot open ' . $text_dir . ' to export files.', 10);
-				break;
-			}
-
-			/*
-			 * Set a flag telling us that we may write text.
-			 */
-			$write_text = TRUE;
-
-			/*
-			 * Establish the path of our code XML storage directory.
-			 */
-			$xml_dir = $downloads_dir . 'code-xml/';
-
-			/*
-			 * If the XML directory doesn't exist, create it.
-			 */
-			if (!file_exists($xml_dir))
-			{
-				mkdir($xml_dir);
-			}
-
-			/*
-			 * If we cannot write to the text directory, log an error.
-			 */
-			if (!is_writable($xml_dir))
-			{
-				$this->logger->message('Cannot open ' . $xml_dir . ' to export files.', 10);
-				break;
-			}
-
-			/*
-			 * Set a flag telling us that we may write XML.
-			 */
-			$write_xml = TRUE;
-
-			/*
-			 * Create a new instance of the class that handles information about individual laws.
-			 */
-			$laws = new Law();
-
-			/*
-			 * Instruct the Law class on what, specifically, it should retrieve.
-			 */
-			$laws->config->get_text = TRUE;
-			$laws->config->get_structure = TRUE;
-			$laws->config->get_amendment_attempts = FALSE;
-			$laws->config->get_court_decisions = TRUE;
-			$laws->config->get_metadata = TRUE;
-			$laws->config->get_references = TRUE;
-			$laws->config->get_related_laws = TRUE;
-
-
-
-			/*
-			 * Iterate through every section number, to pass to the Laws class.
-			 */
-			while ($section = $statement->fetch(PDO::FETCH_OBJ))
-			{
-
-				/*
-				 * Pass the requested section number to Law.
-				 */
-				$laws->section_number = $section->number;
-
-				unset($law);
-
-				/*
-				 * Get a list of all of the basic information that we have about this section.
-				 */
-				$law = $laws->get_law();
-
-				/*
-				 * Eliminate colons from section numbers, since some OSes can't handle colons in
-				 * filenames.
-				 */
-				$filename = str_replace(':', '_', $law->section_number);
-
-				/*
-				 * Store the JSON file.
-				 */
-				if ($write_json === TRUE)
-				{
-
-					$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
-					if ($success === FALSE)
-					{
-						$this->logger->message('Could not write law JSON files', 9);
-						break;
-					}
-
-				}
-
-				/*
-				 * Store the XML file.
-				 */
-				if ($write_xml === TRUE)
-				{
-
-					$xml = new SimpleXMLElement('<law />');
-					object_to_xml($law, $xml);
-					$dom = dom_import_simplexml($xml)->ownerDocument;
-					$dom->formatOutput = true;
-
-					$success = file_put_contents($xml_dir . $filename . '.xml', $xml->asXML());
-					if ($success === FALSE)
-					{
-						$this->logger->message('Could not write law XML files', 9);
-						break;
-					}
-
-				}
-
-				/*
-				 * Store the text file.
-				 */
-				if ($write_text === TRUE)
-				{
-
-					$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
-					if ($success === FALSE)
-					{
-						$this->logger->message('Could not write law text files', 9);
-						break;
-					}
-
-				}
-
-			} // end the while() law iterator
-
-			/*
-			 * Zip up all of the JSON files into a single file. We do this via exec(), rather than
-			 * PHP's ZIP extension, because doing it within PHP requires far too much memory. Using
-			 * exec() is faster and more efficient.
-			 */
-			if ($write_json === TRUE)
-			{
-				$this->logger->message('Creating code JSON ZIP file', 3);
-				$output = array();
-				exec('cd ' . $downloads_dir . '; zip -9rq code.json.zip code-json');
-			}
-
-			/*
-			 * Zip up all of the text into a single file.
-			 */
-			if ($write_text === TRUE)
-			{
-				$this->logger->message('Creating code text ZIP file', 3);
-				$output = array();
-				exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
-			}
-
-			/*
-			 * Zip up all of the XML into a single file.
-			 */
-			if ($write_text === TRUE)
-			{
-				$this->logger->message('Creating code XML ZIP file', 3);
-				$output = array();
-				exec('cd ' . $downloads_dir . '; zip -9rq code.xml.zip code-xml');
-			}
-
+		/*
+		 * Zip up all of the XML into a single file.
+		 */
+		if ($write_text === TRUE)
+		{
+			$this->logger->message('Creating code XML ZIP file', 3);
+			$output = array();
+			exec('cd ' . $downloads_dir . '; zip -9rq code.xml.zip code-xml');
 		}
 
 		/*
@@ -1151,8 +1004,322 @@ class ParserController
 			}
 		}
 
+		$this->logger->message('Creating symlinks', 4);
+
+		if($this->edition['current'] == '1')
+		{
+			exec('cd ' . WEB_ROOT . '/downloads/; rm current ; ln -s ' . $this->edition['slug'] . ' current');
+		}
+
 		$this->logger->message('Done generating exports', 5);
 
+	}
+
+	/**
+	 * Export a single structure
+	 */
+	function export_structure($parent_id)
+	{
+		/*
+		 * Define the location of the downloads directory.
+		 */
+		$downloads_dir = WEB_ROOT . '/downloads/';
+		$downloads_dir .= $this->edition['slug'] . '/';
+
+
+		$structure_sql = '	SELECT structure_unified.*
+							FROM structure
+							LEFT JOIN structure_unified
+								ON structure.id = structure_unified.s1_id';
+
+		$structure_args = array();
+
+		if (isset($parent_id))
+		{
+			$structure_sql .= ' WHERE parent_id = :parent_id';
+			$structure_args[':parent_id'] = $parent_id;
+		}
+		else
+		{
+			$structure_sql .= ' WHERE parent_id IS NULL';
+		}
+
+		$structure_sql .= ' AND edition_id = :edition_id';
+		$structure_args[':edition_id'] = $this->edition_id;
+
+		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_result = $structure_statement->execute($structure_args);
+
+		if ($structure_result === FALSE)
+		{
+			echo '<p>' . $structure_sql . '</p>';
+			echo '<p>' . $structure_result->getMessage() . '</p>';
+			return;
+		}
+
+		/*
+		 * Get results as an array to save memory
+		 */
+		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
+		{
+
+			/*
+			 * Figure out the URL for this structural unit by iterating through the "identifier"
+			 * columns in this row.
+			 */
+			$identifier_parts = array();
+
+			foreach ($item as $key => $value)
+			{
+				if (preg_match('/s[0-9]_identifier/', $key) == 1)
+				{
+					/*
+					 * Higher-level structural elements (e.g., titles) will have blank columns in
+					 * structure_unified, so we want to omit any blank values. Because a valid
+					 * structural unit identifier is "0" (Virginia does this), we check the string
+					 * length, rather than using empty().
+					 */
+					if (strlen($value) > 0)
+					{
+						$identifier_parts[] = urlencode($value);
+					}
+				}
+			}
+			$identifier_parts = array_reverse($identifier_parts);
+			$token = implode('/', $identifier_parts);
+
+			/*
+			 * This is slightly different from how we handle permalinks
+			 * since we don't want to overwrite files if current has changed.
+			 */
+
+			$url = '/';
+			if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
+			{
+				$url .= $token . '/';
+			}
+			/*
+			 * Now we can use our data to build the child law identifiers
+			 */
+			if (INCLUDES_REPEALED !== TRUE)
+			{
+				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
+								FROM laws
+								WHERE structure_id = :s_id
+								AND edition_id = :edition_id
+								ORDER BY order_by, section';
+			}
+			else
+			{
+				$laws_sql = '	SELECT laws.id, laws.structure_id, laws.section AS section_number,
+								laws.catch_line
+								FROM laws
+								LEFT OUTER JOIN laws_meta
+									ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
+								WHERE structure_id = :s_id
+								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
+								AND edition_id = :edition_id
+								ORDER BY order_by, section';
+			}
+			$laws_args = array(
+				':s_id' => $item['s1_id'],
+				':edition_id' => $this->edition_id
+			);
+
+			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+			$laws_result = $laws_statement->execute( $laws_args );
+
+			if ($laws_result !== FALSE && $laws_statement->rowCount() > 0)
+			{
+
+				/*
+				 * Establish the path of our code JSON storage directory.
+				 */
+				$json_dir = $downloads_dir . 'code-json' . $url;
+
+				/*
+				 * If the JSON directory doesn't exist, create it.
+				 */
+				if (!file_exists($json_dir))
+				{
+					/*
+					 * Build our directories recursively.
+					 * Don't worry about the mode, as our server's umask should handle
+					 * that for us.
+					 */
+					mkdir($json_dir, 0777, true);
+				}
+
+				/*
+				 * If we cannot write to the JSON directory, log an error.
+				 */
+				if (!is_writable($json_dir))
+				{
+					$this->logger->message('Cannot write to ' . $json_dir . ' to export files.', 10);
+					break;
+				}
+
+				/*
+				 * Set a flag telling us that we may write JSON.
+				 */
+				$write_json = TRUE;
+
+				/*
+				 * Establish the path of our code text storage directory.
+				 */
+				$text_dir = $downloads_dir . 'code-text' . $url;
+
+				/*
+				 * If the text directory doesn't exist, create it.
+				 */
+				if (!file_exists($text_dir))
+				{
+					mkdir($text_dir, 0777, true);
+				}
+
+				/*
+				 * If we cannot write to the text directory, log an error.
+				 */
+				if (!is_writable($text_dir))
+				{
+					$this->logger->message('Cannot open ' . $text_dir . ' to export files.', 10);
+					break;
+				}
+
+				/*
+				 * Set a flag telling us that we may write text.
+				 */
+				$write_text = TRUE;
+
+				/*
+				 * Establish the path of our code XML storage directory.
+				 */
+				$xml_dir = $downloads_dir . 'code-xml' . $url;
+
+				/*
+				 * If the XML directory doesn't exist, create it.
+				 */
+				if (!file_exists($xml_dir))
+				{
+					mkdir($xml_dir, 0777, true);
+				}
+
+				/*
+				 * If we cannot write to the text directory, log an error.
+				 */
+				if (!is_writable($xml_dir))
+				{
+					$this->logger->message('Cannot open ' . $xml_dir . ' to export files.', 10);
+					break;
+				}
+
+				/*
+				 * Set a flag telling us that we may write XML.
+				 */
+				$write_xml = TRUE;
+
+				/*
+				 * Create a new instance of the class that handles information about individual laws.
+				 */
+				$laws = new Law();
+
+				/*
+				 * Instruct the Law class on what, specifically, it should retrieve.
+				 */
+				$laws->config->get_text = TRUE;
+				$laws->config->get_structure = TRUE;
+				$laws->config->get_amendment_attempts = FALSE;
+				$laws->config->get_court_decisions = TRUE;
+				$laws->config->get_metadata = TRUE;
+				$laws->config->get_references = TRUE;
+				$laws->config->get_related_laws = TRUE;
+
+				/*
+				 * Iterate through every section number, to pass to the Laws class.
+				 */
+				while ($section = $laws_statement->fetch(PDO::FETCH_OBJ))
+				{
+
+					$this->logger->message('Writing '.$section->section_number, 3);
+
+					/*
+					 * Pass the requested section number to Law.
+					 */
+					$laws->section_number = $section->section_number;
+					$laws->edition_id = $this->edition_id;
+
+					unset($law, $section);
+
+					/*
+					 * Get a list of all of the basic information that we have about this section.
+					 */
+					$law = $laws->get_law();
+
+					if($law)
+					{
+						/*
+						 * Eliminate colons from section numbers, since some OSes can't handle colons in
+						 * filenames.
+						 */
+						$filename = str_replace(':', '_', $law->section_number);
+
+						/*
+						 * Store the JSON file.
+						 */
+						if ($write_json === TRUE)
+						{
+
+							$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
+							if ($success === FALSE)
+							{
+								$this->logger->message('Could not write law JSON files', 9);
+								break;
+							}
+
+						}
+
+						/*
+						 * Store the XML file.
+						 */
+						if ($write_xml === TRUE)
+						{
+
+							$xml = new SimpleXMLElement('<law />');
+							object_to_xml($law, $xml);
+							$dom = dom_import_simplexml($xml)->ownerDocument;
+							$dom->formatOutput = true;
+
+							$success = file_put_contents($xml_dir . $filename . '.xml', $xml->asXML());
+							if ($success === FALSE)
+							{
+								$this->logger->message('Could not write law XML files', 9);
+								break;
+							}
+
+						}
+
+						/*
+						 * Store the text file.
+						 */
+						if ($write_text === TRUE)
+						{
+
+							$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
+							if ($success === FALSE)
+							{
+								$this->logger->message('Could not write law text files', 9);
+								break;
+							}
+
+						}
+					} // end the $law exists condition
+
+				} // end the while() law iterator
+			} // end the $laws condition
+
+			$this->export_structure($item['s1_id']);
+
+		} // end the while() structure iterator
 	}
 
 	/**

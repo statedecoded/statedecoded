@@ -118,7 +118,8 @@ class Law
 			$sql .= ' WHERE section = :section_number
 					AND edition_id = :edition_id';
 			$sql_args[':section_number'] = $this->section_number;
-			$sql_args[':edition_id'] = EDITION_ID;
+
+			$sql_args[':edition_id'] = $this->edition_id or EDITION_ID;
 		}
 
 		$statement = $db->prepare($sql);
@@ -442,7 +443,7 @@ class Law
 			$permalink = $statement->fetch(PDO::FETCH_OBJ);
 			$this->url = $permalink->url;
 		}
-		
+
 		/*
 		 * List the URLs for the textual formats in which this section is available.
 		 */
