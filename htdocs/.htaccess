@@ -13,7 +13,13 @@ RewriteRule ^(.*)\.txt$ /$1/?plain_text=y [PT]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*\.json)$ /downloads/code-json/$1 [L]
+RewriteCond %{DOCUMENT_ROOT}/downloads/current/code-json%{REQUEST_URI} -f
+RewriteRule ^(.*\.json)$ /downloads/current/code-json/$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/(.*?\.json)$ /downloads/$1/code-json/$2 [L]
+
 
 RewriteRule ^index\.php$ - [L]
 
