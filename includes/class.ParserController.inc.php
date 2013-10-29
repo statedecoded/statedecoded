@@ -1283,7 +1283,7 @@ class ParserController
 						 */
 						if ($write_xml === TRUE)
 						{
-
+							$law->html = html_entity_decode($law->html);
 							$xml = new SimpleXMLElement('<law />');
 							object_to_xml($law, $xml);
 							$dom = dom_import_simplexml($xml)->ownerDocument;
@@ -1729,163 +1729,164 @@ class ParserController
 	 */
 	function index_laws()
 	{
-
-		/*
-		 * Define the Solr URL to which the XML files will be posted.
-		 */
-		$solr_update_url = SOLR_URL . 'update';
-
-		/*
-		 * Generate a list of all of the XML files.
-		 */
-		$files = array();
-		$path = WEB_ROOT . '/downloads/code-xml/';
-
-		if (file_exists($path) && is_dir($path))
+		if(!isset($this->edition))
 		{
-			$directory = dir($path);
+			throw new Exception('No edition, cannot index laws.');
+		}
+
+		if($this->edition['current'] != '1')
+		{
+			$this->logger->message('The edition is not current, skipping update to search index.');
+			return;
 		}
 		else
 		{
-			$this->logger->message('XML output directory ' . $path . ' does not exist—could not '
-				. 'index laws with Solr.', 10);
-			return FALSE;
-		}
-
-		/*
-		 * Create an array, $files, with a list of every XML file.
-		 *
-		 * We don't bother to check whether each file is readable because a) these files were just
-		 * created by the exporter and b) it's really too slow on the order of tens or hundreds of
-		 * thousands of files.
-		 */
-		$files = array();
-		while (FALSE !== ($filename = $directory->read()))
-		{
-
-			$file_path = $path . $filename;
-			if (substr($filename, 0, 1) !== '.')
-			{
-				$files[] = $file_path;
-			}
-
-		}
-
-		if (count($files) == 0)
-		{
-			$this->logger->message('No files were found in ' . $path . '—could not index laws with Solr.', 10);
-			return FALSE;
-		}
-
-		/*
-		 * If we have a list of files with XML problems, then remove those from the list of files
-		 * to import. If a single file in a batch has XML errors, then the entire batch is rejected,
-		 * so it's better to omit a file than to risk that.
-		 */
-		if (isset($this->invalid_xml))
-		{
-			foreach ($this->invalid_xml as $entry)
-			{
-				$key = array_search($entry, $files);
-				echo 'Removed ' . $files[$key] . ' for invalid XML.<br />';
-				unset($files[$key]);
-			}
-		}
-
-		/*
-		 * Post each of the files to Solr, in batches of 10,000.
-		 */
-		$file_count = count($files);
-		$batch_size = 10000;
-		for ($i = 0; $i < $file_count; $i+=$batch_size)
-		{
-
-			$file_slice = array_slice($files, $i, $batch_size);
+			$this->logger->message('Updating search index.');
 
 			/*
-			 * Instruct Solr to return its response as JSON, and to apply the specified XSL
-			 * transformation on the provided XML files.
+			 * Define the Solr URL to which the XML files will be posted.
 			 */
-			$solr_parameters = array(
-				'wt' => 'json',
-				'tr' => 'stateDecodedXml.xsl');
+			$solr_update_url = SOLR_URL . 'update';
 
-			$numFiles = 0;
-			$url = $solr_update_url . '?' . http_build_query($solr_parameters);
+			/*
+			 * Generate a list of all of the XML files.
+			 */
+			$path = WEB_ROOT . '/downloads/' . $this->edition['slug'] . '/code-xml/';
+
+			if (!file_exists($path) ||!is_dir($path))
+			{
+				$this->logger->message('XML output directory ' . $path . ' does not exist—could not '
+					. 'index laws with Solr.', 10);
+				return FALSE;
+			}
+
+			/*
+			 * Create an array, $files, with a list of every XML file.
+			 *
+			 * We don't bother to check whether each file is readable because a) these files were just
+			 * created by the exporter and b) it's really too slow on the order of tens or hundreds of
+			 * thousands of files.
+			 */
+			$files = get_files($path);
+
+			if (count($files) == 0)
+			{
+				$this->logger->message('No files were found in ' . $path . '—could not index laws with Solr.', 10);
+				return FALSE;
+			}
+
+			/*
+			 * If we have a list of files with XML problems, then remove those from the list of files
+			 * to import. If a single file in a batch has XML errors, then the entire batch is rejected,
+			 * so it's better to omit a file than to risk that.
+			 */
+			if (isset($this->invalid_xml))
+			{
+				foreach ($this->invalid_xml as $entry)
+				{
+					$key = array_search($entry, $files);
+					echo 'Removed ' . $files[$key] . ' for invalid XML.<br />';
+					unset($files[$key]);
+				}
+			}
+
+			/*
+			 * Post each of the files to Solr, in batches of 10,000.
+			 */
+			$file_count = count($files);
+			$batch_size = 10000;
+			for ($i = 0; $i < $file_count; $i+=$batch_size)
+			{
+
+				$file_slice = array_slice($files, $i, $batch_size);
+
+				/*
+				 * Instruct Solr to return its response as JSON, and to apply the specified XSL
+				 * transformation on the provided XML files.
+				 */
+				$solr_parameters = array(
+					'wt' => 'json',
+					'tr' => 'stateDecodedXml.xsl');
+
+				$numFiles = 0;
+				$url = $solr_update_url . '?' . http_build_query($solr_parameters);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
+				$params = array();
+				foreach ($file_slice as $key=>$filename)
+				{
+					$params[$filename] = '@' . realpath($filename) . ';type=application/xml';
+					++$numFiles;
+				}
+				curl_setopt($ch, CURLOPT_POST, TRUE);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+
+				/*
+				 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
+				 */
+				$response_json = curl_exec($ch);
+
+				/*
+				 * If cURL returned an error.
+				 */
+				if (curl_errno($ch) > 0)
+				{
+					$this->logger->message('The attempt to post files to Solr via cURL returned an '
+						. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
+					return FALSE;
+				}
+
+				if ( (FALSE === $response_json) || !is_string($response_json) )
+				{
+					$this->logger->message('Could not connect to Solr.', 10);
+					return FALSE;
+				}
+
+				$response = json_decode($response_json);
+
+				if ( ($response === FALSE) || empty($response) )
+				{
+					$this->logger->message('Solr returned invalid JSON.', 8);
+					return FALSE;
+				}
+
+				if (isset($response->error))
+				{
+
+					var_dump($response->error);
+					$this->logger->message('Solr error: ',  8);
+					return FALSE;
+				}
+
+			} // end for() loop
+
+			/*
+			 * Files aren't searchable until Solr is told to commit them.
+			 */
+			$url = $solr_update_url . '?commit=true';
+
 			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_URL, $solr_update_url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
-			$params = array();
-			foreach ($file_slice as $key=>$filename)
-			{
-				$params[$filename] = '@' . realpath($filename) . ';type=application/xml';
-				++$numFiles;
-			}
-			curl_setopt($ch, CURLOPT_POST, TRUE);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-
-			/*
-			 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
-			 */
-			$response_json = curl_exec($ch);
+			$results = curl_exec($ch);
 
 			/*
 			 * If cURL returned an error.
 			 */
 			if (curl_errno($ch) > 0)
 			{
-				$this->logger->message('The attempt to post files to Solr via cURL returned an '
+				$this->logger->message('The attempt to commit files to Solr via cURL returned an '
 					. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
 				return FALSE;
 			}
 
-			if ( (FALSE === $response_json) || !is_string($response_json) )
-			{
-				$this->logger->message('Could not connect to Solr.', 10);
-				return FALSE;
-			}
+			$this->logger->message('Laws indexed with Solr successfully.', 7);
 
-			$response = json_decode($response_json);
-
-			if ( ($response === FALSE) || empty($response) )
-			{
-				$this->logger->message('Solr returned invalid JSON.', 8);
-				return FALSE;
-			}
-
-			if (isset($response->error))
-			{
-				$this->logger->message('Solr error: ' . $response->error, 8);
-				return FALSE;
-			}
-
-		} // end for() loop
-
-		/*
-		 * Files aren't searchable until Solr is told to commit them.
-		 */
-		$url = $solr_update_url . '?commit=true';
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $solr_update_url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		$results = curl_exec($ch);
-
-		/*
-		 * If cURL returned an error.
-		 */
-		if (curl_errno($ch) > 0)
-		{
-			$this->logger->message('The attempt to commit files to Solr via cURL returned an '
-				. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
-			return FALSE;
+			return TRUE;
 		}
-
-		$this->logger->message('Laws indexed with Solr successfully.', 7);
-
-		return TRUE;
 
 	}
 

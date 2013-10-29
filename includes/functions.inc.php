@@ -41,7 +41,7 @@ function fetch_url($url)
 	{
 		return FALSE;
 	}
-	
+
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
 	curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1200);
@@ -50,7 +50,7 @@ function fetch_url($url)
 
 	/* Set CURLOPT_PROTOCOLS to protect against exploitation of CVE-2013-0249 that affects cURL
 	 * v7.26.0 through v7.28.1, inclusive.
-	 * 
+	 *
 	 * http://curl.haxx.se/docs/adv_20130206.html
 	 * http://www.h-online.com/open/news/item/cURL-goes-wrong-1800880.html
 	 */
@@ -85,7 +85,7 @@ function json_error($text)
 	{
 		return FALSE;
 	}
-	
+
 	$error = array('error',
 		array(
 			'message' => 'An Error Occurred',
@@ -227,7 +227,7 @@ function wptexturize($text)
 		$curl = preg_replace('/&([^#])(?![a-zA-Z1-4]{1,8};)/', '&#038;$1', $curl);
 	}
 	return implode( '', $textarr );
-	
+
 }
 
 /**
@@ -281,7 +281,7 @@ function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $openi
 			}
 		}
 	}
-	
+
 }
 
 /**
@@ -318,7 +318,7 @@ function check_file_available($filename, $writable=false)
 	else {
 		return true;
 	}
-	
+
 }
 
 /**
@@ -356,7 +356,7 @@ function check_dir_available($dirname, $writable=false)
 	else {
 		return true;
 	}
-	
+
 }
 
 /**
@@ -395,13 +395,13 @@ function object_to_xml( $array, $xml )
 		{
 			$xml->addAttribute( $key, $value );
 		}
-		
+
 		/*
 		 * If this value is an object or array, add a child node and treat recursively.
 		 */
 		else
 		{
-		
+
 			if ( is_object( $value ) || is_array( $value ) )
 			{
 				$child = $xml->addChild(  $key );
@@ -411,11 +411,44 @@ function object_to_xml( $array, $xml )
 			{
 				$xml->addChild( $key, $value );
 			}
-			
+
 		}
-		
+
 	}
 
 	return $xml;
 
+}
+
+/*
+ * Recursively get all files
+ */
+
+function get_files($path, $files = array())
+{
+	if(substr($path, -1, 1) != '/')
+	{
+		$path .= '/';
+	}
+
+	$directory = dir($path);
+
+	while (FALSE !== ($filename = $directory->read()))
+	{
+
+		$file_path = $path . $filename;
+		if (substr($filename, 0, 1) !== '.')
+		{
+			if(is_file($file_path))
+			{
+				$files[] = $file_path;
+			}
+			elseif(is_dir($file_path))
+			{
+				$files = get_files($file_path, $files);
+			}
+		}
+	}
+
+	return $files;
 }

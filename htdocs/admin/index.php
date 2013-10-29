@@ -82,6 +82,7 @@ elseif ($_POST['action'] == 'empty')
  */
 elseif ($_POST['action'] == 'parse')
 {
+	define('EXPORT_IN_PROGRESS', true);
 
 	echo 'Beginning import<br />';
 	flush();

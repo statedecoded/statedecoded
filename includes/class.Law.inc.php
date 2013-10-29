@@ -1099,7 +1099,7 @@ class Law
 			/*
 			 * If we've got a section prefix, append a paragraph link to the end of this section.
 			 */
-			if (!empty($paragraph->prefix))
+			if (!empty($paragraph->prefix) && !defined('EXPORT_IN_PROGRESS'))
 			{
 				/*
 				 * Assemble the permalink
