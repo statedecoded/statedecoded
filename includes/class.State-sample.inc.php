@@ -1451,7 +1451,7 @@ class Parser
 				 * one, which we'll use to narrow the scope of our search for the use of structural
 				 * labels within the text.
 				 */
-				$structure_labels = $this->structure_labels);
+				$structure_labels = $this->structure_labels;
 
 				usort($structure_labels, 'sort_by_length');
 				$longest_label = strlen(current($structure_labels));
