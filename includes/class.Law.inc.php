@@ -426,7 +426,7 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-		$sql = 'SELECT url FROM permalinks
+		$sql = 'SELECT url, token FROM permalinks
 				WHERE relational_id = :id
 				AND object_type = :object_type';
 		$statement = $db->prepare($sql);
@@ -442,6 +442,7 @@ class Law
 		{
 			$permalink = $statement->fetch(PDO::FETCH_OBJ);
 			$this->url = $permalink->url;
+			$this->token = $permalink->token;
 		}
 
 		/*

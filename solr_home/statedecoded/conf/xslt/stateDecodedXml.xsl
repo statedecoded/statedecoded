@@ -11,7 +11,7 @@
 
   <xsl:template match="law">
     <doc>
-      <field name="id">l_<xsl:value-of select="@id"/></field>
+      <field name="id">l_<xsl:value-of select="token"/></field>
       <field name="catch_line"><xsl:value-of select="catch_line"/></field>
       <field name="text"><xsl:apply-templates select="text"/></field>
       <field name="section"><xsl:value-of select="section_number"/></field>
@@ -30,7 +30,7 @@
   <xsl:template match="tags">
     <xsl:for-each select="tag">
       <field name="tags">
-        <xsl:value-of select="current()"/> 
+        <xsl:value-of select="current()"/>
       </field>
     </xsl:for-each>
   </xsl:template>
@@ -38,7 +38,7 @@
   <xsl:template match="refers_to">
     <xsl:for-each select="reference">
       <field name="refers_to">
-        <xsl:value-of select="current()"/> 
+        <xsl:value-of select="current()"/>
       </field>
     </xsl:for-each>
   </xsl:template>
@@ -46,7 +46,7 @@
   <xsl:template match="referred_to_by">
     <xsl:for-each select="reference">
       <field name="referred_to_by">
-        <xsl:value-of select="current()"/> 
+        <xsl:value-of select="current()"/>
       </field>
     </xsl:for-each>
   </xsl:template>
@@ -54,7 +54,7 @@
   <xsl:template match="structure">
     <field name="structure">
       <xsl:for-each select="unit">
-        <xsl:value-of select="current()"/> 
+        <xsl:value-of select="current()"/>
         <xsl:if test="not(position() = last())">/</xsl:if>
       </xsl:for-each>
     </field>
@@ -144,7 +144,7 @@
          </xsl:if>
   </xsl:template>
 
-  <!-- tail recursion single character at a time 
+  <!-- tail recursion single character at a time
        escaping as needed. This should be only
        called directly by escape-xml
   -->
@@ -154,7 +154,7 @@
     <xsl:if test="$text != ''">
           <xsl:variable name="head" select="substring($text, 1, 1)"/>
           <xsl:variable name="tail" select="substring($text, 2)"/>
-           <!-- Emit the correct escap sequence for this character -->  
+           <!-- Emit the correct escap sequence for this character -->
           <xsl:choose>
              <xsl:when test="$head = '&amp;'">&amp;amp;</xsl:when>
              <xsl:when test="$head = '&lt;'">&amp;lt;</xsl:when>
@@ -163,7 +163,7 @@
              <xsl:when test="$head = &quot;&apos;&quot;">&amp;apos;</xsl:when>
              <xsl:otherwise><xsl:value-of select="$head"/></xsl:otherwise>
          </xsl:choose>
-       <!-- recurse on the remaining characters -->  
+       <!-- recurse on the remaining characters -->
        <xsl:call-template name="escape-xml">
         <xsl:with-param name="text" select="$tail"/>
       </xsl:call-template>
