@@ -1240,8 +1240,6 @@ class ParserController
 				while ($section = $laws_statement->fetch(PDO::FETCH_OBJ))
 				{
 
-					$this->logger->message('Writing '.$section->section_number, 3);
-
 					/*
 					 * Pass the requested section number to Law.
 					 */
