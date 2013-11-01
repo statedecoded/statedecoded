@@ -655,7 +655,7 @@ class ParserController
 		/*
 		 * If we already have a view, replace it with this new one.
 		 */
-		$this->logger->message('Replace old view', 3);
+		$this->logger->message('Mapping the structure of the laws', 3);
 
 		$sql = 'DROP VIEW IF EXISTS structure_unified';
 		$statement = $this->db->prepare($sql);
