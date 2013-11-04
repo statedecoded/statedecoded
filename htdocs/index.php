@@ -135,7 +135,10 @@ if ( !extension_loaded('apc') || (ini_get('apc.enabled') != 1) )
 	/*
 	 * Include the site's config file.
 	 */
-	require INCLUDE_PATH . '/config.inc.php';
+	if ( (include INCLUDE_PATH . '/config.inc.php') === FALSE )
+	{
+		die('Cannot run without a config.inc.php file. See the installation documentation.');
+	}
 
 	define('APC_RUNNING', FALSE);
 
@@ -161,7 +164,10 @@ else
 		/*
 		 * Load constants from the config file.
 		 */
-		require INCLUDE_PATH . '/config.inc.php';
+		if ( (include INCLUDE_PATH . '/config.inc.php') === FALSE )
+		{
+			die('Cannot run without a config.inc.php file. See the installation documentation.');
+		}
 
 		define('APC_RUNNING', TRUE);
 
