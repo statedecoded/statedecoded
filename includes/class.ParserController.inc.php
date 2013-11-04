@@ -1281,7 +1281,29 @@ class ParserController
 						 */
 						if ($write_xml === TRUE)
 						{
-							$law->html = html_entity_decode($law->html);
+						
+							/*
+							 * Clean up the data to fit the prescribed State Decoded XML format.
+							 */
+							$law->catch_line = html_entity_decode($law->catch_line);
+							unset($law->plain_text);
+							unset($law->structure_contents);
+							unset($law->next_section);
+							unset($law->previous_section);
+							unset($law->amendment_years);
+							unset($law->dublin_core);
+							unset($law->plain_text);
+							unset($law->section_id);
+							unset($law->structure_id);
+							unset($law->edition_id);
+							unset($law->full_text);
+							unset($law->formats);
+							unset($law->html);
+							foreach ($law->text as &$subsection)
+							{
+								$subsection->text = html_entity_decode($subsection->text);
+							}
+							
 							$xml = new SimpleXMLElement('<law />');
 							object_to_xml($law, $xml);
 							$dom = dom_import_simplexml($xml)->ownerDocument;
