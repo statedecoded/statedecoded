@@ -1253,7 +1253,7 @@ class ParserController
 					 */
 					$law = $laws->get_law();
 
-					if($law)
+					if ($law !== FALSE)
 					{
 						/*
 						 * Eliminate colons from section numbers, since some OSes can't handle colons in
