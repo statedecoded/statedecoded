@@ -1277,6 +1277,21 @@ class ParserController
 						}
 
 						/*
+						 * Store the text file.
+						 */
+						if ($write_text === TRUE)
+						{
+
+							$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
+							if ($success === FALSE)
+							{
+								$this->logger->message('Could not write law text files', 9);
+								break;
+							}
+
+						}
+
+						/*
 						 * Store the XML file.
 						 */
 						if ($write_xml === TRUE)
@@ -1296,7 +1311,7 @@ class ParserController
 							unset($law->html);
 
 							$law = html_entity_decode_object($law);
-
+							
 							$xml = new SimpleXMLElement('<law />');
 							object_to_xml($law, $xml);
 							$dom = dom_import_simplexml($xml)->ownerDocument;
@@ -1310,21 +1325,7 @@ class ParserController
 							}
 
 						}
-
-						/*
-						 * Store the text file.
-						 */
-						if ($write_text === TRUE)
-						{
-
-							$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
-							if ($success === FALSE)
-							{
-								$this->logger->message('Could not write law text files', 9);
-								break;
-							}
-
-						}
+						
 					} // end the $law exists condition
 
 				} // end the while() law iterator
