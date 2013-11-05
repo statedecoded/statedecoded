@@ -1281,9 +1281,6 @@ class ParserController
 						 */
 						if ($write_xml === TRUE)
 						{
-							/*
-							 * Clean up the data to fit the prescribed State Decoded XML format.
-							 */
 							unset($law->plain_text);
 							unset($law->structure_contents);
 							unset($law->next_section);
@@ -1745,18 +1742,21 @@ class ParserController
 	 */
 	function index_laws()
 	{
-		if(!isset($this->edition))
+		
+		if (!isset($this->edition))
 		{
 			throw new Exception('No edition, cannot index laws.');
 		}
 
-		if($this->edition['current'] != '1')
+		if ($this->edition['current'] != '1')
 		{
 			$this->logger->message('The edition is not current, skipping update to search index.');
 			return;
 		}
+		
 		else
 		{
+			
 			$this->logger->message('Updating search index.');
 
 			/*
@@ -1779,9 +1779,9 @@ class ParserController
 			/*
 			 * Create an array, $files, with a list of every XML file.
 			 *
-			 * We don't bother to check whether each file is readable because a) these files were just
-			 * created by the exporter and b) it's really too slow on the order of tens or hundreds of
-			 * thousands of files.
+			 * We don't bother to check whether each file is readable because a) these files were
+			 * just created by the exporter and b) it's really too slow on the order of tens or
+			 * hundreds of thousands of files.
 			 */
 			$files = get_files($path);
 
@@ -1929,6 +1929,7 @@ class ParserController
 			$this->logger->message('Laws indexed with Solr successfully.', 7);
 
 			return TRUE;
+			
 		}
 
 	}
