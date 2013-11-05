@@ -1792,18 +1792,45 @@ class ParserController
 			}
 
 			/*
-			 * If we have a list of files with XML problems, then remove those from the list of files
-			 * to import. If a single file in a batch has XML errors, then the entire batch is rejected,
-			 * so it's better to omit a file than to risk that.
+			 * See if any of these files contain invalid XML. We run xmllint, extract filenames from
+			 * the output, and put those on a blacklist. This is because Solr reacts badly to
+			 * invalid XML, and it's best that it not encounter any.
+			 *
+			 * We do this in a strange fashion, but for good cause. xmllint appears to be written in
+			 * such a fashion that makes it impossible for exec() to capture its output. Maybe it
+			 * explicitly writes to the console rather than STDOUT, maybe something else is going
+			 * on, but the simple solution is to redirect xmllint's output to a file, retrieve the
+			 * contents of that file, and then delete the file.
 			 */
-			if (isset($this->invalid_xml))
+			$this->logger->message('Validating XML files before indexing them');
+			exec('xmllint --noout ' . $path . '1-1* > ' . $path . 'xmllint.txt 2>&1');
+			$output = file_get_contents($path . 'xmllint.txt');
+			unlink($path . 'xmllint.txt');
+			
+			/*
+			 * Extract filenames from the output.
+			 */
+			if (preg_match_all('/' . preg_quote($path, '/') . '(.+)\.xml\:/', $output, $matches) !== FALSE)
 			{
-				foreach ($this->invalid_xml as $entry)
+				
+				$invalid_xml = array();
+				if (count($matches[1]) > 0)
 				{
-					$key = array_search($entry, $files);
-					echo 'Removed ' . $files[$key] . ' for invalid XML.<br />';
-					unset($files[$key]);
+					
+					$this->logger->message('preg_match_all did not return an error');
+					foreach ($matches[1] as $match)
+					{
+					
+						$key = array_search($match, $files);
+						unset($files[$key]);
+						
+					}
+					$this->logger->message('Suppressing the indexing of ' .
+						number_format( count($this->invalid_xml) ) . ' laws, for the presence of'
+						. ' invalid XML');
+					
 				}
+				
 			}
 
 			/*
