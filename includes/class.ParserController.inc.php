@@ -1089,8 +1089,8 @@ class ParserController
 			$token = implode('/', $identifier_parts);
 
 			/*
-			 * This is slightly different from how we handle permalinks
-			 * since we don't want to overwrite files if current has changed.
+			 * This is slightly different from how we handle permalinks since we don't want to
+			 * overwrite files if current has changed.
 			 */
 
 			$url = '/';
