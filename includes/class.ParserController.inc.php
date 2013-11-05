@@ -1296,6 +1296,8 @@ class ParserController
 						 */
 						if ($write_xml === TRUE)
 						{
+						
+							$law->catch_line = html_entity_decode($law->catch_line);
 							unset($law->plain_text);
 							unset($law->structure_contents);
 							unset($law->next_section);
@@ -1309,6 +1311,10 @@ class ParserController
 							unset($law->full_text);
 							unset($law->formats);
 							unset($law->html);
+							$law->structure = $law->ancestry;
+							unset($law->ancestry);
+							$law->referred_to_by = $law->references;
+							unset($law->references);
 
 							$law = html_entity_decode_object($law);
 							
