@@ -937,7 +937,7 @@ class ParserController
 		/*
 		 * Zip up all of the XML into a single file.
 		 */
-		if ($write_text === TRUE)
+		if ($write_xml === TRUE)
 		{
 			$this->logger->message('Creating code XML ZIP file', 3);
 			$output = array();
