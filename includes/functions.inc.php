@@ -481,9 +481,11 @@ function html_entity_decode_object($obj)
  * From php.net: http://us2.php.net/manual/en/function.html-entity-decode.php#47371
  */
 function decode_entities($text) {
-	$text = html_entity_decode($text);
-    $text = html_entity_decode($text,ENT_QUOTES,"ISO-8859-1"); #NOTE: UTF-8 does not work!
-    $text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
-    $text = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
-    return $text;
+	$text = str_ireplace(array('&#038;', '&#38;', '&amp;'), '[AMP]', $text); // ampersands must be kept!
+	$text = html_entity_decode($text); // Basic decoding
+	$text = html_entity_decode($text,ENT_QUOTES,"ISO-8859-1"); //NOTE: UTF-8 does not work!
+	$text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); // decimal notation
+	$text = preg_replace('/&#x([a-fA-F0-9]+);/mei',"chr(0x\\1)",$text);  // hex notation
+	$text = str_replace('[AMP]', '&amp;', $text);
+	return $text;
 }
