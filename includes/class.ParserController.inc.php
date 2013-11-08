@@ -1296,8 +1296,6 @@ class ParserController
 						 */
 						if ($write_xml === TRUE)
 						{
-
-							$law->catch_line = html_entity_decode($law->catch_line);
 							unset($law->plain_text);
 							unset($law->structure_contents);
 							unset($law->next_section);
