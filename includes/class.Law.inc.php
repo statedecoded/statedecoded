@@ -426,7 +426,8 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-		$sql = 'SELECT url, token FROM permalinks
+		$sql = 'SELECT url, token
+				FROM permalinks
 				WHERE relational_id = :id
 				AND object_type = :object_type';
 		$statement = $db->prepare($sql);
