@@ -1356,7 +1356,10 @@ class ParserController
 							 * Simplify every reference, stripping them down to the cited sections.
 							 */
 							$referred_to_by = $dom->getElementsByTagName('referred_to_by')->item(0);
-							$references = $referred_to_by->getElementsByTagName('unit');
+							if ($referred_to_by->length > 0)
+							{
+								$references = $referred_to_by->getElementsByTagName('unit');
+							}
 							
 							/*
 							 * Iterate backwards through our elements.
