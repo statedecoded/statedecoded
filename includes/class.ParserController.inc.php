@@ -1356,98 +1356,109 @@ class ParserController
 							 * Simplify every reference, stripping them down to the cited sections.
 							 */
 							$referred_to_by = $dom->getElementsByTagName('referred_to_by')->item(0);
-							if ($referred_to_by->length > 0)
+							if ( !empty($referred_to_by) && ($referred_to_by->length > 0) )
 							{
+							
 								$references = $referred_to_by->getElementsByTagName('unit');
-							}
-							
-							/*
-							 * Iterate backwards through our elements.
-							 */
-							for ($i = $references->length; --$i >= 0;)
-							{
-								
-								$reference = $references->item($i);
-								
-								/*
-								 * Save the section number.
-								 */
-								$section_number = trim($reference->getElementsByTagName('section_number')->item(0)->nodeValue);
-								
-								/*
-								 * Create a new element, named "reference," which contains the only
-								 * the section number.
-								 */
-								$element = $dom->createElement('reference', $section_number);
-								$reference->parentNode->insertBefore($element, $reference);
 							
 								/*
-								 * Remove the "unit" node.
+								 * Iterate backwards through our elements.
 								 */
-								$reference->parentNode->removeChild($reference);
-							
+								for ($i = $references->length; --$i >= 0;)
+								{
+									
+									$reference = $references->item($i);
+									
+									/*
+									 * Save the section number.
+									 */
+									$section_number = trim($reference->getElementsByTagName('section_number')->item(0)->nodeValue);
+									
+									/*
+									 * Create a new element, named "reference," which contains the only
+									 * the section number.
+									 */
+									$element = $dom->createElement('reference', $section_number);
+									$reference->parentNode->insertBefore($element, $reference);
+								
+									/*
+									 * Remove the "unit" node.
+									 */
+									$reference->parentNode->removeChild($reference);
+								
+								}
+								
 							}
 							
 							/*
 							 * Simplify and reorganize every structural unit.
 							 */
 							$structure = $dom->getElementsByTagName('structure')->item(0);
-							$structural_units = $structure->getElementsByTagName('unit');
-							
-							/*
-							 * Iterate backwards through our elements.
-							 */
-							for ($i = $structural_units->length; --$i >= 0;)
+							if (!empty($structure) && ($structure->length > 0)
 							{
+								$structural_units = $structure->getElementsByTagName('unit');
+							
+								/*
+								 * Iterate backwards through our elements.
+								 */
+								for ($i = $structural_units->length; --$i >= 0;)
+								{
+									
+									$unit = $structural_units->item($i);
 								
-								$unit = $structural_units->item($i);
-							
-								/*
-								 * Add the "level" attribute.
-								 */
-								$label = trim(strtolower($unit->getAttribute('label')));
-								$level = $dom->createAttribute('level');
-								$level->value = array_search($label, $parser->get_structure_labels()) + 1;
-							
-								$unit->appendChild($level);
+									/*
+									 * Add the "level" attribute.
+									 */
+									$label = trim(strtolower($unit->getAttribute('label')));
+									$level = $dom->createAttribute('level');
+									$level->value = array_search($label, $parser->get_structure_labels()) + 1;
 								
-								/*
-								 * Add the "identifier" attribute.
-								 */
-								$identifier = $dom->createAttribute('identifier');
-								$identifier->value = trim($unit->getElementsByTagName('identifier')->item(0)->nodeValue);
-								$unit->appendChild($identifier);
-							
-								/*
-								 * Remove the "id" attribute from <unit>.
-								 */
-								$unit->removeAttribute('id');
-							
-								/*
-								 * Store the name of this structural unit as the contents of <unit>.
-								 */
-								$unit->nodeValue = trim($unit->getElementsByTagName('name')->item(0)->nodeValue);
-							
-								/*
-								 * Save these changes.
-								 */
-								$structure->appendChild($unit);
+									$unit->appendChild($level);
+									
+									/*
+									 * Add the "identifier" attribute.
+									 */
+									$identifier = $dom->createAttribute('identifier');
+									$identifier->value = trim($unit->getElementsByTagName('identifier')->item(0)->nodeValue);
+									$unit->appendChild($identifier);
 								
+									/*
+									 * Remove the "id" attribute from <unit>.
+									 */
+									$unit->removeAttribute('id');
+								
+									/*
+									 * Store the name of this structural unit as the contents of <unit>.
+									 */
+									$unit->nodeValue = trim($unit->getElementsByTagName('name')->item(0)->nodeValue);
+								
+									/*
+									 * Save these changes.
+									 */
+									$structure->appendChild($unit);
+									
+								}
+							
 							}
 							
 							/*
 							 * Rename text units as text sections.
 							 */
 							$text = $dom->getElementsByTagName('text')->item(0);
-							$text_units = $text->getElementsByTagName('unit');
-							
-							/*
-							 * Iterate backwards through our elements.
-							 */
-							for ($i = $text_units->length; --$i >= 0;)
+							if (!empty($text) && ($text->length > 0))
 							{
-								$text_unit = $text_units->item($i);
-								renameElement($text_unit, 'section');
+								
+								$text_units = $text->getElementsByTagName('unit');
+							
+								/*
+								 * Iterate backwards through our elements.
+								 */
+								for ($i = $text_units->length; --$i >= 0;)
+								{
+									$text_unit = $text_units->item($i);
+									renameElement($text_unit, 'section');
+								}
+							
 							}
 
 							/*
