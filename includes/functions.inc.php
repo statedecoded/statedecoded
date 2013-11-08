@@ -420,10 +420,44 @@ function object_to_xml( $array, $xml )
 
 }
 
+/**
+ * Change the name of DOMXPath element $element to $newName
+ * By Felix E. Klee <felix.klee at inka.de>
+ * http://www.php.net/manual/en/class.domelement.php#111494
+ */
+function renameElement($element, $newName)
+{
+
+	$newElement = $element->ownerDocument->createElement($newName);
+	$parentElement = $element->parentNode;
+	$parentElement->insertBefore($newElement, $element);
+
+	$childNodes = $element->childNodes;
+	while ($childNodes->length > 0)
+	{
+		$newElement->appendChild($childNodes->item(0));
+	}
+
+	$attributes = $element->attributes;
+	while ($attributes->length > 0)
+	{
+		$attribute = $attributes->item(0);
+			if (!is_null($attribute->namespaceURI))
+			{
+				$newElement->setAttributeNS('http://www.w3.org/2000/xmlns/',
+				  'xmlns:'.$attribute->prefix,
+				  $attribute->namespaceURI);
+    		}
+			$newElement->setAttributeNode($attribute);
+	}
+
+	$parentElement->removeChild($element);
+
+}
+
 /*
  * Recursively get all files
  */
-
 function get_files($path, $files = array())
 {
 	if(substr($path, -1, 1) != '/')
@@ -481,11 +515,9 @@ function html_entity_decode_object($obj)
  * From php.net: http://us2.php.net/manual/en/function.html-entity-decode.php#47371
  */
 function decode_entities($text) {
-	$text = str_ireplace(array('&#038;', '&#38;', '&amp;'), '[AMP]', $text); // ampersands must be kept!
-	$text = html_entity_decode($text); // Basic decoding
-	$text = html_entity_decode($text,ENT_QUOTES,"ISO-8859-1"); //NOTE: UTF-8 does not work!
-	$text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); // decimal notation
-	$text = preg_replace('/&#x([a-fA-F0-9]+);/mei',"chr(0x\\1)",$text);  // hex notation
-	$text = str_replace('[AMP]', '&amp;', $text);
-	return $text;
+	$text = html_entity_decode($text);
+    $text = html_entity_decode($text,ENT_QUOTES,"ISO-8859-1"); #NOTE: UTF-8 does not work!
+    $text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
+    $text = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
+    return $text;
 }
