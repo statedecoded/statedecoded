@@ -625,7 +625,7 @@ class Law
 		foreach ($results as $document)
 		{
 			$law = new Law();
-			$law->id = $document->id;
+			$law->law_id = $document->id;
 			$law->get_law();
 
 			$related->{$i} = $law;
