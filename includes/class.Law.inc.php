@@ -624,12 +624,11 @@ class Law
 		$i=0;
 		foreach ($results as $document)
 		{
+			$law = new Law();
+			$law->id = $document->id;
+			$law->get_law();
 
-			$related->{$i}->id = $document->id;
-			$related->{$i}->catch_line = $document->catch_line;
-			$related->{$i}->section_number = $document->section;
-			$related->{$i}->text = $document->text;
-			$related->{$i}->url = $this->get_url($document->section);
+			$related->{$i} = $law;
 			$i++;
 
 		}
@@ -667,10 +666,10 @@ class Law
 		$sql = 'SELECT url
 				FROM permalinks
 				WHERE object_type="law"
-				AND identifier = :identifier';
+				AND token = :token';
 
 		$sql_args = array(
-			':identifier' => $section_number
+			':token' => $section_number
 		);
 
 		$statement = $db->prepare($sql);

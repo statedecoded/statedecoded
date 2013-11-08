@@ -525,7 +525,6 @@ class Parser
 			$identifier_parts = array_reverse($identifier_parts);
 			$token = implode('/', $identifier_parts);
 
-
 			if ($item['current_edition'])
 			{
 				$url = '/' . $token . '/';
@@ -595,14 +594,15 @@ class Parser
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
 			{
-				$law_token = $law['section_number'];
-
 				if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
 				{
+					$law_token = $token . '/' . $law['section_number'];
 					$law_url = $url . $law['section_number'];
 				}
 				else
 				{
+					$law_token = $law['section_number'];
+
 					if ($item['current_edition'])
 					{
 						$law_url = '/' . $law['section_number'] . '/';

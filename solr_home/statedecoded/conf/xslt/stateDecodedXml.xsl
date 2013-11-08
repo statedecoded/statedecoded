@@ -14,7 +14,7 @@
       <field name="id">l_<xsl:value-of select="url"/></field>
       <field name="catch_line"><xsl:value-of select="catch_line"/></field>
       <field name="text"><xsl:apply-templates select="text"/></field>
-      <field name="section"><xsl:value-of select="section_number"/></field>
+      <field name="section"><xsl:value-of select="token"/></field>
       <xsl:apply-templates select="structure"/>
       <xsl:apply-templates select="tags"/>
       <xsl:apply-templates select="refers_to"/>
