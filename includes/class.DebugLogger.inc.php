@@ -10,7 +10,7 @@
  * @author		Bill Hunt <bill at krues8dr.com>
  * @copyright	2013 Bill Hunt
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.7
+ * @version		0.8
  * @link		http://www.statedecoded.com/
  * @since		0.7
 */

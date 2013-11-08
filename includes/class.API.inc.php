@@ -8,7 +8,7 @@
  * @author		Waldo Jaquith <waldo at jaquith.org>
  * @copyright	2010-2013 Waldo Jaquith
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		0.7
+ * @version		0.8
  * @link		http://www.statedecoded.com/
  * @since		0.6
  *
