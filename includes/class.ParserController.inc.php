@@ -1296,7 +1296,7 @@ class ParserController
 						 */
 						if ($write_xml === TRUE)
 						{
-						
+
 							$law->catch_line = html_entity_decode($law->catch_line);
 							unset($law->plain_text);
 							unset($law->structure_contents);
@@ -1317,7 +1317,7 @@ class ParserController
 							unset($law->references);
 
 							$law = html_entity_decode_object($law);
-							
+
 							$xml = new SimpleXMLElement('<law />');
 							object_to_xml($law, $xml);
 							$dom = dom_import_simplexml($xml)->ownerDocument;
@@ -1331,7 +1331,7 @@ class ParserController
 							}
 
 						}
-						
+
 					} // end the $law exists condition
 
 				} // end the while() law iterator
@@ -1749,7 +1749,7 @@ class ParserController
 	 */
 	function index_laws()
 	{
-		
+
 		if (!isset($this->edition))
 		{
 			throw new Exception('No edition, cannot index laws.');
@@ -1760,10 +1760,10 @@ class ParserController
 			$this->logger->message('The edition is not current, skipping update to search index.');
 			return;
 		}
-		
+
 		else
 		{
-			
+
 			$this->logger->message('Updating search index.');
 
 			/*
@@ -1813,31 +1813,31 @@ class ParserController
 			exec('xmllint --noout ' . $path . '* > ' . $path . 'xmllint.txt 2>&1');
 			$output = file_get_contents($path . 'xmllint.txt');
 			unlink($path . 'xmllint.txt');
-			
+
 			/*
 			 * Extract filenames from the output.
 			 */
 			if (preg_match_all('/' . preg_quote($path, '/') . '(.+)\.xml\:/', $output, $matches) !== FALSE)
 			{
-				
+
 				$invalid_xml = array();
 				if (count($matches[1]) > 0)
 				{
-					
+
 					$this->logger->message('preg_match_all did not return an error');
 					foreach ($matches[1] as $match)
 					{
-					
+
 						$key = array_search($match, $files);
 						unset($files[$key]);
-						
+
 					}
 					$this->logger->message('Suppressing the indexing of ' .
 						number_format( count($this->invalid_xml) ) . ' laws, for the presence of'
 						. ' invalid XML');
-					
+
 				}
-				
+
 			}
 
 			/*
@@ -1856,7 +1856,8 @@ class ParserController
 				 */
 				$solr_parameters = array(
 					'wt' => 'json',
-					'tr' => 'stateDecodedXml.xsl');
+					'tr' => 'stateDecodedXml.xsl',
+					'commit' => 'true');
 
 				$numFiles = 0;
 				$url = $solr_update_url . '?' . http_build_query($solr_parameters);
@@ -1936,7 +1937,7 @@ class ParserController
 			$this->logger->message('Laws indexed with Solr successfully.', 7);
 
 			return TRUE;
-			
+
 		}
 
 	}
