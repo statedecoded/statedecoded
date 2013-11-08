@@ -877,7 +877,7 @@ class ParserController
 		}
 
 		/*
-		 * Blow away our old directory completely
+		 * Delete our old downloads directory.
 		 */
 		$this->logger->message('Removing old downloads folder.', 5);
 		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition['slug']);
