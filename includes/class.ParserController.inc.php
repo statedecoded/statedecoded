@@ -1937,7 +1937,7 @@ class ParserController
 			 * contents of that file, and then delete the file.
 			 */
 			$this->logger->message('Validating XML files before indexing them');
-			exec('xmllint --noout ' . $path . '1-1* > ' . $path . 'xmllint.txt 2>&1');
+			exec('xmllint --noout ' . $path . '* > ' . $path . 'xmllint.txt 2>&1');
 			$output = file_get_contents($path . 'xmllint.txt');
 			unlink($path . 'xmllint.txt');
 			
