@@ -1915,10 +1915,9 @@ class ParserController
 			/*
 			 * Files aren't searchable until Solr is told to commit them.
 			 */
-			$url = $solr_update_url . '?commit=true';
-
+			$commit_url = $solr_update_url . '?commit=true';
 			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $solr_update_url);
+			curl_setopt($ch, CURLOPT_URL, $commit_url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 			$results = curl_exec($ch);
 
