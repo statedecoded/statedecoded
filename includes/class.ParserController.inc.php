@@ -550,14 +550,6 @@ class ParserController
 				$parser->post_parse();
 			}
 
-			/*
-			 * If any files contained invalid XML, bring that list into the local scope.
-			 */
-			if (isset($parser->invalid_xml))
-			{
-				$this->invalid_xml = $parser->invalid_xml;
-			}
-
 		}
 		catch(Exception $e)
 		{
