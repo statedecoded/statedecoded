@@ -138,7 +138,7 @@ else
 	/*
 	* Make the "up" link a link to the home page.
 	*/
-	$content->set('link_rel', '<link rel="up" title="Up" href="/" />');
+	$content->set('link_rel', '<link rel="up" title="Up" href="/browse/" />');
 
 }
 
