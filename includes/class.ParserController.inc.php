@@ -1394,8 +1394,9 @@ class ParserController
 							 * Simplify and reorganize every structural unit.
 							 */
 							$structure = $dom->getElementsByTagName('structure')->item(0);
-							if (!empty($structure) && ($structure->length > 0)
+							if ( !empty($structure) && ($structure->length > 0) )
 							{
+							
 								$structural_units = $structure->getElementsByTagName('unit');
 							
 								/*
