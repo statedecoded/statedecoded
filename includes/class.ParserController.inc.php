@@ -1806,6 +1806,17 @@ class ParserController
 			}
 
 		}
+		
+		/*
+		 * Make sure that xmllint is installed.
+		 */
+		exec('which xmllint', $result, $status);
+		if ($status != 0)
+		{
+			$this->logger->message('xmllint must be installed.', 10);
+			$error = TRUE;
+		}
+		
 		/*
 		 * Make sure that zip is installed.
 		 */
