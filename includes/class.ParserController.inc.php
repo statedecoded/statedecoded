@@ -1949,11 +1949,25 @@ class ParserController
 			 * explicitly writes to the console rather than STDOUT, maybe something else is going
 			 * on, but the simple solution is to redirect xmllint's output to a file, retrieve the
 			 * contents of that file, and then delete the file.
+			 *
+			 * We can only validate XML files that are all in the same directory (see issue #433 in
+			 * the GitHub repository), so we alert people with LAW_LONG_URLS enabled (which nests
+			 * XML within subdirectories) that their XML is not being validated.
 			 */
-			$this->logger->message('Validating XML files before indexing them');
-			exec('xmllint --noout ' . $path . '* > ' . $path . 'xmllint.txt 2>&1');
-			$output = file_get_contents($path . 'xmllint.txt');
-			unlink($path . 'xmllint.txt');
+			if (LAW_LONG_URLS === FALSE)
+			{
+			
+				$this->logger->message('Validating XML files before indexing them', 5);
+				exec('xmllint --noout ' . $path . '* > ' . $path . 'xmllint.txt 2>&1');
+				$output = file_get_contents($path . 'xmllint.txt');
+				unlink($path . 'xmllint.txt');
+				
+			}
+			else
+			{
+				$this->logger->message('Cannot try to validate XML files, because LAW_LONG_URLS is '
+					. 'enabled—proceeding with the assumption that they do not contain errors', 5);
+			}
 			
 			/*
 			 * Extract filenames from the output.
