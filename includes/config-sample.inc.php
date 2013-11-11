@@ -114,7 +114,7 @@ define('PDO_PASSWORD', 'password');
  * presence. A growing collection of per-state regular expressions can be found at
  * <https://github.com/statedecoded/law-identifier>.
  */
-define('SECTION_PCRE', '/([[0-9]{1,})([0-9A-Za-z\-\.]{0,3})-([0-9A-Za-z\-\.:]*)([0-9A-Za-z]{1,})/');
+define('SECTION_REGEX', '/([[0-9]{1,})([0-9A-Za-z\-\.]{0,3})-([0-9A-Za-z\-\.:]*)([0-9A-Za-z]{1,})/');
 
 /*
  * The path, relative to the webroot, to an error page to be displayed if the database connection is

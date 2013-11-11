@@ -1812,7 +1812,7 @@ class Parser
 		/*
 		 * Find every string that fits the acceptable format for a state code citation.
 		 */
-		preg_match_all(SECTION_PCRE, $this->text, $matches);
+		preg_match_all(SECTION_REGEX, $this->text, $matches);
 
 		/*
 		 * We don't need all of the matches data -- just the first set. (The others are arrays of
@@ -1944,7 +1944,7 @@ class Parser
 				}
 				if (!empty($matches[3]))
 				{
-					$result = preg_match(SECTION_PCRE, $update, $matches[3]);
+					$result = preg_match(SECTION_REGEX, $update, $matches[3]);
 					if ( ($result !== FALSE) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
@@ -2006,7 +2006,7 @@ class Parser
 					/*
 					 * Locate any section identifier.
 					 */
-					$result = preg_match(SECTION_PCRE, $update, $matches);
+					$result = preg_match(SECTION_REGEX, $update, $matches);
 					if ( ($result !== FALSE) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];

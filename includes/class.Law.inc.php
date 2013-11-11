@@ -991,7 +991,7 @@ class Law
 			/*
 			 * Turn every code reference in every paragraph into a link.
 			 */
-			$section->text = preg_replace_callback(SECTION_PCRE, array($autolinker, 'replace_sections'), $section->text);
+			$section->text = preg_replace_callback(SECTION_REGEX, array($autolinker, 'replace_sections'), $section->text);
 
 			/*
 			 * Turn every pair of newlines into carriage returns.
