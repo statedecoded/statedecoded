@@ -28,7 +28,10 @@ class PermalinkController extends BaseController
 			/*
 			 * Look up the route in the database
 			 */
-			$sql = 'SELECT * FROM permalinks WHERE url = :url LIMIT 1';
+			$sql = 'SELECT *
+					FROM permalinks
+					WHERE url = :url
+					LIMIT 1';
 			$sql_args = array(
 				':url' => $args['route']
 			);
@@ -38,7 +41,7 @@ class PermalinkController extends BaseController
 			/*
 			 * If we found a route
 			 */
-			if ( $result !== FALSE && $statement->rowCount() > 0 )
+			if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
 			{
 
 				$route = $statement->fetch(PDO::FETCH_ASSOC);
