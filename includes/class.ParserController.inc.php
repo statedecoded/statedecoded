@@ -1806,6 +1806,15 @@ class ParserController
 			}
 
 		}
+		/*
+		 * Make sure that zip is installed.
+		 */
+		exec('which zip', $result, $status);
+		if ($status != 0)
+		{
+			$this->logger->message('zip must be installed.', 10);
+			$error = TRUE;
+		}
 
 		/*
 		 * Make sure that the configuration file is writable.
