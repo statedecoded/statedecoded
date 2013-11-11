@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
 CREATE TABLE IF NOT EXISTS `dictionary` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `law_id` int(10) unsigned NOT NULL,
-  `term` varchar(64) collate utf8_bin NOT NULL,
+  `term` varchar(128) collate utf8_bin NOT NULL,
   `definition` text collate utf8_bin NOT NULL,
   `scope` varchar(32) collate utf8_bin NOT NULL COMMENT 'The extent of the code to which this definition applies',
   `scope_specificity` tinyint(3) unsigned default NULL COMMENT 'Larger numbers have a larger applicability scope',
