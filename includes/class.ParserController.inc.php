@@ -1968,21 +1968,28 @@ class ParserController
 			if (preg_match_all('/' . preg_quote($path, '/') . '(.+)\.xml\:/', $output, $matches) !== FALSE)
 			{
 				
-				$invalid_xml = array();
 				if (count($matches[1]) > 0)
 				{
 					
-					$this->logger->message('preg_match_all did not return an error');
+					$invalid_files = 0;
+					
 					foreach ($matches[1] as $match)
 					{
 					
 						$key = array_search($match, $files);
-						unset($files[$key]);
+						if ($key !== FALSE)
+						{
+							unset($files[$key]);
+							$invalid_files++;
+						}
 						
 					}
-					$this->logger->message('Suppressing the indexing of ' .
-						number_format( count($this->invalid_xml) ) . ' laws, for the presence of'
-						. ' invalid XML');
+					
+					if ($invalid_files > 0)
+					{
+						$this->logger->message('Suppressing the indexing of ' .
+							number_format($invalid_files) . ' laws, for the presence of invalid XML');
+					}
 					
 				}
 				
