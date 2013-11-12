@@ -68,6 +68,60 @@ class State
 		return TRUE;
 	}
 	*/
+	
+	/**
+	 * Retrieve a list of every attempt to amend a law
+	 *
+	 * Should create an object named "bills" (plural) with one numbered entry for each bill that
+	 * proposed to amend the law, with values of "year," "number," "catch_line," "outcome," and
+	 * "url."
+	 *
+	 * @return true or false
+	 */
+	/*function get_amendment_attempts()
+	{	
+		
+		if (!isset($this->section_number))
+		{
+			return FALSE;
+		}
+		
+		# Below is an example of how $this->bills should be formatted. Every field must be present,
+		# and they should be sorted chronologically, from most oldest to newest.
+		#
+		#		Object
+		#		(
+		#			[0] => stdClass Object
+		#				(
+		#					[year] => 2009
+		#					[number] => SB1316
+		#					[catch_line] => Freedom of Information Act; strikes requirement to publish a database index, etc.
+		#					[outcome] => passed
+		#					[url] => http://www.richmondsunlight.com/bill/2009/sb1316/
+		#				)
+		#		
+		#			[1] => stdClass Object
+		#				(
+		#					[year] => 2010
+		#					[number] => HB449
+		#					[catch_line] => Freedom of Information Act; injunctive relief for public bodies under certain circumstances.
+		#					[outcome] => failed
+		#					[url] => http://www.richmondsunlight.com/bill/2010/hb449/
+		#				)
+		#		
+		#			[2] => stdClass Object
+		#				(
+		#					[year] => 2010
+		#					[number] => HB518
+		#					[catch_line] => Freedom of Information Act; public body shall remain responsible for retrieving public records, etc.
+		#					[outcome] => passed
+		#					[url] => http://www.richmondsunlight.com/bill/2010/hb518/
+		#				)
+		
+		return TRUE;
+		
+	} // end get_amendment_attempts()
+	*/
 
 }
 
