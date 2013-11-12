@@ -105,11 +105,11 @@ if (is_object($law->dublin_core))
 $content->set('breadcrumbs', '');
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$content->append('breadcrumbs', '<li><a href="'.$ancestor->url.'">'.$ancestor->identifier.' '
-		.$ancestor->name.'</a></li>');
+	$content->append('breadcrumbs', '<li><a href="'.$ancestor->url.'">' . $ancestor->identifier . ' '
+		.$ancestor->name . '</a></li>');
 }
-$content->append('breadcrumbs', '<li class="active"><a href="/'.$law->section_number.'/">§&nbsp;' .
-	 $law->section_number.' '.$law->catch_line.'</a></li>');
+$content->append('breadcrumbs', '<li class="active"><a href="/' . $law->section_number
+	. '/">§&nbsp;' . $law->section_number . ' ' . $law->catch_line . '</a></li>');
 
 $content->prepend('breadcrumbs', '<nav class="breadcrumbs"><ul class="steps-nav">');
 $content->append('breadcrumbs', '</ul></nav>');
