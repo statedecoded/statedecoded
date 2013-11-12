@@ -322,20 +322,6 @@ class Law
 		}
 
 		/*
-		 * Extract every year named in the history.
-		 */
-		preg_match_all('/(18|19|20)([0-9]{2})/', $this->history, $years);
-		if (count($years[0]) > 0)
-		{
-			$i=0;
-			foreach ($years[0] as $year)
-			{
-				$this->amendment_years->$i = $year;
-				$i++;
-			}
-		}
-
-		/*
 		 * Create a new instance of the State() class.
 		 */
 		$state = new State();
@@ -365,7 +351,6 @@ class Law
 		{
 			if (method_exists($state, 'get_court_decisions'))
 			{
-				$this->court_decisions = $state->get_court_decisions();
 				$state->get_court_decisions();
 				$this->court_decisions = $state->decisions;
 			}
@@ -397,7 +382,6 @@ class Law
 		if (method_exists($state, 'citations'))
 		{
 			$state->section_number = $this->section_number;
-			$state->amendment_years = $this->amendment_years;
 			$state->citations();
 			$this->citation = $state->citation;
 		}

@@ -230,50 +230,6 @@ $body .= '
 $sidebar = '';
 
 /*
- * Only show the history if the law has a list of amendment years.
- */
-if ( isset($law->amendment_years) )
-{
-	$sidebar .= '
-			<section id="history-description">
-				<h1>History</h1>
-				<p>
-					This law was first passed in ' . reset($law->amendment_years) . '.';
-	if (count((array) $law->amendment_years) > 1)
-	{
-		$sidebar .= ' It was updated in ';
-
-		/*
-		 * Iterate through every year in which this bill has been amended and list them.
-		 */
-		foreach ($law->amendment_years as $year)
-		{
-			if ($year == reset($law->amendment_years))
-			{
-				continue;
-			}
-			if ( ($year == end($law->amendment_years)) && (count((array)$law->amendment_years) > 2) )
-			{
-				$sidebar .= 'and ';
-			}
-			$sidebar .= $year;
-			if ($year != end($law->amendment_years))
-			{
-				$sidebar .= ', ';
-			}
-		}
-		$sidebar .= '.';
-	}
-	else
-	{
-		$sidebar .= ' It has not been changed since.';
-	}
-	$sidebar .= '
-					</p>
-				</section>';
-}
-
-/*
  * Commenting functionality.
  */
 if (defined('DISQUS_SHORTNAME') === TRUE)
@@ -339,11 +295,11 @@ if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 	$sidebar .= '<section class="grid-box grid-sizer" id="court-decisions">
 				<h1>Court Decisions</h1>
 				<ul>';
+				
 	foreach ($law->court_decisions as $decision)
 	{
 	
 		$sidebar .= '<li><a href="' . $decision->url . '"><em>' . $decision->name . '</em></a> ('
-			. $decision->type_html . ', ' . date('m/d/y', strtotime($decision->date)) . ')<br />'
 			. $decision->court_html . ', ' . date('m/d/y', strtotime($decision->date)) . ')';
 		if (isset($decision->abstract))
 		{
