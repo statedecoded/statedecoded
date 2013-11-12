@@ -123,7 +123,7 @@ $content->append('breadcrumbs', '</ul></nav>');
 if (isset($law->previous_section))
 {
 	$content->set('prev_next', '<li><a href="' . $law->previous_section->url .
-		'" class="prev" title="Previous section"><span>&larr; Previous</span>' .
+		'" class="prev" title="Previous section"><span>← Previous</span>' .
 		$law->previous_section->section_number . ' ' . $law->previous_section->catch_line
 		. '</a></li>');
 	$content->append('link_rel', '<link rel="prev" title="Previous" href="' .
@@ -140,7 +140,7 @@ else
 if (isset($law->next_section))
 {
 	$content->append('prev_next', '<li><a href="' . $law->next_section->url .
-		'" class="next" title="Next section"><span>Next &rarr;</span>' .
+		'" class="next" title="Next section"><span>Next →</span>' .
 		$law->next_section->section_number . ' ' .
 		$law->next_section->catch_line . '</a></li>');
 	$content->append('link_rel', '<link rel="next" title="Next" href="' . $law->next_section->url . '" />');
