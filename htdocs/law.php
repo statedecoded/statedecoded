@@ -105,9 +105,10 @@ if (is_object($law->dublin_core))
 $content->set('breadcrumbs', '');
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$content->append('breadcrumbs', '<li><a href="'.$ancestor->url.'">' . $ancestor->identifier . ' '
-		.$ancestor->name . '</a></li>');
+	$content->append('breadcrumbs', '<li><a href="' . $ancestor->url . '">' . $ancestor->identifier
+		. ' ' . $ancestor->name . '</a></li>');
 }
+
 $content->append('breadcrumbs', '<li class="active"><a href="/' . $law->section_number
 	. '/">§&nbsp;' . $law->section_number . ' '
 	. ((strlen($law->catch_line) > 50) ? array_shift(explode("\n", wordwrap($law->catch_line, 50)))
@@ -123,8 +124,8 @@ if (isset($law->previous_section))
 {
 	$content->set('prev_next', '<li><a href="' . $law->previous_section->url .
 		'" class="prev" title="Previous section"><span>&larr; Previous</span>' .
-		$law->previous_section->section_number . ' ' .
-		$law->previous_section->catch_line . '</a></li>');
+		$law->previous_section->section_number . ' ' . $law->previous_section->catch_line
+		. '</a></li>');
 	$content->append('link_rel', '<link rel="prev" title="Previous" href="' .
 		$law->previous_section->url . '" />');
 }
