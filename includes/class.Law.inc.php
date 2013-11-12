@@ -366,6 +366,8 @@ class Law
 			if (method_exists($state, 'get_court_decisions'))
 			{
 				$this->court_decisions = $state->get_court_decisions();
+				$state->get_court_decisions();
+				$this->court_decisions = $state->decisions;
 			}
 		}
 

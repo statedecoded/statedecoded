@@ -335,17 +335,27 @@ $sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')
  */
 if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 {
+	
 	$sidebar .= '<section class="grid-box grid-sizer" id="court-decisions">
 				<h1>Court Decisions</h1>
 				<ul>';
 	foreach ($law->court_decisions as $decision)
 	{
+	
 		$sidebar .= '<li><a href="' . $decision->url . '"><em>' . $decision->name . '</em></a> ('
 			. $decision->type_html . ', ' . date('m/d/y', strtotime($decision->date)) . ')<br />'
-			. $decision->abstract . '</li>';
+			. $decision->court_html . ', ' . date('m/d/y', strtotime($decision->date)) . ')';
+		if (isset($decision->abstract))
+		{
+			$sidebar .= '<br />' . $decision->abstract;
+		}
+		$sidebar .= '</li>';
+		
 	}
+	
 	$sidebar .= '</ul>
 			</section>';
+			
 }
 
 /*
