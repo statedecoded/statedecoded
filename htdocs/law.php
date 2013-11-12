@@ -329,7 +329,12 @@ if ( isset($law->amendment_attempts) && ($law->amendment_attempts != FALSE) )
 	{
 	
 		$sidebar .= '<li><a href="' . $bill->url . '">' . $bill->number . '</a>: '
-			. $bill->catch_line . ' (' . $bill->outcome . ')</li>';
+			. $bill->catch_line;
+		if (!empty($bill->outcome))
+		{
+			$sidebar .= ' (' . $bill->outcome . ')';
+		}
+		$sidebar .= '</li>';
 		
 	}
 	
