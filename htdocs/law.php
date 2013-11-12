@@ -109,7 +109,9 @@ foreach (array_reverse((array) $law->ancestry) as $ancestor)
 		.$ancestor->name . '</a></li>');
 }
 $content->append('breadcrumbs', '<li class="active"><a href="/' . $law->section_number
-	. '/">§&nbsp;' . $law->section_number . ' ' . $law->catch_line . '</a></li>');
+	. '/">§&nbsp;' . $law->section_number . ' '
+	. ((strlen($law->catch_line) > 50) ? array_shift(explode("\n", wordwrap($law->catch_line, 50)))
+	. ' . . .' : $law->catch_line) . '</a></li>');
 
 $content->prepend('breadcrumbs', '<nav class="breadcrumbs"><ul class="steps-nav">');
 $content->append('breadcrumbs', '</ul></nav>');
