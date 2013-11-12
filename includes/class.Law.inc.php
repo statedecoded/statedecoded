@@ -336,10 +336,13 @@ class Law
 		 */
 		if ($this->config->get_amendment_attempts == TRUE)
 		{
+		
 			if (method_exists($state, 'get_amendment_attempts'))
 			{
-				$this->amendment_attempts = $state->get_amendment_attempts();
+				$state->get_amendment_attempts();
+				$this->amendment_attempts = $state->bills;
 			}
+			
 		}
 
 		/*

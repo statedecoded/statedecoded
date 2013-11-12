@@ -314,6 +314,30 @@ if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 			
 }
 
+
+/*
+ * If any legislation has attempted to amend this law, list it.
+ */
+if ( isset($law->amendment_attempts) && ($law->amendment_attempts != FALSE) )
+{
+	
+	$sidebar .= '<section class="grid-box grid-sizer" id="amendment-attempts">
+				<h1>Amendment Attempts</h1>
+				<ul>';
+				
+	foreach ($law->amendment_attempts as $bill)
+	{
+	
+		$sidebar .= '<li><a href="' . $bill->url . '">' . $bill->number . '</a>: '
+			. $bill->catch_line . ' (' . $bill->outcome . ')</li>';
+		
+	}
+	
+	$sidebar .= '</ul>
+			</section>';
+			
+}
+
 /*
  * If we have a list of cross-references, list them.
  */
