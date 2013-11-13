@@ -127,7 +127,7 @@ function sort_by_length($a, $b)
 
 
 /**
- * The following two functions were pulled out of WordPress 3.5. They've been modified somewhat, in
+ * The following two functions were pulled out of WordPress 3.7.1. They've been modified somewhat, in
  * order to remove the use of a pair of internal WordPress functions (_x and apply_filters(), and
  * also to replace WordPress’ use of entities with the use of actual Unicode characters.
  */
@@ -155,15 +155,34 @@ function wptexturize($text)
 {
 
 	global $wp_cockneyreplace;
-	//static $opening_quote, $closing_quote, $default_no_texturize_tags, $default_no_texturize_shortcodes, $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements;
+	static $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements,
+		$default_no_texturize_tags, $default_no_texturize_shortcodes;
 
 	// No need to set up these static variables more than once
-	if ( empty( $opening_quote ) )
+	if ( ! isset( $static_characters ) )
 	{
-		/* translators: opening curly quote */
-		$opening_quote = '“';
-		/* translators: closing curly quote */
-		$closing_quote = '”';
+		/* translators: opening curly double quote */
+		$opening_quote = '&#8220;'; // 'opening curly double quote' );
+		/* translators: closing curly double quote */
+		$closing_quote = '&#8221;'; // closing curly double quote
+
+		/* translators: apostrophe, for example in 'cause or can't */
+		$apos = '&#8217;'; // apostrophe
+
+		/* translators: prime, for example in 9' (nine feet) */
+		$prime = '&#8242;'; // prime
+		/* translators: double prime, for example in 9" (nine inches) */
+		$double_prime = '&#8243;'; // double prime
+
+		/* translators: opening curly single quote */
+		$opening_single_quote = '&#8216;'; // opening curly single quote
+		/* translators: closing curly single quote */
+		$closing_single_quote = '&#8217;'; // closing curly single quote
+
+		/* translators: en dash */
+		$en_dash = '&#8211;'; // en dash
+		/* translators: em dash */
+		$em_dash = '&#8212;'; // em dash
 
 		$default_no_texturize_tags = array('pre', 'code', 'kbd', 'style', 'script', 'tt');
 		$default_no_texturize_shortcodes = array('code');
@@ -175,22 +194,50 @@ function wptexturize($text)
 			$cockneyreplace = array_values($wp_cockneyreplace);
 		}
 
-		else
+		elseif ( "'" != $apos ) // Only bother if we're doing a replacement.
 		{
-			$cockney = array("'tain't","'twere","'twas","'tis","'twill","'til","'bout","'nuff","'round","'cause");
-			$cockneyreplace = array("’tain’t","’twere","’twas","’tis","’twill","’til","’bout","’nuff","’round","’cause");
+			$cockney = array( "'tain't", "'twere", "'twas", "'tis", "'twill", "'til", "'bout", "'nuff", "'round", "'cause" );
+			$cockneyreplace = array( $apos . "tain" . $apos . "t", $apos . "twere", $apos . "twas", $apos . "tis", $apos . "twill", $apos . "til", $apos . "bout", $apos . "nuff", $apos . "round", $apos . "cause" );
 		}
 
-		$static_characters = array_merge(array('---', ' -- ', '--', ' - ', 'xn–', '...', '``', '\'\'', ' (tm)'), $cockney);
-		$static_replacements = array_merge(array('—', ' — ', '–', ' – ', 'xn--', ' . . . ', $opening_quote, $closing_quote, ' ™'), $cockneyreplace);
+		else
+		{
+			$cockney = $cockneyreplace = array();
+		}
 
-		$dynamic_characters = array('/\'(\d\d(?:’|\')?s)/', '/\'(\d)/', '/(\s|\A|[([{<]|")\'/', '/(\d)"/', '/(\d)\'/', '/(\S)\'([^\'\s])/', '/(\s|\A|[([{<])"(?!\s)/', '/"(\s|\S|\Z)/', '/\'([\s.]|\Z)/', '/\b(\d+)x(\d+)\b/');
-		$dynamic_replacements = array('’$1','’$1', '$1‘', '$1&″', '$1′', '$1’$2', '$1' . $opening_quote . '$2', $closing_quote . '$1', '’$1', '$1&×$2');
+		$static_characters = array_merge( array( '---', ' -- ', '--', ' - ', 'xn&#8211;', '...', '``', '\'\'', ' (tm)' ), $cockney );
+		$static_replacements = array_merge( array( $em_dash, ' ' . $em_dash . ' ', $en_dash, ' ' . $en_dash . ' ', 'xn--', '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ), $cockneyreplace );
+
+		$dynamic = array();
+		if ( "'" != $apos )
+		{
+			$dynamic[ '/\'(\d\d(?:&#8217;|\')?s)/' ] = $apos . '$1'; // '99's
+			$dynamic[ '/\'(\d)/'                   ] = $apos . '$1'; // '99
+		}
+		if ( "'" != $opening_single_quote )
+			$dynamic[ '/(\s|\A|[([{<]|")\'/'       ] = '$1' . $opening_single_quote; // opening single quote, even after (, {, <, [
+		if ( '"' != $double_prime )
+			$dynamic[ '/(\d)"/'                    ] = '$1' . $double_prime; // 9" (double prime)
+		if ( "'" != $prime )
+			$dynamic[ '/(\d)\'/'                   ] = '$1' . $prime; // 9' (prime)
+		if ( "'" != $apos )
+			$dynamic[ '/(\S)\'([^\'\s])/'          ] = '$1' . $apos . '$2'; // apostrophe in a word
+		if ( '"' != $opening_quote )
+			$dynamic[ '/(\s|\A|[([{<])"(?!\s)/'    ] = '$1' . $opening_quote . '$2'; // opening double quote, even after (, {, <, [
+		if ( '"' != $closing_quote )
+			$dynamic[ '/"(\s|\S|\Z)/'              ] = $closing_quote . '$1'; // closing double quote
+		if ( "'" != $closing_single_quote )
+			$dynamic[ '/\'([\s.]|\Z)/'             ] = $closing_single_quote . '$1'; // closing single quote
+
+		$dynamic[ '/\b(\d+)x(\d+)\b/'              ] = '$1&#215;$2'; // 9x9 (times)
+
+		$dynamic_characters = array_keys( $dynamic );
+		$dynamic_replacements = array_values( $dynamic );
 	}
 
 	// Transform into regexp sub-expression used in _wptexturize_pushpop_element
-	// Must do this everytime in case plugins use these filters in a context sensitive manner
-	$no_texturize_tags = '(' . implode('|', $default_no_texturize_tags) . ')';
+	// Must do this every time in case plugins use these filters in a context sensitive manner
+	$no_texturize_tags = '(' . implode('|', $default_no_texturize_tags ) . ')';
 	$no_texturize_shortcodes = '(' . implode('|', $default_no_texturize_shortcodes ) . ')';
 
 	$no_texturize_tags_stack = array();
@@ -225,22 +272,19 @@ function wptexturize($text)
 		$curl = preg_replace('/&([^#])(?![a-zA-Z1-4]{1,8};)/', '&#038;$1', $curl);
 	}
 	return implode( '', $textarr );
-
 }
 
 /**
  * Search for disabled element tags. Push element to stack on tag open and pop
  * on tag close. Assumes first character of $text is tag opening.
  *
- * @access private
- * @since 2.9.0
+ * @since Wordpress 2.9.0
  *
  * @param string $text Text to check. First character is assumed to be $opening
  * @param array $stack Array used as stack of opened tag elements
  * @param string $disabled_elements Tags to match against formatted as regexp sub-expression
  * @param string $opening Tag opening character, assumed to be 1 character long
- * @param string $opening Tag closing  character
- * @return object
+ * @param string $closing Tag closing character
  */
 function _wptexturize_pushpop_element($text, &$stack, $disabled_elements, $opening = '<', $closing = '>')
 {
