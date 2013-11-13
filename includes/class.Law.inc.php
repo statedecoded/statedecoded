@@ -339,8 +339,10 @@ class Law
 		
 			if (method_exists($state, 'get_amendment_attempts'))
 			{
-				$state->get_amendment_attempts();
-				$this->amendment_attempts = $state->bills;
+				if ($state->get_amendment_attempts() !== FALSE)
+				{
+					$this->amendment_attempts = $state->bills;
+				}
 			}
 			
 		}
