@@ -142,10 +142,11 @@ class Parser
 
 	public function __construct($options)
 	{
+	
 		/**
 		 * Set our defaults
 		 */
-		foreach($options as $key => $value)
+		foreach ($options as $key => $value)
 		{
 			$this->$key = $value;
 		}
@@ -153,7 +154,7 @@ class Parser
 		/**
 		 * Set the directory to parse
 		 */
-		if($this->directory)
+		if ($this->directory)
 		{
 
 			if (!isset($this->directory))
@@ -173,6 +174,7 @@ class Parser
 
 			while (false !== ($filename = $directory->read()))
 			{
+			
 				/*
 				 * We should make sure we've got an actual file that's readable.
 				 * Ignore anything that starts with a dot.
@@ -184,6 +186,7 @@ class Parser
 				{
 					$this->files[] = $filepath;
 				}
+				
 			}
 
 			/*
@@ -197,7 +200,7 @@ class Parser
 
 		}
 
-		if(!$this->structure_labels)
+		if (!$this->structure_labels)
 		{
 			$this->structure_labels = $this->get_structure_labels();
 		}
