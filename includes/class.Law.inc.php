@@ -825,6 +825,63 @@ class Law
 
 		}
 		return $rotated;
+		
+	}
+	
+	/*
+	 * Store a single piece of metadata for a single law
+	 *
+	 * Must receive $this->section_id and $this->metadata. The latter is an object that that
+	 * contains a series of $key => $value pairs (at least one) that are to be stored for the law
+	 * in question.
+	 *
+	 * This method exists within Law, as opposed to within the importer, because metadata can be
+	 * stored at any time. For example, a list of court rulings affecting a given law wouldn't be
+	 * imported only when the parser is run, because a court could issue a new ruling again at any
+	 * time. Instead, that data is imported periodically, incrementally, via store_metadata.
+	 *
+	 * @param	string	$this->section_id	The ID of the law.
+	 * @param	object	$this->metadata		Key/value pairs to be stored.
+	 * @return TRUE or FALSE
+	 */
+	function store_metadata()
+	{
+		
+		/*
+		 * We're going to need access to the database connection throughout this class.
+		 */
+		global $db;
+		
+		if ( !isset($this->section_id) || !is_object($this->metadata) )
+		{
+			return FALSE;
+		}
+		
+		$sql = 'INSERT INTO laws_meta
+				SET law_id = :law_id,
+				meta_key = :meta_key,
+				meta_value = :meta_value,
+				date_created = now()';
+		$statement = $db->prepare($sql);
+		
+		foreach ($this->metadata as $field)
+		{
+			$sql_args = array(
+				':law_id' => $this->section_id,
+				':meta_key' => $field->key,
+				':meta_value' => $field->value
+			);
+			$result = $statement->execute($sql_args);
+
+			if ($result === FALSE)
+			{
+				return FALSE;
+			}
+			
+		}
+		
+		return TRUE;
+		
 	}
 
 
