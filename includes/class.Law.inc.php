@@ -354,10 +354,27 @@ class Law
 		 */
 		if ($this->config->get_court_decisions == TRUE)
 		{
-			if (method_exists($state, 'get_court_decisions'))
+		
+			/*
+			 * If we already have this data cached as metadata.
+			 */
+			if (isset($this->metadata->court_decisions))
 			{
-				$state->get_court_decisions();
-				$this->court_decisions = $state->decisions;
+				$this->court_decisions = unserialize($this->metadata->court_decisions);
+			}
+			
+			/*
+			 * If we do not have this data cached.
+			 */
+			else
+			{
+				if (method_exists($state, 'get_court_decisions'))
+				{
+					if ($state->get_court_decisions() !== FALSE)
+					{
+						$this->court_decisions = $state->decisions;
+					}
+				}
 			}
 		}
 
@@ -824,6 +841,7 @@ class Law
 			$rotated->{stripslashes($field->meta_key)} = $field->meta_value;
 
 		}
+		
 		return $rotated;
 		
 	}

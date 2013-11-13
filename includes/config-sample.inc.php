@@ -182,3 +182,12 @@ define('API_KEY', '');
  * The Typekit ID is "abc1efg".
  */
 // define('TYPEKIT_ID', 'abc1efg');
+
+/*
+ * If you want to display court decisions that affect each law using CourtListener's REST API
+ * <https://www.courtlistener.com/api/rest-info/>, you must register for an account and enter your
+ * username and password here. See the get_court_decisions() method in class.State-sample.inc.php
+ * for more.
+ */
+// define('COURTLISTENER_USERNAME', 'jane_doe');
+// define('COURTLISTENER_PASSWORD', 's3cr3tp@ssw0rd');

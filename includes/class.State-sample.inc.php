@@ -122,7 +122,118 @@ class State
 		
 	} // end get_amendment_attempts()
 	*/
+	
+	/**
+	 * Retrieve a list of every court decision that cites a given law.
+	 *
+	 * A customization is necessary to get this working for your legal code.
+	 * 
+	 * You need to experiment with searches on CourtListener and figure out how to build a query
+	 * that will return court decisions that refer to your legal code. In the below example, for
+	 * Virginia, we've created $url by prefixing the section number query with "Virginia Code" (URL
+	 * encoded).
+	 *
+	 * An optional customization is to set the value of court_html. This is the name of court as
+	 * displayed for each ruling, which can look better if abbreviated. You can modify the example
+	 * Virginia text that's provided. Or, if you do nothing, the entire court name will be
+	 * displayed.
+	 * 
+	 * @return true or false
+	 */
+	/*function get_court_decisions()
+	{
 
+		//  We need a section number in order to search for court decisions that cite that law.
+		if (!isset($this->section_number))
+		{
+			return FALSE;
+		}
+		
+		// Assemble the URL for our query to the CourtListener API.
+		$url = 'https://www.courtlistener.com/api/rest/v1/search/?q=Virginia+Code+%22'
+			. urlencode($this->section_number) . '%22&sort=score+desc&format=json';
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+		curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1200);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_USERPWD, COURTLISTENER_USERNAME . ':' . COURTLISTENER_PASSWORD);
+		$allowed_protocols = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+		curl_setopt($ch, CURLOPT_PROTOCOLS, $allowed_protocols);
+		curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols & ~(CURLPROTO_FILE | CURLPROTO_SCP));
+		$json = curl_exec($ch);
+		
+		// If the query failed.
+		if ($json == FALSE)
+		{
+			return FALSE;
+		}
+		
+		// Turn this JSON into an object.
+		$cl_list = json_decode($json);
+		
+		// If the JSON is invalid.
+		if ($cl_list == FALSE)
+		{
+			return FALSE;
+		}
+		
+		// If no results were found.
+		if ($cl_list->meta->total_count == 0)
+		{
+			return FALSE;
+		}
+		
+		// Create an object to store the decisions that we're going to return.
+		$this->decisions = new stdClass();
+		
+		// Iterate through the decisions and assign the first 10 to $this->decisions.
+		$i=0;
+		foreach ($cl_list->objects as $opinion)
+		{
+			
+			if ($i == 10)
+			{
+				break;
+			}
+			
+			// Port the fields that we need from $opinion to $this->decisions.
+			$this->decisions->{$i}->name = $opinion->case_name;
+			$this->decisions->{$i}->case_number = $opinion->case_number;
+			$this->decisions->{$i}->citation = $opinion->citation;
+			$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
+			$this->decisions->{$i}->url = $opinion->download_url;
+			
+			if ($opinion->court == 'Court of Appeals of Virginia')
+			{
+				$this->decisions->{$i}->court_html = '<abbr title="Court of Appeals">COA</abbr>';
+			}
+			elseif ($opinion->court == 'Supreme Court of Virginia')
+			{
+				$this->decisions->{$i}->court_html = '<abbr title="Supreme Court of Virginia">SCV</abbr>';
+			}
+			else
+			{
+				$this->decisions->{$i}->court_html = $opinion->court;
+			}
+				
+			$i++;
+			
+		}
+		
+		// Store these decisions in the metadata table.
+		$law = new Law();
+		$law->section_id = $this->section_id;
+		$law->metadata->{0}->key = 'court_decisions';
+		$law->metadata->{0}->value = serialize($this->decisions);
+		$law->store_metadata();
+		
+		return TRUE;
+		
+	}*/
+	
 }
 
 
@@ -133,6 +244,7 @@ class State
  */
 class Parser
 {
+
 	public $file = 0;
 	public $directory;
 	public $files = array();

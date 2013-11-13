@@ -301,7 +301,7 @@ if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 				
 	foreach ($law->court_decisions as $decision)
 	{
-	
+		
 		$sidebar .= '<li><a href="' . $decision->url . '"><em>' . $decision->name . '</em></a> ('
 			. $decision->court_html . ', ' . date('m/d/y', strtotime($decision->date)) . ')';
 		if (isset($decision->abstract))
