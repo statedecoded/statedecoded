@@ -151,7 +151,7 @@ class State
 		
 		// Assemble the URL for our query to the CourtListener API.
 		$url = 'https://www.courtlistener.com/api/rest/v1/search/?q=Virginia+Code+%22'
-			. urlencode($this->section_number) . '%22&sort=score+desc&format=json';
+			. urlencode($this->section_number) . '%22&order_by=score+desc&format=json';
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
