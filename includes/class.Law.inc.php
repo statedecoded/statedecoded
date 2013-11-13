@@ -117,7 +117,14 @@ class Law
 					AND edition_id = :edition_id';
 			$sql_args[':section_number'] = $this->section_number;
 
-			$sql_args[':edition_id'] = $this->edition_id or EDITION_ID;
+			if(isset($this->edition_id))
+			{
+				$sql_args[':edition_id'] = $this->edition_id;
+			}
+			else
+			{
+				$sql_args[':edition_id'] = EDITION_ID;
+			}
 		}
 
 		$statement = $db->prepare($sql);
@@ -336,7 +343,7 @@ class Law
 		 */
 		if ($this->config->get_amendment_attempts == TRUE)
 		{
-		
+
 			if (method_exists($state, 'get_amendment_attempts'))
 			{
 				if ($state->get_amendment_attempts() !== FALSE)
@@ -344,7 +351,7 @@ class Law
 					$this->amendment_attempts = $state->bills;
 				}
 			}
-			
+
 		}
 
 		/*
