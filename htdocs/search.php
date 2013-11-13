@@ -164,7 +164,7 @@ if (!empty($_GET['q']))
 	if (count($results) == FALSE)
 	{
 		
-		$body .= '<p>No results found.';
+		$body .= '<p>No results found.</p>';
 		
 	}
 	
