@@ -1010,7 +1010,7 @@ class ParserController
 	 */
 	function export_structure($parent_id)
 	{
-	
+
 		/*
 		 * Define the location of the downloads directory.
 		 */
@@ -1208,7 +1208,7 @@ class ParserController
 				 * Set a flag telling us that we may write XML.
 				 */
 				$write_xml = TRUE;
-				
+
 				/*
 				 * Create a new instance of the Parser class, so that we have access to its
 				 * get_structure_labels() method.
@@ -1244,7 +1244,7 @@ class ParserController
 					/*
 					 * Pass the requested section number to Law.
 					 */
-					$laws->section_number = $section->section_number;
+					$laws->law_id = $section->id;
 					$laws->edition_id = $this->edition_id;
 
 					unset($law, $section);
@@ -1256,7 +1256,7 @@ class ParserController
 
 					if ($law !== FALSE)
 					{
-					
+
 						/*
 						 * Eliminate colons from section numbers, since some OSes can't handle colons in
 						 * filenames.
@@ -1268,7 +1268,7 @@ class ParserController
 						 */
 						if ($write_json === TRUE)
 						{
-							
+
 							$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
 							if ($success === FALSE)
 							{
@@ -1298,7 +1298,7 @@ class ParserController
 						 */
 						if ($write_xml === TRUE)
 						{
-							
+
 							/*
 							 * We need to massage the $law object into matching the State Decoded
 							 * XML standard. The first step towards this is removing unnecessary
@@ -1321,13 +1321,13 @@ class ParserController
 							unset($law->ancestry);
 							$law->referred_to_by = $law->references;
 							unset($law->references);
-							
+
 							/*
 							 * Encode all entities as their proper Unicode characters, save for the
 							 * few that are necessary in XML.
 							 */
 							$law = html_entity_decode_object($law);
-							
+
 							/*
 							 * Quickly turn this into an XML string.
 							 */
@@ -1341,106 +1341,106 @@ class ParserController
 							 */
 							$dom = new DOMDocument($xml);
 							$dom->loadXML($xml);
-							
+
 							/*
 							 * Simplify every reference, stripping them down to the cited sections.
 							 */
 							$referred_to_by = $dom->getElementsByTagName('referred_to_by')->item(0);
 							if ( !empty($referred_to_by) && ($referred_to_by->length > 0) )
 							{
-							
+
 								$references = $referred_to_by->getElementsByTagName('unit');
-							
+
 								/*
 								 * Iterate backwards through our elements.
 								 */
 								for ($i = $references->length; --$i >= 0;)
 								{
-									
+
 									$reference = $references->item($i);
-									
+
 									/*
 									 * Save the section number.
 									 */
 									$section_number = trim($reference->getElementsByTagName('section_number')->item(0)->nodeValue);
-									
+
 									/*
 									 * Create a new element, named "reference," which contains the only
 									 * the section number.
 									 */
 									$element = $dom->createElement('reference', $section_number);
 									$reference->parentNode->insertBefore($element, $reference);
-								
+
 									/*
 									 * Remove the "unit" node.
 									 */
 									$reference->parentNode->removeChild($reference);
-								
+
 								}
-								
+
 							}
-							
+
 							/*
 							 * Simplify and reorganize every structural unit.
 							 */
 							$structure = $dom->getElementsByTagName('structure')->item(0);
 							if ( !empty($structure) && ($structure->length > 0) )
 							{
-							
+
 								$structural_units = $structure->getElementsByTagName('unit');
-							
+
 								/*
 								 * Iterate backwards through our elements.
 								 */
 								for ($i = $structural_units->length; --$i >= 0;)
 								{
-									
+
 									$unit = $structural_units->item($i);
-								
+
 									/*
 									 * Add the "level" attribute.
 									 */
 									$label = trim(strtolower($unit->getAttribute('label')));
 									$level = $dom->createAttribute('level');
 									$level->value = array_search($label, $parser->get_structure_labels()) + 1;
-								
+
 									$unit->appendChild($level);
-									
+
 									/*
 									 * Add the "identifier" attribute.
 									 */
 									$identifier = $dom->createAttribute('identifier');
 									$identifier->value = trim($unit->getElementsByTagName('identifier')->item(0)->nodeValue);
 									$unit->appendChild($identifier);
-								
+
 									/*
 									 * Remove the "id" attribute from <unit>.
 									 */
 									$unit->removeAttribute('id');
-								
+
 									/*
 									 * Store the name of this structural unit as the contents of <unit>.
 									 */
 									$unit->nodeValue = trim($unit->getElementsByTagName('name')->item(0)->nodeValue);
-								
+
 									/*
 									 * Save these changes.
 									 */
 									$structure->appendChild($unit);
-									
+
 								}
-							
+
 							}
-							
+
 							/*
 							 * Rename text units as text sections.
 							 */
 							$text = $dom->getElementsByTagName('text')->item(0);
 							if (!empty($text) && ($text->length > 0))
 							{
-								
+
 								$text_units = $text->getElementsByTagName('unit');
-							
+
 								/*
 								 * Iterate backwards through our elements.
 								 */
@@ -1449,7 +1449,7 @@ class ParserController
 									$text_unit = $text_units->item($i);
 									renameElement($text_unit, 'section');
 								}
-							
+
 							}
 
 							/*
@@ -1463,7 +1463,7 @@ class ParserController
 							}
 
 						}
-						
+
 					} // end the $law exists condition
 
 				} // end the while() law iterator
@@ -1806,7 +1806,7 @@ class ParserController
 			}
 
 		}
-		
+
 		/*
 		 * Make sure that xmllint is installed.
 		 */
@@ -1816,7 +1816,7 @@ class ParserController
 			$this->logger->message('xmllint must be installed.', 10);
 			$error = TRUE;
 		}
-		
+
 		/*
 		 * Make sure that zip is installed.
 		 */
@@ -1901,7 +1901,7 @@ class ParserController
 	 */
 	function index_laws()
 	{
-		
+
 		if (!isset($this->edition))
 		{
 			throw new Exception('No edition, cannot index laws.');
@@ -1912,10 +1912,10 @@ class ParserController
 			$this->logger->message('The edition is not current, skipping update to search index.');
 			return;
 		}
-		
+
 		else
 		{
-			
+
 			$this->logger->message('Updating search index.');
 
 			/*
@@ -1967,50 +1967,50 @@ class ParserController
 			 */
 			if (LAW_LONG_URLS === FALSE)
 			{
-			
+
 				$this->logger->message('Validating XML files before indexing them', 5);
 				exec('xmllint --noout ' . $path . '* > ' . $path . 'xmllint.txt 2>&1');
 				$output = file_get_contents($path . 'xmllint.txt');
 				unlink($path . 'xmllint.txt');
-				
+
 			}
 			else
 			{
 				$this->logger->message('Cannot try to validate XML files, because LAW_LONG_URLS is '
 					. 'enabled—proceeding with the assumption that they do not contain errors', 5);
 			}
-			
+
 			/*
 			 * Extract filenames from the output.
 			 */
 			if (preg_match_all('/' . preg_quote($path, '/') . '(.+)\.xml\:/', $output, $matches) !== FALSE)
 			{
-				
+
 				if (count($matches[1]) > 0)
 				{
-					
+
 					$invalid_files = 0;
-					
+
 					foreach ($matches[1] as $match)
 					{
-					
+
 						$key = array_search($match, $files);
 						if ($key !== FALSE)
 						{
 							unset($files[$key]);
 							$invalid_files++;
 						}
-						
+
 					}
-					
+
 					if ($invalid_files > 0)
 					{
 						$this->logger->message('Suppressing the indexing of ' .
 							number_format($invalid_files) . ' laws, for the presence of invalid XML');
 					}
-					
+
 				}
-				
+
 			}
 
 			/*
@@ -2091,7 +2091,7 @@ class ParserController
 			 * Files aren't searchable until Solr is told to commit them.
 			 */
 			$commit_url = $solr_update_url . '?commit=true';
-			
+
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $commit_url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -2110,7 +2110,7 @@ class ParserController
 			$this->logger->message('Laws indexed with Solr successfully.', 7);
 
 			return TRUE;
-			
+
 		}
 
 	}
