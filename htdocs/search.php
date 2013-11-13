@@ -159,6 +159,26 @@ if (!empty($_GET['q']))
 	}
 	
 	/*
+	 * See if the search term consists of a section number.
+	 */
+	if (preg_match(SECTION_REGEX, $q) == TRUE)
+	{
+	
+		/*
+		 * If this is an actual section number that exists in the law, provide a link to it.
+		 */
+		$law = new Law();
+		$law->section_number = $q;
+		if ($law->exists() === TRUE)
+		{
+			$body .= '
+			<p><a href="' . $law->url . '">Were you looking for ' . SECTION_SYMBOL . '&nbsp;'
+					. $law->section_number . '?</a></p>';
+		}
+		
+	}
+	
+	/*
 	 * If there are no results.
 	 */
 	if (count($results) == FALSE)
