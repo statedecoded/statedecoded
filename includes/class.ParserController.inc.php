@@ -2137,6 +2137,8 @@ class ParserController
 			$this->logger->message('Solr error: ',  8);
 			return FALSE;
 		}
+
+		return TRUE;
 	}
 
 }
