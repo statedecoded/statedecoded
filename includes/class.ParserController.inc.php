@@ -1333,7 +1333,7 @@ class ParserController
 							 */
 							$xml = new SimpleXMLElement('<law />');
 							object_to_xml($law, $xml);
-							$dom = dom_import_simplexml($xml)->ownerDocument;
+
 							$xml = $xml->asXML();
 
 							/*
