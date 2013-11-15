@@ -1339,7 +1339,7 @@ class ParserController
 							/*
 							 * Load the XML string into DOMDocument.
 							 */
-							$dom = new DOMDocument($xml);
+							$dom = new DOMDocument();
 							$dom->loadXML($xml);
 
 							/*
