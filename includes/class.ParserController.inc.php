@@ -2025,87 +2025,24 @@ class ParserController
 				$file_slice = array_slice($files, $i, $batch_size);
 
 				/*
-				 * Instruct Solr to return its response as JSON, and to apply the specified XSL
+				 * Instruct Solr to apply the specified XSL
 				 * transformation on the provided XML files.
 				 */
 				$solr_parameters = array(
-					'wt' => 'json',
-					'tr' => 'stateDecodedXml.xsl',
-					'commit' => 'true');
+					'tr' => 'stateDecodedXml.xsl');
 
-				$numFiles = 0;
-				$url = $solr_update_url . '?' . http_build_query($solr_parameters);
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL, $url);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-				curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
-				$params = array();
+
+				$fields = array();
 				foreach ($file_slice as $key=>$filename)
 				{
-					$params[$filename] = '@' . realpath($filename) . ';type=application/xml';
+					$fields[$filename] = '@' . realpath($filename) . ';type=application/xml';
 					++$numFiles;
 				}
-				curl_setopt($ch, CURLOPT_POST, TRUE);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 
-				/*
-				 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
-				 */
-				$response_json = curl_exec($ch);
-
-				/*
-				 * If cURL returned an error.
-				 */
-				if (curl_errno($ch) > 0)
+				if ( !$this->handle_solr_request($fields, true, $solr_parameters) )
 				{
-					$this->logger->message('The attempt to post files to Solr via cURL returned an '
-						. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
 					return FALSE;
 				}
-
-				if ( (FALSE === $response_json) || !is_string($response_json) )
-				{
-					$this->logger->message('Could not connect to Solr.', 10);
-					return FALSE;
-				}
-
-				$response = json_decode($response_json);
-
-				if ( ($response === FALSE) || empty($response) )
-				{
-					$this->logger->message('Solr returned invalid JSON.', 8);
-					return FALSE;
-				}
-
-				if (isset($response->error))
-				{
-
-					var_dump($response->error);
-					$this->logger->message('Solr error: ',  8);
-					return FALSE;
-				}
-
-			} // end for() loop
-
-			/*
-			 * Files aren't searchable until Solr is told to commit them.
-			 */
-			$commit_url = $solr_update_url . '?commit=true';
-
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $commit_url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			$results = curl_exec($ch);
-
-			/*
-			 * If cURL returned an error.
-			 */
-			if (curl_errno($ch) > 0)
-			{
-				$this->logger->message('The attempt to commit files to Solr via cURL returned an '
-					. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
-				return FALSE;
 			}
 
 			$this->logger->message('Laws indexed with Solr successfully.', 7);
@@ -2114,6 +2051,92 @@ class ParserController
 
 		}
 
+	}
+
+	function clear_index()
+	{
+		$request = '<delete><query>*:*</query></delete>';
+		if ( !$this->handle_solr_request($request) )
+		{
+			return FALSE;
+		}
+
+		$request = '<optimize />';
+		if ( !$this->handle_solr_request($request) )
+		{
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	function handle_solr_request($fields = array(), $multipart = false, $parameters = array())
+	{
+
+		$solr_update_url = SOLR_URL . 'update';
+
+		/*
+		 * Instruct Solr to return its response as JSON, and commit the change.
+		 */
+
+		$solr_parameters = array_merge($parameters, array(
+				'wt' => 'json',
+				'commit' => 'true'
+				)
+			);
+
+		$url = $solr_update_url . '?' . http_build_query($solr_parameters);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+		if($multipart)
+		{
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
+		}
+		else
+		{
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml; charset=US-ASCII') );
+		}
+
+		curl_setopt($ch, CURLOPT_POST, TRUE);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+
+		/*
+		 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
+		 */
+		$response_json = curl_exec($ch);
+
+		/*
+		 * If cURL returned an error.
+		 */
+		if (curl_errno($ch) > 0)
+		{
+			$this->logger->message('The attempt to post files to Solr via cURL returned an '
+				. 'error code, ' . curl_errno($ch) . ', from cURL. Could not index laws.', 10);
+			return FALSE;
+		}
+
+		if ( (FALSE === $response_json) || !is_string($response_json) )
+		{
+			$this->logger->message('Could not connect to Solr.', 10);
+			return FALSE;
+		}
+
+		$response = json_decode($response_json);
+
+		if ( ($response === FALSE) || empty($response) )
+		{
+			$this->logger->message('Solr returned invalid JSON.', 8);
+			return FALSE;
+		}
+
+		if (isset($response->error))
+		{
+			var_dump($response->error);
+			$this->logger->message('Solr error: ',  8);
+			return FALSE;
+		}
 	}
 
 }

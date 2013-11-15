@@ -73,6 +73,11 @@ elseif ($_POST['action'] == 'empty')
 	echo 'Emptying the database<br />';
 	flush();
 	$parser->clear_db();
+
+	echo 'Emptying the index<br />';
+	flush();
+	$parser->clear_index();
+
 	echo 'Done<br />';
 
 }
