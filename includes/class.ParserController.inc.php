@@ -1345,10 +1345,10 @@ class ParserController
 							/*
 							 * Simplify every reference, stripping them down to the cited sections.
 							 */
-							$referred_to_by = $dom->getElementsByTagName('referred_to_by')->item(0);
+							$referred_to_by = $dom->getElementsByTagName('referred_to_by');
 							if ( !empty($referred_to_by) && ($referred_to_by->length > 0) )
 							{
-
+								$referred_to_by = $referred_to_by->item(0);
 								$references = $referred_to_by->getElementsByTagName('unit');
 
 								/*
@@ -1383,9 +1383,10 @@ class ParserController
 							/*
 							 * Simplify and reorganize every structural unit.
 							 */
-							$structure = $dom->getElementsByTagName('structure')->item(0);
+							$structure = $dom->getElementsByTagName('structure');
 							if ( !empty($structure) && ($structure->length > 0) )
 							{
+								$structure = $structure->item(0);
 
 								$structural_units = $structure->getElementsByTagName('unit');
 
@@ -1435,10 +1436,10 @@ class ParserController
 							/*
 							 * Rename text units as text sections.
 							 */
-							$text = $dom->getElementsByTagName('text')->item(0);
+							$text = $dom->getElementsByTagName('text');
 							if (!empty($text) && ($text->length > 0))
 							{
-
+								$text = $text->item(0);
 								$text_units = $text->getElementsByTagName('unit');
 
 								/*
