@@ -8,3 +8,6 @@ includes/class.Virginia.inc.php
 includes/config.inc.php
 htdocs/.sass-cache/
 package.box
+.settings
+.project
+.buildpath
