@@ -1807,6 +1807,15 @@ class ParserController
 			}
 
 		}
+		
+		/*
+		 * Make sure that php-xml is installed.
+		 */
+		if (extension_loaded('xml') == FALSE)
+		{
+			$this->logger->message('PHP’s XML extension must be installed and enabled.', 10);
+			$error = TRUE;
+		}
 
 		/*
 		 * Make sure that xmllint is installed.
