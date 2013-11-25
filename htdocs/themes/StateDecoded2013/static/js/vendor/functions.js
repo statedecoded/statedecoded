@@ -249,7 +249,7 @@ $(document).ready(function () {
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/dictionary/' + encodeURI(term),
+					url: '/api/dictionary/' + encodeURI(term) + '/',
 					type: 'GET',
 					data: { section: section_number, key: api_key },
 					dataType: 'json',
@@ -272,9 +272,9 @@ $(document).ready(function () {
 	$("#keyhelp").click(function() {
 		showHelp('keyboard');
 	});
-	
-	
-	
+
+
+
 	/* Search Autocomplete */
 	$(function() {
 	  function split( val ) {
@@ -283,7 +283,7 @@ $(document).ready(function () {
 	  function extractLast( term ) {
 		return split( term ).pop();
 	  }
-	
+
 	  $( "#q" ).autocomplete({
 		source: function( request, response ) {
 		  if(request.term[request.term.length-1]==" ") {
@@ -298,7 +298,7 @@ $(document).ready(function () {
 			  key: api_key
 			},
 			success: function( data ) {
-			  response( $.map(data.terms, function(item) { 
+			  response( $.map(data.terms, function(item) {
 				return {
 					label: item.term,
 					value: item.term
@@ -331,5 +331,5 @@ $(document).ready(function () {
 		}
 	  });
 	});
-	
+
 });
