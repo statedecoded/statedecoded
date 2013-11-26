@@ -1225,21 +1225,21 @@ class ParserController
 				$laws = new Law();
 
 				/*
-				 * Instruct the Law class on what, specifically, it should retrieve.
-				 */
-				$laws->config->get_text = TRUE;
-				$laws->config->get_structure = TRUE;
-				$laws->config->get_amendment_attempts = FALSE;
-				$laws->config->get_court_decisions = TRUE;
-				$laws->config->get_metadata = TRUE;
-				$laws->config->get_references = TRUE;
-				$laws->config->get_related_laws = TRUE;
-
-				/*
 				 * Iterate through every section number, to pass to the Laws class.
 				 */
 				while ($section = $laws_statement->fetch(PDO::FETCH_OBJ))
 				{
+
+					/*
+					 * Instruct the Law class on what, specifically, it should retrieve.
+					 */
+					$laws->config->get_text = TRUE;
+					$laws->config->get_structure = TRUE;
+					$laws->config->get_amendment_attempts = FALSE;
+					$laws->config->get_court_decisions = TRUE;
+					$laws->config->get_metadata = TRUE;
+					$laws->config->get_references = TRUE;
+					$laws->config->get_related_laws = TRUE;
 
 					/*
 					 * Pass the requested section number to Law.
