@@ -228,7 +228,7 @@ class State
 		$law = new Law();
 		$law->section_id = $this->section_id;
 		$law->metadata->{0}->key = 'court_decisions';
-		$law->metadata->{0}->value = serialize($this->decisions);
+		$law->metadata->{0}->value = json_encode($this->decisions);
 		$law->store_metadata();
 		
 		return TRUE;

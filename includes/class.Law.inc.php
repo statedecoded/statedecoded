@@ -59,7 +59,7 @@ class Law
 			$this->config->get_tags = TRUE;
 			$this->config->render_html = TRUE;
 		}
-
+		
 		/*
 		 * Assemble the query that we'll use to get this law.
 		 */
@@ -158,7 +158,7 @@ class Law
 		 */
 		if ($this->config->get_text === TRUE)
 		{
-
+			
 			/*
 			 * When invoking this method in a loop, $this->text can pile up on itself. If the text
 			 * property is already set, clear it out.
@@ -367,7 +367,7 @@ class Law
 			 */
 			if (isset($this->metadata->court_decisions))
 			{
-				$this->court_decisions = unserialize($this->metadata->court_decisions);
+				$this->court_decisions = $this->metadata->court_decisions;
 			}
 			
 			/*
@@ -380,7 +380,7 @@ class Law
 					if ($state->get_court_decisions() !== FALSE)
 					{
 						$this->court_decisions = $state->decisions;
-					}
+					}	
 				}
 			}
 		}
@@ -810,7 +810,7 @@ class Law
 		 * Return the result as an object.
 		 */
 		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
-
+		
 		/*
 		 * Create a new object, to which we will port a rotated version of this object.
 		 */
@@ -829,6 +829,14 @@ class Law
 			if (@unserialize($row->meta_value) !== FALSE)
 			{
 				$field->meta_value = unserialize($field->meta_value);
+			}
+
+			/*
+			 * If JSON decoding this value works, then we've got JSON data here.
+			 */
+			if (@json_decode($row->meta_value) !== FALSE)
+			{
+				$field->meta_value = json_decode($field->meta_value);
 			}
 
 			/*
