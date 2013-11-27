@@ -204,7 +204,7 @@ class State
 			$this->decisions->{$i}->case_number = $opinion->case_number;
 			$this->decisions->{$i}->citation = $opinion->citation;
 			$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
-			$this->decisions->{$i}->url = $opinion->download_url;
+			$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
 			$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
 			
 			if ($opinion->court == 'Court of Appeals of Virginia')
