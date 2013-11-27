@@ -313,6 +313,12 @@ if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 	}
 	
 	$sidebar .= '</ul>
+	
+				<p><small>Court opinions are provided by <a
+				href="http://www.courtlistener.com/">CourtListener</a>, which is
+				developed by the <a href="http://freelawproject.org/">Free Law
+				Project</a>.</small></p>
+				
 			</section>';
 			
 }
