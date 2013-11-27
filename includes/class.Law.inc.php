@@ -823,8 +823,6 @@ class Law
 		foreach($metadata as $field)
 		{
 
-			$field->meta_value = stripslashes($field->meta_value);
-
 			/*
 			 * If unserializing this value works, then we've got serialized data here.
 			 */
@@ -845,7 +843,7 @@ class Law
 				$field->meta_value = FALSE;
 			}
 
-			$rotated->{stripslashes($field->meta_key)} = $field->meta_value;
+			$rotated->{$field->meta_key} = $field->meta_value;
 
 		}
 		
