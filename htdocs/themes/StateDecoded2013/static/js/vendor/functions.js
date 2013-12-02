@@ -209,7 +209,7 @@ $(document).ready(function () {
 			content: {
 				text: 'Loading .&thinsp;.&thinsp;.',
 				ajax: {
-					url: '/api/law/'+section_number,
+					url: '/api/law/' + section_number + '/',
 					type: 'GET',
 					data: { fields: 'catch_line,ancestry', key: api_key },
 					dataType: 'json',
