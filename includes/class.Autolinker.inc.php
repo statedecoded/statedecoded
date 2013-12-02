@@ -97,12 +97,12 @@ class Autolinker
 			{
 				for ($i=0; $i<$num_spaces; $i++)
 				{
-					$this->term_blacklist[] = strtolower($term_components[$i].' '.$term_components[$i+1]);
+					$this->term_blacklist[] = strtolower($term_components[$i] . ' ' . $term_components[$i+1]);
 				}
 			}
 		}
 
-		return '<span class="dictionary">'.$term.'</span>';
+		return '<span class="dictionary">' . $term . '</span>';
 	}
 
 
@@ -122,7 +122,7 @@ class Autolinker
 		 */
 		if (substr($match, 0, strlen(SECTION_SYMBOL)) == SECTION_SYMBOL)
 		{
-			$match = substr($match, (strlen(SECTION_SYMBOL.' ')));
+			$match = substr($match, (strlen(SECTION_SYMBOL . ' ')));
 		}
 
 		/*
@@ -145,6 +145,6 @@ class Autolinker
 			return $matches[0];
 		}
 
-		return '<a class="law" href="/'.$match.'/">'.$matches[0].'</a>';
+		return '<a class="law" href="/' . $match . '/">' . $matches[0] . '</a>';
 	}
 }
