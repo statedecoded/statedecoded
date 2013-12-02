@@ -207,7 +207,7 @@ $(document).ready(function () {
 				tip: "bottom left"
 			},
 			content: {
-				text: 'Loading .&thinsp;.&thinsp;.',
+				text: 'Loading . . .', // Those are U+2009, not regular spaces.
 				ajax: {
 					url: '/api/law/' + section_number + '/',
 					type: 'GET',
@@ -247,7 +247,7 @@ $(document).ready(function () {
 				tip: "bottom left"
 			},
 			content: {
-				text: 'Loading .&thinsp;.&thinsp;.',
+				text: 'Loading . . .', // Those are U+2009, not regular spaces.
 				ajax: {
 					url: '/api/dictionary/' + encodeURI(term) + '/',
 					type: 'GET',
