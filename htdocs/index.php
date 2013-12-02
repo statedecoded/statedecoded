@@ -152,13 +152,21 @@ else
 	 * Attempt to load the config file constants out of APC.
 	 */
 	$result = apc_load_constants('config');
+	
+	/*
+	 * If loading from APC worked, just set the include path.
+	 */
+	if ($result == TRUE)
+	{
+		set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
+	}
 
 	/*
-	 * If this attempt did not work.
+	 * If we couldn't load the constants from APC.
 	 */
-	if ($result === FALSE)
+	else
 	{
-
+		
 		/*
 		 * Load constants from the config file.
 		 */
@@ -166,7 +174,7 @@ else
 		{
 			die('Cannot run without a config.inc.php file. See the installation documentation.');
 		}
-
+		
 		define('APC_RUNNING', TRUE);
 
 		/*
@@ -176,6 +184,7 @@ else
 		apc_define_constants('config', $constants['user']);
 
 	}
+	
 }
 
 /*
@@ -191,7 +200,7 @@ try
  */
 catch (PDOException $e)
 {
-
+	
 	/*
 	 * If we get error 1049, that means that no database of this name could be found. This means
 	 * that The State Decoded has not yet been installed. Redirect to the admin section.
