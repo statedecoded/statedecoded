@@ -255,6 +255,17 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 }
 
 /*
+ * Display links to share this law via social services.
+ */
+if (defined('SOCIAL_LINKS') == TRUE)
+{
+	$sidebar .= '<section class="info-box" id="social">
+				<h1>Share</h1>
+				' . SOCIAL_LINKS . '
+			</section>';
+}
+
+/*
  * Reminder to check source materials.
  */
 $sidebar .= '<section class="info-box" id="elsewhere">
