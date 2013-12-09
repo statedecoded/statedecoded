@@ -255,7 +255,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 }
 
 /*
- * General info
+ * Reminder to check source materials.
  */
 $sidebar .= '<section class="info-box" id="elsewhere">
 				<h1>Trust, But Verify</h1>
