@@ -1,6 +1,10 @@
 # Specify our error pages.
 ErrorDocument 404 /404.php
 
+<IfModule mod_env.c>
+   SetEnv HTTP_MOD_ENV on
+</ifModule>
+
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /

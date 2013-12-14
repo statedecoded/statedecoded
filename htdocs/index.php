@@ -15,6 +15,14 @@
  */
 
 /*
+ * Make sure that mod_env is installed, as it must be.
+ */
+if (!isset($_SERVER['HTTP_MOD_ENV']))
+{
+	die('The State Decoded cannot run without Apache’s mod_env installed.');
+}
+
+/*
  * If we have not defined the include path yet, then try to do so automatically. Once we have
  * automatically defined the include path, we store it in .htaccess, where it becomes available
  * within the scope of $_SERVER.
