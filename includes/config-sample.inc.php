@@ -161,6 +161,12 @@ define('SOLR_URL', 'http://localhost:8080/solr/statedecoded/');
 define('API_KEY', '');
 
 /*
+ * The version of The State Decoded that is installed. (This is populated automatically by the
+ * upgrade script, and should not be modified manually.)
+ */
+define('VERSION', '0.81');
+
+/*
  * If you want to enable Disqus <http://www.disqus.com/> commenting for every law, register for
  * Disqus, create a new site, and enter the assigned Disqus shortname here.
  */
