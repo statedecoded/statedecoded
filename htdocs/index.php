@@ -17,10 +17,18 @@
 /*
  * Make sure that mod_env is installed, as it must be.
  */
-if (!isset($_SERVER['HTTP_MOD_ENV']))
-{
-	die('The State Decoded cannot run without Apache’s mod_env installed.');
+if( function_exists('apache_get_modules') ) { 
+	# Php installed as module
+	if ( !in_array('mod_env', apache_get_modules()) ) {
+		die("The State Decoded cannot run without Apache's mod_env installed.");
+	}
+} else {
+	# Php installed as CGI
+	if ( !isset($_SERVER['HTTP_MOD_ENV']) ) {
+		die("The State Decoded cannot run without Apache's mod_env installed.");
+	}
 }
+
 
 /*
  * If we have not defined the include path yet, then try to do so automatically. Once we have
