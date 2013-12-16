@@ -17,9 +17,9 @@
 /*
  * Make sure that mod_env is installed, as it must be.
  */
-if (!isset($_SERVER['HTTP_MOD_ENV']))
+if ( !isset($_SERVER['HTTP_MOD_ENV']) )
 {
-	die('The State Decoded cannot run without Apache’s mod_env installed.');
+	die('The State Decoded cannot run without Apache\'s mod_env installed.');
 }
 
 /*
