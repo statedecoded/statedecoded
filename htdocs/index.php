@@ -17,7 +17,7 @@
 /*
  * Make sure that mod_env is installed, as it must be.
  */
-if (!isset($_SERVER['HTTP_MOD_ENV']))
+if ( !in_array('mod_rewrite', apache_get_modules()) )
 {
 	die('The State Decoded cannot run without Apache’s mod_env installed.');
 }
