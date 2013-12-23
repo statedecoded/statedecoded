@@ -1521,9 +1521,8 @@ class ParserController
 		/*
 		 * Create a new XML file, using the sitemap.xml schema.
 		 */
-		$xml = new SimpleXMLElement('<xml/>');
-		$urlset = $xml->addChild('urlset');
-		$urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+		
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" />');
 
 		/*
 		 * Create a new instance of the class that handles information about individual laws.
