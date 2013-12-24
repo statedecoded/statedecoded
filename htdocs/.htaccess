@@ -13,7 +13,8 @@ RewriteBase /
 # request.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)\.txt$ /$1/?plain_text=y [PT]
+RewriteCond %{DOCUMENT_ROOT}/downloads/current/code-text%{REQUEST_URI} -f
+RewriteRule ^(.*\.txt)$ /downloads/current/code-text/$1 [L]
 
 # If this is a request for the JSON version of a law, remap the extension to the cached JSON file.
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -21,8 +22,11 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{DOCUMENT_ROOT}/downloads/current/code-json%{REQUEST_URI} -f
 RewriteRule ^(.*\.json)$ /downloads/current/code-json/$1 [L]
 
+# If this is a request for the XML version of a law, remap the extension to the cached XML file.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/downloads/current/code-xml%{REQUEST_URI} -f
+RewriteRule ^(.*\.xml)$ /downloads/current/code-xml/$1 [L]
 
 RewriteRule ^index\.php$ - [L]
 
