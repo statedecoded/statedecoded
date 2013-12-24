@@ -996,9 +996,15 @@ class ParserController
 
 		$this->logger->message('Creating symlinks', 4);
 
-		if($this->edition['current'] == '1')
+		if ($this->edition['current'] == '1')
 		{
-			exec('cd ' . WEB_ROOT . '/downloads/; rm current ; ln -s ' . $this->edition['slug'] . ' current');
+			
+			$result = exec('cd ' . WEB_ROOT . '/downloads/; rm current; ln -s ' . $this->edition['slug'] . ' current');
+			if ($result != 0)
+			{
+				$this->logger->message('Could not create “current” symlink in /downloads/', 10);
+			}
+			
 		}
 
 		$this->logger->message('Done generating exports', 5);
