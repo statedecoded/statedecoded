@@ -136,6 +136,18 @@ class Search
 			}
 			
 			/*
+			 * If we have next and previous pages, store those.
+			 */
+			if ($i == $this->page)
+			{
+				$this->next = $url;
+			}
+			if ( ($i + 2) == $this->page)
+			{
+				$this->prev = $url;
+			}
+			
+			/*
 			 * Increment our page counter.
 			 */
 			$j++;

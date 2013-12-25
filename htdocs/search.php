@@ -292,6 +292,18 @@ if (!empty($_GET['q']))
 		 * Close the #search-results div.
 		 */
 		$body .= '</div>';
+			
+		/*
+		 * If there is a next and/or previous page of results, include that in the HTML head.
+		 */
+		if (isset($search->prev))
+		{
+			$content->append('link_rel', '<link rel="prev" title="Previous" href="' . $search->prev . '" />');
+		}
+		if (isset($search->next))
+		{
+			$content->append('link_rel', '<link rel="next" title="Next" href="' . $search->next . '" />');
+		}
 	
 	}
 	
