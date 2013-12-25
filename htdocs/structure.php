@@ -31,6 +31,7 @@ else
 	 */
 	$structure_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
 }
+
 /*
  * Create a new instance of the class that handles information about individual laws.
  */
@@ -41,7 +42,10 @@ $struct = new Structure();
  */
 $struct->structure_id = $structure_id;
 $struct->get_current();
-// If are at the top level, struct->structure is null
+
+/*
+ * If are at the top level, struct->structure is null.
+ */
 $response = (isset($struct->structure) ? $struct->structure : '' );
 
 /*
@@ -97,7 +101,8 @@ if (count((array) $structure) > 1)
 
 		$active = '';
 
-		if($level == end($structure)) {
+		if ($level == end($structure))
+		{
 			$active = 'active';
 		}
 
