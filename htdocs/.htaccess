@@ -9,11 +9,6 @@ ErrorDocument 404 /404.php
 RewriteEngine On
 RewriteBase /
 
-# Append a trailing slash to URLs.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_URI} !(.*)/$
-RewriteRule ^(.*)$ /$1/ [L,R=301]
-
 # If this is a request for a plain-text version of a page, translate the extention into a specific
 # request.
 RewriteCond %{REQUEST_FILENAME} !-f
