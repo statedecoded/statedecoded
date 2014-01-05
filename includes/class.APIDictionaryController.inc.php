@@ -14,13 +14,16 @@
 
 class APIDictionaryController extends BaseAPIController
 {
+
 	function handle($args)
 	{
-
-		# Make sure we have a term.
-		if (!isset($args['term']) || empty($args['term']))
+		
+		/*
+		 * If we have received neither a term nor a section, we can't do anything.
+		 */
+		if ( empty($args['term']) && empty($args['section']) )
 		{
-			json_error('Dictionary term not provided.');
+			json_error('Neither a dictionary term nor a section number have been provided.');
 			die();
 		}
 
@@ -37,87 +40,144 @@ class APIDictionaryController extends BaseAPIController
 			$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
 		}
 
-		# Get the definitions for the requested term.
 		$dict = new Dictionary();
-		if (isset($section))
+		
+		/*
+		 * Get the definitions for the requested term, if a term has been requested.
+		 */
+		if (!empty($args['term']))
 		{
-			$dict->section_number = $section;
-		}
-		$dict->term = $term;
-		$dictionary = $dict->define_term();
-
-		if ($dictionary === FALSE)
-		{
-			$response = array('definition' => 'Definition not available.');
-		}
-
-		else
-		{
-			if (preg_match('/[A-Za-z]/', $dictionary->definition[0]) === 1)
+		
+			if (isset($section))
 			{
-				$dictionary->definition[0] = strtoupper($dictionary->definition[0]);
+				$dict->section_number = $section;
 			}
-			elseif (preg_match('/[A-Za-z]/', $dictionary->definition[1]) === 1)
+			$dict->term = $term;
+			$dictionary = $dict->define_term();
+
 			/*
 			 * If, for whatever reason, this term is not found, return an error.
 			 */
+			if ($dictionary === FALSE)
 			{
-				$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
+				$response = array('definition' => 'Definition not available.');
 			}
 
-			if (isset($_GET['fields']))
+			else
 			{
-				$returned_fields = explode(',', urldecode($_GET['fields']));
-				foreach ($returned_fields as &$field)
+
 				/*
 				 * Uppercase the first letter of the first (quoted) word. We perform this twice because
 				 * some egal codes begin the definition with a quotation mark and some do not. (That is,
 				 * some write '"Whale" is a large sea-going mammal' and some write 'Whale is a large
 				 * sea-going mammal.")
 				 */
+				if (preg_match('/[A-Za-z]/', $dictionary->definition[0]) === 1)
 				{
-					$field = trim($field);
+					$dictionary->definition[0] = strtoupper($dictionary->definition[0]);
+				}
+				elseif (preg_match('/[A-Za-z]/', $dictionary->definition[1]) === 1)
+				{
+					$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
 				}
 
-				# It's essential to unset $field at the conclusion of the prior loop.
-				unset($field);
-
-				foreach ($dictionary as &$term)
 				/*
 				 * If the request contains a specific list of fields to be returned.
 				 */
+				if (isset($_GET['fields']))
 				{
-					# Step through our response fields and eliminate those that aren't in the requested
-					# list.
-					foreach($term as $field => &$value)
+			
 					/*
 					 * Turn that list into an array.
 					 */
+					$returned_fields = explode(',', urldecode($_GET['fields']));
+					foreach ($returned_fields as &$field)
 					{
-						if (in_array($field, $returned_fields) === FALSE)
-						{
-							unset($term->$field);
-						}
+						$field = trim($field);
 					}
+
+					/*
+					 * It's essential to unset $field at the conclusion of the prior loop.
+					 */
+					unset($field);
+
+					foreach ($dictionary as &$term)
+					{
+					
+						/*
+						 * Step through our response fields and eliminate those that aren't in the
+						 * requested list.
+						 */
+						foreach($term as $field => &$value)
+						{
+					
+							if (in_array($field, $returned_fields) === FALSE)
+							{
+								unset($term->$field);
+							}
+						
+						}
+					
+					}
+				
 				}
-			}
 
 				/*
 				 * If a section has been specified, then simplify this response by returning just a
 				 * single definition.
 				 */
 				if (isset($section))
+				{
+					$dictionary = $dictionary->{0};
+				}
+
 				/*
 				 * Rename this variable to use the expected name.
 				 */
-			{
-				$dictionary = $dictionary->{0};
-			}
+				$response = $dictionary;
+			
+			} // end else if term is found
+			
+		} // end if (!empty($args['term']))
 
-			$response = $dictionary;
-		}
+		/*
+		 * If a term hasn't been provided, then retrieve a term list for the specified section.
+		 */
+		elseif (!empty($args['section']))
+		{
+	
+			/*
+			 * Get the structural ID of the container for this section.
+			 */
+			$law = new Law;
+			$law->section_number = $section;
+			$law->config = FALSE;
+			$result = $law->get_law();
+			if ($result == FALSE)
+			{
+				$response = array('terms' => 'Term list not available.');
+			}
+			else
+			{
+				
+				/*
+				 * Now get the term list.
+				 */
+				$dict->section_id = $law->section_id;
+				$dict->structure_id = $law->structure_id;
+				$response = $dict->term_list();
+				if ($response == FALSE)
+				{
+					$response = array('terms' => 'Term list not available.');
+				}
+		
+			}
+	
+		} // end elseif (!empty($args['section']))
+
 
 		$this->render($response, 'OK', $_REQUEST['callback']);
 
 	} /* handle() */
+	
 } /* class APILawController */
