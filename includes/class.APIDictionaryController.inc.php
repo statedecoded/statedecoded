@@ -17,11 +17,11 @@ class APIDictionaryController extends BaseAPIController
 
 	function handle($args)
 	{
-		
+
 		/*
 		 * If we have received neither a term nor a section, we can't do anything.
 		 */
-		if ( empty($args['term']) && empty($args['section']) )
+		if ( empty($args['term']) && empty($_GET['section']) )
 		{
 			json_error('Neither a dictionary term nor a section number have been provided.');
 			die();
@@ -41,13 +41,13 @@ class APIDictionaryController extends BaseAPIController
 		}
 
 		$dict = new Dictionary();
-		
+
 		/*
 		 * Get the definitions for the requested term, if a term has been requested.
 		 */
 		if (!empty($args['term']))
 		{
-		
+
 			if (isset($section))
 			{
 				$dict->section_number = $section;
@@ -86,7 +86,7 @@ class APIDictionaryController extends BaseAPIController
 				 */
 				if (isset($_GET['fields']))
 				{
-			
+
 					/*
 					 * Turn that list into an array.
 					 */
@@ -103,23 +103,23 @@ class APIDictionaryController extends BaseAPIController
 
 					foreach ($dictionary as &$term)
 					{
-					
+
 						/*
 						 * Step through our response fields and eliminate those that aren't in the
 						 * requested list.
 						 */
 						foreach($term as $field => &$value)
 						{
-					
+
 							if (in_array($field, $returned_fields) === FALSE)
 							{
 								unset($term->$field);
 							}
-						
+
 						}
-					
+
 					}
-				
+
 				}
 
 				/*
@@ -135,17 +135,17 @@ class APIDictionaryController extends BaseAPIController
 				 * Rename this variable to use the expected name.
 				 */
 				$response = $dictionary;
-			
+
 			} // end else if term is found
-			
+
 		} // end if (!empty($args['term']))
 
 		/*
 		 * If a term hasn't been provided, then retrieve a term list for the specified section.
 		 */
-		elseif (!empty($args['section']))
+		elseif (!empty($_GET['section']))
 		{
-	
+
 			/*
 			 * Get the structural ID of the container for this section.
 			 */
@@ -159,7 +159,7 @@ class APIDictionaryController extends BaseAPIController
 			}
 			else
 			{
-				
+
 				/*
 				 * Now get the term list.
 				 */
@@ -170,14 +170,14 @@ class APIDictionaryController extends BaseAPIController
 				{
 					$response = array('terms' => 'Term list not available.');
 				}
-		
+
 			}
-	
+
 		} // end elseif (!empty($args['section']))
 
 
 		$this->render($response, 'OK', $_REQUEST['callback']);
 
 	} /* handle() */
-	
+
 } /* class APILawController */

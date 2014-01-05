@@ -45,7 +45,7 @@ Router::addRoute('^/api-key/$', array('ApiKeyController', 'requestKey'));
 Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?(?P<operation>structure|law|)(?P<route>/.*)',
 	array('APIPermalinkController', 'handle'));
 
-Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?dictionary/(?P<term>.*)/',
+Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?dictionary/((?P<term>.*)/)?',
 	array('APIDictionaryController', 'handle'));
 
 Router::addRoute('^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?search/(?P<term>.*)/',
