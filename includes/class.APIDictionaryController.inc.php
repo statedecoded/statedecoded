@@ -24,10 +24,14 @@ class APIDictionaryController extends BaseAPIController
 			die();
 		}
 
-		# Clean up the term.
+		/*
+		 * Clean up the term.
+		 */
 		$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
 
-		# If a section has been specified, then clean that up.
+		/*
+		 * If a section has been specified, then clean that up.
+		 */
 		if (isset($_GET['section']))
 		{
 			$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
@@ -42,7 +46,6 @@ class APIDictionaryController extends BaseAPIController
 		$dict->term = $term;
 		$dictionary = $dict->define_term();
 
-		# If, for whatever reason, this word is not found, return an error.
 		if ($dictionary === FALSE)
 		{
 			$response = array('definition' => 'Definition not available.');
@@ -50,25 +53,28 @@ class APIDictionaryController extends BaseAPIController
 
 		else
 		{
-
-			# Uppercase the first letter of the first (quoted) word. We perform this twice because some
-			# legal codes begin the definition with a quotation mark and some do not. (That is, some write
-			# '"Whale" is a large sea-going mammal' and some write 'Whale is a large sea-going mammal.")
 			if (preg_match('/[A-Za-z]/', $dictionary->definition[0]) === 1)
 			{
 				$dictionary->definition[0] = strtoupper($dictionary->definition[0]);
 			}
 			elseif (preg_match('/[A-Za-z]/', $dictionary->definition[1]) === 1)
+			/*
+			 * If, for whatever reason, this term is not found, return an error.
+			 */
 			{
 				$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
 			}
 
-			# If the request contains a specific list of fields to be returned.
 			if (isset($_GET['fields']))
 			{
-				# Turn that list into an array.
 				$returned_fields = explode(',', urldecode($_GET['fields']));
 				foreach ($returned_fields as &$field)
+				/*
+				 * Uppercase the first letter of the first (quoted) word. We perform this twice because
+				 * some egal codes begin the definition with a quotation mark and some do not. (That is,
+				 * some write '"Whale" is a large sea-going mammal' and some write 'Whale is a large
+				 * sea-going mammal.")
+				 */
 				{
 					$field = trim($field);
 				}
@@ -77,10 +83,16 @@ class APIDictionaryController extends BaseAPIController
 				unset($field);
 
 				foreach ($dictionary as &$term)
+				/*
+				 * If the request contains a specific list of fields to be returned.
+				 */
 				{
 					# Step through our response fields and eliminate those that aren't in the requested
 					# list.
 					foreach($term as $field => &$value)
+					/*
+					 * Turn that list into an array.
+					 */
 					{
 						if (in_array($field, $returned_fields) === FALSE)
 						{
@@ -90,14 +102,18 @@ class APIDictionaryController extends BaseAPIController
 				}
 			}
 
-			# If a section has been specified, then simplify this response by returning just a single
-			# definition.
-			if (isset($section))
+				/*
+				 * If a section has been specified, then simplify this response by returning just a
+				 * single definition.
+				 */
+				if (isset($section))
+				/*
+				 * Rename this variable to use the expected name.
+				 */
 			{
 				$dictionary = $dictionary->{0};
 			}
 
-			# Rename this variable to use the expected name.
 			$response = $dictionary;
 		}
 
