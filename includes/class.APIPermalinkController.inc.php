@@ -90,13 +90,8 @@ class APIPermalinkController extends BaseAPIController
 					$object_name = 'API' .
 						str_replace(' ', '', ucwords($route['object_type'])) .
 						'Controller';
-					$filename = 'class.' . $object_name . '.inc.php';
 
-					/*
-					 * We use file_exists rather than class_exists, as the latter
-					 * will invoke the autoloader.
-					 */
-					if ( file_exists(INCLUDE_PATH . '/' . $filename) )
+					if ( class_exists($object_name, FALSE) )
 					{
 						$controller = new $object_name();
 						return $controller->handle($route);
