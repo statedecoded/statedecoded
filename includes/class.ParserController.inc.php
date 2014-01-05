@@ -998,13 +998,13 @@ class ParserController
 
 		if ($this->edition['current'] == '1')
 		{
-			
+
 			$result = exec('cd ' . WEB_ROOT . '/downloads/; rm current; ln -s ' . $this->edition['slug'] . ' current');
 			if ($result != 0)
 			{
 				$this->logger->message('Could not create “current” symlink in /downloads/', 10);
 			}
-			
+
 		}
 
 		$this->logger->message('Done generating exports', 5);
@@ -1527,7 +1527,7 @@ class ParserController
 		/*
 		 * Create a new XML file, using the sitemap.xml schema.
 		 */
-		
+
 		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" />');
 
 		/*
@@ -1562,7 +1562,7 @@ class ParserController
 			/*
 			 * Add a record of this law to the XML.
 			 */
-			$url = $urlset->addChild('url');
+			$url = $xml->addChild('url');
 			$url->addchild('loc', $law->url);
 			$url->addchild('changefreq', 'monthly');
 
@@ -1812,7 +1812,7 @@ class ParserController
 			}
 
 		}
-		
+
 		/*
 		 * Make sure that php-xml is installed.
 		 */
