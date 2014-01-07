@@ -221,7 +221,7 @@ class Structure
 				}
 			}
 
-			if(!isset($structure->{$prefix-1}))
+			if ( !isset($structure->{$prefix-1}) )
 			{
 				$structure->{$prefix-1} = new StdClass();
 			}
@@ -243,10 +243,11 @@ class Structure
 		 */
 		$j=0;
 
-		if(!isset($this->structure))
+		if (!isset($this->structure) )
 		{
 			$this->structure = new StdClass();
 		}
+
 		for ($i=count((array) $structure)-1; $i>=0; $i--)
 		{
 
