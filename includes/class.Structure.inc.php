@@ -221,6 +221,10 @@ class Structure
 				}
 			}
 
+			if(!isset($structure->{$prefix-1}))
+			{
+				$structure->{$prefix-1} = new StdClass();
+			}
 			$structure->{$prefix-1}->$key = $value;
 
 		}
@@ -238,6 +242,11 @@ class Structure
 		 * Reverse the order of the elements of this object and place it in the scope of $this.
 		 */
 		$j=0;
+
+		if(!isset($this->structure))
+		{
+			$this->structure = new StdClass();
+		}
 		for ($i=count((array) $structure)-1; $i>=0; $i--)
 		{
 
