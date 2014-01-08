@@ -51,19 +51,11 @@ class PermalinkController extends BaseController
 				 */
 				$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
 					'Controller';
-				
-				try
+
+				if (class_exists($object_name, FALSE) == FALSE)
 				{
-					if (class_exists($object_name, FALSE) == FALSE)
-					{
-						$controller = new $object_name();
-						return $controller->handle($route);
-					}
-				}
-				catch(Exception $e)
-				{
-					trigger_error('Cannot find permalink class for object_type "' .
-						$route['object_type'] . '"', E_USER_WARNING);
+					$controller = new $object_name();
+					return $controller->handle($route);
 				}
 
 			}
