@@ -647,6 +647,12 @@ class Structure
 			 * Assign this datum to an element within $tmp based on its prefix.
 			 */
 			$label = substr($column, 3);
+
+			if(!isset($ancestry->$prefix))
+			{
+				$ancestry->$prefix = new StdClass();
+			}
+
 			$ancestry->$prefix->$label = $cell;
 		}
 

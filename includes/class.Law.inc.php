@@ -40,6 +40,7 @@ class Law
 		 */
 		if (!isset($this->config) || !is_object($this->config) )
 		{
+			$this->config = new StdClass();
 			$this->config->get_all = TRUE;
 		}
 
@@ -59,7 +60,7 @@ class Law
 			$this->config->get_tags = TRUE;
 			$this->config->render_html = TRUE;
 		}
-		
+
 		/*
 		 * Assemble the query that we'll use to get this law.
 		 */
@@ -158,7 +159,7 @@ class Law
 		 */
 		if ($this->config->get_text === TRUE)
 		{
-			
+
 			/*
 			 * When invoking this method in a loop, $this->text can pile up on itself. If the text
 			 * property is already set, clear it out.
@@ -220,6 +221,10 @@ class Law
 				/*
 				 * Append this section.
 				 */
+				if(!isset($this->text))
+				{
+					$this->text = new StdClass();
+				}
 				$this->text->$i = $tmp;
 				$i++;
 
@@ -361,7 +366,7 @@ class Law
 		 */
 		if ($this->config->get_court_decisions == TRUE)
 		{
-		
+
 			/*
 			 * If we already have this data cached as metadata.
 			 */
@@ -369,7 +374,7 @@ class Law
 			{
 				$this->court_decisions = $this->metadata->court_decisions;
 			}
-			
+
 			/*
 			 * If we do not have this data cached.
 			 */
@@ -380,7 +385,7 @@ class Law
 					if ($state->get_court_decisions() !== FALSE)
 					{
 						$this->court_decisions = $state->decisions;
-					}	
+					}
 				}
 			}
 		}
@@ -462,6 +467,11 @@ class Law
 		/*
 		 * List the URLs for the textual formats in which this section is available.
 		 */
+		if(!isset($this->formats))
+		{
+			$this->formats = new StdClass();
+		}
+
 		$this->formats->txt = substr($this->url, 0, -1) . '.txt';
 		$this->formats->json = substr($this->url, 0, -1) . '.json';
 		$this->formats->json = substr($this->url, 0, -1) . '.xml';
@@ -810,7 +820,7 @@ class Law
 		 * Return the result as an object.
 		 */
 		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
-		
+
 		/*
 		 * Create a new object, to which we will port a rotated version of this object.
 		 */
@@ -854,11 +864,11 @@ class Law
 			$rotated->{$field->meta_key} = $field->meta_value;
 
 		}
-		
+
 		return $rotated;
-		
+
 	}
-	
+
 	/*
 	 * Store a single piece of metadata for a single law
 	 *
@@ -877,24 +887,24 @@ class Law
 	 */
 	function store_metadata()
 	{
-		
+
 		/*
 		 * We're going to need access to the database connection throughout this class.
 		 */
 		global $db;
-		
+
 		if ( !isset($this->section_id) || !is_object($this->metadata) )
 		{
 			return FALSE;
 		}
-		
+
 		$sql = 'INSERT INTO laws_meta
 				SET law_id = :law_id,
 				meta_key = :meta_key,
 				meta_value = :meta_value,
 				date_created = now()';
 		$statement = $db->prepare($sql);
-		
+
 		foreach ($this->metadata as $field)
 		{
 			$sql_args = array(
@@ -908,11 +918,11 @@ class Law
 			{
 				return FALSE;
 			}
-			
+
 		}
-		
+
 		return TRUE;
-		
+
 	}
 
 
