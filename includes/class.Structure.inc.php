@@ -351,7 +351,7 @@ class Structure
 		else
 		{
 
-			$sql = 'SELECT id, name, identifier,
+			$sql = 'SELECT structure.id, structure.name, structure.identifier,
 					permalinks.url, permalinks.token
 					FROM structure
 					LEFT JOIN permalinks
