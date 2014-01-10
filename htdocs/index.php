@@ -192,15 +192,20 @@ else
 		apc_define_constants('config', $constants['user']);
 
 	}
-	
+
 }
+
+/*
+ * Include the functions that drive the site.
+ */
+require('functions.inc.php');
 
 /*
  * Connect to the database.
  */
 try
 {
-	$db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+	$db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
 }
 
 /*
@@ -262,11 +267,6 @@ if (version_compare(PHP_VERSION, '5.3.6', '<'))
  * We're going to need access to the database connection throughout the site.
  */
 global $db;
-
-/*
- * Include the functions that drive the site.
- */
-require('functions.inc.php');
 
 
 /*
