@@ -97,7 +97,7 @@ class APIPermalinkController extends BaseAPIController
 						str_replace(' ', '', ucwords($route['object_type'])) .
 						'Controller';
 
-					if ( class_exists($object_name, FALSE) )
+					if ( class_exists($object_name) == TRUE)
 					{
 						$controller = new $object_name();
 						return $controller->handle($route);
