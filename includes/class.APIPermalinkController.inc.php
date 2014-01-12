@@ -104,7 +104,7 @@ class APIPermalinkController extends BaseAPIController
 					}
 					else
 					{
-						trigger_error('Cannot find permalink class for object_type"' .
+						trigger_error('Cannot find permalink class for object_type "' .
 							$route['object_type'] . '"', E_USER_WARNING);
 					}
 				}
