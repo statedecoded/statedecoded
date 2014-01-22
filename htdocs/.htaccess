@@ -13,6 +13,14 @@ AddEncoding gzip svgz
 RewriteEngine On
 RewriteBase /
 
+# Append a trailing slash to URLs. Don't try to append trailing slashes to static assets or, if
+# mod_pagespeed is running, to its own in-memory repository.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteCond %{REQUEST_URI} !themes/(.+)/static/(.+)$
+RewriteCond %{REQUEST_URI} !mod_pagespeed_static/(.+)$
+RewriteRule ^(.*)$ /$1/ [L,R=301]
+
 # If this is a request for a plain-text version of a page, translate the extention into a specific
 # request.
 RewriteCond %{REQUEST_FILENAME} !-f
