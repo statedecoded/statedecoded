@@ -24,6 +24,24 @@
 $logger = new Logger(array('html' => TRUE));
 
 /*
+ * Require that the user log in.
+ */
+if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
+    $_SERVER['PHP_AUTH_USER'] != ADMIN_USERNAME || $_SERVER['PHP_AUTH_PW'] != ADMIN_PASSWORD)
+{
+
+    Header('WWW-Authenticate: Basic realm="The State Decoded Admin"');
+    Header('HTTP/1.0 401 Unauthorized');
+
+    echo '<html><body>
+        <h1>Rejected</h1>
+        <big>Wrong Username or Password</big>
+        </body></html>';
+    exit;
+    
+}
+
+/*
  * Create a new parser controller.
  */
 $parser = new ParserController(array('logger' => $logger));
