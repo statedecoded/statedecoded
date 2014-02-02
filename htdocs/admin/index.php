@@ -21,7 +21,7 @@
 /*
  * Log parser output.
  */
-$logger = new Logger(array('html' => true));
+$logger = new Logger(array('html' => TRUE));
 
 /*
  * Create a new parser controller.
