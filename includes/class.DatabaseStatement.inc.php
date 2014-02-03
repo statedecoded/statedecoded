@@ -157,7 +157,14 @@ class DatabaseStatement extends PDOStatement
 
 	public function fetchAll ( $fetch_style = null, $fetch_argument = null, $actor_args = null )
 	{
-		return $this->pdo_statement->fetchAll($fetch_style, $fetch_argument, $actor_args);
+		if(isset($fetch_argument))
+		{
+			return $this->pdo_statement->fetchAll($fetch_style, $fetch_argument, $actor_args);
+		}
+		else
+		{
+			return $this->pdo_statement->fetchAll($fetch_style);
+		}
 	}
 
 	public function fetchColumn ( $column_number = null )
