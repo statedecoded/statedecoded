@@ -33,11 +33,8 @@ class ParserController
 		/*
 		 * Connect to the database.
 		 */
-		$this->db = new PDO( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
-		if ($this->db === FALSE)
-		{
-			die('Could not connect to the database.');
-		}
+		global $db;
+		$this->db = $db;
 
 		/*
 		 * Prior to PHP v5.3.6, the PDO does not pass along to MySQL the DSN charset configuration
