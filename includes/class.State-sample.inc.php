@@ -491,6 +491,11 @@ class Parser
 		foreach ($this->section->structure->unit as $unit)
 		{
 			$level = (string) $unit['level'];
+			if(!isset($this->code->structure->{$level}))
+			{
+				$this->code->structure->{$level} = new stdClass();
+			}
+
 			$this->code->structure->{$level}->name = (string) $unit;
 			$this->code->structure->{$level}->label = (string) $unit['label'];
 			$this->code->structure->{$level}->level = (string) $unit['level'];
@@ -512,6 +517,10 @@ class Parser
 			 */
 			if (count($section) === 0)
 			{
+				if(!isset($this->code->section->{$this->i}))
+				{
+					$this->code->section->{$this->i} = new stdClass();
+				}
 				$this->code->section->{$this->i}->text = trim((string) $section);
 				$this->code->text = trim((string) $section);
 				break;
@@ -522,6 +531,10 @@ class Parser
 			 */
 			foreach ($section as $subsection)
 			{
+				if(!isset($this->code->section->{$this->i}))
+				{
+					$this->code->section->{$this->i} = new stdClass();
+				}
 
 				$this->code->section->{$this->i}->text = trim((string) $subsection);
 
@@ -538,6 +551,11 @@ class Parser
 
 				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 				$this->prefix_hierarchy[] = (string) $subsection['prefix'];
+
+				if(!isset($this->code->section->{$this->i}->prefix_hierarchy))
+				{
+					$this->code->section->{$this->i}->prefix_hierarchy = new stdClass();
+				}
 				$this->code->section->{$this->i}->prefix_hierarchy->{0} = (string) $subsection['prefix'];
 
 				/*
@@ -857,6 +875,11 @@ class Parser
 			/*
 			 * Store this subsection's data in our code object.
 			 */
+			if(!isset($this->code->section->{$this->i}))
+			{
+				$this->code->section->{$this->i} = new stdClass();
+			}
+
 			$this->code->section->{$this->i}->text = (string) $subsection;
 			if (!empty($subsection['type']))
 			{
@@ -864,6 +887,11 @@ class Parser
 			}
 			$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 			$this->prefix_hierarchy[] = (string) $subsection['prefix'];
+
+			if(!isset($this->code->section->{$this->i}->prefix_hierarchy))
+			{
+				$this->code->section->{$this->i}->prefix_hierarchy = new stdClass();
+			}
 			$this->code->section->{$this->i}->prefix_hierarchy = (object) $this->prefix_hierarchy;
 
 			/*
