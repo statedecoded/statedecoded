@@ -628,11 +628,12 @@ class Parser
 	{
 
 		$sql = 'DELETE FROM permalinks';
-		$result = $this->db->exec($sql);
+		$statement = $this->db->prepare($sql);
+
+		$result = $statement->execute();
 		if ($result === FALSE)
 		{
-			echo '<p>'.$sql.'</p>';
-			echo '<p>'.$result->getMessage().'</p>';
+			echo '<p>Query failed: '.$sql.'</p>';
 			return;
 		}
 
