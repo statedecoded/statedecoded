@@ -783,7 +783,7 @@ class Parser
 				if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
 				{
 					$law_token = $token . '/' . $law['section_number'];
-					$law_url = $url . $law['section_number'];
+					$law_url = $url . $law['section_number'] . '/';
 				}
 				else
 				{
