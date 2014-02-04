@@ -889,10 +889,6 @@ class Parser
 			$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
 			$this->prefix_hierarchy[] = (string) $subsection['prefix'];
 
-			if(!isset($this->code->section->{$this->i}->prefix_hierarchy))
-			{
-				$this->code->section->{$this->i}->prefix_hierarchy = new stdClass();
-			}
 			$this->code->section->{$this->i}->prefix_hierarchy = (object) $this->prefix_hierarchy;
 
 			/*
