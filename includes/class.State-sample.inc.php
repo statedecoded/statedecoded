@@ -1276,10 +1276,14 @@ class Parser
 				);
 				$find_scope->label = $dictionary->scope;
 				$find_scope->structure_id = $dictionary->structure_id;
-				$dictionary->structure_id = $find_scope->find_structure_parent();
-				if ($dictionary->structure_id === FALSE)
+
+				if($dictionary->structure_id)
 				{
-					unset($dictionary->structure_id);
+					$dictionary->structure_id = $find_scope->find_structure_parent();
+					if ($dictionary->structure_id == FALSE)
+					{
+						unset($dictionary->structure_id);
+					}
 				}
 			}
 
