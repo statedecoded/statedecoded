@@ -51,20 +51,20 @@ $content->set('inline_css',
 
 $body = '
 	<h2>Laws as JSON</h2>
-	<p><a href="code.json.zip">code.json.zip</a><br />
+	<p><a href="current/code.json.zip">code.json.zip</a><br />
 	This is the basic data about every law, one JSON file per law. Fields include section, catch
 	line, text, history, and structural ancestry (i.e., title number/name and chapter number/name).
 	Note that any sections that contain colons (e.g., § 8.01-581.12:2) have an underscore in place
 	of the colon in the filename, because neither Windows nor Mac OS support colons in filenames.</p>
 
 	<h2>Laws as Plain Text</h2>
-	<p><a href="code.txt.zip">code.txt.zip</a><br />
+	<p><a href="current/code.txt.zip">code.txt.zip</a><br />
 	This is the basic data about every law, one plain text file per law. Note that any sections that
 	contain colons (e.g., § 8.01-581.12:2) have an underscore in place of the colon in the filename,
 	because neither Windows nor Mac OS support colons in filenames.</p>
 
 	<h2>Dictionary as JSON</h2>
-	<p><a href="dictionary.json.zip">dictionary.json.zip</a><br />
+	<p><a href="current/dictionary.json.zip">dictionary.json.zip</a><br />
 	All terms defined in the laws, with each term’s definition, the section in which it is defined,
 	and the scope (section, chapter, title, global) of that definition.</p>';
 
