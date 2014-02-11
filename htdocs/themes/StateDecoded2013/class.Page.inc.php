@@ -43,7 +43,7 @@ class StateDecoded2013__Page extends Page
 			'requires' => array('jquery')
 		),
 		'jquery_qtip' => array(
-			'path' => '//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/jquery.qtip.min.js',
+			'path' => '//cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js',
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),

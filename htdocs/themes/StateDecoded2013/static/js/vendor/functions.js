@@ -159,7 +159,8 @@ $(document).ready(function () {
 		},
 		position: {
 			at: "top center",
-			my: "bottom center"
+			my: "bottom center",
+			viewport: $(window)
 		}
 	})
 
