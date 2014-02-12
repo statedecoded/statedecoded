@@ -12,7 +12,7 @@
   <xsl:template match="law">
     <doc>
       <field name="id">l_<xsl:value-of select="url"/></field>
-      <field name="edition"><xsl:value-of select="edition_id"/></field>
+      <field name="edition"><xsl:value-of select="edition"/></field>
       <field name="catch_line"><xsl:value-of select="catch_line"/></field>
       <field name="text"><xsl:apply-templates select="text"/></field>
       <field name="section"><xsl:value-of select="token"/></field>

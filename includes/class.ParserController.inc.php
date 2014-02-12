@@ -1316,6 +1316,7 @@ class ParserController
 							unset($law->plain_text);
 							unset($law->section_id);
 							unset($law->structure_id);
+							unset($law->edition_id);
 							unset($law->full_text);
 							unset($law->formats);
 							unset($law->html);
@@ -1323,6 +1324,7 @@ class ParserController
 							unset($law->ancestry);
 							$law->referred_to_by = $law->references;
 							unset($law->references);
+							$law->edition = $this->edition['slug'];
 
 							/*
 							 * Encode all entities as their proper Unicode characters, save for the
