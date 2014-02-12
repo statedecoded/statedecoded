@@ -83,7 +83,7 @@ if (!empty($_GET['q']))
 
 	if(!empty($_GET['edition']))
 	{
-		$edition_param = $_GET['edition'];
+		$edition_param = filter_input(INPUT_GET, 'edition', FILTER_SANITIZE_STRING);
 	}
 	else
 	{
