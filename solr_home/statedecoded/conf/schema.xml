@@ -22,8 +22,8 @@ Licensed to the Apache Software Foundation (ASF) under one or more
     <!-- State Decoded Law Fields ==
         taken from law table tsv dump -->
    <field name="_version_" type="long" indexed="true" stored="true"/>
-   <field name="id" type="string" indexed="true" stored="true" required="true" /> 
-   <field name="edition" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="id" type="string" indexed="true" stored="true" required="true" />
+   <field name="edition" type="string" indexed="true" stored="true" required="true" />
 
    <field name="catch_line" type="html_stripped_text_en" indexed="true" stored="true"/>
    <field name="tags" type="html_stripped_text_en" indexed="true" stored="true" multiValued="true" />

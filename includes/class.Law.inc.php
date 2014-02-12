@@ -64,7 +64,8 @@ class Law
 		/*
 		 * Assemble the query that we'll use to get this law.
 		 */
-		$sql = 'SELECT id AS section_id, structure_id, section AS section_number, catch_line,
+		$sql = 'SELECT id AS section_id, structure_id, edition_id,
+				section AS section_number, catch_line,
 				history, text AS full_text, order_by
 				FROM laws';
 		$sql_args = array();

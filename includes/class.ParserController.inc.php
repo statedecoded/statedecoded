@@ -1316,7 +1316,6 @@ class ParserController
 							unset($law->plain_text);
 							unset($law->section_id);
 							unset($law->structure_id);
-							unset($law->edition_id);
 							unset($law->full_text);
 							unset($law->formats);
 							unset($law->html);
