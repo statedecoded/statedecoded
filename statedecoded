@@ -1,0 +1,67 @@
+#!/usr/bin/php
+<?php
+
+define('INCLUDE_PATH', dirname(__FILE__) . '/includes/');
+
+require_once(INCLUDE_PATH . 'config.inc.php');
+require_once(INCLUDE_PATH . 'functions.inc.php');
+
+function parse_action_info($action)
+{
+	$obj = str_replace(' ', '', ucwords(str_replace('-', ' ', $action))). 'Action';
+	$file = INCLUDE_PATH . 'task/class.' . $obj . '.inc.php';
+
+	if(file_exists($file))
+	{
+		return array($obj, $file);
+	}
+	return false;
+}
+
+function filename_to_classname($filename)
+{
+	$file = basename($filename);
+	if(preg_match('/^class.([A-Za-z0-9]+).inc.php$/', $file, $matches))
+	{
+		return $matches[1];
+	}
+	return false;
+}
+
+/*
+ * The first item is always the filename.
+ */
+array_shift($argv);
+
+// This will do for now, but really this should be wrapped in a class
+// and all actions should register themselves with that class.
+if(isset($argv) && count($argv) > 0)
+{
+	$args = array_slice($argv, 2);
+
+	$action = $argv[0];
+
+	if($action_info = parse_action_info($action))
+	{
+		list($obj, $file) = $action_info;
+	}
+
+}
+
+if(!isset($obj))
+{
+	$action = 'help';
+
+	if($action_info = parse_action_info($action))
+	{
+		list($obj, $file) = $action_info;
+	}
+
+	$args = array();
+}
+
+require_once($file);
+
+$action = new $obj();
+
+print $action->execute($args);
