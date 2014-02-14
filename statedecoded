@@ -45,9 +45,8 @@ array_shift($argv);
 // and all actions should register themselves with that class.
 if(isset($argv) && count($argv) > 0)
 {
-	$args = array_slice($argv, 2);
-
-	$action = $argv[0];
+	$action = array_shift($argv);
+	$args = $argv;
 
 	if($action_info = parse_action_info($action))
 	{
