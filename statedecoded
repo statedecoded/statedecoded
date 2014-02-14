@@ -1,6 +1,14 @@
 #!/usr/bin/php
 <?php
 
+/*
+ * statedecoded task runner
+ *
+ * Usage: php statedecoded [action]
+ *
+ * Builtin documentation: php statedecoded help
+ */
+
 define('INCLUDE_PATH', dirname(__FILE__) . '/includes/');
 
 require_once(INCLUDE_PATH . 'config.inc.php');
