@@ -211,4 +211,26 @@ class MigrateAction extends CliAction
 
 		return $statement->execute(array($migration_name));
 	}
+
+	static public function getHelp()
+	{
+		return <<<EOS
+
+statedecoded : migrate
+
+This action updates the database.
+Currently, it is all-or-nothing, we cannot do incremental updates!
+
+Usage:
+
+  statedecoded migrate [--verbose] [--down]
+
+Available options:
+
+  --verbose : Prints detailed logs of queries run.
+  --down    : Rolls back migrations, if possible.
+
+
+EOS;
+	}
 }
