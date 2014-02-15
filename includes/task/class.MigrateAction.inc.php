@@ -28,7 +28,7 @@ class MigrateAction extends CliAction
 	{
 		if($this->checkSetup())
 		{
-			return $this->doMigrations();
+			return $this->doMigrations($args);
 		}
 		else
 		{
@@ -69,23 +69,33 @@ class MigrateAction extends CliAction
 		return TRUE;
 	}
 
-	public function doMigrations()
+	public function doMigrations($args = array())
 	{
 		/*
 		 * Get completed migrations from db.
 		 */
 		$done_migrations = $this->getDoneMigrations();
 
-
 		/*
-		 * Get all migrations from files.
+		 * If we're rolling back.
 		 */
-		$all_migrations = $this->getAllMigrations();
+		if(in_array('--down', $args))
+		{
+			$migrations = $done_migrations;
+			rsort($migrations);
+		}
+		else
+		{
+			/*
+			 * Get all migrations from files.
+			 */
+			$all_migrations = $this->getAllMigrations();
 
-		/*
-		 * Determine what's left to be done.
-		 */
-		$migrations = array_diff($all_migrations, $done_migrations);
+			/*
+			 * Determine what's left to be done.
+			 */
+			$migrations = array_diff($all_migrations, $done_migrations);
+		}
 
 		if(count($migrations) < 1)
 		{
@@ -97,7 +107,7 @@ class MigrateAction extends CliAction
 
 			foreach($migrations as $migration_name)
 			{
-				$this->doMigration($migration_name);
+				$this->doMigration($migration_name, $args);
 			}
 		}
 
@@ -138,16 +148,37 @@ class MigrateAction extends CliAction
 		return $all_migrations;
 	}
 
-	public function doMigration($migration_name)
+	public function doMigration($migration_name, $args = array())
 	{
-		print "Running migration $migration_name\n";
+		print "Running migration $migration_name";
+		if (in_array('--down', $args))
+		{
+			print " ROLLBACK";
+		}
+		print "\n";
+
 		require_once(INCLUDE_PATH . '/migrations/class.Migration_'.$migration_name.'.inc.php');
 		$obj = 'Migration_' . $migration_name;
 		$migration = new $obj($this->db);
 
+		/*
+		 * Set verbose mode.
+		 */
+		if(in_array('--verbose', $args))
+		{
+			$migration->verbose = TRUE;
+		}
+
 		try
 		{
-			$migration->up();
+			if (in_array('--down', $args))
+			{
+				$migration->down();
+			}
+			else
+			{
+				$migration->up();
+			}
 		}
 		catch(Exception $except)
 		{
@@ -157,16 +188,25 @@ class MigrateAction extends CliAction
 			exit();
 		}
 
-		$this->recordMigration($migration_name);
+		$this->recordMigration($migration_name, $args);
 	}
 
-	public function recordMigration($migration_name)
+	public function recordMigration($migration_name, $args = array())
 	{
+		// We are assuming there is never a mix of down and up in the same
+		// action.  Just be careful, ok?
 		static $statement;
 		if(empty($statement))
 		{
-			$statement = $this->db->prepare('INSERT INTO migrations SET name=?, ' .
-				'date_created=NOW(), date_modified=NOW()');
+			if (in_array('--down', $args))
+			{
+				$statement = $this->db->prepare('DELETE FROM migrations WHERE name=?');
+			}
+			else
+			{
+				$statement = $this->db->prepare('INSERT INTO migrations SET name=?, ' .
+					'date_created=NOW(), date_modified=NOW()');
+			}
 		}
 
 		return $statement->execute(array($migration_name));
