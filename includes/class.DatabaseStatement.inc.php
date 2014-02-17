@@ -68,8 +68,23 @@ class DatabaseStatement extends PDOStatement
 
 	public function execute ( $input_parameters = null )
 	{
+		try
+		{
+			$result = $this->pdo_statement->execute($input_parameters);
+		}
+		catch(Exception $e)
+		{
+			if(strpos($e->getMessage(), 'Error while sending QUERY packet.') !== FALSE)
+			{
+				$result = FALSE;
+				$error = 'MySQL server has gone away';
+			}
+			else
+			{
+				throw $e;
+			}
+		}
 
-		$result = $this->pdo_statement->execute($input_parameters);
 
 		if($result === FALSE)
 		{
