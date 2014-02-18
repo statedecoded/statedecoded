@@ -2,6 +2,7 @@
 
 require_once 'class.CliAction.inc.php';
 
+
 class HelpAction extends CliAction
 {
 	static public $name = 'help';
@@ -31,7 +32,7 @@ class HelpAction extends CliAction
 		{
 			if (is_file($local_dir . '/' . $entry))
 			{
-				if($class = filename_to_classname($entry))
+				if($class = TaskRunner::filename_to_classname($entry))
 				{
 					require_once($local_dir . '/' . $entry);
 
@@ -74,7 +75,7 @@ EOS;
 
 	public function showHelp($args = array())
 	{
-		if($action_info = parse_action_info($args[0]))
+		if($action_info = TaskRunner::parse_action_info($args[0]))
 		{
 			list($obj, $file) = $action_info;
 		}
