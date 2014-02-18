@@ -6,6 +6,8 @@
 
 class TaskRunner
 {
+	public $format = 'text';
+
 	public static function parse_action_info($action)
 	{
 		$obj = str_replace(' ', '', ucwords(str_replace('-', ' ', $action))). 'Action';
@@ -34,6 +36,8 @@ class TaskRunner
 		 * The first item is always the filename.
 		 */
 		array_shift($exec_args);
+
+		$this->parseExecArgs($exec_args);
 
 		// This will do for now, but really this should be wrapped in a class
 		// and all actions should register themselves with that class.
@@ -65,6 +69,73 @@ class TaskRunner
 
 		$action = new $obj();
 
-		return $action->execute($args);
+		return $this->format( $action->execute($args) );
+	}
+
+	protected function parseExecArgs(&$exec_args)
+	{
+		foreach($exec_args as $index => $value)
+		{
+			/*
+			 * Eat any single-dash params, but not double-dash params.
+			 */
+			if(substr($value, 0, 1) === '-' && substr($value, 0, 2) !== '--')
+			{
+				/*
+				 * Split our key=value pairs.
+				 */
+				list($name, $val) = explode('=', substr($value, 1));
+
+				/*
+				 * Set the local value.
+				 */
+				$this->$name = $val;
+
+				/*
+				 * Unset the value.
+				 */
+				unset($exec_args[$index]);
+			}
+		}
+	}
+
+	/*
+	 * Sets the output format.  Matches the command line switch -format=NAME
+	 */
+	protected function format($text)
+	{
+		switch($this->format)
+		{
+			case 'cow' :
+			case 'cowsay' :
+				return $this->formatCow($text);
+
+			case 'text' :
+			default :
+				return $this->formatText($text);
+		}
+	}
+
+	/*
+	 * Text formatting wraps on 75 cols and adds some whitespace.
+	 */
+	protected function formatText($text)
+	{
+		return "\n" . wordwrap($text) . "\n\n";
+	}
+
+	protected function formatCow($text)
+	{
+		if(exec('which cowsay') !== '')
+		{
+			 exec('cowsay -W 75 "' . $text . '"', $output);
+
+			 return join("\n", $output) . "\n\n";
+		}
+		else
+		{
+			return "cowsay is not installed.\n\n" .
+				$this->formatText($text);
+		}
 	}
 }

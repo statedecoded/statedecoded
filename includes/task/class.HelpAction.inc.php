@@ -53,14 +53,11 @@ class HelpAction extends CliAction
 		$dh->close();
 
 		$return_value = <<<EOS
-
 statedecoded - task runner for the StateDecoded project.
 
 Usage: php statedecoded command [arg1 arg2 ...]
 
 Available commands:
-
-
 EOS;
 
 		foreach($actions as $name=>$summary)
@@ -90,12 +87,9 @@ EOS;
 	public static function getHelp()
 	{
 		return <<<EOS
-
 statedecoded : help
 
 It looks like you already know how to use help.
-
-
 EOS;
 	}
 }

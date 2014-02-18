@@ -99,21 +99,17 @@ EOS;
 	{
 		$include_path = INCLUDE_PATH;
 		return <<<EOS
-
 statedecoded : generate-migration
 
 This action creates a skeleton database migration file in the folder:
 
   {$include_path}migrations/
 
-This file will be named with the current date & time.  Please do not
-change the name, unless it follows this format!
+This file will be named with the current date & time.  Please do not change the name, unless it follows this format!
 
 Usage:
 
   statedecoded generate-migration
-
-
 EOS;
 	}
 }
