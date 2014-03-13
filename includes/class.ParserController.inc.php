@@ -425,8 +425,9 @@ class ParserController
 			/*
 			 * Note that we *cannot* prepare the table name as an argument here.
 			 * PDO doesn't work that way.
+			 * We are deleting instead of truncating, to handle foreign keys.
 			 */
-			$sql = 'TRUNCATE ' . $table;
+			$sql = 'DELETE FROM ' . $table . ' WHERE 1=1';
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute();
@@ -440,14 +441,6 @@ class ParserController
 			$this->logger->message('Deleted ' . $table, 5);
 
 		}
-
-		/*
-		 * Reset the auto-increment counter, to avoid unreasonably large numbers.
-		 */
-		$sql = 'ALTER TABLE structure
-				AUTO_INCREMENT=1';
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute();
 
 		/*
 		 * Delete law histories.
@@ -464,6 +457,10 @@ class ParserController
 
 		return TRUE;
 
+	}
+
+	public function clear_db_edition($edition)
+	{
 	}
 
 	/**
@@ -2065,9 +2062,19 @@ class ParserController
 
 	}
 
-	function clear_index()
+	function clear_index($edition = null)
 	{
-		$request = '<delete><query>*:*</query></delete>';
+		if(isset($edition))
+		{
+			$query = 'edition:' . $edition;
+		}
+		else
+		{
+			$query = '*:*';
+		}
+
+
+		$request = '<delete><query>' . $query . '</query></delete>';
 		if ( !$this->handle_solr_request($request) )
 		{
 			return FALSE;
