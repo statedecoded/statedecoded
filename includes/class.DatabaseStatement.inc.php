@@ -121,6 +121,10 @@ class DatabaseStatement extends PDOStatement
 	protected function fetchErrors ( $input_parameters = array() )
 	{
 		$error = array();
+		if ( strlen($this->query) )
+		{
+			$error['Query'] = $this->query;
+		}
 		if ( $this->errorCode() )
 		{
 			$error['Statement Code'] = $this->errorCode();
