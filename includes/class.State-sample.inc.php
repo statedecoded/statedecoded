@@ -956,6 +956,7 @@ class Parser
 			$structure->name = $struct->name;
 			$structure->label = $struct->label;
 			$structure->level = $struct->level;
+			$structure->metadata = $struct->metadata;
 
 			/* If we've gone through this loop already, then we have a parent ID. */
 			if (isset($this->code->structure_id))

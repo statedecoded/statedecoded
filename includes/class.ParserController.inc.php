@@ -1687,12 +1687,19 @@ class ParserController
 				$structure->child_structures = 0;
 			}
 
-			$metadata = new stdClass();
-			$metadata->child_laws = $structure->child_laws;
-			$metadata->child_structures = $structure->child_structures;
+			$structure_temp = new Structure();
+			$structure_temp->structure_id = $structure_id;
+			$structure_temp->get_current();
+
+			if(!isset($structure_temp->metadata))
+			{
+				$structure_temp->metadata = new stdClass();
+			}
+			$structure_temp->metadata->child_laws = $structure->child_laws;
+			$structure_temp->metadata->child_structures = $structure->child_structures;
 
 			$sql_args = array(
-				':metadata' => serialize($metadata),
+				':metadata' => serialize($structure_temp->metadata),
 				':structure_id' => $structure_id
 			);
 			$result = $statement->execute($sql_args);
