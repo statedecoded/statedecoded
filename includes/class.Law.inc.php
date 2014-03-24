@@ -360,7 +360,7 @@ class Law
 		}
 
 		/*
-		 * Get the amendment attempts for this law and include those (if there are any). But
+		 * Get the court decisions that affect this law and include those (if there are any). But
 		 * only if we have specifically requested this data. That's because, on most installations,
 		 * this will be making a call to a third-party service and such a call is expensive.
 		 */
