@@ -1984,20 +1984,23 @@ class ParserController
 			$error = TRUE;
 		}
 
-		/*
-		 * Make sure that Solr is responsive.
-		 */
-		Solarium_Autoloader::register();
-		$client = new Solarium_Client($GLOBALS['solr_config']);
-		$ping = $client->createPing();
-		try
+		if(defined('SOLR_URL'))
 		{
-			$result = $client->ping($ping);
-		}
-		catch(Solarium_Exception $e)
-		{
-			$this->logger->message('Solr must be installed, configured in config.inc.php, and running.', 10);
-			$error = TRUE;
+			/*
+			 * Make sure that Solr is responsive.
+			 */
+			Solarium_Autoloader::register();
+			$client = new Solarium_Client($GLOBALS['solr_config']);
+			$ping = $client->createPing();
+			try
+			{
+				$result = $client->ping($ping);
+			}
+			catch(Solarium_Exception $e)
+			{
+				$this->logger->message('Solr must be installed, configured in config.inc.php, and running.', 10);
+				$error = TRUE;
+			}
 		}
 
 		if (isset($error))
@@ -2029,7 +2032,13 @@ class ParserController
 
 		if ($this->edition['current'] != '1')
 		{
-			$this->logger->message('The edition is not current, skipping update to search index.');
+			$this->logger->message('The edition is not current, skipping update to search index.', 9);
+			return;
+		}
+
+		if(!defined('SOLR_URL'))
+		{
+			$this->logger->message('Solr is not in use.  Skipping index.', 9);
 			return;
 		}
 
@@ -2174,6 +2183,11 @@ class ParserController
 
 	function clear_index()
 	{
+		if(!defined('SOLR_URL'))
+		{
+			$this->logger->message('Solr is not enabled, skipping clearing of the index.', 5);
+			return TRUE;
+		}
 		$request = '<delete><query>*:*</query></delete>';
 		if ( !$this->handle_solr_request($request) )
 		{
