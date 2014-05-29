@@ -212,10 +212,28 @@ class ParserController
 
 		$errors = array();
 
-		if ($post_data['edition_option'] == 'new')
+		$create_data = array();
+
+		if (!empty($post_data['make_current']))
 		{
 
-			$create_data = array();
+			if ($current = filter_var($post_data['make_current'], FILTER_VALIDATE_INT))
+			{
+				$create_data['current'] = (int) $current;
+			}
+			else
+			{
+				$errors[] = 'Unexpected value for “make this edition current.”';
+			}
+
+		}
+		else
+		{
+			$create_data['current'] = 0;
+		}
+
+		if ($post_data['edition_option'] == 'new')
+		{
 
 			if ($name = filter_var($post_data['new_edition_name'], FILTER_SANITIZE_STRING))
 			{
@@ -233,24 +251,6 @@ class ParserController
 			else
 			{
 				$errors[] = 'Please enter a valid edition URL.';
-			}
-
-			if (!empty($post_data['make_current']))
-			{
-
-				if ($current = filter_var($post_data['make_current'], FILTER_VALIDATE_INT))
-				{
-					$create_data['current'] = (int) $current;
-				}
-				else
-				{
-					$errors[] = 'Unexpected value for “make this edition current.”';
-				}
-
-			}
-			else
-			{
-				$create_data['current'] = 0;
 			}
 
 			if (count($errors) === 0)
@@ -276,6 +276,12 @@ class ParserController
 			if ($edition_id = filter_var($post_data['edition'], FILTER_VALIDATE_INT))
 			{
 				$this->edition_id = $edition_id;
+
+				if($create_data['current'] > 0)
+				{
+					$create_data['id'] = $this->edition_id;
+					$this->update_edition($create_data);
+				}
 			}
 			else
 			{
@@ -301,6 +307,7 @@ class ParserController
 
 			if ($edition_result !== FALSE && $edition_statement->rowCount() > 0)
 			{
+				$this->export_edition_id($this->edition_id);
 				$this->edition = $edition_statement->fetch(PDO::FETCH_ASSOC);
 			}
 			else
@@ -368,37 +375,6 @@ class ParserController
 
 		if ($result !== FALSE)
 		{
-
-			/*
-			 * If possible, modify the .htaccess file, to store permanently the edition ID.
-			 */
-			if (is_writable(WEB_ROOT . '/.htaccess') == TRUE)
-			{
-
-				$htaccess = file_get_contents(WEB_ROOT . '/.htaccess');
-
-				/*
-				 * If there isn't already an edition ID in .htaccess, then write a new record.
-				 * Otherwise, update the existing record.
-				 */
-				if (strpos($htaccess, ' EDITION_ID ') === FALSE)
-				{
-					$htaccess .= PHP_EOL . PHP_EOL . 'SetEnv EDITION_ID ' . $this->db->lastInsertId() . PHP_EOL;
-				}
-				else
-				{
-					$htaccess = preg_replace('/SetEnv EDITION_ID (\d+)/', 'SetEnv EDITION_ID ' . $this->db->lastInsertId(), $htaccess);
-				}
-				$result = file_put_contents(WEB_ROOT . '/.htaccess', $htaccess);
-
-			}
-
-			/*
-			 * Store the edition ID as a constant, so that we can use it elsewhere in the import
-			 * process.
-			 */
-			define('EDITION_ID', $this->db->lastInsertId());
-
 			return $this->db->lastInsertId();
 
 		}
@@ -407,6 +383,98 @@ class ParserController
 			return FALSE;
 		}
 
+	}
+
+	/**
+	 * Update an edition.
+	 */
+	public function update_edition($data)
+	{
+		if($data['id'])
+		{
+			$sql_args[':id'] = $data['id'];
+			unset($data['id']);
+
+			if(count($data))
+			{
+				$sql = 'UPDATE editions
+						SET ';
+				$update = array();
+				foreach($data as $key => $value)
+				{
+					$sql_args[':' . $key] = $value;
+					$update[] = $key .' = :' . $key;
+				}
+				$sql .= join(',', $update);
+				$sql .= ' WHERE id = :id';
+
+				$statement = $this->db->prepare($sql);
+				$result = $statement->execute($sql_args);
+			}
+			else
+			{
+				trigger_error('Nothing to update on editions. Cowardly refusing.', E_USER_WARNING);
+			}
+		}
+		else
+		{
+			trigger_error('Updating editions without an id! Cowardly refusing.', E_USER_WARNING);
+		}
+	}
+
+	/**
+	 * Store the edition id in the .htaccess file.
+	 */
+
+
+	public function export_edition_id($edition_id)
+	{
+		/*
+		 * If possible, modify the .htaccess file, to store permanently the edition ID.
+		 */
+		if (is_writable(WEB_ROOT . '/.htaccess') == TRUE)
+		{
+			$this->logger->message('Writing edition id to .htaccess', 1);
+
+			$htaccess = file_get_contents(WEB_ROOT . '/.htaccess');
+
+			/*
+			 * If there isn't already an edition ID in .htaccess, then write a new record.
+			 * Otherwise, update the existing record.
+			 */
+			if (strpos($htaccess, ' EDITION_ID ') === FALSE)
+			{
+				$htaccess .= PHP_EOL . PHP_EOL . 'SetEnv EDITION_ID ' . $edition_id . PHP_EOL;
+			}
+			else
+			{
+				$htaccess = preg_replace('/SetEnv EDITION_ID (\d+)/', 'SetEnv EDITION_ID ' . $edition_id, $htaccess);
+			}
+			$result = file_put_contents(WEB_ROOT . '/.htaccess', $htaccess);
+
+			if($result)
+			{
+				$this->logger->message('Wrote edition id to .htaccess', 5);
+			}
+			else
+			{
+				$this->logger->message('Could not write edition id to .htaccess!', 10);
+			}
+
+		}
+		else
+		{
+			$this->logger->message('Cannot write to .htaccess!', 10);
+		}
+
+		/*
+		 * Store the edition ID as a constant, so that we can use it elsewhere in the import
+		 * process.
+		 */
+		if(!defined('EDITION_ID'))
+		{
+			define('EDITION_ID', $edition_id);
+		}
 	}
 
 	/**
@@ -519,7 +587,19 @@ class ParserController
 					/*
 					 * Set the edition
 					 */
-					 'edition_id' => $this->edition_id
+					 'edition_id' => $this->edition_id,
+
+					/*
+					 * Set the logger
+					 */
+					'logger' => $this->logger,
+
+					/*
+					 * Set the downloads directories
+					 */
+					'downloads_dir' => $this->downloads_dir,
+					'downloads_url' => $this->downloads_url
+
 				)
 			);
 
@@ -741,7 +821,18 @@ class ParserController
 				/*
 				 * Set the database
 				 */
-				'db' => $this->db
+				'db' => $this->db,
+
+				/*
+				 * Set the logger
+				 */
+				'logger' => $this->logger,
+
+				/*
+				 * Set the downloads directories
+				 */
+				'downloads_dir' => $this->downloads_dir,
+				'downloads_url' => $this->downloads_url
 			)
 		);
 
@@ -852,37 +943,7 @@ class ParserController
 
 		$this->logger->message('Preparing to export bulk downloads', 5);
 
-		/*
-		 * Define the location of the downloads directory.
-		 */
-		$downloads_dir = WEB_ROOT . '/downloads/';
-
-		if(!isset($this->edition) || !isset($this->edition['slug']))
-		{
-			$this->logger->message('Edition is missing!  Cannot write new files.', 10);
-			throw new Exception('Edition is missing');
-		}
-
-		/*
-		 * Delete our old downloads directory.
-		 */
-		$this->logger->message('Removing old downloads folder.', 5);
-		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition['slug']);
-
-		/*
-		 * If we cannot write files to the downloads directory, then we can't export anything.
-		 */
-		if (is_writable($downloads_dir) === FALSE)
-		{
-			$this->logger->message('Error: ' . $downloads_dir . ' could not be written to, so bulk
-				download files could not be exported.', 10);
-			return FALSE;
-		}
-
-		/*
-		 * Add the proper structure for editions.
-		 */
-		$downloads_dir .= $this->edition['slug'] . '/';
+		$downloads_dir = $this->downloads_dir;
 
 		/*
 		 * Begin the process of exporting each section.
@@ -1130,28 +1191,7 @@ class ParserController
 				 * Establish the path of our code JSON storage directory.
 				 */
 				$json_dir = $downloads_dir . 'code-json' . $url;
-
-				/*
-				 * If the JSON directory doesn't exist, create it.
-				 */
-				if (!file_exists($json_dir))
-				{
-					/*
-					 * Build our directories recursively.
-					 * Don't worry about the mode, as our server's umask should handle
-					 * that for us.
-					 */
-					mkdir($json_dir, 0777, true);
-				}
-
-				/*
-				 * If we cannot write to the JSON directory, log an error.
-				 */
-				if (!is_writable($json_dir))
-				{
-					$this->logger->message('Cannot write to ' . $json_dir . ' to export files.', 10);
-					break;
-				}
+				$this->mkdir($json_dir);
 
 				/*
 				 * Set a flag telling us that we may write JSON.
@@ -1162,23 +1202,7 @@ class ParserController
 				 * Establish the path of our code text storage directory.
 				 */
 				$text_dir = $downloads_dir . 'code-text' . $url;
-
-				/*
-				 * If the text directory doesn't exist, create it.
-				 */
-				if (!file_exists($text_dir))
-				{
-					mkdir($text_dir, 0777, true);
-				}
-
-				/*
-				 * If we cannot write to the text directory, log an error.
-				 */
-				if (!is_writable($text_dir))
-				{
-					$this->logger->message('Cannot open ' . $text_dir . ' to export files.', 10);
-					break;
-				}
+				$this->mkdir($text_dir);
 
 				/*
 				 * Set a flag telling us that we may write text.
@@ -1189,23 +1213,7 @@ class ParserController
 				 * Establish the path of our code XML storage directory.
 				 */
 				$xml_dir = $downloads_dir . 'code-xml' . $url;
-
-				/*
-				 * If the XML directory doesn't exist, create it.
-				 */
-				if (!file_exists($xml_dir))
-				{
-					mkdir($xml_dir, 0777, true);
-				}
-
-				/*
-				 * If we cannot write to the text directory, log an error.
-				 */
-				if (!is_writable($xml_dir))
-				{
-					$this->logger->message('Cannot open ' . $xml_dir . ' to export files.', 10);
-					break;
-				}
+				$this->mkdir($xml_dir);
 
 				/*
 				 * Set a flag telling us that we may write XML.
@@ -1218,7 +1226,10 @@ class ParserController
 				 */
 				$parser = new Parser(
 					array(
-						'db' => $this->db
+						'db' => $this->db,
+						'logger' => $this->logger,
+						'downloads_dir' => $this->downloads_dir,
+						'downloads_url' => $this->downloads_url
 					)
 				);
 
@@ -1275,8 +1286,12 @@ class ParserController
 							$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
 							if ($success === FALSE)
 							{
-								$this->logger->message('Could not write law JSON files', 9);
+								$this->logger->message('Could not write law JSON files "' . $json_dir . $filename . '.json' . '"', 9);
 								break;
+							}
+							else
+							{
+								$this->logger->message('Wrote file "'. $json_dir . $filename . '.json' .'"', 1);
 							}
 
 						}
@@ -1290,8 +1305,12 @@ class ParserController
 							$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
 							if ($success === FALSE)
 							{
-								$this->logger->message('Could not write law text files', 9);
+								$this->logger->message('Could not write law text files "' . $text_dir . $filename . '.txt', $law->plain_text . '"', 9);
 								break;
+							}
+							else
+							{
+								$this->logger->message('Wrote file "'. $json_dir . $filename . '.txt' .'"', 1);
 							}
 
 						}
@@ -1476,6 +1495,88 @@ class ParserController
 			$this->export_structure($item['s1_id']);
 
 		} // end the while() structure iterator
+	}
+
+	/**
+	 * Create necessary folders.
+	 */
+	public function setup_directories()
+	{
+
+		$this->logger->message('Writing output directories.', 5);
+		/*
+		 * Define the location of the downloads directory.
+		 */
+		$downloads_dir = WEB_ROOT . '/downloads/';
+
+		if(!isset($this->edition) || !isset($this->edition['slug']))
+		{
+			$this->logger->message('Edition is missing!  Cannot write new files.', 10);
+			throw new Exception('Edition is missing');
+		}
+
+		/*
+		 * Delete our old downloads directory.
+		 */
+		$this->logger->message('Removing old downloads folder.', 5);
+		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition['slug']);
+
+		/*
+		 * If we cannot write files to the downloads directory, then we can't export anything.
+		 */
+		if (is_writable($downloads_dir) === FALSE)
+		{
+			$this->logger->message('Error: ' . $downloads_dir . ' could not be written to, so bulk
+				download files could not be exported.', 10);
+			return FALSE;
+		}
+
+		/*
+		 * Add the proper structure for editions.
+		 */
+		$downloads_dir .= $this->edition['slug'] . '/';
+
+		$this->downloads_dir = $downloads_dir;
+
+		$this->downloads_url = '/downloads/' . $this->edition['slug'] . '/';
+
+		foreach(array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
+		{
+			$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
+
+			/*
+			 * If the JSON directory doesn't exist, create it.
+			 */
+			$this->mkdir($this->downloads_dir . $data_dir);
+		}
+	}
+
+	public function mkdir($dir)
+	{
+
+			/*
+			 * If the directory doesn't exist, create it.
+			 */
+			if (!file_exists($dir))
+			{
+				/*
+				 * Build our directories recursively.
+				 * Don't worry about the mode, as our server's umask should handle
+				 * that for us.
+				 */
+				if(!mkdir($dir, 0777, true))
+				{
+					$this->logger->message('Cannot create directory "' . $dir . '"', 10);
+				}
+			}
+
+			/*
+			 * If we cannot write to the JSON directory, log an error.
+			 */
+			if (!is_writable($dir))
+			{
+				$this->logger->message('Cannot write to "' . $dir . '"', 10);
+			}
 	}
 
 	/**
