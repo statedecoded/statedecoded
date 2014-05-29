@@ -642,7 +642,7 @@ class ParserController
 				SET target_law_id =
 					(SELECT laws.id
 					FROM laws
-					WHERE section = laws_references.target_section_number)
+					WHERE section = laws_references.target_section_number LIMIT 1)
 				WHERE target_law_id = :target_law_id';
 		$sql_args = array(
 			':target_law_id' => 0
