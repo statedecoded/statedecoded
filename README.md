@@ -6,7 +6,7 @@ The State Decoded is a free, open source, web-based application to display laws 
 ![Before and After](https://s3.amazonaws.com/statedecoded.com/comparison.jpg)
 
 ## Can I try it out?
-Sure! This project can be seen in action on sites for [Virginia](http://vacode.org/), [Maryland](http://marylandcode.org/), [Chicago](http://chicagocode.org/), [San Francisco](http://sanfranciscocode.org/), and a growing list of others. If you want to install it, you can also [download a Vagrant image from GitMachines](https://github.com/GitMachines/statedecoded-gm-centos6), or just [download and install it from scratch](https://github.com/statedecoded/statedecoded/releases).
+Sure! This project can be seen in action on sites for [Virginia](http://vacode.org/), [Maryland](http://marylandcode.org/), [Chicago](http://chicagocode.org/), [San Francisco](http://sanfranciscocode.org/), and [a growing list of others](http://americadecoded.org/). If you want to install it, you can also [download a Vagrant image from GitMachines](https://github.com/GitMachines/statedecoded-gm-centos6), or just [download and install it from scratch](https://github.com/statedecoded/statedecoded/releases).
 
 
 ## Is this ready for prime time?
@@ -17,11 +17,11 @@ This is a pre-v1.0 release, which is to say that it isn't quite done. A capable 
 ## How do get my legal code into The State Decoded?
 There are two ways.
 
-1. Natively, The State Decoded imports XML in [The State Decoded XML format](http://statedecoded.github.io/documentation/xml-format.html). If you have your legal code as XML, you can adapt [the provided XSLT](https://github.com/statedecoded/statedecoded/blob/master/sample.xsl) to transform it into the proper format. Or if you don't have your legal code as XML, you can convert it into XML.
-1. Skip XML entirely and [modify the included parser](http://statedecoded.github.io/documentation/parser.html) to import it in the format in which you have it.
+1. Natively, The State Decoded imports XML in [The State Decoded XML format](http://docs.statedecoded.com/xml-format.html). If you have your legal code as XML, you can adapt [the provided XSLT](https://github.com/statedecoded/statedecoded/blob/master/sample.xsl) to transform it into the proper format. Or if you don't have your legal code as XML, you can convert it into XML.
+1. Skip XML entirely and [modify the included parser](http://docs.statedecoded.com/parser.html) to import it in the format in which you have it.
 
 ## Project documentation
-Project documentation can be found at [documentation.statedecoded.com](http://documentation.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](http://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](http://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
+Project documentation can be found at [documentation.statedecoded.com](http://docs.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](http://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](http://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
 
 ## How to help
 * Use State Decoded sites and share your feedback in the form of [filing issues](https://github.com/statedecoded/statedecoded/issues/new)—suggestions for new features, notifications of bugs, etc.
