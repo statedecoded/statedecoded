@@ -36,7 +36,7 @@ class Dictionary
 		{
 			return FALSE;
 		}
-
+re
 		/*
 		 * Determine the structural heritage of the provided section number and store it in an
 		 * array.
@@ -156,7 +156,9 @@ class Dictionary
 			while ($term = $statement->fetch(PDO::FETCH_OBJ))
 			{
 			
-				$term->url = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $term->section_number . '/';
+				$term->url = 'http://' . $_SERVER['SERVER_NAME']
+				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
+				. '/' . $term->section_number . '/';
 				$term->formatted = wptexturize($term->definition) . ' (<a href="' . $term->url . '">'
 					. $term->section_number . '</a>)';
 				$dictionary->$i = $term;
