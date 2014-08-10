@@ -21,7 +21,7 @@ There are two ways.
 1. Skip XML entirely and [modify the included parser](http://docs.statedecoded.com/parser.html) to import it in the format in which you have it.
 
 ## Project documentation
-Project documentation can be found at [documentation.statedecoded.com](http://docs.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](http://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](http://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
+Project documentation can be found at [docs.statedecoded.com](http://docs.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](http://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](http://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
 
 ## How to help
 * Use State Decoded sites and share your feedback in the form of [filing issues](https://github.com/statedecoded/statedecoded/issues/new)—suggestions for new features, notifications of bugs, etc.
