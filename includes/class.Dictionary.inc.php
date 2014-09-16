@@ -36,7 +36,7 @@ class Dictionary
 		{
 			return FALSE;
 		}
-re
+
 		/*
 		 * Determine the structural heritage of the provided section number and store it in an
 		 * array.
