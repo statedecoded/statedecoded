@@ -110,6 +110,10 @@ Licensed to the Apache Software Foundation (ASF) under one or more
          words="lang/stopwords_en.txt"
          enablePositionIncrements="true"
          />
+       <filter class="solr.SynonymFilterFactory"
+         ignoreCase="true"
+         synonyms="synonyms.txt"
+         expand="true" />
        <filter class="solr.LowerCaseFilterFactory"/>
        <filter class="solr.EnglishPossessiveFilterFactory"/>
        <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
@@ -122,6 +126,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
        <charFilter class="solr.HTMLStripCharFilterFactory"/>
        <tokenizer class="solr.StandardTokenizerFactory"/>
        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" enablePositionIncrements="true"/>
+       <filter class="solr.SynonymFilterFactory" ignoreCase="true" synonyms="synonyms.txt" expand="true" />
        <filter class="solr.LowerCaseFilterFactory"/>
      </analyzer>
    </fieldType>
