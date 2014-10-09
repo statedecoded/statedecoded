@@ -2198,7 +2198,6 @@ class ParserController
 
 	function clear_index($edition = null)
 	{
-
 		if(!defined('SOLR_URL'))
 		{
 			$this->logger->message('Solr is not enabled, skipping clearing of the index.', 5);
