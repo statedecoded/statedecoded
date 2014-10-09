@@ -80,15 +80,18 @@ class Logger
 			{
 				echo "\n";
 			}
-			
+
 			/*
 			 * Flush the buffer to send the content to the browse immediately.
 			 */
 			flush();
-			ob_flush();
-			
+			if(ob_get_length())
+			{
+				ob_flush();
+			}
+
 		}
-		
+
 	}
 
 	// }}}

@@ -13,6 +13,8 @@
 
 class ParserController
 {
+	public $db;
+	public $logger;
 
 	public function __construct($args)
 	{
@@ -29,12 +31,6 @@ class ParserController
 		 * Setup a logger.
 		 */
 		$this->init_logger();
-
-		/*
-		 * Connect to the database.
-		 */
-		global $db;
-		$this->db = $db;
 
 		/*
 		 * Prior to PHP v5.3.6, the PDO does not pass along to MySQL the DSN charset configuration
@@ -205,6 +201,27 @@ class ParserController
 		}
 		return $editions;
 
+	}
+
+	public function get_current_edition()
+	{
+		$sql = 'SELECT *
+				FROM editions
+				WHERE current = :current
+				ORDER BY order_by';
+		$sql_args[':current'] = 1;
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$edition = $statement->fetch(PDO::FETCH_OBJ);
+		}
+		return $edition;
 	}
 
 	public function handle_editions($post_data)

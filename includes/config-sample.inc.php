@@ -13,6 +13,14 @@
  */
 
 /*
+ * Make a reasonable guess as to wear the INCLUDE_PATH is.
+ */
+if(!defined('INCLUDE_PATH'))
+{
+	define('INCLUDE_PATH', dirname(__FILE__) . '/');
+}
+
+/*
  * Append the includes directory to the include path.
  */
 set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
@@ -41,7 +49,7 @@ define('SECTION_SYMBOL', '§');
 /*
  * Define the web root -- the directory in which index.php is found.
  */
-define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
+define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT'] ? $_SERVER['DOCUMENT_ROOT'] : dirname(INCLUDE_PATH) . '/htdocs/');
 
 /*
  * Define the location of the files to import.

@@ -9,9 +9,8 @@
  * Builtin documentation: php statedecoded help
  */
 
-define('INCLUDE_PATH', dirname(__FILE__) . '/includes/');
 
-require_once(INCLUDE_PATH . 'config.inc.php');
+require_once(dirname(__FILE__) . '/includes/config.inc.php');
 require_once(INCLUDE_PATH . 'functions.inc.php');
 
 $runner = new TaskRunner();

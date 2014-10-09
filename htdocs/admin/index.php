@@ -38,13 +38,19 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
         <big>Wrong Username or Password</big>
         </body></html>';
     exit;
-    
+
 }
 
 /*
  * Create a new parser controller.
  */
-$parser = new ParserController(array('logger' => $logger));
+global $db;
+$parser = new ParserController(
+	array(
+		'logger' => $logger,
+		'db' => &$db
+	)
+);
 
 if (isset($_GET['noframe']))
 {
@@ -77,7 +83,8 @@ if (count($_POST) === 0)
 	}
 	elseif ($_GET['page'] == 'parse' )
 	{
-		$body = show_admin_forms();
+		$args['parser'] = $parser;
+		$body = show_admin_forms($args);
 	}
 
 }
@@ -128,6 +135,7 @@ elseif ($_POST['action'] == 'parse')
 			{
 				$args = $_POST;
 				$args['import_errors'] = $edition_errors;
+				$args['parser'] = $parser;
 
 				echo show_admin_forms($args);
 			}
@@ -280,9 +288,8 @@ else
 function show_admin_forms($args = array())
 {
 
-	$parser = new ParserController($args);
 
-	$editions = $parser->get_editions();
+	$editions = $args['parser']->get_editions();
 
 	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
 	{
