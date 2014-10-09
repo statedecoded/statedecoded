@@ -154,7 +154,7 @@ define('SOLR_URL', 'http://localhost:8080/solr/statedecoded/');
  * The HTML to be displayed on individual law pages that will allow them to be shared via social
  * services. Twitter and Facebook are included by default.
  */
-// define('SOCIAL_LINKS', '<div id="twitter"><a href="https://twitter.com/share" class="twitter-share-button">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?\'http\':\'https\';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\'://platform.twitter.com/widgets.js\';fjs.parentNode.insertBefore(js,fjs);}}(document, \'script\', \'twitter-wjs\');</script></div><div id="facebook"><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:like layout="button_count" show_faces="false" width="100" action="recommend"></fb:like></div>');
+// define('SOCIAL_LINKS', '<div id="twitter"><a href="https://twitter.com/share" class="twitter-share-button">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?\'http\':\'https\';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\'://platform.twitter.com/widgets.js\';fjs.parentNode.insertBefore(js,fjs);}}(document, \'script\', \'twitter-wjs\');</script></div><div id="facebook"><script src="//connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:like layout="button_count" show_faces="false" width="100" action="recommend"></fb:like></div>');
 
 /**
  * API Keys

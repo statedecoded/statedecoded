@@ -475,12 +475,13 @@ class Structure
 			if (INCLUDES_REPEALED === TRUE)
 			{
 				$sql .= ' AND
-						(SELECT COUNT(*)
+						((SELECT COUNT(*)
 						FROM laws
 						LEFT OUTER JOIN laws_meta
 							ON laws.id = laws_meta.law_id AND laws_meta.meta_key = "repealed"
 						WHERE laws.structure_id=structure.id
-						AND ((laws_meta.meta_value = "n") OR laws_meta.meta_value IS NULL)  ) > 0';
+						AND ((laws_meta.meta_value = "n") OR laws_meta.meta_value IS NULL)  ) > 0
+						OR (SELECT COUNT(*) FROM structure AS s2 WHERE s2.parent_id = structure.id) > 0)';
 			}
 
 		}

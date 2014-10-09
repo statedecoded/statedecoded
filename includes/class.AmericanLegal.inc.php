@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The state-specific function library for The State Decoded.
+ * Library for importing XML formatted by American Legal.
  *
  * PHP version 5
  *
@@ -9,232 +9,38 @@
  * @version		0.8
  * @link		http://www.statedecoded.com/
  * @since		0.3
-*/
+ *
+ * This library is Abstract - meaning you must derive it to use it!
+ *
+ * Example usage (to replace State-sample):
+********************************************************************
+// class.MyCity.inc.php
+
+ <?php
+
+require 'class.AmericanLegal.inc.php';
+
+// All we need is a derivative of both State and Parser.
+class State extends AmericanLegalState {}
+
+// We should probably list the images to ignore, though!
+class Parser extends AmericanLegalParser
+{
+	public $image_blacklist = array(
+		'seal.png',
+		'seal.jpg'
+	);
+}
+
+// class.MyCity.inc.php
+*******************************************************************/
 
 /**
  * This class may be populated with custom functions.
  */
-class State
+abstract class AmericanLegalState
 {
 
-	/**
-	 * Generate the URL to view a law on the official government website
-	 *
-	 * @return the URL or false
-	 */
-	/*official_url()
-	{
-
-		if (!isset($this->section_number))
-		{
-			return FALSE;
-		}
-
-		return 'http://example.gov/laws/' . $this->section_number . '/';
-
-	}*/
-
-	/**
-	 * Render the often-confusing history text for a law as plain English.
-	 *
-	 * @return the history text or false
-	 */
-	/*function translate_history()
-	{
-
-	}
-	*/
-
-	/**
-	 * Generate one or more citations for a law
-	 *
-	 * Should create an object named "citation" (singular) with one numbered entry for each citation
-	 * style, with values of "label" and "text," the label describing the type of citation (e.g.
-	 * "Official," "Universal") and the text being the citation itself.
-	 *
-	 * @return true or false
-	 */
-	/*function citations()
-	{
-
-		if (!isset($this->section_number))
-		{
-			return FALSE;
-		}
-
-		$this->citation->{0}->label = 'Official';
-		$this->citation->{0}->text = 'St. Code § '.$this->section_number;
-
-		return TRUE;
-	}
-	*/
-	
-	/**
-	 * Retrieve a list of every attempt to amend a law
-	 *
-	 * Should create an object named "bills" (plural) with one numbered entry for each bill that
-	 * proposed to amend the law, with values of "year," "number," "catch_line," "outcome," and
-	 * "url."
-	 *
-	 * @return true or false
-	 */
-	/*function get_amendment_attempts()
-	{	
-		
-		if (!isset($this->section_number))
-		{
-			return FALSE;
-		}
-		
-		# Below is an example of how $this->bills should be formatted. Every field must be present,
-		# and they should be sorted chronologically, from most oldest to newest.
-		#
-		#		Object
-		#		(
-		#			[0] => stdClass Object
-		#				(
-		#					[year] => 2009
-		#					[number] => SB1316
-		#					[catch_line] => Freedom of Information Act; strikes requirement to publish a database index, etc.
-		#					[outcome] => passed
-		#					[url] => http://www.richmondsunlight.com/bill/2009/sb1316/
-		#				)
-		#		
-		#			[1] => stdClass Object
-		#				(
-		#					[year] => 2010
-		#					[number] => HB449
-		#					[catch_line] => Freedom of Information Act; injunctive relief for public bodies under certain circumstances.
-		#					[outcome] => failed
-		#					[url] => http://www.richmondsunlight.com/bill/2010/hb449/
-		#				)
-		#		
-		#			[2] => stdClass Object
-		#				(
-		#					[year] => 2010
-		#					[number] => HB518
-		#					[catch_line] => Freedom of Information Act; public body shall remain responsible for retrieving public records, etc.
-		#					[outcome] => passed
-		#					[url] => http://www.richmondsunlight.com/bill/2010/hb518/
-		#				)
-		
-		return TRUE;
-		
-	} // end get_amendment_attempts()
-	*/
-	
-	/**
-	 * Retrieve a list of every court decision that cites a given law.
-	 *
-	 * A customization is necessary to get this working for your legal code.
-	 * 
-	 * You need to experiment with searches on CourtListener and figure out how to build a query
-	 * that will return court decisions that refer to your legal code. In the below example, for
-	 * Virginia, we've created $url by prefixing the section number query with "Virginia Code" (URL
-	 * encoded).
-	 *
-	 * An optional customization is to set the value of court_html. This is the name of court as
-	 * displayed for each ruling, which can look better if abbreviated. You can modify the example
-	 * Virginia text that's provided. Or, if you do nothing, the entire court name will be
-	 * displayed.
-	 * 
-	 * @return true or false
-	 */
-	/*function get_court_decisions()
-	{
-
-		//  We need a section number in order to search for court decisions that cite that law.
-		if (!isset($this->section_number))
-		{
-			return FALSE;
-		}
-		
-		// Assemble the URL for our query to the CourtListener API.
-		$url = 'https://www.courtlistener.com/api/rest/v1/search/?q=Virginia+Code+%22'
-			. urlencode($this->section_number) . '%22&order_by=score+desc&format=json';
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-		curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1200);
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($ch, CURLOPT_USERPWD, COURTLISTENER_USERNAME . ':' . COURTLISTENER_PASSWORD);
-		$allowed_protocols = CURLPROTO_HTTP | CURLPROTO_HTTPS;
-		curl_setopt($ch, CURLOPT_PROTOCOLS, $allowed_protocols);
-		curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols & ~(CURLPROTO_FILE | CURLPROTO_SCP));
-		$json = curl_exec($ch);
-		
-		// If the query failed.
-		if ($json == FALSE)
-		{
-			return FALSE;
-		}
-		
-		// Turn this JSON into an object.
-		$cl_list = json_decode($json);
-		
-		// If the JSON is invalid.
-		if ($cl_list == FALSE)
-		{
-			return FALSE;
-		}
-		
-		// If no results were found.
-		if ($cl_list->meta->total_count == 0)
-		{
-			return FALSE;
-		}
-		
-		// Create an object to store the decisions that we're going to return.
-		$this->decisions = new stdClass();
-		
-		// Iterate through the decisions and assign the first 10 to $this->decisions.
-		$i=0;
-		foreach ($cl_list->objects as $opinion)
-		{
-			
-			if ($i == 10)
-			{
-				break;
-			}
-			
-			// Port the fields that we need from $opinion to $this->decisions.
-			$this->decisions->{$i}->name = $opinion->case_name;
-			$this->decisions->{$i}->case_number = $opinion->case_number;
-			$this->decisions->{$i}->citation = $opinion->citation;
-			$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
-			$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
-			$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
-			
-			if ($opinion->court == 'Court of Appeals of Virginia')
-			{
-				$this->decisions->{$i}->court_html = '<abbr title="Court of Appeals">COA</abbr>';
-			}
-			elseif ($opinion->court == 'Supreme Court of Virginia')
-			{
-				$this->decisions->{$i}->court_html = '<abbr title="Supreme Court of Virginia">SCV</abbr>';
-			}
-			else
-			{
-				$this->decisions->{$i}->court_html = $opinion->court;
-			}
-				
-			$i++;
-			
-		}
-		
-		// Store these decisions in the metadata table.
-		$law = new Law();
-		$law->section_id = $this->section_id;
-		$law->metadata->{0}->key = 'court_decisions';
-		$law->metadata->{0}->value = json_encode($this->decisions);
-		$law->store_metadata();
-		
-		return TRUE;
-		
-	}*/
-	
 }
 
 
@@ -243,19 +49,69 @@ class State
  * prescribed XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
  * and serves as a guide for those who want to parse an alternate format.
  */
-class Parser
+abstract class AmericanLegalParser
 {
 
 	public $file = 0;
 	public $directory;
 	public $files = array();
 	public $db;
+	public $logger;
 	public $edition_id;
 	public $structure_labels;
 
+	public $section_count = 1;
+
+	public $structures = array();
+
+	/*
+	 * Regexes.
+	 * These will need to be customized for your purposes.
+	 */
+	//                            | type of section                 |!temp!|    | section number                    (opt ' - section number')       |      | hyphen | catch line
+	public $section_regex = '/^\[?(?P<type>§|SEC(TION|S\.|\.)|APPENDIX|ARTICLE)\s+(?P<number>[0-9A-Z]+[0-9A-Za-z_\.\-]*(.?\s-\s[0-9]+[0-9A-Za-z\.\-]*)?)\.?\s*(?:-\s*)?(?P<catch_line>.*?)\.?\]?$/i';
+
+	public $structure_regex = '/^(?P<type>SECS\.|APPENDIX|CHAPTER|ARTICLE|TITLE|SUBCODE)\s+(?P<number>[A-Za-z0-9\-\.]+)(?:[:\. -]+)(?P<name>.*?)$/i';
+
+	public $appendix_regex = '/^APPENDI(CES|X):\s+(?P<name>.*?)$/i';
+
+	/*
+	 * Xpaths.
+	 */
+	public $structure_xpath = "./LEVEL[not(@style-name='Section')]";
+	public $structure_heading_xpath = "./RECORD/HEADING";
+	public $section_xpath = "./LEVEL[@style-name='Section']";
+
+	/*
+	 * Files to ignore.
+	 */
+	public $ignore_files = array(
+		'0-0-0-1.xml',
+		'0-0-0-2.xml'
+	);
+
+	/*
+	 * Unfortunately, there are some images that we cannot use, for a variety of reasons.
+	 * Most notably are city seals - most localities have laws preventing their use by
+	 * anyone other than the city.  This is going to be locality-specific, so put them here.
+	 * If you need more complex rules, override check_image()
+	 */
+	public $image_blacklist = array('ALP Icon', 'SFSeal');
+
+	/*
+	 * Images to store.
+	 */
+	public $images = array();
+
+	/*
+	 * Count the structures and appendices statically
+	 * so this will persist across instances.
+	 */
+	public static $appendix_count = 1;
+
 	public function __construct($options)
 	{
-	
+
 		/**
 		 * Set our defaults
 		 */
@@ -287,7 +143,7 @@ class Parser
 
 			while (false !== ($filename = $directory->read()))
 			{
-			
+
 				/*
 				 * We should make sure we've got an actual file that's readable.
 				 * Ignore anything that starts with a dot.
@@ -299,7 +155,7 @@ class Parser
 				{
 					$this->files[] = $filepath;
 				}
-				
+
 			}
 
 			/*
@@ -337,38 +193,43 @@ class Parser
 			 */
 			$filename = $this->files[$i];
 
+			$file = array_pop(explode('/', $filename));
+
 			/*
-			 * Determine data type and import
+			 * We only care about xml files.
 			 */
-			// TODO : Make this smarter.  We can use the PECL Fileinfo package
-			// instead, but I'd rather not have to require that at this point. -BH
-
 			$extension = substr($filename, strrpos($filename, '.')+1);
-
-			switch($extension)
-			{
-				case 'xml' :
-					$this->import_xml($filename);
-					break;
-
-				case 'json' :
-					$this->import_json($filename);
-					break;
-
-				// TODO: Fix this.
-				default:
-					// Anything else, we can't handle.
-			}
 
 			/*
 			 * Increment our placeholder counter.
 			 */
 			$this->file++;
 
-			/*
-			 * Send this object back, out of the iterator.
-			 */
-			return $this->section;
+			if($extension == 'xml' && !in_array($file, $this->ignore_files))
+			{
+				$this->import_xml($filename);
+
+				/*
+				 * If we have a valid file.
+				 */
+				if(@isset($this->chapter->REFERENCE->TITLE)){
+					/*
+					 * Send this object back, out of the iterator.
+					 */
+
+					$this->logger->message('Importing "' . $filename . '"', 3);
+					return $this->chapter;
+				}
+				else {
+					$this->logger->message('No sections found in "' . $filename . '"', 3);
+					continue;
+				}
+			}
+			else
+			{
+				$this->logger->message('Ignoring "' . $filename . '"', 3);
+				continue;
+			}
 		}
 
 	} // end iterate() function
@@ -383,7 +244,7 @@ class Parser
 
 		try
 		{
-			$this->section = new SimpleXMLElement($xml);
+			$this->chapter = new SimpleXMLElement($xml);
 		}
 		catch(Exception $e)
 		{
@@ -405,208 +266,667 @@ class Parser
 				exec('tidy -xml '.$filename, $output);
 				$xml = join('', $output);
 			}
-			$this->section = new SimpleXMLElement($xml);
+			$this->chapter = new SimpleXMLElement($xml);
 		}
 
 		/*
 		 * Send this object back, out of the iterator.
 		 */
-		return $this->section;
+		return $this->chapter;
 	}
-
-
-	/**
-	 * Convert the JSON into an object.
-	 */
-	public function import_json($filename)
-	{
-		$section_data = file_get_contents($filename);
-
-		$this->section = json_decode($section_data);
-
-		return $this->section;
-	}
-
 
 	/**
 	 * Accept the raw content of a section of code and normalize it.
 	 */
 	public function parse()
 	{
+		unset($this->structures);
+		$this->structures = array();
 
 		/*
 		 * If a section of code hasn't been passed to this, then it's of no use.
 		 */
-		if (!isset($this->section))
+		if (!isset($this->chapter))
 		{
 			return FALSE;
 		}
 
 		/*
-		 * Create a new, empty object to store our code's data.
+		 * The first child LEVEL we encounter is actually the table of contents, so we skip it.
 		 */
-		$this->code = new stdClass();
+		$this->pre_parse_chapter($this->chapter);
 
 		/*
-		 * Transfer some data to our object.
+		 * The real chapter starts at the first level.
 		 */
-		$this->code->catch_line = (string) $this->section->catch_line[0];
-		$this->code->section_number = (string) $this->section->section_number;
-		$this->code->order_by = (string) $this->section->order_by;
-		$this->code->history = (string)  $this->section->history;
+		$chapter = $this->chapter->LEVEL;
 
 		/*
-		 * If additional metadata is present in a "metadata" container, copy it over to our code
-		 * object.
+		 * There are multiple sections per file.
 		 */
-		if (isset($this->section->metadata))
+		$this->sections = array();
+		$this->section_count = 1;
+
+		$this->parse_recurse($chapter);
+	}
+
+	/**
+	 * In most cases, there will be a table of contents that we want to drop.
+	 */
+
+	public function pre_parse_chapter(&$chapter)
+	{
+		// If there's more than one title, this has a table of contents.
+		if(count($chapter->REFERENCE->TITLE) > 1)
 		{
+			$this->logger->message('Skipping first level.', 2);
+			unset($chapter->LEVEL->LEVEL[0]);
+		}
+	}
 
-			foreach ($this->section->metadata as $field)
+	public function parse_recurse($levels)
+	{
+		$this->logger->message('parse_recurse', 1);
+
+		if(is_array($levels))
+		{
+			foreach($levels as $level) {
+				$this->parse_recurse($level);
+			}
+		}
+		else {
+			$level = $levels;
+
+
+			$title = (string) $level->RECORD->HEADING;
+
+			/*
+			 * Check to see if we have another layer of nesting
+			 */
+			if(isset($level->LEVEL))
 			{
-
-				foreach ($field as $key => $value)
+				/*
+				 * If we have two levels deeper, this is a structure.
+				 */
+				if(count($level->xpath('./LEVEL/LEVEL')) || preg_match($this->structure_regex, $title))
 				{
+					$structure = FALSE;
+
+					$this->logger->message('STRUCTURE', 2);
+
+					// If we have a structure heading, add it to the structures.
+					if(count($level->xpath($this->structure_heading_xpath))) {
+						$structure = $this->parse_structure( $level );
+
+						if($structure) {
+							$this->logger->message('Descending : ' . $structure->name, 2);
+
+							$previous_structure = end($this->structures);
+
+							if($previous_structure)
+							{
+								$structure->parent_id = $previous_structure->id;
+							}
+
+							$this->create_structure($structure);
+
+							$this->structures[] = $structure;
+
+						}
+					}
+					foreach($level->LEVEL as $sublevel)
+					{
+						// But recurse, either way.
+						$this->parse_recurse($sublevel);
+					}
+
+					// If we had a structure heading, pop it from the structures.
+					if($structure) {
+						$this->logger->message('Ascending', 2);
+
+						array_pop($this->structures);
+					}
+				}
+				/*
+				 * If we have one level deeper, this is a section.
+				 */
+				else
+				{
+					$this->logger->message('SECTION', 2);
+
+					$new_section = $this->parse_section($level, $structures);
+
+					if($new_section)
+					{
+						$this->sections[] = $new_section;
+					}
+					else {
+						/*
+						 * See if maybe we have a structure after all.
+						 */
+						// TODO
+					}
+				}
+			}
+			/*
+			 * If we have no children, somehow we've gone too far!
+			 */
+			else
+			{
+				$this->logger->message('Empty', 1);
+			}
+		}
+
+		$this->logger->message('Exit parse_recurse', 1);
+	}
+
+	public function parse_structure($level)
+	{
+		$structure = $this->pre_parse_structure($level);
+
+		if($structure)
+		{
+			/*
+			 * Set the level.
+			 */
+			$structure->level = count($this->structures) + 1;
+			$structure->edition_id = $this->edition_id;
+
+			if(!isset($structure->identifier))
+			{
+				$this->logger->message('No identifier, so creating one for "'. $structure->name . '"', 3);
+
+				$structure->identifier = $this->clean_identifier(preg_replace('/[^a-zA-Z0-9- ]/m', '', $structure->name));
+
+				if(strlen($structure->identifier) > 16)
+				{
+					$this->logger->message('Identifier is longer than 16 characters and will be truncated!', 3);
+				}
+
+				if(strtolower($structure->label) === 'appendix' &&
+					strtolower(substr($structure->identifier, 0, 8)) !== 'appendix')
+				{
+					$this->logger->message('Overriding Appendix', 2);
+
+					$structure->identifier = 'Appendix ' . $this->clean_identifier($structure->identifier);
+				}
+			}
+
+			if(!isset($structure->order_by))
+			{
+				$structure->order_by = $this->get_structure_order_by($structure);
+			}
+
+			/*
+			 * Check to see if this structure has text of its own.
+			 */
+			if($paragraphs = $level->xpath('./LEVEL[@style-name="Normal Level"]/RECORD'))
+			{
+				foreach($paragraphs as $paragraph)
+				{
+					$attributes = $paragraph->PARA->attributes();
+
+					$type = '';
+
+					if(isset($attributes['style-name']))
+					{
+						$type = (string) $attributes['style-name'];
+					}
+
+					switch($type)
+					{
+						case 'History' :
+						case 'Section-Deleted' :
+							$structure->metadata->history .= $this->clean_text($paragraph->PARA->asXML());
+							break;
+
+						case 'EdNote' :
+							$structure->metadata->notes .= $this->clean_text($paragraph->PARA->asXML());
+							break;
+
+						default :
+							$table_children = $paragraph->PARA->xpath('./TABLE|SCROLL_TABLE');
+
+							$para_text = $paragraph->PARA->asXML();
+
+							if(!isset($structure->metadata->text))
+							{
+								$structure->metadata->text = '';
+							}
+
+							// Remove tables of contents.
+							if($table_children && count($table_children))
+							{
+								$this->logger->message('Has tables.', 1);
+
+								foreach($table_children as $child)
+								{
+									//var_dump(html_entities($para_text), html_entities($child->asXML()));
+									$para_text = str_replace($child->asXML(), '', $para_text);
+								}
+							}
+
+							$structure->metadata->text .= $this->clean_text($para_text);
+
+							break;
+					}
+				}
+			}
+
+		}
+
+		$this->logger->message('Structure Data: ' . print_r($structure, TRUE), 1);
+
+		$structure = $this->post_parse_structure($level, $structure);
+
+		return $structure;
+	}
+
+	/**
+	 * We may want to do custom handling based on any number of
+	 * different aspect of this element. These next two methods
+	 * open up for extension.
+	 */
+	public function pre_parse_structure($level)
+	{
+		/*
+		 * The minimum structure that must be yielded from this function:
+		 *
+		 * $structure = new stdClass();
+		 * $structure->name = 'My Structure';
+		 * $structure->identifier = 'MyStruct';
+		 * $structure->label = 'structure';
+		 * return $structure;
+		 */
+
+		$structure_name = $this->clean_title((string) $level->RECORD->HEADING);
+		$structure = FALSE;
+
+		if(preg_match($this->structure_regex, $structure_name, $chapter_parts))
+		{
+			$this->logger->message('Structure name: ' . $structure_name, 1);
+
+			$structure = new stdClass();
+			$structure->metadata = new stdClass();
+
+			if(isset($chapter_parts['name']) && strlen(trim($chapter_parts['name'])))
+			{
+				$structure->name = $chapter_parts['name'];
+			}
+			else
+			{
+				$structure->name = $structure_name;
+			}
+			$structure->label = ucwords(strtolower($chapter_parts['type']));
+
+			if(!$structure->label)
+			{
+				$structure->label = 'Structure';
+			}
+		}
+		elseif(preg_match($this->appendix_regex, $structure_name, $chapter_parts))
+		{
+			$this->logger->message('Appendix name: ' . $structure_name, 1);
+
+			$structure = new stdClass();
+			$structure->name = $chapter_parts['name'];
+
+			$structure->label = 'Appendix';
+
+			self::$appendix_count++;
+		}
+		else
+		{
+			$this->logger->message('Failed to match structure title: ' . $structure_name, 3);
+		}
+
+		if($chapter_parts['number'])
+		{
+			if(substr($chapter_parts['number'], -1, 1) == '.')
+			{
+				$chapter_parts['number'] = substr($chapter_parts['number'], 0, -1);
+			}
+
+			$structure->identifier = $this->clean_identifier($chapter_parts['number']); // Put these at the end.
+		}
+
+		return $structure;
+	}
+
+	public function post_parse_structure($level, $structure)
+	{
+		return $structure;
+	}
+
+	public function parse_section($section)
+	{
+		$code = new stdClass();
+
+		$structure = end($this->structures);
+		$code->structure_id = $structure->id;
+
+		$section_parts = $this->get_section_parts($section);
+
+		if(!isset($section_parts['number']) || !isset($section_parts['catch_line']))
+		{
+			$this->logger->message('Could not get Section info from title, "' . (string) $section->RECORD->HEADING . '"', 5);
+
+			$section_title = trim((string) $section->RECORD->HEADING);
+
+			$code->section_number = $section_title;
+			$code->catch_line = $section_title;
+		}
+		else
+		{
+			$code->section_number = $section_parts['number'];
+			$code->catch_line = $section_parts['catch_line'];
+		}
+
+		$code->section_number = $this->clean_identifier($code->section_number);
+		$code->catch_line = $this->clean_identifier($code->catch_line);
+
+
+		/*
+		 * If this is an appendix, use the whole line as the title.
+		 */
+		if($section_parts['type'] === 'APPENDIX')
+		{
+			$code->catch_line = $section_parts[0];
+		}
+		$code->text = '';
+		$code->history = '';
+		$code->metadata = array(
+			'repealed' => 'n'
+		);
+
+		$code->order_by = $this->get_section_order_by($code);
+
+		/*
+		 * Get the paragraph text from the children RECORDs.
+		 */
+
+		$code->section = new stdClass();
+		$i = 0;
+
+		foreach($section->LEVEL->RECORD as $paragraph) {
+
+			$attributes = $paragraph->PARA->attributes();
+
+			$type = '';
+
+			if(isset($attributes['style-name']))
+			{
+				$type = (string) $attributes['style-name'];
+			}
+
+			switch($type)
+			{
+				case 'History' :
+					$code->history .= $this->clean_text($paragraph->PARA->asXML());
+					break;
+
+				case 'Section-Deleted' :
+					$code->catch_line = '[REPEALED]';
+					$code->metadata['repealed'] = 'y';
+					break;
+
+				case 'EdNote' :
+					$code->metadata['notes'] = $this->clean_text($paragraph->PARA->asXML());
+					break;
+
+				default :
+					$code->section->{$i} = new stdClass();
+
+					$section_text = $this->clean_text($paragraph->PARA->asXML());
+
+					$code->text .= $section_text . "\r\r";
 					/*
-					 * Convert true/false values to y/n values.
+					 * Get the section identifier if it exists.
 					 */
-					if ($value == 'true')
+
+					if(preg_match("/^<p>\s*\((?P<letter>[a-zA-Z0-9]{1,3})\) /", $section_text, $paragraph_id))
 					{
-						$value = 'y';
+						$code->section->{$i}->prefix = $paragraph_id['letter'];
+						/*
+						 * TODO: !IMPORTANT Deal with hierarchy.  This is just a hack.
+						 */
+						$code->section->{$i}->prefix_hierarchy = array($paragraph_id['letter']);
+
+						/*
+						 * Remove the section letter from the section.
+						 */
+						$section_text = str_replace($paragraph_id[0], '<p>', $section_text);
 					}
-					elseif ($value == 'true')
-					{
-						$value = 'n';
-					}
-					$this->code->metadata->$key = $value;
+					// TODO: Clean up tags in the paragraph.
+
+					$code->section->{$i}->text = $section_text;
+
+					$i++;
+			}
+		}
+
+		if(isset($code->catch_line) && strlen($code->catch_line))
+		{
+			$this->section_count++;
+
+			$this->logger->message('Section Data: ' . print_r($code, TRUE), 1);
+
+			return $code;
+		}
+		else
+		{
+			$this->logger->message('Invalid section: ' . print_r($code, TRUE), 2);
+			return FALSE;
+		}
+	}
+
+	public function get_section_parts($section)
+	{
+		/*
+		 * Parse the catch line and section number.
+		 */
+		$section_title = trim((string) $section->RECORD->HEADING);
+
+		$this->logger->message('Title: ' . $section_title, 1);
+
+		preg_match($this->section_regex, $section_title, $section_parts);
+
+		return $section_parts;
+	}
+
+	/**
+	 * Wrap up the convoluted logic for creating the order_by value.
+	 * Feel free to override this, but keep in mind it's a natural sort.
+	 */
+
+	public function get_structure_order_by($structure)
+	{
+		if($structure->label == 'Appendix')
+		{
+			$order_by = '1' . str_pad(self::$appendix_count, 3, '0', STR_PAD_LEFT);
+		}
+		else
+		{
+			$order_by = str_pad($structure->identifier, 4, '0', STR_PAD_LEFT);
+		}
+
+		return $order_by;
+	}
+
+	public function get_section_order_by($code)
+	{
+		// Do some wrangling to get an orderable number.
+		$order_by = $code->section_number;
+		if(substr($order_by, -1, 1) == '.')
+		{
+			$order_by = substr($order_by, 0, -1);
+		}
+
+		$order_by = floatval($order_by);
+		$order_by = intval($order_by * 100.0);
+
+		$order_by = str_pad($order_by, 8, '0', STR_PAD_LEFT);
+
+		return $order_by;
+	}
+
+	/**
+	 * Clean up XML into nice HTML.
+	 */
+	public function clean_text($xml)
+	{
+		//$this->logger->message('Before formatting XML: "' . $xml . '"', 1);
+		// Remove TABLEFORMAT.
+		$xml = preg_replace('/<TABLEFORMAT[^>]*>.*?<\/TABLEFORMAT>/sm', '', $xml);
+
+		// Replace SCROLL_TABLE
+		$xml = preg_replace('/<SCROLL_TABLE[^>]*>(.*?)<\/SCROLL_TABLE>/sm', '<table>$1</table>', $xml);
+
+		// Replace ROW with tr.
+		$xml = str_replace(array('<ROW>', '</ROW>'), array('<tr>', '</tr>'), $xml);
+
+		// Replace COL with td.
+		$xml = str_replace(array('<COL>', '</COL>'), array('<td>', '</td>'), $xml);
+
+		// Replace CELLFORMAT.
+		$xml = preg_replace('/<CELLFORMAT[^>]*>(.*?)<\/CELLFORMAT>/sm', '$1', $xml);
+
+		// Replace CELL.
+		$xml = preg_replace('/<CELL[^>]*>(.*?)<\/CELL>/sm', '$1', $xml);
+
+		// Replace empty tables.
+		$xml = preg_replace('/<TABLE>\s*<\/TABLE>/sm', '', $xml);
+
+		// Replace PARA with P.
+		$xml = preg_replace('/<PARA[^>]*>/sm', '<p>', $xml);
+		$xml = str_replace('</PARA>', '</p>', $xml);
+
+		$xml = preg_replace('/<PARAFORMAT[^>]*>/sm', '<p>', $xml);
+		$xml = str_replace('</PARAFORMAT>', '</p>', $xml);
+
+		// Replace <td><p> with <td>
+		$xml = preg_replace('/<td>\s*<p>/sm', '<td>', $xml);
+		$xml = preg_replace('/<\/p>\s*<\/td>/sm', '<td>', $xml);
+
+		// At this point, we should have clean tables.
+		// In cases where we have two consecutive tables, with the first having only one row,
+		// that's probably a table heading and then the table body.
+		preg_match_all('/<table>(.*?)<\/table>\s*<table>(.*?)<\/table>/smi', $xml, $tables, PREG_SET_ORDER);
+		if($tables && count($tables))
+		{
+			foreach($tables as $table_pair)
+			{
+				if(substr_count($table_pair[1], '<tr>') === 1)
+				{
+					$table_pair[1] = str_replace(
+						array('<tbody>', '</tbody>', '<td>', '</td>'),
+						array('<thead>', '</thead>', '<th>', '</th>'),
+						$table_pair[1]);
+
+					$xml = str_replace($table_pair[0], '<table>' . $table_pair[1] . $table_pair[2] . '</table>', $xml);
 				}
+			}
+		}
+
+
+		// Replace CHARFORMAT.
+		$xml = preg_replace('/<CHARFORMAT[^>]*>(.*?)<\/CHARFORMAT>/sm', '$1', $xml);
+
+		// Replace TAB
+		// TODO: !IMPORTANT Handle nested paragraphs here.
+		$xml = str_replace('<TAB tab-count="1"/>', ' ', $xml);
+
+		// Deal with images
+		preg_match_all('/<PICTURE(?P<args>[^>]*?)\/>/', $xml, $images, PREG_SET_ORDER);
+		foreach($images as $current_image)
+		{
+			// Parse the arguments into an array.
+			preg_match_all('/(?P<name>[a-zA-Z_-]+)="(?P<value>[^"]*)"/',
+				$current_image['args'], $image_attrs, PREG_SET_ORDER);
+
+			$image = array();
+
+			foreach($image_attrs as $image_attr)
+			{
+				$image[ $image_attr['name'] ] = $image_attr['value'];
+			}
+
+			if( $this->check_image($image) )
+			{
+				$image['filename'] = str_replace('-img', '', $image['id']) . '.jpg';
+
+				$this->images[] = $image;
+
+				$image_url = $this->downloads_url . 'images/' . $image['filename'];
+				$image_source = $this->directory . '../IMAGES/' . $image['filename'];
+				$image_download = $this->downloads_dir . 'images/' . $image['filename'];
+
+				// All images have been converted to jpg for export, so we should be safe.
+				$xml = str_replace($current_image[0],
+					'<a href=" ' . $image_url . '" title="click to zoom" class="lightbox"><img src="' . $image_url . '"/></a>',
+					$xml);
+
+				if(!copy($image_source, $image_download))
+				{
+					$this->logger->message('Can\'t copy image from "' . $image_source .
+						'" to "' . $image_download . '"', 10);
+				}
+
+			}
+			else
+			{
+				$this->logger->message('Skipping image "' . $current_image[0] . '"', 2);
+				$xml = str_replace($current_image[0], '', $xml);
 
 			}
 
 		}
 
-		/*
-		 * Iterate through the structural headers.
-		 */
-		foreach ($this->section->structure->unit as $unit)
+		// Trim.
+		$xml = trim($xml);
+
+		//$this->logger->message('After formatting XML: "' . $xml . '"', 1);
+
+		return $xml;
+	}
+
+	public function clean_title($text)
+	{
+		// We often see <LINEBRK/> inside of titles.
+		$text = str_replace('<LINEBRK/>', ' ', $text);
+
+		// Sometimes, different parts of the code will have different
+		// numbers of spaces in the title.
+		$text = preg_replace('/\s+/', ' ', $text);
+
+		// Default cleaning.
+		$text = $this->clean_identifier($text);
+
+		return $text;
+	}
+
+	public function clean_identifier($text)
+	{
+		// Trim the text for any spaces or periods.
+		return trim($text, ". \t\n\r\0\x0B");
+	}
+
+	/**
+	 * Check that the image is valid.
+	 */
+	public function check_image($image)
+	{
+		foreach($this->image_blacklist as $blacklisted)
 		{
-			$level = (string) $unit['level'];
-			if(!isset($this->code->structure->{$level}))
+			if(strpos($image['name'], $blacklisted) !== FALSE)
 			{
-				$this->code->structure->{$level} = new stdClass();
+				return FALSE;
 			}
-
-			$this->code->structure->{$level}->name = (string) $unit;
-			$this->code->structure->{$level}->label = (string) $unit['label'];
-			$this->code->structure->{$level}->level = (string) $unit['level'];
-			$this->code->structure->{$level}->identifier = (string) $unit['identifier'];
-			if ( !empty($unit['order_by']) )
-			{
-				$this->code->structure->{$level}->order_by = (string) $unit['order_by'];
-			}
-		}
-
-		/*
-		 * Iterate through the text.
-		 */
-		$this->i=0;
-		foreach ($this->section->text as $section)
-		{
-			/*
-			 * If there are no subsections, but just a single block of text, then simply save that.
-			 */
-			if (count($section) === 0)
-			{
-				if(!isset($this->code->section->{$this->i}))
-				{
-					$this->code->section->{$this->i} = new stdClass();
-				}
-				$this->code->section->{$this->i}->text = trim((string) $section);
-				$this->code->text = trim((string) $section);
-				break;
-			}
-
-			/*
-			 * If this law is broken down into subsections, iterate through those.
-			 */
-			foreach ($section as $subsection)
-			{
-				if(!isset($this->code->section->{$this->i}))
-				{
-					$this->code->section->{$this->i} = new stdClass();
-				}
-
-				$this->code->section->{$this->i}->text = trim((string) $subsection);
-
-				/*
-				 * If this subsection has text, save it. Some subsections will not have text, such
-				 * as those that are purely structural, existing to hold sub-subsections, but
-				 * containing no text themselves.
-				 */
-				if ( !empty( $this->code->section->{$this->i}->text ) )
-				{
-					$this->code->text .= (string) $subsection['prefix'] . ' '
-						. trim((string) $subsection) . "\r\r";
-				}
-
-				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
-				$this->prefix_hierarchy[] = (string) $subsection['prefix'];
-
-				if(!isset($this->code->section->{$this->i}->prefix_hierarchy))
-				{
-					$this->code->section->{$this->i}->prefix_hierarchy = new stdClass();
-				}
-				$this->code->section->{$this->i}->prefix_hierarchy->{0} = (string) $subsection['prefix'];
-
-				/*
-				 * If this subsection has a specified type (e.g., "table"), save that.
-				 */
-				if (!empty($subsection['type']))
-				{
-					$this->code->section->{$this->i}->type = (string) $subsection['type'];
-				}
-				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
-
-				$this->i++;
-
-				/*
-				 * Recurse through any subsections.
-				 */
-				if (count($subsection) > 0)
-				{
-					$this->recurse($subsection);
-				}
-
-				/*
-				 * Having come to the end of the loop, reset the prefix hierarchy.
-				 */
-				$this->prefix_hierarchy = array();
-			}
-		}
-
-		/*
-		 * If there any tags, store those, too.
-		 */
-		if (isset($this->section->tags))
-		{
-
-			/*
-			 * Create an object to store the tags.
-			 */
-			$this->code->tags = new stdClass();
-
-			/*
-			 * Iterate through each of the tags and move them over to $this->code.
-			 */
-			foreach ($this->section->tags->tag as $tag)
-			{
-				$this->code->tags->tag = trim($tag);
-			}
-
 		}
 
 		return TRUE;
 	}
+
 
 	/**
 	 * Create permalinks from what's in the database
@@ -710,7 +1030,13 @@ class Parser
 				}
 			}
 			$identifier_parts = array_reverse($identifier_parts);
+
+			foreach ($identifier_parts as $key => $value) {
+				$identifier_parts[$key] = $this->slugify($value);
+			}
+
 			$token = implode('/', $identifier_parts);
+
 
 			if ($item['current_edition'])
 			{
@@ -781,22 +1107,24 @@ class Parser
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
 			{
+				$section_slug = $this->slugify($law['section_number']);
+
 				if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
 				{
-					$law_token = $token . '/' . $law['section_number'];
-					$law_url = $url . $law['section_number'] . '/';
+					$law_token = $token . '/' . $section_slug;
+					$law_url = $url . $section_slug . '/';
 				}
 				else
 				{
-					$law_token = $law['section_number'];
+					$law_token = $section_slug;
 
 					if ($item['current_edition'])
 					{
-						$law_url = '/' . $law['section_number'] . '/';
+						$law_url = '/' . $section_slug . '/';
 					}
 					else
 					{
-						$law_url = '/' . $item['edition_slug'] . '/' . $law['section_number'] . '/';
+						$law_url = '/' . $item['edition_slug'] . '/' . $section_slug . '/';
 					}
 				}
 				/*
@@ -845,87 +1173,19 @@ class Parser
 	{
 	}
 
-	/**
-	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
-	 * we call this method recursively to gather their content.
-	 */
-	public function recurse($section)
+	public function store()
 	{
-
-		if ( !isset($section) || !isset($this->code) )
+		foreach($this->sections as $code)
 		{
-			return FALSE;
+			$this->code = $code;
+			$this->store_section();
 		}
-
-		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
-		if (!isset($this->depth))
-		{
-			$this->depth = 1;
-		}
-		else
-		{
-			$this->depth++;
-		}
-
-		/*
-		 * Iterate through each subsection.
-		 */
-		foreach ($section as $subsection)
-		{
-
-			/*
-			 * Store this subsection's data in our code object.
-			 */
-			if(!isset($this->code->section->{$this->i}))
-			{
-				$this->code->section->{$this->i} = new stdClass();
-			}
-
-			$this->code->section->{$this->i}->text = (string) $subsection;
-			if (!empty($subsection['type']))
-			{
-				$this->code->section->{$this->i}->type = (string) $subsection['type'];
-			}
-			$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
-			$this->prefix_hierarchy[] = (string) $subsection['prefix'];
-
-			$this->code->section->{$this->i}->prefix_hierarchy = (object) $this->prefix_hierarchy;
-
-			/*
-			 * We increment our counter at this point, rather than at the end of the loop, because
-			 * of the use of the recurse() method after it.
-			 */
-			$this->i++;
-
-			/*
-			 * If this recurses further, keep going.
-			 */
-			if (isset($subsection->section))
-			{
-				$this->recurse($subsection->section);
-			}
-
-			/*
-			 * Reduce the prefix hierarchy back to where it started, for our next loop through.
-			 */
-			$this->prefix_hierarchy = array_slice($this->prefix_hierarchy, 0, ($this->depth));
-
-		}
-
-		/*
-		 * Reset the prefix depth back to its default of 1.
-		 */
-		$this->depth--;
-
-		return TRUE;
-
 	}
-
 
 	/**
 	 * Take an object containing the normalized code data and store it.
 	 */
-	public function store()
+	public function store_section()
 	{
 		if (!isset($this->code))
 		{
@@ -937,40 +1197,6 @@ class Parser
 		 * content of it just yet.
 		 */
 
-		/*
-		 * Try to create this section's structural element(s). If they already exist,
-		 * create_structure() will handle that silently. Either way a structural ID gets returned.
-		 */
-		$structure = new Parser(
-			array(
-				'db' => $this->db,
-				'edition_id' => $this->edition_id,
-				'structure_labels' => $this->structure_labels
-			)
-		);
-
-		foreach ($this->code->structure as $struct)
-		{
-
-			$structure->identifier = $struct->identifier;
-			$structure->name = $struct->name;
-			$structure->label = $struct->label;
-			$structure->level = $struct->level;
-			$structure->metadata = $struct->metadata;
-
-			/* If we've gone through this loop already, then we have a parent ID. */
-			if (isset($this->code->structure_id))
-			{
-				$structure->parent_id = $this->code->structure_id;
-			}
-			$this->code->structure_id = $structure->create_structure();
-
-		}
-
-		/*
-		 * When that loop is finished, because structural units are ordered from most general to
-		 * most specific, we're left with the section's parent ID. Preserve it.
-		 */
 		$query['structure_id'] = $this->code->structure_id;
 
 		/*
@@ -1031,6 +1257,7 @@ class Parser
 		$references = new Parser(
 			array(
 				'db' => $this->db,
+				'logger' => $this->logger,
 				'edition_id' => $this->edition_id,
 				'structure_labels' => $this->structure_labels
 			)
@@ -1204,6 +1431,7 @@ class Parser
 		$dictionary = new Parser(
 			array(
 				'db' => $this->db,
+				'logger' => $this->logger,
 				'edition_id' => $this->edition_id,
 				'structure_labels' => $this->structure_labels
 			)
@@ -1268,6 +1496,7 @@ class Parser
 				$find_scope = new Parser(
 					array(
 						'db' => $this->db,
+						'logger' => $this->logger,
 						'edition_id' => $this->edition_id,
 						'structure_labels' => $this->structure_labels
 					)
@@ -1328,10 +1557,10 @@ class Parser
 	 * When provided with a structural identifier, verifies whether that structural unit exists.
 	 * Returns the structural database ID if it exists; otherwise, returns false.
 	 */
-	function structure_exists()
+	public function structure_exists($structure)
 	{
 
-		if (!isset($this->identifier))
+		if (!isset($structure->identifier))
 		{
 			return FALSE;
 		}
@@ -1344,18 +1573,18 @@ class Parser
 				WHERE identifier = :identifier
 				AND edition_id = :edition_id';
 		$sql_args = array(
-			':identifier' => $this->identifier,
-			':edition_id' => $this->edition_id
+			':identifier' => $structure->identifier,
+			':edition_id' => $structure->edition_id
 		);
 
 		/*
 		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
 		 * include that in our query.
 		 */
-		if ( !empty($this->parent_id) )
+		if ( !empty($structure->parent_id) )
 		{
 			$sql .= ' AND parent_id = :parent_id';
-			$sql_args[':parent_id'] = $this->parent_id;
+			$sql_args[':parent_id'] = $structure->parent_id;
 		}
 		else
 		{
@@ -1370,10 +1599,9 @@ class Parser
 			return FALSE;
 		}
 
-		$structure = $statement->fetch(PDO::FETCH_OBJ);
-		return $structure->id;
+		$found_structure = $statement->fetch(PDO::FETCH_OBJ);
+		return $found_structure->id;
 	}
-
 
 	/**
 	 * When provided with a structural unit identifier and type, it creates a record for that
@@ -1381,9 +1609,12 @@ class Parser
 	 * provided with a $parent_id, which is the ID of the parent structural unit. Most structural
 	 * units will have a name, but not all.
 	 */
-	function create_structure()
+	public function create_structure(&$structure)
 	{
-
+		if(!isset($structure->edition_id))
+		{
+			$structure->edition_id = $this->edition_id;
+		}
 		/*
 		 * Sometimes the code contains references to no-longer-existent chapters and even whole
 		 * titles of the code. These are void of necessary information. We want to ignore these
@@ -1398,20 +1629,25 @@ class Parser
 		 * empty.
 		 */
 		if (
-				( empty($this->identifier) && (strlen($this->identifier) === 0) )
+				( empty($structure->identifier) && (strlen($structure->identifier) === 0) )
 				||
-				( empty($this->label) )
+				( empty($structure->label) )
 			)
 		{
+			$this->logger->message('Can\'t create structure "' . $structure->name . '" "' .
+				$structure->identifier . '" "' . $structure->label . '"', 5);
 			return FALSE;
 		}
 
 		/*
 		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
 		 */
-		$structure_id = $this->structure_exists();
+		$structure_id = $this->structure_exists($structure);
 		if ($structure_id !== FALSE)
 		{
+			$this->logger->message('Structure_exists "' . $structure->name . '"', 1);
+
+			$structure->id = $structure_id;
 			return $structure_id;
 		}
 
@@ -1425,42 +1661,40 @@ class Parser
 		$sql = 'INSERT INTO structure
 				SET identifier = :identifier';
 		$sql_args = array(
-			':identifier' => $this->identifier
+			':identifier' => $structure->identifier
 		);
-		if (!empty($this->name))
+		if (!empty($structure->name))
 		{
 			$sql .= ', name = :name';
-			$sql_args[':name'] = $this->name;
+			$sql_args[':name'] = $structure->name;
 		}
 		$sql .= ', label = :label, edition_id = :edition_id';
-		$sql .= ', depth = :depth, date_created=now()';
-		$sql_args[':label'] = $this->label;
-		$sql_args[':edition_id'] = $this->edition_id;
-		$sql_args[':depth'] = $this->level;
-		if (isset($this->parent_id))
+		$sql .= ', depth = :depth, order_by = :order_by';
+		$sql .= ', date_created=now()';
+		$sql_args[':label'] = $structure->label;
+		$sql_args[':edition_id'] = $structure->edition_id;
+		$sql_args[':depth'] = $structure->level;
+		$sql_args[':order_by'] = $structure->order_by;
+		if (isset($structure->parent_id))
 		{
 			$sql .= ', parent_id = :parent_id';
-			$sql_args[':parent_id'] = $this->parent_id;
+			$sql_args[':parent_id'] = $structure->parent_id;
 
 		}
-		if(isset($this->metadata))
+		if(isset($structure->metadata))
 		{
 			$sql .= ', metadata = :metadata';
-			$sql_args[':metadata'] = serialize($this->metadata);
+			$sql_args[':metadata'] = serialize($structure->metadata);
 		}
+
+		$this->logger->message('Structure created: "' . $structure->name . '"', 2);
 
 		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
+		$statement->execute($sql_args);
 
-		if ($result === FALSE)
-		{
-			echo '<p>Failure: '.$sql.'</p>';
-			var_dump($sql_args);
-			return FALSE;
-		}
+		$structure->id = $this->db->lastInsertID();
 
-		return $this->db->lastInsertID();
-
+		return $structure->id;
 	}
 
 
@@ -2267,5 +2501,18 @@ class Parser
 
 		return $structure_labels;
 	} // end get_structure_labels()
+
+	/*
+	 * Create a url-safe string.
+	 */
+	public function slugify($value)
+	{
+		$value = preg_replace('[^a-z0-9-]', '', $value);
+		if(substr($value, -1, 1) === '.')
+		{
+			$value = substr($value, 0, -1);
+		}
+		return $value;
+	}
 
 } // end Parser class

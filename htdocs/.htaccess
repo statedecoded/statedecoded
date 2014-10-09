@@ -43,7 +43,9 @@ RewriteRule ^(.*\.xml)$ /downloads/current/code-xml/$1 [L]
 RewriteRule ^index\.php$ - [L]
 
 RewriteRule ^admin/ /index.php [L]
-RewriteRule ^downloads/$ /index.php [L]
+
+RewriteCond %{REQUEST_URI} !/downloads/(.+)/ [NC]
+RewriteRule ^downloads/ /index.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -95,6 +95,12 @@ class TaskRunner
 				 * Unset the value.
 				 */
 				unset($exec_args[$index]);
+
+				/*
+				 * Set the formatted value
+				 */
+				$exec_args[$name] = $val;
+
 			}
 		}
 	}
