@@ -4,6 +4,7 @@ abstract class CliAction
 {
 	static public $name;
 	static public $summary;
+	public $options;
 
 	abstract public function execute($args = array());
 

@@ -14,9 +14,9 @@ class ImportAction extends CliAction
 	{
 		global $db;
 		$db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD );
-		$this->db =& $db;
+		$this->db = $db;
 
-		$this->logger =& new Logger();
+		$this->logger = new Logger();
 	}
 
 	public function execute($args = array())
@@ -30,11 +30,8 @@ class ImportAction extends CliAction
 				)
 			);
 
-			if (!in_array('--no-delete', $args))
+			if (!$this->options['no-delete'])
 			{
-				// Pop this from the args.
-				$args = array_diff($args, array('--no-delete'));
-
 				$parser->clear_db();
 				$parser->clear_index();
 			}

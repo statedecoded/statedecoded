@@ -6,9 +6,9 @@
 
 class TaskRunner
 {
-	public $format = 'text';
+	public $options = array();
 
-	public static function parse_action_info($action)
+	public static function parseActionInfo($action)
 	{
 		$obj = str_replace(' ', '', ucwords(str_replace('-', ' ', $action))). 'Action';
 		$file = INCLUDE_PATH . 'task/class.' . $obj . '.inc.php';
@@ -20,7 +20,7 @@ class TaskRunner
 		return false;
 	}
 
-	public static function filename_to_classname($filename)
+	public static function filenameToClassname($filename)
 	{
 		$file = basename($filename);
 		if(preg_match('/^class.([A-Za-z0-9]+).inc.php$/', $file, $matches))
@@ -46,7 +46,7 @@ class TaskRunner
 			$action = array_shift($exec_args);
 			$args = $exec_args;
 
-			if($action_info = TaskRunner::parse_action_info($action))
+			if($action_info = TaskRunner::parseActionInfo($action))
 			{
 				list($obj, $file) = $action_info;
 			}
@@ -57,7 +57,7 @@ class TaskRunner
 		{
 			$action = 'help';
 
-			if($action_info = TaskRunner::parse_action_info($action))
+			if($action_info = TaskRunner::parseActionInfo($action))
 			{
 				list($obj, $file) = $action_info;
 			}
@@ -69,6 +69,9 @@ class TaskRunner
 
 		$action = new $obj();
 
+		// Give a reference to command line options.
+		$action->options =& $this->options;
+
 		return $this->format( $action->execute($args) );
 	}
 
@@ -77,30 +80,33 @@ class TaskRunner
 		foreach($exec_args as $index => $value)
 		{
 			/*
-			 * Eat any single-dash params, but not double-dash params.
+			 * Eat any params that begin with a dash.
 			 */
-			if(substr($value, 0, 1) === '-' && substr($value, 0, 2) !== '--')
+			if(substr($value, 0, 1) === '-')
 			{
+
 				/*
 				 * Split our key=value pairs.
 				 */
-				list($name, $val) = explode('=', substr($value, 1));
+				$value = preg_replace('/^-+/', '', $value);
+				if(strpos($value, '=') !== FALSE)
+				{
+					list($name, $val) = explode('=', $value);
+				}
+				else {
+					$name = $value;
+					$val = TRUE;
+				}
 
 				/*
 				 * Set the local value.
 				 */
-				$this->$name = $val;
+				$this->options[$name] = $val;
 
 				/*
 				 * Unset the value.
 				 */
 				unset($exec_args[$index]);
-
-				/*
-				 * Set the formatted value
-				 */
-				$exec_args[$name] = $val;
-
 			}
 		}
 	}
@@ -110,7 +116,17 @@ class TaskRunner
 	 */
 	protected function format($text)
 	{
-		switch($this->format)
+		$format = '';
+		if(isset($this->options['format']))
+		{
+			$format = $this->options['format'];
+		}
+		elseif(isset($this->options['f']))
+		{
+			$format = $this->options['f'];
+		}
+
+		switch($format)
 		{
 			case 'cow' :
 			case 'cowsay' :

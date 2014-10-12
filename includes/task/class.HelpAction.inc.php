@@ -32,7 +32,7 @@ class HelpAction extends CliAction
 		{
 			if (is_file($local_dir . '/' . $entry))
 			{
-				if($class = TaskRunner::filename_to_classname($entry))
+				if($class = TaskRunner::filenameToClassname($entry))
 				{
 					require_once($local_dir . '/' . $entry);
 
@@ -55,7 +55,18 @@ class HelpAction extends CliAction
 		$return_value = <<<EOS
 statedecoded - task runner for the StateDecoded project.
 
-Usage: php statedecoded command [arg1 arg2 ...]
+Usage: php statedecoded [-c=/path/to/config/file] [-f|--format=formatname]
+           <command> [arg1 arg2 ...]
+
+Options:
+  Note that all options *must* use = as a separator.
+
+  -c
+      Used to specify a config file.  By default, config.inc.php
+       in the INCLUDE_PATH directory is used.
+
+  -f, --format
+      Set the format of the returned text. Currently defaults to text.
 
 Available commands:
 EOS;
@@ -72,7 +83,7 @@ EOS;
 
 	public function showHelp($args = array())
 	{
-		if($action_info = TaskRunner::parse_action_info($args[0]))
+		if($action_info = TaskRunner::parseActionInfo($args[0]))
 		{
 			list($obj, $file) = $action_info;
 		}

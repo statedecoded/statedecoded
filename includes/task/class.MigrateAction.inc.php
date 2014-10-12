@@ -79,7 +79,7 @@ class MigrateAction extends CliAction
 		/*
 		 * If we're rolling back.
 		 */
-		if(in_array('--down', $args))
+		if(isset($this->options['down']))
 		{
 			$migrations = $done_migrations;
 			rsort($migrations);
@@ -151,7 +151,7 @@ class MigrateAction extends CliAction
 	public function doMigration($migration_name, $args = array())
 	{
 		print "Running migration $migration_name";
-		if (in_array('--down', $args))
+		if(isset($this->options['down']))
 		{
 			print " ROLLBACK";
 		}
@@ -164,14 +164,14 @@ class MigrateAction extends CliAction
 		/*
 		 * Set verbose mode.
 		 */
-		if(in_array('--verbose', $args))
+		if(isset($this->options['verbose']))
 		{
 			$migration->verbose = TRUE;
 		}
 
 		try
 		{
-			if (in_array('--down', $args))
+			if(isset($this->options['down']))
 			{
 				$migration->down();
 			}
@@ -198,7 +198,7 @@ class MigrateAction extends CliAction
 		static $statement;
 		if(empty($statement))
 		{
-			if (in_array('--down', $args))
+			if(isset($this->options['down']))
 			{
 				$statement = $this->db->prepare('DELETE FROM migrations WHERE name=?');
 			}

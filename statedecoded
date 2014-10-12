@@ -9,8 +9,131 @@
  * Builtin documentation: php statedecoded help
  */
 
+/*
+ * The next huge chunk is to determine what the include path is.
+ *
+ * NOTE: This is duplicated in index.php, but we have no way of
+ * referencing that file before we do this part.  As a result,
+ * you'll need to edit it in both places!
+ */
 
-require_once(dirname(__FILE__) . '/includes/config.inc.php');
+if ( !isset($_SERVER['INCLUDE_PATH']) )
+{
+
+	/*
+	 * Try a couple of likely locations.
+	 */
+	if (file_exists('includes'))
+	{
+		$include_path = dirname(__FILE__) . '/includes/';
+	}
+	elseif (file_exists('../includes'))
+	{
+		$include_path = dirname(dirname(__FILE__)) . '/includes/';
+	}
+
+	/*
+	 * Since we have not found it, recurse through the directories to locate it.
+	 */
+	else
+	{
+
+		/*
+		 * These are the directories that we want to peer into the child directories of -- the
+		 * current directory and its parent directory.
+		 */
+		$parent_directories = array('.', '..');
+		foreach ($parent_directories as $parent_directory)
+		{
+
+			/*
+			 * Iterate through all of the parent directory's contents.
+			 */
+			$files = scandir($parent_directory);
+			foreach ($files as $file)
+			{
+
+				/*
+				 * If this file is a directory, peer into its contents.
+				 */
+				if ( ($file != '.') && ($file != '..') && is_dir($parent_directory . '/' . $file) )
+				{
+
+					$child_files = scandir($parent_directory . '/' . $file);
+
+					/*
+					 * To pick a file more or less at random, we look for class.Law.inc.php.
+					 */
+					if (in_array('class.Law.inc.php', $child_files) === TRUE)
+					{
+						$include_path = realpath(dirname(__FILE__) . '/' . $parent_directory . '/' . $file . '/');
+						break(2);
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/*
+	 * If we've defined our include path, then modify this file to store it permanently and store it
+	 * as a constant.
+	 */
+	if (isset($include_path))
+	{
+
+		/*
+		 * If possible, modify the .htaccess file, to store permanently the include path.
+		 *
+		 * If we *can't* modify the .htaccess file, then we have to define the constant on the fly,
+		 * with every page view. This is really quite undesirable, because it will slow down the
+		 * site non-trivially, but it's better than not working at all.
+		 */
+		if (is_writable('.htaccess') == TRUE)
+		{
+
+			$htaccess = PHP_EOL . PHP_EOL . 'SetEnv INCLUDE_PATH ' . $include_path . PHP_EOL;
+			$result = file_put_contents('.htaccess' , $htaccess, FILE_APPEND);
+
+		}
+
+		define('INCLUDE_PATH', $include_path);
+
+	}
+
+}
+
+/*
+ * Save the include path as a constant.
+ */
+if (isset($_SERVER['INCLUDE_PATH']))
+{
+	define('INCLUDE_PATH', $_SERVER['INCLUDE_PATH']);
+}
+
+/*
+ * If the user has suggested a config file
+ */
+if($args = getopt('c:'))
+{
+	if(isset($args['c']) && is_file($args['c']) && is_readable($args['c']))
+	{
+		$config_file = $args['c'];
+	}
+	else
+	{
+		throw new Exception('Unable to open config file "' . $args['c'] . '"', E_ERROR);
+	}
+}
+else
+{
+	$config_file = INCLUDE_PATH . 'config.inc.php';
+}
+
+require_once($config_file);
 require_once(INCLUDE_PATH . 'functions.inc.php');
 
 $runner = new TaskRunner();
