@@ -69,6 +69,8 @@ Options:
       Set the format of the returned text. Currently defaults to text.
 
 Available commands:
+
+
 EOS;
 
 		foreach($actions as $name=>$summary)

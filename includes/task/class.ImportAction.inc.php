@@ -21,7 +21,9 @@ class ImportAction extends CliAction
 
 	public function execute($args = array())
 	{
+		$this->logger->message('Starting import.', 10);
 		try {
+			$this->handleVerbosity();
 
 			$parser = new ParserController(
 				array(
@@ -91,13 +93,30 @@ class ImportAction extends CliAction
 			$varnish = new Varnish;
 			$varnish->purge();
 
-			$this->logger->message('======== DONE ========', 10);
+			$this->logger->message('Done.', 10);
 
 		}
 		catch(Exception $e) {
 			exit(1);
 		}
 
+	}
+
+	public function handleVerbosity()
+	{
+		var_dump($this->options);
+		$level = 10;
+		if(isset($this->options['v'])) {
+			if($this->options['v'] === TRUE) {
+				$level = 1;
+			}
+			else
+			{
+				$level = $this->options['v'];
+			}
+		}
+
+		$this->logger->level = $level;
 	}
 
 	public static function getHelp($args = array()) {
@@ -108,11 +127,17 @@ This action imports new data.  By default, this replaces the current edition.
 
 Usage:
 
-  statedecoded import [--no-delete]
+  statedecoded import [--no-delete] [-v[=#]]
 
 Available options:
 
-  --no-delete : Do not empty the database and search index before importing.
+  --no-delete
+      Do not empty the database and search index before importing.
+
+  -v, -v=##
+      Show verbose output.  ## is an optional value of 1 (default,
+      all messages) to 10 (only important messages).
+
 EOS;
 
 	}
