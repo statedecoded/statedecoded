@@ -957,6 +957,8 @@ class ParserController
 
 		$this->logger->message('Preparing to export bulk downloads', 5);
 
+		$this->setup_directories();
+
 		$downloads_dir = $this->downloads_dir;
 
 		/*
