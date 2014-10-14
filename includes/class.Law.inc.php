@@ -474,7 +474,7 @@ class Law
 
 		$this->formats->txt = substr($this->url, 0, -1) . '.txt';
 		$this->formats->json = substr($this->url, 0, -1) . '.json';
-		$this->formats->json = substr($this->url, 0, -1) . '.xml';
+		$this->formats->xml = substr($this->url, 0, -1) . '.xml';
 
 		/*
 		 * Create metadata in the Dublin Core format.
