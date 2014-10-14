@@ -65,7 +65,7 @@ Options:
       Used to specify a config file.  By default, config.inc.php
        in the INCLUDE_PATH directory is used.
 
-  -f, --format
+  --format
       Set the format of the returned text. Currently defaults to text.
 
 Available commands:

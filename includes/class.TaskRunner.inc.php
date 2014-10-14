@@ -67,10 +67,11 @@ class TaskRunner
 
 		require_once($file);
 
-		$action = new $obj();
+		$action = new $obj(
+			array('options' => &$this->options)
+		);
 
 		// Give a reference to command line options.
-		$action->options =& $this->options;
 
 		return $this->format( $action->execute($args) );
 	}
@@ -120,10 +121,6 @@ class TaskRunner
 		if(isset($this->options['format']))
 		{
 			$format = $this->options['format'];
-		}
-		elseif(isset($this->options['f']))
-		{
-			$format = $this->options['f'];
 		}
 
 		switch($format)

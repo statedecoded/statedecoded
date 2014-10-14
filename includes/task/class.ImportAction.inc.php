@@ -10,21 +10,24 @@ class ImportAction extends CliAction
 	static public $name = 'import';
 	static public $summary = 'Imports new data.';
 
-	public function __construct()
+	public function __construct($args = array())
 	{
+		parent::__construct($args);
+
 		global $db;
 		$db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD );
 		$this->db = $db;
 
 		$this->logger = new Logger();
+
+		$this->handleVerbosity();
 	}
 
 	public function execute($args = array())
 	{
 		$this->logger->message('Starting import.', 10);
-		try {
-			$this->handleVerbosity();
 
+		try {
 			$parser = new ParserController(
 				array(
 					'logger' => $this->logger,
@@ -104,7 +107,6 @@ class ImportAction extends CliAction
 
 	public function handleVerbosity()
 	{
-		var_dump($this->options);
 		$level = 10;
 		if(isset($this->options['v'])) {
 			if($this->options['v'] === TRUE) {
