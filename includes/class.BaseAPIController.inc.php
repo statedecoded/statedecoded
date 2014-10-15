@@ -85,7 +85,7 @@ class BaseAPIController extends BaseController
 	 */
 	public function render($response, $status)
 	{
-		$this->sendJSONHeaders($status);
+		$this->sendHeaders($status);
 
 		$this->setApiVersion($response);
 
@@ -113,7 +113,7 @@ class BaseAPIController extends BaseController
 	/**
 	 * Send proper headers for the content type
 	 */
-	public function sendJSONHeaders($status = 'OK')
+	public function sendHeaders($status = 'OK')
 	{
 	
 		switch ($status)
