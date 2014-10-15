@@ -15,6 +15,7 @@ class ParserController
 {
 	public $db;
 	public $logger;
+	public $import_data_dir;
 
 	public function __construct($args)
 	{
@@ -45,6 +46,14 @@ class ParserController
 		 * Set our default execution limits.
 		 */
 		$this->set_execution_limits();
+
+		/*
+		 * Set the default import location;
+		 */
+		if(!isset($this->import_data_dir))
+		{
+			$this->import_data_dir = IMPORT_DATA_DIR;
+		}
 
 	}
 
@@ -591,7 +600,7 @@ class ParserController
 					 * Tell the parser what the working directory
 					 * should be for the data files to import.
 					 */
-					'directory' => IMPORT_DATA_DIR,
+					'directory' => $this->import_data_dir,
 
 					/*
 					 * Set the database

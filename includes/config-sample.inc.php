@@ -217,3 +217,12 @@ define('VERSION', '0.81');
  */
 // define('COURTLISTENER_USERNAME', 'jane_doe');
 // define('COURTLISTENER_PASSWORD', 's3cr3tp@ssw0rd');
+
+/*
+ * Remote Data Info.
+ * Used by the command line tool to set reasonable defaults for importing data automatically.
+ */
+// define('DATA_REMOTE_USER', '');
+// define('DATA_REMOTE_PASSWORD', '');
+// define('DATA_REMOTE_HOST', '');
+// define('DATA_REMOTE_PATH', '');

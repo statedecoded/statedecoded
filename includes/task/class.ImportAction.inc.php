@@ -12,6 +12,15 @@ class ImportAction extends CliAction
 
 	public function __construct($args = array())
 	{
+		/*
+		 * Note: PHP can't use constants as class defaults,
+		 * so we cannot set this in $default_options above.
+		 */
+		if(defined('IMPORT_DATA_DIR'))
+		{
+			$this->default_options['d'] = IMPORT_DATA_DIR;
+		}
+
 		parent::__construct($args);
 
 		global $db;
@@ -25,17 +34,19 @@ class ImportAction extends CliAction
 
 	public function execute($args = array())
 	{
+
 		$this->logger->message('Starting import.', 10);
 
 		try {
 			$parser = new ParserController(
 				array(
 					'logger' => $this->logger,
-					'db' => &$this->db
+					'db' => &$this->db,
+					'import_data_dir' => $this->options['d']
 				)
 			);
 
-			if (!$this->options['no-delete'])
+			if (!isset($this->options['no-delete']))
 			{
 				$parser->clear_db();
 				$parser->clear_index();
@@ -139,6 +150,9 @@ Available options:
   -v, -v=##
       Show verbose output.  ## is an optional value of 1 (default,
       all messages) to 10 (only important messages).
+
+  -d=directory
+      Directory to import data from.  Defaults to IMPORT_DATA_DIR
 
 EOS;
 

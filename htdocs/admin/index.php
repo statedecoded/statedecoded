@@ -48,7 +48,8 @@ global $db;
 $parser = new ParserController(
 	array(
 		'logger' => $logger,
-		'db' => &$db
+		'db' => &$db,
+		'import_data_dir' => IMPORT_DATA_DIR
 	)
 );
 
