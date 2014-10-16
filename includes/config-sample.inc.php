@@ -185,6 +185,13 @@ define('VERSION', '0.81');
 // define('VARNISH_HOST', 'http://127.0.0.1:80/');
 
 /*
+ * If you're running a Memcached or Redis server, and you want The State Decoded to cache assets
+ * within that cache, provide the host and port here.
+ */
+// define('CACHE_HOST', 'localhost');
+// define('CACHE_PORT', '11211');
+
+/*
  * If you want to track traffic stats with Google Analytics, provide your site's web property ID
  * here.
  */

@@ -210,6 +210,10 @@ if (version_compare(PHP_VERSION, '5.3.6', '<'))
  */
 global $db;
 
+/*
+ * Include the functions that drive the site.
+ */
+require('functions.inc.php');
 
 /*
  * Include Solarium's autoloader, for queries to Solr.
@@ -234,6 +238,14 @@ $GLOBALS['solr_config'] = array(
  * Include the custom functions file.
  */
 require(CUSTOM_FUNCTIONS);
+
+/*
+ * If Memcached or Redis is installed, instantiate a connection to it.
+ */
+if (defined('CACHE_HOST') && defined('CACHE_PORT'))
+{
+	$cache = new Cache();
+}
 
 /*
  * Establish routes
