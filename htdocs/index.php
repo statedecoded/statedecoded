@@ -140,6 +140,11 @@ if ( (include INCLUDE_PATH . '/config.inc.php') === FALSE )
 	die('Cannot run without a config.inc.php file. See the installation documentation.');
 }
 
+/*
+ * Include the functions that drive the site.
+ */
+require('functions.inc.php');
+
 define('APC_RUNNING', FALSE);
 
 /*
@@ -209,11 +214,6 @@ if (version_compare(PHP_VERSION, '5.3.6', '<'))
  * We're going to need access to the database connection throughout the site.
  */
 global $db;
-
-/*
- * Include the functions that drive the site.
- */
-require('functions.inc.php');
 
 /*
  * Include Solarium's autoloader, for queries to Solr.
