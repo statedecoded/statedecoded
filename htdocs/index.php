@@ -145,6 +145,10 @@ if ( (include INCLUDE_PATH . '/config.inc.php') === FALSE )
  */
 require('functions.inc.php');
 
+/*
+ * We used check if APC was running and then set a flag. Now, as we transition away from APC, we
+ * always say that it is not running, to avoid accidentally using it anywhere within the site.
+ */
 define('APC_RUNNING', FALSE);
 
 /*
