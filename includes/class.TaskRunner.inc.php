@@ -92,7 +92,7 @@ class TaskRunner
 				$value = preg_replace('/^-+/', '', $value);
 				if(strpos($value, '=') !== FALSE)
 				{
-					list($name, $val) = explode('=', $value);
+					list($name, $val) = explode('=', $value, 2);
 				}
 				else {
 					$name = $value;

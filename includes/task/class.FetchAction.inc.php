@@ -9,7 +9,8 @@ class FetchAction extends CliAction
 
 	public $default_options = array(
 		'tmp' => '/tmp/statedecoded/',
-		'ftype' => 'xml'
+		'ftype' => 'xml',
+		'extra-args' => '-nd'
 	);
 
 	public function __construct($args)
@@ -65,8 +66,9 @@ class FetchAction extends CliAction
 
 			exec('rm -R ' . $this->options['tmp'] . '*');
 
-
-			$cmd = 'wget -r -nd ftp://' . $this->options['u'] . ':' .
+var_dump($this->options['extra-args']);
+			$cmd = 'wget -r ' . $this->options['extra-args'] .
+				' ftp://' . $this->options['u'] . ':' .
 				$this->options['p'] . '@' . $this->options['h'] .
 				':' . $this->options['P'] . ' -P ' . $this->options['tmp'] .
 				' -A ' . $this->options['ftype'];
@@ -145,6 +147,11 @@ Available options:
   --ftype=filetype
     Only download files of the matching type.  Defaults to xml
     See wget -A documentation for details.
+
+  --extra-args
+    Extra arguments to pass to wget.  Defaults to '-nd'
+    (no directories).  You may prefer to use '-nH' and/or
+    '--cut-dirs=#' to remove other directories.
 
 EOS;
 
