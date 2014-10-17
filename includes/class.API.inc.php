@@ -25,16 +25,19 @@ class API
 	{
 
 		/*
-		 * If APC is running, retrieve the keys from APC.
+		 * If an in-memory cache is running, retrieve the keys.
 		 */
-		if (APC_RUNNING === TRUE)
+		global $cache;
+		if (isset($cache))
 		{
-			$api_keys = apc_fetch('api_keys');
+			
+			$api_keys = $cache->retrieve('api_keys');
 			if ($api_keys !== FALSE)
 			{
 				$this->all_keys = $api_keys;
 				return TRUE;
 			}
+			
 		}
 
 		/*
@@ -87,11 +90,11 @@ class API
 		}
 
 		/*
-		 * If APC is running, store the API keys in APC.
+		 * If an in-memory cache is running, store the API keys within it.
 		 */
-		if (APC_RUNNING === TRUE)
+		if (isset($cache))
 		{
-			apc_store('api_keys', $this->all_keys);
+			$cache->store('api_keys', $this->all_keys);
 		}
 
 		return TRUE;

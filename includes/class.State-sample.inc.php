@@ -200,7 +200,7 @@ class State
 			}
 			
 			// Port the fields that we need from $opinion to $this->decisions.
-			$this->decisions->{$i}->name = $opinion->case_name;
+			$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->case_name)), 100))) . ' . . . ';
 			$this->decisions->{$i}->case_number = $opinion->case_number;
 			$this->decisions->{$i}->citation = $opinion->citation;
 			$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));

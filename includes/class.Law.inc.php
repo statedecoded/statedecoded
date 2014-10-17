@@ -222,7 +222,7 @@ class Law
 				/*
 				 * Append this section.
 				 */
-				if(!isset($this->text))
+				if (!isset($this->text))
 				{
 					$this->text = new StdClass();
 				}
