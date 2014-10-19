@@ -98,7 +98,15 @@ elseif ($_POST['action'] == 'empty')
 
 	echo 'Emptying the database<br />';
 	flush();
-	$parser->clear_db();
+
+	if($_POST['edition'])
+	{
+		$parser->clear_edition($_POST['edition']);
+	}
+	else
+	{
+		$parser->clear_db();
+	}
 
 	echo 'Emptying the index<br />';
 	flush();
@@ -145,6 +153,7 @@ elseif ($_POST['action'] == 'parse')
 			{
 
 				$parser->clear_apc();
+				$parser->clear_edition($_POST['edition']);
 
 				/*
 				 * We should only continue if parsing was successful.
@@ -378,6 +387,7 @@ function show_admin_forms($args = array())
 	{
 
 		$body .= '<div class="suboption">
+					<p>This will remove all existing data in this edition.</p>
 					<select name="edition" value="edition">
 						<option value="">Choose Edition .&thinsp;.&thinsp;.</option>';
 		foreach($editions as $edition)
@@ -387,7 +397,12 @@ function show_admin_forms($args = array())
 			{
 				$body .= ' select="selected"';
 			}
-			$body .='>' . $edition->name . '</option>';
+			$body .= '>' . $edition->name;
+			if($edition->current === '1')
+			{
+				$body .= ' [current]';
+			}
+			$boduy .= '</option>';
 		}
 
 		$body .= '</select>
@@ -417,9 +432,39 @@ function show_admin_forms($args = array())
 
 	<form method="post" action="/admin/?page=parse&noframe=1">
 		<h3>Empty the Database</h3>
-		<p>Remove all data from the database. (This leaves database tables intact.)</p>
+		<p>
+			Remove data from the database. This leaves database tables intact.
+			You may choose all data, or just data from a specific edition below.
+		</p>';
 
-		<input type="hidden" name="action" value="empty" />
+
+	if ($editions !== FALSE)
+	{
+
+		$body .= '<div class="suboption">
+					<select name="edition" value="edition">
+						<option value="">All Data</option>';
+		foreach($editions as $edition)
+		{
+			$body .= '<option value="' . $edition->id . '"';
+			if ($args['edition'] == $edition->id)
+			{
+				$body .= ' select="selected"';
+			}
+			$body .= '>' . $edition->name;
+			if($edition->current === '1')
+			{
+				$body .= ' [current]';
+			}
+			$boduy .= '</option>';
+		}
+
+		$body .= '</select>
+			</div>';
+
+	}
+
+	$body .= '<input type="hidden" name="action" value="empty" />
 		<input type="submit" value="Empty the Database" />
 	</form>
 

@@ -553,8 +553,19 @@ class ParserController
 
 	}
 
-	public function clear_db_edition($edition)
+	public function clear_edition($edition_id)
 	{
+		/*
+		 * If migrations have been run properly, everything should cascade from structure.
+		 */
+
+		$sql = 'DELETE FROM structure WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $edition_id);
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		return TRUE;
 	}
 
 	/**
@@ -2207,7 +2218,7 @@ class ParserController
 
 	}
 
-	function clear_index($edition = null)
+	function clear_index($edition_id = null)
 	{
 		if(!defined('SOLR_URL'))
 		{
@@ -2215,9 +2226,22 @@ class ParserController
 			return TRUE;
 		}
 
-		if(isset($edition))
+		if(isset($edition_id))
 		{
+			$sql = 'SELECT * FROM editions WHERE id = :edition_id';
+			$sql_args = array(':edition_id' => 'edition');
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute($sql_args);
+			if ($result === FALSE || $statement->rowCount() == 0)
+			{
+				throw new Exception('No such edition id:'. int($edition_id), E_USER_ERROR);
+				return FALSE;
+			}
+
+			$edition = $statement->fetchColumn('name');
+
 			$query = 'edition:' . $edition;
+
 		}
 		else
 		{
