@@ -16,6 +16,11 @@
  */
 $laws = new Law();
 
+if (isset($args['edition_id']))
+{
+	$laws->edition_id = $args['edition_id'];
+}
+
 /*
  * Use the ID passed to look up the law.
  */

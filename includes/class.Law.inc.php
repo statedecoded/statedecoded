@@ -965,8 +965,16 @@ class Law
 				AND edition_id = :edition_id';
 		$sql_args = array(
 			':section' => $this->section_number,
-			':edition_id' => EDITION_ID
 		);
+
+		if(isset($this->edition_id))
+		{
+			$sql_args[':edition_id'] = $this->edition_id;
+		}
+		else
+		{
+			$sql_args[':edition_id'] = EDITION_ID;
+		}
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);

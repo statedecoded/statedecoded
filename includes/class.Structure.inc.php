@@ -455,17 +455,30 @@ class Structure
 		);
 
 		/*
+		 * Check edition.
+		 */
+		$sql .= ' WHERE structure.edition_id = :edition_id';
+		if(isset($this->edition_id))
+		{
+			$sql_args[':edition_id'] = $this->edition_id;
+		}
+		else
+		{
+			$sql_args[':edition_id'] = EDITION_ID;
+		}
+
+		/*
 		 * If a structural ID hasn't been provided, then this request is for the root node -- that
 		 * is, the top level of the legal code.
 		 */
 		if (!isset($this->id))
 		{
-			$sql .= ' WHERE structure.parent_id IS NULL';
+			$sql .= ' AND structure.parent_id IS NULL';
 		}
 		else
 		{
 
-			$sql .= ' WHERE structure.parent_id = :parent_id';
+			$sql .= ' AND structure.parent_id = :parent_id';
 			$sql_args[':parent_id'] = $this->id;
 
 			/*

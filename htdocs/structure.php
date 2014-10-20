@@ -37,6 +37,11 @@ else
  */
 $struct = new Structure();
 
+if ( isset($args['edition_id']) )
+{
+	$struct->edition_id = $args['edition_id'];
+}
+
 /*
  * Get the structure based on our identifier
  */
