@@ -19,8 +19,9 @@ class MigrateAction extends CliAction
 	static public $name = 'migrate';
 	static public $summary = 'Updates the database schema.';
 
-	public function __construct()
+	public function __construct($args = array())
 	{
+		parent::__construct($args);
 		$this->db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD );
 	}
 
@@ -82,7 +83,6 @@ class MigrateAction extends CliAction
 		if(isset($this->options['down']))
 		{
 			$migrations = $done_migrations;
-			rsort($migrations);
 		}
 		else
 		{
@@ -95,6 +95,7 @@ class MigrateAction extends CliAction
 			 * Determine what's left to be done.
 			 */
 			$migrations = array_diff($all_migrations, $done_migrations);
+			sort($migrations);
 		}
 
 		if(count($migrations) < 1)
@@ -103,7 +104,6 @@ class MigrateAction extends CliAction
 		}
 		else
 		{
-			sort($migrations);
 
 			foreach($migrations as $migration_name)
 			{
@@ -117,7 +117,7 @@ class MigrateAction extends CliAction
 	{
 		$done_migrations = array();
 
-		$query = 'SELECT name FROM `migrations`';
+		$query = 'SELECT name FROM `migrations` ORDER BY id DESC';
 		$statement = $this->db->query($query);
 
 		if($statement->rowCount() > 0)

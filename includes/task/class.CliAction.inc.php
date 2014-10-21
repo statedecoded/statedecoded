@@ -5,9 +5,9 @@ abstract class CliAction
 	static public $name;
 	static public $summary;
 	public $options;
-	public $default_options;
+	public $default_options = array();
 
-	public function __construct($args)
+	public function __construct($args = array())
 	{
 		/*
 		 * Set our defaults
