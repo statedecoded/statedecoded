@@ -1061,7 +1061,8 @@ class Parser
 			$sql = 'INSERT INTO laws_meta
 					SET law_id = :law_id,
 					meta_key = :meta_key,
-					meta_value = :meta_value';
+					meta_value = :meta_value,
+					edition_id = :edition_id';
 			$statement = $this->db->prepare($sql);
 
 			foreach ($this->code->metadata as $key => $value)
@@ -1069,7 +1070,8 @@ class Parser
 				$sql_args = array(
 					':law_id' => $law_id,
 					':meta_key' => $key,
-					':meta_value' => $value
+					':meta_value' => $value,
+					':edition_id' => $this->edition_id
 				);
 				$result = $statement->execute($sql_args);
 
@@ -1089,7 +1091,8 @@ class Parser
 			$sql = 'INSERT INTO tags
 					SET law_id = :law_id,
 					section_number = :section_number,
-					text = :tag';
+					text = :tag,
+					edition_id = :edition_id';
 			$statement = $this->db->prepare($sql);
 
 			foreach ($this->code->tags as $tag)
@@ -1097,7 +1100,8 @@ class Parser
 				$sql_args = array(
 					':law_id' => $law_id,
 					':section_number' => $this->code->section_number,
-					':tag' => $tag
+					':tag' => $tag,
+					':edition_id' => $this->edition_id
 				);
 				$result = $statement->execute($sql_args);
 
@@ -1131,11 +1135,13 @@ class Parser
 					SET law_id = :law_id,
 					sequence = :sequence,
 					type = :type,
-					date_created=now()';
+					date_created=now(),
+					edition_id = :edition_id';
 			$sql_args = array(
 				':law_id' => $law_id,
 				':sequence' => $i,
-				':type' => $section->type
+				':type' => $section->type,
+				':edition_id' => $this->edition_id
 			);
 			if (!empty($section->text))
 			{
@@ -1174,11 +1180,13 @@ class Parser
 							SET text_id = :text_id,
 							identifier = :identifier,
 							sequence = :sequence,
-							date_created=now()';
+							date_created=now(),
+							edition_id = :edition_id';
 					$sql_args = array(
 						':text_id' => $text_id,
 						':identifier' => $prefix,
-						':sequence' => $j
+						':sequence' => $j,
+						':edition_id' => $this->edition_id
 					);
 
 					$statement = $this->db->prepare($sql);
@@ -2072,8 +2080,8 @@ class Parser
 		 * Start creating our insertion query.
 		 */
 		$sql = 'INSERT INTO laws_references
-				(law_id, target_section_number, mentions, date_created)
-				VALUES (:law_id, :section_number, :mentions, now())
+				(law_id, target_section_number, mentions, date_created, edition_id)
+				VALUES (:law_id, :section_number, :mentions, now(), :edition_id)
 				ON DUPLICATE KEY UPDATE mentions=mentions';
 				$statement = $this->db->prepare($sql);
 		$i=0;
@@ -2082,7 +2090,8 @@ class Parser
 			$sql_args = array(
 				':law_id' => $this->section_id,
 				':section_number' => $section,
-				':mentions' => $mentions
+				':mentions' => $mentions,
+				':edition_id' => $this->edition_id
 			);
 
 			$result = $statement->execute($sql_args);

@@ -17,6 +17,13 @@ class ParserController
 	public $logger;
 	public $import_data_dir;
 
+	/*
+	 * Temporary variables
+	 */
+	public $edition_id;
+	public $previous_edition_id;
+
+
 	public function __construct($args)
 	{
 
@@ -235,6 +242,8 @@ class ParserController
 
 	public function handle_editions($post_data)
 	{
+		$previous_edition = $this->get_current_edition();
+		$this->previous_edition_id = $previous_edition->id;
 
 		$errors = array();
 
@@ -512,7 +521,7 @@ class ParserController
 		$this->logger->message('Clearing out the database', 5);
 
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
-			'tags', 'text_sections', 'structure', 'permalinks');
+			'tags', 'text_sections', 'structure', 'permalinks', 'laws_meta');
 		foreach ($tables as $table)
 		{
 
@@ -555,15 +564,41 @@ class ParserController
 
 	public function clear_edition($edition_id)
 	{
-		/*
-		 * If migrations have been run properly, everything should cascade from structure.
-		 */
+		$tables = array(
+			//'dictionary',
+			'laws',
+			'laws_references',
+			'text',
+			'text_sections',
+			//'laws_views',
+			'tags',
+			'structure',
+			'permalinks',
+			'laws_meta'
+		);
 
-		$sql = 'DELETE FROM structure WHERE edition_id = :edition_id';
-		$sql_args = array(':edition_id' => $edition_id);
+		foreach ($tables as $table)
+		{
 
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
+			/*
+			 * Note that we *cannot* prepare the table name as an argument here.
+			 * PDO doesn't work that way.
+			 * We are deleting instead of truncating, to handle foreign keys.
+			 */
+			$sql = 'DELETE FROM ' . $table . ' WHERE edition_id = :edition_id';
+			$sql_args = array(':edition_id' => $this->edition_id);
+
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute($sql_args);
+
+			if ($result === FALSE)
+			{
+				$this->logger->message('Error in SQL: ' . $sql, 10);
+				die();
+			}
+
+			$this->logger->message('Deleted ' . $table, 5);
+		}
 
 		return TRUE;
 	}
@@ -621,7 +656,7 @@ class ParserController
 					/*
 					 * Set the edition
 					 */
-					 'edition_id' => $this->edition_id,
+					'edition_id' => $this->edition_id,
 
 					/*
 					 * Set the logger
@@ -721,7 +756,8 @@ class ParserController
 					SET law_id = :law_id,
 					meta_key = :meta_key,
 					meta_value = :meta_value,
-					date_created=now()';
+					date_created = now(),
+					edition_id = :edition_id';
 			$statement = $this->db->prepare($sql);
 
 			while ($law = $statement->fetch(PDO::FETCH_OBJ))
@@ -743,7 +779,8 @@ class ParserController
 					$sql_args = array(
 						':law_id' => $law->id,
 						':meta_key' => 'history',
-						':meta_value' => serialize($history)
+						':meta_value' => serialize($history),
+						':edition_id' => $this->edition_id
 					);
 					$result = $statement->execute($sql_args);
 
@@ -1264,6 +1301,7 @@ class ParserController
 					array(
 						'db' => $this->db,
 						'logger' => $this->logger,
+						'edition_id' => $this->edition_id,
 						'downloads_dir' => $this->downloads_dir,
 						'downloads_url' => $this->downloads_url
 					)
