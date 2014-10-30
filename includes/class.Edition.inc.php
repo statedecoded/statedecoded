@@ -16,7 +16,6 @@
 class Edition {
 
 	protected $db;
-	public $current_edition;
 
 	public function __construct()
 	{
@@ -24,27 +23,45 @@ class Edition {
 		$this->db =& $db;
 	}
 
-	public function current($field = null)
+	public function find_by_slug($slug)
 	{
+		$sql = 'SELECT *
+				FROM editions
+				WHERE slug = :slug
+				LIMIT 1';
+		$sql_args[':slug'] = $slug;
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
-		if(empty($this->current_edition))
+		if ($result === FALSE || $statement->rowCount() == 0)
 		{
-			$statement = $this->db->prepare('SELECT * FROM editions WHERE current = 1');
-			$result = $statement->execute();
-
-			$this->current_edition = $statement->fetch(PDO::FETCH_OBJ);
-			var_dump('Current', $this->current_edition);
-		}
-
-		if(isset($field))
-		{
-			return $this->current_edition->$field;
+			return FALSE;
 		}
 		else
 		{
-			return $this->current_edition;
+			$edition = $statement->fetch(PDO::FETCH_OBJ);
 		}
+		return $edition;
+	}
 
+	public function find_current()
+	{
+		$sql = 'SELECT *
+				FROM editions
+				WHERE current = 1
+				LIMIT 1';
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$edition = $statement->fetch(PDO::FETCH_OBJ);
+		}
+		return $edition;
 	}
 
 }

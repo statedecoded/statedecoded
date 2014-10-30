@@ -68,6 +68,8 @@ EOS;
 			exit;
 		}
 
+		print "Writing file " . $migration['fullpath'];
+
 	}
 
 	public function generateFilename()

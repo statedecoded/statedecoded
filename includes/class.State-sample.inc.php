@@ -251,11 +251,12 @@ class Parser
 	public $files = array();
 	public $db;
 	public $edition_id;
+	public $previous_edition_id;
 	public $structure_labels;
 
 	public function __construct($options)
 	{
-	
+
 		/**
 		 * Set our defaults
 		 */
@@ -613,80 +614,109 @@ class Parser
 	 */
 	public function build_permalinks()
 	{
+		/*
+		 * Update the previous edition's permalinks.
+		 * In theory, this should preserve the edition-specific
+		 * urls, and only remove the "short" urls used for the
+		 * current edition.
+		 */
+		if(isset($this->previous_edition_id))
+		{
+			$this->move_old_permalinks($this->previous_edition_id);
+		}
 
-		$this->move_old_permalinks();
-		$this->build_permalink_subsections();
-
+		$this->delete_permalinks($this->edition_id);
+		$this->build_permalink_subsections($this->edition_id);
 	}
+
+	/**
+	 * Move old permalinks
+	 */
+	public function move_old_permalinks($edition_id)
+	{
+		/*
+		 * First, delete anything that's not a real permalink.
+		 */
+		$sql = 'DELETE FROM permalinks
+			WHERE edition_id = :edition_id
+			AND permalink = 0';
+		$sql_args = array(':edition_id' => $edition_id);
+		$statement = $this->db->prepare($sql);
+
+		$statement->execute($sql_args);
+
+		/*
+		 * Then make all remaining permalinks preferred.
+		 */
+		$sql = 'UPDATE permalinks
+			SET preferred = 1
+			WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $edition_id);
+		$statement = $this->db->prepare($sql);
+
+		$statement->execute($sql_args);
+	}
+
 
 	/**
 	 * Remove all old permalinks
 	 */
 	// TODO: eventually, we'll want to keep these and have multiple versions.
 	// See issues #314 #362 #363
-	public function move_old_permalinks()
+	public function delete_permalinks($edition_id)
 	{
 
-		$sql = 'DELETE FROM permalinks';
+		$sql = 'DELETE FROM permalinks WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $edition_id);
 		$statement = $this->db->prepare($sql);
 
-		$result = $statement->execute();
-		if ($result === FALSE)
-		{
-			echo '<p>Query failed: '.$sql.'</p>';
-			return;
-		}
-
+		$statement->execute($sql_args);
 	}
 
 	/**
 	 * Recurse through all subsections to build permalink data.
 	 */
-	public function build_permalink_subsections($parent_id = null)
+	public function build_permalink_subsections($edition_id, $parent_id = null)
 	{
 
-		$structure_sql = '	SELECT structure_unified.*,
-							editions.current AS current_edition,
-							editions.slug AS edition_slug
-							FROM structure
-							LEFT JOIN structure_unified
-								ON structure.id = structure_unified.s1_id
-							LEFT JOIN editions
-								ON structure.edition_id = editions.id';
+		$structure_sql =
+			'SELECT structure_unified.*,
+			editions.current AS current_edition,
+			editions.slug AS edition_slug
+			FROM structure
+			LEFT JOIN structure_unified
+				ON structure.id = structure_unified.s1_id
+			LEFT JOIN editions
+				ON structure.edition_id = editions.id
+			WHERE edition_id = :edition_id';
 
 		/*
 		 * We use prepared statements for efficiency.  As a result,
 		 * we need to keep an array of our arguments rather than
 		 * hardcoding them in the SQL.
 		 */
-		$structure_args = array();
+		$structure_args = array(
+			':edition_id' => $edition_id
+		);
 
 		if (isset($parent_id))
 		{
-			$structure_sql .= ' WHERE parent_id = :parent_id';
+			$structure_sql .= ' AND parent_id = :parent_id';
 			$structure_args[':parent_id'] = $parent_id;
 		}
 		else
 		{
-			$structure_sql .= ' WHERE parent_id IS NULL';
+			$structure_sql .= ' AND parent_id IS NULL';
 		}
 
 		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-		$structure_result = $structure_statement->execute($structure_args);
-
-		if ($structure_result === FALSE)
-		{
-			echo '<p>' . $structure_sql . '</p>';
-			echo '<p>' . $structure_result->getMessage() . '</p>';
-			return;
-		}
+		$structure_statement->execute($structure_args);
 
 		/*
 		 * Get results as an array to save memory
 		 */
 		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
 		{
-
 			/*
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
@@ -710,16 +740,7 @@ class Parser
 				}
 			}
 			$identifier_parts = array_reverse($identifier_parts);
-			$token = implode('/', $identifier_parts);
-
-			if ($item['current_edition'])
-			{
-				$url = '/' . $token . '/';
-			}
-			else
-			{
-				$url = '/' . $item['edition_slug'] . '/' . $token .'/';
-			}
+			$structure_token = implode('/', $identifier_parts);
 
 			/*
 			 * Insert the structure
@@ -729,24 +750,53 @@ class Parser
 				relational_id = :relational_id,
 				identifier = :identifier,
 				token = :token,
-				url = :url';
+				url = :url,
+				edition_id = :edition_id,
+				preferred = :preferred,
+				permalink = :permalink';
 			$insert_statement = $this->db->prepare($insert_sql);
+
+			/*
+			 * By default, the actual permalink is preferred.
+			 */
+			$preferred = 1;
+
+			/*
+			 * If this is the current edition, add links to the urls
+			 * without the edition slug.  This becomes the preferred
+			 * link url.
+			 */
+			if ($item['current_edition'])
+			{
+				$insert_data = array(
+					':object_type' => 'structure',
+					':relational_id' => $item['s1_id'],
+					':identifier' => $item['s1_identifier'],
+					':token' => $structure_token,
+					':url' => '/' . $structure_token . '/',
+					':edition_id' => $edition_id,
+					':preferred' => 1,
+					':permalink' => 0
+				);
+				$insert_result = $insert_statement->execute($insert_data);
+
+				$preferred = 0;
+			}
+
+			/*
+			 * Insert actual permalinks.
+			 */
 			$insert_data = array(
 				':object_type' => 'structure',
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
-				':token' => $token,
-				':url' => $url,
+				':token' => $structure_token,
+				':url' => '/' . $item['edition_slug'] . '/' . $structure_token . '/',
+				':edition_id' => $edition_id,
+				':preferred' => $preferred,
+				':permalink' => 1
 			);
-
-
-			$insert_result = $insert_statement->execute($insert_data);
-			if ($insert_result === FALSE)
-			{
-				echo '<p>'.$sql.'</p>';
-				echo '<p>'.$structure_result->getMessage().'</p>';
-				return;
-			}
+			$insert_statement->execute($insert_data);
 
 			/*
 			 * Now we can use our data to build the child law identifiers
@@ -756,6 +806,7 @@ class Parser
 				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
 								FROM laws
 								WHERE structure_id = :s_id
+								AND edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			else
@@ -767,67 +818,114 @@ class Parser
 									ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
 								WHERE structure_id = :s_id
 								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
+								AND edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-			$laws_result = $laws_statement->execute( array( ':s_id' => $item['s1_id'] ) );
-
-			if ($structure_result === FALSE)
-			{
-				echo '<p>'.$laws_sql.'</p>';
-				echo '<p>'.$laws_result->getMessage().'</p>';
-				return;
-			}
+			$laws_sql_args = array(
+				':s_id' => $item['s1_id'],
+				':edition_id' => $edition_id
+			);
+			$laws_statement->execute( $laws_sql_args );
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
 			{
-				if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
-				{
-					$law_token = $token . '/' . $law['section_number'];
-					$law_url = $url . $law['section_number'] . '/';
-				}
-				else
-				{
-					$law_token = $law['section_number'];
 
-					if ($item['current_edition'])
-					{
-						$law_url = '/' . $law['section_number'] . '/';
-					}
-					else
-					{
-						$law_url = '/' . $item['edition_slug'] . '/' . $law['section_number'] . '/';
-					}
-				}
-				/*
-				 * Insert the structure
-				 */
 				$insert_sql =  'INSERT INTO permalinks SET
 								object_type = :object_type,
 								relational_id = :relational_id,
 								identifier = :identifier,
 								token = :token,
-								url = :url';
+								url = :url,
+								edition_id = :edition_id,
+								permalink = :permalink,
+								preferred = :preferred';
 				$insert_statement = $this->db->prepare($insert_sql);
+
+				/*
+				 * Note that we descend from our most-preferred url option
+				 * to our least, depending on what flags have been set.
+				 */
+				$preferred = 1;
+
+				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === FALSE)
+				{
+					/*
+					 * Current-and-short is the most-preferred (shortest) url.
+					 */
+
+					if ($item['current_edition'])
+					{
+						$insert_data = array(
+							':object_type' => 'law',
+							':relational_id' => $law['id'],
+							':identifier' => $law['section_number'],
+							':token' => $law['section_number'],
+							':url' => '/' . $law['section_number'] . '/',
+							':edition_id' => $edition_id,
+							':permalink' => 0,
+							':preferred' => 1
+						);
+						$insert_statement->execute($insert_data);
+
+						$preferred = 0;
+					}
+
+					/*
+					 * If this is not-current, then short is the most-preferred.
+					 */
+					$insert_data = array(
+						':object_type' => 'law',
+						':relational_id' => $law['id'],
+						':identifier' => $law['section_number'],
+						':token' => $law['section_number'],
+						':url' => '/' . $item['edition_slug'] . '/' . $law['section_number'] . '/',
+						':edition_id' => $edition_id,
+						':permalink' => 0,
+						':preferred' => $preferred
+					);
+					$insert_statement->execute($insert_data);
+
+					$preferred = 0;
+				}
+
+				/*
+				 * Long and current is our third choice.
+				 */
+				if ($item['current_edition'])
+				{
+					$insert_data = array(
+						':object_type' => 'law',
+						':relational_id' => $law['id'],
+						':identifier' => $law['section_number'],
+						':token' => $law['section_number'],
+						':url' => '/' . $structure_token . '/' . $law['section_number'] . '/',
+						':edition_id' => $edition_id,
+						':permalink' => 0,
+						':preferred' => $preferred
+					);
+					$insert_statement->execute($insert_data);
+
+					$preferred = 0;
+				}
+
+				/*
+				 * Failing everything else, use the super-long url.
+				 */
 				$insert_data = array(
 					':object_type' => 'law',
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
-					':token' => $law_token,
-					':url' => $law_url,
+					':token' => $law['section_number'],
+					':url' => '/' . $item['edition_slug'] . '/' . $structure_token . '/' . $law['section_number'] . '/',
+					':edition_id' => $edition_id,
+					':permalink' => 1,
+					':preferred' => $preferred
 				);
-
-				$insert_result = $insert_statement->execute($insert_data);
-
-				if ($insert_result === FALSE)
-				{
-					echo '<p>'.$insert_sql.'</p>';
-					echo '<p>'.$insert_result->getMessage().'</p>';
-					return;
-				}
+				$insert_statement->execute($insert_data);
 			}
 
-			$this->build_permalink_subsections($item['s1_id']);
+			$this->build_permalink_subsections($edition_id, $item['s1_id']);
 
 		}
 	}
@@ -945,6 +1043,7 @@ class Parser
 			array(
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id,
 				'structure_labels' => $this->structure_labels
 			)
 		);
@@ -1032,6 +1131,7 @@ class Parser
 			array(
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id,
 				'structure_labels' => $this->structure_labels
 			)
 		);
@@ -1213,6 +1313,7 @@ class Parser
 			array(
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id,
 				'structure_labels' => $this->structure_labels
 			)
 		);
@@ -1277,6 +1378,7 @@ class Parser
 					array(
 						'db' => $this->db,
 						'edition_id' => $this->edition_id,
+						'previous_edition_id' => $this->previous_edition_id,
 						'structure_labels' => $this->structure_labels
 					)
 				);

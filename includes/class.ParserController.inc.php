@@ -895,6 +895,11 @@ class ParserController
 				'db' => $this->db,
 
 				/*
+				 * Set the edition
+				 */
+				'edition_id' => $this->edition_id,
+
+				/*
 				 * Set the logger
 				 */
 				'logger' => $this->logger,
