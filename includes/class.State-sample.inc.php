@@ -14,6 +14,9 @@
 /**
  * This class may be populated with custom functions.
  */
+
+require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
+
 class State
 {
 
@@ -249,10 +252,15 @@ class Parser
 	public $file = 0;
 	public $directory;
 	public $files = array();
+
 	public $db;
+	public $permalink_obj;
+
 	public $edition_id;
 	public $previous_edition_id;
 	public $structure_labels;
+
+
 
 	public function __construct($options)
 	{
@@ -317,6 +325,15 @@ class Parser
 		if (!$this->structure_labels)
 		{
 			$this->structure_labels = $this->get_structure_labels();
+		}
+
+		if(!isset($this->permalink_obj))
+		{
+			$this->permalink_obj = new Permalink(
+				array(
+					'db' => $this->db
+				)
+			);
 		}
 
 	}
@@ -679,6 +696,41 @@ class Parser
 	public function build_permalink_subsections($edition_id, $parent_id = null)
 	{
 
+		/*
+		 * If we don't have a parent, set the base url.
+		 * We only want to do this once.
+		 */
+		if (!isset($parent_id))
+		{
+			/*
+			 * By default, the actual permalink is preferred.
+			 */
+			$preferred = 1;
+
+			/*
+			 * If this is the current edition, add links to the urls
+			 * without the edition slug.  This becomes the preferred
+			 * link url.
+			 */
+			if ($item['current_edition'])
+			{
+				$insert_data = array(
+					':object_type' => 'structure',
+					':relational_id' => $item['s1_id'],
+					':identifier' => $item['s1_identifier'],
+					':token' => $structure_token,
+					':url' => '/' . $structure_token . '/',
+					':edition_id' => $edition_id,
+					':preferred' => 1,
+					':permalink' => 0
+				);
+				$this->permalink_obj->create($insert_data);
+
+				$preferred = 0;
+			}
+
+		}
+
 		$structure_sql =
 			'SELECT structure_unified.*,
 			editions.current AS current_edition,
@@ -745,16 +797,6 @@ class Parser
 			/*
 			 * Insert the structure
 			 */
-			$insert_sql = 'INSERT INTO permalinks SET
-				object_type = :object_type,
-				relational_id = :relational_id,
-				identifier = :identifier,
-				token = :token,
-				url = :url,
-				edition_id = :edition_id,
-				preferred = :preferred,
-				permalink = :permalink';
-			$insert_statement = $this->db->prepare($insert_sql);
 
 			/*
 			 * By default, the actual permalink is preferred.
@@ -778,7 +820,7 @@ class Parser
 					':preferred' => 1,
 					':permalink' => 0
 				);
-				$insert_result = $insert_statement->execute($insert_data);
+				$this->permalink_obj->create($insert_data);
 
 				$preferred = 0;
 			}
@@ -796,7 +838,7 @@ class Parser
 				':preferred' => $preferred,
 				':permalink' => 1
 			);
-			$insert_statement->execute($insert_data);
+			$this->permalink_obj->create($insert_data);
 
 			/*
 			 * Now we can use our data to build the child law identifiers
@@ -831,17 +873,6 @@ class Parser
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
 			{
 
-				$insert_sql =  'INSERT INTO permalinks SET
-								object_type = :object_type,
-								relational_id = :relational_id,
-								identifier = :identifier,
-								token = :token,
-								url = :url,
-								edition_id = :edition_id,
-								permalink = :permalink,
-								preferred = :preferred';
-				$insert_statement = $this->db->prepare($insert_sql);
-
 				/*
 				 * Note that we descend from our most-preferred url option
 				 * to our least, depending on what flags have been set.
@@ -866,7 +897,7 @@ class Parser
 							':permalink' => 0,
 							':preferred' => 1
 						);
-						$insert_statement->execute($insert_data);
+						$this->permalink_obj->create($insert_data);
 
 						$preferred = 0;
 					}
@@ -884,7 +915,7 @@ class Parser
 						':permalink' => 0,
 						':preferred' => $preferred
 					);
-					$insert_statement->execute($insert_data);
+					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
 				}
@@ -904,7 +935,7 @@ class Parser
 						':permalink' => 0,
 						':preferred' => $preferred
 					);
-					$insert_statement->execute($insert_data);
+					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
 				}
@@ -922,7 +953,7 @@ class Parser
 					':permalink' => 1,
 					':preferred' => $preferred
 				);
-				$insert_statement->execute($insert_data);
+				$this->permalink_obj->create($insert_data);
 			}
 
 			$this->build_permalink_subsections($edition_id, $item['s1_id']);

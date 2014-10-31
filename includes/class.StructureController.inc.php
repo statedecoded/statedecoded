@@ -14,8 +14,6 @@
  *
  */
 
-require_once(INCLUDE_PATH . 'class.Edition.inc.php');
-
 class StructureController extends BaseController
 {
 

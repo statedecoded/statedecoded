@@ -13,14 +13,40 @@
  *
  */
 
-class Edition {
-
+class Edition
+{
 	protected $db;
 
-	public function __construct()
+	public function __construct($args = array())
 	{
-		global $db;
-		$this->db =& $db;
+		/*
+		 * Set our defaults
+		 */
+		foreach($args as $key=>$value)
+		{
+			$this->$key = $value;
+		}
+	}
+
+	public function find_by_id($id)
+	{
+		$sql = 'SELECT *
+				FROM editions
+				WHERE id = :id
+				LIMIT 1';
+		$sql_args[':id'] = $id;
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$edition = $statement->fetch(PDO::FETCH_OBJ);
+		}
+		return $edition;
 	}
 
 	public function find_by_slug($slug)
@@ -44,7 +70,7 @@ class Edition {
 		return $edition;
 	}
 
-	public function find_current()
+	public function current()
 	{
 		$sql = 'SELECT *
 				FROM editions
@@ -63,5 +89,46 @@ class Edition {
 		}
 		return $edition;
 	}
+
+	public function all()
+	{
+		$sql = 'SELECT *
+				FROM editions
+				ORDER BY order_by';
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$editions = array();
+			$editions = $statement->fetchAll(PDO::FETCH_OBJ);
+		}
+		return $editions;
+	}
+
+
+	public function count()
+	{
+		$sql = 'SELECT COUNT(*) AS count
+				FROM editions';
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			$count = 0;
+		}
+		else
+		{
+			$count = (int) $statement->fetchColumn();
+		}
+		return $count;
+	}
+
 
 }

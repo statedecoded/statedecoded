@@ -11,6 +11,14 @@
  * @since		0.1
 */
 
+
+/*
+ * Setup the edition object.
+ */
+require_once(INCLUDE_PATH . 'class.Edition.inc.php');
+global $db;
+$edition = new Edition(array('db' => $db));
+
 /*
  * If no identifier has been specified, explicitly make it a null variable. This is when the request
  * is for the top level -- that is, a listing of the fundamental units of the code (e.g., titles).
@@ -40,6 +48,11 @@ $struct = new Structure();
 if ( isset($args['edition_id']) )
 {
 	$struct->edition_id = $args['edition_id'];
+}
+else
+{
+	$edition_data = $edition->current();
+	$struct->edition_id = $edition_data->id;
 }
 
 /*
@@ -76,6 +89,11 @@ $children = $struct->list_children();
  * Create a container for our content.
  */
 $content = new Content();
+
+/*
+ * Setup the body.
+ */
+$body = '';
 
 /*
  * Define the title page elements.
@@ -202,7 +220,7 @@ if (isset($struct->siblings))
 if(strlen($structure_id) > 0)
 {
 
-	$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME
+	$body .= '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME
 		. ', titled “'.$struct->name.'.”';
 
 	if (count((array) $structure) > 1)
@@ -225,10 +243,27 @@ if(strlen($structure_id) > 0)
 
 else
 {
-	$body = '
+	$body .= '
 		<article>
 		<h1>' . ucwords($children->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
 		<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
+}
+
+
+/*
+ * Show edition info.
+ */
+
+$edition_data = $edition->find_by_id($struct->edition_id);
+$edition_list = $edition->all();
+if($edition_data && count($edition_list) > 1)
+{
+	$body .= '<p>This is the <strong>' . $edition_data->name . '</strong> edition of the code.  ';
+	if($edition_data->current)
+	{
+		$body .= 'This is the most current edition.  ';
+	}
+	$body .= '<a href="/editions/" class="edition-link">[browse editions]</a></p>';
 }
 
 /*

@@ -154,8 +154,10 @@ class Structure
 		/*
 		 * Retrieve this structural unit's ancestry.
 		 */
-		$sql = 'SELECT structure_unified.*
+		$sql = 'SELECT structure_unified.*,
+				structure.edition_id
 				FROM structure_unified
+				LEFT JOIN structure ON structure_unified.s1_id = structure.id
 				WHERE
 				s1_id = :id
 				LIMIT 1';
@@ -183,6 +185,8 @@ class Structure
 		 */
 		$structure = new stdClass();
 		$structure_ids = array();
+		$structure->edition_id = $structure_row->edition_id;
+
 		foreach($structure_row as $key => $value)
 		{
 
