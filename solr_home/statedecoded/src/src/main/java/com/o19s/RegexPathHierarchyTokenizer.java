@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
+import org.apache.lucene.util.AttributeFactory;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
@@ -80,7 +81,7 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
   private int currentEnd = 0;
   private boolean done = false;
   private int depth = 0;
-  private final StringBuffer termBuffer;
+  private final StringBuilder termBuffer;
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
   private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
   private final PositionIncrementAttribute posAtt = addAttribute(PositionIncrementAttribute.class);
@@ -98,12 +99,17 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
       zeroPaddingString = "%0"+depthPrefixNumChars+"d";
     }
 
-    termBuffer = new StringBuffer(bufferSize);
+    termBuffer = new StringBuilder(bufferSize);
     termAtt.resizeBuffer(bufferSize);
     this.delimiter = Pattern.compile(delimiter);
     this.depthPrefixNumChars = depthPrefixNumChars;
     
     keyWordTokenizer = new KeywordTokenizer(input);
+    try {
+      keyWordTokenizer.reset();
+    } catch (IOException e) {
+      throw new RuntimeException(e);//For now, may want to handle more declaratively
+    }
     keyWordTokenizerTermAtt = keyWordTokenizer.addAttribute(CharTermAttribute.class);
     
     matcher = this.delimiter.matcher(keyWordTokenizerTermAtt);
@@ -158,5 +164,12 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
     termBuffer.delete(0,termBuffer.length());
     keyWordTokenizer.reset();
     keyWordTokenizer.setReader(input);
+  }
+  
+  @Override
+  public void close() throws IOException{
+
+    keyWordTokenizer.close();
+
   }
 }

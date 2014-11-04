@@ -24,7 +24,8 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.path.PathHierarchyTokenizer;
 import org.apache.lucene.analysis.path.ReversePathHierarchyTokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
-import org.apache.lucene.util.AttributeSource.AttributeFactory;
+import org.apache.lucene.util.AttributeSource;
+import org.apache.lucene.util.AttributeFactory;
 
 /**
  * Factory for {@link PathHierarchyTokenizer}.

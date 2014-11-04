@@ -8,7 +8,7 @@
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-test-framework</artifactId>
-			<version>4.3.0</version>
+			<version>4.10.2</version>
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -21,13 +21,13 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>4.3.0</version>
+			<version>4.10.2</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-core</artifactId>
-			<version>4.3.0</version>
+			<version>4.10.2</version>
 		</dependency>
 	</dependencies>
 </project>
