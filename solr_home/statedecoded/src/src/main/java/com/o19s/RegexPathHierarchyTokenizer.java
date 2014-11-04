@@ -105,13 +105,7 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
     this.depthPrefixNumChars = depthPrefixNumChars;
     
     keyWordTokenizer = new KeywordTokenizer(input);
-    try {
-      keyWordTokenizer.reset();
-    } catch (IOException e) {
-      throw new RuntimeException(e);//For now, may want to handle more declaratively
-    }
     keyWordTokenizerTermAtt = keyWordTokenizer.addAttribute(CharTermAttribute.class);
-    
     matcher = this.delimiter.matcher(keyWordTokenizerTermAtt);
   }
 
@@ -121,7 +115,7 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
     if(done) return false;
     clearAttributes();
     if(depth == 0) {
-      keyWordTokenizer.incrementToken();
+      keyWordTokenizer.incrementToken();  //should check for false?
       matcher.reset(keyWordTokenizerTermAtt);
       posAtt.setPositionIncrement(1);
     } else {
@@ -163,12 +157,12 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
     currentEnd = 0;
     termBuffer.delete(0,termBuffer.length());
     keyWordTokenizer.reset();
-    keyWordTokenizer.setReader(input);
+    //keyWordTokenizer.setReader(input);
   }
-  
+
   @Override
   public void close() throws IOException{
-
+    super.close();
     keyWordTokenizer.close();
 
   }
