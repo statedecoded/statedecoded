@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.path.PathHierarchyTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
@@ -30,7 +31,7 @@ public class RegexPathHierarchyTokenizerTest {
 
   @Test
   public void testBasic() throws IOException {
-    TokenStream t = new RegexPathHierarchyTokenizer(new StringReader("14-32.43-25") , "[-.]");
+    Tokenizer t = new RegexPathHierarchyTokenizer(new StringReader("14-32.43-25") , "[-.]");
     /*
      * Should become
      * 
@@ -40,7 +41,13 @@ public class RegexPathHierarchyTokenizerTest {
      * 14-32.43-25
      *  2  5  8  1
      */
-    compareTokens(t,new String[]{"14","14-32","14-32.43","14-32.43-25"}, new int[]{1,0,0,0},new int[]{0,0,0,0},new int[]{2,5,8,11});  
+    compareTokens(t,new String[]{"14","14-32","14-32.43","14-32.43-25"}, new int[]{1,0,0,0},new int[]{0,0,0,0},new int[]{2,5,8,11});
+    t.end();
+    t.close();
+    t.setReader(new StringReader("14-32.43-25"));
+
+    compareTokens(t,new String[]{"14","14-32","14-32.43","14-32.43-25"}, new int[]{1,0,0,0},new int[]{0,0,0,0},new int[]{2,5,8,11});
+
   }
   
   
@@ -56,7 +63,8 @@ public class RegexPathHierarchyTokenizerTest {
      * 314-32.43-25
      *  2  5  8  1 
      */
-    compareTokens(t,new String[]{"014","114-32","214-32.43","314-32.43-25"}, new int[]{1,0,0,0},new int[]{0,0,0,0},new int[]{2,5,8,11});  
+    compareTokens(t,new String[]{"014","114-32","214-32.43","314-32.43-25"}, new int[]{1,0,0,0},new int[]{0,0,0,0},new int[]{2,5,8,11});
+    t.close();
   }
   
 
@@ -71,7 +79,8 @@ public class RegexPathHierarchyTokenizerTest {
      * abcbddbadccabd
      *    4    9    4 
      */
-    compareTokens(t,new String[]{"abcb","abcbddbad","abcbddbadccabd"}, new int[]{1,0,0},new int[]{0,0,0},new int[]{4,9,14});  
+    compareTokens(t,new String[]{"abcb","abcbddbad","abcbddbadccabd"}, new int[]{1,0,0},new int[]{0,0,0},new int[]{4,9,14});
+    t.close();
   }
   
   
@@ -81,7 +90,7 @@ public class RegexPathHierarchyTokenizerTest {
   
   public void compareTokens(TokenStream tokenStream, String[] desiredTokens, 
       int[] desiredPosIncr, int[] desiredStartOffset, int[] desiredEndOffset) throws IOException {
-    
+    tokenStream.reset();
     CharTermAttribute termAtt = tokenStream.addAttribute(CharTermAttribute.class);
     OffsetAttribute offsetAtt = tokenStream.addAttribute(OffsetAttribute.class);
     PositionIncrementAttribute posAtt = tokenStream.addAttribute(PositionIncrementAttribute.class);
