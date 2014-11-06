@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.path.PathHierarchyTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
@@ -30,7 +31,7 @@ public class RegexPathHierarchyTokenizerTest {
 
   @Test
   public void testBasic() throws IOException {
-    TokenStream t = new RegexPathHierarchyTokenizer(new StringReader("14-32.43-25") , "[-.]");
+    Tokenizer t = new RegexPathHierarchyTokenizer(new StringReader("14-32.43-25") , "[-.]");
     /*
      * Should become
      * 
@@ -41,7 +42,12 @@ public class RegexPathHierarchyTokenizerTest {
      *  2  5  8  1
      */
     compareTokens(t,new String[]{"14","14-32","14-32.43","14-32.43-25"}, new int[]{1,0,0,0},new int[]{0,0,0,0},new int[]{2,5,8,11});
+    t.end();
     t.close();
+    t.setReader(new StringReader("14-32.43-25"));
+
+    compareTokens(t,new String[]{"14","14-32","14-32.43","14-32.43-25"}, new int[]{1,0,0,0},new int[]{0,0,0,0},new int[]{2,5,8,11});
+
   }
   
   

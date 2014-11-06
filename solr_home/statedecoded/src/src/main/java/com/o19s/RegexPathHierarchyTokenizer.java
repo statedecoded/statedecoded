@@ -50,15 +50,15 @@ import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
  */
 public class RegexPathHierarchyTokenizer extends Tokenizer {
 
-  
+
   public RegexPathHierarchyTokenizer(Reader input, String delimiter) {
     this(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY, input, DEFAULT_BUFFER_SIZE, delimiter, DEFAULT_DEPTH_PREFIX_NUM_CHARS);
   }
-  
+
   public RegexPathHierarchyTokenizer(Reader input, String delimiter, int depthPrefixNumChars) {
     this(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY, input, DEFAULT_BUFFER_SIZE, delimiter, depthPrefixNumChars);
   }
-      
+
   public RegexPathHierarchyTokenizer(Reader input, int bufferSize, String delimiter, int depthPrefixNumChars) {
     this(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY, input, bufferSize, delimiter, depthPrefixNumChars);
   }
@@ -72,10 +72,9 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
   int depthPrefixNumChars;
   private Formatter termAttFormatter;
   private String zeroPaddingString;
-  
+
   //stateful
   private final Matcher matcher;
-  private final KeywordTokenizer keyWordTokenizer;
   private final CharTermAttribute keyWordTokenizerTermAtt;
   private int currentStart = 0;
   private int currentEnd = 0;
@@ -85,16 +84,16 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
   private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
   private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
   private final PositionIncrementAttribute posAtt = addAttribute(PositionIncrementAttribute.class);
-  
+
   public RegexPathHierarchyTokenizer
       (AttributeFactory factory, Reader input, int bufferSize, String delimiter, int depthPrefixNumChars) {
-    
+
     super(factory, input);
     if (bufferSize < 0) {
       throw new IllegalArgumentException("bufferSize cannot be negative");
     }
 
-    if (depthPrefixNumChars > 0) {      
+    if (depthPrefixNumChars > 0) {
       termAttFormatter = new Formatter(termAtt);
       zeroPaddingString = "%0"+depthPrefixNumChars+"d";
     }
@@ -103,31 +102,29 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
     termAtt.resizeBuffer(bufferSize);
     this.delimiter = Pattern.compile(delimiter);
     this.depthPrefixNumChars = depthPrefixNumChars;
-    
-    keyWordTokenizer = new KeywordTokenizer(input);
-    keyWordTokenizerTermAtt = keyWordTokenizer.addAttribute(CharTermAttribute.class);
+    keyWordTokenizerTermAtt = (CharTermAttribute) factory.createAttributeInstance(CharTermAttribute.class);
     matcher = this.delimiter.matcher(keyWordTokenizerTermAtt);
   }
 
-  
+
   @Override
   public final boolean incrementToken() throws IOException {
     if(done) return false;
     clearAttributes();
     if(depth == 0) {
-      keyWordTokenizer.incrementToken();  //should check for false?
+      consumeInput(); //read in all the input
       matcher.reset(keyWordTokenizerTermAtt);
       posAtt.setPositionIncrement(1);
     } else {
       posAtt.setPositionIncrement(0); //I thought that clearAttributes would reset this to 0!?
     }
-    if(matcher.find())  
-    { 
+    if(matcher.find())
+    {
       currentEnd = matcher.start();
       termBuffer.append(keyWordTokenizerTermAtt.subSequence(currentStart, currentEnd));
       offsetAtt.setOffset(0, currentEnd);
       currentStart = currentEnd;
-    } else { 
+    } else {
       termBuffer.append(keyWordTokenizerTermAtt.subSequence(currentStart, keyWordTokenizerTermAtt.length()));
       done = true;
       offsetAtt.setOffset(0, keyWordTokenizerTermAtt.length());
@@ -142,10 +139,24 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
     return true;
   }
 
+  private void consumeInput() throws IOException {
+    int upto = 0;
+      char[] buffer = keyWordTokenizerTermAtt.buffer();
+      while (true) {
+        final int length = input.read(buffer, upto, buffer.length-upto);
+        if (length == -1) break;
+        upto += length;
+        if (upto == buffer.length)
+          buffer = keyWordTokenizerTermAtt.resizeBuffer(1+buffer.length);
+      }
+      keyWordTokenizerTermAtt.setLength(upto);
+      /*finalOffset = correctOffset(upto);
+      offsetAtt.setOffset(correctOffset(0), finalOffset);*/
+  }
+
   @Override
   public final void end() throws IOException {
     super.end();
-    keyWordTokenizer.end();
   }
 
   @Override
@@ -156,14 +167,14 @@ public class RegexPathHierarchyTokenizer extends Tokenizer {
     currentStart = 0;
     currentEnd = 0;
     termBuffer.delete(0,termBuffer.length());
-    keyWordTokenizer.reset();
-    //keyWordTokenizer.setReader(input);
+
   }
+
+
 
   @Override
   public void close() throws IOException{
     super.close();
-    keyWordTokenizer.close();
 
   }
 }
