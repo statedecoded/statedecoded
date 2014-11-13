@@ -877,6 +877,15 @@ class ParserController
 	}
 
 	/**
+	 * Finish up.
+	 */
+	public function finish_import()
+	{
+		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj->update_last_import($this->edition_id);
+	}
+
+	/**
 	 * Build the permalinks
 	 */
 	public function build_permalinks()

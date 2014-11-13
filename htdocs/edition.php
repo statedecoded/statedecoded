@@ -33,8 +33,7 @@ $content->set('page_title', '<h2>Editions</h2>');
 $editions = $edition_obj->all();
 
 $body = '<p>
-	These are the available editions of the code. The name is followed with the date
-	the data for that edition was last updated.
+	These are the available editions of the code.
 </p>';
 
 $body .= '<ol class="edition-list">';
@@ -45,15 +44,20 @@ foreach($editions as $edition)
 	{
 		$url = '/browse/';
 	}
-	$body .= '<li><a href="' . $url . '">' . $edition->name;
-	if($edition->last_import)
-	{
-		$body .= ' - ' . $edition->last_import;
-	}
-	$body .= '</a>';
+	$body .= '<li';
 	if($edition->current)
 	{
-		$body .= ' (current edition)';
+		$body .= ' class="current-edition"';
+	}
+	$body .= '><a href="' . $url . '">' . $edition->name;
+	$body .= '</a>';
+	if($edition->last_import)
+	{
+		$body .= ' - updated ' . date('M d, Y', strtotime($edition->last_import)) . '';
+	}
+	if($edition->current)
+	{
+		$body .= ' (Current Edition)';
 	}
 }
 

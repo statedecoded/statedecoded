@@ -130,5 +130,25 @@ class Edition
 		return $count;
 	}
 
+	public function update_last_import($edition_id, $datetime = FALSE)
+	{
+		$sql = 'UPDATE editions
+				SET last_import = :last_import
+				WHERE id = :id
+				LIMIT 1';
+		$sql_args[':id'] = $edition_id;
+		if($datetime)
+		{
+			$sql_args['last_import'] = $datetime;
+		}
+		else
+		{
+			$sql = str_replace(':last_import', 'NOW()', $sql);
+		}
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		return $result;
+	}
 
 }

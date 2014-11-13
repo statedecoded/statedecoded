@@ -386,6 +386,10 @@ if($edition_data && count($edition_list) > 1)
 	else {
 		$content->append('edition', 'There is <strong>not</strong> the current edition.  ');
 	}
+	if($edition_data->last_import)
+	{
+		$content->append('edition', 'It was last updated ' . date('M d, Y', strtotime($edition_data->last_import)) . '.  ');
+	}
 	$content->append('edition', '<a href="/editions/" class="edition-link">Browse all editions.</a></p>');
 }
 

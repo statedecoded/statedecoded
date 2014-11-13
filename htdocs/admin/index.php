@@ -168,7 +168,7 @@ elseif ($_POST['action'] == 'parse')
 					$parser->index_laws();
 					$parser->structural_stats_generate();
 					$parser->prune_views();
-
+					$parser->finish_import();
 				}
 
 			}
