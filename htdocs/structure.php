@@ -106,6 +106,7 @@ if (strlen($structure_id) > 0)
 else
 {
 	$content->set('browser_title', SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.');
+	$content->set('page_title', '<h2>'.ucwords($children->{0}->label) . 's of the ' . LAWS_NAME.'</h2>');
 }
 
 /*
@@ -244,26 +245,7 @@ if(strlen($structure_id) > 0)
 else
 {
 	$body .= '
-		<article>
-		<h1>' . ucwords($children->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
 		<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
-}
-
-
-/*
- * Show edition info.
- */
-
-$edition_data = $edition->find_by_id($struct->edition_id);
-$edition_list = $edition->all();
-if($edition_data && count($edition_list) > 1)
-{
-	$body .= '<p>This is the <strong>' . $edition_data->name . '</strong> edition of the code.  ';
-	if($edition_data->current)
-	{
-		$body .= 'This is the most current edition.  ';
-	}
-	$body .= '<a href="/editions/" class="edition-link">[browse editions]</a></p>';
 }
 
 /*
@@ -387,6 +369,25 @@ if ($laws !== FALSE)
  */
 $content->set('body', $body);
 unset($body);
+
+/*
+ * Show edition info.
+ */
+
+$edition_data = $edition->find_by_id($struct->edition_id);
+$edition_list = $edition->all();
+if($edition_data && count($edition_list) > 1)
+{
+	$content->set('edition', '<p class="edition">This is the <strong>' . $edition_data->name . '</strong> edition of the code.  ');
+	if($edition_data->current)
+	{
+		$content->append('edition', 'This is the current edition.  ');
+	}
+	else {
+		$content->append('edition', 'There is <strong>not</strong> the current edition.  ');
+	}
+	$content->append('edition', '<a href="/editions/" class="edition-link">Browse all editions.</a></p>');
+}
 
 /*
  * Put the shorthand $sidebar variable into its proper place.

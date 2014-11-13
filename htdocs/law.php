@@ -12,6 +12,13 @@
 */
 
 /*
+ * Setup the edition object.
+ */
+require_once(INCLUDE_PATH . 'class.Edition.inc.php');
+global $db;
+$edition = new Edition(array('db' => $db));
+
+/*
  * Create a new instance of Law.
  */
 $laws = new Law();
@@ -431,6 +438,25 @@ if ( isset($law->citation) && is_object($law->citation) )
  * End Masonry.js wrapper
  */
 $sidebar .= '</section>';
+
+/*
+ * Show edition info.
+ */
+
+$edition_data = $edition->find_by_id($law->edition_id);
+$edition_list = $edition->all();
+if($edition_data && count($edition_list) > 1)
+{
+	$content->set('edition', '<p class="edition">This is the <strong>' . $edition_data->name . '</strong> edition of the code.  ');
+	if($edition_data->current)
+	{
+		$content->append('edition', 'This is the current edition.  ');
+	}
+	else {
+		$content->append('edition', 'There is <strong>not</strong> the current edition.  ');
+	}
+	$content->append('edition', '<a href="/editions/" class="edition-link">Browse all editions.</a></p>');
+}
 
 /*
  * Put the shorthand $body variable into its proper place.

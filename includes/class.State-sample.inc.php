@@ -11,11 +11,12 @@
  * @since		0.3
 */
 
+require_once(INCLUDE_PATH . 'class.Edition.inc.php');
+require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
+
 /**
  * This class may be populated with custom functions.
  */
-
-require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
 
 class State
 {
@@ -696,6 +697,9 @@ class Parser
 	public function build_permalink_subsections($edition_id, $parent_id = null)
 	{
 
+		$edition_obj = new Edition(array('db' => $this->db));
+		$edition = $edition_obj->find_by_id($edition_id);
+
 		/*
 		 * If we don't have a parent, set the base url.
 		 * We only want to do this once.
@@ -716,12 +720,12 @@ class Parser
 			{
 				$insert_data = array(
 					':object_type' => 'structure',
-					':relational_id' => $item['s1_id'],
-					':identifier' => $item['s1_identifier'],
-					':token' => $structure_token,
-					':url' => '/' . $structure_token . '/',
+					':relational_id' => '',
+					':identifier' => '',
+					':token' => '',
+					':url' => '/browse/',
 					':edition_id' => $edition_id,
-					':preferred' => 1,
+					':preferred' => $preferred,
 					':permalink' => 0
 				);
 				$this->permalink_obj->create($insert_data);
@@ -729,17 +733,25 @@ class Parser
 				$preferred = 0;
 			}
 
+			$insert_data = array(
+				':object_type' => 'structure',
+				':relational_id' => '',
+				':identifier' => '',
+				':token' => '',
+				':url' => '/' . $edition->slug . '/',
+				':edition_id' => $edition_id,
+				':preferred' => $preferred,
+				':permalink' => 0
+			);
+			$this->permalink_obj->create($insert_data);
+
 		}
 
 		$structure_sql =
-			'SELECT structure_unified.*,
-			editions.current AS current_edition,
-			editions.slug AS edition_slug
+			'SELECT structure_unified.*
 			FROM structure
 			LEFT JOIN structure_unified
 				ON structure.id = structure_unified.s1_id
-			LEFT JOIN editions
-				ON structure.edition_id = editions.id
 			WHERE edition_id = :edition_id';
 
 		/*
@@ -833,7 +845,7 @@ class Parser
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
 				':token' => $structure_token,
-				':url' => '/' . $item['edition_slug'] . '/' . $structure_token . '/',
+				':url' => '/' . $edition->slug . '/' . $structure_token . '/',
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
 				':permalink' => 1
@@ -910,7 +922,7 @@ class Parser
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
 						':token' => $law['section_number'],
-						':url' => '/' . $item['edition_slug'] . '/' . $law['section_number'] . '/',
+						':url' => '/' . $edition->slug . '/' . $law['section_number'] . '/',
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred

@@ -185,7 +185,6 @@ class Structure
 		 */
 		$structure = new stdClass();
 		$structure_ids = array();
-		$structure->edition_id = $structure_row->edition_id;
 
 		foreach($structure_row as $key => $value)
 		{
@@ -256,36 +255,39 @@ class Structure
 		for ($i=count((array) $structure)-1; $i>=0; $i--)
 		{
 
-			$this->structure->{$j} = $structure->{$i};
-
-			/*
-			 * Include the level of this structural element. (e.g., in Virginia, "title" is 1,
-			 * "chapter" is 2, "part" is 3.)
-			 */
-			$this->structure->{$j}->level = $j+1;
-
-			$sql_args = array(
-				':object_type' => 'structure',
-				':id' => $structure->{$i}->id
-			);
-			$result = $statement->execute($sql_args);
-
-			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+			if(isset($structure->{$i}))
 			{
-				return FALSE;
+				$this->structure->{$j} = $structure->{$i};
+
+				/*
+				 * Include the level of this structural element. (e.g., in Virginia, "title" is 1,
+				 * "chapter" is 2, "part" is 3.)
+				 */
+				$this->structure->{$j}->level = $j+1;
+
+				$sql_args = array(
+					':object_type' => 'structure',
+					':id' => $structure->{$i}->id
+				);
+				$result = $statement->execute($sql_args);
+
+				if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+				{
+					return FALSE;
+				}
+				$permalink = $statement->fetch(PDO::FETCH_OBJ);
+
+				$this->structure->{$j}->url = $permalink->url;
+				$this->structure->{$j}->token = $permalink->token;
+
+
+				if (isset($prior_id))
+				{
+					$this->structure->{$j}->parent_id = $prior_id;
+				}
+				$j++;
+				$prior_id = $structure->{$i}->id;
 			}
-
-			$permalink = $statement->fetch(PDO::FETCH_OBJ);
-			$this->structure->{$j}->url = $permalink->url;
-			$this->structure->{$j}->token = $permalink->token;
-
-			if (isset($prior_id))
-			{
-				$this->structure->{$j}->parent_id = $prior_id;
-			}
-			$j++;
-			$prior_id = $structure->{$i}->id;
-
 		}
 
 		unset($structure);

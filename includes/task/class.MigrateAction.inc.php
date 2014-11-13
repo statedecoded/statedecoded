@@ -111,6 +111,8 @@ class MigrateAction extends CliAction
 			}
 		}
 
+		return "Done";
+
 	}
 
 	public function getDoneMigrations()

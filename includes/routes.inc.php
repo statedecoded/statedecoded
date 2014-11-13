@@ -21,6 +21,9 @@ Router::addRoute('^/admin(/.*)?$', 'admin/index.php');
 // Downloads and API
 Router::addRoute('^/downloads/?(.*)', 'downloads/index.php');
 
+// Editions list
+Router::addRoute('^/editions/?(.*)', array('EditionController', 'handle'));
+
 // Search
 Router::addRoute('^/search/?(.*)', 'search.php');
 

@@ -73,6 +73,7 @@
 				</nav> <!-- // #intercode -->
 
 				<h1>{{page_title}}</h1>
+				{{edition}}
 
 				{{body}}
 			</section>
