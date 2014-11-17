@@ -11,10 +11,13 @@
  * @since		0.7
 */
 
+require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
+
 class ParserController
 {
 	public $db;
 	public $logger;
+	public $permalink_obj;
 	public $import_data_dir;
 
 	/*
@@ -61,6 +64,11 @@ class ParserController
 		{
 			$this->import_data_dir = IMPORT_DATA_DIR;
 		}
+
+		/*
+		 * Set our objects
+		 */
+		$this->permalink_obj = new Permalink(array('db' => $this->db));
 
 	}
 
@@ -1159,7 +1167,7 @@ class ParserController
 	/**
 	 * Export a single structure
 	 */
-	function export_structure($parent_id = null)
+	public function export_structure($parent_id = null)
 	{
 
 		/*
@@ -1431,7 +1439,6 @@ class ParserController
 							unset($law->ancestry);
 							$law->referred_to_by = $law->references;
 							unset($law->references);
-							$law->edition = $this->edition['slug'];
 
 							/*
 							 * Encode all entities as their proper Unicode characters, save for the
@@ -1452,6 +1459,61 @@ class ParserController
 							 */
 							$dom = new DOMDocument();
 							$dom->loadXML($xml);
+
+							/*
+							 * We're going to be inserting some things before the catch line.
+							 */
+							$catch_lines = $dom->getElementsByTagName('catch_line');
+							$catch_line = $catch_lines->item(0);
+
+							$law_dom = $dom->getElementsByTagName('law');
+							$law_dom = $law_dom->item(0);
+
+							/*
+							 * Add the main site info.
+							 */
+							if(defined('SITE_TITLE'))
+							{
+								$site_title = $dom->createElement('site_title');
+								$site_title->appendChild($dom->createTextNode(SITE_TITLE));
+								$law_dom->insertBefore($site_title, $catch_line);
+							}
+
+							if(defined('SITE_URL'))
+							{
+								$site_url = $dom->createElement('site_url');
+								$site_url->appendChild($dom->createTextNode(SITE_URL));
+								$law_dom->insertBefore($site_url, $catch_line);
+							}
+
+							/*
+							 * Set the edition.
+							 */
+							$edition = $dom->createElement('edition');
+							$edition->appendChild($dom->createTextNode($this->edition['name']));
+
+							$edition_url = $dom->createAttribute('url');
+							$edition_url->value = '';
+							if(defined('SITE_URL'))
+							{
+								$edition_url->value = SITE_URL;
+							}
+							$edition_url->value .= '/' . $this->edition['slug'] . '/';
+							$edition->appendChild($edition_url);
+
+							$edition_last_updated = $dom->createAttribute('last_updated');
+							$edition_last_updated->value = $this->edition['last_updated'];
+							$edition->appendChild($edition_last_updated);
+
+							$edition_last_updated = $dom->createAttribute('last_updated');
+							$edition_last_updated->value = $this->edition['last_import'];
+							$edition->appendChild($edition_last_updated);
+
+							$edition_current = $dom->createAttribute('current');
+							$edition_current->value = $this->edition['current'] ? 'TRUE' : 'FALSE';
+							$edition->appendChild($edition_current);
+
+							$law_dom->insertBefore($edition, $catch_line);
 
 							/*
 							 * Simplify every reference, stripping them down to the cited sections.
@@ -1494,27 +1556,41 @@ class ParserController
 							/*
 							 * Simplify and reorganize every structural unit.
 							 */
-							$structure = $dom->getElementsByTagName('structure');
-							if ( !empty($structure) && ($structure->length > 0) )
+							$structure_elements = $dom->getElementsByTagName('structure');
+							if ( !empty($structure_elements) && ($structure_elements->length > 0) )
 							{
-								$structure = $structure->item(0);
+								$structure_element = $structure_elements->item(0);
+								$structural_units = $structure_element->getElementsByTagName('unit');
 
-								$structural_units = $structure->getElementsByTagName('unit');
+								$law_dom->insertBefore($structure_element, $catch_line);
 
 								/*
 								 * Iterate backwards through our elements.
 								 */
 								for ($i = $structural_units->length; --$i >= 0;)
 								{
+									$structure_element->removeChild($structural_units->item($i));
+								}
 
-									$unit = $structural_units->item($i);
+								/*
+								 * Build up our structures.
+								 * The count/get_object_vars is really fragile, and not a good way to do this.
+								 * TODO: Refactor all of $law->structure to be an array, not an object.
+								 */
+								$level_value = 0;
+								for ($i = count(get_object_vars($law->structure))+1; --$i >= 1;)
+								{
+									$structure = $law->structure->{$i};
+									$level_value++;
+
+									$unit = $dom->createElement('unit');
 
 									/*
 									 * Add the "level" attribute.
 									 */
 									$label = trim(strtolower($unit->getAttribute('label')));
 									$level = $dom->createAttribute('level');
-									$level->value = array_search($label, $parser->get_structure_labels()) + 1;
+									$level->value = $level_value;
 
 									$unit->appendChild($level);
 
@@ -1522,24 +1598,32 @@ class ParserController
 									 * Add the "identifier" attribute.
 									 */
 									$identifier = $dom->createAttribute('identifier');
-									$identifier->value = trim($unit->getElementsByTagName('identifier')->item(0)->nodeValue);
+									$identifier->value = trim($structure->identifier);
 									$unit->appendChild($identifier);
 
 									/*
-									 * Remove the "id" attribute from <unit>.
+									 * Add the "url" attribute.
 									 */
-									$unit->removeAttribute('id');
+									$url = $dom->createAttribute('url');
+									$permalink = $this->permalink_obj->get_permalink($structure->id, 'structure', $this->edition_id);
+									$url->value = '';
+									if(defined('SITE_URL'))
+									{
+										$url->value = SITE_URL;
+									}
+									$url->value .= $permalink->url;
+
+									$unit->appendChild($url);
 
 									/*
 									 * Store the name of this structural unit as the contents of <unit>.
 									 */
-									$unit->nodeValue = trim($unit->getElementsByTagName('name')->item(0)->nodeValue);
+									$unit->nodeValue = trim($structure->name);
 
 									/*
 									 * Save these changes.
 									 */
-									$structure->appendChild($unit);
-
+									$structure_element->appendChild($unit);
 								}
 
 							}

@@ -31,6 +31,22 @@ set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
 define('SITE_TITLE', 'The State Decoded');
 
 /*
+ * Set the main site url.
+ */
+$url = 'http://';
+if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+{
+	$url = 'https://';
+}
+$url .= $_SERVER['SERVER_NAME'];
+
+if($_SERVER['SERVER_PORT'] != '80')
+{
+	$url .= ':80';
+}
+define('SITE_URL', $url);
+
+/*
  * What is the name of the place that these laws govern?
  */
 define('PLACE_NAME', 'State');
