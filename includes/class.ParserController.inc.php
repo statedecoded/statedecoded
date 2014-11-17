@@ -1757,7 +1757,7 @@ class ParserController
 	 *
 	 * List every law in this legal code and create an XML file with an entry for every one of them.
 	 */
-	function generate_sitemap()
+	public function generate_sitemap()
 	{
 
 		$this->logger->message('Generating sitemap.xml', 3);
@@ -1876,7 +1876,7 @@ class ParserController
 	 * structural units or laws), and then store that data as serialized objects in the "structure"
 	 * database table.
 	 */
-	function structural_stats_generate()
+	public function structural_stats_generate()
 	{
 
 		$this->logger->message('Generating structural statistics', 3);
@@ -1988,7 +1988,7 @@ class ParserController
 	 *
 	 * A helper method for structural_stats_generate(); not intended to be called on its own.
 	 */
-	function structural_stats_recurse()
+	public function structural_stats_recurse()
 	{
 
 		/*
@@ -2052,7 +2052,7 @@ class ParserController
 	 *
 	 * @throws Exception if the environment test fails
 	 */
-	function test_environment()
+	public function test_environment()
 	{
 
 		/*
@@ -2195,7 +2195,7 @@ class ParserController
 	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
 	 * instead, we do this via cURL.
 	 */
-	function index_laws()
+	public function index_laws()
 	{
 
 		if (!isset($this->edition))
@@ -2354,7 +2354,7 @@ class ParserController
 
 	}
 
-	function clear_index($edition_id = null)
+	public function clear_index($edition_id = null)
 	{
 		if(!defined('SOLR_URL'))
 		{
@@ -2399,7 +2399,7 @@ class ParserController
 		return TRUE;
 	}
 
-	function handle_solr_request($fields = array(), $multipart = false, $parameters = array())
+	protected function handle_solr_request($fields = array(), $multipart = false, $parameters = array())
 	{
 
 		$solr_update_url = SOLR_URL . 'update';
