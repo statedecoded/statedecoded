@@ -24,6 +24,9 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="_version_" type="long" indexed="true" stored="true"/>
    <field name="id" type="string" indexed="true" stored="true" required="true" />
    <field name="edition" type="string" indexed="true" stored="true" required="true" />
+   <field name="edition_id" type="string" indexed="true" stored="true" required="true" />
+   <field name="edition_updated" type="string" indexed="true" stored="true" />
+   <field name="edition_current" type="bool" indexed="true" stored="true" />
 
    <field name="catch_line" type="html_stripped_text_en" indexed="true" stored="true"/>
    <field name="tags" type="html_stripped_text_en" indexed="true" stored="true" multiValued="true" />
@@ -67,8 +70,8 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="definition" type="html_stripped_text_en" indexed="true" stored="true" termVectors="true"/>
 
    <!-- Other -->
-   <field name="type" type="lowercase" indexed="true" stored="true"/> 
-   <field name="spelling" type="html_stripped_text" indexed="true" stored="false" multiValued="true"/> 
+   <field name="type" type="lowercase" indexed="true" stored="true"/>
+   <field name="spelling" type="html_stripped_text" indexed="true" stored="false" multiValued="true"/>
    <copyField source= "text" dest="spelling"/>
    <copyField source= "tags" dest="spelling"/>
    <copyField source= "structure" dest="spelling"/>
@@ -210,6 +213,8 @@ Licensed to the Apache Software Foundation (ASF) under one or more
        <tokenizer class="solr.KeywordTokenizerFactory" />
      </analyzer>
    </fieldType>
+
+   <fieldType name="bool" class="solr.BoolField" sortMissingLast="true" />
 
  </types>
 

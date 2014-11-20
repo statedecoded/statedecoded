@@ -1501,12 +1501,12 @@ class ParserController
 							$edition_url->value .= '/' . $this->edition['slug'] . '/';
 							$edition->appendChild($edition_url);
 
-							$edition_last_updated = $dom->createAttribute('last_updated');
-							$edition_last_updated->value = $this->edition['last_updated'];
-							$edition->appendChild($edition_last_updated);
+							$edition_id = $dom->createAttribute('id');
+							$edition_id->value = $this->edition['id'];
+							$edition->appendChild($edition_id);
 
 							$edition_last_updated = $dom->createAttribute('last_updated');
-							$edition_last_updated->value = $this->edition['last_import'];
+							$edition_last_updated->value = date('Y-m-d', strtotime($this->edition['last_import']));
 							$edition->appendChild($edition_last_updated);
 
 							$edition_current = $dom->createAttribute('current');
