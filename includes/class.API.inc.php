@@ -427,7 +427,7 @@ class API
 
 		if ( ($_SERVER['SERVER_PORT'] != '80') && ($_SERVER['SERVER_PORT'] != '443') )
 		{
-			$url .= ':80';
+			$url .= $_SERVER['SERVER_PORT'];
 		}
 
 		$url .= '/downloads/?secret=' . $this->secret;
