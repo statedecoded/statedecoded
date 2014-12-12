@@ -117,6 +117,21 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 }
 
 /*
+ * Set the main site URL.
+ */
+$url = 'http://';
+if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+{
+	$url = 'https://';
+}
+$url .= $_SERVER['SERVER_NAME'];
+if ($_SERVER['SERVER_PORT'] != '80')
+{
+	$url .= ':80';
+}
+define('SITE_URL', $url);
+
+/*
  * Save the include path as a constant.
  */
 if (isset($_SERVER['INCLUDE_PATH']))
