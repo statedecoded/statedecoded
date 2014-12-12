@@ -125,9 +125,9 @@ if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SE
 	$url = 'https://';
 }
 $url .= $_SERVER['SERVER_NAME'];
-if ($_SERVER['SERVER_PORT'] != '80')
+if ( ($_SERVER['SERVER_PORT'] != '80') && ($_SERVER['SERVER_PORT'] != '443') )
 {
-	$url .= ':80';
+	$url .= $_SERVER['SERVER_PORT'];
 }
 define('SITE_URL', $url);
 
