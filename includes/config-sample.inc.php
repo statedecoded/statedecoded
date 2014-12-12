@@ -216,3 +216,23 @@ define('VERSION', '0.81');
  */
 // define('COURTLISTENER_USERNAME', 'jane_doe');
 // define('COURTLISTENER_PASSWORD', 's3cr3tp@ssw0rd');
+
+/*
+ * Define the site's URL. This can be defined manually by removing the below stanza, leaving just:
+ *
+ * define('SITE_URL', 'http://example.com:1234');
+ *
+ * substituting, of course, your site's protocol, domain name, and port (if you're using a non-
+ * standard port).
+ */
+$url = 'http://';
+if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+{
+	$url = 'https://';
+}
+$url .= $_SERVER['SERVER_NAME'];
+if ( ($_SERVER['SERVER_PORT'] != '80') && ($_SERVER['SERVER_PORT'] != '443') )
+{
+	$url .= $_SERVER['SERVER_PORT'];
+}
+define('SITE_URL', $url);
