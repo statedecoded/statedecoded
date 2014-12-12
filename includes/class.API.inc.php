@@ -418,19 +418,7 @@ class API
 			return FALSE;
 		}
 
-		$url = 'http://';
-		if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
-		{
-			$url = 'https://';
-		}
-		$url .= $_SERVER['SERVER_NAME'];
-
-		if ( ($_SERVER['SERVER_PORT'] != '80') && ($_SERVER['SERVER_PORT'] != '443') )
-		{
-			$url .= $_SERVER['SERVER_PORT'];
-		}
-
-		$url .= '/downloads/?secret=' . $this->secret;
+		$url = SITE_URL . '/downloads/?secret=' . $this->secret;
 
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
 			. "\r\r"
