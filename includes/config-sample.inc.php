@@ -233,6 +233,6 @@ if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SE
 $url .= $_SERVER['SERVER_NAME'];
 if ( ($_SERVER['SERVER_PORT'] != '80') && ($_SERVER['SERVER_PORT'] != '443') )
 {
-	$url .= $_SERVER['SERVER_PORT'];
+	$url .= ':' . $_SERVER['SERVER_PORT'];
 }
 define('SITE_URL', $url);
