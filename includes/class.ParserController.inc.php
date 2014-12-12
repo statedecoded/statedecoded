@@ -1661,7 +1661,7 @@ class ParserController
 			 * Add a record of this law to the XML.
 			 */
 			$url = $xml->addChild('url');
-			$url->addchild('loc', $law->url);
+			$url->addchild('loc', SITE_URL . $law->url);
 			$url->addchild('changefreq', 'monthly');
 
 		}
