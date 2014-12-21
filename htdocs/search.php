@@ -320,6 +320,31 @@ else
 }
 
 /*
+ * Always display a guide to writing searches, whether or not a search is being submitted.
+ */
+$sidebar .= '
+	<section class="info-box" id="boolean">
+		<h1>Writing Searches</h1>
+		
+		<p>Generally, you can just write a few words to describe the law you’re looking for, such
+		as “<code>radar detectors</code>”, “<code>insurance agents</code>”, or
+		“<code>assault</code>” (leaving out the quotation marks).</p>
+		
+		<p>Also, advanced searches are supported, using the following terms:</p>
+		
+		<ul>
+			<li><code>AND</code>: Requires the words or phrases before and after the
+				<code>AND</code>, like <code>radar AND vehicle</code>.</li>
+			<li><code>+</code>: Requires that the following word or phrase be in the law, like
+				<code>insurance +agent</code>.</li>
+			<li><code>NOT</code>: Requires that the following word or phrase <em>not</em> be in the
+				law, like <code>assault NOT battery</code>.</li>
+			<li><code>OR</code>: Requires that either word or phrase (or both words or phrases) be
+				in the law, like <code>assault OR battery</code>.</li>
+		</ul>
+	</section>';
+
+/*
  * Put the shorthand $body variable into its proper place.
  */
 $content->set('body', $body);
