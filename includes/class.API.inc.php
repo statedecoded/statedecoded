@@ -390,12 +390,15 @@ class API
 		}
 
 		/*
-		 * If APC is installed, then delete the cache of the keys, since it's been invalidated by
-		 * the addition of this key.
+		 * If an in-memory cache is running, then delete the cache of the keys, since it's been
+		 * invalidated by the addition of this key.
 		 */
-		if ( extension_loaded('apc') || (ini_get('apc.enabled') === 1) )
+		global $cache;
+		if (isset($cache))
 		{
-			apc_delete('api_keys');
+			
+			$cache->erase('api_keys');
+			
 		}
 
 		return TRUE;
@@ -418,7 +421,19 @@ class API
 			return FALSE;
 		}
 
-		$url = SITE_URL . '/downloads/?secret=' . $this->secret;
+		$url = 'http://';
+		if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+		{
+			$url = 'https://';
+		}
+		$url .= $_SERVER['SERVER_NAME'];
+
+		if($_SERVER['SERVER_PORT'] != '80')
+		{
+			$url .= ':80';
+		}
+
+		$url .= '/downloads/?secret=' . $this->secret;
 
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
 			. "\r\r"
