@@ -79,25 +79,29 @@ class Page
 	 */
 	public function load_template($template_file)
 	{
+	
 		/*
-		 * Save the contents of the template file to a variable. First check APC and see if it's
-		 * stored there.
+		 * Save the contents of the template file to a variable. See if it's already cached in
+		 * memory.
 		 */
-		$storage_name = 'template-'.$this->theme_name.'-'.$this->page;
-		if ( APC_RUNNING === TRUE)
+		$storage_name = 'template-' . $this->theme_name . '-' . $this->page;
+		global $cache;
+		if (isset($cache))
 		{
-			$html = apc_fetch($storage_name);
+
+			$html = $cache->retrieve($storage_name);
 			if ($html === FALSE)
 			{
-
 
 				if (check_file_available($template_file))
 				{
 					$html = file_get_contents($template_file);
 				}
 
-				apc_store($storage_name, $html);
+				$cache->store($storage_name, $html);
+
 			}
+			
 		}
 		else
 		{
@@ -105,7 +109,7 @@ class Page
 		}
 
 		return $html;
-		
+
 	}
 
 
