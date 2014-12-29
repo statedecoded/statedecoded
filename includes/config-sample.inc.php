@@ -56,7 +56,7 @@ define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
 /*
  * The directory in which templates are stored.
  */
-define('TEMPLATE_DIR', WEB_ROOT . '/themes/');
+define('THEMES_DIR', WEB_ROOT . '/themes/');
 
 /*
  * Which theme to use.
