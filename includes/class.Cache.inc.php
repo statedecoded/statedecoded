@@ -113,4 +113,38 @@ class Cache
 
 	}
 
+	/*
+	 * Flush the cache by invalidating all matching items.
+	 *
+	 * @return TRUE or FALSE.
+	 */
+	function flush()
+	{
+		
+		global $cache;
+		
+		
+		/*
+		 * Erase every cached item that has the correct prefix. We do this to avoid invalidating
+		 * cached items for the whole of Memcached (e.g., other website).
+		 */
+		$keys = $this->cache->getAllKeys();
+		
+		if ($keys != FALSE)
+		{
+		
+			foreach ($keys as $index => $key)
+			{
+				if (strpos($key, $this->prefix) !== FALSE)
+				{
+					$this->cache->delete($key);
+				}
+			}
+		
+		}
+		
+		return TRUE;
+
+	}
+
 }

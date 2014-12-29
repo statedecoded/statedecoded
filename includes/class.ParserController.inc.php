@@ -1676,24 +1676,25 @@ class ParserController
 	}
 
 	/**
-	 * Clear out the APC cache, if it exists
+	 * Clear out the in-memory cache, if it exists
 	 */
-	public function clear_apc()
+	public function clear_cache()
 	{
 
 		/*
-		 * If APC exists on this server, clear everything in the user space. That consists of
-		 * information that the State Decoded has stored in APC, which is now suspect, as a result
-		 * of having reloaded the laws.
+		 * If an in-memory cache is in use, invalidate all cached data. Everything that The State
+		 * Decoded has stored is now suspect, as a result of having reloaded the laws.
 		 */
-		if (extension_loaded('apc') && ini_get('apc.enabled') == 1)
+		global $cache;
+		if (isset($cache))
 		{
-			$this->logger->message('Clearing APC cache', 5);
-
-			apc_clear_cache('user');
-
+		
+			$this->logger->message('Clearing in-memory cache', 5);
+			$cache->flush();
 			$this->logger->message('Done', 5);
+			
 		}
+		
 	}
 
 	/**
