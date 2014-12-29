@@ -150,8 +150,9 @@ class State
 		}
 		
 		// Assemble the URL for our query to the CourtListener API.
-		$url = 'https://www.courtlistener.com/api/rest/v1/search/?q=Virginia+Code+%22'
-			. urlencode($this->section_number) . '%22&order_by=score+desc&format=json';
+		$url = 'https://www.courtlistener.com/api/rest/v1/search/?q="'
+			. urlencode($this->section_number) . '"&court=ca4,vaeb,vawb,vaed,vawd,va,vactapp'
+			. '&order_by=score+desc&format=json';
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
@@ -200,7 +201,14 @@ class State
 			}
 			
 			// Port the fields that we need from $opinion to $this->decisions.
-			$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->case_name)), 100))) . ' . . . ';
+			if (html_entity_decode(strlen(strip_tags($opinion->case_name))) > 60)
+			{
+				$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->case_name)), 60))) . ' . . . ';
+			}
+			else
+			{
+				$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->case_name));
+			}
 			$this->decisions->{$i}->case_number = $opinion->case_number;
 			$this->decisions->{$i}->citation = $opinion->citation;
 			$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
