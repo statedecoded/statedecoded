@@ -3,7 +3,7 @@
 /**
  * Caching functionality
  *
- * Interact with Memcached or Reddis.
+ * Interact with Memcached or Redis.
  * 
  * PHP version 5
  *
@@ -91,7 +91,7 @@ class Cache
 	/*
 	 * Retrieve a given item from cache.
 	 *
-	 * @return str the contents of the cache. FALSE is the retrieval failed.
+	 * @return str the contents of the cache. FALSE if the retrieval failed.
 	 */
 	function retrieve($key)
 	{
