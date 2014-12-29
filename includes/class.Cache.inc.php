@@ -123,7 +123,6 @@ class Cache
 		
 		global $cache;
 		
-		
 		/*
 		 * Erase every cached item that has the correct prefix. We do this to avoid invalidating
 		 * cached items for the whole of Memcached (e.g., other website).
