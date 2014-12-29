@@ -67,12 +67,24 @@ class Logger
 		if ($level >= $this->level)
 		{
 		
-			echo $msg;
+			/*
+			 * If this is a very serious message -- a show-stopping error -- highlight it in red,
+			 * when outputting HTML. But don't do this if we're only listing the most serious
+			 * errors, because it wouldn't provide any useful UX.
+			 */
+			if ( ($this->html === TRUE) && ($level == 10) && ($this->level < 10) )
+			{
+				echo '<span color="red">' . $msg . '</span>';
+			}
+			else
+			{
+				echo $msg;
+			}
 
 			/*
 			 * Provide the correct line endings.
 			 */
-			if($this->html === TRUE)
+			if ($this->html === TRUE)
 			{
 				echo '<br />';
 			}
