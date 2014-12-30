@@ -13,9 +13,9 @@
  */
 
 /*
- * Make a reasonable guess as to wear the INCLUDE_PATH is.
+ * Guess where the includes directory is.
  */
-if(!defined('INCLUDE_PATH'))
+if (!defined('INCLUDE_PATH'))
 {
 	define('INCLUDE_PATH', dirname(__FILE__) . '/');
 }
