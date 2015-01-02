@@ -368,9 +368,11 @@ class Law
 		{
 
 			/*
-			 * If we already have this data cached as metadata.
+			 * If we already have this data cached as metadata, and it's not blank. (We cache not
+			 * just when there are court decisions for a given law, but also when there are no
+			 * court decisions for a law. "No court decisions" is represented as an empty record.)
 			 */
-			if (isset($this->metadata->court_decisions))
+			if ( isset($this->metadata->court_decisions) && !empty($this->metadata->court_decisions) )
 			{
 				$this->court_decisions = $this->metadata->court_decisions;
 			}

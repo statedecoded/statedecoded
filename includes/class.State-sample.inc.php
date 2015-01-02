@@ -181,55 +181,64 @@ class State
 			return FALSE;
 		}
 		
-		// If no results were found.
+		// If no results were found, save an empty variable. In this way we cache a lack of court
+		// decisions that cite a given section.
 		if ($cl_list->meta->total_count == 0)
 		{
-			return FALSE;
+		
+			$this->decisions = '';
+			
 		}
 		
-		// Create an object to store the decisions that we're going to return.
-		$this->decisions = new stdClass();
-		
-		// Iterate through the decisions and assign the first 10 to $this->decisions.
-		$i=0;
-		foreach ($cl_list->objects as $opinion)
+		// Otherwise if results were found.
+		else
 		{
+		
+			// Create an object to store the decisions that we're going to return.
+			$this->decisions = new stdClass();
+		
+			// Iterate through the decisions and assign the first 10 to $this->decisions.
+			$i=0;
+			foreach ($cl_list->objects as $opinion)
+			{
 			
-			if ($i == 10)
-			{
-				break;
-			}
+				if ($i == 10)
+				{
+					break;
+				}
 			
-			// Port the fields that we need from $opinion to $this->decisions.
-			if (html_entity_decode(strlen(strip_tags($opinion->case_name))) > 60)
-			{
-				$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->case_name)), 60))) . ' . . . ';
-			}
-			else
-			{
-				$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->case_name));
-			}
-			$this->decisions->{$i}->case_number = $opinion->case_number;
-			$this->decisions->{$i}->citation = $opinion->citation;
-			$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
-			$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
-			$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
+				// Port the fields that we need from $opinion to $this->decisions.
+				if (html_entity_decode(strlen(strip_tags($opinion->case_name))) > 60)
+				{
+					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->case_name)), 60))) . ' . . . ';
+				}
+				else
+				{
+					$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->case_name));
+				}
+				$this->decisions->{$i}->case_number = $opinion->case_number;
+				$this->decisions->{$i}->citation = $opinion->citation;
+				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
+				$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
+				$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
 			
-			if ($opinion->court == 'Court of Appeals of Virginia')
-			{
-				$this->decisions->{$i}->court_html = '<abbr title="Court of Appeals">COA</abbr>';
-			}
-			elseif ($opinion->court == 'Supreme Court of Virginia')
-			{
-				$this->decisions->{$i}->court_html = '<abbr title="Supreme Court of Virginia">SCV</abbr>';
-			}
-			else
-			{
-				$this->decisions->{$i}->court_html = $opinion->court;
-			}
+				if ($opinion->court == 'Court of Appeals of Virginia')
+				{
+					$this->decisions->{$i}->court_html = '<abbr title="Court of Appeals">COA</abbr>';
+				}
+				elseif ($opinion->court == 'Supreme Court of Virginia')
+				{
+					$this->decisions->{$i}->court_html = '<abbr title="Supreme Court of Virginia">SCV</abbr>';
+				}
+				else
+				{
+					$this->decisions->{$i}->court_html = $opinion->court;
+				}
 				
-			$i++;
+				$i++;
 			
+			}
+		
 		}
 		
 		// Store these decisions in the metadata table.
