@@ -106,46 +106,63 @@ class ParserController
 	}
 
 	/**
+	 * Check if we need to populate the db.
+	 */
+	public function check_db_populated()
+	{
+		/*
+		 * To see if the database tables exist, just issue a query to the laws table.
+		 */
+		try
+		{
+			$sql = 'SELECT 1
+					FROM laws
+					LIMIT 1';
+
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute();
+		} catch (Exception $except)
+		{
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	/**
 	 * Populate the database
 	 */
 	public function populate_db()
 	{
 
-		/*
-		 * To see if the database tables exist, just issue a query to the laws table.
-		 */
-		$sql = 'SELECT 1
-				FROM laws
-				LIMIT 1';
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute();
-
-		if ($result !== FALSE)
+		if(!$this->check_db_populated())
 		{
-			return TRUE;
-		}
+			/*
+			 * We expect an exception here.  If there's not one,
+			 * the table exists and we can go on our merry way.
+			 */
 
-		$this->logger->message('Creating the database tables', 5);
+			$this->logger->message('Creating the database tables', 5);
 
-		/*
-		 * The database tables do not exist, so see if the MySQL import file can be found.
-		 */
-		if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === FALSE)
-		{
-			$this->logger->message('Could not read find ' . WEB_ROOT . '/admin/statedecoded.sql to '
-				. 'populate the database. Database tables could not be created.', 10);
-			return FALSE;
-		}
+			/*
+			 * The database tables do not exist, so see if the MySQL import file can be found.
+			 */
+			if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === FALSE)
+			{
+				$this->logger->message('Could not read find ' . WEB_ROOT . '/admin/statedecoded.sql to '
+					. 'populate the database. Database tables could not be created.', 10);
+				return FALSE;
+			}
 
-		/*
-		 * Load the MySQL import file into MySQL. We don't prepare this query because PDO_MySQL
-		 * didn't support multiple queries until PHP 5.3.
-		 */
-		$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
-		$result = $this->db->exec($sql);
-		if ($result === FALSE)
-		{
-			return FALSE;
+			/*
+			 * Load the MySQL import file into MySQL. We don't prepare this query because PDO_MySQL
+			 * didn't support multiple queries until PHP 5.3.
+			 */
+			$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
+			$result = $this->db->exec($sql);
+			if ($result === FALSE)
+			{
+				return FALSE;
+			}
 		}
 
 		return TRUE;

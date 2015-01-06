@@ -159,7 +159,13 @@ class DatabaseStatement extends PDOStatement
 
 		$error['Input Parameters'] = $input_parameters;
 
-		$error['Statement Parameters'] = $this->pdo_statement->debugDumpParams();
+		/*
+		 * Capture the parameters from PDO.
+		 */
+		ob_start();
+		$this->pdo_statement->debugDumpParams();
+		$error['Statement Parameters'] = ob_get_contents();
+		ob_end_clean();
 
 		return $error;
 	}

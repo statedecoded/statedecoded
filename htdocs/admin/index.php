@@ -84,10 +84,93 @@ if (count($_POST) === 0)
 	}
 	elseif ($_GET['page'] == 'parse' )
 	{
-		$args['parser'] = $parser;
-		$body = show_admin_forms($args);
-	}
+		$parser->logger->flush_buffer = FALSE;
 
+		if(!$parser->check_db_populated())
+		{
+			ob_start();
+			if(!$parser->test_environment())
+			{
+				$errors = ob_get_contents();
+
+				$body = '<p>
+					It looks like this is a new installation of The State
+					Decoded. Unfortunately, there are a few issues you need
+					to resolve before we can do the rest of the setup.  Those
+					errors are listed below.
+					</p>
+					<p class="errors">' . $errors . '</p>';
+			}
+			else
+			{
+				$body = '
+				<form method="post" action="/admin/?page=setup&noframe=1">
+					<h3>Setup</h3>
+					<p>
+						It looks like this is a new installation of The State
+						Decoded. To get started, you\'ll need to click the
+						button below to setup the database.  If this is not a
+						new installation, you should <a
+						href="http://docs.statedecoded.com/config.html">check
+						that your database is configured properly</a> and
+						everything is working as it should.
+					</p>
+					<p>
+						<input type="hidden" name="page" value="setup" />
+						<input type="submit" name="submit"
+							value="Setup the database"/>
+					</p>
+				</form>';
+			}
+			ob_end_clean();
+		}
+		else
+		{
+			$args['parser'] = $parser;
+			$body = show_admin_forms($args);
+		}
+	}
+}
+
+/*
+ * If we're doing the initial setup.
+ */
+elseif ($_POST['page'] == 'setup')
+{
+		/*
+	 * Step through each parser method.
+	 */
+	if ($parser->test_environment() !== FALSE)
+	{
+		$body .= '<p>Environment test succeeded</p>';
+
+		if ($parser->populate_db() !== FALSE)
+		{
+			$body .= '<p>Database successfully setup.</p>';
+			$body .= '<p><a href="/admin/?page=parse&amp;noframe=1">Back to Admin Dashboard</a></p>';
+		}
+		else
+		{
+			echo '<p>There was an error setting up the database.  Please review
+				<a href="http://docs.statedecoded.com/">the documentation</a>
+				 to confirm that you have everything
+				 <a href="http://docs.statedecoded.com/installation.html">installed</a>
+				 and
+				 <a href="http://docs.statedecoded.com/config.html">configured</a>
+				 properly.</p>';
+		}
+	}
+	else
+	{
+			echo '<p>There was an error setting up the database.  The issues
+				encountered should appear above. Please review
+				<a href="http://docs.statedecoded.com/">the documentation</a>
+				 to confirm that you have everything
+				 <a href="http://docs.statedecoded.com/installation.html">installed</a>
+				 and
+				 <a href="http://docs.statedecoded.com/config.html">configured</a>
+				 properly.</p>';
+	}
 }
 
 /*
@@ -298,8 +381,15 @@ else
 function show_admin_forms($args = array())
 {
 
+	global $db;
+	$edition = new Edition(array('db' => $db));
 
-	$editions = $args['parser']->get_editions();
+	try {
+		$editions = $edition->all();
+	}
+	catch(Exception $exception) {
+		$editions = FALSE;
+	}
 
 	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
 	{

@@ -33,6 +33,11 @@ class Logger
      */
 	public $level = 0;
 
+	/**
+	 * Should we flush the buffer automatically?
+	 */
+	public $flush_buffer = TRUE;
+
 	// {{{ __construct
 
 	/**
@@ -81,13 +86,16 @@ class Logger
 				echo "\n";
 			}
 
-			/*
-			 * Flush the buffer to send the content to the browse immediately.
-			 */
-			flush();
-			if(ob_get_length())
+			if($this->flush_buffer)
 			{
-				ob_flush();
+				/*
+				 * Flush the buffer to send the content to the browse immediately.
+				 */
+				flush();
+				if(ob_get_length())
+				{
+					ob_flush();
+				}
 			}
 
 		}
