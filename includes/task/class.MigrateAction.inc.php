@@ -22,7 +22,11 @@ class MigrateAction extends CliAction
 	public function __construct($args = array())
 	{
 		parent::__construct($args);
-		$this->db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD );
+
+		if(!isset($this->db))
+		{
+			$this->db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD );
+		}
 	}
 
 	public function execute($args = array())
@@ -73,29 +77,18 @@ class MigrateAction extends CliAction
 	public function doMigrations($args = array())
 	{
 		/*
-		 * Get completed migrations from db.
-		 */
-		$done_migrations = $this->getDoneMigrations();
-
-		/*
 		 * If we're rolling back.
 		 */
 		if(isset($this->options['down']))
 		{
-			$migrations = $done_migrations;
+			$migrations = $this->getDoneMigrations();
 		}
+		/*
+		 * If we're moving forward.
+		 */
 		else
 		{
-			/*
-			 * Get all migrations from files.
-			 */
-			$all_migrations = $this->getAllMigrations();
-
-			/*
-			 * Determine what's left to be done.
-			 */
-			$migrations = array_diff($all_migrations, $done_migrations);
-			sort($migrations);
+			$migrations = $this->getUndoneMigrations();
 		}
 
 		if(count($migrations) < 1)
@@ -148,6 +141,22 @@ class MigrateAction extends CliAction
 		}
 
 		return $all_migrations;
+	}
+
+	public function getUndoneMigrations()
+	{
+		/*
+		 * Get all migrations from files.
+		 */
+		$all_migrations = $this->getAllMigrations();
+
+		/*
+		 * Determine what's left to be done.
+		 */
+		$migrations = array_diff($all_migrations, $this->getDoneMigrations());
+		sort($migrations);
+
+		return $migrations;
 	}
 
 	public function doMigration($migration_name, $args = array())

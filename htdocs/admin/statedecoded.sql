@@ -116,6 +116,15 @@ CREATE TABLE IF NOT EXISTS `laws_views` (
   KEY `section_2` (`section`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;
 
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `date_created` datetime NOT NULL,
+  `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
 CREATE TABLE IF NOT EXISTS `permalinks` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `object_type` varchar(10) NOT NULL,

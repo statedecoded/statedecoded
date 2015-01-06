@@ -12,6 +12,7 @@
 */
 
 require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
+require_once(INCLUDE_PATH . 'task/class.MigrateAction.inc.php');
 
 class ParserController
 {
@@ -167,6 +168,34 @@ class ParserController
 
 		return TRUE;
 
+	}
+
+	/**
+	 * Check for any outstanding migrations that need running.
+	 */
+	public function check_migrations()
+	{
+		$migrate_action = new MigrateAction(array(
+			'db' => $this->db
+		));
+
+		$migrations = $migrate_action->getUndoneMigrations();
+
+		return $migrations;
+	}
+
+	public function run_migrations()
+	{
+		$migrate_action = new MigrateAction(array(
+			'db' => $this->db
+		));
+
+		ob_start();
+		$result = $migrate_action->doMigrations();
+		$result = nl2br(ob_get_contents()) . $result;
+		ob_end_clean();
+
+		return $result;
 	}
 
 	/**

@@ -116,13 +116,30 @@ if (count($_POST) === 0)
 						everything is working as it should.
 					</p>
 					<p>
-						<input type="hidden" name="page" value="setup" />
+						<input type="hidden" name="action" value="setup" />
 						<input type="submit" name="submit"
 							value="Setup the database"/>
 					</p>
 				</form>';
 			}
 			ob_end_clean();
+		}
+		elseif($parser->check_migrations())
+		{
+			$body = '
+				<form method="post" action="/admin/?page=setup&noframe=1">
+					<h3>Update</h3>
+					<p>
+						The State Decoded has been updated but the database
+						needs to be upgraded. Please click the button below
+						to update the database.
+					</p>
+					<p>
+						<input type="hidden" name="action" value="update_db" />
+						<input type="submit" name="submit"
+							value="Update the database"/>
+					</p>
+				</form>';
 		}
 		else
 		{
@@ -135,18 +152,22 @@ if (count($_POST) === 0)
 /*
  * If we're doing the initial setup.
  */
-elseif ($_POST['page'] == 'setup')
+elseif ($_POST['action'] == 'setup')
 {
 		/*
 	 * Step through each parser method.
 	 */
 	if ($parser->test_environment() !== FALSE)
 	{
-		$body .= '<p>Environment test succeeded</p>';
+		$body = '<p>Environment test succeeded</p>';
 
 		if ($parser->populate_db() !== FALSE)
 		{
 			$body .= '<p>Database successfully setup.</p>';
+
+			$body .= $parser->run_migrations();
+			$body .= '<p>Migration complete.</p>';
+
 			$body .= '<p><a href="/admin/?page=parse&amp;noframe=1">Back to Admin Dashboard</a></p>';
 		}
 		else
@@ -171,6 +192,13 @@ elseif ($_POST['page'] == 'setup')
 				 <a href="http://docs.statedecoded.com/config.html">configured</a>
 				 properly.</p>';
 	}
+}
+
+elseif ($_POST['action'] == 'update_db')
+{
+	$body .= $parser->run_migrations();
+	$body .= '<p>Migration complete.</p>';
+	$body .= '<p><a href="/admin/?page=parse&amp;noframe=1">Back to Admin Dashboard</a></p>';
 }
 
 /*
