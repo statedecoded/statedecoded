@@ -35,7 +35,6 @@ function getHelp(section, callback) {
 		$.getJSON('/content/help.json', {}, function(data, textStatus, jqXHR) {
 			if(data) {
 				help = data;
-				console.log(help);
 				callback(section, help[section]);
 			}
 			else {
@@ -135,7 +134,7 @@ $(document).ready(function () {
 	$('a[href*=#]').click(function(){
 
 		var elemId = '#' + escapeSelector($(this).attr('href').split('#')[1]);
-		console.log(elemId);
+
 		$(elemId).slideto({
 			slide_duration: 500
 		});
@@ -333,5 +332,45 @@ $(document).ready(function () {
 		}
 	  });
 	});
+
+	// We need to make sure every row in our table has the same number of columns.
+	// Otherwise dataTable doesn't work.
+	$('.primary-content table').each(function(i, elm) {
+		elm = $(elm);
+
+		// Get the longest row length.
+		var maxsize = 0;
+		var trs = elm.find('tr');
+		trs.each(function(i, tr) {
+			if($(tr).find('td,th').length > maxsize) {
+				maxsize = $(tr).find('td,th').length;
+			}
+		});
+
+		// Repeat the loop, this time padding out our rows
+		trs.each(function(i, tr) {
+			var tr = $(tr);
+			var missing = maxsize - tr.find('td,th').length;
+			if(missing > 0) {
+				var extra_elms = '<td></td>';
+				if(tr.parent().prop('tagName').toLowerCase() === 'thead') {
+					extra_elms = '<th></th>';
+				}
+
+				for(i=0; i<missing; i++) {
+					tr.append(extra_elms);
+				}
+			}
+		});
+	});
+
+	$('.primary-content table').dataTable({
+        'scrollY': '400px',
+        'scrollX': true,
+        'scrollCollapse': true,
+        'paging': false,
+        'ordering': false,
+        'info': false
+    });
 
 });

@@ -74,10 +74,14 @@ $table-border-color: $gray-lighter; // table and cell border
     th {
       background-color: $gray-darker;
       color: $white;
-      font-size: 9px;
+      font-size: 11px;
       padding: 0 5px;
       text-transform: uppercase;
-      vertical-align: bottom;
+      vertical-align: middle;
+      border-right: 1px solid $white;
+      &:last-child {
+        border-right: none;
+      }
     } // th
   } // thead, tfoot
 
@@ -171,3 +175,14 @@ tbody {
     } // td
   } // &.is-active
 } // tbody
+
+// ------------------------------------------------------------------
+//  dataTables Styles
+// ------------------------------------------------------------------
+.dataTables_filter {
+  margin-bottom: 0.5em;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+  padding: 0 8px;
+}

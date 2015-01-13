@@ -33,9 +33,6 @@ body {
     margin: auto;
     min-height: 100%;
     text-align: left;
-    &.preload * {
-      transition: none !important;
-    }
 
     @include respond-to(print) {
       background-color: white;

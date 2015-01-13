@@ -806,7 +806,7 @@ abstract class AmericanLegalParser
 
 		// Replace <td><p> with <td>
 		$xml = preg_replace('/<td>\s*<p>/sm', '<td>', $xml);
-		$xml = preg_replace('/<\/p>\s*<\/td>/sm', '<td>', $xml);
+		$xml = preg_replace('/<\/p>\s*<\/td>/sm', '</td>', $xml);
 
 		// At this point, we should have clean tables.
 		// In cases where we have two consecutive tables, with the first having only one row,
@@ -823,10 +823,21 @@ abstract class AmericanLegalParser
 						array('<thead>', '</thead>', '<th>', '</th>'),
 						$table_pair[1]);
 
+					$table_pair[1] = trim($table_pair[1]);
+					$table_pair[2] = trim($table_pair[2]);
+
 					$xml = str_replace($table_pair[0], '<table>' . $table_pair[1] . $table_pair[2] . '</table>', $xml);
 				}
 			}
 		}
+
+		// Add some semantic elements.
+		$xml = preg_replace('/<table>\s*<tr>\s*<th>/sm', '<table><thead><tr><th>', $xml);
+		$xml = preg_replace('/<table>\s*<tr>\s*<td>/sm', '<table><tbody><tr><td>', $xml);
+		$xml = preg_replace('/<\/th>\s*<\/tr>/sm', '</th></tr></thead><tbody>', $xml);
+		$xml = preg_replace('/<\/tr>\s*<\/table>/sm', '</tr></tbody></table>', $xml);
+
+
 
 
 		// Replace CHARFORMAT.
