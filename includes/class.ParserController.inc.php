@@ -2295,7 +2295,7 @@ class ParserController
 		if (isset($response->error))
 		{
 			$this->logger->message('Solr returned the following unexpected error: '
-				. $response->error,  8);
+				. print_r($response, true),  8);
 			return FALSE;
 		}
 
