@@ -863,7 +863,8 @@
                          catch_line
                                tags
                                text
-                          structure
+                          structure^5
+                            section^10
                    section_ancestor^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
                  section_descendent^10 <!--High weighting on this field ensures that exact section matches are boosted to the top.-->
                refers_to_descendent

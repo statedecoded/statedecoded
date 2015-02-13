@@ -160,6 +160,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
      <analyzer type="query">
        <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
        <tokenizer class="solr.KeywordTokenizerFactory" />
+       <filter class="solr.LowerCaseFilterFactory" />
      </analyzer>
    </fieldType>
 
@@ -208,20 +209,6 @@ Licensed to the Apache Software Foundation (ASF) under one or more
      </analyzer>
    </fieldType>
 
-   <fieldType name="section_descendent_prefixed" class="solr.TextField">
-     <analyzer type="index">
-       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
-       <!-- remove () or [] that somebody might use to identify a chapter -->
-       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\(.*?\)$" replacement=""/>
-       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="\[.*?\]$" replacement=""/>
-       <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="~" />
-       <filter class="solr.LowerCaseFilterFactory" />
-     </analyzer>
-     <analyzer type="query">
-       <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="[\.-]" replacement="~"/>
-       <tokenizer class="solr.KeywordTokenizerFactory" />
-     </analyzer>
-    </fieldType>
  </types>
 
 </schema>
