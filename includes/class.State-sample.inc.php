@@ -270,9 +270,42 @@ class Parser
 	public $edition_id;
 	public $structure_labels;
 
+	/**
+	 * Indicators of dictionary terms.
+	 */
+
+	/*
+	 * The candidate phrases that indicate that the scope of one or more definitions are about
+	 * to be provided. Some phrases are left-padded with a space if they would never occur
+	 * without being preceded by a space; this is to prevent over-broad matches.
+	 */
+	public $scope_indicators = array(
+		' are used in this ',
+		'when used in this ',
+		'for purposes of this ',
+		'for the purposes of this ',
+		'for the purpose of this ',
+		'in this ',
+	);
+
+	/*
+	 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
+	 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
+	 * spaces, to avoid erroneously matching fragments of other terms.
+	 */
+	public $linking_phrases = array(
+		' mean ',
+		' means ',
+		' shall include ',
+		' includes ',
+		' has the same meaning as ',
+		' shall be construed ',
+		' shall also be construed to mean ',
+	);
+
 	public function __construct($options)
 	{
-	
+
 		/**
 		 * Set our defaults
 		 */
@@ -1234,7 +1267,7 @@ class Parser
 		/*
 		 * Get a normalized listing of definitions.
 		 */
-		$definitions = $dictionary->extract_definitions();
+		$definitions = $this->extract_definitions($this->code->text, $this->get_structure_labels());
 
 		/*
 		 * Check to see if this section or its containing structural unit were specified in the
@@ -1569,46 +1602,20 @@ class Parser
 	 * When fed a section of the code that contains definitions, extracts the definitions from that
 	 * section and returns them as an object. Requires only a block of text.
 	 */
-	function extract_definitions()
+	function extract_definitions($text, $structure_labels)
 	{
+		$scope = 'global';
 
-		if (!isset($this->text))
+		if (!isset($text))
 		{
 			return FALSE;
 		}
-
-		/*
-		 * The candidate phrases that indicate that the scope of one or more definitions are about
-		 * to be provided. Some phrases are left-padded with a space if they would never occur
-		 * without being preceded by a space; this is to prevent over-broad matches.
-		 */
-		$scope_indicators = array(	' are used in this ',
-									'when used in this ',
-									'for purposes of this ',
-									'for the purposes of this ',
-									'for the purpose of this ',
-									'in this ',
-								);
-
-		/*
-		 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
-		 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
-		 * spaces, to avoid erroneously matching fragments of other terms.
-		 */
-		$linking_phrases = array(	' mean ',
-									' means ',
-									' shall include ',
-									' includes ',
-									' has the same meaning as ',
-									' shall be construed ',
-									' shall also be construed to mean ',
-								);
 
 		/* Measure whether there are more straight quotes or directional quotes in this passage
 		 * of text, to determine which type are used in these definitions. We double the count of
 		 * directional quotes since we're only counting one of the two directions.
 		 */
-		if ( substr_count($this->text, '"') > (substr_count($this->text, '”') * 2) )
+		if ( substr_count($text, '"') > (substr_count($text, '”') * 2) )
 		{
 			$quote_type = 'straight';
 			$quote_sample = '"';
@@ -1625,12 +1632,12 @@ class Parser
 		 */
 		if (strpos($this->text, '<p>') !== FALSE)
 		{
-			$paragraphs = explode('<p>', $this->text);
+			$paragraphs = explode('<p>', $text);
 		}
 		else
 		{
-			$this->text = str_replace("\n", "\r", $this->text);
-			$paragraphs = explode("\r", $this->text);
+			$this->text = str_replace("\n", "\r", $text);
+			$paragraphs = explode("\r", $text);
 		}
 
 		/*
@@ -1666,7 +1673,6 @@ class Parser
 				 * one, which we'll use to narrow the scope of our search for the use of structural
 				 * labels within the text.
 				 */
-				$structure_labels = $this->structure_labels;
 
 				usort($structure_labels, 'sort_by_length');
 				$longest_label = strlen(current($structure_labels));
@@ -1674,7 +1680,7 @@ class Parser
 				/*
 				 * Iterate through every scope indicator.
 				 */
-				foreach ($scope_indicators as $scope_indicator)
+				foreach ($this->scope_indicators as $scope_indicator)
 				{
 
 					/*
@@ -1751,7 +1757,7 @@ class Parser
 				 * We need to find the right one that will allow us to connect a term to its
 				 * definition.
 				 */
-				foreach ($linking_phrases as $linking_phrase)
+				foreach ($this->linking_phrases as $linking_phrase)
 				{
 
 					if (strpos($paragraph, $linking_phrase) !== FALSE)
