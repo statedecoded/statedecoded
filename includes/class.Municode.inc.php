@@ -5,7 +5,7 @@
  *
  ******************************************
  * NOTE: This is very new and very rough! *
- * Use at your own risk!
+ * Use at your own risk!                  *
  * Please submit issues as you find them! *
  ******************************************
  *
