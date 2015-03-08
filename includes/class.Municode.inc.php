@@ -220,7 +220,7 @@ class Parser
 			$section->catch_line = $section_xml->subtitle;
 			if(!isset($section_xml->subtitle))
 			{
-				var_dump($section_xml->title);
+				$this->logger->message('Missing subtitle "' . $section_xml->title . '"', 10);
 			}
 		}
 		else
@@ -983,7 +983,7 @@ class Parser
 				$sql .= ', text = :text';
 				$sql_args[':text'] = $section->text;
 			}
-var_dump('text', $sql_args);
+
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
