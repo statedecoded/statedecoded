@@ -1,7 +1,13 @@
 <?php
 
 /**
- * The state-specific function library for The State Decoded.
+ * Parser for Municode's XML data format.
+ *
+ ******************************************
+ * NOTE: This is very new and very rough! *
+ * Use at your own risk!
+ * Please submit issues as you find them! *
+ ******************************************
  *
  * PHP version 5
  *
