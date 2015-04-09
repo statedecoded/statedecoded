@@ -24,18 +24,23 @@ class SearchIndex
 
 	public function __construct($args = array())
 	{
-		if(!isset($args['engine']) && defined('SEARCH_ENGINE'))
+		foreach($args as $key=>$value)
 		{
-			$args['engine'] = SEARCH_ENGINE;
+			$this->$key = $value;
 		}
 
-		if(!isset($args['engine']))
+		if(!isset($this->config) && defined('SEARCH_CONFIG'))
+		{
+			$this->config = json_decode(SEARCH_CONFIG, TRUE);
+			$args['config'] = $this->config;
+		}
+
+		if(!isset($this->config['engine']))
 		{
 			throw new Exception('No search engine defined in SearchIndex.');
 		}
 		else {
-			$engine = $args['engine'];
-			unset($args['engine']);
+			$engine = $this->config['engine'];
 			$this->engine = new $engine($args);
 		}
 	}

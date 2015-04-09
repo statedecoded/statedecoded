@@ -43,11 +43,6 @@ class SolrSearchEngine extends SearchEngineInterface
 	{
 		parent::__construct($args);
 
-		if(!isset($this->config) && defined('SEARCH_CONFIG'))
-		{
-			$this->config = json_decode(SEARCH_CONFIG, TRUE);
-		}
-
 		$this->client = new Solarium_Client(
 			array(
 				'adapteroptions' => $this->config

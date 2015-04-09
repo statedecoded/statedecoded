@@ -174,6 +174,7 @@ define('RECORD_VIEWS', TRUE);
  */
 define('SEARCH_CONFIG', json_encode(
 	array(
+		'engine' => 'SolrSearchEngine',
 		'host' => 'localhost',
 		'port' => 8983,
 		'path' => '/solr/',
@@ -182,8 +183,6 @@ define('SEARCH_CONFIG', json_encode(
 		'omitheader' => false
 	)
 ));
-
-define('SEARCH_ENGINE', 'SolrSearchEngine');
 
 /*
  * The HTML to be displayed on individual law pages that will allow them to be shared via social
