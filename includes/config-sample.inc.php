@@ -170,9 +170,20 @@ define('EMAIL_NAME', SITE_TITLE);
 define('RECORD_VIEWS', TRUE);
 
 /*
- * The URL for your installation of Solr. End with a trailing slash.
+ * Solr configuration.
  */
-define('SOLR_URL', 'http://localhost:8080/solr/statedecoded/');
+define('SEARCH_CONFIG', json_encode(
+	array(
+		'host' => 'localhost',
+		'port' => 8983,
+		'path' => '/solr/',
+		'core' => 'statedecoded',
+		'timeout' => 30,
+		'omitheader' => false
+	)
+));
+
+define('SEARCH_ENGINE', 'SolrSearchEngine');
 
 /*
  * The HTML to be displayed on individual law pages that will allow them to be shared via social

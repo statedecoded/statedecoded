@@ -11,7 +11,6 @@
  * @since		0.7
 */
 
-require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
 require_once(INCLUDE_PATH . 'task/class.MigrateAction.inc.php');
 
 class ParserController
@@ -584,7 +583,7 @@ class ParserController
 			 * PDO doesn't work that way.
 			 * We are deleting instead of truncating, to handle foreign keys.
 			 */
-			$sql = 'DELETE FROM ' . $table . ' WHERE 1=1';
+			$sql = 'DELETE FROM ' . $table;
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute();
@@ -842,6 +841,8 @@ class ParserController
 
 			}
 
+			$this->logger->message('Analyzed and stored law codification histories', 3);
+
 		}
 
 		/*
@@ -925,7 +926,13 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		$this->logger->message('Done', 5);
+		if ($result == FALSE)
+		{
+			$this->logger->message('Could not map the structure of the laws', 10);
+		}
+		else {
+			$this->logger->message('Done', 5);
+		}
 
 		return true;
 	}
@@ -937,6 +944,8 @@ class ParserController
 	{
 		$edition_obj = new Edition(array('db' => $this->db));
 		$edition_obj->update_last_import($this->edition_id);
+
+		return TRUE;
 	}
 
 	/**
@@ -1015,6 +1024,8 @@ class ParserController
 				$config = file_get_contents($config_file);
 				$config = str_replace("('API_KEY', '')", "('API_KEY', '".$api->key."')", $config);
 				file_put_contents($config_file, $config);
+
+				$this->logger->message('Created internal API key', 5);
 			}
 			else
 			{
@@ -1108,9 +1119,11 @@ class ParserController
 
 		if ($write_json === TRUE)
 		{
-			$this->logger->message('Creating code JSON ZIP file', 3);
+
 			$output = array();
 			exec('cd ' . $downloads_dir . '; zip -9rq code.json.zip code-json');
+			$this->logger->message('Created a ZIP file of the laws as JSON', 3);
+
 		}
 
 		/*
@@ -1118,9 +1131,10 @@ class ParserController
 		 */
 		if ($write_text === TRUE)
 		{
-			$this->logger->message('Creating code text ZIP file', 3);
 			$output = array();
 			exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
+			$this->logger->message('Created a ZIP file of the laws as plain text', 3);
+
 		}
 
 		/*
@@ -1128,9 +1142,9 @@ class ParserController
 		 */
 		if ($write_xml === TRUE)
 		{
-			$this->logger->message('Creating code XML ZIP file', 3);
 			$output = array();
 			exec('cd ' . $downloads_dir . '; zip -9rq code.xml.zip code-xml');
+			$this->logger->message('Created a ZIP file of the laws as XML', 3);
 		}
 
 		/*
@@ -1191,6 +1205,9 @@ class ParserController
 				$zip->close();
 
 			}
+
+			$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
+
 		}
 
 		$this->logger->message('Creating symlinks', 4);
@@ -1203,6 +1220,8 @@ class ParserController
 			{
 				$this->logger->message('Could not create “current” symlink in /downloads/', 10);
 			}
+
+			$this->logger->message('Created downloads “current” symlink', 4);
 
 		}
 
@@ -1761,6 +1780,7 @@ class ParserController
 
 		foreach(array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
 		{
+
 			$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
 
 			/*
@@ -1768,6 +1788,9 @@ class ParserController
 			 */
 			$this->mkdir($this->downloads_dir . $data_dir);
 		}
+
+		$this->logger->message('Created output directories for bulk download files', 5);
+
 	}
 
 	public function mkdir($dir)
@@ -1890,6 +1913,8 @@ class ParserController
 		 */
 		file_put_contents($sitemap_file, $xml->asXML());
 
+		$this->logger->message('Created sitemap.xml', 3);
+
 		return TRUE;
 
 	}
@@ -1907,12 +1932,12 @@ class ParserController
 		 */
 		if (extension_loaded('apc') && ini_get('apc.enabled') == 1)
 		{
-			$this->logger->message('Clearing APC cache', 5);
 
-			apc_clear_cache('user');
+			$cache->flush();
+			$this->logger->message('Cleared in-memory cache', 5);
 
-			$this->logger->message('Done', 5);
 		}
+
 	}
 
 	/**
@@ -2025,6 +2050,8 @@ class ParserController
 			$result = $statement->execute($sql_args);
 
 		}
+
+		$this->logger->message('Generated structural statistics', 3);
 
 	} // end structural_stats_generate()
 
@@ -2241,21 +2268,26 @@ class ParserController
 	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
 	 * instead, we do this via cURL.
 	 */
-	public function index_laws()
+	public function index_laws($args)
 	{
+		if(!isset($this->edition))
+		{
+			$edition_obj = new Edition(array('db' => $this->db));
+			$this->edition = $edition_obj->current();
+		}
 
 		if (!isset($this->edition))
 		{
 			throw new Exception('No edition, cannot index laws.');
 		}
 
-		if ($this->edition['current'] != '1')
+		if ($this->edition->current != '1')
 		{
 			$this->logger->message('The edition is not current, skipping update to search index.', 9);
 			return;
 		}
 
-		if(!defined('SOLR_URL'))
+		if(!defined('SEARCH_CONFIG'))
 		{
 			$this->logger->message('Solr is not in use.  Skipping index.', 9);
 			return;
@@ -2263,134 +2295,37 @@ class ParserController
 
 		else
 		{
-
-			$this->logger->message('Updating search index.');
-
 			/*
-			 * Define the Solr URL to which the XML files will be posted.
+			 * Index the laws.
 			 */
-			$solr_update_url = SOLR_URL . 'update';
+			$this->logger->message('Updating search index', 5);
 
-			/*
-			 * Generate a list of all of the XML files.
-			 */
-			$path = WEB_ROOT . '/downloads/' . $this->edition['slug'] . '/code-xml/';
+			$this->logger->message('Indexing laws', 6);
 
-			if (!file_exists($path) ||!is_dir($path))
+			$search_index = new SearchIndex();
+
+			$law_obj = new Law(array('db' => $this->db));
+			$result = $law_obj->get_all_laws($this->edition->id, true);
+
+			$search_index->start_update();
+
+			while($law = $result->fetch())
 			{
-				$this->logger->message('XML output directory ' . $path . ' does not exist—could not '
-					. 'index laws with Solr.', 10);
-				return FALSE;
+				// Get the full data of the actual law.
+				$document = new Law(array('db' => $this->db));
+				$document->law_id = $law['id'];
+				$document->config->get_all = TRUE;
+				$document->get_law();
+				// Bring over our edition info.
+				$document->edition = $this->edition;
+
+				$search_index->add_document($document);
 			}
 
-			/*
-			 * Create an array, $files, with a list of every XML file.
-			 *
-			 * We don't bother to check whether each file is readable because a) these files were
-			 * just created by the exporter and b) it's really too slow on the order of tens or
-			 * hundreds of thousands of files.
-			 */
-			$files = get_files($path);
+			$search_index->commit();
 
-			if (count($files) == 0)
-			{
-				$this->logger->message('No files were found in ' . $path . '—could not index laws with Solr.', 10);
-				return FALSE;
-			}
-
-			/*
-			 * See if any of these files contain invalid XML. We run xmllint, extract filenames from
-			 * the output, and put those on a blacklist. This is because Solr reacts badly to
-			 * invalid XML, and it's best that it not encounter any.
-			 *
-			 * We do this in a strange fashion, but for good cause. xmllint appears to be written in
-			 * such a fashion that makes it impossible for exec() to capture its output. Maybe it
-			 * explicitly writes to the console rather than STDOUT, maybe something else is going
-			 * on, but the simple solution is to redirect xmllint's output to a file, retrieve the
-			 * contents of that file, and then delete the file.
-			 *
-			 * We can only validate XML files that are all in the same directory (see issue #433 in
-			 * the GitHub repository), so we alert people with LAW_LONG_URLS enabled (which nests
-			 * XML within subdirectories) that their XML is not being validated.
-			 */
-			if (LAW_LONG_URLS === FALSE)
-			{
-
-				$this->logger->message('Validating XML files before indexing them', 5);
-				exec('xmllint --noout ' . $path . '* > ' . $path . 'xmllint.txt 2>&1');
-				$output = file_get_contents($path . 'xmllint.txt');
-				unlink($path . 'xmllint.txt');
-
-			}
-			else
-			{
-				$this->logger->message('Cannot try to validate XML files, because LAW_LONG_URLS is '
-					. 'enabled—proceeding with the assumption that they do not contain errors', 5);
-			}
-
-			/*
-			 * Extract filenames from the output.
-			 */
-			if (preg_match_all('/' . preg_quote($path, '/') . '(.+)\.xml\:/', $output, $matches) !== FALSE)
-			{
-
-				if (count($matches[1]) > 0)
-				{
-
-					$invalid_files = 0;
-
-					foreach ($matches[1] as $match)
-					{
-
-						$key = array_search($match, $files);
-						if ($key !== FALSE)
-						{
-							unset($files[$key]);
-							$invalid_files++;
-						}
-
-					}
-
-					if ($invalid_files > 0)
-					{
-						$this->logger->message('Suppressing the indexing of ' .
-							number_format($invalid_files) . ' laws, for the presence of invalid XML');
-					}
-
-				}
-
-			}
-
-			/*
-			 * Post each of the files to Solr, in batches of 10,000.
-			 */
-			$file_count = count($files);
-			$batch_size = 10000;
-			for ($i = 0; $i < $file_count; $i+=$batch_size)
-			{
-
-				$file_slice = array_slice($files, $i, $batch_size);
-
-				/*
-				 * Instruct Solr to apply the specified XSL
-				 * transformation on the provided XML files.
-				 */
-				$solr_parameters = array(
-					'tr' => 'stateDecodedXml.xsl');
-
-
-				$fields = array();
-				foreach ($file_slice as $key=>$filename)
-				{
-					$fields[$filename] = '@' . realpath($filename) . ';type=application/xml';
-					++$numFiles;
-				}
-
-				if ( !$this->handle_solr_request($fields, true, $solr_parameters) )
-				{
-					return FALSE;
-				}
-			}
+			// $this->logger->message('Indexing structures', 6);
+			### TODO
 
 			$this->logger->message('Laws indexed with Solr successfully.', 7);
 
@@ -2402,7 +2337,7 @@ class ParserController
 
 	public function clear_index($edition_id = null)
 	{
-		if(!defined('SOLR_URL'))
+		if (!defined('SOLR_URL'))
 		{
 			$this->logger->message('Solr is not enabled, skipping clearing of the index.', 5);
 			return TRUE;
@@ -2442,7 +2377,10 @@ class ParserController
 			return FALSE;
 		}
 
+		$this->logger->message('Solr cleared of all indexed laws', 5);
+
 		return TRUE;
+
 	}
 
 	protected function handle_solr_request($fields = array(), $multipart = false, $parameters = array())
