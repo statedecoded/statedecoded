@@ -129,6 +129,11 @@ class SolrSearchEngine extends SearchEngineInterface
 	{
 		$document = $this->transaction->createDocument();
 
+		// Set our site config info.
+		$document->site_identifier = $this->config['site']['identifier'];
+		$document->site_name = $this->config['site']['name'];
+		$document->site_url = $this->config['site']['url'];
+
 		$document->id = 'l_' . $law->token;
 
 		$document->section = $law->section;

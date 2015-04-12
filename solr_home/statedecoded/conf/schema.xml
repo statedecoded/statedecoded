@@ -28,6 +28,10 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="edition_updated" type="string" indexed="true" stored="true" />
    <field name="edition_current" type="bool" indexed="true" stored="true" />
 
+   <field name="site_identifier" type="string" indexed="true" stored="true" />
+   <field name="site_name" type="string" indexed="false" stored="true" />
+   <field name="site_url" type="string" indexed="false" stored="true" />
+
    <field name="catch_line" type="html_stripped_text_en" indexed="true" stored="true"/>
    <field name="tags" type="html_stripped_text_en" indexed="true" stored="true" multiValued="true" />
    <field name="tags_facet" type="string" indexed="true" stored="false" multiValued="true" />
