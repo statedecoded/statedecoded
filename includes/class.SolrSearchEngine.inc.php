@@ -32,7 +32,7 @@ class SolrSearchEngine extends SearchEngineInterface
 	/*
 	 * Number of documents to store before automatically flushing.
 	 */
-	public $autocommit_size = 100;
+	public $batch_size = 100;
 
 	/*
 	 * Hang on to our last result.
@@ -42,6 +42,11 @@ class SolrSearchEngine extends SearchEngineInterface
 	public function __construct($args = array())
 	{
 		parent::__construct($args);
+
+		if(!isset($this->config['batch_size']))
+		{
+			$this->config['batch_size'] = $this->batch_size;
+		}
 
 		$this->client = new Solarium_Client(
 			array(
@@ -80,11 +85,11 @@ class SolrSearchEngine extends SearchEngineInterface
 		$this->documents[] = $document;
 
 		// If we've reached the maximum size, flush our documents to the index.
-		// if(count($this->documents) >= $this->autocommit_size)
-		// {
-		// 	$this->commit();
-		// 	$this->start_update();
-		// }
+		if(count($this->documents) >= $this->config['batch_size'])
+		{
+			$this->commit();
+			$this->start_update();
+		}
 
 		return $document;
 	}

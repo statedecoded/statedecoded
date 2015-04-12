@@ -174,13 +174,29 @@ define('RECORD_VIEWS', TRUE);
  */
 define('SEARCH_CONFIG', json_encode(
 	array(
+		// By default, we use Solr.
 		'engine' => 'SolrSearchEngine',
+		// Our host configuration from solr.
 		'host' => 'localhost',
 		'port' => 8983,
 		'path' => '/solr/',
+		// The name of the default core to use.  Usually this is statedecoded.
 		'core' => 'statedecoded',
+		// 30 seconds should be long enough to index in most cases.
 		'timeout' => 30,
-		'omitheader' => false
+		// The hardcoded batch size is 100, we can change that as needed here.
+		'batch_size' => 100,
+		// We want to include the headers from Solr for error catching.
+		'omitheader' => false,
+		// Setup our local data to pass to the seach index.
+		'site' => array(
+			// On sites where multiple codes are stored in one Solr core, set
+			// a unique identifier for each site here.  You may also want to
+			// customize the default site name and url here.
+			'identifier' => 'statedecoded',
+			'name' => SITE_TITLE,
+			'url' => SITE_URL
+		)
 	)
 ));
 
