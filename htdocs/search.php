@@ -203,10 +203,10 @@ if (!empty($_GET['q']))
 			 * terms within that text.
 			 */
 
-			if ($results->highlight != FALSE)
+			if ($result->highlight != FALSE)
 			{
 
-				foreach ($results->highlight as $field => $highlight)
+				foreach ($result->highlight as $field => $highlight)
 				{
 					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
 						. ' .&thinsp;.&thinsp;. ';
