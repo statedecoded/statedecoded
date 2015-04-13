@@ -240,10 +240,11 @@ class SolrSearchEngine extends SearchEngineInterface
 			->setRows($query['per_page']);
 
 
-		$result = $this->client->select($select);
-		$this->last_result = $result;
+		$results = $this->client->select($select);
+		$this->last_result = $results;
 
-		return $result;
+		// Wrap the results and return them.
+		return new SolrSearchResults($query['term'], $results);
 	}
 
 }

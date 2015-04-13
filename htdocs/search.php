@@ -115,35 +115,15 @@ if (!empty($_GET['q']))
 	);
 
 	/*
-	 * Gather highlighted uses of the search terms, which we may use in display results.
-	 */
-	$highlighted = $results->getHighlighting();
-
-	/*
 	 * If any portion of this search term appears to be misspelled, propose a properly spelled
 	 * version.
 	 */
-	$spelling = $results->getSpellcheck();
-	if ($spelling->getCorrectlySpelled() == FALSE)
+	if ($results->get_fixed_spelling() !== FALSE)
 	{
-
-		/*
-		 * We're going to modify the provided query to suggest a better one, so duplicate $q.
-		 */
-		$suggested_q = $q;
 
 		$body .= '<h1>Suggestions</h1>';
 
-		/*
-		 * Step through each term that appears to be misspelled, and create a modified query string.
-		 */
-		foreach($spelling as $suggestion)
-		{
-			$str_start = $suggestion->getStartOffset();
-			$str_end = $suggestion->getEndOffset();
-			$original_string = substr($q, $str_start, $str_end);
-			$suggested_q = str_replace($original_string, $suggestion->getWord(), $suggested_q);
-		}
+		$suggested_q = $results->get_fixed_spelling($q);
 
 		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q) . '">'
 			. $suggested_q . '</a>”?</p>';
@@ -173,7 +153,7 @@ if (!empty($_GET['q']))
 	/*
 	 * If there are no results.
 	 */
-	if (count($results) == FALSE)
+	if (!isset($results) || $results->get_count() < 1)
 	{
 
 		$body .= '<p>No results found.</p>';
@@ -187,23 +167,18 @@ if (!empty($_GET['q']))
 	{
 
 		/*
-		 * Store the total number of documents returned by this search.
-		 */
-		$total_results = $results->getNumFound();
-
-		/*
 		 * Start the DIV that stores all of the search results.
 		 */
 		$body .= '
 			<div class="search-results">
-			<p>' . number_format($total_results) . ' results found.</p>
+			<p>' . number_format($results->get_count()) . ' results found.</p>
 			<ul>';
 
 		/*
 		 * Iterate through the results.
 		 */
 		$law = new Law;
-		foreach ($results as $result)
+		foreach ($results->get_results() as $result)
 		{
 
 			$url = $law->get_url($result->section);
@@ -227,11 +202,11 @@ if (!empty($_GET['q']))
 			 * Attempt to display a snippet of the indexed law, highlighting the use of the search
 			 * terms within that text.
 			 */
-			$snippet = $highlighted->getResult($result->id);
-			if ($snippet != FALSE)
+
+			if ($results->highlight != FALSE)
 			{
 
-				foreach ($snippet as $field => $highlight)
+				foreach ($results->highlight as $field => $highlight)
 				{
 					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
 						. ' .&thinsp;.&thinsp;. ';
