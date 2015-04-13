@@ -177,9 +177,13 @@ if (!empty($_GET['q']))
 		/*
 		 * Iterate through the results.
 		 */
-		$law = new Law;
+		global $db;
+		$law = new Law(array('db' => $db));
+
 		foreach ($results->get_results() as $result)
 		{
+			$law->law_id = $result->law_id;
+			$law->get_law();
 
 			$url = $law->get_url($result->section);
 
@@ -191,10 +195,11 @@ if (!empty($_GET['q']))
 			 * Display this law's structural ancestry as a breadcrumb trail.
 			 */
 			$body .= '<div class="breadcrumbs"><ul>';
-			$ancestry = explode('/', $result->structure);
-			foreach ($ancestry as $structure)
+
+			foreach ($law->ancestry as $structure)
 			{
-				$body .= '<li><a>' . $structure . '</a></li>';
+				$body .= '<li><a href="' . $structure->url . '">' . $structure->identifier . ' ' .
+					$structure->name . '</a></li>';
 			}
 			$body .= '</ul></div>';
 

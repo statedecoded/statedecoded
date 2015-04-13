@@ -135,6 +135,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		$document->site_url = $this->config['site']['url'];
 
 		$document->id = 'l_' . $law->token;
+		$document->law_id = $law->section_id;
 
 		$document->section = $law->section_number;
 
@@ -151,12 +152,12 @@ class SolrSearchEngine extends SearchEngineInterface
 
 		$document->repealed = $law->metadata->repealed;
 
-		$document->structure = array();
+		$structure = array();
 		foreach($law->ancestry as $key=>$value)
 		{
-			$document->structure[] = $value->name;
+			$structure[] = $value->identifier . ' ' . $value->name;
 		}
-		$document->structure = join('/', $document->structure);
+		$document->structure = join('/', $structure);
 
 		$document->refers_to = array();
 		foreach($document->refers_to as $law)
