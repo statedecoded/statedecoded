@@ -136,7 +136,7 @@ class SolrSearchEngine extends SearchEngineInterface
 
 		$document->id = 'l_' . $law->token;
 
-		$document->section = $law->section;
+		$document->section = $law->section_number;
 
 		$document->edition_id = $law->edition->id;
 		$document->edition = $law->edition->name;
