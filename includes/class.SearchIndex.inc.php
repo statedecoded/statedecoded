@@ -50,7 +50,7 @@ class SearchIndex
 	 */
 	public function start_update()
 	{
-		$this->engine->start_update();
+		return $this->engine->start_update();
 	}
 
 	/*
@@ -58,7 +58,7 @@ class SearchIndex
 	 */
 	public function add_document($data)
 	{
-		$this->engine->add_document($data);
+		return $this->engine->add_document($data);
 	}
 
 	/*
@@ -66,7 +66,12 @@ class SearchIndex
 	 */
 	public function commit()
 	{
-		$this->engine->commit();
+		return $this->engine->commit();
+	}
+
+	public function search($query)
+	{
+		return $this->engine->search($query);
 	}
 
 }

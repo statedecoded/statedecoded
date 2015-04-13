@@ -15,7 +15,11 @@
 /*
  * Intialize Solarium and instruct it to use the correct request handler.
  */
-$client = new Solarium_Client($GLOBALS['solr_config']);
+$client = new SearchIndex(
+	array(
+		'config' => json_decode(SEARCH_CONFIG, TRUE)
+	)
+);
 
 /*
  * Create a container for our content.
@@ -87,8 +91,9 @@ if (!empty($_GET['q']))
 	}
 	else
 	{
-		$edition = new Edition(); // Cool it now.
-		$edition_param = $edition->current('slug');
+		global $db;
+		$edition = new Edition(array('db' => $db)); // Cool it now.
+		$edition_param = $edition->current();
 	}
 
 	/*
@@ -98,44 +103,16 @@ if (!empty($_GET['q']))
 	$body .= $search->display_form();
 
 	/*
-	 * Set up our query.
-	 */
-	$query = $client->createSelect();
-	$query->setHandler('search');
-	$query->setQuery($q);
-
-	/*
-	 * Set our filter
-	 */
-	$query->createFilterQuery('edition')->setQuery('edition:' . $edition_param);
-
-	/*
-	 * We want the most useful bits highlighted as search results snippets.
-	 */
-	$hl = $query->getHighlighting();
-	$hl->setFields('catch_line, text');
-	$hl->setSimplePrefix('<span>');
-	$hl->setSimplePostfix('</span>');
-
-	/*
-	 * Check the spelling of the query and suggest alternates.
-	 */
-	$spellcheck = $query->getSpellcheck();
-	$spellcheck->setQuery($q);
-	$spellcheck->setBuild(TRUE);
-	$spellcheck->setCollate(TRUE);
-	$spellcheck->setExtendedResults(TRUE);
-	$spellcheck->setCollateExtendedResults(TRUE);
-
-	/*
-	 * Specify which page we want, and how many results.
-	 */
-	$query->setStart(($page - 1) * $per_page)->setRows($per_page);
-
-	/*
 	 * Execute the query.
 	 */
-	$results = $client->select($query);
+	$results = $client->search(
+		array(
+			'term' => $q,
+			'edition' => $edition_param->slug,
+			'page' => $page,
+			'per_page' => $per_page
+		)
+	);
 
 	/*
 	 * Gather highlighted uses of the search terms, which we may use in display results.

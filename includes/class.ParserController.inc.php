@@ -2302,7 +2302,11 @@ class ParserController
 
 			$this->logger->message('Indexing laws', 6);
 
-			$search_index = new SearchIndex();
+			$search_index = new SearchIndex(
+				array(
+					'config' => json_decode(SEARCH_CONFIG, TRUE)
+				)
+			);
 
 			$law_obj = new Law(array('db' => $this->db));
 			$result = $law_obj->get_all_laws($this->edition->id, true);

@@ -25,6 +25,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="id" type="string" indexed="true" stored="true" required="true" />
    <field name="edition" type="string" indexed="true" stored="true" required="true" />
    <field name="edition_id" type="string" indexed="true" stored="true" required="true" />
+   <field name="edition_slug" type="string" indexed="true" stored="true" required="true" />
    <field name="edition_updated" type="string" indexed="true" stored="true" />
    <field name="edition_current" type="bool" indexed="true" stored="true" />
 

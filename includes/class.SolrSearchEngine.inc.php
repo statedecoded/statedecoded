@@ -140,6 +140,7 @@ class SolrSearchEngine extends SearchEngineInterface
 
 		$document->edition_id = $law->edition->id;
 		$document->edition = $law->edition->name;
+		$document->edition_slug = $law->edition->slug;
 		$document->edition_updated = $law->edition->last_import;
 		$document->edition_current = $law->edition->current;
 
@@ -199,5 +200,50 @@ class SolrSearchEngine extends SearchEngineInterface
 	*/
 	}
 
+	public function search($query = array())
+	{
+		/*
+		 * Set up our query.
+		 */
+		$select = $this->client->createSelect();
+		$select->setHandler('search');
+		$select->setQuery($query['term']);
+
+		if(isset($query['edition']))
+		{
+			$select->createFilterQuery('edition')->setQuery(
+				'edition_slug:' . $query['edition']);
+		}
+
+		/*
+		 * We want the most useful bits highlighted as search results snippets.
+		 */
+		$hl = $select->getHighlighting();
+		$hl->setFields('catch_line, text');
+		$hl->setSimplePrefix('<span>');
+		$hl->setSimplePostfix('</span>');
+
+		/*
+		 * Check the spelling of the query and suggest alternates.
+		 */
+		$spellcheck = $select->getSpellcheck();
+		$spellcheck->setQuery($query['term']);
+		$spellcheck->setBuild(TRUE);
+		$spellcheck->setCollate(TRUE);
+		$spellcheck->setExtendedResults(TRUE);
+		$spellcheck->setCollateExtendedResults(TRUE);
+
+		/*
+		 * Specify which page we want, and how many results.
+		 */
+		$select->setStart(($query['page'] - 1) * $query['per_page'])
+			->setRows($query['per_page']);
+
+
+		$result = $this->client->select($select);
+		$this->last_result = $result;
+
+		return $result;
+	}
 
 }

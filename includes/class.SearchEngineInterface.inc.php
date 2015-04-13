@@ -10,18 +10,11 @@ abstract class SearchEngineInterface
 		}
 	}
 
-	public function start_update()
-	{
+	public function start_update() {}
 
-	}
+	public function add_document($record) {}
 
-	public function add_document($record)
-	{
+	public function commit() {}
 
-	}
-
-	public function commit()
-	{
-
-	}
+	public function search($query) {}
 }
