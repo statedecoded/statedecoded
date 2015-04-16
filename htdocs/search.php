@@ -105,20 +105,29 @@ if (!empty($_GET['q']))
 	/*
 	 * Execute the query.
 	 */
-	$results = $client->search(
-		array(
-			'term' => $q,
-			'edition' => $edition_param->slug,
-			'page' => $page,
-			'per_page' => $per_page
-		)
-	);
+	try {
+		$results = $client->search(
+			array(
+				'term' => $q,
+				'edition' => $edition_param->slug,
+				'page' => $page,
+				'per_page' => $per_page
+			)
+		);
+	}
+	catch (Exception $error)
+	{
+		$error_message = 'Search failed with the error "' . $error->getStatusMessage() .'". ';
+		$error_message .= 'Please try again later.';
+
+		unset($results);
+	}
 
 	/*
 	 * If any portion of this search term appears to be misspelled, propose a properly spelled
 	 * version.
 	 */
-	if ($results->get_fixed_spelling() !== FALSE)
+	if (isset($results) && $results->get_fixed_spelling() !== FALSE)
 	{
 
 		$body .= '<h1>Suggestions</h1>';
@@ -155,8 +164,13 @@ if (!empty($_GET['q']))
 	 */
 	if (!isset($results) || $results->get_count() < 1)
 	{
-
-		$body .= '<p>No results found.</p>';
+		if(isset($error_message))
+		{
+			$body .= $error_message;
+		}
+		else {
+			$body .= '<p>No results found.</p>';
+		}
 
 	}
 
