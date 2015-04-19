@@ -109,7 +109,7 @@ class StateDecoded2013__Page extends Page
 		}
 		else
 		{
-			$content->append('browser_title', '-' . SITE_TITLE);
+			$content->append('browser_title', '&#8202;-&#8202;' . SITE_TITLE);
 		}
 
 		/*
