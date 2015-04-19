@@ -174,7 +174,8 @@ define('RECORD_VIEWS', TRUE);
  */
 define('SEARCH_CONFIG', json_encode(
 	array(
-		// By default, we use Solr.
+		// By default, we use Solr.  You can also use 'SqlSearchEngine'
+		// to just use the database search with no external search engine.
 		'engine' => 'SolrSearchEngine',
 		// Our host configuration from solr.
 		'host' => 'localhost',
