@@ -26,6 +26,12 @@ class Edition
 		{
 			$this->$key = $value;
 		}
+
+		if(!isset($this->db))
+		{
+			global $db;
+			$this->db = $db;
+		}
 	}
 
 	public function find_by_id($id)
