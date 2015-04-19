@@ -1347,7 +1347,7 @@ class Parser
 			/*
 			 * Determine the position of this structural unit.
 			 */
-			$structure = array_reverse($this->structure_labels);
+			$structure = array_reverse($this->get_structure_labels());
 			array_push($structure, 'global');
 
 			/*
@@ -1630,7 +1630,7 @@ class Parser
 		 * Break up this section into paragraphs. If HTML paragraph tags are present, break it up
 		 * with those. If they're not, break it up with carriage returns.
 		 */
-		if (strpos($this->text, '<p>') !== FALSE)
+		if (strpos($text, '<p>') !== FALSE)
 		{
 			$paragraphs = explode('<p>', $text);
 		}
@@ -1641,6 +1641,11 @@ class Parser
 		}
 
 		/*
+		 * Discard any empty paragraphs.
+		 */
+		$paragraphs = array_values(array_filter($paragraphs));
+
+		/*
 		 * Create the empty array that we'll build up with the definitions found in this section.
 		 */
 		$definitions = array();
@@ -1648,7 +1653,7 @@ class Parser
 		/*
 		 * Step through each paragraph and determine which contain definitions.
 		 */
-		foreach ($paragraphs as &$paragraph)
+		foreach ($paragraphs as $index => $paragraph)
 		{
 
 			/*
@@ -1665,7 +1670,7 @@ class Parser
 			/*
 			 * Calculate the scope of these definitions using the first line.
 			 */
-			if (reset($paragraphs) == $paragraph)
+			if ($index === 0)
 			{
 
 				/*
