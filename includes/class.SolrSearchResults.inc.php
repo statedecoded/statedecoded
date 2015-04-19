@@ -33,12 +33,12 @@ class SolrSearchResults implements SearchResultsInterface
 			/*
 			 * Step through each term that appears to be misspelled, and create a modified query string.
 			 */
-			$clean_spelling = $this->query;
+			$clean_spelling = $this->query['term'];
 			foreach($this->spelling as $suggestion)
 			{
 				$str_start = $suggestion->getStartOffset();
 				$str_end = $suggestion->getEndOffset();
-				$original_string = substr($this->query, $str_start, $str_end);
+				$original_string = substr($this->query['term'], $str_start, $str_end);
 				$clean_spelling = str_replace($original_string, $suggestion->getWord(), $clean_spelling);
 			}
 			return $clean_spelling;

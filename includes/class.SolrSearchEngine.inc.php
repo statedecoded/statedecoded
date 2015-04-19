@@ -137,7 +137,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		$document->id = 'l_' . $law->token;
 		$document->law_id = $law->section_id;
 
-		$document->section = $law->section_number;
+		$document->section_number = $law->section_number;
 
 		$document->edition_id = $law->edition->id;
 		$document->edition = $law->edition->name;
@@ -210,10 +210,10 @@ class SolrSearchEngine extends SearchEngineInterface
 		$select->setHandler('search');
 		$select->setQuery($query['term']);
 
-		if(isset($query['edition']))
+		if(isset($query['edition_id']))
 		{
-			$select->createFilterQuery('edition')->setQuery(
-				'edition_slug:' . $query['edition']);
+			$select->createFilterQuery('edition_id')->setQuery(
+				'edition_id:' . $query['edition_id']);
 		}
 
 		/*
@@ -245,7 +245,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		$this->last_result = $results;
 
 		// Wrap the results and return them.
-		return new SolrSearchResults($query['term'], $results);
+		return new SolrSearchResults($query, $results);
 	}
 
 }

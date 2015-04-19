@@ -85,14 +85,19 @@ if (!empty($_GET['q']))
 		$per_page = 10;
 	}
 
-	if(!empty($_GET['edition']))
+	/*
+	 * Filter by edition.
+	 */
+	global $db;
+	$edition = new Edition(array('db' => $db)); // Cool it now.
+
+	if(!empty($_GET['edition_id']))
 	{
-		$edition_param = filter_input(INPUT_GET, 'edition', FILTER_SANITIZE_STRING);
+		$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
+		$edition_param = $edition->find_by_id($edition_id);
 	}
 	else
 	{
-		global $db;
-		$edition = new Edition(array('db' => $db)); // Cool it now.
 		$edition_param = $edition->current();
 	}
 
@@ -109,7 +114,7 @@ if (!empty($_GET['q']))
 		$results = $client->search(
 			array(
 				'term' => $q,
-				'edition' => $edition_param->slug,
+				'edition_id' => $edition_param->id,
 				'page' => $page,
 				'per_page' => $per_page
 			)
@@ -199,18 +204,21 @@ if (!empty($_GET['q']))
 			$law->law_id = $result->law_id;
 			$law->get_law();
 
-			$url = $law->get_url($result->section);
+			$url = $law->get_url( $result->law_id );
 
 			$body .= '<li><div class="result">';
-			$body .= '<h1><a href="' . $url . '">' . $result->catch_line . ' (' . SECTION_SYMBOL . '&nbsp;'
-				. $result->section . ')</a></h1>';
+			$body .= '<h1><a href="' . $url->url . '">';
+			$body .= isset($result->catch_line) ? $result->catch_line : $law->catch_line;
+			$body .= ' (' . SECTION_SYMBOL . '&nbsp;';
+			$body .= isset($result->section_number) ? $result->section_number : $law->section_number;
+			$body .= ')</a></h1>';
 
 			/*
 			 * Display this law's structural ancestry as a breadcrumb trail.
 			 */
 			$body .= '<div class="breadcrumbs"><ul>';
 
-			foreach ($law->ancestry as $structure)
+			foreach (array_reverse((array) $law->ancestry) as $structure)
 			{
 				$body .= '<li><a href="' . $structure->url . '">' . $structure->identifier . ' ' .
 					$structure->name . '</a></li>';
@@ -222,7 +230,7 @@ if (!empty($_GET['q']))
 			 * terms within that text.
 			 */
 
-			if ($result->highlight != FALSE)
+			if (isset($result->highlight) && !empty($result->highlight))
 			{
 
 				foreach ($result->highlight as $field => $highlight)
@@ -247,7 +255,8 @@ if (!empty($_GET['q']))
 			 */
 			else
 			{
-				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
+				$text = isset($result->text) ? $result->text : $law->full_text;
+				$body .= '<p>' . substr($text , 0, 250) . ' .&thinsp;.&thinsp;.</p>';
 			}
 
 			/*
@@ -265,9 +274,9 @@ if (!empty($_GET['q']))
 		/*
 		 * Display page numbers at the bottom, if we have more than one page of results.
 		 */
-		if ($total_results > $per_page)
+		if ($results->get_count() > $per_page)
 		{
-			$search->total_results = $total_results;
+			$search->total_results = $results->get_count();
 			$search->per_page = $per_page;
 			$search->page = $page;
 			$search->query = $q;

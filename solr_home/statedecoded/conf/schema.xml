@@ -51,13 +51,13 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <copyField source= "structure" dest="structure_ancestor"/>
    <copyField source= "structure" dest="structure_facet_hierarchical"/>
 
-   <field name="section" type="string" indexed="true" stored="true"/>
+   <field name="section_number" type="string" indexed="true" stored="true"/>
    <field name="section_descendent" type="section_descendent" indexed="true" stored="false"/>
    <field name="section_ancestor" type="section_ancestor" indexed="true" stored="false"/>
    <field name="section_facet_hierarchical" type="descendent_facet_hierarchical" indexed="true" stored="false"/>
-   <copyField source= "section" dest="section_descendent"/>
-   <copyField source= "section" dest="section_ancestor"/>
-   <copyField source= "section" dest="section_facet_hierarchical"/>
+   <copyField source= "section_number" dest="section_descendent"/>
+   <copyField source= "section_number" dest="section_ancestor"/>
+   <copyField source= "section_number" dest="section_facet_hierarchical"/>
 
    <field name="refers_to" type="string" indexed="false" stored="true" multiValued="true"/>
    <field name="refers_to_descendent" type="section_descendent" indexed="true" stored="false" multiValued="true"/>

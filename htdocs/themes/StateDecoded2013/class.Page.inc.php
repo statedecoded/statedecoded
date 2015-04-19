@@ -100,7 +100,7 @@ class StateDecoded2013__Page extends Page
 			if (strlen($content->get('page_title')) > 0)
 			{
 				$content->set('browser_title', $content->get('page_title'));
-				$content->append('browser_title', '-' . SITE_TITLE);
+				$content->append('browser_title', ' - ' . SITE_TITLE);
 			}
 			else
 			{
@@ -109,7 +109,7 @@ class StateDecoded2013__Page extends Page
 		}
 		else
 		{
-			$content->append('browser_title', '—' . SITE_TITLE);
+			$content->append('browser_title', ' - ' . SITE_TITLE);
 		}
 
 		/*
