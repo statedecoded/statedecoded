@@ -135,15 +135,21 @@ class SqlSearchEngine extends SearchEngineInterface
 
 			$where_or = array();
 
-			$query_args[':term'] = '[[:<:]]' . $query['term'] . '[[:>:]]';
+			$where_or[] = 'section = :term';
+			$query_args[':term'] = $query['term'];
+
+			// Remove any quotes, and apply our regexp word boundaries.
+			$query_args[':term_boundary'] = SqlSearchEngine::word_boundary(
+				str_replace('"', '', $query['term'])
+			);
 
 			// Add our query
-			$where_or[] = 'catch_line REGEXP :term';
-			$where_or[] = 'text REGEXP :term';
+			$where_or[] = 'catch_line REGEXP :term_boundary';
+			$where_or[] = 'text REGEXP :term_boundary';
 
 			// Add some fields to use in the order
-			$fields[] = 'catch_line REGEXP :term AS title_exect_match';
-			$fields[] = 'text REGEXP :term AS text_exect_match';
+			$fields[] = 'catch_line REGEXP :term_boundary AS title_exect_match';
+			$fields[] = 'text REGEXP :term_boundary AS text_exect_match';
 
 			// Order by
 			$order[] = 'title_exect_match DESC';
@@ -157,24 +163,36 @@ class SqlSearchEngine extends SearchEngineInterface
 			 */
 			if($this->use_token_match && strpos($query['term'], ' ') !== FALSE)
 			{
+				// The function below handles quoted items.
+				$keywords = SqlSearchEngine::tokenize($query['term']);
 
+				// Only do this search if we have more than one keyword.
+				// Otherwise, we still only care about an exact match.
 
-				$title_search = SqlSearchEngine::build_keyword_search(
-					'catch_line', $query['term']);
-				$where_or[] = join(' OR ', $title_search);
+				if(count($keywords > 1))
+				{
+					list($title_search, $new_args) =
+						SqlSearchEngine::build_keyword_search(
+						'catch_line', $keywords);
+					$query_args = array_merge($query_args, $new_args);
 
-				$fields[] = '( ' .
-					join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
-					. ' ) AS title_match';
-				$order[] = 'title_match DESC';
+					$where_or[] = join(' OR ', $title_search);
+					$fields[] = '( ' .
+						join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
+						. ' ) AS title_match';
+					$order[] = 'title_match DESC';
 
-				$text_search = SqlSearchEngine::build_keyword_search(
-					'text', $query['term']);
-				$where_or[] = join(' OR ', $text_search);
-				$fields[] = '( ' .
-					join(' + ', array_map('SqlSearchEngine::ifify', $text_search))
-					. ' ) AS text_match';
-				$order[] = 'text_match DESC';
+					list($text_search, $new_args) =
+						SqlSearchEngine::build_keyword_search(
+						'text', $keywords);
+					$query_args = array_merge($query_args, $new_args);
+
+					$where_or[] = join(' OR ', $text_search);
+					$fields[] = '( ' .
+						join(' + ', array_map('SqlSearchEngine::ifify', $text_search))
+						. ' ) AS text_match';
+					$order[] = 'text_match DESC';
+				}
 			}
 
 			if(count($where_or))
@@ -243,46 +261,30 @@ class SqlSearchEngine extends SearchEngineInterface
 		$fields = array();
 
 		if($keywords) {
+			$i = 0;
+			foreach($keywords as $keyword)
+			{
+				$i++;
 
-			// The function below handles quoted items.
-			if(!is_array($keywords)) {
-				$keywords = SqlSearchEngine::tokenize($keywords);
-			}
-
-			foreach($keywords as $keyword) {
 				// Add slash escaping
-				$keyword = SqlSearchEngine::escape_regexp($keyword);
-
-				unset($keyword_where);
+				// This isn't necessary with PDO
+				// $keyword = SqlSearchEngine::escape_regexp($keyword);
 
 				// Handle wildcards
-
-				// At this point, *s have a slash in front of them.
-				if(substr($keyword, 0, 2) == '\*') {
-					$keyword = '.*'.substr($keyword, 2);
-				}
-				else {
-					// Add front word boundary
-					$keyword = '[[:<:]]'.$keyword;
-				}
-
-				if(substr($keyword, -2, 2) == '\*') {
-					$keyword = substr($keyword, 0, -2).'.*';
-				}
-				else {
-					// Add back word boundary
-					$keyword .= '[[:>:]]';
-				}
+				$keyword = SqlSearchEngine::word_boundary($keyword);
 
 				// Replace remaining wildcards.
 				$keyword = str_replace('\*', '.*', $keyword);
 
-				$fields[] = $search_field.' REGEXP "'.$keyword.'"';
+				// Build a placeholder token for sql.
+				$placeholder = ':token_' . $i;
+
+				$fields[] = $search_field . ' REGEXP ' . $placeholder;
+				$sql_args[$placeholder] = $keyword;
 			}
 		}
 
-
-		return $fields;
+		return array($fields, $sql_args);
 
 	}
 
@@ -291,35 +293,47 @@ class SqlSearchEngine extends SearchEngineInterface
 	 * search queries.
 	 */
 
-	public static function tokenize($string) {
+	public static function tokenize($string)
+	{
 		$buffer = '';
 		$keywords = array();
-		$quote_string = 0;
-		for($i = 0; $i< strlen($string); $i++) {
-			if($string[$i] == '"') {
-				if(strlen($buffer)) {
-					$keywords[] = $buffer;
-					unset($buffer);
-				}
-				$quote_string = ! (int) $quote_string;
+		$quote_string = FALSE;
 
+		for($i = 0; $i< strlen($string); $i++)
+		{
+			if($string[$i] === '"')
+			{
+				if(strlen($buffer))
+				{
+					$keywords[] = $buffer;
+					$buffer = '';
+				}
+				$quote_string = !$quote_string;
 			}
-			else {
-				if($string[$i] == ' ' && !$quote_string) {
-					if(strlen($buffer)) {
+			else
+			{
+				if($string[$i] === ' ' && !$quote_string)
+				{
+					if(strlen($buffer))
+					{
 						$keywords[] = $buffer;
-						unset($buffer);
+						$buffer = '';
 					}
 				}
-				else {
+				else
+				{
 					$buffer .= $string[$i];
 				}
 			}
 		}
 
-		if(strlen($buffer)) {
+		if(strlen($buffer))
+		{
 			$keywords[] = $buffer;
 		}
+
+		// Remove any empty strings.
+		$keywords = array_values(array_filter($keywords));
 
 		return $keywords;
 	}
@@ -327,10 +341,40 @@ class SqlSearchEngine extends SearchEngineInterface
 	/*
 	 * We have to jump through some hoops for REGEXP escaping in SQL.
 	 */
-	public static function escape_regexp($string){
+	public static function escape_regexp($string)
+	{
 		$return_value = preg_replace("/([.\[\]*^\$])/", '\\\$1', $string);
 		$return_value = str_replace('|', '\\\\|', $return_value);
 		return $return_value;
+	}
+
+	/*
+	 * Add regexp word boundaries.  Handles wildcards.
+	 */
+	public static function word_boundary($keyword)
+	{
+		// At this point, *s have a slash in front of them.
+		if(substr($keyword, 0, 2) == '\*')
+		{
+			$keyword = '.*'.substr($keyword, 2);
+		}
+		else
+		{
+			// Add front word boundary
+			$keyword = '[[:<:]]'.$keyword;
+		}
+
+		if(substr($keyword, -2, 2) == '\*')
+		{
+			$keyword = substr($keyword, 0, -2).'.*';
+		}
+		else
+		{
+			// Add back word boundary
+			$keyword .= '[[:>:]]';
+		}
+
+		return $keyword;
 	}
 
 	/*

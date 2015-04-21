@@ -110,10 +110,11 @@ if (!empty($_GET['q']))
 	/*
 	 * Execute the query.
 	 */
-	try {
+	try
+	{
 		$results = $client->search(
 			array(
-				'term' => $q,
+				'term' => decode_entities($q),
 				'edition_id' => $edition_param->id,
 				'page' => $page,
 				'per_page' => $per_page
@@ -122,7 +123,7 @@ if (!empty($_GET['q']))
 	}
 	catch (Exception $error)
 	{
-		$error_message = 'Search failed with the error "' . $error->getStatusMessage() .'". ';
+		$error_message = 'Search failed with the error "' . $error->getMessage() .'". ';
 		$error_message .= 'Please try again later.';
 
 		unset($results);
@@ -141,26 +142,6 @@ if (!empty($_GET['q']))
 
 		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q) . '">'
 			. $suggested_q . '</a>”?</p>';
-
-	}
-
-	/*
-	 * See if the search term consists of a section number.
-	 */
-	if (preg_match(SECTION_REGEX, $q) == TRUE)
-	{
-
-		/*
-		 * If this is an actual section number that exists in the law, provide a link to it.
-		 */
-		$law = new Law();
-		$law->section_number = $q;
-		if ($law->exists() === TRUE)
-		{
-			$body .= '
-			<p><a href="' . $law->url . '">Were you looking for ' . SECTION_SYMBOL . '&nbsp;'
-					. $law->section_number . '?</a></p>';
-		}
 
 	}
 

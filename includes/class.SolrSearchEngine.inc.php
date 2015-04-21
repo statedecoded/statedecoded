@@ -203,49 +203,56 @@ class SolrSearchEngine extends SearchEngineInterface
 
 	public function search($query = array())
 	{
-		/*
-		 * Set up our query.
-		 */
-		$select = $this->client->createSelect();
-		$select->setHandler('search');
-		$select->setQuery($query['term']);
-
-		if(isset($query['edition_id']))
+		// We try our query here so we can wrap the exception into a standard one.
+		try
 		{
-			$select->createFilterQuery('edition_id')->setQuery(
-				'edition_id:' . $query['edition_id']);
+			/*
+			 * Set up our query.
+			 */
+			$select = $this->client->createSelect();
+			$select->setHandler('search');
+			$select->setQuery($query['term']);
+
+			if(isset($query['edition_id']))
+			{
+				$select->createFilterQuery('edition_id')->setQuery(
+					'edition_id:' . $query['edition_id']);
+			}
+
+			/*
+			 * We want the most useful bits highlighted as search results snippets.
+			 */
+			$hl = $select->getHighlighting();
+			$hl->setFields('catch_line, text');
+			$hl->setSimplePrefix('<span>');
+			$hl->setSimplePostfix('</span>');
+
+			/*
+			 * Check the spelling of the query and suggest alternates.
+			 */
+			$spellcheck = $select->getSpellcheck();
+			$spellcheck->setQuery($query['term']);
+			$spellcheck->setBuild(TRUE);
+			$spellcheck->setCollate(TRUE);
+			$spellcheck->setExtendedResults(TRUE);
+			$spellcheck->setCollateExtendedResults(TRUE);
+
+			/*
+			 * Specify which page we want, and how many results.
+			 */
+			$select->setStart(($query['page'] - 1) * $query['per_page'])
+				->setRows($query['per_page']);
+
+
+			$results = $this->client->select($select);
+			$this->last_result = $results;
+
+			// Wrap the results and return them.
+			return new SolrSearchResults($query, $results);
 		}
-
-		/*
-		 * We want the most useful bits highlighted as search results snippets.
-		 */
-		$hl = $select->getHighlighting();
-		$hl->setFields('catch_line, text');
-		$hl->setSimplePrefix('<span>');
-		$hl->setSimplePostfix('</span>');
-
-		/*
-		 * Check the spelling of the query and suggest alternates.
-		 */
-		$spellcheck = $select->getSpellcheck();
-		$spellcheck->setQuery($query['term']);
-		$spellcheck->setBuild(TRUE);
-		$spellcheck->setCollate(TRUE);
-		$spellcheck->setExtendedResults(TRUE);
-		$spellcheck->setCollateExtendedResults(TRUE);
-
-		/*
-		 * Specify which page we want, and how many results.
-		 */
-		$select->setStart(($query['page'] - 1) * $query['per_page'])
-			->setRows($query['per_page']);
-
-
-		$results = $this->client->select($select);
-		$this->last_result = $results;
-
-		// Wrap the results and return them.
-		return new SolrSearchResults($query, $results);
+		catch (Exception $error)
+		{
+			throw new Exception( $error->getStatusMessage() );
+		}
 	}
-
 }
