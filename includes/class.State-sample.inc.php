@@ -716,7 +716,7 @@ class Parser
 			 * without the edition slug.  This becomes the preferred
 			 * link url.
 			 */
-			if ($item['current_edition'])
+			if ($edition->current)
 			{
 				$insert_data = array(
 					':object_type' => 'structure',
@@ -741,7 +741,7 @@ class Parser
 				':url' => '/' . $edition->slug . '/',
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
-				':permalink' => 0
+				':permalink' => 1
 			);
 			$this->permalink_obj->create($insert_data);
 
@@ -820,7 +820,7 @@ class Parser
 			 * without the edition slug.  This becomes the preferred
 			 * link url.
 			 */
-			if ($item['current_edition'])
+			if ($edition->current)
 			{
 				$insert_data = array(
 					':object_type' => 'structure',
@@ -897,7 +897,7 @@ class Parser
 					 * Current-and-short is the most-preferred (shortest) url.
 					 */
 
-					if ($item['current_edition'])
+					if ($edition->current)
 					{
 						$insert_data = array(
 							':object_type' => 'law',
@@ -935,7 +935,7 @@ class Parser
 				/*
 				 * Long and current is our third choice.
 				 */
-				if ($item['current_edition'])
+				if ($edition->current)
 				{
 					$insert_data = array(
 						':object_type' => 'law',

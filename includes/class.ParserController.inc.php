@@ -387,16 +387,19 @@ class ParserController
 			/*
 			 * Get the edition from the database and store a copy locally.
 			 */
-			$edition_query = 'SELECT * FROM editions WHERE id = :edition_id';
-			$edition_args = array(':edition_id' => $this->edition_id);
+			$edition = new Edition();
+			$edition_result = $edition->find_by_id($this->edition_id);
 
-			$edition_statement = $this->db->prepare($edition_query);
-			$edition_result = $edition_statement->execute($edition_args);
-
-			if ($edition_result !== FALSE && $edition_statement->rowCount() > 0)
+			if ($edition_result !== FALSE)
 			{
-				$this->export_edition_id($this->edition_id);
-				$this->edition = $edition_statement->fetch(PDO::FETCH_ASSOC);
+				$this->edition = $edition_result;
+
+				// Write the EDITION_ID
+				if($this->edition->current && defined('EDITION_ID') &&
+					EDITION_ID != $this->edition->id)
+				{
+					$this->export_edition_id($this->edition_id);
+				}
 			}
 			else
 			{
