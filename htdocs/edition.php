@@ -18,6 +18,7 @@
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 global $db;
 $edition_obj = new Edition(array('db' => $db));
+$permalink_obj = new Permalink(array('db' => $db));
 
 /*
  * Create a container for our content.
@@ -39,12 +40,30 @@ $body = '<p>
 $body .= '<ol class="edition-list">';
 foreach($editions as $edition)
 {
-	// TODO: lookup permalink if $_GET['from] is set.
-	$url = '/' . $edition->slug . '/';
-	if($edition->current)
+	// If we have a passed url, use it.
+	if($_GET['from'])
 	{
-		$url = '/browse/';
+		$old_url = $_GET['from'];
 	}
+	else
+	{
+		$old_url = '/browse/';
+	}
+	// Translate our url into a shiny new permalink.
+	$permalink = $permalink_obj->translate_permalink($old_url, $edition->id);
+
+	if($permalink && isset($permalink->url))
+	{
+		$url = $permalink->url;
+	}
+	// If we didn't turn up a url, that page must not be in this edition of the code.
+	// In this case, just show them the index.
+	else
+	{
+		$permalink = $permalink_obj->translate_permalink('/browse/', $edition->id);
+		$url = $permalink->url;
+	}
+
 	$body .= '<li';
 	if($edition->current)
 	{

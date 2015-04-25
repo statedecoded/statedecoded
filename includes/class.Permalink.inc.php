@@ -97,4 +97,46 @@ class Permalink
 			return $preferred_statement->fetch(PDO::FETCH_OBJ);
 		}
 	}
+
+	/*
+	 * Given an existing url, find a permalink that matches that url
+	 * for a different edition.
+	 * E.g. "Show the version of this law for edition 7."
+	 */
+	public function translate_permalink($url, $edition_id, $preferred = 1)
+	{
+		$query = 'SELECT p2.* FROM permalinks AS p1
+		LEFT JOIN permalinks AS p2
+		 ON p1.token = p2.token
+		 AND p1.object_type = p2.object_type
+		WHERE p1.url = :url
+		AND p2.edition_id = :edition_id ';
+		$sql_args = array(
+			':url' => $url,
+			':edition_id' => $edition_id
+		);
+		// If it's preferred, we want that.
+		if($preferred)
+		{
+			$query .= 'AND p2.preferred = 1 ';
+		}
+		// Otherwise we want the permalink.
+		else
+		{
+			$query .= 'AND p2.permalink = 1 ';
+		}
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($sql_args);
+
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			return $statement->fetch(PDO::FETCH_OBJ);
+		}
+	}
 }

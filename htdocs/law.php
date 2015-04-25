@@ -459,7 +459,7 @@ if($edition_data && count($edition_list) > 1)
 	{
 		$content->append('edition', 'It was last updated ' . date('M d, Y', strtotime($edition_data->last_import)) . '.  ');
 	}
-	$content->append('edition', '<a href="/editions/" class="edition-link">Browse all editions.</a></p>');
+	$content->append('edition', '<a href="/editions/?from=' . $_SERVER['REQUEST_URI'] . '" class="edition-link">Browse all editions.</a></p>');
 }
 
 $content->set('current_edition', $law->edition_id);
