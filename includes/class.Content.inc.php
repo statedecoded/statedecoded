@@ -79,13 +79,17 @@ class Content
 				 */
 				return '';
 			}
-			
+
 		}
 		else
 		{
 			return $this->data;
 		}
-		
 	}
-	
+
+	public function is_set($field)
+	{
+		return isset($this->data[$field]);
+	}
+
 }

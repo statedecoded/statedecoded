@@ -204,7 +204,7 @@ class SqlSearchEngine extends SearchEngineInterface
 		/*
 		 * Handle editions.
 		 */
-		if(isset($query['edition_id']))
+		if(isset($query['edition_id']) && strlen($query['edition_id']))
 		{
 			$where[] = 'laws.edition_id = :edition_id';
 			$query_args[':edition_id'] = $query['edition_id'];

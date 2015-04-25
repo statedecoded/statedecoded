@@ -120,7 +120,22 @@ class StateDecoded2013__Page extends Page
 		/*
 		 * Get the edition data
 		 */
-		$content->set('edition_select', $this->build_edition($content));
+		$search = new Search();
+
+		// Since we don't have any conditions in our template, we have to build
+		// html here.
+		if(!$content->is_set('current_edition'))
+		{
+			$content->set('current_edition', EDITION_ID);
+		}
+		$content->set('edition_select',
+			$search->build_edition( $content->get('current_edition') )
+		);
+
+		/*
+		 * Set our search terms.
+		 */
+		$content->set('search_terms', $_GET['q']);
 
 		/*
 		 * If a Google Analytics Web Property ID has been provided, insert the tracking code.
@@ -213,50 +228,4 @@ class StateDecoded2013__Page extends Page
 		$content->set('css', join("\n", $stylesheets));
 	}
 
-	public function build_edition($content)
-	{
-		$output = '';
-
-		// Since we don't have any conditions in our template, we have to build
-		// html here.
-		if(!$content->get('current_edition'))
-		{
-			$content->set('current_edition', EDITION_ID);
-		}
-
-		$edition_object = new Edition();
-		$editions = $edition_object->all();
-
-		if(count($editions) > 1)
-		{
-
-			$output = '<select name="edition" id="edition">';
-			$output .= '<option value="">Search All Editions</option>';
-			foreach($editions as $edition)
-			{
-				$output .= '<option value="' . $edition->slug .'"';
-
-				if($edition->id == $content->get('current_edition'))
-				{
-					$output .= ' selected="selected"';
-				}
-				$output .= '>' . $edition->name;
-
-				if($edition->current)
-				{
-					$output .= ' (current)';
-				}
-				$output .= '</option>';
-			}
-			$output .= '</select>';
-		}
-		// If we only have one edition, just use it.
-		elseif(count($editions) == 1)
-		{
-			$output .= '<input type="hidden" name="edition" value="' .
-				$editions[0]->slug .'">';
-		}
-
-		return $output;
-	}
 }

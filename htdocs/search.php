@@ -88,24 +88,20 @@ if (!empty($_GET['q']))
 	/*
 	 * Filter by edition.
 	 */
-	global $db;
-	$edition = new Edition(array('db' => $db)); // Cool it now.
+	$edition_id = '';
+	$edition = new Edition();
 
 	if(!empty($_GET['edition_id']))
 	{
 		$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
-		$edition_param = $edition->find_by_id($edition_id);
 	}
-	else
-	{
-		$edition_param = $edition->current();
-	}
+	$content->set('current_edition', $edition_id);
 
 	/*
 	 * Display our search form.
 	 */
 	$search->query = $q;
-	$body .= $search->display_form();
+	$body .= $search->display_form($edition_id);
 
 	/*
 	 * Execute the query.
@@ -115,7 +111,7 @@ if (!empty($_GET['q']))
 		$results = $client->search(
 			array(
 				'term' => decode_entities($q),
-				'edition_id' => $edition_param->id,
+				'edition_id' => $edition_id,
 				'page' => $page,
 				'per_page' => $per_page
 			)
@@ -188,11 +184,36 @@ if (!empty($_GET['q']))
 			$url = $law->get_url( $result->law_id );
 
 			$body .= '<li><div class="result">';
-			$body .= '<h1><a href="' . $url->url . '">';
-			$body .= isset($result->catch_line) ? $result->catch_line : $law->catch_line;
+			$body .= '<h1><a href="' . $url_string . '">';
+
+			if(strlen($result->catch_line))
+			{
+				$body .= $result->catch_line;
+			}
+			else
+			{
+				$body .= $law->catch_line;
+			}
+
 			$body .= ' (' . SECTION_SYMBOL . '&nbsp;';
-			$body .= isset($result->section_number) ? $result->section_number : $law->section_number;
+			if(strlen($result->section_number))
+			{
+				$body .= $result->section_number;
+			}
+			else
+			{
+				$body .= $law->section_number;
+			}
 			$body .= ')</a></h1>';
+
+			/*
+			 * If we're searching all editions, show what edition this law is from.
+			 */
+			if(!strlen($edition_id))
+			{
+				$law_edition = $edition->find_by_id($law->edition_id);
+				$body .= '<div class="edition_heading edition">' . $law_edition->name . '</div>';
+			}
 
 			/*
 			 * Display this law's structural ancestry as a breadcrumb trail.

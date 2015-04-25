@@ -1096,6 +1096,19 @@ class Law
 			$section->text = str_replace('§ ', '§&nbsp;', $section->text);
 
 			/*
+			 * Highlight any search terms.
+			 */
+			if($_GET['q'])
+			{
+				$query = str_replace('"', '', $_GET['q']);
+				$query = explode(' ', $query);
+				foreach($query as $term)
+				{
+					$section->text = str_replace($term, '<span class="search-term">' . $term . '</span>', $section->text);
+				}
+			}
+
+			/*
 			 * Turn every code reference in every paragraph into a link.
 			 */
 			$section->text = preg_replace_callback(SECTION_REGEX, array($autolinker, 'replace_sections'), $section->text);

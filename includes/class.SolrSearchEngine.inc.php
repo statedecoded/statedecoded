@@ -135,7 +135,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		$document->site_url = $this->config['site']['url'];
 
 		$document->id = 'l_' . $law->token;
-		$document->law_id = $law->section_id;
+		$document->law_id = $law->law_id;
 
 		$document->section_number = $law->section_number;
 

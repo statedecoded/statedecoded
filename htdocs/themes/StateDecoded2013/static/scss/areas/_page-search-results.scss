@@ -13,16 +13,22 @@
       }
     }
 
+    .edition_heading {
+      margin: 0 0 10px;
+      display: inline-block;
+      padding: 3px 5px;
+    }
+
     .result {
       color: $gray-darker;
       text-decoration: none;
-      span {
-        background-color: #fff799;
-      }
+      margin-bottom: 25px;
+
       h1 {
+        display: inline;
         font-size: 22px;
         line-height: 24px;
-        margin: 0 0 10px 0;
+        margin: 0 20px 10px 0;
       }
       p {
         margin: 0;
@@ -39,12 +45,12 @@
       display: inline;
       list-style-type: none;
     }
-    li + li {
-	  margin-left: 1em;
-    }
   form input[type=text] {
     width: 70%;
     margin-right: 5%;
   }
-  
+}
+
+.result span, .search-term {
+  background-color: #fff799;
 }

@@ -39,6 +39,7 @@ $body = '<p>
 $body .= '<ol class="edition-list">';
 foreach($editions as $edition)
 {
+	// TODO: lookup permalink if $_GET['from] is set.
 	$url = '/' . $edition->slug . '/';
 	if($edition->current)
 	{

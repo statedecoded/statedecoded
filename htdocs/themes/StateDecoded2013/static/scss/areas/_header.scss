@@ -336,43 +336,4 @@
   }
   @include respond-to(tablet) {
   }
-
-  section#search {
-    margin-top: 70px;
-    font-size: 14px;
-
-    .form_field {
-      display: table-cell;
-      padding-right: 10px;
-      vertical-align: bottom;
-    }
-
-    .text_field_container {
-      width: 100%;
-    }
-
-    input[type="search"] {
-      width: 95%;
-      width: calc(100% - 10px);
-    }
-
-    select {
-      line-height: 26px;
-      border-radius: 0;
-    }
-
-    input[type="submit"] {
-      padding: 0px 10px;
-    }
-
-  } // section#search
-
-  @include respond-to(smartphone)
-  {
-    section#search {
-      margin: 10px;
-      padding: 0;
-      width: 100%;
-    }
-  }
 } // header#page_header
