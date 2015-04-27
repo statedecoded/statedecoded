@@ -60,6 +60,7 @@ class Search
 	public function build_edition($current_edition)
 	{
 		$output = '';
+		$editions = array();
 
 		// Since we don't have any conditions in our template, we have to build
 		// html here.
@@ -68,10 +69,18 @@ class Search
 			$current_edition = EDITION_ID;
 		}
 
-		$edition_object = new Edition();
-		$editions = $edition_object->all();
+		try
+		{
+			$edition_object = new Edition();
+			$editions = $edition_object->all();
+		}
+		catch(Exception $error)
+		{
+			// It's ok if we get an error here, as this happens before we have a database setup.
+			$editions = array();
+		}
 
-		if(count($editions) > 1)
+		if($editions && count($editions) > 1)
 		{
 
 			$output = '<select name="edition_id" id="edition_id">';

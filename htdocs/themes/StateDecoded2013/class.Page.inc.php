@@ -124,7 +124,7 @@ class StateDecoded2013__Page extends Page
 
 		// Since we don't have any conditions in our template, we have to build
 		// html here.
-		if(!$content->is_set('current_edition'))
+		if(!$content->is_set('current_edition') && defined('EDITION_ID'))
 		{
 			$content->set('current_edition', EDITION_ID);
 		}
