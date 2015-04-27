@@ -395,9 +395,9 @@ class ParserController
 				$this->edition = $edition_result;
 
 				// Write the EDITION_ID
-				if($this->edition->current && defined('EDITION_ID') &&
-					EDITION_ID != $this->edition->id)
+				if($this->edition->current)
 				{
+					$edition->unset_current($this->edition_id);
 					$this->export_edition_id($this->edition_id);
 				}
 			}
@@ -417,62 +417,23 @@ class ParserController
 	public function create_edition($edition = array())
 	{
 
-		if (!isset($edition['order_by']))
-		{
-			$sql = 'SELECT MAX(order_by) AS order_by
-					FROM editions
-					ORDER BY order_by';
-			$statement = $this->db->prepare($sql);
-			$result = $statement->execute();
-			if ($result !== FALSE && $statement->rowCount() > 0)
-			{
-				$edition_row = $statement->fetch(PDO::FETCH_ASSOC);
-				$edition['order_by'] = (int) $edition_row['order_by'] + 1;
-			}
-		}
-
-		if (!isset($edition['order_by']))
-		{
-			$edition['order_by'] = 1;
-		}
+		$edition_obj = new Edition(array('db' => $this->db));
 
 		/*
-		 * If we have a new current edition, make the older ones not current.
+		 * Make sure we have a unique edition.
 		 */
-		if ($edition['current'] == 1)
+		if($edition_obj->find_by_name($edition['name']))
 		{
-			$sql = 'UPDATE editions
-					SET current = 0';
-			$statement = $this->db->prepare($sql);
-			$result = $statement->execute();
-		}
-
-		$sql = 'INSERT INTO editions SET
-				name=:name,
-				slug=:slug,
-				current=:current,
-				order_by=:order_by,
-				date_created=NOW(),
-				date_modified=NOW()';
-		$statement = $this->db->prepare($sql);
-
-		$sql_args = array(
-			':name' => $edition['name'],
-			':slug' => $edition['slug'],
-			':current' => $edition['current'],
-			':order_by' => $edition['order_by']
-		);
-		$result = $statement->execute($sql_args);
-
-		if ($result !== FALSE)
-		{
-			return $this->db->lastInsertId();
-
-		}
-		else
-		{
+			$this->logger->message('The name for that edition is already in use.  Please choose a different name.', 10);
 			return FALSE;
 		}
+		if($edition_obj->find_by_slug($edition['slug']))
+		{
+			$this->logger->message('The slug for that edition is already in use.  Please choose a different slug.', 10);
+			return FALSE;
+		}
+
+		return $edition_obj->create($edition);
 
 	}
 
@@ -1215,10 +1176,10 @@ class ParserController
 
 		$this->logger->message('Creating symlinks', 4);
 
-		if ($this->edition['current'] == '1')
+		if ($this->edition->current == '1')
 		{
 
-			$result = exec('cd ' . WEB_ROOT . '/downloads/; rm current; ln -s ' . $this->edition['slug'] . ' current');
+			$result = exec('cd ' . WEB_ROOT . '/downloads/; rm current; ln -s ' . $this->edition->slug . ' current');
 			if ($result != 0)
 			{
 				$this->logger->message('Could not create “current” symlink in /downloads/', 10);
@@ -1242,7 +1203,7 @@ class ParserController
 		 * Define the location of the downloads directory.
 		 */
 		$downloads_dir = WEB_ROOT . '/downloads/';
-		$downloads_dir .= $this->edition['slug'] . '/';
+		$downloads_dir .= $this->edition->slug . '/';
 
 
 		$structure_sql = '	SELECT structure_unified.*
@@ -1558,7 +1519,7 @@ class ParserController
 							 * Set the edition.
 							 */
 							$edition = $dom->createElement('edition');
-							$edition->appendChild($dom->createTextNode($this->edition['name']));
+							$edition->appendChild($dom->createTextNode($this->edition->name));
 
 							$edition_url = $dom->createAttribute('url');
 							$edition_url->value = '';
@@ -1566,19 +1527,19 @@ class ParserController
 							{
 								$edition_url->value = SITE_URL;
 							}
-							$edition_url->value .= '/' . $this->edition['slug'] . '/';
+							$edition_url->value .= '/' . $this->edition->slug . '/';
 							$edition->appendChild($edition_url);
 
 							$edition_id = $dom->createAttribute('id');
-							$edition_id->value = $this->edition['id'];
+							$edition_id->value = $this->edition->id;
 							$edition->appendChild($edition_id);
 
 							$edition_last_updated = $dom->createAttribute('last_updated');
-							$edition_last_updated->value = date('Y-m-d', strtotime($this->edition['last_import']));
+							$edition_last_updated->value = date('Y-m-d', strtotime($this->edition->last_import));
 							$edition->appendChild($edition_last_updated);
 
 							$edition_current = $dom->createAttribute('current');
-							$edition_current->value = $this->edition['current'] ? 'TRUE' : 'FALSE';
+							$edition_current->value = $this->edition->current ? 'TRUE' : 'FALSE';
 							$edition->appendChild($edition_current);
 
 							$law_dom->insertBefore($edition, $catch_line);
@@ -1750,7 +1711,7 @@ class ParserController
 		 */
 		$downloads_dir = WEB_ROOT . '/downloads/';
 
-		if(!isset($this->edition) || !isset($this->edition['slug']))
+		if(!isset($this->edition) || !isset($this->edition->slug))
 		{
 			$this->logger->message('Edition is missing!  Cannot write new files.', 10);
 			throw new Exception('Edition is missing');
@@ -1760,7 +1721,7 @@ class ParserController
 		 * Delete our old downloads directory.
 		 */
 		$this->logger->message('Removing old downloads folder.', 5);
-		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition['slug']);
+		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition->slug);
 
 		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
@@ -1775,11 +1736,11 @@ class ParserController
 		/*
 		 * Add the proper structure for editions.
 		 */
-		$downloads_dir .= $this->edition['slug'] . '/';
+		$downloads_dir .= $this->edition->slug . '/';
 
 		$this->downloads_dir = $downloads_dir;
 
-		$this->downloads_url = '/downloads/' . $this->edition['slug'] . '/';
+		$this->downloads_url = '/downloads/' . $this->edition->slug . '/';
 
 		foreach(array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
 		{

@@ -76,6 +76,27 @@ class Edition
 		return $edition;
 	}
 
+	public function find_by_name($name)
+	{
+		$sql = 'SELECT *
+				FROM editions
+				WHERE name = :name
+				LIMIT 1';
+		$sql_args[':name'] = $name;
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$edition = $statement->fetch(PDO::FETCH_OBJ);
+		}
+		return $edition;
+	}
+
 	public function current()
 	{
 		$sql = 'SELECT *
@@ -157,4 +178,79 @@ class Edition
 		return $result;
 	}
 
+	public function create($edition)
+	{
+		static $statement;
+		if(!isset($statement))
+		{
+			$sql = 'INSERT INTO editions SET
+					name=:name,
+					slug=:slug,
+					current=:current,
+					order_by=:order_by,
+					date_created=NOW(),
+					date_modified=NOW()';
+			$statement = $this->db->prepare($sql);
+		}
+
+		if (!isset($edition['order_by']))
+		{
+			$edition['order_by'] = $this->get_max_order() + 1;
+		}
+
+		$sql_args = array(
+			':name' => $edition['name'],
+			':slug' => $edition['slug'],
+			':current' => $edition['current'],
+			':order_by' => $edition['order_by']
+		);
+		$result = $statement->execute($sql_args);
+
+		if ($result !== FALSE)
+		{
+			return $this->db->lastInsertId();
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	public function unset_current($exception = FALSE)
+	{
+		$sql = 'UPDATE editions
+				SET current = :current';
+		$sql_args = array(
+			':current' => 0
+		);
+
+		if($exception)
+		{
+			$sql .= ' WHERE id <> :id';
+			$sql_args['id'] = $exception;
+		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		return $result;
+	}
+
+	public function get_max_order()
+	{
+		$sql = 'SELECT MAX(order_by) AS order_by
+				FROM editions
+				ORDER BY order_by';
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+		if ($result !== FALSE && $statement->rowCount() > 0)
+		{
+			$edition_row = $statement->fetch(PDO::FETCH_ASSOC);
+			return (int) $edition_row['order_by'];
+		}
+		else
+		{
+			return 0;
+		}
+	}
 }
