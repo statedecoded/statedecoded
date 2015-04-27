@@ -255,6 +255,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 		<div id=\"disqus_thread\"></div>
 		<script>
 			var disqus_shortname = '" . DISQUS_SHORTNAME . "'; // required: replace example with your forum shortname
+			var disqus_identifier = '" . $law->token . "';
 
 			/* * * DON'T EDIT BELOW THIS LINE * * */
 			(function() {
