@@ -34,15 +34,20 @@ define('SITE_TITLE', 'The State Decoded');
  * Set the main site url.
  */
 $url = 'http://';
-if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+	($_SERVER['SERVER_PORT'] == 443) )
 {
 	$url = 'https://';
 }
-$url .= $_SERVER['SERVER_NAME'];
-
-if($_SERVER['SERVER_PORT'] != '80')
+if(isset($_SERVER['SERVER_NAME']))
 {
-	$url .= ':80';
+	$url .= $_SERVER['SERVER_NAME'];
+}
+
+if(isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] !== '80' &&
+	$_SERVER['SERVER_PORT'] !== '443')
+{
+	$url .= ':' . $_SERVER['SERVER_PORT'];
 }
 define('SITE_URL', $url);
 
