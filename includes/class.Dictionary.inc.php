@@ -41,12 +41,26 @@ class Dictionary
 		 * Determine the structural heritage of the provided section number and store it in an
 		 * array.
 		 */
-		if (isset($this->section_number))
+		if (isset($this->section_number) || isset($this->law_id))
 		{
 		
 			$heritage = new Law;
 			$heritage->config->get_structure = TRUE;
-			$heritage->section_number = $this->section_number;
+
+			if (isset($this->section_number))
+			{
+				$heritage->section_number = $this->section_number;
+			}
+			elseif (isset($this->law_id))
+			{
+				$heritage->law_id = $this->law_id;
+			}
+
+			if (isset($this->edition_id))
+			{
+				$heritage->edition_id = $this->edition_id;
+			}
+
 			$law = $heritage->get_law();
 			$ancestry = array();
 			foreach ($law->ancestry as $tmp)
@@ -98,13 +112,18 @@ class Dictionary
 		 * a term within a given scope or all definitions in the whole code.
 		 */
 		$sql = 'SELECT dictionary.term, dictionary.definition, dictionary.scope,
-				laws.section AS section_number
+				laws.section AS section_number, laws.id AS law_id, permalinks.url AS url
 				FROM dictionary
 				LEFT JOIN laws
 					ON dictionary.law_id=laws.id
+				LEFT JOIN permalinks
+					ON permalinks.relational_id=laws.id
+					AND permalinks.object_type = :object_type
+					AND permalinks.preferred=1
 				WHERE (dictionary.term = :term';
 		$sql_args = array(
-			':term' => $this->term
+			':term' => $this->term,
+			':object_type' => 'law'
 		);
 		if ($plural === TRUE)
 		{
@@ -112,9 +131,9 @@ class Dictionary
 			$sql_args[':term_single'] =  substr($this->term, 0, -1);
 		}
 		$sql .= ') ';
-		if (isset($this->section_number))
+		if (isset($this->section_number) || isset($this->law_id))
 		{
-		
+
 			$sql .= 'AND (';
 
 			$ancestor_count = count($ancestry);
@@ -123,17 +142,26 @@ class Dictionary
 				$sql .= "(dictionary.structure_id = :structure_id$i) OR ";
 				$sql_args[":structure_id$i"] = $ancestry[$i];
 			}
-			$sql .= '	(dictionary.scope = :scope)
-					OR
-						(laws.section = :section_number)
-					) ';
+			$sql .= ' (dictionary.scope = :scope) OR ';
+
+			if(isset($this->section_number))
+			{
+				$sql .= '(laws.section = :section_number)';
+				$sql_args[':section_number'] = $this->section_number;
+			}
+			else
+			{
+				$sql .= '(laws.id = :law_id)';
+				$sql_args[':law_id'] = $this->law_id;
+			}
+
+			$sql .= ') AND dictionary.edition_id = :edition_id ';
 			$sql_args[':scope'] = 'global';
-			$sql_args[':section_number'] = $this->section_number;
-			
+			$sql_args[':edition_id'] = $this->edition_id;
 		}
 
 		$sql .= 'ORDER BY dictionary.scope_specificity ';
-		if (isset($this->section_number))
+		if (isset($this->section_number) || isset($this->law_id))
 		{
 
 			$sql .= 'LIMIT 1';
@@ -155,10 +183,6 @@ class Dictionary
 			$i=0;
 			while ($term = $statement->fetch(PDO::FETCH_OBJ))
 			{
-			
-				$term->url = 'http://' . $_SERVER['SERVER_NAME']
-				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
-				. '/' . $term->section_number . '/';
 				$term->formatted = wptexturize($term->definition) . ' (<a href="' . $term->url . '">'
 					. $term->section_number . '</a>)';
 				$dictionary->$i = $term;

@@ -84,7 +84,8 @@ $content = new Content();
  * Make some section information available globally to JavaScript.
  */
 $content->set('javascript', "var section_number = '" . $law->section_number . "';");
-$content->append('javascript', "var section_id = '" . $law->section_id . "';");
+$content->append('javascript', "var law_id = '" . $law->law_id . "';");
+$content->append('javascript', "var edition_id = '" . $law->edition_id . "';");
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
 
 /*

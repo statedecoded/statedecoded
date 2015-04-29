@@ -1410,6 +1410,7 @@ class Parser
 			$dictionary->law_id = $law_id;
 			$dictionary->scope = $definitions->scope;
 			$dictionary->structure_id = $this->code->structure_id;
+			$dictionary->edition_id = $this->edition_id;
 
 			/*
 			 * If the scope of this definition isn't section-specific, and isn't global, then
@@ -2104,9 +2105,9 @@ class Parser
 		 * Start assembling our SQL string.
 		 */
 		$sql = 'INSERT INTO dictionary (law_id, term, definition, scope, scope_specificity,
-				structure_id, date_created)
+				structure_id, date_created, edition_id)
 				VALUES (:law_id, :term, :definition, :scope, :scope_specificity,
-				:structure_id, now())';
+				:structure_id, now(), :edition_id)';
 		$statement = $this->db->prepare($sql);
 
 		foreach ($this->terms as $term => $definition)
@@ -2118,7 +2119,8 @@ class Parser
 				':definition' => $definition,
 				':scope' => $this->scope,
 				':scope_specificity' => $this->scope_specificity,
-				':structure_id' => $this->structure_id
+				':structure_id' => $this->structure_id,
+				':edition_id' => $this->edition_id
 			);
 			$result = $statement->execute($sql_args);
 

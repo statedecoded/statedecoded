@@ -582,7 +582,7 @@ class ParserController
 	public function clear_edition($edition_id)
 	{
 		$tables = array(
-			//'dictionary',
+			'dictionary',
 			'laws',
 			'laws_references',
 			'text',

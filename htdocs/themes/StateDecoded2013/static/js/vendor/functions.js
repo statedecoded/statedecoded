@@ -253,7 +253,11 @@ $(document).ready(function () {
 				ajax: {
 					url: '/api/dictionary/' + encodeURI(term) + '/',
 					type: 'GET',
-					data: { section: section_number, key: api_key },
+					data: {
+						law_id: law_id,
+						edition_id: edition_id,
+						key: api_key
+					},
 					dataType: 'json',
 					success: function(data, status) {
 						var content = truncate(data.definition);
