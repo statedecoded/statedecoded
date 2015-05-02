@@ -153,7 +153,12 @@ if (!empty($_GET['q']))
 			$suggested_q = str_replace($original_string, $suggestion->getWord(), $suggested_q);
 		}
 		
-		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q) . '">'
+		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q);
+		if ($per_page != 10)
+		{
+			$body .= '&amp;per_page=' . $per_page;
+		}
+		$body .= '">'
 			. $suggested_q . '</a>”?</p>';
 		
 	}
