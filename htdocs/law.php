@@ -467,6 +467,17 @@ if($edition_data && count($edition_list) > 1)
 $content->set('current_edition', $law->edition_id);
 
 /*
+ * If this isn't the canonical page, show a canonical meta tag.
+ */
+$permalink_obj = new Permalink(array('db' => $db));
+$permalink = $permalink_obj->get_permalink($law->law_id, 'law', $law->edition_id);
+if($args['url'] !== $permalink->url)
+{
+	$content->append('meta_tags',
+		'<link rel="canonical" href="' . $permalink->url . '" />');
+}
+
+/*
  * Put the shorthand $body variable into its proper place.
  */
 $content->set('body', $body);
