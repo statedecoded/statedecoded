@@ -960,7 +960,7 @@ class Parser
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
 					':token' => $structure_token . '/' . $law['section_number'],
-					':url' => '/' . $item['edition_slug'] . '/' . $structure_token . '/' . $law['section_number'] . '/',
+					':url' => '/' . $edition->slug . '/' . $structure_token . '/' . $law['section_number'] . '/',
 					':edition_id' => $edition_id,
 					':permalink' => 1,
 					':preferred' => $preferred
