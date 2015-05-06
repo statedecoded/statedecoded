@@ -719,38 +719,9 @@ class ParserController
 		}
 
 		/*
-		 * Crosslink laws_references. This needs to be done after the time of the creation of these
-		 * references, because many of the references are at that time to not-yet-inserted sections.
+		 * Handle references
 		 */
-		$this->logger->message('Updating laws_references', 3);
-
-		$sql = 'UPDATE laws_references
-				SET target_law_id =
-					(SELECT laws.id
-					FROM laws
-					WHERE section = laws_references.target_section_number LIMIT 1)
-				WHERE target_law_id = :target_law_id';
-		$sql_args = array(
-			':target_law_id' => 0
-		);
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
-
-		/*
-		 * Any unresolved target section numbers are spurious (strings that happen to match our
-		 * section PCRE), and can be deleted.
-		 */
-		$this->logger->message('Deleting unresolved laws_references', 3);
-
-		$sql = 'DELETE FROM laws_references
-				WHERE target_law_id = :target_law_id';
-		$sql_args = array(
-			':target_law_id' => 0
-		);
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
+		$this->update_laws_references();
 
 		/*
 		 * Break up law histories into their components and save those.
@@ -2420,6 +2391,137 @@ class ParserController
 		}
 
 		return TRUE;
+	}
+
+	public function update_laws_references()
+	{
+		/*
+		 * Crosslink laws_references. This needs to be done after the time of
+		 * the creation of these references, because many of the references are
+		 * at that time to not-yet-inserted sections.
+		 */
+		$this->logger->message('Updating laws_references', 3);
+
+		/*
+		 * Since section numbers may be duplicated, make this a many-to-one
+		 * relationship.
+		 */
+
+		/*
+		 * First, get our existing references.
+		 */
+
+		$existing_sql = 'SELECT * FROM laws_references
+			WHERE edition_id = :edition_id';
+		$existing_args = array(':edition_id' => $this->edition_id);
+		$existing_statement =  $this->db->prepare($existing_sql);
+		$existing_result = $existing_statement->execute($existing_args);
+
+		/*
+		 * Let's build a few queries we'll be using later. Do this outside the
+		 * loop for better memory handling.
+		 */
+		$law_sql = 'SELECT laws.id FROM laws WHERE section = :section_number';
+		$laws_statement = $this->db->prepare($law_sql);
+
+		$update_sql = 'UPDATE laws_references SET target_law_id = :target_law_id
+			WHERE target_section_number = :target_section_number AND
+			edition_id = :edition_id';
+		$update_statement = $this->db->prepare($update_sql);
+
+		$insert_sql = 'INSERT INTO laws_references (law_id, target_section_number,
+			target_law_id, mentions, date_created, edition_id) VALUES (:law_id,
+			:target_section_number, :target_law_id, :mentions, :date_created,
+			:edition_id) ON DUPLICATE KEY UPDATE mentions=mentions';
+		$insert_statement = $this->db->prepare($insert_sql);
+
+		/*
+		 * We don't want anything weird to happen since we're messing with this
+		 * table while iterating over it. So let's fetchAll for safety's sake,
+		 * even if it's inefficient to keep all of this in memory.
+		 */
+		$laws_references = $existing_statement->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach($laws_references as $laws_reference)
+		{
+			$this->logger->message('Matching ' .
+				$laws_reference['target_section_number'], 1);
+			/*
+			 * We may have many-to-one, so handle that.
+			 */
+			$laws_args = array(':section_number' =>
+				$laws_reference['target_section_number']);
+			$laws_result = $laws_statement->execute($laws_args);
+
+			/*
+			 * If we have precisely one record, we can just update in place.
+			 */
+			if($laws_statement->rowCount() == 1)
+			{
+				$law = $laws_statement->fetch(PDO::FETCH_ASSOC);
+
+				$this->logger->message('Updating  ' .
+					$laws_reference['target_section_number'] . ' with ' .
+					$law['id'], 1);
+
+				$update_args = array(
+					':target_law_id' => $law['id'],
+					':target_section_number' =>
+						$laws_reference['target_section_number'],
+					':edition_id' => $this->edition_id
+				);
+				$update_statement->execute($update_args);
+			}
+
+			/*
+			 * If we have more than one, we must create new records.
+			 */
+			elseif($laws_statement->rowCount() > 1)
+			{
+				while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
+				{
+					$this->logger->message('Adding new records for ' .
+						$laws_reference['target_section_number'] . ' with ' .
+						$law['id'], 1);
+
+					$insert_args = array(
+						':law_id' => $laws_reference['law_id'],
+						':target_section_number' =>
+							$laws_reference['target_section_number'],
+						':target_law_id' => $law['id'],
+						':mentions' => $laws_reference['mentions'],
+						':date_created' => $laws_reference['date_created'],
+						':edition_id' => $this->edition_id
+					);
+					$insert_statement->execute($insert_args);
+				}
+			}
+
+			/*
+			 * Otherwise, we have no match - do nothing.
+			 */
+			else
+			{
+				$this->logger->message('No match for  ' .
+					$laws_reference['target_section_number'], 1);
+			}
+		}
+
+		/*
+		 * Any unresolved target section numbers are spurious (strings that
+		 * happen to match our section PCRE), and can be deleted.
+		 */
+		$this->logger->message('Deleting unresolved laws_references', 3);
+
+		$sql = 'DELETE FROM laws_references WHERE target_law_id = :target_law_id
+			AND edition_id = :edition_id';
+		$sql_args = array(
+			':target_law_id' => 0,
+			':edition_id' => $this->edition_id
+
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
 	}
 
 }

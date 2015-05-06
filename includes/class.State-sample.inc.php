@@ -2227,8 +2227,8 @@ class Parser
 		 * Start creating our insertion query.
 		 */
 		$sql = 'INSERT INTO laws_references
-				(law_id, target_section_number, mentions, date_created, edition_id)
-				VALUES (:law_id, :section_number, :mentions, now(), :edition_id)
+				(law_id, target_section_number, target_law_id, mentions, date_created, edition_id)
+				VALUES (:law_id, :section_number, :target_law_id, :mentions, now(), :edition_id)
 				ON DUPLICATE KEY UPDATE mentions=mentions';
 				$statement = $this->db->prepare($sql);
 		$i=0;
@@ -2237,6 +2237,7 @@ class Parser
 			$sql_args = array(
 				':law_id' => $this->section_id,
 				':section_number' => $section,
+				':target_law_id' => '0',
 				':mentions' => $mentions,
 				':edition_id' => $this->edition_id
 			);
