@@ -274,6 +274,12 @@ define('VERSION', '0.81');
 // define('COURTLISTENER_PASSWORD', 's3cr3tp@ssw0rd');
 
 /*
+ * To turn up or down debugging on the admin functions, set this to a value between 1 (verbose)
+ * and 10 (quiet).  5 is the default, which will tell you what step the import is on.
+ */
+define('DEBUG_LEVEL', 5);
+
+/*
  * Remote Data Info.
  * Used by the command line tool to set reasonable defaults for importing data automatically.
  */
