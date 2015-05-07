@@ -191,24 +191,35 @@ $(document).ready(function () {
 	});
 
 	/* Mentions of other sections of the code. */
-	$("a.law").each(function() {
+	$("a.law").each(function(i, elm) {
+		elm = $(elm);
 		var section_number = $(this).text();
-		$(this).qtip({
-			tip: true,
-			hide: {
-				when: 'mouseout',
-				fixed: true,
-				delay: 100
-			},
-			position: {
-				at: "top center",
-				my: "bottom left"
-			},
-			style: {
-				width: 300,
-				tip: "bottom left"
-			},
-			content: {
+		var content = {};
+
+		// If we have multiple references, use that list in the popup.
+		if(elm.hasClass('multiple-references')) {
+			var laws = elm.data('popup-content');
+
+			var popup_content = section_number + ' may refer to the following sections: ';
+			popup_content += '<ul>';
+
+			for(i in laws)
+			{
+				var law = laws[i];
+				popup_content += '<li><a href="' + law.url + '">' + law.catch_line + '</a></li>';
+			}
+
+			popup_content += '</ul>';
+
+			content = {
+				text: popup_content
+			};
+		}
+
+		// Otherwise, Ajax in the list.
+		else {
+			return;
+			content = {
 				text: 'Loading . . .', // Those are U+2009, not regular spaces.
 				ajax: {
 					url: '/api/law/' + section_number + '/',
@@ -226,7 +237,26 @@ $(document).ready(function () {
 						this.set('content.text', content);
 					}
 				}
-			}
+			};
+		}
+
+
+		$(this).qtip({
+			tip: true,
+			hide: {
+				when: 'mouseout',
+				fixed: true,
+				delay: 100
+			},
+			position: {
+				at: "top center",
+				my: "bottom left"
+			},
+			style: {
+				width: 300,
+				tip: "bottom left"
+			},
+			content: content
 		})
 	});
 

@@ -567,9 +567,11 @@ class Law
 				ON laws.id = laws_references.law_id
 				WHERE laws_references.target_law_id =  :law_id ';
 		}
-		$sql .= 'ORDER BY laws.order_by, laws.section ASC';
+		$sql .= 'AND laws.edition_id = :edition_id
+			ORDER BY laws.order_by, laws.section ASC';
 		$sql_args = array(
-			':law_id' => $this->section_id
+			':law_id' => $this->section_id,
+			':edition_id' => $this->edition_id
 		);
 		/*
 		 * Execute the query.
@@ -586,22 +588,18 @@ class Law
 			return FALSE;
 		}
 
-		/*
-		 * Return the result as an enumerated object.
-		 */
-		$references = new stdClass();
-		$i = 0;
+		$permalink_obj = new Permalink(array('db' => $this->db));
+
+		$references = array();
 		while ($reference = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
 
-			### TODO: Fix me
-			$reference->url = 'http://' . $_SERVER['SERVER_NAME']
-				. ( ($_SERVER['SERVER_PORT'] == 80) ? '' : ':' . $_SERVER['SERVER_PORT'] )
-				. '/' . $reference->section_number . '/';
+			$permalink = $permalink_obj->get_preferred(
+				$reference->id, 'law', $this->edition_id);
+			$reference->url = $permalink->url;
 
-			$references->$i = $reference;
-			$i++;
+			$references[] = $reference;
 		}
 
 		return $references;
@@ -694,6 +692,7 @@ class Law
 	 *
 	 */
 	### TODO fix references to this.
+	### TODO replace the body of this with a call to Permalink.
 	public function get_url($law_id, $edition_id = null, $permalink = false)
 	{
 
@@ -1082,7 +1081,12 @@ class Law
 		{
 			$autolinker = new State_Autolinker;
 		}
-		$autolinker = new Autolinker;
+		$autolinker = new Autolinker(
+			array(
+				'edition_id' => $this->edition_id,
+				'db' => $this->db
+			)
+		);
 
 		/*
 		 * Iterate through every section to make some basic transformations.
@@ -1404,6 +1408,44 @@ class Law
 		}
 	}
 
+	/**
+	 * A stripped down version of the get_law() function.  Used by the Autolinker.
+	 */
+	public function get_matching_sections($section, $edition_id, $fields = array())
+	{
+		static $select_statement;
+		if(!isset($select_statement))
+		{
+			$sql = 'SELECT id, catch_line FROM laws WHERE section = :section AND
+				edition_id = :edition_id ORDER BY order_by';
+			$select_statement = $this->db->prepare($sql);
+		}
+
+		$sql_args = array(
+			':section' => $section,
+			':edition_id' => $edition_id
+		);
+
+		$select_result = $select_statement->execute($sql_args);
+
+		if ($select_result === FALSE || $select_statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$permalink_obj = new Permalink(array('db' => $this->db));
+
+			$laws = $select_statement->fetchAll(PDO::FETCH_OBJ);
+			foreach($laws as $key=>$law)
+			{
+				$permalink = $permalink_obj->get_preferred($law->id, 'law',
+					$edition_id);
+				$laws[$key]->url = $permalink->url;
+			}
+			return $laws;
+		}
+	}
 
 
 } // end Law

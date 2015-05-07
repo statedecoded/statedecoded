@@ -423,7 +423,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 if ( isset($law->citation) && is_object($law->citation) )
 {
 
-	$sidebar .= '<section class="related-group dark grid-box" id="cite-as">
+	$sidebar .= '<section class="related-group grid-box" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';
 	foreach ($law->citation as $citation)

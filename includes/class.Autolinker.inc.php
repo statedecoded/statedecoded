@@ -18,6 +18,11 @@
 class Autolinker
 {
 
+	public $terms;
+	public $term_blacklist = array();
+	public $edition_id;
+	public $db;
+
 	/**
 	 * Make these arrays available so that we can manipulate them, if need be. There's no need to
 	 * feed these to Autolinker directly, because under real-world circumstances, these can always
@@ -25,12 +30,21 @@ class Autolinker
 	 *
 	 * This is completely unnecessary for the replace_sections() method, but it doesn't do any harm.
 	 */
-	function __construct()
+	function __construct($args = array())
 	{
+		/*
+		 * Set our defaults
+		 */
+		foreach($args as $key=>$value)
+		{
+			$this->$key = $value;
+		}
 
-		global $terms;
-		$this->terms = $terms;
-		$this->term_blacklist = array();
+		if(!isset($this->terms))
+		{
+			global $terms;
+			$this->terms = $terms;
+		}
 
 	}
 
@@ -128,23 +142,61 @@ class Autolinker
 		/*
 		 * Create an instance of the Law class.
 		 */
-		$law = new Law;
+		$law = new Law(array('db' => $this->db));
 
 		/*
-		 * Just find out if this law exists.
+		 * Get the law, so we can get the proper url.
 		 */
-		$law->section_number = $match;
-		$section = $law->exists();
+		$laws = $law->get_matching_sections($match, $this->edition_id);
 
 		/*
 		 * If this isn't a valid section number, then just return the match verbatim -- there's no
 		 * link to be provided.
 		 */
-		if ($section === FALSE)
+		if ($laws === FALSE)
 		{
 			return $matches[0];
 		}
 
-		return '<a class="law" href="/' . $match . '/">' . $matches[0] . '</a>';
+		else
+		{
+
+			$permalink_obj = new Permalink(array('db' => $this->db));
+
+			/*
+			 * If we have a single law, we just link to it.
+			 */
+			if(count($laws) == 1)
+			{
+				$law = $laws[0];
+				$law->url = $permalink_obj->get_preferred($law->id, 'law',
+					$law->edition_id);
+
+				return '<a class="law" title="'.$law->catch_line.'" href="/' .
+					$law->url . '/">' . $matches[0] . '</a>';
+			}
+
+			/*
+			 * If we have multiple laws, provide a list of links to them.
+			 */
+			elseif(count($laws) > 0)
+			{
+				/*
+				 * Show a popup listing all possible matches. Pass this data as
+				 * JSON to make jquery able to handle it natively.
+				 */
+				$popup_content = str_replace("'", "&#39;", json_encode($laws));
+
+				$return_text = '<a class="law multiple-references"
+					title="This section number matches multiple sections."
+					data-popup-content=\'' . $popup_content . '\'
+					data-ref="' . $ref_counter . '"
+					>' . $matches[0] . '</a>';
+
+
+				return $return_text;
+			}
+
+		}
 	}
 }
