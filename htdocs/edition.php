@@ -43,34 +43,22 @@ foreach($editions as $edition)
 	// If we have a passed url, use it.
 	if($_GET['from'])
 	{
-		$old_url = $_GET['from'];
+		$from_permalink = $permalink_obj->translate_permalink($_GET['from'], $edition->id);
 	}
-	else
-	{
-		$old_url = '/browse/';
-	}
+
 	// Translate our url into a shiny new permalink.
-	$permalink = $permalink_obj->translate_permalink($old_url, $edition->id);
+	$browse_permalink = $permalink_obj->translate_permalink('/browse/', $edition->id);
 
-	if($permalink && isset($permalink->url))
-	{
-		$url = $permalink->url;
-	}
-	// If we didn't turn up a url, that page must not be in this edition of the code.
-	// In this case, just show them the index.
-	else
-	{
-		$permalink = $permalink_obj->translate_permalink('/browse/', $edition->id);
-		$url = $permalink->url;
-	}
 
-	$body .= '<li';
+	$body .= '<li>';
 	if($edition->current)
 	{
-		$body .= ' class="current-edition"';
+		$body .= '<span class="current-edition">' . $edition->name . '</span>';
 	}
-	$body .= '><a href="' . $url . '">' . $edition->name;
-	$body .= '</a>';
+	else {
+		$body .= $edition->name;
+	}
+
 	if($edition->last_import)
 	{
 		$body .= ' - updated ' . date('M d, Y', strtotime($edition->last_import)) . '';
@@ -79,7 +67,19 @@ foreach($editions as $edition)
 	{
 		$body .= ' (Current Edition)';
 	}
+
+	if(isset($from_permalink) && $from_permalink !== FALSE)
+	{
+		$body .= '<br/><a href="' . $from_permalink->url . '">View ' . $from_permalink->title .'</a>';
+	}
+	if(isset($browse_permalink) && $browse_permalink !== FALSE)
+	{
+		$body .= '<br/><a href="' . $browse_permalink->url . '">Browse Edition</a>';
+	}
+
+	$body .= '</li>';
 }
+$body .= '</ol>';
 
 $content->set('body', $body);
 

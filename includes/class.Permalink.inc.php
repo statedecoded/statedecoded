@@ -136,7 +136,41 @@ class Permalink
 		}
 		else
 		{
-			return $statement->fetch(PDO::FETCH_OBJ);
+			$permalink = $statement->fetch(PDO::FETCH_OBJ);
+
+			// Get our extended data.
+			if($permalink->object_type == 'law')
+			{
+				$law_statement = $this->db->prepare('SELECT * FROM laws
+					WHERE id = :law_id');
+				$law_args = array(':law_id' => $permalink->relational_id);
+
+				$law_result = $law_statement->execute($law_args);
+				if ($law_result !== FALSE && $law_statement->rowCount() > 0)
+				{
+					$permalink->law = $law_statement->fetch(PDO::FETCH_OBJ);
+					$permalink->title = SECTION_SYMBOL . '&nbsp;' .
+						$permalink->law->section . ' ' .
+						$permalink->law->catch_line;
+				}
+			}
+			elseif($permalink->object_type == 'structure')
+			{
+				$structure_statement = $this->db->prepare('SELECT * FROM
+					structure WHERE id = :structure_id');
+				$structure_args = array(':structure_id' => $permalink->relational_id);
+
+				$structure_result = $structure_statement->execute($structure_args);
+				if ($structure_result !== FALSE &&
+					$structure_statement->rowCount() > 0)
+				{
+					$permalink->structure = $structure_statement->fetch(PDO::FETCH_OBJ);
+					$permalink->title = $permalink->structure->identifier .
+						' ' . $permalink->structure->name;
+				}
+			}
+
+			return $permalink;
 		}
 	}
 }
