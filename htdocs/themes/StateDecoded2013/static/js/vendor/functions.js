@@ -240,11 +240,11 @@ $(document).ready(function () {
 
 		// Otherwise, Ajax in the list.
 		else {
-			return;
+			console.log('/api/law' + elm.attr('href'));
 			content = {
 				text: 'Loading . . .', // Those are U+2009, not regular spaces.
 				ajax: {
-					url: '/api/law/' + section_number + '/',
+					url: '/api/law' + elm.attr('href'),
 					type: 'GET',
 					data: { fields: 'catch_line,ancestry', key: api_key },
 					dataType: 'json',

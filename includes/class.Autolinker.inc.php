@@ -169,11 +169,9 @@ class Autolinker
 			if(count($laws) == 1)
 			{
 				$law = $laws[0];
-				$law->url = $permalink_obj->get_preferred($law->id, 'law',
-					$law->edition_id);
 
-				return '<a class="law" title="'.$law->catch_line.'" href="/' .
-					$law->url . '/">' . $matches[0] . '</a>';
+				return '<a class="law" title="'.$law->catch_line.'" href="' .
+					$law->url . '">' . $matches[0] . '</a>';
 			}
 
 			/*
