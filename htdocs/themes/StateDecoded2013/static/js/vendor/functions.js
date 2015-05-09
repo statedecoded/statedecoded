@@ -225,7 +225,7 @@ $(document).ready(function () {
 			}
 
 			// Create a wrapper to link to.
-			var wrapper = $('<article></article>');
+			var wrapper = $('<article><h3>' + elm.data('ref-count') + '</h3></article>');
 			wrapper.attr('id', 'ref-' +  elm.data('ref-count'));
 			wrapper.append(popup_content);
 
