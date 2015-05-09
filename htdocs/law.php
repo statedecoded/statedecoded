@@ -12,9 +12,21 @@
 */
 
 /*
+ * Setup the edition object.
+ */
+require_once(INCLUDE_PATH . 'class.Edition.inc.php');
+global $db;
+$edition = new Edition(array('db' => $db));
+
+/*
  * Create a new instance of Law.
  */
 $laws = new Law();
+
+if (isset($args['edition_id']))
+{
+	$laws->edition_id = $args['edition_id'];
+}
 
 /*
  * Use the ID passed to look up the law.
@@ -72,7 +84,8 @@ $content = new Content();
  * Make some section information available globally to JavaScript.
  */
 $content->set('javascript', "var section_number = '" . $law->section_number . "';");
-$content->append('javascript', "var section_id = '" . $law->section_id . "';");
+$content->append('javascript', "var law_id = '" . $law->law_id . "';");
+$content->append('javascript', "var edition_id = '" . $law->edition_id . "';");
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
 
 /*
@@ -260,6 +273,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 
 	$content->append('javascript', "
 			var disqus_shortname = '" . DISQUS_SHORTNAME . "'; // required: replace example with your forum shortname
+			var disqus_identifier = '" . $law->token . "';
 
 			/* * * DON'T EDIT BELOW THIS LINE * * */
 			(function() {
@@ -424,7 +438,7 @@ if (isset($law->related) && (count((array) $law->related) > 0))
 if ( isset($law->citation) && is_object($law->citation) )
 {
 
-	$sidebar .= '<section class="related-group dark grid-box" id="cite-as">
+	$sidebar .= '<section class="related-group grid-box" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';
 	foreach ($law->citation as $citation)
@@ -441,6 +455,42 @@ if ( isset($law->citation) && is_object($law->citation) )
  * End Masonry.js wrapper
  */
 $sidebar .= '</section>';
+
+/*
+ * Show edition info.
+ */
+
+$edition_data = $edition->find_by_id($law->edition_id);
+$edition_list = $edition->all();
+if($edition_data && count($edition_list) > 1)
+{
+	$content->set('edition', '<p class="edition">This is the <strong>' . $edition_data->name . '</strong> edition of the code.  ');
+	if($edition_data->current)
+	{
+		$content->append('edition', 'This is the current edition.  ');
+	}
+	else {
+		$content->append('edition', 'There is <strong>not</strong> the current edition.  ');
+	}
+	if($edition_data->last_import)
+	{
+		$content->append('edition', 'It was last updated ' . date('M d, Y', strtotime($edition_data->last_import)) . '.  ');
+	}
+	$content->append('edition', '<a href="/editions/?from=' . $_SERVER['REQUEST_URI'] . '" class="edition-link">Browse all editions.</a></p>');
+}
+
+$content->set('current_edition', $law->edition_id);
+
+/*
+ * If this isn't the canonical page, show a canonical meta tag.
+ */
+$permalink_obj = new Permalink(array('db' => $db));
+$permalink = $permalink_obj->get_permalink($law->law_id, 'law', $law->edition_id);
+if($args['url'] !== $permalink->url)
+{
+	$content->append('meta_tags',
+		'<link rel="canonical" href="' . $permalink->url . '" />');
+}
 
 /*
  * Put the shorthand $body variable into its proper place.

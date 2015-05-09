@@ -21,19 +21,23 @@ class Search
 	 *
 	 * @returns the HTML of the form
 	 */
-	function display_form()
+	public function display_form($current_edition)
 	{
-		
+
 		$this->form = '
-			<div class="ui-widget">
+			<div class="ui-widget search">
 				<form method="get" action="/search/">
+					<div class="form_field">
 					<input type="text" name="q" id="q" ';
 		if (!empty($this->query))
 		{
 			$this->form .= 'value="' . $this->query . '"';
 		}
-		$this->form .= ' />';
-		
+		$this->form .= ' /></div>';
+		$this->form .= '<div class="form_field">';
+		$this->form .= $this->build_edition($current_edition);
+		$this->form .= '</div>';
+
 		/*
 		 * If we've specified the number of results that we want to display per page, instead of
 		 * the default, include it here.
@@ -42,23 +46,81 @@ class Search
 		{
 			$this->form .= '<input type="hidden" name="num" value="' . $this->per_page . '" />';
 		}
-		
-		$this->form .= '<input type="submit" value="Search" />
+
+		$this->form .= '<div class="form_field">
+						<input class="btn btn-success" type="submit" value="Search" />
+					</div>
 				</form>
 			</div>';
-			
+
 		return $this->form;
-		
+
 	}
-	
+
+	public function build_edition($current_edition)
+	{
+		$output = '';
+		$editions = array();
+
+		// Since we don't have any conditions in our template, we have to build
+		// html here.
+		if(!isset($current_edition))
+		{
+			$current_edition = EDITION_ID;
+		}
+
+		try
+		{
+			$edition_object = new Edition();
+			$editions = $edition_object->all();
+		}
+		catch(Exception $error)
+		{
+			// It's ok if we get an error here, as this happens before we have a database setup.
+			$editions = array();
+		}
+
+		if($editions && count($editions) > 1)
+		{
+
+			$output = '<select name="edition_id" id="edition_id">';
+			$output .= '<option value="">Search All Editions</option>';
+			foreach($editions as $edition)
+			{
+				$output .= '<option value="' . $edition->id .'"';
+
+				if($edition->id == $current_edition)
+				{
+					$output .= ' selected="selected"';
+				}
+				$output .= '>' . $edition->name;
+
+				if($edition->current)
+				{
+					$output .= ' (current)';
+				}
+				$output .= '</option>';
+			}
+			$output .= '</select>';
+		}
+		// If we only have one edition, just use it.
+		elseif(count($editions) == 1)
+		{
+			$output .= '<input type="hidden" name="edition_id" value="' .
+				$editions[0]->id .'">';
+		}
+
+		return $output;
+	}
+
 	/**
 	 * Display the links to each page of search results.
 	 *
 	 * @returns the HTML of the paging links
 	 */
-	function display_paging()
+	public function display_paging()
 	{
-		
+
 		/*
 		 * Require these properties to be set.
 		 */

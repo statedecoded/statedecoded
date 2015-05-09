@@ -12,6 +12,7 @@
   <xsl:template match="law">
     <doc>
       <field name="id">l_<xsl:value-of select="url"/></field>
+      <xsl:apply-templates select="edition"/>
       <field name="catch_line"><xsl:value-of select="catch_line"/></field>
       <field name="text"><xsl:apply-templates select="text"/></field>
       <field name="section"><xsl:value-of select="token"/></field>
@@ -60,10 +61,20 @@
     </field>
   </xsl:template>
 
-
-
-
-
+  <xsl:template match="edition">
+    <field name="edition">
+      <xsl:value-of select="current()"/>
+    </field>
+    <field name="edition_id">
+      <xsl:value-of select="@id"/>
+    </field>
+    <field name="edition_updated">
+      <xsl:value-of select="@last_updated"/>
+    </field>
+    <field name="edition_current">
+      <xsl:value-of select="@current"/>
+    </field>
+  </xsl:template>
 
   <xsl:template match="*" mode="escape">
     <!-- Begin opening tag -->

@@ -110,7 +110,7 @@ class StateDecoded2013__Page extends Page
 			if (strlen($content->get('page_title')) > 0)
 			{
 				$content->set('browser_title', $content->get('page_title'));
-				$content->append('browser_title', '-' . SITE_TITLE);
+				$content->append('browser_title', ' - ' . SITE_TITLE);
 			}
 			else
 			{
@@ -119,13 +119,33 @@ class StateDecoded2013__Page extends Page
 		}
 		else
 		{
-			$content->append('browser_title', '—' . SITE_TITLE);
+			$content->append('browser_title', '&#8202;-&#8202;' . SITE_TITLE);
 		}
 
 		/*
 		 * Include the place name (e.g., "Washington," "Texas," "United States").
 		 */
 		$content->set('place_name', PLACE_NAME);
+
+		/*
+		 * Get the edition data
+		 */
+		$search = new Search();
+
+		// Since we don't have any conditions in our template, we have to build
+		// html here.
+		if(!$content->is_set('current_edition') && defined('EDITION_ID'))
+		{
+			$content->set('current_edition', EDITION_ID);
+		}
+		$content->set('edition_select',
+			$search->build_edition( $content->get('current_edition') )
+		);
+
+		/*
+		 * Set our search terms.
+		 */
+		$content->set('search_terms', $_GET['q']);
 
 		/*
 		 * If a Google Analytics Web Property ID has been provided, insert the tracking code.
@@ -216,4 +236,5 @@ class StateDecoded2013__Page extends Page
 
 		$content->set('css', join("\n", $stylesheets));
 	}
+
 }

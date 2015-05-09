@@ -15,7 +15,11 @@
 /*
  * Intialize Solarium and instruct it to use the correct request handler.
  */
-$client = new Solarium_Client($GLOBALS['solr_config']);
+$client = new SearchIndex(
+	array(
+		'config' => json_decode(SEARCH_CONFIG, TRUE)
+	)
+);
 
 /*
  * Create a container for our content.
@@ -55,7 +59,7 @@ if (!empty($_GET['q']))
 	 * Localize the search string, filtering out unsafe characters.
 	 */
 	$q = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
-	
+
 	/*
 	 * If a page number has been specified, include that. Otherwise, it's page 1.
 	 */
@@ -67,7 +71,7 @@ if (!empty($_GET['q']))
 	{
 		$page = 1;
 	}
-	
+
 	/*
 	 * If the number of results to display per page has been specified, include that. Otherwise,
 	 * the default is 10.
@@ -80,176 +84,175 @@ if (!empty($_GET['q']))
 	{
 		$per_page = 10;
 	}
-	
+
+	/*
+	 * Filter by edition.
+	 */
+	$edition_id = '';
+	$edition = new Edition();
+
+	if(!empty($_GET['edition_id']))
+	{
+		$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
+	}
+	$content->set('current_edition', $edition_id);
+
 	/*
 	 * Display our search form.
 	 */
 	$search->query = $q;
-	$body .= $search->display_form();
-	
-	/*
-	 * Set up our query.
-	 */
-	$query = $client->createSelect();
-	$query->setHandler('search');
-	$query->setQuery($q);
-	
-	/*
-	 * We want the most useful bits highlighted as search results snippets.
-	 */
-	$hl = $query->getHighlighting();
-	$hl->setFields('catch_line, text');
-	$hl->setSimplePrefix('<span>');
-	$hl->setSimplePostfix('</span>');
+	$body .= $search->display_form($edition_id);
 
-	/*
-	 * Check the spelling of the query and suggest alternates.
-	 */
-	$spellcheck = $query->getSpellcheck();
-	$spellcheck->setQuery($q);
-	$spellcheck->setBuild(TRUE);
-	$spellcheck->setCollate(TRUE);
-	$spellcheck->setExtendedResults(TRUE);
-	$spellcheck->setCollateExtendedResults(TRUE);
-	
-	/*
-	 * Specify which page we want, and how many results.
-	 */
-	$query->setStart(($page - 1) * $per_page)->setRows($per_page);
-	
 	/*
 	 * Execute the query.
 	 */
-	$results = $client->select($query);
-	
-	/*
-	 * Gather highlighted uses of the search terms, which we may use in display results.
-	 */
-	$highlighted = $results->getHighlighting();
-	
+	try
+	{
+		$results = $client->search(
+			array(
+				'term' => decode_entities($q),
+				'edition_id' => $edition_id,
+				'page' => $page,
+				'per_page' => $per_page
+			)
+		);
+	}
+	catch (Exception $error)
+	{
+		$error_message = 'Search failed with the error "' . $error->getMessage() .'". ';
+		$error_message .= 'Please try again later.';
+
+		unset($results);
+	}
+
 	/*
 	 * If any portion of this search term appears to be misspelled, propose a properly spelled
 	 * version.
 	 */
-	$spelling = $results->getSpellcheck();
-	if ($spelling->getCorrectlySpelled() == FALSE)
+	if (isset($results) && $results->get_fixed_spelling() !== FALSE)
 	{
-		
-		/*
-		 * We're going to modify the provided query to suggest a better one, so duplicate $q.
-		 */
-		$suggested_q = $q;
-		
+
 		$body .= '<h1>Suggestions</h1>';
-		
-		/*
-		 * Step through each term that appears to be misspelled, and create a modified query string.
-		 */
-		foreach($spelling as $suggestion)
-		{
-			$str_start = $suggestion->getStartOffset();
-			$str_end = $suggestion->getEndOffset();
-			$original_string = substr($q, $str_start, $str_end);
-			$suggested_q = str_replace($original_string, $suggestion->getWord(), $suggested_q);
-		}
-		
-		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q);
-		if ($per_page != 10)
-		{
-			$body .= '&amp;per_page=' . $per_page;
-		}
-		$body .= '">'
+
+		// TODO: fix me #443
+		$suggested_q = $results->get_fixed_spelling($q);
+
+		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q) . '">'
 			. $suggested_q . '</a>”?</p>';
-		
+
 	}
-	
-	/*
-	 * See if the search term consists of a section number.
-	 */
-	if (preg_match(SECTION_REGEX, $q) == TRUE)
-	{
-	
-		/*
-		 * If this is an actual section number that exists in the law, provide a link to it.
-		 */
-		$law = new Law();
-		$law->section_number = $q;
-		if ($law->exists() === TRUE)
-		{
-			$body .= '
-			<p><a href="' . $law->url . '">Were you looking for ' . SECTION_SYMBOL . '&nbsp;'
-					. $law->section_number . '?</a></p>';
-		}
-		
-	}
-	
+
 	/*
 	 * If there are no results.
 	 */
-	if (count($results) == FALSE)
+	if (!isset($results) || $results->get_count() < 1)
 	{
-		
-		$body .= '<p>No results found.</p>';
-		
+		if(isset($error_message))
+		{
+			$body .= $error_message;
+		}
+		else {
+			$body .= '<p>No results found.</p>';
+		}
+
 	}
-	
+
 	/*
 	 * If there are results, display them.
 	 */
 	else
 	{
-	
-		/*
-		 * Store the total number of documents returned by this search.
-		 */
-		$total_results = $results->getNumFound();
-		
+
 		/*
 		 * Start the DIV that stores all of the search results.
 		 */
 		$body .= '
 			<div class="search-results">
-			<p>' . number_format($total_results) . ' results found.</p>
+			<p>' . number_format($results->get_count()) . ' results found.</p>
 			<ul>';
-		
+
 		/*
 		 * Iterate through the results.
 		 */
-		$law = new Law;
-		foreach ($results as $result)
+		global $db;
+		$law = new Law(array('db' => $db));
+
+		foreach ($results->get_results() as $result)
 		{
-			
-			$url = $law->get_url($result->section);
-			
+			$law->law_id = $result->law_id;
+			$law->get_law();
+
+			$url = $law->get_url( $result->law_id );
+			$url_string = $url->url;
+
+			if(strpos($url, '?') !== FALSE)
+			{
+				$url_string .= '?';
+			}
+			else
+			{
+				$url_string .= '*';
+			}
+			$url_string .= 'q='.urlencode($q);
+
 			$body .= '<li><div class="result">';
-			$body .= '<h1><a href="' . $url . '">' . $result->catch_line . ' (' . SECTION_SYMBOL . '&nbsp;'
-				. $result->section . ')</a></h1>';
-			
+			$body .= '<h1><a href="' . $url_string . '">';
+
+			if(strlen($result->catch_line))
+			{
+				$body .= $result->catch_line;
+			}
+			else
+			{
+				$body .= $law->catch_line;
+			}
+
+			$body .= ' (' . SECTION_SYMBOL . '&nbsp;';
+			if(strlen($result->section_number))
+			{
+				$body .= $result->section_number;
+			}
+			else
+			{
+				$body .= $law->section_number;
+			}
+			$body .= ')</a></h1>';
+
+			/*
+			 * If we're searching all editions, show what edition this law is from.
+			 */
+			if(!strlen($edition_id))
+			{
+				$law_edition = $edition->find_by_id($law->edition_id);
+				$body .= '<div class="edition_heading edition">' . $law_edition->name . '</div>';
+			}
+
 			/*
 			 * Display this law's structural ancestry as a breadcrumb trail.
 			 */
 			$body .= '<div class="breadcrumbs"><ul>';
-			$ancestry = explode('/', $result->structure);
-			foreach ($ancestry as $structure)
+
+			foreach (array_reverse((array) $law->ancestry) as $structure)
 			{
-				$body .= '<li><a>' . $structure . '</a></li>';
+				$body .= '<li><a href="' . $structure->url . '">' . $structure->identifier . ' ' .
+					$structure->name . '</a></li>';
 			}
 			$body .= '</ul></div>';
-			
+
 			/*
 			 * Attempt to display a snippet of the indexed law, highlighting the use of the search
 			 * terms within that text.
 			 */
-			$snippet = $highlighted->getResult($result->id);
-			if ($snippet != FALSE)
+
+			if (isset($result->highlight) && !empty($result->highlight))
 			{
-			
-				foreach ($snippet as $field => $highlight)
+
+				foreach ($result->highlight as $field => $highlight)
 				{
 					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
 						. ' .&thinsp;.&thinsp;. ';
 				}
-						
+
 				/*
 				 * Use an appropriate closing ellipsis.
 				 */
@@ -258,46 +261,47 @@ if (!empty($_GET['q']))
 					$body = substr($body, 0, -22) . '.&thinsp;.&thinsp;.&thinsp;.';
 				}
 				$body = trim($body);
-				
+
 			}
-			
+
 			/*
 			 * If we can't get a highlighted snippet, just show the first few lines of the law.
 			 */
 			else
 			{
-				$body .= '<p>' . substr($result->text, 250) . ' .&thinsp;.&thinsp;.</p>';
+				$text = isset($result->text) ? $result->text : $law->full_text;
+				$body .= '<p>' . substr($text , 0, 250) . ' .&thinsp;.&thinsp;.</p>';
 			}
-			
+
 			/*
 			 * End the display of this single result.
 			 */
 			$body .= '</div></li>';
-		
+
 		}
-		
+
 		/*
 		 * End the UL that lists the search results.
 		 */
 		$body .= '</ul>';
-		
+
 		/*
 		 * Display page numbers at the bottom, if we have more than one page of results.
 		 */
-		if ($total_results > $per_page)
+		if ($results->get_count() > $per_page)
 		{
-			$search->total_results = $total_results;
+			$search->total_results = $results->get_count();
 			$search->per_page = $per_page;
 			$search->page = $page;
 			$search->query = $q;
 			$body .= $search->display_paging();
 		}
-		
+
 		/*
 		 * Close the #search-results div.
 		 */
 		$body .= '</div>';
-			
+
 		/*
 		 * If there is a next and/or previous page of results, include that in the HTML head.
 		 */
@@ -309,9 +313,9 @@ if (!empty($_GET['q']))
 		{
 			$content->append('link_rel', '<link rel="next" title="Next" href="' . $search->next . '" />');
 		}
-	
+
 	}
-	
+
 }
 
 /*
@@ -330,13 +334,13 @@ else
 $sidebar .= '
 	<section class="info-box" id="boolean">
 		<h1>Writing Searches</h1>
-		
+
 		<p>Generally, you can just write a few words to describe the law you’re looking for, such
 		as “<code>radar detectors</code>”, “<code>insurance agents</code>”, or
 		“<code>assault</code>” (leaving out the quotation marks).</p>
-		
+
 		<p>Also, advanced searches are supported, using the following terms:</p>
-		
+
 		<ul>
 			<li><code>AND</code>: Requires the words or phrases before and after the
 				<code>AND</code>, like <code>radar AND vehicle</code>.</li>

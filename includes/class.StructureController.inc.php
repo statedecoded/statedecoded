@@ -19,11 +19,9 @@ class StructureController extends BaseController
 
 	public function handle($args)
 	{
-	
 		require(WEB_ROOT . '/structure.php');
 
 		$this->render($content);
-		
 	}
-	
+
 }

@@ -40,6 +40,22 @@ class APIDictionaryController extends BaseAPIController
 			$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
 		}
 
+		if (isset($_GET['law_id']))
+		{
+			$law_id = filter_input(INPUT_GET, 'law_id', FILTER_SANITIZE_STRING);
+		}
+
+		if (isset($_GET['edition_id']))
+		{
+			$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
+		}
+		else
+		{
+			$edition = new Edition();
+			$current_edition = $edition->current();
+			$edition_id = $current_edition->id;
+		}
+
 		$dict = new Dictionary();
 
 		/*
@@ -52,6 +68,16 @@ class APIDictionaryController extends BaseAPIController
 			{
 				$dict->section_number = $section;
 			}
+			if (isset($law_id))
+			{
+				$dict->law_id = $law_id;
+			}
+			if (isset($edition_id))
+			{
+				$dict->edition_id = $edition_id;
+			}
+
+
 			$dict->term = $term;
 			$dictionary = $dict->define_term();
 
@@ -126,7 +152,7 @@ class APIDictionaryController extends BaseAPIController
 				 * If a section has been specified, then simplify this response by returning just a
 				 * single definition.
 				 */
-				if (isset($section))
+				if (isset($section) || isset($law_id))
 				{
 					$dictionary = $dictionary->{0};
 				}

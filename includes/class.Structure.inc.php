@@ -154,8 +154,10 @@ class Structure
 		/*
 		 * Retrieve this structural unit's ancestry.
 		 */
-		$sql = 'SELECT structure_unified.*
+		$sql = 'SELECT structure_unified.*,
+				structure.edition_id
 				FROM structure_unified
+				LEFT JOIN structure ON structure_unified.s1_id = structure.id
 				WHERE
 				s1_id = :id
 				LIMIT 1';
@@ -183,6 +185,7 @@ class Structure
 		 */
 		$structure = new stdClass();
 		$structure_ids = array();
+
 		foreach($structure_row as $key => $value)
 		{
 
@@ -234,7 +237,8 @@ class Structure
 		 */
 		$sql = 'SELECT permalinks.* FROM permalinks ' .
 			'WHERE object_type = :object_type AND ' .
-			'permalinks.relational_id = :id';
+			'permalinks.relational_id = :id AND ' .
+			'permalinks.preferred = 1';
 
 		$statement = $db->prepare($sql);
 
@@ -251,36 +255,39 @@ class Structure
 		for ($i=count((array) $structure)-1; $i>=0; $i--)
 		{
 
-			$this->structure->{$j} = $structure->{$i};
-
-			/*
-			 * Include the level of this structural element. (e.g., in Virginia, "title" is 1,
-			 * "chapter" is 2, "part" is 3.)
-			 */
-			$this->structure->{$j}->level = $j+1;
-
-			$sql_args = array(
-				':object_type' => 'structure',
-				':id' => $structure->{$i}->id
-			);
-			$result = $statement->execute($sql_args);
-
-			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+			if(isset($structure->{$i}))
 			{
-				return FALSE;
+				$this->structure->{$j} = $structure->{$i};
+
+				/*
+				 * Include the level of this structural element. (e.g., in Virginia, "title" is 1,
+				 * "chapter" is 2, "part" is 3.)
+				 */
+				$this->structure->{$j}->level = $j+1;
+
+				$sql_args = array(
+					':object_type' => 'structure',
+					':id' => $structure->{$i}->id
+				);
+				$result = $statement->execute($sql_args);
+
+				if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+				{
+					return FALSE;
+				}
+				$permalink = $statement->fetch(PDO::FETCH_OBJ);
+
+				$this->structure->{$j}->url = $permalink->url;
+				$this->structure->{$j}->token = $permalink->token;
+
+
+				if (isset($prior_id))
+				{
+					$this->structure->{$j}->parent_id = $prior_id;
+				}
+				$j++;
+				$prior_id = $structure->{$i}->id;
 			}
-
-			$permalink = $statement->fetch(PDO::FETCH_OBJ);
-			$this->structure->{$j}->url = $permalink->url;
-			$this->structure->{$j}->token = $permalink->token;
-
-			if (isset($prior_id))
-			{
-				$this->structure->{$j}->parent_id = $prior_id;
-			}
-			$j++;
-			$prior_id = $structure->{$i}->id;
-
 		}
 
 		unset($structure);
@@ -339,9 +346,12 @@ class Structure
 						ON structure.id = permalinks.relational_id and
 						object_type = :object_type
 					WHERE s2_id = :parent_id
+					AND permalinks.preferred = 1
+					AND structure.edition_id = :edition_id
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
 			$sql_args[':object_type'] = 'structure';
 			$sql_args[':parent_id'] = $this->parent_id;
+			$sql_args[':edition_id'] = $this->edition_id;
 
 		}
 
@@ -357,8 +367,11 @@ class Structure
 					LEFT JOIN permalinks
 						ON structure.id = permalinks.relational_id and
 						object_type = :object_type
-					WHERE parent_id IS NULL';
+					WHERE parent_id IS NULL
+					AND permalinks.preferred = 1
+					AND structure.edition_id = :edition_id';
 			$sql_args[':object_type'] = 'structure';
+			$sql_args[':edition_id'] = $this->edition_id;
 
 			/*
 			 * Order these by the order_by column, which may or may not be populated.
@@ -455,17 +468,31 @@ class Structure
 		);
 
 		/*
+		 * Check edition.
+		 */
+		$sql .= ' WHERE structure.edition_id = :edition_id';
+		$sql .= ' AND permalinks.preferred = 1';
+		if(isset($this->edition_id))
+		{
+			$sql_args[':edition_id'] = $this->edition_id;
+		}
+		else
+		{
+			$sql_args[':edition_id'] = EDITION_ID;
+		}
+
+		/*
 		 * If a structural ID hasn't been provided, then this request is for the root node -- that
 		 * is, the top level of the legal code.
 		 */
 		if (!isset($this->id))
 		{
-			$sql .= ' WHERE structure.parent_id IS NULL';
+			$sql .= ' AND structure.parent_id IS NULL';
 		}
 		else
 		{
 
-			$sql .= ' WHERE structure.parent_id = :parent_id';
+			$sql .= ' AND structure.parent_id = :parent_id';
 			$sql_args[':parent_id'] = $this->id;
 
 			/*
@@ -480,6 +507,7 @@ class Structure
 						LEFT OUTER JOIN laws_meta
 							ON laws.id = laws_meta.law_id AND laws_meta.meta_key = "repealed"
 						WHERE laws.structure_id=structure.id
+						AND laws.edition_id = :edition_id
 						AND ((laws_meta.meta_value = "n") OR laws_meta.meta_value IS NULL)  ) > 0
 						OR (SELECT COUNT(*) FROM structure AS s2 WHERE s2.parent_id = structure.id) > 0)';
 			}
@@ -663,6 +691,7 @@ class Structure
 		$sql = 'SELECT permalinks.url
 				FROM permalinks
 				WHERE relational_id = :id
+				AND preferred = 1
 				AND object_type = :object_type';
 		$statement = $db->prepare($sql);
 
@@ -764,9 +793,11 @@ class Structure
 		 */
 		$sql = 'SELECT id
 				FROM structure
-				WHERE identifier = :identifier';
+				WHERE identifier = :identifier
+				AND structure.edition_id = :edition_id';
 		$sql_args = array(
-			':identifier' => $this->identifier
+			':identifier' => $this->identifier,
+			':edition_id' => $this->edition_id
 		);
 
 		$statement = $db->prepare($sql);
@@ -819,9 +850,12 @@ class Structure
 					LEFT JOIN permalinks ON laws.id = permalinks.relational_id
 						AND permalinks.object_type = :object_type
 					WHERE structure_id = :id
+					AND laws.edition_id = :edition_id
+					AND permalinks.preferred = 1
 					ORDER BY order_by, section';
 			$sql_args = array(
 				':object_type' => 'law',
+				':edition_id' => $this->edition_id,
 				':id' => $this->id
 			);
 		}
@@ -838,9 +872,12 @@ class Structure
 						AND permalinks.object_type = :object_type
 					WHERE structure_id = :id
 					AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
+					AND laws.edition_id = :edition_id
+					AND permalinks.preferred = 1
 					ORDER BY order_by, section';
 			$sql_args = array(
 				':object_type' => 'law',
+				':edition_id' => $this->edition_id,
 				':id' => $this->id
 			);
 		}

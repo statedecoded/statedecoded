@@ -11,6 +11,14 @@
  * @since		0.1
 */
 
+
+/*
+ * Setup the edition object.
+ */
+require_once(INCLUDE_PATH . 'class.Edition.inc.php');
+global $db;
+$edition = new Edition(array('db' => $db));
+
 /*
  * If no identifier has been specified, explicitly make it a null variable. This is when the request
  * is for the top level -- that is, a listing of the fundamental units of the code (e.g., titles).
@@ -36,6 +44,16 @@ else
  * Create a new instance of the class that handles information about individual laws.
  */
 $struct = new Structure();
+
+if ( isset($args['edition_id']) )
+{
+	$struct->edition_id = $args['edition_id'];
+}
+else
+{
+	$edition_data = $edition->current();
+	$struct->edition_id = $edition_data->id;
+}
 
 /*
  * Get the structure based on our identifier
@@ -73,6 +91,11 @@ $children = $struct->list_children();
 $content = new Content();
 
 /*
+ * Setup the body.
+ */
+$body = '';
+
+/*
  * Define the title page elements.
  */
 if (strlen($structure_id) > 0)
@@ -83,6 +106,7 @@ if (strlen($structure_id) > 0)
 else
 {
 	$content->set('browser_title', SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.');
+	$content->set('page_title', '<h2>'.ucwords($children->{0}->label) . 's of the ' . LAWS_NAME.'</h2>');
 }
 
 /*
@@ -197,7 +221,7 @@ if (isset($struct->siblings))
 if(strlen($structure_id) > 0)
 {
 
-	$body = '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME
+	$body .= '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME
 		. ', titled “'.$struct->name.'.”';
 
 	if (count((array) $structure) > 1)
@@ -220,9 +244,7 @@ if(strlen($structure_id) > 0)
 
 else
 {
-	$body = '
-		<article>
-		<h1>' . ucwords($children->{0}->label) . 's of the ' . LAWS_NAME . '</h1>
+	$body .= '
 		<p>These are the fundamental units of the ' . LAWS_NAME . '.</p>';
 }
 
@@ -343,10 +365,45 @@ if ($laws !== FALSE)
 }
 
 /*
+ * If this isn't the canonical page, show a canonical meta tag.
+ */
+$permalink_obj = new Permalink(array('db' => $db));
+$permalink = $permalink_obj->get_permalink($struct->structure_id, 'structure', $struct->edition_id);
+if($args['url'] !== $permalink->url)
+{
+	$content->append('meta_tags',
+		'<link rel="canonical" href="' . $permalink->url . '" />');
+}
+
+/*
  * Put the shorthand $body variable into its proper place.
  */
 $content->set('body', $body);
 unset($body);
+
+/*
+ * Show edition info.
+ */
+
+$edition_data = $edition->find_by_id($struct->edition_id);
+$edition_list = $edition->all();
+if($edition_data && count($edition_list) > 1)
+{
+	$content->set('edition', '<p class="edition">This is the <strong>' . $edition_data->name . '</strong> edition of the code.  ');
+	if($edition_data->current)
+	{
+		$content->append('edition', 'This is the current edition.  ');
+	}
+	else {
+		$content->append('edition', 'There is <strong>not</strong> the current edition.  ');
+	}
+	if($edition_data->last_import)
+	{
+		$content->append('edition', 'It was last updated ' . date('M d, Y', strtotime($edition_data->last_import)) . '.  ');
+	}
+	$content->append('edition', '<a href="/editions/?from=' . $_SERVER['REQUEST_URI'] . '" class="edition-link">Browse all editions.</a></p>');
+}
+$content->set('current_edition', $struct->edition_id);
 
 /*
  * Put the shorthand $sidebar variable into its proper place.

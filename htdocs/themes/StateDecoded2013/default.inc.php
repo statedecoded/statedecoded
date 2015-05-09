@@ -33,11 +33,18 @@
 					<h2>Decoded</h2>
 				</hgroup>
 			</a>
-			<section id="search">
+			<section id="search" class="search">
 				<form id="search_form" method="get" action="/search/">
-					<label for="search">Search the code by keyword, phrase, or title</label>
-					<input type="search" name="q" value="" id="search" placeholder="Search the Laws">
-					<input type="submit" name="" value="Search" id="submit" class="btn btn-success">
+					<div class="form_field text_field_container">
+						<label for="search">Search the code by keyword, phrase, or title</label>
+						<input type="search" name="q" value="{{search_terms}}" id="search" placeholder="Search the Laws">
+					</div>
+					<div class="form_field">
+						{{edition_select}}
+					</div>
+					<div class="form_field">
+						<input type="submit" name="" value="Search" id="submit" class="btn btn-success">
+					</div>
 					<!--a class="advanced" href="#">Advanced</a-->
 				</form>
 			</section> <!-- // #search -->
@@ -73,6 +80,7 @@
 				</nav> <!-- // #intercode -->
 
 				<h1>{{page_title}}</h1>
+				{{edition}}
 
 				{{body}}
 			</section>

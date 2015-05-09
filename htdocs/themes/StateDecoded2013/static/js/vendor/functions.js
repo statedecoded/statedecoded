@@ -190,8 +190,78 @@ $(document).ready(function () {
 	});
 
 	/* Mentions of other sections of the code. */
-	$("a.law").each(function() {
+	$("a.law").each(function(i, elm) {
+		elm = $(elm);
 		var section_number = $(this).text();
+		var content = {};
+
+		// If we have multiple references, use that list in the popup.
+		if(elm.hasClass('multiple-references')) {
+			var laws = elm.data('popup-content');
+
+			var popup_content = section_number + ' may refer to the following sections: ';
+			popup_content += '<ul>';
+
+			for(i in laws)
+			{
+				var law = laws[i];
+				popup_content += '<li><a href="' + law.url + '">' + law.catch_line + '</a></li>';
+			}
+
+			popup_content += '</ul>';
+
+			content = {
+				text: popup_content
+			};
+
+			// Since this is activated on hover, we need something for screen readers.
+			// This will be hidden from normal browsers.
+
+			var footnote = $('.footnote');
+			if(footnote.length === 0) {
+				footnote = $('<section class="footnote"></section>');
+				footnote.append('<h2>Footnotes</h2>');
+			}
+
+			// Create a wrapper to link to.
+			var wrapper = $('<article><h3>' + elm.data('ref-count') + '</h3></article>');
+			wrapper.attr('id', 'ref-' +  elm.data('ref-count'));
+			wrapper.append(popup_content);
+
+			footnote.append(wrapper);
+
+			$('#law').append(footnote);
+
+			elm.after('<sup class="footnote-link"><a href="#ref-' + elm.data('ref-count') + '">' + elm.data('ref-count') + '</a></sup>');
+
+
+		}
+
+		// Otherwise, Ajax in the list.
+		else {
+			console.log('/api/law' + elm.attr('href'));
+			content = {
+				text: 'Loading . . .', // Those are U+2009, not regular spaces.
+				ajax: {
+					url: '/api/law' + elm.attr('href'),
+					type: 'GET',
+					data: { fields: 'catch_line,ancestry', key: api_key },
+					dataType: 'json',
+					success: function(section, status) {
+						if( section.ancestry instanceof Object ) {
+							var content = '';
+							for (key in section.ancestry) {
+								var content = section.ancestry[key].name + ' → ' + content;
+							}
+						}
+						var content = content + section.catch_line;
+						this.set('content.text', content);
+					}
+				}
+			};
+		}
+
+
 		$(this).qtip({
 			tip: true,
 			hide: {
@@ -207,25 +277,7 @@ $(document).ready(function () {
 				width: 300,
 				tip: "bottom left"
 			},
-			content: {
-				text: 'Loading . . .', // Those are U+2009, not regular spaces.
-				ajax: {
-					url: '/api/law/' + section_number + '/',
-					type: 'GET',
-					data: { fields: 'catch_line,ancestry', key: api_key },
-					dataType: 'json',
-					success: function(section, status) {
-						if( section.ancestry instanceof Object ) {
-							var content = '';
-							for (key in section.ancestry) {
-								var content = section.ancestry[key].name + ' → ' + content;
-							}
-						}
-						var content = content + section.catch_line;
-						this.set('content.text', content);
-					}
-				}
-			}
+			content: content
 		})
 	});
 
@@ -252,7 +304,11 @@ $(document).ready(function () {
 				ajax: {
 					url: '/api/dictionary/' + encodeURI(term) + '/',
 					type: 'GET',
-					data: { section: section_number, key: api_key },
+					data: {
+						law_id: law_id,
+						edition_id: edition_id,
+						key: api_key
+					},
 					dataType: 'json',
 					success: function(data, status) {
 						var content = truncate(data.definition);

@@ -17,49 +17,24 @@
 class PermalinkController extends BaseController
 {
 
-	function handle($args)
+	public function handle($args)
 	{
 
 		if ( $args['route'] )
 		{
-
-			global $db;
-
-			/*
-			 * Look up the route in the database
-			 */
-			$sql = 'SELECT *
-					FROM permalinks
-					WHERE url = :url
-					LIMIT 1';
-			$sql_args = array(
-				':url' => $args['route']
-			);
-			$statement = $db->prepare($sql);
-			$result = $statement->execute($sql_args);
+			$route = $this->find_route($args['route']);
 
 			/*
-			 * If we found a route
+			 * Try to intelligently determine if there's a matching controller
 			 */
-			if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+			$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
+				'Controller';
+
+			if (class_exists($object_name, FALSE) == FALSE)
 			{
-
-				$route = $statement->fetch(PDO::FETCH_ASSOC);
-
-				/*
-				 * Try to intelligently determine if there's a matching controller
-				 */
-				$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
-					'Controller';
-
-				if (class_exists($object_name, FALSE) == FALSE)
-				{
-					$controller = new $object_name();
-					return $controller->handle($route);
-				}
-
+				$controller = new $object_name();
+				return $controller->handle($route);
 			}
-
 		}
 
 		/*
@@ -67,6 +42,36 @@ class PermalinkController extends BaseController
 		 */
 		return $this->handleNotFound($args);
 
+	}
+
+	public function find_route($url)
+	{
+		$route = FALSE;
+
+		global $db;
+
+		/*
+		 * Look up the route in the database
+		 */
+		$sql = 'SELECT *
+				FROM permalinks
+				WHERE url = :url
+				LIMIT 1';
+		$sql_args = array(
+			':url' => $url
+		);
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		/*
+		 * If we found a route
+		 */
+		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+		{
+			$route = $statement->fetch(PDO::FETCH_ASSOC);
+		}
+
+		return $route;
 	}
 
 }

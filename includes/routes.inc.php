@@ -16,16 +16,19 @@ Router::addRoute('^/$', 'home.php');
 Router::addRoute('^/about/?(.*)', 'about.php');
 
 // Admin section
-Router::addRoute('^/admin/?(.*)', 'admin/index.php');
+Router::addRoute('^/admin(/.*)?$', 'admin/index.php');
 
 // Downloads and API
 Router::addRoute('^/downloads/?(.*)', 'downloads/index.php');
+
+// Editions list
+Router::addRoute('^/editions/?(.*)', array('EditionController', 'handle'));
 
 // Search
 Router::addRoute('^/search/?(.*)', 'search.php');
 
 // Browse
-Router::addRoute('^/browse/?(.*)', array('StructureController', 'handle'));
+Router::addRoute('^/browse/?((?P<edition>.*?)/)?$', array('StructureController', 'handle'));
 
 
 // New activation

@@ -13,6 +13,14 @@
  */
 
 /*
+ * Guess where the includes directory is.
+ */
+if (!defined('INCLUDE_PATH'))
+{
+	define('INCLUDE_PATH', dirname(__FILE__) . '/');
+}
+
+/*
  * Append the includes directory to the include path.
  */
 set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
@@ -21,6 +29,40 @@ set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
  * What is the title of the website?
  */
 define('SITE_TITLE', 'The State Decoded');
+
+/*
+ * Set the main site url.
+ */
+$url = 'http://';
+if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+	($_SERVER['SERVER_PORT'] == 443) )
+{
+	$url = 'https://';
+}
+if(isset($_SERVER['SERVER_NAME']))
+{
+	$url .= $_SERVER['SERVER_NAME'];
+}
+
+/*
+ * Define the site's URL. This can be defined manually by removing the below stanza, leaving just:
+ *
+ * define('SITE_URL', 'http://example.com:1234');
+ *
+ * substituting, of course, your site's protocol, domain name, and port (if you're using a non-
+ * standard port).
+ */
+$url = 'http://';
+if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+{
+	$url = 'https://';
+}
+$url .= $_SERVER['SERVER_NAME'];
+if ( ($_SERVER['SERVER_PORT'] != '80') && ($_SERVER['SERVER_PORT'] != '443') )
+{
+	$url .= ':' . $_SERVER['SERVER_PORT'];
+}
+define('SITE_URL', $url);
 
 /*
  * What is the name of the place that these laws govern?
@@ -41,7 +83,7 @@ define('SECTION_SYMBOL', '§');
 /*
  * Define the web root -- the directory in which index.php is found.
  */
-define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT']);
+define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT'] ? $_SERVER['DOCUMENT_ROOT'] : dirname(INCLUDE_PATH) . '/htdocs/');
 
 /*
  * Define the location of the files to import.
@@ -146,9 +188,36 @@ define('EMAIL_NAME', SITE_TITLE);
 define('RECORD_VIEWS', TRUE);
 
 /*
- * The URL for your installation of Solr. End with a trailing slash.
+ * Solr configuration.
  */
-define('SOLR_URL', 'http://localhost:8080/solr/statedecoded/');
+define('SEARCH_CONFIG', json_encode(
+	array(
+		// By default, we use Solr.  You can also use 'SqlSearchEngine'
+		// to just use the database search with no external search engine.
+		'engine' => 'SolrSearchEngine',
+		// Our host configuration from solr.
+		'host' => 'localhost',
+		'port' => 8983,
+		'path' => '/solr/',
+		// The name of the default core to use.  Usually this is statedecoded.
+		'core' => 'statedecoded',
+		// 30 seconds should be long enough to index in most cases.
+		'timeout' => 30,
+		// The hardcoded batch size is 100, we can change that as needed here.
+		'batch_size' => 100,
+		// We want to include the headers from Solr for error catching.
+		'omitheader' => false,
+		// Setup our local data to pass to the seach index.
+		'site' => array(
+			// On sites where multiple codes are stored in one Solr core, set
+			// a unique identifier for each site here.  You may also want to
+			// customize the default site name and url here.
+			'identifier' => 'statedecoded',
+			'name' => SITE_TITLE,
+			'url' => SITE_URL
+		)
+	)
+));
 
 /*
  * The HTML to be displayed on individual law pages that will allow them to be shared via social
@@ -218,21 +287,17 @@ define('VERSION', '0.81');
 // define('COURTLISTENER_PASSWORD', 's3cr3tp@ssw0rd');
 
 /*
- * Define the site's URL. This can be defined manually by removing the below stanza, leaving just:
- *
- * define('SITE_URL', 'http://example.com:1234');
- *
- * substituting, of course, your site's protocol, domain name, and port (if you're using a non-
- * standard port).
+ * To turn up or down debugging on the admin functions, set this to a value between 1 (verbose)
+ * and 10 (quiet).  5 is the default, which will tell you what step the import is on.
  */
-$url = 'http://';
-if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
-{
-	$url = 'https://';
-}
-$url .= $_SERVER['SERVER_NAME'];
-if ( ($_SERVER['SERVER_PORT'] != '80') && ($_SERVER['SERVER_PORT'] != '443') )
-{
-	$url .= ':' . $_SERVER['SERVER_PORT'];
-}
-define('SITE_URL', $url);
+define('DEBUG_LEVEL', 5);
+
+/*
+ * Remote Data Info.
+ * Used by the command line tool to set reasonable defaults for importing data automatically.
+ */
+// define('DATA_REMOTE_USER', '');
+// define('DATA_REMOTE_PASSWORD', '');
+// define('DATA_REMOTE_HOST', '');
+// define('DATA_REMOTE_PATH', '');
+>>>>>>> edition-update

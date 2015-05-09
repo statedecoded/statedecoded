@@ -21,7 +21,12 @@
 /*
  * Log parser output.
  */
-$logger = new Logger(array('html' => TRUE));
+$logger_args = array('html' => TRUE);
+if(defined('DEBUG_LEVEL'))
+{
+	$logger_args['level'] = DEBUG_LEVEL;
+}
+$logger = new Logger($logger_args);
 
 /*
  * Require that the user log in.
@@ -38,13 +43,20 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
         <big>Wrong Username or Password</big>
         </body></html>';
     exit;
-    
+
 }
 
 /*
  * Create a new parser controller.
  */
-$parser = new ParserController(array('logger' => $logger));
+global $db;
+$parser = new ParserController(
+	array(
+		'logger' => $logger,
+		'db' => &$db,
+		'import_data_dir' => IMPORT_DATA_DIR
+	)
+);
 
 if (isset($_GET['noframe']))
 {
@@ -77,9 +89,121 @@ if (count($_POST) === 0)
 	}
 	elseif ($_GET['page'] == 'parse' )
 	{
-		$body = show_admin_forms();
-	}
+		$parser->logger->flush_buffer = FALSE;
 
+		if(!$parser->check_db_populated())
+		{
+			ob_start();
+			if(!$parser->test_environment())
+			{
+				$errors = ob_get_contents();
+
+				$body = '<p>
+					It looks like this is a new installation of The State
+					Decoded. Unfortunately, there are a few issues you need
+					to resolve before we can do the rest of the setup.  Those
+					errors are listed below.
+					</p>
+					<p class="errors">' . $errors . '</p>';
+			}
+			else
+			{
+				$body = '
+				<form method="post" action="/admin/?page=setup&noframe=1">
+					<h3>Setup</h3>
+					<p>
+						It looks like this is a new installation of The State
+						Decoded. To get started, you\'ll need to click the
+						button below to setup the database.  If this is not a
+						new installation, you should <a
+						href="http://docs.statedecoded.com/config.html">check
+						that your database is configured properly</a> and
+						everything is working as it should.
+					</p>
+					<p>
+						<input type="hidden" name="action" value="setup" />
+						<input type="submit" name="submit"
+							value="Setup the database"/>
+					</p>
+				</form>';
+			}
+			ob_end_clean();
+		}
+		elseif($parser->check_migrations())
+		{
+			$body = '
+				<form method="post" action="/admin/?page=setup&noframe=1">
+					<h3>Update</h3>
+					<p>
+						The State Decoded has been updated but the database
+						needs to be upgraded. Please click the button below
+						to update the database.
+					</p>
+					<p>
+						<input type="hidden" name="action" value="update_db" />
+						<input type="submit" name="submit"
+							value="Update the database"/>
+					</p>
+				</form>';
+		}
+		else
+		{
+			$args['parser'] = $parser;
+			$body = show_admin_forms($args);
+		}
+	}
+}
+
+/*
+ * If we're doing the initial setup.
+ */
+elseif ($_POST['action'] == 'setup')
+{
+		/*
+	 * Step through each parser method.
+	 */
+	if ($parser->test_environment() !== FALSE)
+	{
+		$body = '<p>Environment test succeeded</p>';
+
+		if ($parser->populate_db() !== FALSE)
+		{
+			$body .= '<p>Database successfully setup.</p>';
+
+			$body .= $parser->run_migrations();
+			$body .= '<p>Migration complete.</p>';
+
+			$body .= '<p><a href="/admin/?page=parse&amp;noframe=1">Back to Admin Dashboard</a></p>';
+		}
+		else
+		{
+			echo '<p>There was an error setting up the database.  Please review
+				<a href="http://docs.statedecoded.com/">the documentation</a>
+				 to confirm that you have everything
+				 <a href="http://docs.statedecoded.com/installation.html">installed</a>
+				 and
+				 <a href="http://docs.statedecoded.com/config.html">configured</a>
+				 properly.</p>';
+		}
+	}
+	else
+	{
+			echo '<p>There was an error setting up the database.  The issues
+				encountered should appear above. Please review
+				<a href="http://docs.statedecoded.com/">the documentation</a>
+				 to confirm that you have everything
+				 <a href="http://docs.statedecoded.com/installation.html">installed</a>
+				 and
+				 <a href="http://docs.statedecoded.com/config.html">configured</a>
+				 properly.</p>';
+	}
+}
+
+elseif ($_POST['action'] == 'update_db')
+{
+	$body .= $parser->run_migrations();
+	$body .= '<p>Migration complete.</p>';
+	$body .= '<p><a href="/admin/?page=parse&amp;noframe=1">Back to Admin Dashboard</a></p>';
 }
 
 /*
@@ -90,7 +214,15 @@ elseif ($_POST['action'] == 'empty')
 
 	echo 'Emptying the database<br />';
 	flush();
-	$parser->clear_db();
+
+	if($_POST['edition'])
+	{
+		$parser->clear_edition($_POST['edition']);
+	}
+	else
+	{
+		$parser->clear_db();
+	}
 
 	echo 'Emptying the index<br />';
 	flush();
@@ -128,6 +260,7 @@ elseif ($_POST['action'] == 'parse')
 			{
 				$args = $_POST;
 				$args['import_errors'] = $edition_errors;
+				$args['parser'] = $parser;
 
 				echo show_admin_forms($args);
 			}
@@ -135,7 +268,9 @@ elseif ($_POST['action'] == 'parse')
 			else
 			{
 
+
 				$parser->clear_cache();
+				$parser->clear_edition($_POST['edition']);
 
 				/*
 				 * We should only continue if parsing was successful.
@@ -150,7 +285,7 @@ elseif ($_POST['action'] == 'parse')
 					$parser->index_laws();
 					$parser->structural_stats_generate();
 					$parser->prune_views();
-
+					$parser->finish_import();
 				}
 
 			}
@@ -280,9 +415,15 @@ else
 function show_admin_forms($args = array())
 {
 
-	$parser = new ParserController($args);
+	global $db;
+	$edition = new Edition(array('db' => $db));
 
-	$editions = $parser->get_editions();
+	try {
+		$editions = $edition->all();
+	}
+	catch(Exception $exception) {
+		$editions = FALSE;
+	}
 
 	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
 	{
@@ -370,6 +511,7 @@ function show_admin_forms($args = array())
 	{
 
 		$body .= '<div class="suboption">
+					<p>This will remove all existing data in this edition.</p>
 					<select name="edition" value="edition">
 						<option value="">Choose Edition .&thinsp;.&thinsp;.</option>';
 		foreach($editions as $edition)
@@ -379,7 +521,12 @@ function show_admin_forms($args = array())
 			{
 				$body .= ' select="selected"';
 			}
-			$body .='>' . $edition->name . '</option>';
+			$body .= '>' . $edition->name;
+			if($edition->current === '1')
+			{
+				$body .= ' [current]';
+			}
+			$boduy .= '</option>';
 		}
 
 		$body .= '</select>
@@ -409,9 +556,39 @@ function show_admin_forms($args = array())
 
 	<form method="post" action="/admin/?page=parse&noframe=1">
 		<h3>Empty the Database</h3>
-		<p>Remove all data from the database. (This leaves database tables intact.)</p>
+		<p>
+			Remove data from the database. This leaves database tables intact.
+			You may choose all data, or just data from a specific edition below.
+		</p>';
 
-		<input type="hidden" name="action" value="empty" />
+
+	if ($editions !== FALSE)
+	{
+
+		$body .= '<div class="suboption">
+					<select name="edition" value="edition">
+						<option value="">All Data</option>';
+		foreach($editions as $edition)
+		{
+			$body .= '<option value="' . $edition->id . '"';
+			if ($args['edition'] == $edition->id)
+			{
+				$body .= ' select="selected"';
+			}
+			$body .= '>' . $edition->name;
+			if($edition->current === '1')
+			{
+				$body .= ' [current]';
+			}
+			$boduy .= '</option>';
+		}
+
+		$body .= '</select>
+			</div>';
+
+	}
+
+	$body .= '<input type="hidden" name="action" value="empty" />
 		<input type="submit" value="Empty the Database" />
 	</form>
 
@@ -438,7 +615,7 @@ function show_admin_forms($args = array())
 	global $cache;
 	if (isset($cache))
 	{
-	
+
 		$body .= '
 			<form method="post" action="/admin/?page=parse&noframe=1">
 				<h3>Clear the In-Memory Cache</h3>
@@ -446,7 +623,7 @@ function show_admin_forms($args = array())
 				<input type="hidden" name="action" value="cache" />
 				<input type="submit" value="Clear Cache" />
 			</form>';
-			
+
 	}
 
 	return $body;

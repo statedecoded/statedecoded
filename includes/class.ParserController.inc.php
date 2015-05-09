@@ -11,8 +11,21 @@
  * @since		0.7
 */
 
+require_once(INCLUDE_PATH . 'task/class.MigrateAction.inc.php');
+
 class ParserController
 {
+	public $db;
+	public $logger;
+	public $permalink_obj;
+	public $import_data_dir;
+
+	/*
+	 * Temporary variables
+	 */
+	public $edition_id;
+	public $previous_edition_id;
+
 
 	public function __construct($args)
 	{
@@ -31,12 +44,6 @@ class ParserController
 		$this->init_logger();
 
 		/*
-		 * Connect to the database.
-		 */
-		global $db;
-		$this->db = $db;
-
-		/*
 		 * Prior to PHP v5.3.6, the PDO does not pass along to MySQL the DSN charset configuration
 		 * option, and it must be done manually.
 		 */
@@ -49,6 +56,19 @@ class ParserController
 		 * Set our default execution limits.
 		 */
 		$this->set_execution_limits();
+
+		/*
+		 * Set the default import location;
+		 */
+		if(!isset($this->import_data_dir))
+		{
+			$this->import_data_dir = IMPORT_DATA_DIR;
+		}
+
+		/*
+		 * Set our objects
+		 */
+		$this->permalink_obj = new Permalink(array('db' => $this->db));
 
 	}
 
@@ -86,55 +106,98 @@ class ParserController
 	}
 
 	/**
+	 * Check if we need to populate the db.
+	 */
+	public function check_db_populated()
+	{
+		/*
+		 * To see if the database tables exist, just issue a query to the laws table.
+		 */
+		try
+		{
+			$sql = 'SELECT 1
+					FROM laws
+					LIMIT 1';
+
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute();
+		} catch (Exception $except)
+		{
+			$this->logger->message('Could not find ' . WEB_ROOT . '/admin/statedecoded.sql to '
+				. 'populate the database—database tables could not be created', 10);
+
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+	/**
 	 * Populate the database
 	 */
 	public function populate_db()
 	{
 
-		/*
-		 * To see if the database tables exist, just issue a query to the laws table.
-		 */
-		$sql = 'SELECT 1
-				FROM laws
-				LIMIT 1';
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute();
-
-		if ($result !== FALSE)
+		if(!$this->check_db_populated())
 		{
-			return TRUE;
-		}
+			/*
+			 * We expect an exception here.  If there's not one,
+			 * the table exists and we can go on our merry way.
+			 */
 
-		$this->logger->message('Creating the database tables', 5);
+			$this->logger->message('Creating the database tables', 5);
 
-		/*
-		 * The database tables do not exist, so see if the MySQL import file can be found.
-		 */
-		if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === FALSE)
-		{
-			$this->logger->message('Could not find ' . WEB_ROOT . '/admin/statedecoded.sql to '
-				. 'populate the database—database tables could not be created', 10);
-			return FALSE;
-		}
+			/*
+			 * The database tables do not exist, so see if the MySQL import file can be found.
+			 */
+			if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === FALSE)
+			{
+				$this->logger->message('Could not read find ' . WEB_ROOT . '/admin/statedecoded.sql to '
+					. 'populate the database. Database tables could not be created.', 10);
+				return FALSE;
+			}
 
-		/*
-		 * Load the MySQL import file into MySQL. We don't prepare this query because PDO_MySQL
-		 * didn't support multiple queries until PHP 5.3.
-		 */
-		$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
-		if ($sql == FALSE)
-		{
-			$this->logger->message('Could not read ' . WEB_ROOT . '/admin/statedecoded.sql to '
-				. 'populate the database—database tables could not be created', 10);
-		}
-		$result = $this->db->exec($sql);
-		if ($result === FALSE)
-		{
-			return FALSE;
+			/*
+			 * Load the MySQL import file into MySQL. We don't prepare this query because PDO_MySQL
+			 * didn't support multiple queries until PHP 5.3.
+			 */
+			$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
+			$result = $this->db->exec($sql);
+			if ($result === FALSE)
+			{
+				return FALSE;
+			}
 		}
 
 		return TRUE;
 
+	}
+
+	/**
+	 * Check for any outstanding migrations that need running.
+	 */
+	public function check_migrations()
+	{
+		$migrate_action = new MigrateAction(array(
+			'db' => $this->db
+		));
+
+		$migrations = $migrate_action->getUndoneMigrations();
+
+		return $migrations;
+	}
+
+	public function run_migrations()
+	{
+		$migrate_action = new MigrateAction(array(
+			'db' => $this->db
+		));
+
+		ob_start();
+		$result = $migrate_action->doMigrations();
+		$result = nl2br(ob_get_contents()) . $result;
+		ob_end_clean();
+
+		return $result;
 	}
 
 	/**
@@ -212,8 +275,31 @@ class ParserController
 
 	}
 
+	public function get_current_edition()
+	{
+		$sql = 'SELECT *
+				FROM editions
+				WHERE current = :current
+				ORDER BY order_by';
+		$sql_args[':current'] = 1;
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE || $statement->rowCount() == 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			$edition = $statement->fetch(PDO::FETCH_OBJ);
+		}
+		return $edition;
+	}
+
 	public function handle_editions($post_data)
 	{
+		$previous_edition = $this->get_current_edition();
+		$this->previous_edition_id = $previous_edition->id;
 
 		$errors = array();
 
@@ -304,16 +390,19 @@ class ParserController
 			/*
 			 * Get the edition from the database and store a copy locally.
 			 */
-			$edition_query = 'SELECT * FROM editions WHERE id = :edition_id';
-			$edition_args = array(':edition_id' => $this->edition_id);
+			$edition = new Edition();
+			$edition_result = $edition->find_by_id($this->edition_id);
 
-			$edition_statement = $this->db->prepare($edition_query);
-			$edition_result = $edition_statement->execute($edition_args);
-
-			if ($edition_result !== FALSE && $edition_statement->rowCount() > 0)
+			if ($edition_result !== FALSE)
 			{
-				$this->export_edition_id($this->edition_id);
-				$this->edition = $edition_statement->fetch(PDO::FETCH_ASSOC);
+				$this->edition = $edition_result;
+
+				// Write the EDITION_ID
+				if($this->edition->current)
+				{
+					$edition->unset_current($this->edition_id);
+					$this->export_edition_id($this->edition_id);
+				}
 			}
 			else
 			{
@@ -331,62 +420,23 @@ class ParserController
 	public function create_edition($edition = array())
 	{
 
-		if (!isset($edition['order_by']))
-		{
-			$sql = 'SELECT MAX(order_by) AS order_by
-					FROM editions
-					ORDER BY order_by';
-			$statement = $this->db->prepare($sql);
-			$result = $statement->execute();
-			if ($result !== FALSE && $statement->rowCount() > 0)
-			{
-				$edition_row = $statement->fetch(PDO::FETCH_ASSOC);
-				$edition['order_by'] = (int) $edition_row['order_by'] + 1;
-			}
-		}
-
-		if (!isset($edition['order_by']))
-		{
-			$edition['order_by'] = 1;
-		}
+		$edition_obj = new Edition(array('db' => $this->db));
 
 		/*
-		 * If we have a new current edition, make the older ones not current.
+		 * Make sure we have a unique edition.
 		 */
-		if ($edition['current'] == 1)
+		if($edition_obj->find_by_name($edition['name']))
 		{
-			$sql = 'UPDATE editions
-					SET current = 0';
-			$statement = $this->db->prepare($sql);
-			$result = $statement->execute();
-		}
-
-		$sql = 'INSERT INTO editions SET
-				name=:name,
-				slug=:slug,
-				current=:current,
-				order_by=:order_by,
-				date_created=NOW(),
-				date_modified=NOW()';
-		$statement = $this->db->prepare($sql);
-
-		$sql_args = array(
-			':name' => $edition['name'],
-			':slug' => $edition['slug'],
-			':current' => $edition['current'],
-			':order_by' => $edition['order_by']
-		);
-		$result = $statement->execute($sql_args);
-
-		if ($result !== FALSE)
-		{
-			return $this->db->lastInsertId();
-
-		}
-		else
-		{
+			$this->logger->message('The name for that edition is already in use.  Please choose a different name.', 10);
 			return FALSE;
 		}
+		if($edition_obj->find_by_slug($edition['slug']))
+		{
+			$this->logger->message('The slug for that edition is already in use.  Please choose a different slug.', 10);
+			return FALSE;
+		}
+
+		return $edition_obj->create($edition);
 
 	}
 
@@ -490,15 +540,16 @@ class ParserController
 		$this->logger->message('Clearing out the database', 5);
 
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
-			'tags', 'text_sections', 'structure', 'permalinks');
+			'tags', 'text_sections', 'structure', 'permalinks', 'laws_meta');
 		foreach ($tables as $table)
 		{
 
 			/*
 			 * Note that we *cannot* prepare the table name as an argument here.
 			 * PDO doesn't work that way.
+			 * We are deleting instead of truncating, to handle foreign keys.
 			 */
-			$sql = 'TRUNCATE ' . $table;
+			$sql = 'DELETE FROM ' . $table;
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute();
@@ -512,14 +563,6 @@ class ParserController
 			$this->logger->message('Deleted ' . $table, 5);
 
 		}
-
-		/*
-		 * Reset the auto-increment counter, to avoid unreasonably large numbers.
-		 */
-		$sql = 'ALTER TABLE structure
-				AUTO_INCREMENT=1';
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute();
 
 		/*
 		 * Delete law histories.
@@ -536,6 +579,47 @@ class ParserController
 
 		return TRUE;
 
+	}
+
+	public function clear_edition($edition_id)
+	{
+		$tables = array(
+			'dictionary',
+			'laws',
+			'laws_references',
+			'text',
+			'text_sections',
+			//'laws_views',
+			'tags',
+			'structure',
+			'permalinks',
+			'laws_meta'
+		);
+
+		foreach ($tables as $table)
+		{
+
+			/*
+			 * Note that we *cannot* prepare the table name as an argument here.
+			 * PDO doesn't work that way.
+			 * We are deleting instead of truncating, to handle foreign keys.
+			 */
+			$sql = 'DELETE FROM ' . $table . ' WHERE edition_id = :edition_id';
+			$sql_args = array(':edition_id' => $this->edition_id);
+
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute($sql_args);
+
+			if ($result === FALSE)
+			{
+				$this->logger->message('Error in SQL: ' . $sql, 10);
+				die();
+			}
+
+			$this->logger->message('Deleted ' . $table, 5);
+		}
+
+		return TRUE;
 	}
 
 	/**
@@ -581,7 +665,7 @@ class ParserController
 					 * Tell the parser what the working directory
 					 * should be for the data files to import.
 					 */
-					'directory' => IMPORT_DATA_DIR,
+					'directory' => $this->import_data_dir,
 
 					/*
 					 * Set the database
@@ -591,7 +675,7 @@ class ParserController
 					/*
 					 * Set the edition
 					 */
-					 'edition_id' => $this->edition_id,
+					'edition_id' => $this->edition_id,
 
 					/*
 					 * Set the logger
@@ -637,36 +721,10 @@ class ParserController
 		}
 
 		/*
-		 * Crosslink laws_references. This needs to be done after the time of the creation of these
-		 * references, because many of the references are at that time to not-yet-inserted sections.
+		 * Handle references
 		 */
-		$sql = 'UPDATE laws_references
-				SET target_law_id =
-					(SELECT laws.id
-					FROM laws
-					WHERE section = laws_references.target_section_number LIMIT 1)
-				WHERE target_law_id = :target_law_id';
-		$sql_args = array(
-			':target_law_id' => 0
-		);
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
-		$this->logger->message('Updated laws_references', 3);
 
-
-		/*
-		 * Any unresolved target section numbers are spurious (strings that happen to match our
-		 * section PCRE), and can be deleted.
-		 */
-		$sql = 'DELETE FROM laws_references
-				WHERE target_law_id = :target_law_id';
-		$sql_args = array(
-			':target_law_id' => 0
-		);
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
-		$this->logger->message('Deleted unresolved laws_references', 3);
-
+		$this->update_laws_references();
 
 		/*
 		 * Break up law histories into their components and save those.
@@ -687,7 +745,8 @@ class ParserController
 					SET law_id = :law_id,
 					meta_key = :meta_key,
 					meta_value = :meta_value,
-					date_created=now()';
+					date_created = now(),
+					edition_id = :edition_id';
 			$statement = $this->db->prepare($sql);
 
 			while ($law = $statement->fetch(PDO::FETCH_OBJ))
@@ -709,14 +768,17 @@ class ParserController
 					$sql_args = array(
 						':law_id' => $law->id,
 						':meta_key' => 'history',
-						':meta_value' => serialize($history)
+						':meta_value' => serialize($history),
+						':edition_id' => $this->edition_id
 					);
 					$result = $statement->execute($sql_args);
 
 				}
 
 			}
-		
+
+			$this->logger->message('Analyzed and stored law codification histories', 3);
+
 			$this->logger->message('Analyzed and stored law codification histories', 3);
 
 		}
@@ -799,16 +861,33 @@ class ParserController
 		 */
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
-		
+
 		if ($result == FALSE)
 		{
 			$this->logger->message('Could not map the structure of the laws', 10);
 		}
 
-		$this->logger->message('Mapped the structure of the laws', 3);
+		if ($result == FALSE)
+		{
+			$this->logger->message('Could not map the structure of the laws', 10);
+		}
+		else {
+			$this->logger->message('Mapped the structure of the laws', 5);
+		}
 
 		return TRUE;
-		
+
+	}
+
+	/**
+	 * Finish up.
+	 */
+	public function finish_import()
+	{
+		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj->update_last_import($this->edition_id);
+
+		return TRUE;
 	}
 
 	/**
@@ -826,6 +905,11 @@ class ParserController
 				 * Set the database
 				 */
 				'db' => $this->db,
+
+				/*
+				 * Set the edition
+				 */
+				'edition_id' => $this->edition_id,
 
 				/*
 				 * Set the logger
@@ -877,21 +961,21 @@ class ParserController
 
 			if (is_writable($config_file))
 			{
-			
+
 				$config = file_get_contents($config_file);
 				$config = str_replace("('API_KEY', '')", "('API_KEY', '" . $api->key . "')", $config);
 				file_put_contents($config_file, $config);
 
 				$this->logger->message('Created internal API key', 5);
-				
+
 			}
 			else
 			{
-			
+
 				$this->logger->message('Created the internal API key, but your config.inc.php file '
 					. 'could not be modified to store it—please edit that file and set the value '
 					. 'of API_KEY to ' . $api->key, 10);
-				
+
 			}
 
 			return TRUE;
@@ -951,6 +1035,8 @@ class ParserController
 
 		$this->logger->message('Exporting bulk download files', 5);
 
+		$this->setup_directories();
+
 		$downloads_dir = $this->downloads_dir;
 
 		/*
@@ -975,11 +1061,11 @@ class ParserController
 
 		if ($write_json === TRUE)
 		{
-		
+
 			$output = array();
 			exec('cd ' . $downloads_dir . '; zip -9rq code.json.zip code-json');
 			$this->logger->message('Created a ZIP file of the laws as JSON', 3);
-			
+
 		}
 
 		/*
@@ -987,11 +1073,11 @@ class ParserController
 		 */
 		if ($write_text === TRUE)
 		{
-		
+
 			$output = array();
 			exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
 			$this->logger->message('Created a ZIP file of the laws as plain text', 3);
-			
+
 		}
 
 		/*
@@ -999,11 +1085,11 @@ class ParserController
 		 */
 		if ($write_xml === TRUE)
 		{
-		
+
 			$output = array();
 			exec('cd ' . $downloads_dir . '; zip -9rq code.xml.zip code-xml');
 			$this->logger->message('Created a ZIP file of the laws as XML', 3);
-			
+
 		}
 
 		/*
@@ -1062,22 +1148,27 @@ class ParserController
 				$zip->close();
 
 			}
-			
+
 			$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
-			
+
 		}
 
-		if ($this->edition['current'] == '1')
+		$this->logger->message('Creating symlinks', 4);
+
+		if ($this->edition->current == '1')
 		{
 
-			$result = exec('cd ' . WEB_ROOT . '/downloads/; rm current; ln -s '
-				. $this->edition['slug'] . ' current');
+			$result = exec('cd ' . WEB_ROOT . '/downloads/; rm current; ln -s ' .
+				$this->edition->slug . ' current');
+
 			if ($result != 0)
 			{
 				$this->logger->message('Could not create “current” symlink in /downloads/—it must '
 					. 'be created manually', 10);
 			}
-			
+
+			$this->logger->message('Created downloads “current” symlink', 4);
+
 			$this->logger->message('Created downloads “current” symlink', 4);
 
 		}
@@ -1089,14 +1180,14 @@ class ParserController
 	/**
 	 * Export a single structure
 	 */
-	function export_structure($parent_id)
+	public function export_structure($parent_id = null)
 	{
 
 		/*
 		 * Define the location of the downloads directory.
 		 */
 		$downloads_dir = WEB_ROOT . '/downloads/';
-		$downloads_dir .= $this->edition['slug'] . '/';
+		$downloads_dir .= $this->edition->slug . '/';
 
 
 		$structure_sql = '	SELECT structure_unified.*
@@ -1245,6 +1336,7 @@ class ParserController
 					array(
 						'db' => $this->db,
 						'logger' => $this->logger,
+						'edition_id' => $this->edition_id,
 						'downloads_dir' => $this->downloads_dir,
 						'downloads_url' => $this->downloads_url
 					)
@@ -1382,6 +1474,61 @@ class ParserController
 							$dom->loadXML($xml);
 
 							/*
+							 * We're going to be inserting some things before the catch line.
+							 */
+							$catch_lines = $dom->getElementsByTagName('catch_line');
+							$catch_line = $catch_lines->item(0);
+
+							$law_dom = $dom->getElementsByTagName('law');
+							$law_dom = $law_dom->item(0);
+
+							/*
+							 * Add the main site info.
+							 */
+							if(defined('SITE_TITLE'))
+							{
+								$site_title = $dom->createElement('site_title');
+								$site_title->appendChild($dom->createTextNode(SITE_TITLE));
+								$law_dom->insertBefore($site_title, $catch_line);
+							}
+
+							if(defined('SITE_URL'))
+							{
+								$site_url = $dom->createElement('site_url');
+								$site_url->appendChild($dom->createTextNode(SITE_URL));
+								$law_dom->insertBefore($site_url, $catch_line);
+							}
+
+							/*
+							 * Set the edition.
+							 */
+							$edition = $dom->createElement('edition');
+							$edition->appendChild($dom->createTextNode($this->edition->name));
+
+							$edition_url = $dom->createAttribute('url');
+							$edition_url->value = '';
+							if(defined('SITE_URL'))
+							{
+								$edition_url->value = SITE_URL;
+							}
+							$edition_url->value .= '/' . $this->edition->slug . '/';
+							$edition->appendChild($edition_url);
+
+							$edition_id = $dom->createAttribute('id');
+							$edition_id->value = $this->edition->id;
+							$edition->appendChild($edition_id);
+
+							$edition_last_updated = $dom->createAttribute('last_updated');
+							$edition_last_updated->value = date('Y-m-d', strtotime($this->edition->last_import));
+							$edition->appendChild($edition_last_updated);
+
+							$edition_current = $dom->createAttribute('current');
+							$edition_current->value = $this->edition->current ? 'TRUE' : 'FALSE';
+							$edition->appendChild($edition_current);
+
+							$law_dom->insertBefore($edition, $catch_line);
+
+							/*
 							 * Simplify every reference, stripping them down to the cited sections.
 							 */
 							$referred_to_by = $dom->getElementsByTagName('referred_to_by');
@@ -1422,27 +1569,41 @@ class ParserController
 							/*
 							 * Simplify and reorganize every structural unit.
 							 */
-							$structure = $dom->getElementsByTagName('structure');
-							if ( !empty($structure) && ($structure->length > 0) )
+							$structure_elements = $dom->getElementsByTagName('structure');
+							if ( !empty($structure_elements) && ($structure_elements->length > 0) )
 							{
-								$structure = $structure->item(0);
+								$structure_element = $structure_elements->item(0);
+								$structural_units = $structure_element->getElementsByTagName('unit');
 
-								$structural_units = $structure->getElementsByTagName('unit');
+								$law_dom->insertBefore($structure_element, $catch_line);
 
 								/*
 								 * Iterate backwards through our elements.
 								 */
 								for ($i = $structural_units->length; --$i >= 0;)
 								{
+									$structure_element->removeChild($structural_units->item($i));
+								}
 
-									$unit = $structural_units->item($i);
+								/*
+								 * Build up our structures.
+								 * The count/get_object_vars is really fragile, and not a good way to do this.
+								 * TODO: Refactor all of $law->structure to be an array, not an object.
+								 */
+								$level_value = 0;
+								for ($i = count(get_object_vars($law->structure))+1; --$i >= 1;)
+								{
+									$structure = $law->structure->{$i};
+									$level_value++;
+
+									$unit = $dom->createElement('unit');
 
 									/*
 									 * Add the "level" attribute.
 									 */
 									$label = trim(strtolower($unit->getAttribute('label')));
 									$level = $dom->createAttribute('level');
-									$level->value = array_search($label, $parser->get_structure_labels()) + 1;
+									$level->value = $level_value;
 
 									$unit->appendChild($level);
 
@@ -1450,24 +1611,32 @@ class ParserController
 									 * Add the "identifier" attribute.
 									 */
 									$identifier = $dom->createAttribute('identifier');
-									$identifier->value = trim($unit->getElementsByTagName('identifier')->item(0)->nodeValue);
+									$identifier->value = trim($structure->identifier);
 									$unit->appendChild($identifier);
 
 									/*
-									 * Remove the "id" attribute from <unit>.
+									 * Add the "url" attribute.
 									 */
-									$unit->removeAttribute('id');
+									$url = $dom->createAttribute('url');
+									$permalink = $this->permalink_obj->get_permalink($structure->id, 'structure', $this->edition_id);
+									$url->value = '';
+									if(defined('SITE_URL'))
+									{
+										$url->value = SITE_URL;
+									}
+									$url->value .= $permalink->url;
+
+									$unit->appendChild($url);
 
 									/*
 									 * Store the name of this structural unit as the contents of <unit>.
 									 */
-									$unit->nodeValue = trim($unit->getElementsByTagName('name')->item(0)->nodeValue);
+									$unit->nodeValue = trim($structure->name);
 
 									/*
 									 * Save these changes.
 									 */
-									$structure->appendChild($unit);
-
+									$structure_element->appendChild($unit);
 								}
 
 							}
@@ -1525,7 +1694,7 @@ class ParserController
 		 */
 		$downloads_dir = WEB_ROOT . '/downloads/';
 
-		if(!isset($this->edition) || !isset($this->edition['slug']))
+		if(!isset($this->edition) || !isset($this->edition->slug))
 		{
 			$this->logger->message('Edition is missing—cannot write new files', 10);
 			throw new Exception('Edition is missing');
@@ -1550,26 +1719,26 @@ class ParserController
 		/*
 		 * Add the proper structure for editions.
 		 */
-		$downloads_dir .= $this->edition['slug'] . '/';
+		$downloads_dir .= $this->edition->slug . '/';
 
 		$this->downloads_dir = $downloads_dir;
 
-		$this->downloads_url = '/downloads/' . $this->edition['slug'] . '/';
+		$this->downloads_url = '/downloads/' . $this->edition->slug . '/';
 
 		foreach (array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
 		{
-		
+
 			$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
 
 			/*
 			 * If the JSON directory doesn't exist, create it.
 			 */
 			$this->mkdir($this->downloads_dir . $data_dir);
-			
+
 		}
-		
+
 		$this->logger->message('Created output directories for bulk download files', 5);
-		
+
 	}
 
 	public function mkdir($dir)
@@ -1605,7 +1774,7 @@ class ParserController
 	 *
 	 * List every law in this legal code and create an XML file with an entry for every one of them.
 	 */
-	function generate_sitemap()
+	public function generate_sitemap()
 	{
 
 		/*
@@ -1689,7 +1858,9 @@ class ParserController
 		 * Save the resulting file.
 		 */
 		file_put_contents($sitemap_file, $xml->asXML());
-		
+
+		$this->logger->message('Created sitemap.xml', 3);
+
 		$this->logger->message('Created sitemap.xml', 3);
 
 		return TRUE;
@@ -1709,12 +1880,12 @@ class ParserController
 		global $cache;
 		if (isset($cache))
 		{
-		
+
 			$cache->flush();
 			$this->logger->message('Cleared in-memory cache', 5);
-			
+
 		}
-		
+
 	}
 
 	/**
@@ -1724,7 +1895,7 @@ class ParserController
 	 * structural units or laws), and then store that data as serialized objects in the "structure"
 	 * database table.
 	 */
-	function structural_stats_generate()
+	public function structural_stats_generate()
 	{
 
 		/*
@@ -1825,7 +1996,9 @@ class ParserController
 			$result = $statement->execute($sql_args);
 
 		}
-		
+
+		$this->logger->message('Generated structural statistics', 3);
+
 		$this->logger->message('Generated structural statistics', 3);
 
 	} // end structural_stats_generate()
@@ -1836,7 +2009,7 @@ class ParserController
 	 *
 	 * A helper method for structural_stats_generate(); not intended to be called on its own.
 	 */
-	function structural_stats_recurse()
+	public function structural_stats_recurse()
 	{
 
 		/*
@@ -1900,7 +2073,7 @@ class ParserController
 	 *
 	 * @throws Exception if the environment test fails
 	 */
-	function test_environment()
+	public function test_environment()
 	{
 
 		/*
@@ -2043,22 +2216,27 @@ class ParserController
 	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
 	 * instead, we do this via cURL.
 	 */
-	function index_laws()
+	public function index_laws($args)
 	{
+		if(!isset($this->edition))
+		{
+			$edition_obj = new Edition(array('db' => $this->db));
+			$this->edition = $edition_obj->current();
+		}
 
 		if (!isset($this->edition))
 		{
 			throw new Exception('No edition, cannot index laws.');
 		}
 
-		if ($this->edition['current'] != '1')
+		if ($this->edition->current != '1')
 		{
 			$this->logger->message('The edition is not current, skipping the update of the search '
 				. ' index', 9);
 			return;
 		}
 
-		if (!defined('SOLR_URL'))
+		if(!defined('SEARCH_CONFIG'))
 		{
 			$this->logger->message('Solr is not in use, skipping index', 9);
 			return;
@@ -2066,137 +2244,41 @@ class ParserController
 
 		else
 		{
-
+			/*
+			 * Index the laws.
+			 */
 			$this->logger->message('Updating search index', 5);
-			
-			/*
-			 * Define the Solr URL to which the XML files will be posted.
-			 */
-			$solr_update_url = SOLR_URL . 'update';
 
-			/*
-			 * Generate a list of all of the XML files.
-			 */
-			$path = WEB_ROOT . '/downloads/' . $this->edition['slug'] . '/code-xml/';
+			$this->logger->message('Indexing laws', 6);
 
-			if (!file_exists($path) ||!is_dir($path))
+			$search_index = new SearchIndex(
+				array(
+					'config' => json_decode(SEARCH_CONFIG, TRUE)
+				)
+			);
+
+			$law_obj = new Law(array('db' => $this->db));
+			$result = $law_obj->get_all_laws($this->edition->id, true);
+
+			$search_index->start_update();
+
+			while($law = $result->fetch())
 			{
-				$this->logger->message('XML output directory ' . $path . ' does not exist—could '
-					. ' not index laws with Solr', 10);
-				return FALSE;
+				// Get the full data of the actual law.
+				$document = new Law(array('db' => $this->db));
+				$document->law_id = $law['id'];
+				$document->config->get_all = TRUE;
+				$document->get_law();
+				// Bring over our edition info.
+				$document->edition = $this->edition;
+
+				$search_index->add_document($document);
 			}
 
-			/*
-			 * Create an array, $files, with a list of every XML file.
-			 *
-			 * We don't bother to check whether each file is readable because a) these files were
-			 * just created by the exporter and b) it's really too slow on the order of tens or
-			 * hundreds of thousands of files.
-			 */
-			$files = get_files($path);
+			$search_index->commit();
 
-			if (count($files) == 0)
-			{
-				$this->logger->message('No files were found in ' . $path . '—could not index laws '
-					. 'with Solr', 10);
-				return FALSE;
-			}
-
-			/*
-			 * See if any of these files contain invalid XML. We run xmllint, extract filenames from
-			 * the output, and put those on a blacklist. This is because Solr reacts badly to
-			 * invalid XML, and it's best that it not encounter any.
-			 *
-			 * We do this in a strange fashion, but for good cause. xmllint appears to be written in
-			 * such a fashion that makes it impossible for exec() to capture its output. Maybe it
-			 * explicitly writes to the console rather than STDOUT, maybe something else is going
-			 * on, but the simple solution is to redirect xmllint's output to a file, retrieve the
-			 * contents of that file, and then delete the file.
-			 *
-			 * We can only validate XML files that are all in the same directory (see issue #433 in
-			 * the GitHub repository), so we alert people with LAW_LONG_URLS enabled (which nests
-			 * XML within subdirectories) that their XML is not being validated.
-			 */
-			if (LAW_LONG_URLS === FALSE)
-			{
-
-				$this->logger->message('Validating XML files before indexing them', 3);
-				exec('xmllint --noout ' . $path . '* > ' . $path . 'xmllint.txt 2>&1');
-				$output = file_get_contents($path . 'xmllint.txt');
-				unlink($path . 'xmllint.txt');
-
-			}
-			else
-			{
-				$this->logger->message('Cannot try to validate XML files, because LAW_LONG_URLS is '
-					. 'enabled—proceeding with the assumption that the XML does not contain '
-					. 'errors', 5);
-			}
-
-			/*
-			 * Extract filenames from the output.
-			 */
-			if (preg_match_all('/' . preg_quote($path, '/') . '(.+)\.xml\:/', $output, $matches) !== FALSE)
-			{
-
-				if (count($matches[1]) > 0)
-				{
-
-					$invalid_files = 0;
-
-					foreach ($matches[1] as $match)
-					{
-
-						$key = array_search($match, $files);
-						if ($key !== FALSE)
-						{
-							unset($files[$key]);
-							$invalid_files++;
-						}
-
-					}
-
-					if ($invalid_files > 0)
-					{
-						$this->logger->message('Suppressing the indexing of '
-							. number_format($invalid_files) . ' laws, due to the presence of '
-							. 'invalid XML');
-					}
-
-				}
-
-			}
-
-			/*
-			 * Post each of the files to Solr, in batches of 10,000.
-			 */
-			$file_count = count($files);
-			$batch_size = 10000;
-			for ($i = 0; $i < $file_count; $i+=$batch_size)
-			{
-
-				$file_slice = array_slice($files, $i, $batch_size);
-
-				/*
-				 * Instruct Solr to apply the specified XSL
-				 * transformation on the provided XML files.
-				 */
-				$solr_parameters = array(
-					'tr' => 'stateDecodedXml.xsl');
-
-
-				$fields = array();
-				foreach ($file_slice as $key=>$filename)
-				{
-					$fields[$filename] = '@' . realpath($filename) . ';type=application/xml';
-					++$numFiles;
-				}
-
-				if ( !$this->handle_solr_request($fields, true, $solr_parameters) )
-				{
-					return FALSE;
-				}
-			}
+			// $this->logger->message('Indexing structures', 6);
+			### TODO: Index structures
 
 			$this->logger->message('Laws were indexed with Solr', 5);
 
@@ -2206,14 +2288,37 @@ class ParserController
 
 	}
 
-	function clear_index()
+	public function clear_index($edition_id = null)
 	{
-	
+
 		if (!defined('SOLR_URL'))
 		{
 			return TRUE;
 		}
-		$request = '<delete><query>*:*</query></delete>';
+
+		if(isset($edition_id))
+		{
+			$sql = 'SELECT * FROM editions WHERE id = :edition_id';
+			$sql_args = array(':edition_id' => 'edition');
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute($sql_args);
+			if ($result === FALSE || $statement->rowCount() == 0)
+			{
+				throw new Exception('No such edition id:'. int($edition_id), E_USER_ERROR);
+				return FALSE;
+			}
+
+			$edition = $statement->fetchColumn('name');
+
+			$query = 'edition:' . $edition;
+
+		}
+		else
+		{
+			$query = '*:*';
+		}
+		$request = '<delete><query>' . $query . '</query></delete>';
+
 		if ( !$this->handle_solr_request($request) )
 		{
 			return FALSE;
@@ -2224,14 +2329,16 @@ class ParserController
 		{
 			return FALSE;
 		}
-		
+
+		$this->logger->message('Solr cleared of all indexed laws', 5);
+
 		$this->logger->message('Solr cleared of all indexed laws', 5);
 
 		return TRUE;
-		
+
 	}
 
-	function handle_solr_request($fields = array(), $multipart = false, $parameters = array())
+	protected function handle_solr_request($fields = array(), $multipart = false, $parameters = array())
 	{
 
 		$solr_update_url = SOLR_URL . 'update';
@@ -2300,6 +2407,137 @@ class ParserController
 		}
 
 		return TRUE;
+	}
+
+	public function update_laws_references()
+	{
+		/*
+		 * Crosslink laws_references. This needs to be done after the time of
+		 * the creation of these references, because many of the references are
+		 * at that time to not-yet-inserted sections.
+		 */
+		$this->logger->message('Updating laws_references', 3);
+
+		/*
+		 * Since section numbers may be duplicated, make this a many-to-one
+		 * relationship.
+		 */
+
+		/*
+		 * First, get our existing references.
+		 */
+
+		$existing_sql = 'SELECT * FROM laws_references
+			WHERE edition_id = :edition_id';
+		$existing_args = array(':edition_id' => $this->edition_id);
+		$existing_statement =  $this->db->prepare($existing_sql);
+		$existing_result = $existing_statement->execute($existing_args);
+
+		/*
+		 * Let's build a few queries we'll be using later. Do this outside the
+		 * loop for better memory handling.
+		 */
+		$law_sql = 'SELECT laws.id FROM laws WHERE section = :section_number';
+		$laws_statement = $this->db->prepare($law_sql);
+
+		$update_sql = 'UPDATE laws_references SET target_law_id = :target_law_id
+			WHERE target_section_number = :target_section_number AND
+			edition_id = :edition_id';
+		$update_statement = $this->db->prepare($update_sql);
+
+		$insert_sql = 'INSERT INTO laws_references (law_id, target_section_number,
+			target_law_id, mentions, date_created, edition_id) VALUES (:law_id,
+			:target_section_number, :target_law_id, :mentions, :date_created,
+			:edition_id) ON DUPLICATE KEY UPDATE mentions=mentions';
+		$insert_statement = $this->db->prepare($insert_sql);
+
+		/*
+		 * We don't want anything weird to happen since we're messing with this
+		 * table while iterating over it. So let's fetchAll for safety's sake,
+		 * even if it's inefficient to keep all of this in memory.
+		 */
+		$laws_references = $existing_statement->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach($laws_references as $laws_reference)
+		{
+			$this->logger->message('Matching ' .
+				$laws_reference['target_section_number'], 1);
+			/*
+			 * We may have many-to-one, so handle that.
+			 */
+			$laws_args = array(':section_number' =>
+				$laws_reference['target_section_number']);
+			$laws_result = $laws_statement->execute($laws_args);
+
+			/*
+			 * If we have precisely one record, we can just update in place.
+			 */
+			if($laws_statement->rowCount() == 1)
+			{
+				$law = $laws_statement->fetch(PDO::FETCH_ASSOC);
+
+				$this->logger->message('Updating  ' .
+					$laws_reference['target_section_number'] . ' with ' .
+					$law['id'], 1);
+
+				$update_args = array(
+					':target_law_id' => $law['id'],
+					':target_section_number' =>
+						$laws_reference['target_section_number'],
+					':edition_id' => $this->edition_id
+				);
+				$update_statement->execute($update_args);
+			}
+
+			/*
+			 * If we have more than one, we must create new records.
+			 */
+			elseif($laws_statement->rowCount() > 1)
+			{
+				while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
+				{
+					$this->logger->message('Adding new records for ' .
+						$laws_reference['target_section_number'] . ' with ' .
+						$law['id'], 1);
+
+					$insert_args = array(
+						':law_id' => $laws_reference['law_id'],
+						':target_section_number' =>
+							$laws_reference['target_section_number'],
+						':target_law_id' => $law['id'],
+						':mentions' => $laws_reference['mentions'],
+						':date_created' => $laws_reference['date_created'],
+						':edition_id' => $this->edition_id
+					);
+					$insert_statement->execute($insert_args);
+				}
+			}
+
+			/*
+			 * Otherwise, we have no match - do nothing.
+			 */
+			else
+			{
+				$this->logger->message('No match for  ' .
+					$laws_reference['target_section_number'], 1);
+			}
+		}
+
+		/*
+		 * Any unresolved target section numbers are spurious (strings that
+		 * happen to match our section PCRE), and can be deleted.
+		 */
+		$this->logger->message('Deleting unresolved laws_references', 3);
+
+		$sql = 'DELETE FROM laws_references WHERE target_law_id = :target_law_id
+			AND edition_id = :edition_id';
+		$sql_args = array(
+			':target_law_id' => 0,
+			':edition_id' => $this->edition_id
+
+		);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
 	}
 
 }
