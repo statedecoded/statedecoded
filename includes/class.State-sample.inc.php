@@ -681,15 +681,9 @@ class Parser
 	public function build_permalinks()
 	{
 		/*
-		 * Update the previous edition's permalinks.
-		 * In theory, this should preserve the edition-specific
-		 * urls, and only remove the "short" urls used for the
-		 * current edition.
+		 * Reset permalinks.
 		 */
-		if(isset($this->previous_edition_id))
-		{
-			$this->move_old_permalinks($this->previous_edition_id);
-		}
+		$this->move_old_permalinks($this->edition_id);
 
 		$this->delete_permalinks($this->edition_id);
 		$this->build_permalink_subsections($this->edition_id);
@@ -701,22 +695,29 @@ class Parser
 	public function move_old_permalinks($edition_id)
 	{
 		/*
-		 * First, delete anything that's not a real permalink.
+		 * Get the current edition.
+		 */
+		$edition_obj = new Edition(array('db' => $this->db));
+		$current_edition = $edition_obj->current();
+
+		/*
+		 * First, delete anything that's not a real permalink for any edition
+		 * that's not current.
 		 */
 		$sql = 'DELETE FROM permalinks
-			WHERE edition_id = :edition_id
-			AND permalink = 0';
-		$sql_args = array(':edition_id' => $edition_id);
+			WHERE permalink = 0 AND edition_id <> :edition_id';
+		$sql_args = array(':edition_id' => $current_edition->id);
 		$statement = $this->db->prepare($sql);
-
 		$statement->execute($sql_args);
 
 		/*
-		 * Then make all remaining permalinks preferred.
+		 * Then make all remaining permalinks preferred for any edition that's
+		 * not current.
 		 */
 		$sql = 'UPDATE permalinks
 			SET preferred = 1
-			WHERE edition_id = :edition_id';
+			WHERE permalink = 1 AND preferred = 0 AND
+			edition_id <> :edition_id';
 		$sql_args = array(':edition_id' => $edition_id);
 		$statement = $this->db->prepare($sql);
 
