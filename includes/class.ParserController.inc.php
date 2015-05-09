@@ -1704,7 +1704,7 @@ class ParserController
 		 * Delete our old downloads directory.
 		 */
 		$this->logger->message('Removing old downloads directory', 5);
-		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition['slug']);
+		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition->slug);
 
 		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
