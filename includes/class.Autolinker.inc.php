@@ -181,6 +181,13 @@ class Autolinker
 			 */
 			elseif(count($laws) > 0)
 			{
+				static $ref_counter;
+				if(!isset($ref_counter))
+				{
+					$ref_counter = 0;
+				}
+				$ref_counter++;
+
 				/*
 				 * Show a popup listing all possible matches. Pass this data as
 				 * JSON to make jquery able to handle it natively.
@@ -190,7 +197,7 @@ class Autolinker
 				$return_text = '<a class="law multiple-references"
 					title="This section number matches multiple sections."
 					data-popup-content=\'' . $popup_content . '\'
-					data-ref="' . $ref_counter . '"
+					data-ref-count="' . $ref_counter . '"
 					>' . $matches[0] . '</a>';
 
 

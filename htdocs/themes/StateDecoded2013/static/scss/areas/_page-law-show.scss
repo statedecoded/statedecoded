@@ -432,6 +432,10 @@
 
     } // &#cite_as
   }
+
+  .footnote, .footnote-link {
+    @extend %visually-hidden;
+  }
 }
 
 .nav {

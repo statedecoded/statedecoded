@@ -214,6 +214,28 @@ $(document).ready(function () {
 			content = {
 				text: popup_content
 			};
+
+			// Since this is activated on hover, we need something for screen readers.
+			// This will be hidden from normal browsers.
+
+			var footnote = $('.footnote');
+			if(footnote.length === 0) {
+				footnote = $('<section class="footnote"></section>');
+				footnote.append('<h2>Footnotes</h2>');
+			}
+
+			// Create a wrapper to link to.
+			var wrapper = $('<article></article>');
+			wrapper.attr('id', 'ref-' +  elm.data('ref-count'));
+			wrapper.append(popup_content);
+
+			footnote.append(wrapper);
+
+			$('#law').append(footnote);
+
+			elm.after('<sup class="footnote-link"><a href="#ref-' + elm.data('ref-count') + '">' + elm.data('ref-count') + '</a></sup>');
+
+
 		}
 
 		// Otherwise, Ajax in the list.
