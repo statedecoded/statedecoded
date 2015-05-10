@@ -261,6 +261,15 @@ class Dictionary
 		{
 			$this->scope = 'global';
 		}
+
+		/*
+		 * If we haven't specified whether we want to include generic terms
+		 * in this query, include them by default.
+		 */
+		if (!isset($this->generic_terms))
+		{
+			$this->generic_terms = TRUE;
+		}
 		
 		/*
 		 * Create an object in which we'll store terms that are identified.
@@ -288,7 +297,7 @@ class Dictionary
 		}
 
 		/*
-		 * Get a listing of all globally scoped terms.
+		 * Get a list of all globally scoped terms.
 		 */
 		$sql_args = array(
 			':global_scope' => 'global'
@@ -305,7 +314,7 @@ class Dictionary
 		}
 
 		/*
-		 * Otherwise, we're getting a listing of all more narrowly scoped terms. We always make sure
+		 * Otherwise, we're getting a list of all more narrowly scoped terms. We always make sure
 		 * that global definitions are included, in addition to the definitions for the current
 		 * structural heritage.
 		 */
@@ -363,28 +372,34 @@ class Dictionary
 		}
 
 		/*
-		 * Assemble a second query, this one against our generic legal dictionary.
+		 * Assemble a second query, this one against our generic legal dictionary, but only if we
+		 * have opted to include generic terms.
 		 */
-		$sql = 'SELECT term
-				FROM dictionary_general';
-		$sql_args = null;
-
-		$statement = $db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		if ($this->generic_terms === TRUE)
 		{
-		
-			/*
-			* Append these results to the existing $terms object, continuing to use the previously-
-			* defined $i counter.
-			*/
-			while ($term = $statement->fetch(PDO::FETCH_OBJ))
+
+			$sql = 'SELECT term
+					FROM dictionary_general';
+			$sql_args = null;
+
+			$statement = $db->prepare($sql);
+			$result = $statement->execute($sql_args);
+
+			if ($result !== FALSE && $statement->rowCount() > 0)
 			{
-				$terms->$i = $term->term;
-				$i++;
-			}
 			
+				/*
+				* Append these results to the existing $terms object, continuing to use the previously-
+				* defined $i counter.
+				*/
+				while ($term = $statement->fetch(PDO::FETCH_OBJ))
+				{
+					$terms->$i = $term->term;
+					$i++;
+				}
+				
+			}
+
 		}
 
 		$tmp = (array) $terms;
