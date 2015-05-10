@@ -1010,6 +1010,10 @@ class Law
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
+		if (USE_GENERIC_TERMS !== TRUE)
+		{
+			$dictionary->generic_terms = FALSE;
+		}
 		$tmp = $dictionary->term_list();
 		if ($tmp !== FALSE)
 		{

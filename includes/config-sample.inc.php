@@ -188,6 +188,13 @@ define('EMAIL_NAME', SITE_TITLE);
 define('RECORD_VIEWS', TRUE);
 
 /*
+ * When embedding definitions for legal terms, should the terms in The State Decoded's built-in
+ * legal dictionary be included? If this is set to FALSE, only the terms defined within this legal
+ * code will appear as defined terms.
+ */
+define('USE_GENERIC_TERMS', TRUE);
+
+/*
  * Solr configuration.
  */
 define('SEARCH_CONFIG', json_encode(
