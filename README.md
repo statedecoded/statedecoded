@@ -6,7 +6,7 @@ The State Decoded is a free, open source, web-based application to display laws 
 ![Before and After](https://s3.amazonaws.com/statedecoded.com/comparison.jpg)
 
 ## Can I try it out?
-Sure! This project can be seen in action on sites for [Virginia](http://vacode.org/), [Maryland](http://marylandcode.org/), [Chicago](http://chicagocode.org/), [San Francisco](http://sanfranciscocode.org/), and [a growing list of others](http://americadecoded.org/). If you want to install it, you can also [download a Vagrant image from GitMachines](https://github.com/GitMachines/statedecoded-gm-centos6), or just [download and install it from scratch](https://github.com/statedecoded/statedecoded/releases).
+Sure! This project can be seen in action on sites for [Virginia](http://vacode.org/), [Chicago](http://chicagocode.org/), [San Francisco](http://sanfranciscocode.org/), and [a growing list of others](http://americadecoded.org/). If you want to install it, you can also [download a Vagrant image from GitMachines](https://github.com/GitMachines/statedecoded-gm-centos6), or just [download and install it from scratch](https://github.com/statedecoded/statedecoded/releases).
 
 
 ## Is this ready for prime time?
