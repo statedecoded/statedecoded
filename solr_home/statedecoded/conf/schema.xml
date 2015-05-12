@@ -29,7 +29,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
    <field name="edition_id" type="string" indexed="true" stored="true" required="true" />
    <field name="edition_slug" type="string" indexed="true" stored="true" required="true" />
    <field name="edition_updated" type="string" indexed="true" stored="true" />
-   <field name="edition_current" type="bool" indexed="true" stored="true" />
+   <field name="edition_current" type="boolean" indexed="true" stored="true" />
 
    <field name="site_identifier" type="string" indexed="true" stored="true" />
    <field name="site_name" type="string" indexed="false" stored="true" />
@@ -95,6 +95,8 @@ Licensed to the Apache Software Foundation (ASF) under one or more
 
 
  <types>
+   <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
+
    <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
 
    <fieldType name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
