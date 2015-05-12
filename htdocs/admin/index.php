@@ -292,6 +292,10 @@ elseif ($_POST['action'] == 'parse')
 
 		}
 
+		else
+		{
+			$this->logger->message('The database isn\'t populated.  Please run the setup function.', 10);
+		}
 	}
 
 	/*

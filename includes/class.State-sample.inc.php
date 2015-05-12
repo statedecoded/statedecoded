@@ -801,7 +801,7 @@ class Parser
 			FROM structure
 			LEFT JOIN structure_unified
 				ON structure.id = structure_unified.s1_id
-			WHERE edition_id = :edition_id';
+			WHERE structure.edition_id = :edition_id';
 
 		/*
 		 * We use prepared statements for efficiency.  As a result,
@@ -909,7 +909,7 @@ class Parser
 				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
 								FROM laws
 								WHERE structure_id = :s_id
-								AND edition_id = :edition_id
+								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			else
@@ -921,7 +921,7 @@ class Parser
 									ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
 								WHERE structure_id = :s_id
 								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
-								AND edition_id = :edition_id
+								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));

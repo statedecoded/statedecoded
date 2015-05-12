@@ -123,9 +123,6 @@ class ParserController
 			$result = $statement->execute();
 		} catch (Exception $except)
 		{
-			$this->logger->message('Could not find ' . WEB_ROOT . '/admin/statedecoded.sql to '
-				. 'populate the database—database tables could not be created', 10);
-
 			return FALSE;
 		}
 		return TRUE;
@@ -1277,7 +1274,7 @@ class ParserController
 				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
 								FROM laws
 								WHERE structure_id = :s_id
-								AND edition_id = :edition_id
+								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			else
@@ -1289,7 +1286,7 @@ class ParserController
 									ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
 								WHERE structure_id = :s_id
 								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
-								AND edition_id = :edition_id
+								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			$laws_args = array(
@@ -2280,7 +2277,15 @@ class ParserController
 				// Bring over our edition info.
 				$document->edition = $this->edition;
 
-				$search_index->add_document($document);
+				try
+				{
+					$search_index->add_document($document);
+				}
+				catch (Exception $error)
+				{
+					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
+					return FALSE;
+				}
 			}
 
 			$search_index->commit();
@@ -2288,7 +2293,7 @@ class ParserController
 			// $this->logger->message('Indexing structures', 6);
 			### TODO: Index structures
 
-			$this->logger->message('Laws were indexed with Solr', 5);
+			$this->logger->message('Laws were indexed', 5);
 
 			return TRUE;
 
