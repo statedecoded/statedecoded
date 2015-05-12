@@ -124,7 +124,7 @@ class SqlSearchEngine extends SearchEngineInterface
 
 		$query_args = array();
 
-		if(isset($query['term']))
+		if(isset($query['q']))
 		{
 			/*
 			 * If we have a search term, we first look for the term as an
@@ -136,11 +136,11 @@ class SqlSearchEngine extends SearchEngineInterface
 			$where_or = array();
 
 			$where_or[] = 'section = :term';
-			$query_args[':term'] = $query['term'];
+			$query_args[':term'] = $query['q'];
 
 			// Remove any quotes, and apply our regexp word boundaries.
 			$query_args[':term_boundary'] = SqlSearchEngine::word_boundary(
-				str_replace('"', '', $query['term'])
+				str_replace('"', '', $query['q'])
 			);
 
 			// Add our query
@@ -161,10 +161,10 @@ class SqlSearchEngine extends SearchEngineInterface
 			 * This is weighted lower, but still first in the title, then in the
 			 * text.
 			 */
-			if($this->use_token_match && strpos($query['term'], ' ') !== FALSE)
+			if($this->use_token_match && strpos($query['q'], ' ') !== FALSE)
 			{
 				// The function below handles quoted items.
-				$keywords = SqlSearchEngine::tokenize($query['term']);
+				$keywords = SqlSearchEngine::tokenize($query['q']);
 
 				// Only do this search if we have more than one keyword.
 				// Otherwise, we still only care about an exact match.

@@ -28,25 +28,59 @@ class SolrSearchResults implements SearchResultsInterface
 
 	public function get_fixed_spelling()
 	{
-		if ($this->spelling->getCorrectlySpelled() == FALSE)
+		/*
+		 * If we know something is misspelled.
+		 */
+		if ($this->spelling->getCorrectlySpelled() === FALSE)
 		{
 			/*
 			 * Step through each term that appears to be misspelled, and create a modified query string.
 			 */
-			$clean_spelling = $this->query['term'];
+			$clean_spelling = $this->query['q'];
 			foreach($this->spelling as $suggestion)
 			{
 				$str_start = $suggestion->getStartOffset();
 				$str_end = $suggestion->getEndOffset();
-				$original_string = substr($this->query['term'], $str_start, $str_end);
-				$clean_spelling = str_replace($original_string, $suggestion->getWord(), $clean_spelling);
+				$str_length = $str_end - $str_start;
+
+				$clean_spelling = str_splice($clean_spelling, $str_start, $str_length, $suggestion->getWord());
 			}
-			return $clean_spelling;
+
+			/*
+			 * If our result is the same as the original, we couldn't find a better suggestion.
+			 * In that case, return false.  This prevents false positives.
+			 */
+
+			if($clean_spelling === $this->query['q'])
+			{
+				return FALSE;
+			}
+			else
+			{
+				return $clean_spelling;
+			}
 		}
 		else
 		{
 			return FALSE;
 		}
+	}
+
+	/*
+	 * Reassemble the query string for the fixed spelling.
+	 */
+	public function get_fixed_query()
+	{
+		// Get our existing query.
+		$args = $this->query;
+
+		// Reset back to page 1.
+		$args['page'] = 1;
+
+		// Fix the query term.
+		$args['q'] = $this->get_fixed_spelling();
+
+		return http_build_query($args);
 	}
 
 	protected function fix_results($results)

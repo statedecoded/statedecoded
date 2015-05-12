@@ -211,7 +211,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			 */
 			$select = $this->client->createSelect();
 			$select->setHandler('search');
-			$select->setQuery($query['term']);
+			$select->setQuery($query['q']);
 
 			if(isset($query['edition_id']))
 			{
@@ -231,7 +231,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			 * Check the spelling of the query and suggest alternates.
 			 */
 			$spellcheck = $select->getSpellcheck();
-			$spellcheck->setQuery($query['term']);
+			$spellcheck->setQuery($query['q']);
 			$spellcheck->setBuild(TRUE);
 			$spellcheck->setCollate(TRUE);
 			$spellcheck->setExtendedResults(TRUE);

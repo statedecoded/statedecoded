@@ -110,7 +110,7 @@ if (!empty($_GET['q']))
 	{
 		$results = $client->search(
 			array(
-				'term' => decode_entities($q),
+				'q' => decode_entities($q),
 				'edition_id' => $edition_id,
 				'page' => $page,
 				'per_page' => $per_page
@@ -134,10 +134,8 @@ if (!empty($_GET['q']))
 
 		$body .= '<h1>Suggestions</h1>';
 
-		// TODO: fix me #443
-		$suggested_q = $results->get_fixed_spelling($q);
-
-		$body .= '<p>Did you mean “<a href="/search/?q=' . urlencode($suggested_q) . '">'
+		$suggested_q = $results->get_fixed_spelling();
+		$body .= '<p>Did you mean “<a href="/search/?' . $results->get_fixed_query() . '">'
 			. $suggested_q . '</a>”?</p>';
 
 	}

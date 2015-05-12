@@ -563,3 +563,16 @@ function decode_entities($text) {
     $text = preg_replace('/&(?!#)/', '&amp;', $text);
     return $text;
 }
+
+/*
+ * Works like array_splice, but on strings.
+ */
+function str_splice($input, $start, $length, $replace)
+{
+	$input = str_split($input);
+	$replace = str_split($replace);
+
+	// array_splice, unlike most functions, edits the element in-place.
+	array_splice($input, $start, $length, $replace);
+	return join( $input );
+}
