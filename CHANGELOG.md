@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.9 (May 12, 2015)
+* Added support for multiple editions of a code in one database, to store revisions of the code over time.
+* Created a generic search wrapper, fixed several search-related bugs.
+* Moved to using Solarium to interface with Solr, eliminating the need for XSLT to transfer State Decoded XML to Solr XML.
+* Made Solr optional, because getting it installed and running was too great an obstacle for many people. Users can now choose to use a more basic search system, built in MySQL.
+* Versioned the database with migrations, which are stored in `includes/migrations`.
+* Included a new command line tool, `statedecoded`. It manages database migrations, and allows importing data from the command line. It is extensible—new tasks can be added in `includes/task/`.
+* Made various bug fixes and design tweaks.
+* **This will certainly break most installations.** Review carefully the changes to `config-sample.inc.php`, `class.State-sample.inc.php`, and the usage of the `statedecoded` tool.
+
 ## Version 0.8 (November 11, 2013)
 * Conducted a complete user interface overhaul. Everything is different: SASS-based layout, a responsive design, a pluggable template system, and a great deal more.
 * Conducted a complete overhaul of the code structure, adding a routing system and a permalinks table.
