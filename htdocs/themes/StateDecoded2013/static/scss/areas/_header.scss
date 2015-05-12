@@ -23,7 +23,7 @@
     height: 0.5in;
   }
 
-  hgroup#place_logo {
+  #place_logo {
     @include background-image(image-url("faux_seal.png"));
     background-repeat: no-repeat;
     background-position: top left;
@@ -122,7 +122,7 @@
         top: 0.22in;
       }
     } //h2
-  } // hgroup#place_logo
+  } // #place_logo
 
   nav#main_navigation {
     background-color: $base-dark;
@@ -274,7 +274,7 @@
         width: 100%;
       }
 
-      section#search {
+      section#search-form {
         width: 40%;
         margin-top: 0px;
 
@@ -288,7 +288,7 @@
         }
       }
 
-      hgroup#place_logo {
+      #place_logo {
         background-size: 50px 50px;
         height: 50px;
         padding-left: 0;
@@ -308,7 +308,7 @@
           letter-spacing: 0.5em;
           margin: -5px 0 0 120px;
         }
-      } // hgroup#place_logo
+      } // #place_logo
 
       nav#main_navigation {
         background-color: transparent;

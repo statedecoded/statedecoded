@@ -28,12 +28,12 @@
 	<header id="page_header">
 		<div class="nest">
 			<a href="/" class="noprint">
-				<hgroup id="place_logo">
+				<div id="place_logo">
 					<h1>{{place_name}}</h1>
 					<h2>Decoded</h2>
-				</hgroup>
+				</div>
 			</a>
-			<section id="search" class="search">
+			<section id="search-form" class="search">
 				<form id="search_form" method="get" action="/search/">
 					<div class="form_field text_field_container">
 						<label for="search">Search the code by keyword, phrase, or title</label>
