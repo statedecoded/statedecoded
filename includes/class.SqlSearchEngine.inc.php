@@ -1,8 +1,17 @@
 <?php
 
-/*
+/**
+ * Wrapper class for searching sql engines.
+ *
  * A barebones search client using the existing database.
  * Feel free to use this as a base to create new search adapters!
+ *
+ * PHP version 5
+ *
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.9
+ * @link		http://www.statedecoded.com/
+ * @since		0.9
  */
 
 require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');

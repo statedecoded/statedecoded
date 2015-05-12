@@ -1,10 +1,17 @@
 <?php
 
 /**
- * Wrapper class for PDO Statement
+ * Wrapper class for PDO Statement.
  *
  * This mostly is just a passthrough for PDO Statement methods.
  * We've also added some error checking.
+ *
+ * PHP version 5
+ *
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.9
+ * @link		http://www.statedecoded.com/
+ * @since		0.9
  */
 
 class DatabaseStatement extends PDOStatement

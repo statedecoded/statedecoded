@@ -1,7 +1,20 @@
 <?php
 
-/*
- * State Decoded Task Runner
+/**
+ * State Decoded Command Line Task Runner.
+ *
+ * You can create your own tasks by adding them to includes/tasks/
+ *
+ * PHP version 5
+ *
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		0.9
+ * @link		http://www.statedecoded.com/
+ * @since		0.9
+ *
+ * Usage:
+ *   ./statedecoded {command}
+ * Use the 'help' command to see all available commands.
  */
 
 class TaskRunner
