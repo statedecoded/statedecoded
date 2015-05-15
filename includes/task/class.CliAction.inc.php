@@ -14,7 +14,7 @@ abstract class CliAction
 		 */
 		foreach($args as $key=>$value)
 		{
-			$this->$key = $value;
+			$this->$key = &$args[$key];
 		}
 		foreach($this->default_options as $key => $value)
 		{
@@ -34,4 +34,24 @@ abstract class CliAction
 	 * function for these classes to work.
 	 */
 	//abstract public static function getHelp($args = array()) {}
+
+	/*
+	 * Generic helpers to convert text if that's needed.
+	 */
+	public function formatOutput($text)
+	{
+		if(isset($this->options['format']) && $this->options['format'] === 'html')
+		{
+			return $this->formatHtml($text);
+		}
+		else
+		{
+			return $text;
+		}
+	}
+
+	public function formatHtml($text)
+	{
+		return nl2br($text);
+	}
 }
