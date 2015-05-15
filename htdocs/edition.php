@@ -68,7 +68,7 @@ foreach($editions as $edition)
 		$body .= ' (Current Edition)';
 	}
 
-	if(isset($from_permalink) && $from_permalink !== FALSE)
+	if(isset($from_permalink) && $from_permalink !== FALSE && $from_permalink->url !== $browse_permalink->url)
 	{
 		$body .= '<br/><a href="' . $from_permalink->url . '">View ' . $from_permalink->title .'</a>';
 	}
