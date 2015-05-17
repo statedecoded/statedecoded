@@ -30,4 +30,6 @@ abstract class SearchEngineInterface
 	public function commit() {}
 
 	public function search($query) {}
+
+	public function find_related($object, $count) {}
 }

@@ -145,7 +145,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		$document->site_name = $this->config['site']['name'];
 		$document->site_url = $this->config['site']['url'];
 
-		$document->id = 'l_' . $law->token;
+		$document->id = 'l_' . $law->edition->id . '_' . $law->token;
 		$document->law_id = $law->law_id;
 
 		$document->section_number = $law->section_number;
@@ -264,6 +264,49 @@ class SolrSearchEngine extends SearchEngineInterface
 		catch (Exception $error)
 		{
 			throw new Exception( $error->getStatusMessage() );
+		}
+	}
+
+	public function find_related($object, $count=5)
+	{
+		if(strtolower(get_class($object)) === 'law')
+		{
+			$id = 'l_' . $object->edition_id . '_' . $object->permalink->token;
+		}
+		// elseif(strtolower(get_class($object)) === 'structure')
+		// {
+		// NOT YET SUPPORTED
+		// }
+		else {
+			throw new Exception('Record has a bad type in SolrSearchEngine->add_document');
+		}
+
+		if(isset($id))
+		{
+			$query = $this->client->createMoreLikeThis();
+
+			$query->setQuery('id:' . $id);
+			$query->setMltFields('catch_line,text,definition');
+			$query->setRows($count);
+			$query->setMinimumDocumentFrequency(1);
+			$query->setMinimumTermFrequency(1);
+			$query->createFilterQuery('edition_id')->setQuery('edition_id:'.$object->edition_id);
+			$query->setInterestingTerms('details');
+			$query->setMatchInclude(true);
+
+			$results = $this->client->select($query);
+
+			$this->last_result = $results;
+
+			if($results)
+			{
+				// Wrap the results and return them.
+				return new SolrSearchResults($query, $results);
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
 	}
 }

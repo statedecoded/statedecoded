@@ -49,6 +49,14 @@ if (!isset($law) || $law === FALSE)
 }
 
 /*
+ * Get our permalink data
+ */
+
+
+$permalink_obj = new Permalink(array('db' => $db));
+$law->permalink = $permalink_obj->get_permalink($law->law_id, 'law', $law->edition_id);
+
+/*
  * Store a record that this section was viewed.
  */
 $laws->record_view();
@@ -415,21 +423,46 @@ if ($law->references !== FALSE)
 
 /*
  * If we have a list of related laws, list them.
+ * Note that Solr < 4.6 will probably die horribly trying this.
+ * We catch any exceptions as a result and go about our business.
  */
-if (isset($law->related) && (count((array) $law->related) > 0))
+
+try
 {
-	$sidebar .= '
-			<section class="related-group grid-box" id="related-links">
-				<h1>Related Laws</h1>
-				<ul id="related">';
-	foreach ($law->related as $related)
+	$search_client = new SearchIndex(
+		array(
+			'config' => json_decode(SEARCH_CONFIG, TRUE)
+		)
+	);
+
+	$related_laws = $search_client->find_related($law, 3);
+
+	if($related_laws && count($related_laws->get_results()) > 0)
 	{
-		$sidebar .= '<li>' . SECTION_SYMBOL . '&nbsp;<a href="' . $related->url . '">'
-			. $related->section_number . '</a> ' . $related->catch_line . '</li>';
+
+		$sidebar .= '
+				<section class="related-group grid-box" id="related-links">
+					<h1>Related Laws</h1>
+					<ul id="related">';
+
+		$related_law = new Law();
+		foreach ($related_laws->get_results() as $result)
+		{
+			$related_law->law_id = $result->law_id;
+			$related_law->get_law();
+			$related_law->permalink = $related_law->get_url( $result->law_id );
+
+			$sidebar .= '<li>' . SECTION_SYMBOL . '&nbsp;<a href="' . $related_law->permalink->url . '">'
+				. $related_law->section_number . '</a> ' . $related_law->catch_line . '</li>';
+		}
+		$sidebar .= '
+					</ul>
+				</section>';
 	}
-	$sidebar .= '
-				</ul>
-			</section>';
+}
+catch(Exception $exception)
+{
+	// Do nothing.
 }
 
 /*
@@ -484,12 +517,10 @@ $content->set('current_edition', $law->edition_id);
 /*
  * If this isn't the canonical page, show a canonical meta tag.
  */
-$permalink_obj = new Permalink(array('db' => $db));
-$permalink = $permalink_obj->get_permalink($law->law_id, 'law', $law->edition_id);
-if($args['url'] !== $permalink->url)
+if($args['url'] !== $law->permalink->url)
 {
 	$content->append('meta_tags',
-		'<link rel="canonical" href="' . $permalink->url . '" />');
+		'<link rel="canonical" href="' . $law->permalink->url . '" />');
 }
 
 /*

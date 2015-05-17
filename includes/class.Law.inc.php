@@ -18,7 +18,7 @@ class Law
 
 	public function __construct($args = array())
 	{
-		foreach($this->args as $key=>$value)
+		foreach($args as $key=>$value)
 		{
 			$this->$key = $value;
 		}
@@ -68,7 +68,6 @@ class Law
 			$this->config->get_court_decisions = TRUE;
 			$this->config->get_metadata = TRUE;
 			$this->config->get_references = TRUE;
-			$this->config->get_related_laws = TRUE;
 			$this->config->get_tags = TRUE;
 			$this->config->render_html = TRUE;
 		}
@@ -445,14 +444,6 @@ class Law
 		}
 
 		/*
-		 * Gather all laws that are textually similar to this law.
-		 */
-		if ($this->config->get_related_laws == TRUE)
-		{
-			//$this->metadata = Law::get_related();
-		}
-
-		/*
 		 * Pretty up the text for the catch line.
 		 */
 		$this->catch_line = wptexturize($this->catch_line);
@@ -608,87 +599,11 @@ class Law
 
 	}
 
-
-	/**
-	 * Get a collection of the laws most similar to the present law.
-	 */
-	public function get_related()
-	{
-
-		/*
-		 * The number of results to return. The default is 5.
-		 */
-		if (!isset($this->num_results))
-		{
-			$this->num_results = 5;
-		}
-
-		/*
-		 * Intialize Solarium.
-		 */
-		$client = new Solarium_Client($GLOBALS['solr_config']);
-
-		if ($client === FALSE)
-		{
-			return FALSE;
-		}
-
-		/*
-		 * Create a MoreLikeThis query instance.
-		 */
-		$query = $client->createMoreLikeThis();
-
-		/*
-		 * Note that we have to escape colons in this query.
-		 */
-		$query->setQuery('section:' . str_replace(':', '\:', $this->section_number));
-		$query->setMltFields('text,tags,catch_line');
-		$query->setMatchInclude(TRUE);
-		$query->setStart(0)->setRows($this->num_results);
-
-		/*
-		 * Execute the query and return the result.
-		 */
-		$results = $client->select($query);
-
-		/*
-		 * If our query fails.
-		 */
-		if ($results === FALSE)
-		{
-			return FALSE;
-		}
-
-		/*
-		 * Create a new, blank object to store our related sections.
-		 */
-		$related = new StdClass();
-
-		/*
-		 * Iterate through the returned documents
-		 */
-		$i=0;
-		foreach ($results as $document)
-		{
-			$law = new Law();
-			$law->law_id = $document->id;
-			$law->get_law();
-
-			$related->{$i} = $law;
-			$i++;
-
-		}
-
-		return TRUE;
-
-	}
-
 	/**
 	 * Return the URL for a given law ID.
 	 *
-	 * This is meant to be invoked inline (see its use in the get_related method), which is why it
-	 * takes a section id as a parameter and returns a URL, rather than getting and setting
-	 * those as object properties.
+	 * This is meant to be invoked inline, which is why it takes a section id as a parameter and
+	 * returns a URL, rather than getting and setting those as object properties.
 	 *
 	 * By default, this will get the preferred link.
 	 *

@@ -76,9 +76,20 @@ class SearchIndex
 		return $this->engine->commit();
 	}
 
+	/*
+	 * Search for documents.
+	 */
 	public function search($query)
 	{
 		return $this->engine->search($query);
+	}
+
+	/*
+	 * Find documents similar to the passed object.
+	 */
+	public function find_related($object, $count)
+	{
+		return $this->engine->find_related($object, $count);
 	}
 
 }

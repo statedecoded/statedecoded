@@ -106,8 +106,12 @@ class SolrSearchResults implements SearchResultsInterface
 			{
 				$temp_result->$key = $value;
 			}
-			// Add highlighting
-			$temp_result->highlight = $highlighted->getResult($result->id);
+
+			if($highlighted)
+			{
+				// Add highlighting
+				$temp_result->highlight = $highlighted->getResult($result->id);
+			}
 
 			$fixed_results[] = $temp_result;
 		}

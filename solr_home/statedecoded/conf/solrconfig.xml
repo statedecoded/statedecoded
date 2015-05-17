@@ -1063,43 +1063,36 @@
      </lst>
   </requestHandler>
 
+ <requestHandler name="/mlt" class="solr.MoreLikeThisHandler">
+    <lst name="defaults">
 
 
+       <!--Result settings-->
+       <str name="fl"><!--Field list. These fields are returned in results.-->
+         id
+         catch_line
+         text
+         type
+         section
+         refers_to
+         referred_to_by
+         term
+         definition
+         score <!--The score field is calculated at query time. Results are sorted by the score, e.g. how well they matched the query.-->
+       </str>
 
 
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
-  <!-- STATE DECODED -->
+       <!-- More Like This -->
+       <str name="mlt">true</str>
+       <str name="mlt.qf">text,definition</str>
+       <str name="mlt.fl">text,definition</str>
+       <int name="mlt.count">4</int><!--4 similar documents will be listed-->
 
+     </lst>
+  </requestHandler>
 
+  <!-- Update Request Handler.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- Update Request Handler.  
-       
        http://wiki.apache.org/solr/UpdateXmlMessages
 
        The canonical Request Handler for Modifying the Index through
