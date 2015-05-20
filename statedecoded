@@ -137,5 +137,5 @@ require_once($config_file);
 require_once(INCLUDE_PATH . 'functions.inc.php');
 
 $runner = new TaskRunner();
-print $runner->execute($argv);
+$runner->execute($argv);
 

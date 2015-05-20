@@ -91,7 +91,7 @@ EOS;
 		{
 			list($obj, $file) = $action_info;
 		}
-		if($obj)
+		if(isset($obj))
 		{
 			require_once($file);
 			return $obj::getHelp();
