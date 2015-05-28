@@ -307,4 +307,3 @@ define('DEBUG_LEVEL', 5);
 // define('DATA_REMOTE_PASSWORD', '');
 // define('DATA_REMOTE_HOST', '');
 // define('DATA_REMOTE_PATH', '');
->>>>>>> edition-update
