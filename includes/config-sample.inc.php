@@ -104,7 +104,7 @@ define('THEMES_DIR', WEB_ROOT . '/themes/');
  * Which theme to use.
  */
 define('THEME_NAME', 'StateDecoded2013');
-define('THEME_DIR', TEMPLATE_DIR . THEME_NAME . '/');
+define('THEME_DIR', THEMES_DIR . THEME_NAME . '/');
 define('THEME_WEB_PATH', '/themes/' . THEME_NAME . '/');
 
 /*
