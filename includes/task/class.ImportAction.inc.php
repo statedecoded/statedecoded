@@ -78,7 +78,7 @@ class ImportAction extends CliAction
 
 					else
 					{
-						$parser->clear_apc();
+						$parser->clear_cache();
 
 						/*
 						 * We should only continue if parsing was successful.
