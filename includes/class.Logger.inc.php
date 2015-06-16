@@ -17,26 +17,32 @@ class Logger
 {
 
    /**
-     * Whether or not to show messages as HTML.
-     *
-     * @var boolean
-     */
+    * Whether or not to show messages as HTML.
+    *
+    * @var boolean
+    */
 	public $html = FALSE;
 
    /**
-     * This setting determines how "loud" the logger will be.
-     *
-     * Setting this to a higher number will reduce the number of messages
-     * output by the logger.
-     *
-     * @var integer
-     */
+    * This setting determines how "loud" the logger will be.
+    *
+    * Setting this to a higher number will reduce the number of messages
+    * output by the logger.
+    *
+    * @var integer
+    */
 	public $level = 0;
 
 	/**
 	 * Should we flush the buffer automatically?
 	 */
 	public $flush_buffer = TRUE;
+
+
+	/**
+	 * Error color (for terminal only)
+	 */
+	public $error_color = '0;31';
 
 	// {{{ __construct
 
@@ -48,7 +54,7 @@ class Logger
 
 	public function __construct($args = array())
 	{
-	
+
 		foreach($args as $key=>$value)
 		{
 			$this->$key = $value;
@@ -68,23 +74,10 @@ class Logger
 	 */
 	public function message($msg, $level = 1)
 	{
-	
+
 		if ($level >= $this->level)
 		{
-		
-			/*
-			 * If this is a very serious message -- a show-stopping error -- highlight it in red,
-			 * when outputting HTML. But don't do this if we're only listing the most serious
-			 * errors, because it wouldn't provide any useful UX.
-			 */
-			if ( ($this->html === TRUE) && ($level == 10) && ($this->level < 10) )
-			{
-				echo '<span color="red">' . $msg . '</span>';
-			}
-			else
-			{
-				echo $msg;
-			}
+			echo $msg;
 
 			/*
 			 * Provide the correct line endings.
@@ -111,6 +104,32 @@ class Logger
 			}
 
 		}
+
+	}
+
+	// }}}
+
+	// {{{ error
+
+	/**
+	 * @param string  $msg the message to print out
+	 * @param integer $level The log level of the message.
+	 *                      This log level must be greater than the log level
+	 *                      set on the class to actually be printed.
+	 */
+	public function error($msg, $level = 1)
+	{
+
+		if($this->html === TRUE)
+		{
+			$msg = '<span class="error">' . $msg . '</span>';
+		}
+		else
+		{
+			$msg = "\033[" . $this->error_color . "m" . $msg . "\033[0m";
+		}
+
+		$this->message($msg, $level);
 
 	}
 

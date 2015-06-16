@@ -558,6 +558,10 @@ class Parser
 		foreach ($this->section->structure->unit as $unit)
 		{
 			$level = (string) $unit['level'];
+			if(!isset($this->code->structure))
+			{
+				$this->code->structure = new stdClass();
+			}
 			if(!isset($this->code->structure->{$level}))
 			{
 				$this->code->structure->{$level} = new stdClass();
@@ -584,6 +588,10 @@ class Parser
 			 */
 			if (count($section) === 0)
 			{
+				if(!isset($this->code->section))
+				{
+					$this->code->section = new stdClass();
+				}
 				if(!isset($this->code->section->{$this->i}))
 				{
 					$this->code->section->{$this->i} = new stdClass();
@@ -598,6 +606,11 @@ class Parser
 			 */
 			foreach ($section as $subsection)
 			{
+
+				if(!isset($this->code->section))
+				{
+					$this->code->section = new stdClass();
+				}
 				if(!isset($this->code->section->{$this->i}))
 				{
 					$this->code->section->{$this->i} = new stdClass();
@@ -1140,29 +1153,44 @@ class Parser
 			)
 		);
 
-		foreach ($this->code->structure as $struct)
+		if(isset($this->code->structure))
 		{
 
-			$structure->identifier = $struct->identifier;
-			$structure->name = $struct->name;
-			$structure->label = $struct->label;
-			$structure->level = $struct->level;
-			$structure->metadata = $struct->metadata;
-
-			/* If we've gone through this loop already, then we have a parent ID. */
-			if (isset($this->code->structure_id))
+			foreach ($this->code->structure as $struct)
 			{
-				$structure->parent_id = $this->code->structure_id;
+
+				$structure->identifier = $struct->identifier;
+				$structure->name = $struct->name;
+				$structure->label = $struct->label;
+				$structure->level = $struct->level;
+				if(isset($struct->metadata))
+				{
+					$structure->metadata = $struct->metadata;
+				}
+				else
+				{
+					$structure->metadata = '';
+				}
+
+				/* If we've gone through this loop already, then we have a parent ID. */
+				if (isset($this->code->structure_id))
+				{
+					$structure->parent_id = $this->code->structure_id;
+				}
+				$this->code->structure_id = $structure->create_structure();
+
 			}
-			$this->code->structure_id = $structure->create_structure();
 
+			/*
+			 * When that loop is finished, because structural units are ordered from most general to
+			 * most specific, we're left with the section's parent ID. Preserve it.
+			 */
+			$query['structure_id'] = $this->code->structure_id;
 		}
-
-		/*
-		 * When that loop is finished, because structural units are ordered from most general to
-		 * most specific, we're left with the section's parent ID. Preserve it.
-		 */
-		$query['structure_id'] = $this->code->structure_id;
+		else
+		{
+			$this->logger->error('ERROR Section without structure found: '. print_r($this->code, TRUE), 10);
+		}
 
 		/*
 		 * Build up an array of field names and values, using the names of the database columns as
@@ -1435,10 +1463,10 @@ class Parser
 		}
 		$ancestry = implode(',', $ancestry);
 		$ancestry_section = $ancestry . ','.$this->code->section_number;
-		if 	(
-				(GLOBAL_DEFINITIONS === $ancestry)
+		if (defined('GLOBAL_DEFINITIONS') &&
+				(GLOBAL_DEFINITIONS === $ancestry
 				||
-				(GLOBAL_DEFINITIONS === $ancestry_section)
+				GLOBAL_DEFINITIONS === $ancestry_section)
 			)
 		{
 			$definitions->scope = 'global';

@@ -46,18 +46,11 @@ class ImportAction extends CliAction
 				)
 			);
 
-			if (!isset($this->options['no-delete']))
-			{
-				$parser->clear_db();
-				$parser->clear_index();
-			}
-
 			// TODO: Do edition stuff
 			$edition_args = array();
 			$edition_args['edition_option'] = 'existing';
 			$edition = $parser->get_current_edition();
 			$edition_args['edition'] = $edition->id;
-
 
 			/*
 			 * Step through each parser method.
@@ -79,6 +72,7 @@ class ImportAction extends CliAction
 					else
 					{
 						$parser->clear_cache();
+						$parser->clear_edition($edition->id);
 
 						/*
 						 * We should only continue if parsing was successful.

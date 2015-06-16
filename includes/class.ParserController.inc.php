@@ -26,6 +26,9 @@ class ParserController
 	public $edition_id;
 	public $previous_edition_id;
 
+	public $downloads_url = '';
+	public $downloads_dir = '';
+
 
 	public function __construct($args)
 	{
@@ -2173,6 +2176,7 @@ class ParserController
 			$error = TRUE;
 		}
 
+		// TODO: Fix me
 		if(defined('SOLR_URL'))
 		{
 			/*

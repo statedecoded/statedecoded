@@ -13,6 +13,9 @@
 
 require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');
 
+require_once(INCLUDE_PATH . 'Solarium/Autoloader.php');
+Solarium_Autoloader::register();
+
 class SolrSearchEngine extends SearchEngineInterface
 {
 	/*
