@@ -238,8 +238,8 @@ abstract class AmericanLegalParser
 			 * Operate on the present file.
 			 */
 			$filename = $this->files[$i];
-
-			$file = array_pop(explode('/', $filename));
+			$fileparts = explode('/', $filename);
+			$file = end($fileparts);
 
 			/*
 			 * We only care about xml files.
@@ -388,8 +388,11 @@ abstract class AmericanLegalParser
 		else {
 			$level = $levels;
 
-
-			$title = (string) $level->RECORD->HEADING;
+			$title = '';
+			if(isset($level) && isset($level->RECORD) && isset($level->RECORD->HEADING))
+			{
+				$title = (string) $level->RECORD->HEADING;
+			}
 
 			/*
 			 * Check to see if we have another layer of nesting
@@ -630,7 +633,7 @@ abstract class AmericanLegalParser
 			$this->logger->message('Failed to match structure title: ' . $structure_name, 3);
 		}
 
-		if($chapter_parts['number'])
+		if(isset($chapter_parts['number']))
 		{
 			if(substr($chapter_parts['number'], -1, 1) == '.')
 			{
@@ -652,8 +655,16 @@ abstract class AmericanLegalParser
 	{
 		$code = new stdClass();
 
-		$structure = end($structures);
-		$code->structure_id = $structure->id;
+		if(isset($structures) && count($structures) > 0)
+		{
+			$structure = end($structures);
+			$code->structure_id = $structure->id;
+		}
+		else
+		{
+			$this->logger->error('ERROR Section without structure found: '. print_r($section, TRUE), 10);
+			return FALSE;
+		}
 
 		$section_parts = $this->get_section_parts($section);
 
@@ -676,7 +687,7 @@ abstract class AmericanLegalParser
 		{
 			$code->section_number = $section_parts['number'];
 			$code->catch_line = $section_parts['catch_line'];
-			if($section_parts['order_by'])
+			if(isset($section_parts['order_by']))
 			{
 				$code->order_by = $section_parts['order_by'];
 			}
