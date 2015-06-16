@@ -55,9 +55,13 @@ abstract class AmericanLegalParser
 	public $file = 0;
 	public $directory;
 	public $files = array();
+
 	public $db;
 	public $logger;
+	public $permalink_obj;
+
 	public $edition_id;
+	public $previous_edition_id;
 	public $structure_labels;
 
 	public $section_count = 1;
@@ -205,6 +209,15 @@ abstract class AmericanLegalParser
 		if (!$this->structure_labels)
 		{
 			$this->structure_labels = $this->get_structure_labels();
+		}
+
+		if(!isset($this->permalink_obj))
+		{
+			$this->permalink_obj = new Permalink(
+				array(
+					'db' => $this->db
+				)
+			);
 		}
 
 	}
@@ -432,7 +445,7 @@ abstract class AmericanLegalParser
 				{
 					$this->logger->message('SECTION', 2);
 
-					$new_section = $this->parse_section($level, $structures);
+					$new_section = $this->parse_section($level, $this->structures);
 
 					if($new_section)
 					{
@@ -539,7 +552,6 @@ abstract class AmericanLegalParser
 
 								foreach($table_children as $child)
 								{
-									//var_dump(html_entities($para_text), html_entities($child->asXML()));
 									$para_text = str_replace($child->asXML(), '', $para_text);
 								}
 							}
@@ -636,11 +648,11 @@ abstract class AmericanLegalParser
 		return $structure;
 	}
 
-	public function parse_section($section)
+	public function parse_section($section, $structures)
 	{
 		$code = new stdClass();
 
-		$structure = end($this->structures);
+		$structure = end($structures);
 		$code->structure_id = $structure->id;
 
 		$section_parts = $this->get_section_parts($section);
@@ -677,7 +689,7 @@ abstract class AmericanLegalParser
 		/*
 		 * If this is an appendix, use the whole line as the title.
 		 */
-		if($section_parts['type'] === 'APPENDIX')
+		if(isset($section_parts['type']) && $section_parts['type'] === 'APPENDIX')
 		{
 			$code->catch_line = $section_parts[0];
 		}
@@ -995,80 +1007,156 @@ abstract class AmericanLegalParser
 	 */
 	public function build_permalinks()
 	{
+		/*
+		 * Reset permalinks.
+		 */
+		$this->move_old_permalinks($this->edition_id);
 
-		$this->move_old_permalinks();
-		$this->build_permalink_subsections();
-
+		$this->delete_permalinks($this->edition_id);
+		$this->build_permalink_subsections($this->edition_id);
 	}
+
+	/**
+	 * Move old permalinks
+	 */
+	public function move_old_permalinks($edition_id)
+	{
+		/*
+		 * Get the current edition.
+		 */
+		$edition_obj = new Edition(array('db' => $this->db));
+		$current_edition = $edition_obj->current();
+
+		/*
+		 * First, delete anything that's not a real permalink for any edition
+		 * that's not current.
+		 */
+		$sql = 'DELETE FROM permalinks
+			WHERE permalink = 0 AND edition_id <> :edition_id';
+		$sql_args = array(':edition_id' => $current_edition->id);
+		$statement = $this->db->prepare($sql);
+		$statement->execute($sql_args);
+
+		/*
+		 * Then make all remaining permalinks preferred for any edition that's
+		 * not current.
+		 */
+		$sql = 'UPDATE permalinks
+			SET preferred = 1
+			WHERE permalink = 1 AND preferred = 0 AND
+			edition_id <> :edition_id';
+		$sql_args = array(':edition_id' => $edition_id);
+		$statement = $this->db->prepare($sql);
+
+		$statement->execute($sql_args);
+	}
+
 
 	/**
 	 * Remove all old permalinks
 	 */
 	// TODO: eventually, we'll want to keep these and have multiple versions.
 	// See issues #314 #362 #363
-	public function move_old_permalinks()
+	public function delete_permalinks($edition_id)
 	{
 
-		$sql = 'DELETE FROM permalinks';
+		$sql = 'DELETE FROM permalinks WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $edition_id);
 		$statement = $this->db->prepare($sql);
 
-		$result = $statement->execute();
-		if ($result === FALSE)
-		{
-			echo '<p>Query failed: '.$sql.'</p>';
-			return;
-		}
-
+		$statement->execute($sql_args);
 	}
 
 	/**
 	 * Recurse through all subsections to build permalink data.
 	 */
-	public function build_permalink_subsections($parent_id = null)
+	public function build_permalink_subsections($edition_id, $parent_id = null)
 	{
 
-		$structure_sql = '	SELECT structure_unified.*,
-							editions.current AS current_edition,
-							editions.slug AS edition_slug
-							FROM structure
-							LEFT JOIN structure_unified
-								ON structure.id = structure_unified.s1_id
-							LEFT JOIN editions
-								ON structure.edition_id = editions.id';
+		$edition_obj = new Edition(array('db' => $this->db));
+		$edition = $edition_obj->find_by_id($edition_id);
+
+		/*
+		 * If we don't have a parent, set the base url.
+		 * We only want to do this once.
+		 */
+		if (!isset($parent_id))
+		{
+			/*
+			 * By default, the actual permalink is preferred.
+			 */
+			$preferred = 1;
+
+			/*
+			 * If this is the current edition, add links to the urls
+			 * without the edition slug.  This becomes the preferred
+			 * link url.
+			 */
+			if ($edition->current)
+			{
+				$insert_data = array(
+					':object_type' => 'structure',
+					':relational_id' => '',
+					':identifier' => '',
+					':token' => '',
+					':url' => '/browse/',
+					':edition_id' => $edition_id,
+					':preferred' => $preferred,
+					':permalink' => 0
+				);
+				$this->permalink_obj->create($insert_data);
+
+				$preferred = 0;
+			}
+
+			$insert_data = array(
+				':object_type' => 'structure',
+				':relational_id' => '',
+				':identifier' => '',
+				':token' => '',
+				':url' => '/' . $edition->slug . '/',
+				':edition_id' => $edition_id,
+				':preferred' => $preferred,
+				':permalink' => 1
+			);
+			$this->permalink_obj->create($insert_data);
+
+		}
+
+		$structure_sql =
+			'SELECT structure_unified.*
+			FROM structure
+			LEFT JOIN structure_unified
+				ON structure.id = structure_unified.s1_id
+			WHERE structure.edition_id = :edition_id';
 
 		/*
 		 * We use prepared statements for efficiency.  As a result,
 		 * we need to keep an array of our arguments rather than
 		 * hardcoding them in the SQL.
 		 */
-		$structure_args = array();
+		$structure_args = array(
+			':edition_id' => $edition_id
+		);
 
 		if (isset($parent_id))
 		{
-			$structure_sql .= ' WHERE parent_id = :parent_id';
+			$structure_sql .= ' AND parent_id = :parent_id';
 			$structure_args[':parent_id'] = $parent_id;
 		}
 		else
 		{
-			$structure_sql .= ' WHERE parent_id IS NULL';
+			$structure_sql .= ' AND parent_id IS NULL';
 		}
 
 		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-		$structure_result = $structure_statement->execute($structure_args);
-
-		if ($structure_result === FALSE)
-		{
-			echo '<p>' . $structure_sql . '</p>';
-			echo '<p>' . $structure_result->getMessage() . '</p>';
-			return;
-		}
+		$structure_statement->execute($structure_args);
 
 		/*
 		 * Get results as an array to save memory
 		 */
 		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
 		{
-
 			/*
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
@@ -1092,49 +1180,53 @@ abstract class AmericanLegalParser
 				}
 			}
 			$identifier_parts = array_reverse($identifier_parts);
-
-			foreach ($identifier_parts as $key => $value) {
-				$identifier_parts[$key] = $this->slugify($value);
-			}
-
-			$token = implode('/', $identifier_parts);
-
-
-			if ($item['current_edition'])
-			{
-				$url = '/' . $token . '/';
-			}
-			else
-			{
-				$url = '/' . $item['edition_slug'] . '/' . $token .'/';
-			}
+			$structure_token = implode('/', $identifier_parts);
 
 			/*
 			 * Insert the structure
 			 */
-			$insert_sql = 'INSERT INTO permalinks SET
-				object_type = :object_type,
-				relational_id = :relational_id,
-				identifier = :identifier,
-				token = :token,
-				url = :url';
-			$insert_statement = $this->db->prepare($insert_sql);
+
+			/*
+			 * By default, the actual permalink is preferred.
+			 */
+			$preferred = 1;
+
+			/*
+			 * If this is the current edition, add links to the urls
+			 * without the edition slug.  This becomes the preferred
+			 * link url.
+			 */
+			if ($edition->current)
+			{
+				$insert_data = array(
+					':object_type' => 'structure',
+					':relational_id' => $item['s1_id'],
+					':identifier' => $item['s1_identifier'],
+					':token' => $structure_token,
+					':url' => '/' . $structure_token . '/',
+					':edition_id' => $edition_id,
+					':preferred' => 1,
+					':permalink' => 0
+				);
+				$this->permalink_obj->create($insert_data);
+
+				$preferred = 0;
+			}
+
+			/*
+			 * Insert actual permalinks.
+			 */
 			$insert_data = array(
 				':object_type' => 'structure',
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
-				':token' => $token,
-				':url' => $url,
+				':token' => $structure_token,
+				':url' => '/' . $edition->slug . '/' . $structure_token . '/',
+				':edition_id' => $edition_id,
+				':preferred' => $preferred,
+				':permalink' => 1
 			);
-
-
-			$insert_result = $insert_statement->execute($insert_data);
-			if ($insert_result === FALSE)
-			{
-				echo '<p>'.$sql.'</p>';
-				echo '<p>'.$structure_result->getMessage().'</p>';
-				return;
-			}
+			$this->permalink_obj->create($insert_data);
 
 			/*
 			 * Now we can use our data to build the child law identifiers
@@ -1144,6 +1236,7 @@ abstract class AmericanLegalParser
 				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
 								FROM laws
 								WHERE structure_id = :s_id
+								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			else
@@ -1155,69 +1248,103 @@ abstract class AmericanLegalParser
 									ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
 								WHERE structure_id = :s_id
 								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
+								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-			$laws_result = $laws_statement->execute( array( ':s_id' => $item['s1_id'] ) );
-
-			if ($structure_result === FALSE)
-			{
-				echo '<p>'.$laws_sql.'</p>';
-				echo '<p>'.$laws_result->getMessage().'</p>';
-				return;
-			}
+			$laws_sql_args = array(
+				':s_id' => $item['s1_id'],
+				':edition_id' => $edition_id
+			);
+			$laws_statement->execute( $laws_sql_args );
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
 			{
-				$section_slug = $this->slugify($law['section_number']);
 
-				if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
-				{
-					$law_token = $token . '/' . $section_slug;
-					$law_url = $url . $section_slug . '/';
-				}
-				else
-				{
-					$law_token = $section_slug;
-
-					if ($item['current_edition'])
-					{
-						$law_url = '/' . $section_slug . '/';
-					}
-					else
-					{
-						$law_url = '/' . $item['edition_slug'] . '/' . $section_slug . '/';
-					}
-				}
 				/*
-				 * Insert the structure
+				 * Note that we descend from our most-preferred url option
+				 * to our least, depending on what flags have been set.
 				 */
-				$insert_sql =  'INSERT INTO permalinks SET
-								object_type = :object_type,
-								relational_id = :relational_id,
-								identifier = :identifier,
-								token = :token,
-								url = :url';
-				$insert_statement = $this->db->prepare($insert_sql);
+				$preferred = 1;
+
+				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === FALSE)
+				{
+					/*
+					 * Current-and-short is the most-preferred (shortest) url.
+					 */
+
+					if ($edition->current)
+					{
+						$insert_data = array(
+							':object_type' => 'law',
+							':relational_id' => $law['id'],
+							':identifier' => $law['section_number'],
+							':token' => $structure_token . '/' . $law['section_number'],
+							':url' => '/' . $law['section_number'] . '/',
+							':edition_id' => $edition_id,
+							':permalink' => 0,
+							':preferred' => 1
+						);
+						$this->permalink_obj->create($insert_data);
+
+						$preferred = 0;
+					}
+
+					/*
+					 * If this is not-current, then short is the most-preferred.
+					 */
+					$insert_data = array(
+						':object_type' => 'law',
+						':relational_id' => $law['id'],
+						':identifier' => $law['section_number'],
+						':token' => $structure_token . '/' . $law['section_number'],
+						':url' => '/' . $edition->slug . '/' . $law['section_number'] . '/',
+						':edition_id' => $edition_id,
+						':permalink' => 0,
+						':preferred' => $preferred
+					);
+					$this->permalink_obj->create($insert_data);
+
+					$preferred = 0;
+				}
+
+				/*
+				 * Long and current is our third choice.
+				 */
+				if ($edition->current)
+				{
+					$insert_data = array(
+						':object_type' => 'law',
+						':relational_id' => $law['id'],
+						':identifier' => $law['section_number'],
+						':token' => $structure_token . '/' . $law['section_number'],
+						':url' => '/' . $structure_token . '/' . $law['section_number'] . '/',
+						':edition_id' => $edition_id,
+						':permalink' => 0,
+						':preferred' => $preferred
+					);
+					$this->permalink_obj->create($insert_data);
+
+					$preferred = 0;
+				}
+
+				/*
+				 * Failing everything else, use the super-long url.
+				 */
 				$insert_data = array(
 					':object_type' => 'law',
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
-					':token' => $law_token,
-					':url' => $law_url,
+					':token' => $structure_token . '/' . $law['section_number'],
+					':url' => '/' . $edition->slug . '/' . $structure_token . '/' . $law['section_number'] . '/',
+					':edition_id' => $edition_id,
+					':permalink' => 1,
+					':preferred' => $preferred
 				);
-
-				$insert_result = $insert_statement->execute($insert_data);
-
-				if ($insert_result === FALSE)
-				{
-					echo '<p>'.$insert_sql.'</p>';
-					echo '<p>'.$insert_result->getMessage().'</p>';
-					return;
-				}
+				$this->permalink_obj->create($insert_data);
 			}
 
-			$this->build_permalink_subsections($item['s1_id']);
+			$this->build_permalink_subsections($edition_id, $item['s1_id']);
 
 		}
 	}
@@ -1259,7 +1386,18 @@ abstract class AmericanLegalParser
 		 * content of it just yet.
 		 */
 
-		$query['structure_id'] = $this->code->structure_id;
+		if(isset($this->code->structure_id))
+		{
+			/*
+			 * When that loop is finished, because structural units are ordered from most general to
+			 * most specific, we're left with the section's parent ID. Preserve it.
+			 */
+			$query['structure_id'] = $this->code->structure_id;
+		}
+		else
+		{
+			$this->logger->error('ERROR Section without structure found: '. print_r($this->code, TRUE), 10);
+		}
 
 		/*
 		 * Build up an array of field names and values, using the names of the database columns as
@@ -1293,15 +1431,8 @@ abstract class AmericanLegalParser
 			$sql .= ', ' . $name . ' = :' . $name;
 			$sql_args[':' . $name] = $value;
 		}
-
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
-
-		if ($result === FALSE)
-		{
-			echo '<p>Failure: ' . $sql . '</p>';
-			var_dump($sql_args);
-		}
 
 		/*
 		 * Preserve the insert ID from this law, since we'll need it below.
@@ -1319,8 +1450,8 @@ abstract class AmericanLegalParser
 		$references = new Parser(
 			array(
 				'db' => $this->db,
-				'logger' => $this->logger,
 				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id,
 				'structure_labels' => $this->structure_labels
 			)
 		);
@@ -1350,7 +1481,8 @@ abstract class AmericanLegalParser
 			$sql = 'INSERT INTO laws_meta
 					SET law_id = :law_id,
 					meta_key = :meta_key,
-					meta_value = :meta_value';
+					meta_value = :meta_value,
+					edition_id = :edition_id';
 			$statement = $this->db->prepare($sql);
 
 			foreach ($this->code->metadata as $key => $value)
@@ -1358,7 +1490,8 @@ abstract class AmericanLegalParser
 				$sql_args = array(
 					':law_id' => $law_id,
 					':meta_key' => $key,
-					':meta_value' => $value
+					':meta_value' => $value,
+					':edition_id' => $this->edition_id
 				);
 				$result = $statement->execute($sql_args);
 
@@ -1378,7 +1511,8 @@ abstract class AmericanLegalParser
 			$sql = 'INSERT INTO tags
 					SET law_id = :law_id,
 					section_number = :section_number,
-					text = :tag';
+					text = :tag,
+					edition_id = :edition_id';
 			$statement = $this->db->prepare($sql);
 
 			foreach ($this->code->tags as $tag)
@@ -1386,14 +1520,14 @@ abstract class AmericanLegalParser
 				$sql_args = array(
 					':law_id' => $law_id,
 					':section_number' => $this->code->section_number,
-					':tag' => $tag
+					':tag' => $tag,
+					':edition_id' => $this->edition_id
 				);
 				$result = $statement->execute($sql_args);
 
 				if ($result === FALSE)
 				{
-					echo '<p>Failure: '.$sql.'</p>';
-					var_dump($sql_args);
+					$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
 				}
 			}
 		}
@@ -1420,11 +1554,13 @@ abstract class AmericanLegalParser
 					SET law_id = :law_id,
 					sequence = :sequence,
 					type = :type,
-					date_created=now()';
+					date_created=now(),
+					edition_id = :edition_id';
 			$sql_args = array(
 				':law_id' => $law_id,
 				':sequence' => $i,
-				':type' => $section->type
+				':type' => $section->type,
+				':edition_id' => $this->edition_id
 			);
 			if (!empty($section->text))
 			{
@@ -1463,11 +1599,13 @@ abstract class AmericanLegalParser
 							SET text_id = :text_id,
 							identifier = :identifier,
 							sequence = :sequence,
-							date_created=now()';
+							date_created=now(),
+							edition_id = :edition_id';
 					$sql_args = array(
 						':text_id' => $text_id,
 						':identifier' => $prefix,
-						':sequence' => $j
+						':sequence' => $j,
+						':edition_id' => $this->edition_id
 					);
 
 					$statement = $this->db->prepare($sql);
@@ -1493,8 +1631,8 @@ abstract class AmericanLegalParser
 		$dictionary = new Parser(
 			array(
 				'db' => $this->db,
-				'logger' => $this->logger,
 				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id,
 				'structure_labels' => $this->structure_labels
 			)
 		);
@@ -1524,10 +1662,10 @@ abstract class AmericanLegalParser
 		}
 		$ancestry = implode(',', $ancestry);
 		$ancestry_section = $ancestry . ','.$this->code->section_number;
-		if 	(
-				(GLOBAL_DEFINITIONS === $ancestry)
+		if (defined('GLOBAL_DEFINITIONS') &&
+				(GLOBAL_DEFINITIONS === $ancestry
 				||
-				(GLOBAL_DEFINITIONS === $ancestry_section)
+				GLOBAL_DEFINITIONS === $ancestry_section)
 			)
 		{
 			$definitions->scope = 'global';
@@ -1548,6 +1686,7 @@ abstract class AmericanLegalParser
 			$dictionary->law_id = $law_id;
 			$dictionary->scope = $definitions->scope;
 			$dictionary->structure_id = $this->code->structure_id;
+			$dictionary->edition_id = $this->edition_id;
 
 			/*
 			 * If the scope of this definition isn't section-specific, and isn't global, then
@@ -1558,8 +1697,8 @@ abstract class AmericanLegalParser
 				$find_scope = new Parser(
 					array(
 						'db' => $this->db,
-						'logger' => $this->logger,
 						'edition_id' => $this->edition_id,
+						'previous_edition_id' => $this->previous_edition_id,
 						'structure_labels' => $this->structure_labels
 					)
 				);
@@ -1635,10 +1774,14 @@ abstract class AmericanLegalParser
 		$sql = 'SELECT id
 				FROM structure
 				WHERE identifier = :identifier
-				AND edition_id = :edition_id';
+				AND edition_id = :edition_id
+				AND depth = :depth
+				AND name = :name';
 		$sql_args = array(
 			':identifier' => $structure->identifier,
-			':edition_id' => $structure->edition_id
+			':edition_id' => $structure->edition_id,
+			':depth' => $structure->level,
+			':name' => $structure->name
 		);
 
 		/*
@@ -1663,9 +1806,10 @@ abstract class AmericanLegalParser
 			return FALSE;
 		}
 
-		$found_structure = $statement->fetch(PDO::FETCH_OBJ);
-		return $found_structure->id;
+		$structure = $statement->fetch(PDO::FETCH_OBJ);
+		return $structure->id;
 	}
+
 
 	/**
 	 * When provided with a structural unit identifier and type, it creates a record for that
@@ -1675,10 +1819,12 @@ abstract class AmericanLegalParser
 	 */
 	public function create_structure(&$structure)
 	{
-		if(!isset($structure->edition_id))
+
+		if(!isset($structure->edition_id) || empty($structure->edition_id))
 		{
 			$structure->edition_id = $this->edition_id;
 		}
+
 		/*
 		 * Sometimes the code contains references to no-longer-existent chapters and even whole
 		 * titles of the code. These are void of necessary information. We want to ignore these
@@ -1698,8 +1844,6 @@ abstract class AmericanLegalParser
 				( empty($structure->label) )
 			)
 		{
-			$this->logger->message('Can\'t create structure "' . $structure->name . '" "' .
-				$structure->identifier . '" "' . $structure->label . '"', 5);
 			return FALSE;
 		}
 
@@ -1709,8 +1853,6 @@ abstract class AmericanLegalParser
 		$structure_id = $this->structure_exists($structure);
 		if ($structure_id !== FALSE)
 		{
-			$this->logger->message('Structure_exists "' . $structure->name . '"', 1);
-
 			$structure->id = $structure_id;
 			return $structure_id;
 		}
@@ -1733,12 +1875,10 @@ abstract class AmericanLegalParser
 			$sql_args[':name'] = $structure->name;
 		}
 		$sql .= ', label = :label, edition_id = :edition_id';
-		$sql .= ', depth = :depth, order_by = :order_by';
-		$sql .= ', date_created=now()';
+		$sql .= ', depth = :depth, date_created=now()';
 		$sql_args[':label'] = $structure->label;
 		$sql_args[':edition_id'] = $structure->edition_id;
 		$sql_args[':depth'] = $structure->level;
-		$sql_args[':order_by'] = $structure->order_by;
 		if (isset($structure->parent_id))
 		{
 			$sql .= ', parent_id = :parent_id';
@@ -1751,14 +1891,19 @@ abstract class AmericanLegalParser
 			$sql_args[':metadata'] = serialize($structure->metadata);
 		}
 
-		$this->logger->message('Structure created: "' . $structure->name . '"', 2);
-
 		$statement = $this->db->prepare($sql);
-		$statement->execute($sql_args);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE)
+		{
+			$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
+			return FALSE;
+		}
 
 		$structure->id = $this->db->lastInsertID();
 
 		return $structure->id;
+
 	}
 
 
@@ -1768,7 +1913,7 @@ abstract class AmericanLegalParser
 	 * This is meant for use while identifying definitions, within the store() method, specifically
 	 * to set the scope of applicability of a definition.
 	 */
-	function find_structure_parent()
+	public function find_structure_parent()
 	{
 
 		/*
@@ -1808,8 +1953,7 @@ abstract class AmericanLegalParser
 
 			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
 			{
-				echo '<p>Query failed: '.$sql.'</p>';
-				var_dump($sql_args);
+				$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
 				return FALSE;
 			}
 
@@ -1850,7 +1994,7 @@ abstract class AmericanLegalParser
 	 * When fed a section of the code that contains definitions, extracts the definitions from that
 	 * section and returns them as an object. Requires only a block of text.
 	 */
-	function extract_definitions($text, $structure_labels)
+	public function extract_definitions($text, $structure_labels)
 	{
 		$scope = 'global';
 
@@ -1884,7 +2028,7 @@ abstract class AmericanLegalParser
 		}
 		else
 		{
-			$text = str_replace("\n", "\r", $text);
+			$this->text = str_replace("\n", "\r", $text);
 			$paragraphs = explode("\r", $text);
 		}
 
@@ -2202,7 +2346,7 @@ abstract class AmericanLegalParser
 	 * When provided with an object containing a list of terms, their definitions, their scope,
 	 * and their section number, this will store them in the database.
 	 */
-	function store_definitions()
+	public function store_definitions()
 	{
 
 		if ( !isset($this->terms) || !isset($this->law_id) || !isset($this->scope) )
@@ -2227,9 +2371,9 @@ abstract class AmericanLegalParser
 		 * Start assembling our SQL string.
 		 */
 		$sql = 'INSERT INTO dictionary (law_id, term, definition, scope, scope_specificity,
-				structure_id, date_created)
+				structure_id, date_created, edition_id)
 				VALUES (:law_id, :term, :definition, :scope, :scope_specificity,
-				:structure_id, now())';
+				:structure_id, now(), :edition_id)';
 		$statement = $this->db->prepare($sql);
 
 		foreach ($this->terms as $term => $definition)
@@ -2241,7 +2385,8 @@ abstract class AmericanLegalParser
 				':definition' => $definition,
 				':scope' => $this->scope,
 				':scope_specificity' => $this->scope_specificity,
-				':structure_id' => $this->structure_id
+				':structure_id' => $this->structure_id,
+				':edition_id' => $this->edition_id
 			);
 			$result = $statement->execute($sql_args);
 
@@ -2258,7 +2403,7 @@ abstract class AmericanLegalParser
 	} // end store_definitions()
 
 
-	function query($sql)
+	public function query($sql)
 	{
 		$result = $this->db->exec($sql);
 		if ($result === FALSE)
@@ -2274,7 +2419,7 @@ abstract class AmericanLegalParser
 	/**
 	 * Find mentions of other sections within a section and return them as an array.
 	 */
-	function extract_references()
+	public function extract_references()
 	{
 
 		/*
@@ -2332,7 +2477,7 @@ abstract class AmericanLegalParser
 	 * Take an array of references to other sections contained within a section of text and store
 	 * them in the database.
 	 */
-	function store_references()
+	public function store_references()
 	{
 
 		/*
@@ -2348,8 +2493,8 @@ abstract class AmericanLegalParser
 		 * Start creating our insertion query.
 		 */
 		$sql = 'INSERT INTO laws_references
-				(law_id, target_section_number, mentions, date_created)
-				VALUES (:law_id, :section_number, :mentions, now())
+				(law_id, target_section_number, target_law_id, mentions, date_created, edition_id)
+				VALUES (:law_id, :section_number, :target_law_id, :mentions, now(), :edition_id)
 				ON DUPLICATE KEY UPDATE mentions=mentions';
 				$statement = $this->db->prepare($sql);
 		$i=0;
@@ -2358,7 +2503,9 @@ abstract class AmericanLegalParser
 			$sql_args = array(
 				':law_id' => $this->section_id,
 				':section_number' => $section,
-				':mentions' => $mentions
+				':target_law_id' => '0',
+				':mentions' => $mentions,
+				':edition_id' => $this->edition_id
 			);
 
 			$result = $statement->execute($sql_args);
@@ -2378,7 +2525,7 @@ abstract class AmericanLegalParser
 	/**
 	 * Turn the history sections into atomic data.
 	 */
-	function extract_history()
+	public function extract_history()
 	{
 
 		/*
@@ -2515,8 +2662,7 @@ abstract class AmericanLegalParser
 
 		if ( ($result === FALSE) )
 		{
-			echo '<p>Query failed: '.$sql.'</p>';
-			var_dump($sql_args);
+			$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
 			return FALSE;
 		}
 		else
@@ -2543,18 +2689,5 @@ abstract class AmericanLegalParser
 
 		return $structure_labels;
 	} // end get_structure_labels()
-
-	/*
-	 * Create a url-safe string.
-	 */
-	public function slugify($value)
-	{
-		$value = preg_replace('[^a-z0-9-]', '', $value);
-		if(substr($value, -1, 1) === '.')
-		{
-			$value = substr($value, 0, -1);
-		}
-		return $value;
-	}
 
 } // end Parser class
