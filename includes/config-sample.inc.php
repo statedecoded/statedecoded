@@ -91,6 +91,11 @@ define('WEB_ROOT', $_SERVER['DOCUMENT_ROOT'] ? $_SERVER['DOCUMENT_ROOT'] : dirna
 define('IMPORT_DATA_DIR', WEB_ROOT . '/admin/import-data/');
 
 /*
+ * Set the amount of memory allowed to use for importing data.
+ */
+define('IMPORT_MEMORY_LIMIT', '128M');
+
+/*
  * The file in the /includes/ directory that contains functions custom to this installation.
  */
 define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');

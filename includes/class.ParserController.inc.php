@@ -104,7 +104,7 @@ class ParserController
 		/*
 		 * Give PHP lots of RAM.
 		 */
-		ini_set('memory_limit', '128M');
+		ini_set('memory_limit', IMPORT_MEMORY_LIMIT);
 
 	}
 
