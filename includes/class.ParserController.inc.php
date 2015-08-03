@@ -26,8 +26,8 @@ class ParserController
 	public $edition_id;
 	public $previous_edition_id;
 
-	public $downloads_url = '';
-	public $downloads_dir = '';
+	public $downloads_url;
+	public $downloads_dir;
 
 
 	public function __construct($args)
@@ -73,6 +73,20 @@ class ParserController
 		 */
 		$this->permalink_obj = new Permalink(array('db' => $this->db));
 
+		/*
+		 * Setup downloads directory.
+		 */
+		if(!isset($this->downloads_dir))
+		{
+			/*
+			 * Define the location of the downloads directory.
+			 */
+			$this->downloads_dir = WEB_ROOT . '/downloads/';
+		}
+		if(!isset($this->downloads_url))
+		{
+			$this->downloads_url = '/downloads/';
+		}
 	}
 
     // {{{ init_logger()
@@ -398,7 +412,7 @@ class ParserController
 
 			if ($edition_result !== FALSE)
 			{
-				$this->edition = $edition_result;
+				$this->set_edition($edition_result);
 
 				// Write the EDITION_ID
 				if($this->edition->current)
@@ -414,6 +428,16 @@ class ParserController
 		}
 
 		return $errors;
+	}
+
+	/**
+	 * Set the edition.
+	 */
+	public function set_edition($edition)
+	{
+		$this->edition = $edition;
+		$this->downloads_dir .= $edition->slug . '/';
+		$this->downloads_url .= $edition->slug . '/';
 	}
 
 
@@ -1045,8 +1069,6 @@ class ParserController
 
 		$this->setup_directories();
 
-		$downloads_dir = $this->downloads_dir;
-
 		/*
 		 * Begin the process of exporting each section.
 		 * We start at the top, with no parents.
@@ -1071,7 +1093,7 @@ class ParserController
 		{
 
 			$output = array();
-			exec('cd ' . $downloads_dir . '; zip -9rq code.json.zip code-json');
+			exec('cd ' . $this->downloads_dir . '; zip -9rq code.json.zip code-json');
 			$this->logger->message('Created a ZIP file of the laws as JSON', 3);
 
 		}
@@ -1083,7 +1105,7 @@ class ParserController
 		{
 
 			$output = array();
-			exec('cd ' . $downloads_dir . '; zip -9rq code.txt.zip code-text');
+			exec('cd ' . $this->downloads_dir . '; zip -9rq code.txt.zip code-text');
 			$this->logger->message('Created a ZIP file of the laws as plain text', 3);
 
 		}
@@ -1095,7 +1117,7 @@ class ParserController
 		{
 
 			$output = array();
-			exec('cd ' . $downloads_dir . '; zip -9rq code.xml.zip code-xml');
+			exec('cd ' . $this->downloads_dir . '; zip -9rq code.xml.zip code-xml');
 			$this->logger->message('Created a ZIP file of the laws as XML', 3);
 
 		}
@@ -1122,7 +1144,7 @@ class ParserController
 			/*
 			 * Define the filename for our dictionary.
 			 */
-			$filename = $downloads_dir . 'dictionary.json.zip';
+			$filename = $this->downloads_dir . 'dictionary.json.zip';
 
 			/*
 			 * Create a new ZIP file object.
@@ -1190,14 +1212,6 @@ class ParserController
 	 */
 	public function export_structure($parent_id = null)
 	{
-
-		/*
-		 * Define the location of the downloads directory.
-		 */
-		$downloads_dir = WEB_ROOT . '/downloads/';
-		$downloads_dir .= $this->edition->slug . '/';
-
-
 		$structure_sql = '	SELECT structure_unified.*
 							FROM structure
 							LEFT JOIN structure_unified
@@ -1306,7 +1320,7 @@ class ParserController
 				/*
 				 * Establish the path of our code JSON storage directory.
 				 */
-				$json_dir = $downloads_dir . 'code-json' . $url;
+				$json_dir = $this->downloads_dir . 'code-json' . $url;
 				$this->mkdir($json_dir);
 
 				/*
@@ -1317,7 +1331,7 @@ class ParserController
 				/*
 				 * Establish the path of our code text storage directory.
 				 */
-				$text_dir = $downloads_dir . 'code-text' . $url;
+				$text_dir = $this->downloads_dir . 'code-text' . $url;
 				$this->mkdir($text_dir);
 
 				/*
@@ -1328,7 +1342,7 @@ class ParserController
 				/*
 				 * Establish the path of our code XML storage directory.
 				 */
-				$xml_dir = $downloads_dir . 'code-xml' . $url;
+				$xml_dir = $this->downloads_dir . 'code-xml' . $url;
 				$this->mkdir($xml_dir);
 
 				/*
@@ -1697,11 +1711,6 @@ class ParserController
 	public function setup_directories()
 	{
 
-		/*
-		 * Define the location of the downloads directory.
-		 */
-		$downloads_dir = WEB_ROOT . '/downloads/';
-
 		if(!isset($this->edition) || !isset($this->edition->slug))
 		{
 			$this->logger->message('Edition is missing—cannot write new files', 10);
@@ -1717,21 +1726,12 @@ class ParserController
 		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
 		 */
-		if (is_writable($downloads_dir) === FALSE)
+		if (is_writable($this->downloads_dir) === FALSE)
 		{
-			$this->logger->message('Error: ' . $downloads_dir . ' could not be written to, so bulk
+			$this->logger->message('Error: ' . $this->downloads_dir . ' could not be written to, so bulk
 				download files could not be exported', 10);
 			return FALSE;
 		}
-
-		/*
-		 * Add the proper structure for editions.
-		 */
-		$downloads_dir .= $this->edition->slug . '/';
-
-		$this->downloads_dir = $downloads_dir;
-
-		$this->downloads_url = '/downloads/' . $this->edition->slug . '/';
 
 		foreach (array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
 		{
@@ -2220,19 +2220,12 @@ class ParserController
 		if(!isset($this->edition))
 		{
 			$edition_obj = new Edition(array('db' => $this->db));
-			$this->edition = $edition_obj->current();
+			$this->set_edition($edition_obj->current());
 		}
 
 		if (!isset($this->edition))
 		{
 			throw new Exception('No edition, cannot index laws.');
-		}
-
-		if ($this->edition->current != '1')
-		{
-			$this->logger->message('The edition is not current, skipping the update of the search '
-				. ' index', 9);
-			return;
 		}
 
 		if(!defined('SEARCH_CONFIG'))

@@ -953,8 +953,13 @@ abstract class AmericanLegalParser
 
 				if(!copy($image_source, $image_download))
 				{
-					$this->logger->message('Can\'t copy image from "' . $image_source .
-						'" to "' . $image_download . '"', 10);
+					$message = 'Can\'t copy image from "' . $image_source . '" to "' . $image_download . '"';
+					if(ini_get('track_errors'))
+					{
+						$message .= ' message: "' . $php_errormsg . '"';
+					}
+
+					$this->logger->error($message, 10);
 				}
 
 			}
@@ -1463,7 +1468,9 @@ abstract class AmericanLegalParser
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id,
-				'structure_labels' => $this->structure_labels
+				'structure_labels' => $this->structure_labels,
+				'downloads_dir' => $this->downloads_dir,
+				'downloads_url' => $this->downloads_url
 			)
 		);
 		$references->text = $this->code->text;
@@ -1644,7 +1651,9 @@ abstract class AmericanLegalParser
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id,
-				'structure_labels' => $this->structure_labels
+				'structure_labels' => $this->structure_labels,
+				'downloads_dir' => $this->downloads_dir,
+				'downloads_url' => $this->downloads_url
 			)
 		);
 
@@ -1710,7 +1719,9 @@ abstract class AmericanLegalParser
 						'db' => $this->db,
 						'edition_id' => $this->edition_id,
 						'previous_edition_id' => $this->previous_edition_id,
-						'structure_labels' => $this->structure_labels
+						'structure_labels' => $this->structure_labels,
+						'downloads_dir' => $this->downloads_dir,
+						'downloads_url' => $this->downloads_url
 					)
 				);
 				$find_scope->label = $dictionary->scope;
