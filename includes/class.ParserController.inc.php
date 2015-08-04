@@ -61,6 +61,14 @@ class ParserController
 		$this->set_execution_limits();
 
 		/*
+		 * Set up our event manager.
+		 */
+		if(!isset($this->events))
+		{
+			$this->events = new EventManager();
+		}
+
+		/*
 		 * Set the default import location;
 		 */
 		if(!isset($this->import_data_dir))

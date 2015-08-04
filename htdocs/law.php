@@ -15,7 +15,7 @@
  * Setup the edition object.
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
-global $db;
+
 $edition = new Edition(array('db' => $db));
 
 /*

@@ -234,12 +234,12 @@ if (defined('CACHE_HOST') && defined('CACHE_PORT'))
 }
 
 /*
- * Establish routes
- */
-require('routes.inc.php');
-
-/*
  * Initialize the master controller
  */
-$mc = new MasterController();
+$mc = new MasterController(
+	array(
+			'db' => $db,
+			'cache' => $cache,
+	)
+);
 $mc->execute();
