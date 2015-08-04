@@ -41,30 +41,39 @@ class MasterController
 
 	public function execute()
 	{
+		/*
+		 * Setup the data we'll pass to any instances.
+		 */
+		$local_data = array(
+			'db' => $this->db,
+			'events' => $this->events,
+			'cache' => $this->cache
+		);
 
 		/*
-		 * Explode the request into a method and some args
+		 * Explode the request into a method and some args.
 		 */
 		list($handler, $args) = $this->parseRequest();
 
+		/*
+		 * If we have a real handler, run it.
+		 */
 		if (is_array($handler) && isset($handler[0]) && isset($handler[1]))
 		{
 			$class = $handler[0];
 			$method = $handler[1];
-			$object = new $class(
-				array(
-					'db' => $this->db,
-					'events' => $this->events,
-					'cache' => $this->cache
-				)
-			);
+			$object = new $class($local_data);
 			print $object->$method($args);
 		}
 
+		/*
+		 * If we have a single file to run, run that.
+		 */
 		elseif (is_string($handler) && strlen($handler) > 0)
 		{
 			if(file_exists(WEB_ROOT.'/'.$handler))
 			{
+				extract($local_data);
 				require(WEB_ROOT.'/'.$handler);
 			}
 		}
