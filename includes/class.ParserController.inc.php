@@ -17,6 +17,7 @@ class ParserController
 {
 	public $db;
 	public $logger;
+	public $events;
 	public $permalink_obj;
 	public $import_data_dir;
 

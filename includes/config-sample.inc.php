@@ -254,6 +254,15 @@ define('API_KEY', '');
 define('VERSION', '0.81');
 
 /*
+ * Enabled plugins.
+ * Add our plugins to the include path.
+ */
+
+define('PLUGINS', json_encode(array()));
+
+set_include_path( get_include_path() . PATH_SEPARATOR . INCLUDE_PATH . 'plugins/' );
+
+/*
  * If you want to enable Disqus <http://www.disqus.com/> commenting for every law, register for
  * Disqus, create a new site, and enter the assigned Disqus shortname here.
  */

@@ -49,12 +49,13 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
 /*
  * Create a new parser controller.
  */
-global $db;
+
 $parser = new ParserController(
 	array(
 		'logger' => $logger,
 		'db' => &$db,
-		'import_data_dir' => IMPORT_DATA_DIR
+		'import_data_dir' => IMPORT_DATA_DIR,
+		'events' => $events
 	)
 );
 

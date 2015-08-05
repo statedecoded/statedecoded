@@ -18,11 +18,22 @@ function __autoload_libraries($class_name)
 {
 
 	$filename = 'class.' . $class_name . '.inc.php';
-	if (file_exists(INCLUDE_PATH . $filename) == TRUE)
+
+	$paths = explode(PATH_SEPARATOR, get_include_path());
+
+	foreach($paths as $path)
 	{
-		$result = include_once $filename;
+		if(substr($path, -1, 1) !== DIRECTORY_SEPARATOR)
+		{
+			$path .= DIRECTORY_SEPARATOR;
+		}
+
+		if (file_exists($path . $filename) === TRUE)
+		{
+			$result = include_once $path . $filename;
+			return;
+		}
 	}
-	return;
 
 }
 

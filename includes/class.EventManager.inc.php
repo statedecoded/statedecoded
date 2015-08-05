@@ -17,6 +17,40 @@
 class EventManager
 {
 	public $events = array();
+	public $logger;
+
+	public function __construct($args = array(), $plugins = false)
+	{
+		foreach($args as $key => $value)
+		{
+			$this->$key = $value;
+		}
+
+		/*
+		 * Register any plugins.
+		 */
+		if(!count($this->events) && !$plugins && defined('PLUGINS'))
+		{
+			$plugins = json_decode(PLUGINS);
+		}
+
+		if($plugins)
+		{
+			$this->includePlugins($plugins);
+		}
+	}
+
+	public function includePlugins($plugins)
+	{
+		foreach($plugins as $plugin)
+		{
+			$pluginObj = new $plugin();
+			foreach($pluginObj->register() as $eventName => $method)
+			{
+				$this->registerListener($eventName, $method);
+			}
+		}
+	}
 
 	public function registerListener($name, $method)
 	{
