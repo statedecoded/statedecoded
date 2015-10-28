@@ -3,9 +3,18 @@
 Currently, The State Decoded has a *very* incomplete test suite.  There's some coverage
 for the Database wrapper, and not much else.  Feel free to contribute your own tests!
 
+Running the test suite _will delete data from the database_. For this reason, it is
+recommended a test database be configured. Copy `config.inc.php` to `config-test.inc.php`
+and adjust the configuration for the test database.
+
+You must also include the following in `config-test.inc.php` for the tests to run:
+
+    define('STATEDECODED_ENV', 'test');
+
 The Database wrapper contains a few functional tests, just to be safe.  One of those is
 for the timeout-reconnect error handler, so the test will take several seconds to run.
-It will also require a valid MySQL connection in `config.inc.php`.
+It will also require a valid MySQL connection in `config-test.inc.php`.
+
 
 ##Installation
 
@@ -31,4 +40,5 @@ directory.  Note: We're using a *very* simple relative path to resolve dependenc
 so you *must* run the test runner from within the test directory.
 
     cd includes/test/
-    phpunit ./
+    phpunit                     # run all tests
+    phpunit DatabaseTest.php    # run specific test
