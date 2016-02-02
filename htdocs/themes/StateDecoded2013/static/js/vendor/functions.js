@@ -177,16 +177,23 @@ $(document).ready(function () {
     /* We want the port if it is set, so don't use hostname */
     base_url += document.location.host;
 
-	/* Get each permalink and add a copy function on it */
-	$('a.section-permalink').each(function(i, elm) {
-		var elm = $(elm);
+	/* Get each permalink and add a copy function on it when visible */
+	$('a.section-permalink').bind('inview', function(event, visible, topOrBottomOrBoth) {
+		if(!visible) return false;
+
+		var elm = $(this);
 		var id = escapeSelector(elm.attr('id'));
 
-		/* Permit copying URLs to the clipboard. */
-		elm.zclip({
-			path: zclip_swf_file,
-			copy: function() { return base_url + $(this).attr('href'); }
-		});
+		if(!elm.data('copyable')){
+			/* Permit copying URLs to the clipboard. */
+			elm.zclip({
+				path: zclip_swf_file,
+				copy: function() { return base_url + $(this).attr('href'); }
+			});
+
+			/* Ensure zclip only run once per element */
+			elm.data('copyable', true);
+		}
 	});
 
 	/* Mentions of other sections of the code. */

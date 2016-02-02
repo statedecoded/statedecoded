@@ -90,20 +90,20 @@
 
     h1 {
       font-family: $statedecoded-stack1;
-      font-size: 125%;
-      font-variant: small-caps;
-      letter-spacing: 0.05em;
-      margin: 0 0 10px 0;
-      text-transform: small-caps;
-    }
-
-    h2 {
-      font-family: $statedecoded-stack1;
       font-size: 200%;
       line-height: 105%;
       font-weight: 100;
       margin: 0 0 20px 0;
     }
+
+      #section_id {
+        font-family: $statedecoded-stack1;
+        font-size: 65%;
+        font-variant: small-caps;
+        letter-spacing: 0.05em;
+        margin: 0 0 10px 0;
+        text-transform: small-caps;
+      }
 
     h3 {
       margin: 40px 0 10px 0;

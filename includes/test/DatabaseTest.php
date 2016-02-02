@@ -6,17 +6,6 @@
  * the connection without it.  We mock wherever possible.
  */
 
-/*
- * Create our include path.
- */
-if(!defined('INCLUDE_PATH'))
-{
-	define('INCLUDE_PATH', '../');
-}
-
-require_once '../config.inc.php';
-require_once '../functions.inc.php';
-
 class DatabaseTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
