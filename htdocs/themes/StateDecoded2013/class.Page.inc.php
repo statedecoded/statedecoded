@@ -145,7 +145,11 @@ class StateDecoded2013__Page extends Page
 		/*
 		 * Set our search terms.
 		 */
-		$content->set('search_terms', $_GET['q']);
+		$query = '';
+		if(isset($_GET['q'])) {
+			$query = $_GET['q'];
+		}
+		$content->set('search_terms', $query);
 
 		/*
 		 * If a Google Analytics Web Property ID has been provided, insert the tracking code.
