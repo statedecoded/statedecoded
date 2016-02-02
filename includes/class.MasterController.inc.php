@@ -61,6 +61,10 @@ class MasterController
 			$url = $_SERVER['REQUEST_URI'];
 		}
 
+		if(strpos($url, '?') !== FALSE) {
+			list($url, $query_string) = explode('?', $url);
+		}
+
 		list($handler, $args) = Router::getRoute($url);
 		return array($handler, $args);
 		
