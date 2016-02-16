@@ -220,7 +220,7 @@ class State
 				{
 					$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->caseName));
 				}
-				$this->decisions->{$i}->docketNumber = $opinion->case_number;
+				$this->decisions->{$i}->case_number = $opinion->docketNumber;
 				$this->decisions->{$i}->citation = $opinion->citation[0];
 				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->dateFiled));
 				$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
