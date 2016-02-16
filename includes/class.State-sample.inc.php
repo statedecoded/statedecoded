@@ -154,7 +154,7 @@ class State
 		}
 
 		// Assemble the URL for our query to the CourtListener API.
-		$url = 'https://www.courtlistener.com/api/rest/v1/search/?q="'
+		$url = 'https://www.courtlistener.com/api/rest/v3/search/?q="'
 			. urlencode($this->section_number) . '"&court=ca4,vaeb,vawb,vaed,vawd,va,vactapp'
 			. '&order_by=score+desc&format=json';
 
@@ -187,7 +187,7 @@ class State
 
 		// If no results were found, save an empty variable. In this way we cache a lack of court
 		// decisions that cite a given section.
-		if ($cl_list->meta->total_count == 0)
+		if ($cl_list->count === 0)
 		{
 
 			$this->decisions = '';
@@ -203,7 +203,7 @@ class State
 
 			// Iterate through the decisions and assign the first 10 to $this->decisions.
 			$i=0;
-			foreach ($cl_list->objects as $opinion)
+			foreach ($cl_list->results as $opinion)
 			{
 
 				if ($i == 10)
@@ -214,15 +214,15 @@ class State
 				// Port the fields that we need from $opinion to $this->decisions.
 				if (html_entity_decode(strlen(strip_tags($opinion->case_name))) > 60)
 				{
-					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->case_name)), 60))) . ' . . . ';
+					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))) . ' . . . ';
 				}
 				else
 				{
-					$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->case_name));
+					$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->caseName));
 				}
-				$this->decisions->{$i}->case_number = $opinion->case_number;
-				$this->decisions->{$i}->citation = $opinion->citation;
-				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
+				$this->decisions->{$i}->case_number = $opinion->docketNumber;
+				$this->decisions->{$i}->citation = $opinion->citation[0];
+				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->dateFiled));
 				$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
 				$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
 
