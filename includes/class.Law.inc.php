@@ -402,6 +402,15 @@ class Law
 					}
 				}
 			}
+
+			/*
+			 * If we've cached the fact that there are no court decisions.
+			 */
+			if ($this->court_decisions->{0} == FALSE)
+			{
+				unset($this->court_decisions);
+			}
+			
 		}
 
 		/*
