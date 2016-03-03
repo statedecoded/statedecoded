@@ -45,8 +45,8 @@ abstract class AmericanLegalState
 
 
 /**
- * The parser for importing legal codes. This is fully functional for importing The State Decoded's
- * prescribed XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
+ * The parser for importing legal codes. This is fully functional for importing American Legals's
+ * usual XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
  * and serves as a guide for those who want to parse an alternate format.
  */
 abstract class AmericanLegalParser
@@ -72,10 +72,10 @@ abstract class AmericanLegalParser
 	 * Regexes.
 	 * These will need to be customized for your purposes.
 	 */
-	//                            | type of section                 |!temp!|    | section number                    (opt ' - section number')       |      | hyphen | catch line
-	public $section_regex = '/^\[?(?P<type>§|SEC(TION|S\.|\.)|APPENDIX|ARTICLE)\s+(?P<number>[0-9A-Z]+[0-9A-Za-z_\.\-]*(.?\s-\s[0-9]+[0-9A-Za-z\.\-]*)?)\.?\s*(?:-\s*)?(?P<catch_line>.*?)\.?\]?$/i';
+	//                            | type of section                              | section number                    (opt ' - section number')        |       | - or : | catch line
+	public $section_regex = '/^\[?(?P<type>§|SEC(TION|S\.|\.)|APPENDIX|ARTICLE)\s+(?P<number>[0-9A-Z]+[0-9A-Za-z_\.\-]*(.?\s-\s[0-9]+[0-9A-Za-z\.\-]*)?)\.?\s*(?:-|:\s*)?(?P<catch_line>.*?)\.?\]?$/i';
 
-	public $structure_regex = '/^(?P<type>SECS\.|APPENDIX|CHAPTER|ARTICLE|TITLE|SUBCODE)\s+(?P<number>[A-Za-z0-9\-\.]+)(?:[:\. -]+)(?P<name>.*?)$/i';
+	public $structure_regex = '/^(?P<type>SECS\.|APPENDIX|CHAPTER|ARTICLE|TITLE|SUBCODE|SUBCHAPTER|SUBSECTION)\s+(?P<number>[A-Za-z0-9\-\.]+)(?:[:\. -]+)(?P<name>.*?)$/i';
 
 	public $appendix_regex = '/^APPENDI(CES|X):\s+(?P<name>.*?)$/i';
 
@@ -366,14 +366,7 @@ abstract class AmericanLegalParser
 	 */
 
 	public function pre_parse_chapter(&$chapter)
-	{
-		// If there's more than one title, this has a table of contents.
-		if(count($chapter->REFERENCE->TITLE) > 1)
-		{
-			$this->logger->message('Skipping first level.', 2);
-			unset($chapter->LEVEL->LEVEL[0]);
-		}
-	}
+	{}
 
 	public function parse_recurse($levels)
 	{
@@ -399,14 +392,44 @@ abstract class AmericanLegalParser
 			 */
 			if(isset($level->LEVEL))
 			{
+
+				if($level->LEVEL[0]->xpath('./RECORD/PARA[@style-name-escaped="Chapter-Analysis"]')) {
+					$this->logger->message('Skipping table of contents', 2);
+					unset($level->LEVEL[0]);
+				}
+
+				/*
+				 * If we have one level deeper, this is a section.
+				 */
+				if($level->xpath('./LEVEL[@style-name-escaped="Normal-Level"]')
+					&& $level->xpath('./RECORD/HEADING')
+					&& !$level->xpath('./LEVEL/LEVEL'))
+				{
+					$this->logger->message('SECTION', 2);
+
+					$new_section = $this->parse_section($level, $this->structures);
+
+					if($new_section)
+					{
+						$this->sections[] = $new_section;
+					}
+					else {
+						/*
+						 * See if maybe we have a structure after all.
+						 */
+						// TODO
+					}
+				}
+
 				/*
 				 * If we have two levels deeper, this is a structure.
 				 */
-				if(count($level->xpath('./LEVEL/LEVEL')) || preg_match($this->structure_regex, $title))
+				else
 				{
 					$structure = FALSE;
+					$title = (string) $level->RECORD->HEADING;
 
-					$this->logger->message('STRUCTURE', 2);
+					$this->logger->message('STRUCTURE "' . $title . '"', 2);
 
 					// If we have a structure heading, add it to the structures.
 					if(count($level->xpath($this->structure_heading_xpath))) {
@@ -439,26 +462,6 @@ abstract class AmericanLegalParser
 						$this->logger->message('Ascending', 2);
 
 						array_pop($this->structures);
-					}
-				}
-				/*
-				 * If we have one level deeper, this is a section.
-				 */
-				else
-				{
-					$this->logger->message('SECTION', 2);
-
-					$new_section = $this->parse_section($level, $this->structures);
-
-					if($new_section)
-					{
-						$this->sections[] = $new_section;
-					}
-					else {
-						/*
-						 * See if maybe we have a structure after all.
-						 */
-						// TODO
 					}
 				}
 			}
@@ -867,6 +870,9 @@ abstract class AmericanLegalParser
 
 		// Replace CELL.
 		$xml = preg_replace('/<CELL[^>]*>(.*?)<\/CELL>/sm', '$1', $xml);
+
+		// Replace LINK.
+		$xml = preg_replace('/<LINK[^>]*>(.*?)<\/LINK>/sm', '$1', $xml);
 
 		// Replace empty tables.
 		$xml = preg_replace('/<TABLE>\s*<\/TABLE>/sm', '', $xml);
