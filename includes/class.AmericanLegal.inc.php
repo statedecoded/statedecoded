@@ -72,8 +72,8 @@ abstract class AmericanLegalParser
 	 * Regexes.
 	 * These will need to be customized for your purposes.
 	 */
-	//                            | type of section                              | section number                    (opt ' - section number')        |       | - or : | catch line
-	public $section_regex = '/^\[?(?P<type>§|SEC(TION|S\.|\.)|APPENDIX|ARTICLE)\s+(?P<number>[0-9A-Z]+[0-9A-Za-z_\.\-]*(.?\s-\s[0-9]+[0-9A-Za-z\.\-]*)?)\.?\s*(?:-|:\s*)?(?P<catch_line>.*?)\.?\]?$/i';
+	//                            | type of section                                  | section number                    (opt ' - section number')        |       | - or : | catch line
+	public $section_regex = '/^\[?((?P<type>§|SEC(TION|S\.|\.)|APPENDIX|ARTICLE)\s+)?(?P<number>[0-9A-Z]+[0-9A-Za-z_\.\-]*(.?\s-\s[0-9]+[0-9A-Za-z\.\-]*)?)\.?\s*(?:-|:*)?\s*(?P<catch_line>.*?)\.?\]?$/i';
 
 	public $structure_regex = '/^(?P<type>SECS\.|APPENDIX|CHAPTER|ARTICLE|TITLE|SUBCODE|SUBCHAPTER|SUBSECTION)\s+(?P<number>[A-Za-z0-9\-\.]+)(?:[:\. -]+)(?P<name>.*?)$/i';
 
