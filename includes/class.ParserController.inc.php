@@ -1197,8 +1197,6 @@ class ParserController
 
 			$this->logger->message('Created downloads “current” symlink', 4);
 
-			$this->logger->message('Created downloads “current” symlink', 4);
-
 		}
 
 		$this->logger->message('All bulk download files were exported', 5);
@@ -2002,8 +2000,6 @@ class ParserController
 			$result = $statement->execute($sql_args);
 
 		}
-
-		$this->logger->message('Generated structural statistics', 3);
 
 		$this->logger->message('Generated structural statistics', 3);
 
