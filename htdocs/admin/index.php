@@ -530,7 +530,7 @@ function show_admin_forms($args = array())
 			{
 				$body .= ' [current]';
 			}
-			$boduy .= '</option>';
+			$body .= '</option>';
 		}
 
 		$body .= '</select>
