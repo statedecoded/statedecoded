@@ -806,8 +806,6 @@ class ParserController
 
 			$this->logger->message('Analyzed and stored law codification histories', 3);
 
-			$this->logger->message('Analyzed and stored law codification histories', 3);
-
 		}
 
 		/*
