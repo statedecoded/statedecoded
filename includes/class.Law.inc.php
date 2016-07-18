@@ -60,7 +60,7 @@ class Law
 		 * Define the level of detail that we want from this method. By default, we return
 		 * everything that we have for this law.
 		 */
-		if ( !isset($this->config) || ($this->config->get_all == TRUE) )
+		if ( !isset($this->config) || ( (isset($this->config->get_all)) && ($this->config->get_all == TRUE) ) )
 		{
 			$this->config->get_text = TRUE;
 			$this->config->get_structure = TRUE;
