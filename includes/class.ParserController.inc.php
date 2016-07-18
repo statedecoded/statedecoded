@@ -1376,6 +1376,7 @@ class ParserController
 					/*
 					 * Instruct the Law class on what, specifically, it should retrieve.
 					 */
+					$laws->config = new stdClass();
 					$laws->config->get_text = TRUE;
 					$laws->config->get_structure = TRUE;
 					$laws->config->get_amendment_attempts = FALSE;
