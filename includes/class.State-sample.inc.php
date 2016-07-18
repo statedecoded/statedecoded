@@ -248,6 +248,10 @@ class State
 		// Store these decisions in the metadata table.
 		$law = new Law();
 		$law->section_id = $this->section_id;
+		if (!isset($law->metadata->{0}))
+		{
+			$law->metadata->{0} = new stdClass();
+		}
 		$law->metadata->{0}->key = 'court_decisions';
 		$law->metadata->{0}->value = json_encode($this->decisions);
 		$law->store_metadata();
