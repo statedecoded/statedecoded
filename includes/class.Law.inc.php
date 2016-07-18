@@ -322,7 +322,7 @@ class Law
 		/*
 		 * Gather any tags applied to this law.
 		 */
-		if ($this->config->get_tags == TRUE)
+		if ( isset($this->config->get_tags) && ($this->config->get_tags == TRUE) )
 		{
 			$sql = 'SELECT text
 					FROM tags
