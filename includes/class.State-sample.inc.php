@@ -212,7 +212,7 @@ class State
 				}
 
 				// Port the fields that we need from $opinion to $this->decisions.
-				if (html_entity_decode(strlen(strip_tags($opinion->case_name))) > 60)
+				if (html_entity_decode(strlen(strip_tags($opinion->caseName))) > 60)
 				{
 					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))) . ' . . . ';
 				}
