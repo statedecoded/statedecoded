@@ -1032,7 +1032,7 @@ class Law
 			/*
 			 * Highlight any search terms.
 			 */
-			if($_GET['q'])
+			if (!empty($_GET['q']))
 			{
 				$query = str_replace('"', '', $_GET['q']);
 				$query = explode(' ', $query);
