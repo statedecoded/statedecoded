@@ -728,7 +728,7 @@ class ParserController
 			/*
 			 * Iterate through the files.
 			 */
-			$this->logger->message('Importing the law files in the import-data directory', 3);
+			$this->logger->message('Importing the law files in the import-data directory', 5);
 
 			while ($section = $parser->iterate())
 			{
