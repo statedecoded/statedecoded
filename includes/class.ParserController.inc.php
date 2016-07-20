@@ -1725,23 +1725,28 @@ class ParserController
 		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
 		 */
-		if (is_writable($this->downloads_dir) === FALSE)
+		try
+		{
+			foreach (array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
+			{
+
+				$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
+
+				/*
+				* If the JSON directory doesn't exist, create it.
+				*/
+				$this->mkdir($this->downloads_dir . $data_dir);
+
+			}
+
+		}
+		catch (Exception $e)
 		{
 			$this->logger->message('Error: ' . $this->downloads_dir . ' could not be written to, so bulk
 				download files could not be exported', 10);
+			$this->rmdir($this->downloads_dir);
+
 			return FALSE;
-		}
-
-		foreach (array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
-		{
-
-			$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
-
-			/*
-			 * If the JSON directory doesn't exist, create it.
-			 */
-			$this->mkdir($this->downloads_dir . $data_dir);
-
 		}
 
 		$this->logger->message('Created output directories for bulk download files', 5);
@@ -1774,6 +1779,23 @@ class ParserController
 			{
 				$this->logger->message('Cannot write to "' . $dir . '"', 10);
 			}
+
+	}
+
+	public function rmdir($dir)
+	{
+
+			/*
+			 * If the directory exists, remove it.
+			 */
+			if (file_exists($dir))
+			{
+				if (!rmdir($dir))
+				{
+					$this->logger->message('Cannot remove directory "' . $dir . '"', 10);
+				}
+			}
+
 	}
 
 	/**
