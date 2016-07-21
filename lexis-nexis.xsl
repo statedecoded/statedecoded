@@ -6,9 +6,6 @@
 	<!-- Strip whitespace from everything except the text of laws. -->
 	<xsl:strip-space elements="*" />
 	<xsl:preserve-space elements="bodyText" />
-
-	<!-- Don't include any whitespace-only text nodes. -->
-	<xsl:strip-space elements="*" />
 	
 	<xsl:output
 			method="xml"
