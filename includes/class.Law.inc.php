@@ -255,6 +255,18 @@ class Law
 			$struct = new Structure;
 
 			/*
+			 * Provide the edition ID so that we know which edition to query.
+			 */
+			if (isset($this->edition_id))
+			{
+				$struct->edition_id = $this->edition_id;
+			}
+			else
+			{
+				$struct->edition_id = EDITION_ID;
+			}
+
+			/*
 			 * Our structure ID provides a starting point to identify this law's ancestry.
 			 */
 			$struct->id = $this->structure_id;
