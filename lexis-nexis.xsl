@@ -86,7 +86,14 @@
 				<section>
 					<xsl:attribute name="prefix">
 						<xsl:variable name="prefix_length" select="string-length(heading/desig)"/>
-						<xsl:value-of select="substring(heading/desig, 0, $prefix_length)"/>
+						<xsl:choose>
+							<xsl:when test="substring(heading/desig, $prefix_length, 1)='.'">
+								<xsl:value-of select="substring(heading/desig, 0, $prefix_length)"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="heading/desig"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:attribute>
 					
 					<xsl:value-of select="bodyText" />
