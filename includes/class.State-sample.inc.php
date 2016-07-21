@@ -1821,7 +1821,7 @@ class Parser
 		}
 		else
 		{
-			$this->text = str_replace("\n", "\r", $text);
+			$text = str_replace("\n", "\r", $text);
 			$paragraphs = explode("\r", $text);
 		}
 
