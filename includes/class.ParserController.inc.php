@@ -1868,8 +1868,6 @@ class ParserController
 
 		$this->logger->message('Created sitemap.xml', 3);
 
-		$this->logger->message('Created sitemap.xml', 3);
-
 		return TRUE;
 
 	}
