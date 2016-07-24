@@ -294,6 +294,7 @@ class Parser
 	public $scope_indicators = array(
 		' are used in this ',
 		'when used in this ',
+		'as used in this ',
 		'for purposes of this ',
 		'for the purposes of this ',
 		'for the purpose of this ',
