@@ -6,6 +6,9 @@
 	<!-- Strip whitespace from everything except the text of laws. -->
 	<xsl:strip-space elements="*" />
 	<xsl:preserve-space elements="bodyText" />
+
+	<!-- Don't include any whitespace-only text nodes. -->
+	<xsl:strip-space elements="*" />
 	
 	<xsl:output
 			method="xml"
@@ -25,10 +28,11 @@
 				</xsl:for-each>
 			</structure>
 			
-			<!--Strip out the leading "§ " and the trailing period.-->
-			<xsl:variable name="section-number" select="translate(legislativeDocBody/statute/level/heading/desig, '§ ', '')"/>
-			<xsl:variable name="section-number-length" select="string-length($section-number)"/>
-			<section_number><xsl:value-of select="substring($section-number, 1, ($section-number-length - 1))" /></section_number>
+			<!--Strip out the leading "_ " and replace any others with a colon.-->
+			<xsl:variable name="section-number" select="translate(legislativeDocBody/statute/level/anchor/@id, '_', ':')" />
+			<section_number>
+				<xsl:value-of select="substring($section-number, 2)"/>
+			</section_number>
 
 			<!--Include the catch line.-->
 			<catch_line><xsl:value-of select="legislativeDocBody/statute/level/heading/title" /></catch_line>
@@ -86,14 +90,7 @@
 				<section>
 					<xsl:attribute name="prefix">
 						<xsl:variable name="prefix_length" select="string-length(heading/desig)"/>
-						<xsl:choose>
-							<xsl:when test="substring(heading/desig, $prefix_length, 1)='.'">
-								<xsl:value-of select="substring(heading/desig, 0, $prefix_length)"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="heading/desig"/>
-							</xsl:otherwise>
-						</xsl:choose>
+						<xsl:value-of select="substring(heading/desig, 0, $prefix_length)"/>
 					</xsl:attribute>
 					
 					<xsl:value-of select="bodyText" />
@@ -132,3 +129,4 @@
 	</xsl:function>
 
 </xsl:stylesheet>
+
