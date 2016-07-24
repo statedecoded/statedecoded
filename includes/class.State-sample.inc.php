@@ -1925,6 +1925,11 @@ class Parser
 
 						}
 
+						/*
+						 * Make sure the scope is lowercase.
+						 */
+						$scope = strtolower($scope);
+
 					}
 
 				}
@@ -2117,6 +2122,11 @@ class Parser
 		{
 			return FALSE;
 		}
+
+		/*
+		 * Make sure the scope is lowercase, as sometimes it is not.
+		 */
+		$scope = strtolower($scope);
 
 		/*
 		 * Make the list of definitions a subset of a larger variable, so that we can store things
