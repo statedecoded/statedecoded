@@ -1790,7 +1790,7 @@ class Parser
 	 */
 	function extract_definitions($text, $structure_labels)
 	{
-		$scope = 'global';
+		$scope = 'section';
 
 		if (!isset($text))
 		{
