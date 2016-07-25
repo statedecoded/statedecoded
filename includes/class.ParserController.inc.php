@@ -1691,6 +1691,8 @@ class ParserController
 								$this->logger->message('Could not write law XML files', 9);
 								break;
 							}
+							
+							$this->logger->message('Wrote file "'. $xml_dir . $filename . '.xml' .'"', 1);
 
 						}
 
