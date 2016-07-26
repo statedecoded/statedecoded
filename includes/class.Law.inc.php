@@ -649,7 +649,7 @@ class Law
 		{
 			$edition_obj = new Edition(array('db' => $this->db));
 			$edition = $edition_obj->current();
-			$edition_id = $edition_object->id;
+			$edition_id = $edition->id;
 		}
 
 		$sql = 'SELECT *
