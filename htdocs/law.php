@@ -235,7 +235,7 @@ $body .= '</article>';
  * Display links to representational variants of the text of this law.
  */
 $formats = array('doc' => 'Word doc', 'epub' => 'ePub', 'json' => 'JSON', 'pdf' => 'PDF',
-	'rtf' => 'Rich Text Format', 'txt' => 'Plain Text');
+	'rtf' => 'Rich Text Format', 'txt' => 'Plain Text', 'xml' => 'XML');
 $body .= '<section id="rep_variant">
 			<h2>Download</h2>
 				<ul>';
