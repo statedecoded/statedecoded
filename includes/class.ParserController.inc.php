@@ -733,8 +733,10 @@ class ParserController
 			while ($section = $parser->iterate())
 			{
 				$parser->section = $section;
-				$parser->parse();
-				$parser->store();
+				if ($parser->parse() === TRUE)
+				{
+					$parser->store();
+				}
 			}
 
 			if(method_exists($parser, 'post_parse'))
