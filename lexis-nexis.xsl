@@ -58,7 +58,7 @@
 			</xsl:attribute>
 
 			<xsl:attribute name="identifier">
-				<xsl:value-of select="replace(replace(normalize-space(heading/desig), '^(TITLE|SUBTITLE|ARTICLE|CHAPTER|PART) ', '' ), '.$', '')"/>
+				<xsl:value-of select="replace(replace(normalize-space(heading/desig), '^(TITLE|SUBTITLE|ARTICLE|CHAPTER|SUBCHAPTER|PART) ', '' ), '.$', '')"/>
 			</xsl:attribute>
 
 			<!-- Counter -->
