@@ -7,7 +7,6 @@ function truncate(str){
 	var new_str = new_str.replace(/\s$/,'');
 	if(new_str.length < str.length)
 		new_str = new_str + "&nbsp;&#8230;";
-	console.log(str, new_str);
 	return new_str;
 }
 
