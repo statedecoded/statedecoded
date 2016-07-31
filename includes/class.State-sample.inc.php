@@ -2456,7 +2456,7 @@ class Parser
 
 	public function get_structure_labels()
 	{
-		$sql = 'SELECT label FROM structure GROUP BY label ' .
+		$sql = 'SELECT label, MIN(depth) AS depth FROM structure GROUP BY label ' .
 			'ORDER BY depth ASC';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();

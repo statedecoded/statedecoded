@@ -567,7 +567,7 @@ class Law
 		/*
 		 * Get a listing of IDs, section numbers, and catch lines.
 		 */
-		$sql = 'SELECT DISTINCT laws.id, laws.section AS section_number,
+		$sql = 'SELECT DISTINCT laws.id, laws.section, laws.order_by AS section_number,
 			laws.catch_line FROM laws ';
 		if($to)
 		{
