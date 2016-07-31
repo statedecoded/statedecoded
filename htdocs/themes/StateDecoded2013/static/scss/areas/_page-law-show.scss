@@ -136,6 +136,12 @@
 
     p {
       margin: 0 0 1.25em 0;
+      &:hover {
+       .section-permalink{
+          opacity:1.0
+
+        }
+      }
     }
 	.tabular {
 	  max-width: 100%;
