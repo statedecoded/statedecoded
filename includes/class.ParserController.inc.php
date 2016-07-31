@@ -87,8 +87,7 @@ class ParserController
 		{
 			$this->downloads_url = '/downloads/';
 		}
-		$this->downloads_dir = realpath($this->downloads_dir);
-		
+		$this->downloads_dir = join_paths(array(realpath($this->downloads_dir)));
 	}
 
     // {{{ init_logger()
@@ -438,8 +437,8 @@ class ParserController
 	public function set_edition($edition)
 	{
 		$this->edition = $edition;
-		$this->downloads_dir .= $edition->slug . '/';
-		$this->downloads_url .= $edition->slug . '/';
+		$this->downloads_dir = join_paths(array($this->downloads_dir, $edition->slug));
+		$this->downloads_url = join_paths(array($this->downloads_url, $edition->slug));
 	}
 
 
