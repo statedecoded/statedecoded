@@ -42,7 +42,16 @@ class Permalink
 				permalink = :permalink';
 			$insert_statement = $this->db->prepare($insert_sql);
 		}
-		$insert_result = $insert_statement->execute($insert_data);
+		if(!isset($insert_data[':relational_id']))
+		{
+			$insert_statement->bindValue(':relational_id', null, PDO::PARAM_INT);
+		}
+		foreach($insert_data as $key=>$value)
+		{
+			$insert_statement->bindValue($key, $value, PDO::PARAM_STR);
+		}
+
+		$insert_result = $insert_statement->execute();
 
 		return $insert_result;
 	}

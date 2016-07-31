@@ -1118,7 +1118,7 @@ abstract class AmericanLegalParser
 			{
 				$insert_data = array(
 					':object_type' => 'structure',
-					':relational_id' => '',
+					// ':relational_id' => '',
 					':identifier' => '',
 					':token' => '',
 					':url' => '/browse/',
@@ -1133,7 +1133,7 @@ abstract class AmericanLegalParser
 
 			$insert_data = array(
 				':object_type' => 'structure',
-				':relational_id' => '',
+				// ':relational_id' => '',
 				':identifier' => '',
 				':token' => '',
 				':url' => '/' . $edition->slug . '/',
