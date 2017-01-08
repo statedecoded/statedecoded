@@ -675,7 +675,7 @@ class ParserController
 	public function parse()
 	{
 
-		$this->logger->message('Beginning the import process', 5);
+		$this->logger->message('Starting file parsing.', 5);
 
 		/*
 		 * Create a new instance of Parser.
@@ -804,8 +804,6 @@ class ParserController
 				}
 
 			}
-
-			$this->logger->message('Analyzed and stored law codification histories', 3);
 
 		}
 
