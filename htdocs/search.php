@@ -183,13 +183,13 @@ if (!empty($_GET['q']))
 			$url = $law->get_url( $result->law_id );
 			$url_string = $url->url;
 
-			if(strpos($url, '?') !== FALSE)
+			if(strpos($url_string, '?') !== FALSE)
 			{
-				$url_string .= '?';
+				$url_string .= '&';
 			}
 			else
 			{
-				$url_string .= '*';
+				$url_string .= '?';
 			}
 			$url_string .= 'q='.urlencode($q);
 
