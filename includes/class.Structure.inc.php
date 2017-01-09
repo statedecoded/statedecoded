@@ -179,6 +179,8 @@ class Structure
 		 */
 		$structure_row = $statement->fetch(PDO::FETCH_OBJ);
 
+		$this->edition_id = $structure_row->edition_id;
+
 		/*
 		 * Pivot this into a multidimensional object. That is, it's presently stored in multiple
 		 * columns in a single row, but we want it in multiple rows, one per hierarchical level.
@@ -188,7 +190,6 @@ class Structure
 
 		foreach($structure_row as $key => $value)
 		{
-
 			$value = stripslashes($value);
 
 			/*
