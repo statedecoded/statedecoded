@@ -443,5 +443,10 @@ class SqlSearchEngine extends SearchEngineInterface
 		return 'IF(' . $string . ', 1,0)';
 	}
 
+	// We don't have a real index, so we don't do anything on delete, successfully.
+	public function delete($edition_id)
+	{
+		return TRUE;
+	}
 
 }

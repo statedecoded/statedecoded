@@ -215,18 +215,22 @@ elseif ($_POST['action'] == 'empty')
 	echo 'Emptying the database<br />';
 	flush();
 
-	if($_POST['edition'])
+	if(isset($_POST['edition']))
 	{
 		$parser->clear_edition($_POST['edition']);
+		echo 'Emptying the index<br />';
+		flush();
+		$parser->clear_index($_POST['edition']);
 	}
 	else
 	{
 		$parser->clear_db();
+		echo 'Emptying the index<br />';
+		flush();
+		$parser->clear_index();
 	}
 
-	echo 'Emptying the index<br />';
-	flush();
-	$parser->clear_index();
+
 
 	echo 'Done<br />';
 

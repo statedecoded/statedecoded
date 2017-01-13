@@ -106,6 +106,10 @@ class SolrSearchResults implements SearchResultsInterface
 			{
 				$temp_result->$key = $value;
 			}
+			// The default type of object is a law.
+			if(!isset($temp_result->object_type)) {
+				$temp_result->object_type = 'law';
+			}
 
 			if($highlighted)
 			{

@@ -110,26 +110,31 @@ class SolrSearchEngine extends SearchEngineInterface
 
 	public function commit()
 	{
-		if($this->transaction_type === 'update')
-		{
+		if(count($this->documents)) {
+			if($this->transaction_type === 'update')
+			{
 
-			// Add the documents and a commit command to the update query.
-			$this->transaction->addDocuments($this->documents);
-			$this->transaction->addCommit();
+				// Add the documents and a commit command to the update query.
+				$this->transaction->addDocuments($this->documents);
+				$this->transaction->addCommit();
 
-			// This executes the query and returns the result.
-			$this->last_result = $this->client->update($this->transaction);
+				// This executes the query and returns the result.
+				$this->last_result = $this->client->update($this->transaction);
+			}
+
+			if($this->last_result->getStatus() === 0)
+			{
+				unset($this->transaction);
+				$this->documents = array();
+				return TRUE;
+			}
+
+			throw new Exception('Solr query failed.');
+			return FALSE;
 		}
-
-		if($this->last_result->getStatus() === 0)
-		{
-			unset($this->transaction);
-			unset($this->documents);
+		else {
 			return TRUE;
 		}
-
-		throw new Exception('Solr query failed.');
-		return FALSE;
 	}
 
 	public function debug()
@@ -149,7 +154,8 @@ class SolrSearchEngine extends SearchEngineInterface
 		$document->site_url = $this->config['site']['url'];
 
 		$document->id = 'l_' . $law->edition->id . '_' . $law->token;
-		$document->law_id = $law->law_id;
+		$document->object_id = $law->law_id;
+		$document->object_type = 'law';
 
 		$document->section_number = $law->section_number;
 
@@ -190,29 +196,37 @@ class SolrSearchEngine extends SearchEngineInterface
 
 	public function structure_to_document($structure)
 	{
-	/*
+
 		$document = $this->transaction->createDocument();
 
-		$document->id =
+		$document->id = 's_' . $structure->edition_id . '_' . $structure->permalink->token;
 
-		//$document->section =
+		$document->object_id = $structure->id;
+		$document->object_type = 'structure';
+
+		$document->section = $structure->identifier;
 
 		$document->edition_id = $structure->edition->id;
 		$document->edition = $structure->edition->name;
+		$document->edition_slug = $structure->edition->slug;
 		$document->edition_updated = $structure->edition->last_import;
 		$document->edition_current = $structure->edition->current;
 
 		$document->catch_line = $structure->name;
-		//$document->tags =
 
-		$document->text =
+		$document->text = '';
+		if(isset($structure->metadata) && isset($structure->metadata->text)) {
+			$document->text = $structure->metadata->text;
+		}
 
-		$document->repealed =
-
-		$document->structure =
+		$ancestry = array();
+		foreach($structure->structure as $key=>$value)
+		{
+			$ancestry[] = $value->identifier . ' ' . $value->name;
+		}
+		$document->structure = join('/', $ancestry);
 
 		return $document;
-	*/
 	}
 
 	public function search($query = array())
@@ -227,7 +241,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			$select->setHandler('search');
 			$select->setQuery($query['q']);
 
-			if(isset($query['edition_id']))
+			if(!empty($query['edition_id']))
 			{
 				$select->createFilterQuery('edition_id')->setQuery(
 					'edition_id:' . $query['edition_id']);
@@ -276,10 +290,10 @@ class SolrSearchEngine extends SearchEngineInterface
 		{
 			$id = 'l_' . $object->edition_id . '_' . $object->permalink->token;
 		}
-		// elseif(strtolower(get_class($object)) === 'structure')
-		// {
-		// NOT YET SUPPORTED
-		// }
+		elseif(strtolower(get_class($object)) === 'structure')
+		{
+			$id = 's_' . $object->edition_id . '_' . $object->permalink->token;
+		}
 		else {
 			throw new Exception('Record has a bad type in SolrSearchEngine->add_document');
 		}
@@ -311,5 +325,30 @@ class SolrSearchEngine extends SearchEngineInterface
 				return FALSE;
 			}
 		}
+	}
+
+	public function delete($edition_id = null) {
+		if($edition_id)
+		{
+			$query = 'edition_id:' . $edition_id;
+		}
+		else
+		{
+			$query = '*:*';
+		}
+
+		$update = $this->client->createUpdate();
+
+		$update->addDeleteQuery($query);
+		$update->addCommit();
+
+		// this executes the query and returns the result
+		$result = $this->client->update($update);
+
+		// A result of 0 is good for some reason.
+		if(!$result->getStatus()) {
+			return TRUE;
+		}
+		return FALSE;
 	}
 }

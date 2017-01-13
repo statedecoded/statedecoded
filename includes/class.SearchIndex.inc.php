@@ -92,4 +92,11 @@ class SearchIndex
 		return $this->engine->find_related($object, $count);
 	}
 
+	/*
+	 * Clear out the index.
+	 */
+	public function delete($edition_id = null) {
+		return $this->engine->delete($edition_id);
+	}
+
 }
