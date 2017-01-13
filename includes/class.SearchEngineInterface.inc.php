@@ -32,4 +32,6 @@ abstract class SearchEngineInterface
 	public function search($query) {}
 
 	public function find_related($object, $count) {}
+
+	public function delete($edition_id) {}
 }

@@ -647,6 +647,9 @@ class ParserController
 			$this->logger->message('Deleted ' . $table, 5);
 		}
 
+		$this->logger->message('Clearing search index', 5);
+		$this->clear_index($edition_id);
+
 		return TRUE;
 	}
 
@@ -822,7 +825,7 @@ class ParserController
 		 * The depth of the structure is the number of entries in the structure labels,
 		 * minus one for 'section'.
 		 */
-		$structure_depth = count($parser->get_structure_labels())-1;
+		$structure_depth = count($parser->get_structure_labels($this->edition_id))-1;
 
 		$select = array();
 		$from = array();
@@ -2273,6 +2276,31 @@ class ParserController
 				}
 			}
 
+			// Store our structures in the index.
+			$struct_obj = new Structure(array('db' => $this->db));
+			$result = $struct_obj->get_all($this->edition->id, true);
+
+			while($struct = $result->fetch())
+			{
+				// Get the full data of the structure.
+				$document = new Structure(array('db' => $this->db));
+				$document->structure_id = $struct['id'];
+				$document->get_current();
+
+				// Bring over our edition info.
+				$document->edition = $this->edition;
+
+				try
+				{
+					$search_index->add_document($document);
+				}
+				catch (Exception $error)
+				{
+					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
+					return FALSE;
+				}
+			}
+
 			$search_index->commit();
 
 			// $this->logger->message('Indexing structures', 6);
@@ -2288,49 +2316,26 @@ class ParserController
 
 	public function clear_index($edition_id = null)
 	{
-
-		if (!defined('SOLR_URL'))
+		if(defined('SEARCH_CONFIG'))
 		{
-			return TRUE;
-		}
+			$search_index = new SearchIndex(
+				array(
+					'config' => json_decode(SEARCH_CONFIG, TRUE)
+				)
+			);
+			if($search_index->delete($edition_id)) {
 
-		if(isset($edition_id))
-		{
-			$sql = 'SELECT * FROM editions WHERE id = :edition_id';
-			$sql_args = array(':edition_id' => 'edition');
-			$statement = $this->db->prepare($sql);
-			$result = $statement->execute($sql_args);
-			if ($result === FALSE || $statement->rowCount() == 0)
-			{
-				throw new Exception('No such edition id:'. int($edition_id), E_USER_ERROR);
-				return FALSE;
+				$message = 'Search index cleared.';
+				if($edition_id) {
+					$message = 'Search index cleared for edition.';
+				}
+
+				$this->logger->message($message, 5);
 			}
-
-			$edition = $statement->fetchColumn('name');
-
-			$query = 'edition:' . $edition;
-
+			else {
+				$this->logger->message('Unable to clear search index.', 5);
+			}
 		}
-		else
-		{
-			$query = '*:*';
-		}
-		$request = '<delete><query>' . $query . '</query></delete>';
-
-		if ( !$this->handle_solr_request($request) )
-		{
-			return FALSE;
-		}
-
-		$request = '<optimize />';
-		if ( !$this->handle_solr_request($request) )
-		{
-			return FALSE;
-		}
-
-		$this->logger->message('Solr cleared of all indexed laws', 5);
-
-		$this->logger->message('Solr cleared of all indexed laws', 5);
 
 		return TRUE;
 

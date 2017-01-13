@@ -787,9 +787,9 @@ class Parser
 			{
 				$insert_data = array(
 					':object_type' => 'structure',
-					':relational_id' => '',
-					':identifier' => '',
-					':token' => '',
+					':relational_id' => null,
+					':identifier' => null,
+					':token' => null,
 					':url' => '/browse/',
 					':edition_id' => $edition_id,
 					':preferred' => $preferred,
@@ -802,9 +802,9 @@ class Parser
 
 			$insert_data = array(
 				':object_type' => 'structure',
-				':relational_id' => '',
-				':identifier' => '',
-				':token' => '',
+				':relational_id' => null,
+				':identifier' => null,
+				':token' => null,
 				':url' => '/' . $edition->slug . '/',
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
@@ -1533,13 +1533,16 @@ class Parser
 			/*
 			 * Determine the position of this structural unit.
 			 */
-			$structure = array_reverse($this->get_structure_labels());
+			$structure = array_reverse($this->get_structure_labels($this->edition_id));
 			array_push($structure, 'global');
 
 			/*
 			 * Find and return the position of this structural unit in the hierarchical stack.
 			 */
-			$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
+			$dictionary->scope_specificity = array_search(
+				strtolower($dictionary->scope),
+				array_map('strtolower', $structure)
+			);
 
 			/*
 			 * Store these definitions in the database.
@@ -2164,7 +2167,7 @@ class Parser
 		 */
 		if (!isset($this->structure_id))
 		{
-			$this->structure_id = 'NULL';
+			$this->structure_id = null;
 		}
 
 		/*
@@ -2454,10 +2457,13 @@ class Parser
 
 	} // end extract_history()
 
-	public function get_structure_labels()
+	public function get_structure_labels($edition_id = null)
 	{
-		$sql = 'SELECT label FROM structure GROUP BY label ' .
-			'ORDER BY depth ASC';
+		$sql = 'SELECT DISTINCT label, depth FROM structure ';
+		if($edition_id) {
+			$sql .= 'WHERE edition_id = ' . $edition_id . ' ';
+		}
+		$sql .= 'ORDER BY depth ASC';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
@@ -2482,10 +2488,12 @@ class Parser
 			else{
 				while($row = $statement->fetch(PDO::FETCH_ASSOC))
 				{
-					$structure_labels[] = $row['label'];
+					$structure_labels[$row['depth']] = $row['label'];
 				}
 			}
 		}
+
+		$structure_labels = array_values($structure_labels);
 
 		/*
 		 * Our lowest level, not represented in the structure table, is 'section'

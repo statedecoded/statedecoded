@@ -128,17 +128,17 @@ class Search
 		{
 			return FALSE;
 		}
-		
+
 		/*
 		 * Start our list of pages.
 		 */
 		$this->paging = '<ul id="paging">';
-		
+
 		/*
 		 * How many pages are there in all?
 		 */
 		$total_pages = ceil($this->total_results / $this->per_page);
-		
+
 		/*
 		 * Figure out the window for search results. That is, if there are more than 12 pages, then
 		 * we need to start someplace other than at the first page.
@@ -151,19 +151,19 @@ class Search
 		{
 			$first_page = 0;
 		}
-		
+
 		/*
 		 * Iterate through each page of results.
 		 */
 		$j=0;
 		for ($i = $first_page; $i < $total_pages; $i++)
 		{
-			
+
 			/*
 			 * Assemble the URL for this page.
 			 */
 			$url = '?q=' . $this->query;
-			
+
 			/*
 			 * Embed a page number in the URL for every page after the first one.
 			 */
@@ -171,7 +171,7 @@ class Search
 			{
 				$url .= '&amp;p=' . ($i + 1);
 			}
-			
+
 			/*
 			 * And if the number of results per page is something other than the default of 10, then
 			 * include that in the URL, too.
@@ -180,7 +180,7 @@ class Search
 			{
 				$url .= '&amp;num=' . $this->per_page;
 			}
-			
+
 			/*
 			 * If this is not the current page, display a linked number.
 			 */
@@ -188,7 +188,7 @@ class Search
 			{
 				$this->paging .= '<li><a href="' . $url . '">' . ($i + 1) . '</a></li>';
 			}
-			
+
 			/*
 			 * If this is the page that we're on right now, display an unlinked number.
 			 */
@@ -196,7 +196,7 @@ class Search
 			{
 				$this->paging .= '<li>' .  ($i + 1) . '</li>';
 			}
-			
+
 			/*
 			 * If we have next and previous pages, store those.
 			 */
@@ -208,12 +208,12 @@ class Search
 			{
 				$this->prev = $url;
 			}
-			
+
 			/*
 			 * Increment our page counter.
 			 */
 			$j++;
-			
+
 			/*
 			 * Once we reach eleven pages, stop.
 			 */
@@ -221,16 +221,16 @@ class Search
 			{
 				break;
 			}
-			
+
 		}
-		
+
 		/*
 		 * Close the #paging DIV.
 		 */
 		$this->paging .= '</ul>';
-		
+
 		return $this->paging;
-		
+
 	}
-	
+
 }
