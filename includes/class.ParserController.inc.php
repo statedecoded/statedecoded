@@ -2171,7 +2171,7 @@ class ParserController
 		 */
 		if (is_writable(WEB_ROOT . '/sitemap.xml') !== TRUE)
 		{
-			$this->logger->message('sitemap.xml must be writable by the server', 3);
+			$this->logger->message('sitemap.xml must be writable by the server', 10);
 			$error = TRUE;
 		}
 
@@ -2180,7 +2180,7 @@ class ParserController
 		 */
 		if (is_writable(WEB_ROOT . '/.htaccess') !== TRUE)
 		{
-			$this->logger->message('.htaccess must be writable by the server', 3);
+			$this->logger->message('.htaccess must be writable by the server', 10);
 			$error = TRUE;
 		}
 
