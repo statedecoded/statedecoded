@@ -631,56 +631,12 @@ class Law
 	 */
 	### TODO fix references to this.
 	### TODO replace the body of this with a call to Permalink.
-	public function get_url($law_id, $edition_id = null, $permalink = false)
+	public function get_url($law_id, $edition_id = null)
 	{
-
-		/*
-		 * If a section number hasn't been passed to this function, then there's nothing to do.
-		 */
-		if (empty($law_id))
-		{
-			return FALSE;
-		}
-
-		/*
-		 * Set the default edition.
-		 */
-		if (empty($edition_id))
-		{
-			$edition_obj = new Edition(array('db' => $this->db));
-			$edition = $edition_obj->current();
-			$edition_id = $edition->id;
-		}
-
-		$sql = 'SELECT *
-				FROM permalinks
-				WHERE object_type="law"
-				AND relational_id = :law_id';
-
-		$sql_args = array(
-			':law_id' => $law_id
-		);
-
-		if($permalink === true)
-		{
-			$sql .= ' AND permalink = 1';
-		}
-		else {
-			$sql .= ' AND preferred = 1';
-		}
-
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
-		{
-			return FALSE;
-		}
-
-		$permalink = $statement->fetch(PDO::FETCH_OBJ);
+		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink = $permalink_obj->get_permalink($law_id, 'law', $edition_id);
 
 		return $permalink;
-
 	}
 
 
