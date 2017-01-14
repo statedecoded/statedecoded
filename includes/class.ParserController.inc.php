@@ -1842,6 +1842,10 @@ class ParserController
 			/*
 			 * Instruct the Law class on what, specifically, it should retrieve. (Very little.)
 			 */
+			if(!isset($laws->config))
+			{
+				$laws->config = new stdClass();
+			}
 			$laws->config->get_all = FALSE;
 			$laws->config->get_text = FALSE;
 			$laws->config->get_structure = FALSE;
@@ -1993,7 +1997,7 @@ class ParserController
 			$structure_temp->structure_id = $structure_id;
 			$structure_temp->get_current();
 
-			if(!isset($structure_temp->metadata))
+			if(!isset($structure_temp->metadata) || empty($structure_temp->metadata))
 			{
 				$structure_temp->metadata = new stdClass();
 			}
@@ -2026,6 +2030,7 @@ class ParserController
 		 */
 		$struct = new Structure();
 		$struct->id = $this->structure_id;
+		$struct->edition_id = $this->edition_id;
 		$child_structures = $struct->list_children();
 		$child_laws = $struct->list_laws();
 
@@ -2216,7 +2221,7 @@ class ParserController
 	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
 	 * instead, we do this via cURL.
 	 */
-	public function index_laws($args)
+	public function index_laws($args = array())
 	{
 		if(!isset($this->edition))
 		{
@@ -2260,6 +2265,10 @@ class ParserController
 				// Get the full data of the actual law.
 				$document = new Law(array('db' => $this->db));
 				$document->law_id = $law['id'];
+				if(!isset($document->config))
+				{
+					$document->config = new stdClass();
+				}
 				$document->config->get_all = TRUE;
 				$document->get_law();
 				// Bring over our edition info.

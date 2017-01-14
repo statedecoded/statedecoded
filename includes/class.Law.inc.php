@@ -31,6 +31,12 @@ class Law
 			global $db;
 			$this->db = $db;
 		}
+
+		if (!isset($this->config) || !is_object($this->config) )
+		{
+			$this->config = new StdClass();
+			$this->config->get_all = TRUE;
+		}
 	}
 
 	/**
@@ -472,22 +478,11 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-		$sql = 'SELECT url, token
-				FROM permalinks
-				WHERE relational_id = :id
-				AND object_type = :object_type';
-		$statement = $this->db->prepare($sql);
 
-		$sql_args = array(
-			':id' => $this->section_id,
-			':object_type' => 'law'
-		);
+		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink = $permalink_obj->get_preferred($this->section_id, 'law', $this->edition_id);
 
-		$result = $statement->execute($sql_args);
-
-		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
-		{
-			$permalink = $statement->fetch(PDO::FETCH_OBJ);
+		if($permalink) {
 			$this->url = $permalink->url;
 			$this->token = $permalink->token;
 		}
@@ -500,9 +495,12 @@ class Law
 			$this->formats = new StdClass();
 		}
 
-		$this->formats->txt = substr($this->url, 0, -1) . '.txt';
-		$this->formats->json = substr($this->url, 0, -1) . '.json';
-		$this->formats->xml = substr($this->url, 0, -1) . '.xml';
+		if(isset($this->url))
+		{
+			$this->formats->txt = substr($this->url, 0, -1) . '.txt';
+			$this->formats->json = substr($this->url, 0, -1) . '.json';
+			$this->formats->xml = substr($this->url, 0, -1) . '.xml';
+		}
 
 		/*
 		 * Create metadata in the Dublin Core format.
@@ -946,7 +944,7 @@ class Law
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
-		if (USE_GENERIC_TERMS !== TRUE)
+		if (!defined('USE_GENERIC_TERMS') || constant('USE_GENERIC_TERMS') !== TRUE)
 		{
 			$dictionary->generic_terms = FALSE;
 		}
