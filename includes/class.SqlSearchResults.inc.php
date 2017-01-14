@@ -28,6 +28,9 @@ class SqlSearchResults implements SearchResultsInterface
 
 	public function get_results()
 	{
+		foreach($this->results as $key => $result) {
+			$this->results[$key]->object_id = $result->id;
+		}
 		return $this->results;
 	}
 

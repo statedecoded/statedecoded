@@ -179,12 +179,12 @@ if (!empty($_GET['q']))
 
 		foreach ($results->get_results() as $result)
 		{
-
 			if($result->object_type === 'law') {
 				$law->law_id = $result->id;
 				$law->get_law();
 
-				$url = $law->get_url( $result->id );
+				$url = $law->get_url( $result->object_id , $result->edition_id );
+
 				$url_string = $url->url;
 
 				if(strpos($url_string, '?') !== FALSE)
@@ -285,11 +285,10 @@ if (!empty($_GET['q']))
 			} // end law
 
 			elseif($result->object_type === 'structure') {
-				$struct->structure_id = $result->id;
+				$struct->structure_id = $result->object_id;
 				$struct->get_current();
 
-				$permalink = $permalink_obj->get_permalink($struct->structure_id, 'structure', $struct->edition_id);
-				$url_string = $permalink->url;
+				$url_string = $struct->permalink->url;
 
 				if(strpos($url_string, '?') !== FALSE)
 				{
@@ -304,9 +303,9 @@ if (!empty($_GET['q']))
 				$body .= '<li><div class="result">';
 				$body .= '<h1><a href="' . $url_string . '">';
 
-				if(strlen($result->name))
+				if(strlen($struct->name))
 				{
-					$body .= $result->name;
+					$body .= $struct->name;
 				}
 
 				$body .= ' (' . $struct->identifier . ')</a></h1>';
