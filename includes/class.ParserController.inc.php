@@ -2104,6 +2104,23 @@ class ParserController
 		}
 
 		/*
+		 * Make sure that the database user has proper permissions.
+		 */
+		$this->db->exec('CREATE VIEW sd_test_view AS SELECT 1');
+		$err = $this->db->errorInfo();
+		if ($err[0] !== '00000' && $err[0] !== '01000') {
+				$this->logger->message('MySQL user does not have permission to create views.', 10);
+				$error = TRUE;
+		}
+
+		$this->db->exec('DROP VIEW sd_test_view');
+		$err = $this->db->errorInfo();
+		if ($err[0] !== '00000' && $err[0] !== '01000') {
+				$this->logger->message('MySQL user does not have permission to drop views.', 10);
+				$error = TRUE;
+		}
+
+		/*
 		 * Make sure that HTML Tidy is available within PHP or, failing that, at the command line.
 		 */
 		if (class_exists('tidy', FALSE) == FALSE)
