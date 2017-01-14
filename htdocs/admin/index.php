@@ -290,6 +290,12 @@ elseif ($_POST['action'] == 'parse')
 					$parser->structural_stats_generate();
 					$parser->prune_views();
 					$parser->finish_import();
+
+					/*
+					 * Attempt to purge Varnish's cache. (Fails silently if Varnish isn't installed or running.)
+					 */
+					$varnish = new Varnish;
+					$varnish->purge();
 				}
 
 			}
@@ -302,11 +308,10 @@ elseif ($_POST['action'] == 'parse')
 		}
 	}
 
-	/*
-	 * Attempt to purge Varnish's cache. (Fails silently if Varnish isn't installed or running.)
-	 */
-	$varnish = new Varnish;
-	$varnish->purge();
+	else {
+		echo 'Environment test failed.  Please resolve the issues above and try again.<br>';
+	}
+
 
 	echo 'Done<br />';
 
