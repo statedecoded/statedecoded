@@ -731,6 +731,7 @@ class ParserController
 			 * Iterate through the files.
 			 */
 			$this->logger->message('Importing the law files in the import-data directory', 5);
+			$this->logger->progress('parsefiles');
 
 			while ($section = $parser->iterate())
 			{
@@ -739,7 +740,10 @@ class ParserController
 				{
 					$parser->store();
 				}
+				$this->logger->updateProgressFiles('parsefiles', $parser->file,  count($parser->files));
 			}
+
+			$this->logger->finishProgress('parsefiles');
 
 			if(method_exists($parser, 'post_parse'))
 			{
@@ -1066,6 +1070,10 @@ class ParserController
 	 * There are a handful of bulk downloads that are created. This gathers up the data and creates
 	 * those files. It also creates the downloads directory, if it doesn't exist.
 	 */
+
+	public $export_count;
+	public $export_progress;
+
 	public function export()
 	{
 
@@ -1077,7 +1085,22 @@ class ParserController
 		 * Begin the process of exporting each section.
 		 * We start at the top, with no parents.
 		 */
+		$this->logger->progress('exportfiles');
+
+		// Figure out how many files we're dealing with.
+		$sql = 'SELECT COUNT(*) AS count FROM laws WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $this->edition_id);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result !== FALSE && $statement->rowCount() > 0)
+		{
+			$this->export_count = (int) $statement->fetchColumn();
+		}
+
 		$this->export_structure();
+
+		$this->logger->finishProgress('exportfiles');
 
 		/*
 		 * Zip up all of the JSON files into a single file. We do this via exec(), rather than
@@ -1214,7 +1237,7 @@ class ParserController
 	 */
 	public function export_structure($parent_id = null)
 	{
-		$structure_sql = '	SELECT structure_unified.*
+		$structure_sql = 'SELECT structure_unified.*
 							FROM structure
 							LEFT JOIN structure_unified
 								ON structure.id = structure_unified.s1_id';
@@ -1695,13 +1718,16 @@ class ParserController
 								$this->logger->message('Could not write law XML files', 9);
 								break;
 							}
-							
+
 							$this->logger->message('Wrote file "'. $xml_dir . $filename . '.xml' .'"', 1);
 
 						}
 
 					} // end the $law exists condition
 
+					$this->export_progress++;
+
+					$this->logger->updateProgressFiles('exportfiles', $this->export_progress * 3, $this->export_count * 3);
 				} // end the while() law iterator
 			} // end the $laws condition
 
