@@ -111,7 +111,7 @@ if (isset($_POST['form_data']))
 			$body = '<p class="error">Error: ' . $e->getMessage() . '</p>';
 		}
 
-		$body .= '<p>You have been sent an e-mail to verify your e-mail address. Please click the
+		$body = '<p>You have been sent an e-mail to verify your e-mail address. Please click the
 					link in that e-mail to activate your API key.</p>';
 	}
 
