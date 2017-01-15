@@ -278,12 +278,6 @@ if (isset($struct->metadata))
 }
 
 /*
- * Row classes and row counter.
- */
-$row_classes = array('odd', 'even');
-$counter = 0;
-
-/*
  * If we have successfully gotten a list of child structural units, display them.
  */
 if ($children !== FALSE)
@@ -292,41 +286,25 @@ if ($children !== FALSE)
 	/*
 	 * The level of this child structural unit is that of the current unit, plus one.
 	 */
-	$body .= '<dl class="title-list sections level-' . ((isset($structure->{count($structure)-1}->level) ? $structure->{count($structure)-1}->level : 0) + 1) . '">';
+	$body .= '<table class="title-list sections table-striped level-' . ((isset($structure->{count($structure)-1}->level) ? $structure->{count($structure)-1}->level : 0) + 1) . '"><tbody>';
 	foreach ($children as $child)
 	{
-
-		/*
-		 * The remainder of the count divided by the number of classes
-		 * yields the proper index for the row class.
-		 */
-		$class_index = $counter % count($row_classes);
-		$row_class = $row_classes[$class_index];
 		$api_url = '/api/1.0/structure/' . $child->token
 			 . '/?key=' . API_KEY;
 
-		$body .= '	<dt class="' . $row_class . '"><a href="' . $child->url . '"
+		$body .= '<tr><td><a href="' . $child->url . '"
 				data-identifier="' . $child->token . '"
 				data-api-url="' . $api_url . '"
-				>' . $child->identifier . '</a></dt>
-			<dd class="' . $row_class . '"><a href="' . $child->url . '"
+				>' . $child->identifier . '</a></td>
+			<td><a href="' . $child->url . '"
 				data-identifier="' . $child->token . '"
 				data-api-url="' . $api_url . '"
-				>' . $child->name . '</a></dd>';
-
-		$counter++;
-
+				>' . $child->name . '</a></td></tr>';
 	}
 
-	$body .= '</dl>';
+	$body .= '</tbody></table>';
 
 }
-
-
-/*
- * Reset counter
- */
-$counter = 0;
 
 /*
  * Get a listing of all laws that are children of this portion of the structure.
@@ -340,28 +318,17 @@ if ($laws !== FALSE)
 {
 
 	$body .= ' It’s comprised of the following ' . count((array) $laws) . ' sections.</p>';
-	$body .= '<dl class="title-list laws">';
+	$body .= '<table class="title-list table-striped laws"><tbody>';
 
 	foreach ($laws as $law)
 	{
-
-		/*
-		 * The remainder of the count divided by the number of classes
-		 * yields the proper index for the row class.
-		 */
-		$class_index = $counter % count($row_classes);
-		$row_class = $row_classes[$class_index];
-
-		$body .= '
-				<dt class="' . $row_class.'"><a href="' . $law->url . '">'
-					. SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</a></dt>
-				<dd class="' . $row_class.'"><a href="' . $law->url . '">'
-					. $law->catch_line . '</a></dd>';
-
-		$counter++;
-
+		$body .= '<tr>
+				<td><a href="' . $law->url . '">'
+					. SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</a></td>
+				<td><a href="' . $law->url . '">'
+					. $law->catch_line . '</a></td></tr>';
 	}
-	$body .= '</dl>';
+	$body .= '</tbody></table>';
 }
 
 /*
