@@ -250,14 +250,6 @@
       text-align: left;
       width: 100%;
 
-      @include respond-to(desktop) {
-        width: 32%;
-      }
-
-      @include respond-to(laptop) {
-        width: 32%;
-      }
-
       @include respond-to(tablet-landscape) {
         width: 100%;
       }

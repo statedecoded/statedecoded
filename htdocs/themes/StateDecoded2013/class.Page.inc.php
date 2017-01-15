@@ -79,10 +79,6 @@ class StateDecoded2013__Page extends Page
 			'path' => '/js/vendor/js-webshim/minified/polyfiller.js',
 			'type' => 'javascript'
 		),
-		'masonry_js' => array(
-			'path' => '/js/vendor/masonry.pkgd.min.js',
-			'type' => 'javascript'
-		),
 		'datatables' => array(
 			'path' => '//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js',
 			'type' => 'javascript',
