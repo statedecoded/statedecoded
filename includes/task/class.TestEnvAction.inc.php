@@ -40,6 +40,9 @@ class TestEnvAction extends CliAction
 		if($parser->test_environment()) {
 			return 'Environment test succeeded.';
 		}
+		else {
+			$this->result = 1;
+		}
 	}
 
 	public static function getHelp()
