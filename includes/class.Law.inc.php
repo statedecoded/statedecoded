@@ -863,13 +863,11 @@ class Law
 
 		if($limit)
 		{
-			$sql .= 'LIMIT :limit ';
-			$sql_args[':limit'] = $limit;
+			$sql .= 'LIMIT ' . $limit . ' ';
 		}
 		if($offset)
 		{
-			$sql .= 'OFFSET :offset ';
-			$sql_args[':offset'] = $offset;
+			$sql .= 'OFFSET ' . $offset . ' ';
 		}
 
 		$statement = $this->db->prepare($sql);

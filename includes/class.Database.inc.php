@@ -29,9 +29,6 @@ class Database extends PDO
 			'password'       => $password,
 			'driver_options' => $driver_options
 		);
-
-		// Disable quoting of integers.
-		$this->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 	}
 
 	public function query( $query )
