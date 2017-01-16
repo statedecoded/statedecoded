@@ -507,7 +507,6 @@
 $border-radius-base: 6px;
 // Give the tabs something to sit on
 .nav-tabs {
-  border-bottom: 1px solid $gray-lighter;
   > li {
     float: left;
     // Make the list-items overlay the bottom border
@@ -525,21 +524,48 @@ $border-radius-base: 6px;
     }
 
     // Active state, and it's :hover to override normal :hover
-    &.active > a {
+    &> a {
       &,
       &:hover,
       &:focus {
-        color: $gray-darkest;
-        background-color: white;
-        border: 1px solid $gray;
-        border-bottom-color: transparent;
+        z-index: 2;
+        padding: 4px 8px;
+        margin-right: 3px;
+        margin-bottom: 1px;
+        text-decoration: none;
+        color: $black;
+        background-color: $base-lightest;
+        border: 1px solid $gray-darkest;
+        border-bottom-color: $gray-darkest;
         cursor: default;
       }
+    }
+    &.active > a {
+      margin-bottom: 0;
+      border: 1px solid $gray-darkest;
+      border-bottom-color: transparent;
+      background-color: $gray-lightest;
     }
   }
   // pulling this in mainly for less shorthand
   &.nav-justified {
     //@extend .nav-justified;
     //@extend .nav-tabs-justified;
+  }
+}
+
+.tab-content {
+    position: relative;
+    top: -1px;
+}
+
+.tab-pane {
+  border: 1px solid $gray-darkest;
+  background-color: $gray-lightest;
+  padding: 1em 1em;
+  display: none;
+
+  &.active {
+    display: block;
   }
 }

@@ -193,37 +193,36 @@ $body .= $law->html;
 /*
  * If we both the raw history text and translated (prose-style) history text, display both formats.
  */
-// Commented out temporarily, per https://github.com/statedecoded/statedecoded/issues/283
-//if ( isset($law->history) && isset($law->history_text))
-//{
-//	$body .= '<section id="history">
-//				<h2>History</h2>
-//				<ul class="nav nav-tabs">
-//				  <li class="active"><a href="#">Translated</a></li>
-//				  <li class="active"><a href="#">Original</a></li>
-//				</ul>
-//				<div class="tab-content">
-//				  <div class="tab-pane active" id="tab1">
-//						<p>'.$law->history_text.'</p>
-//				  </div>
-//				  <div class="tab-pane" id="tab2">
-//						<p>'.$law->history.'</p>
-//				  </div>
-//				</section>';
-//}
-//
+if ( isset($law->history) && isset($law->history_text))
+{
+	$body .= '<section id="history">
+				<h2>History</h2>
+				<ul class="nav nav-tabs">
+				  <li class="active"><a href="#" data-target="#translated-history" data-toggle="tab">Translated</a></li>
+				  <li><a href="#" data-target="#original-history" data-toggle="tab">Original</a></li>
+				</ul>
+				<div class="tab-content">
+				  <div class="tab-pane active" id="translated-history">
+						<p>'.$law->history_text.'</p>
+				  </div>
+				  <div class="tab-pane" id="original-history">
+						<p>'.$law->history.'</p>
+				  </div>
+				</section>';
+}
+
 /*
  * If we only have the raw history text, display that.
  */
-//elseif (isset($law->history))
-//{
+elseif (isset($law->history))
+{
 
 	$body .= '<section id="history">
 				<h2>History</h2>
 				<p>'.$law->history.'</p>
 			</section>';
 
-//}
+}
 
 /*
  * Indicate the conclusion of the "section" article, which is the container for the text of a

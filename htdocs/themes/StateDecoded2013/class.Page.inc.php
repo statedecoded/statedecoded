@@ -93,6 +93,11 @@ class StateDecoded2013__Page extends Page
 			'type' => 'css',
 			'requires' => array('datatables')
 		),
+		'tabs' => array(
+			'path' => '/js/vendor/tab.js',
+			'type' => 'javascript',
+			'requires' => 'jquery'
+		),
 		'main_js' => array(
 			'path' => '/js/vendor/functions.js',
 			'type' => 'javascript',
