@@ -223,6 +223,8 @@ if (!empty($_GET['q']))
 				}
 				$body .= ')</a></h1>';
 
+				$body .= '<em class="edition-label">' . $edition_cache[$result->edition_id]->name . '</em>';
+
 				/*
 				 * If we're searching all editions, show what edition this law is from.
 				 */
