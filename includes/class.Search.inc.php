@@ -14,6 +14,18 @@
 
 class Search
 {
+	public function __construct($args = null)
+	{
+		if($args) {
+			foreach($args as $key => $value) {
+				$this->$key = $value;
+			}
+		}
+		else {
+			global $db;
+			$this->db = $db;
+		}
+	}
 
 	/**
 	 * Display the complete search form. (As opposed to the abbreviated form, which is included in
@@ -21,12 +33,20 @@ class Search
 	 *
 	 * @returns the HTML of the form
 	 */
-	public function display_form($current_edition)
+	public function display_form($current_edition = null)
 	{
+		$law = new Law(array('db' => $this->db));
+		$lawCount = $law->count($current_edition);
+
+		$structure = new Structure(array('db' => $this->db));
+		$structureCount = $structure->count($current_edition);
 
 		$this->form = '
 			<div class="ui-widget search">
 				<form method="get" action="/search/">
+						<p>
+							Search ' . $lawCount . ' laws and ' . $structureCount . ' structures:
+						</p>
 					<div class="form_field">
 					<input type="text" name="q" id="q" ';
 		if (!empty($this->query))

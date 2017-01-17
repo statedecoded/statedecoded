@@ -1307,6 +1307,28 @@ class Law
 	}
 
 	/**
+	 * Get count of all laws.
+	 *
+	 * param int  $edition_id The edition to query.
+	 */
+
+	public function count($edition_id = null)
+	{
+		$query_args = array();
+		$query = 'SELECT count(*) AS count FROM laws ';
+		if($edition_id)
+		{
+			$query .= 'WHERE edition_id = :edition_id ';
+			$query_args[':edition_id'] = $edition_id;
+		}
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($query_args);
+
+		return (int) $statement->fetchColumn();
+	}
+
+	/**
 	 * A stripped down version of the get_law() function.  Used by the Autolinker.
 	 */
 	public function get_matching_sections($section, $edition_id, $fields = array())

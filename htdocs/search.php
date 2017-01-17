@@ -12,6 +12,8 @@
  *
  */
 
+global $db;
+
 /*
  * Intialize Solarium and instruct it to use the correct request handler.
  */
@@ -47,7 +49,7 @@ $content->set('javascript', "var api_key = '" . API_KEY . "';");
  * Create a new instance of our search class. We use this to display the search form and the result
  * page numbers.
  */
-$search = new Search();
+$search = new Search(array('db' => $db));
 
 /*
  * If a search is being submitted.
@@ -172,13 +174,19 @@ if (!empty($_GET['q']))
 		/*
 		 * Iterate through the results.
 		 */
-		global $db;
 		$law = new Law(array('db' => $db));
-		$struct = new Structure();
+		$struct = new Structure(array('db' => $db));
+		$edition = new Edition(array('db' => $db));
 		$permalink_obj = new Permalink(array('db' => $db));
+
+		$edition_cache = array();
 
 		foreach ($results->get_results() as $result)
 		{
+			if(!isset($edition_cache[$result->edition_id])) {
+				$edition_cache[$result->edition_id] = $edition->find_by_id($result->edition_id);
+			}
+
 			if($result->object_type === 'law') {
 				$law->law_id = $result->id;
 				$law->get_law();
