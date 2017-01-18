@@ -1,0 +1,53 @@
+.pinned-laws {
+  a {
+    @include background-image(image-url("nav-icons/nav_pinned.svg"));
+    &:hover {
+      @include background-image(image-url("nav-icons/nav_pinned-hover.svg"));
+    }
+  }
+}
+.pinned-modal {
+  .close {
+    float: right;
+    @extend .fa;
+    @extend .fa-close;
+
+    .label {
+      @extend %visually-hidden;
+    }
+  }
+  .pin-law {
+    font-size: 18px;
+    &:hover {
+      font-size: 18px;
+    }
+  }
+}
+
+.pin-law,
+.pin-law:link,
+.pin-law:hover,
+.pin-law:visited {
+  @extend .fa;
+  @extend .fa-thumb-tack;
+  text-decoration: none;
+  font-size: 25px;
+  float: right;
+  color: $gray-darker;
+  margin-right: 10px;
+
+  @include transition(all 0.1s linear);
+
+  span {
+    @extend %visually-hidden;
+  }
+
+  &:hover {
+    color: $base-light;
+  }
+
+  &.pinned {
+    color: $base-light;
+    @include rotate(45deg);
+  }
+}
