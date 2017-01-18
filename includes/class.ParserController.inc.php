@@ -633,7 +633,7 @@ class ParserController
 			 * We are deleting instead of truncating, to handle foreign keys.
 			 */
 			$sql = 'DELETE FROM ' . $table . ' WHERE edition_id = :edition_id';
-			$sql_args = array(':edition_id' => $this->edition_id);
+			$sql_args = array(':edition_id' => $edition_id);
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -646,9 +646,6 @@ class ParserController
 
 			$this->logger->message('Deleted ' . $table, 5);
 		}
-
-		$this->logger->message('Clearing search index', 5);
-		$this->clear_index($edition_id);
 
 		return TRUE;
 	}
