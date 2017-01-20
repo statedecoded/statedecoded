@@ -33,8 +33,8 @@ class PermalinkController extends BaseController
 			try {
 				if (class_exists($object_name) !== FALSE)
 				{
-
 					$controller = new $object_name($this->local);
+
 					return $controller->handle($route);
 				}
 			}

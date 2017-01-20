@@ -96,6 +96,7 @@ class ParserController
 		{
 			$this->downloads_url = '/downloads/';
 		}
+		$this->downloads_dir = join_paths(array(realpath($this->downloads_dir)));
 	}
 
     // {{{ init_logger()
@@ -445,8 +446,8 @@ class ParserController
 	public function set_edition($edition)
 	{
 		$this->edition = $edition;
-		$this->downloads_dir .= $edition->slug . '/';
-		$this->downloads_url .= $edition->slug . '/';
+		$this->downloads_dir = join_paths(array($this->downloads_dir, $edition->slug));
+		$this->downloads_url = join_paths(array($this->downloads_url, $edition->slug));
 	}
 
 
@@ -655,6 +656,9 @@ class ParserController
 			$this->logger->message('Deleted ' . $table, 5);
 		}
 
+		$this->logger->message('Clearing search index', 5);
+		$this->clear_index($edition_id);
+
 		return TRUE;
 	}
 
@@ -735,13 +739,15 @@ class ParserController
 			/*
 			 * Iterate through the files.
 			 */
-			$this->logger->message('Importing the law files in the import-data directory', 3);
+			$this->logger->message('Importing the law files in the import-data directory', 5);
 
 			while ($section = $parser->iterate())
 			{
 				$parser->section = $section;
-				$parser->parse();
-				$parser->store();
+				if ($parser->parse() === TRUE)
+				{
+					$parser->store();
+				}
 			}
 
 			if(method_exists($parser, 'post_parse'))
@@ -815,8 +821,6 @@ class ParserController
 
 			$this->logger->message('Analyzed and stored law codification histories', 3);
 
-			$this->logger->message('Analyzed and stored law codification histories', 3);
-
 		}
 
 		/*
@@ -830,7 +834,7 @@ class ParserController
 		 * The depth of the structure is the number of entries in the structure labels,
 		 * minus one for 'section'.
 		 */
-		$structure_depth = count($parser->get_structure_labels())-1;
+		$structure_depth = count($parser->get_structure_labels($this->edition_id))-1;
 
 		$select = array();
 		$from = array();
@@ -1208,8 +1212,6 @@ class ParserController
 
 			$this->logger->message('Created downloads “current” symlink', 4);
 
-			$this->logger->message('Created downloads “current” symlink', 4);
-
 		}
 
 		$this->logger->message('All bulk download files were exported', 5);
@@ -1387,6 +1389,7 @@ class ParserController
 					/*
 					 * Instruct the Law class on what, specifically, it should retrieve.
 					 */
+					$laws->config = new stdClass();
 					$laws->config->get_text = TRUE;
 					$laws->config->get_structure = TRUE;
 					$laws->config->get_amendment_attempts = FALSE;
@@ -1701,6 +1704,8 @@ class ParserController
 								$this->logger->message('Could not write law XML files', 9);
 								break;
 							}
+							
+							$this->logger->message('Wrote file "'. $xml_dir . $filename . '.xml' .'"', 1);
 
 						}
 
@@ -1735,23 +1740,28 @@ class ParserController
 		/*
 		 * If we cannot write files to the downloads directory, then we can't export anything.
 		 */
-		if (is_writable($this->downloads_dir) === FALSE)
+		try
+		{
+			foreach (array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
+			{
+
+				$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
+
+				/*
+				* If the JSON directory doesn't exist, create it.
+				*/
+				$this->mkdir($this->downloads_dir . $data_dir);
+
+			}
+
+		}
+		catch (Exception $e)
 		{
 			$this->logger->message('Error: ' . $this->downloads_dir . ' could not be written to, so bulk
 				download files could not be exported', 10);
+			$this->rmdir($this->downloads_dir);
+
 			return FALSE;
-		}
-
-		foreach (array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
-		{
-
-			$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
-
-			/*
-			 * If the JSON directory doesn't exist, create it.
-			 */
-			$this->mkdir($this->downloads_dir . $data_dir);
-
 		}
 
 		$this->logger->message('Created output directories for bulk download files', 5);
@@ -1784,6 +1794,23 @@ class ParserController
 			{
 				$this->logger->message('Cannot write to "' . $dir . '"', 10);
 			}
+
+	}
+
+	public function rmdir($dir)
+	{
+
+			/*
+			 * If the directory exists, remove it.
+			 */
+			if (file_exists($dir))
+			{
+				if (!rmdir($dir))
+				{
+					$this->logger->message('Cannot remove directory "' . $dir . '"', 10);
+				}
+			}
+
 	}
 
 	/**
@@ -1875,8 +1902,6 @@ class ParserController
 		 * Save the resulting file.
 		 */
 		file_put_contents($sitemap_file, $xml->asXML());
-
-		$this->logger->message('Created sitemap.xml', 3);
 
 		$this->logger->message('Created sitemap.xml', 3);
 
@@ -2016,8 +2041,6 @@ class ParserController
 
 		$this->logger->message('Generated structural statistics', 3);
 
-		$this->logger->message('Generated structural statistics', 3);
-
 	} // end structural_stats_generate()
 
 
@@ -2109,6 +2132,23 @@ class ParserController
 		{
 			$this->logger->message('PHP Data Objects (PDO) must have a MySQL driver enabled', 10);
 			$error = TRUE;
+		}
+
+		/*
+		 * Make sure that the database user has proper permissions.
+		 */
+		$this->db->exec('CREATE VIEW sd_test_view AS SELECT 1');
+		$err = $this->db->errorInfo();
+		if ($err[0] !== '00000' && $err[0] !== '01000') {
+				$this->logger->message('MySQL user does not have permission to create views.', 10);
+				$error = TRUE;
+		}
+
+		$this->db->exec('DROP VIEW sd_test_view');
+		$err = $this->db->errorInfo();
+		if ($err[0] !== '00000' && $err[0] !== '01000') {
+				$this->logger->message('MySQL user does not have permission to drop views.', 10);
+				$error = TRUE;
 		}
 
 		/*
@@ -2284,6 +2324,31 @@ class ParserController
 				}
 			}
 
+			// Store our structures in the index.
+			$struct_obj = new Structure(array('db' => $this->db));
+			$result = $struct_obj->get_all($this->edition->id, true);
+
+			while($struct = $result->fetch())
+			{
+				// Get the full data of the structure.
+				$document = new Structure(array('db' => $this->db));
+				$document->structure_id = $struct['id'];
+				$document->get_current();
+
+				// Bring over our edition info.
+				$document->edition = $this->edition;
+
+				try
+				{
+					$search_index->add_document($document);
+				}
+				catch (Exception $error)
+				{
+					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
+					return FALSE;
+				}
+			}
+
 			$search_index->commit();
 
 			// $this->logger->message('Indexing structures', 6);
@@ -2299,49 +2364,26 @@ class ParserController
 
 	public function clear_index($edition_id = null)
 	{
-
-		if (!defined('SOLR_URL'))
+		if(defined('SEARCH_CONFIG'))
 		{
-			return TRUE;
-		}
+			$search_index = new SearchIndex(
+				array(
+					'config' => json_decode(SEARCH_CONFIG, TRUE)
+				)
+			);
+			if($search_index->delete($edition_id)) {
 
-		if(isset($edition_id))
-		{
-			$sql = 'SELECT * FROM editions WHERE id = :edition_id';
-			$sql_args = array(':edition_id' => 'edition');
-			$statement = $this->db->prepare($sql);
-			$result = $statement->execute($sql_args);
-			if ($result === FALSE || $statement->rowCount() == 0)
-			{
-				throw new Exception('No such edition id:'. int($edition_id), E_USER_ERROR);
-				return FALSE;
+				$message = 'Search index cleared.';
+				if($edition_id) {
+					$message = 'Search index cleared for edition.';
+				}
+
+				$this->logger->message($message, 5);
 			}
-
-			$edition = $statement->fetchColumn('name');
-
-			$query = 'edition:' . $edition;
-
+			else {
+				$this->logger->message('Unable to clear search index.', 5);
+			}
 		}
-		else
-		{
-			$query = '*:*';
-		}
-		$request = '<delete><query>' . $query . '</query></delete>';
-
-		if ( !$this->handle_solr_request($request) )
-		{
-			return FALSE;
-		}
-
-		$request = '<optimize />';
-		if ( !$this->handle_solr_request($request) )
-		{
-			return FALSE;
-		}
-
-		$this->logger->message('Solr cleared of all indexed laws', 5);
-
-		$this->logger->message('Solr cleared of all indexed laws', 5);
 
 		return TRUE;
 

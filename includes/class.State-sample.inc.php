@@ -154,7 +154,7 @@ class State
 		}
 
 		// Assemble the URL for our query to the CourtListener API.
-		$url = 'https://www.courtlistener.com/api/rest/v1/search/?q="'
+		$url = 'https://www.courtlistener.com/api/rest/v3/search/?q="'
 			. urlencode($this->section_number) . '"&court=ca4,vaeb,vawb,vaed,vawd,va,vactapp'
 			. '&order_by=score+desc&format=json';
 
@@ -187,7 +187,7 @@ class State
 
 		// If no results were found, save an empty variable. In this way we cache a lack of court
 		// decisions that cite a given section.
-		if ($cl_list->meta->total_count == 0)
+		if ($cl_list->count === 0)
 		{
 
 			$this->decisions = '';
@@ -203,7 +203,7 @@ class State
 
 			// Iterate through the decisions and assign the first 10 to $this->decisions.
 			$i=0;
-			foreach ($cl_list->objects as $opinion)
+			foreach ($cl_list->results as $opinion)
 			{
 
 				if ($i == 10)
@@ -212,17 +212,17 @@ class State
 				}
 
 				// Port the fields that we need from $opinion to $this->decisions.
-				if (html_entity_decode(strlen(strip_tags($opinion->case_name))) > 60)
+				if (html_entity_decode(strlen(strip_tags($opinion->caseName))) > 60)
 				{
-					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->case_name)), 60))) . ' . . . ';
+					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))) . ' . . . ';
 				}
 				else
 				{
-					$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->case_name));
+					$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->caseName));
 				}
-				$this->decisions->{$i}->case_number = $opinion->case_number;
-				$this->decisions->{$i}->citation = $opinion->citation;
-				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->date_filed));
+				$this->decisions->{$i}->case_number = $opinion->docketNumber;
+				$this->decisions->{$i}->citation = $opinion->citation[0];
+				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->dateFiled));
 				$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
 				$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
 
@@ -248,6 +248,10 @@ class State
 		// Store these decisions in the metadata table.
 		$law = new Law();
 		$law->section_id = $this->section_id;
+		if (!isset($law->metadata->{0}))
+		{
+			$law->metadata->{0} = new stdClass();
+		}
 		$law->metadata->{0}->key = 'court_decisions';
 		$law->metadata->{0}->value = json_encode($this->decisions);
 		$law->store_metadata();
@@ -290,6 +294,7 @@ class Parser
 	public $scope_indicators = array(
 		' are used in this ',
 		'when used in this ',
+		'as used in this ',
 		'for purposes of this ',
 		'for the purposes of this ',
 		'for the purpose of this ',
@@ -782,9 +787,9 @@ class Parser
 			{
 				$insert_data = array(
 					':object_type' => 'structure',
-					':relational_id' => '',
-					':identifier' => '',
-					':token' => '',
+					':relational_id' => null,
+					':identifier' => null,
+					':token' => '/browse/',
 					':url' => '/browse/',
 					':edition_id' => $edition_id,
 					':preferred' => $preferred,
@@ -797,9 +802,9 @@ class Parser
 
 			$insert_data = array(
 				':object_type' => 'structure',
-				':relational_id' => '',
-				':identifier' => '',
-				':token' => '',
+				':relational_id' => null,
+				':identifier' => null,
+				':token' => '/browse/',
 				':url' => '/' . $edition->slug . '/',
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
@@ -1528,13 +1533,16 @@ class Parser
 			/*
 			 * Determine the position of this structural unit.
 			 */
-			$structure = array_reverse($this->get_structure_labels());
+			$structure = array_reverse($this->get_structure_labels($this->edition_id));
 			array_push($structure, 'global');
 
 			/*
 			 * Find and return the position of this structural unit in the hierarchical stack.
 			 */
-			$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
+			$dictionary->scope_specificity = array_search(
+				strtolower($dictionary->scope),
+				array_map('strtolower', $structure)
+			);
 
 			/*
 			 * Store these definitions in the database.
@@ -1785,7 +1793,7 @@ class Parser
 	 */
 	function extract_definitions($text, $structure_labels)
 	{
-		$scope = 'global';
+		$scope = 'section';
 
 		if (!isset($text))
 		{
@@ -1817,7 +1825,7 @@ class Parser
 		}
 		else
 		{
-			$this->text = str_replace("\n", "\r", $text);
+			$text = str_replace("\n", "\r", $text);
 			$paragraphs = explode("\r", $text);
 		}
 
@@ -1919,6 +1927,11 @@ class Parser
 							$scope = end($structure_labels);
 
 						}
+
+						/*
+						 * Make sure the scope is lowercase.
+						 */
+						$scope = strtolower($scope);
 
 					}
 
@@ -2114,6 +2127,11 @@ class Parser
 		}
 
 		/*
+		 * Make sure the scope is lowercase, as sometimes it is not.
+		 */
+		$scope = strtolower($scope);
+
+		/*
 		 * Make the list of definitions a subset of a larger variable, so that we can store things
 		 * other than terms.
 		 */
@@ -2149,7 +2167,7 @@ class Parser
 		 */
 		if (!isset($this->structure_id))
 		{
-			$this->structure_id = 'NULL';
+			$this->structure_id = null;
 		}
 
 		/*
@@ -2439,10 +2457,13 @@ class Parser
 
 	} // end extract_history()
 
-	public function get_structure_labels()
+	public function get_structure_labels($edition_id = null)
 	{
-		$sql = 'SELECT label FROM structure GROUP BY label ' .
-			'ORDER BY depth ASC';
+		$sql = 'SELECT DISTINCT label, depth FROM structure ';
+		if($edition_id) {
+			$sql .= 'WHERE edition_id = ' . $edition_id . ' ';
+		}
+		$sql .= 'ORDER BY depth ASC';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
@@ -2467,10 +2488,12 @@ class Parser
 			else{
 				while($row = $statement->fetch(PDO::FETCH_ASSOC))
 				{
-					$structure_labels[] = $row['label'];
+					$structure_labels[$row['depth']] = $row['label'];
 				}
 			}
 		}
+
+		$structure_labels = array_values($structure_labels);
 
 		/*
 		 * Our lowest level, not represented in the structure table, is 'section'

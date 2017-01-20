@@ -70,6 +70,11 @@ class StateDecoded2013__Page extends Page
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),
+		'jquery_inview' => array(
+			'path' => '/js/vendor/jquery.inview.min.js',
+			'type' => 'javascript',
+			'requires' => array('jquery')
+		),
 		'polyfiller' => array(
 			'path' => '/js/vendor/js-webshim/minified/polyfiller.js',
 			'type' => 'javascript'

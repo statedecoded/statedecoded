@@ -45,6 +45,7 @@ class Dictionary
 		{
 		
 			$heritage = new Law;
+			$heritage->config = new stdClass();
 			$heritage->config->get_structure = TRUE;
 
 			if (isset($this->section_number))

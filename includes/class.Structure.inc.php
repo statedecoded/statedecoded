@@ -14,6 +14,24 @@
 
 class Structure
 {
+	protected $db;
+
+	public function __construct($args = array())
+	{
+		foreach($args as $key=>$value)
+		{
+			$this->$key = $value;
+		}
+
+		/*
+		 * We're going to need access to the database connection throughout this class.
+		 */
+		if(!isset($this->db))
+		{
+			global $db;
+			$this->db = $db;
+		}
+	}
 
 	/**
 	 * Takes a URL, returns an object all about that structural component. This isn't for laws,
@@ -179,6 +197,8 @@ class Structure
 		 */
 		$structure_row = $statement->fetch(PDO::FETCH_OBJ);
 
+		$this->edition_id = $structure_row->edition_id;
+
 		/*
 		 * Pivot this into a multidimensional object. That is, it's presently stored in multiple
 		 * columns in a single row, but we want it in multiple rows, one per hierarchical level.
@@ -188,7 +208,6 @@ class Structure
 
 		foreach($structure_row as $key => $value)
 		{
-
 			$value = stripslashes($value);
 
 			/*
@@ -231,6 +250,9 @@ class Structure
 			$structure->{$prefix-1}->$key = $value;
 
 		}
+
+		$permalink_obj = new Permalink(array('db' => $db));
+		$this->permalink = $permalink_obj->get_permalink($this->structure_id, 'structure', $this->edition_id);
 
 		/*
 		 * Get all of the associated permalinks.
@@ -916,7 +938,35 @@ class Structure
 		}
 
 		return $laws;
+	}
 
+	/**
+	 * Get ids of all of the laws for a given edition.
+	 *
+	 * param int  $edition_id The edition to query.
+	 * param bool $result_handle_only Get the results or just return the handle.
+	 *                                This is useful when we don't have much memory.
+	 */
+	public function get_all($edition_id, $result_handle_only = false)
+	{
+		$query_args = array(
+			':edition_id' => $edition_id
+		);
+		$query = 'SELECT structure.id
+			FROM structure
+			WHERE edition_id = :edition_id';
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($query_args);
+
+		if($result_handle_only)
+		{
+			return $statement;
+		}
+		else
+		{
+			return $statement->fetchAll();
+		}
 	}
 
 }

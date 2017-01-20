@@ -60,7 +60,7 @@ class Law
 		 * Define the level of detail that we want from this method. By default, we return
 		 * everything that we have for this law.
 		 */
-		if ( !isset($this->config) || ($this->config->get_all == TRUE) )
+		if ( !isset($this->config) || ( (isset($this->config->get_all)) && ($this->config->get_all == TRUE) ) )
 		{
 			$this->config->get_text = TRUE;
 			$this->config->get_structure = TRUE;
@@ -255,6 +255,18 @@ class Law
 			$struct = new Structure;
 
 			/*
+			 * Provide the edition ID so that we know which edition to query.
+			 */
+			if (isset($this->edition_id))
+			{
+				$struct->edition_id = $this->edition_id;
+			}
+			else
+			{
+				$struct->edition_id = EDITION_ID;
+			}
+
+			/*
 			 * Our structure ID provides a starting point to identify this law's ancestry.
 			 */
 			$struct->id = $this->structure_id;
@@ -322,7 +334,7 @@ class Law
 		/*
 		 * Gather any tags applied to this law.
 		 */
-		if ($this->config->get_tags == TRUE)
+		if ( isset($this->config->get_tags) && ($this->config->get_tags == TRUE) )
 		{
 			$sql = 'SELECT text
 					FROM tags
@@ -402,6 +414,15 @@ class Law
 					}
 				}
 			}
+
+			/*
+			 * If we've cached the fact that there are no court decisions.
+			 */
+			if ( isset($this->court_decisions->{0}) && $this->court_decisions->{0} == FALSE )
+			{
+				unset($this->court_decisions);
+			}
+			
 		}
 
 		/*
@@ -547,7 +568,7 @@ class Law
 		 * Get a listing of IDs, section numbers, and catch lines.
 		 */
 		$sql = 'SELECT DISTINCT laws.id, laws.section AS section_number,
-			laws.catch_line FROM laws ';
+			laws.catch_line, laws.order_by FROM laws ';
 		if($to)
 		{
 			$sql .= 'INNER JOIN laws_references
@@ -610,56 +631,12 @@ class Law
 	 */
 	### TODO fix references to this.
 	### TODO replace the body of this with a call to Permalink.
-	public function get_url($law_id, $edition_id = null, $permalink = false)
+	public function get_url($law_id, $edition_id = null)
 	{
-
-		/*
-		 * If a section number hasn't been passed to this function, then there's nothing to do.
-		 */
-		if (empty($law_id))
-		{
-			return FALSE;
-		}
-
-		/*
-		 * Set the default edition.
-		 */
-		if (empty($edition_id))
-		{
-			$edition_obj = new Edition(array('db' => $this->db));
-			$edition = $edition_obj->current();
-			$edition_id = $edition_object->id;
-		}
-
-		$sql = 'SELECT *
-				FROM permalinks
-				WHERE object_type="law"
-				AND relational_id = :law_id';
-
-		$sql_args = array(
-			':law_id' => $law_id
-		);
-
-		if($permalink === true)
-		{
-			$sql .= ' AND permalink = 1';
-		}
-		else {
-			$sql .= ' AND preferred = 1';
-		}
-
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
-		{
-			return FALSE;
-		}
-
-		$permalink = $statement->fetch(PDO::FETCH_OBJ);
+		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink = $permalink_obj->get_permalink($law_id, 'law', $edition_id);
 
 		return $permalink;
-
 	}
 
 
@@ -1023,7 +1000,7 @@ class Law
 			/*
 			 * Highlight any search terms.
 			 */
-			if($_GET['q'])
+			if (!empty($_GET['q']))
 			{
 				$query = str_replace('"', '', $_GET['q']);
 				$query = explode(' ', $query);

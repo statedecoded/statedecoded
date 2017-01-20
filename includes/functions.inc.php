@@ -509,6 +509,29 @@ function renameElement($element, $newName)
 }
 
 /*
+ * Handle paths, trims extra trailing slashes.
+ * By default, adds a trailing slash.
+ */
+
+function join_paths($paths, $no_trailing_slash = false)
+{
+	foreach($paths as $key => $value)
+	{
+		$paths[$key] = rtrim($value, DIRECTORY_SEPARATOR);
+	}
+
+	$return_path = rtrim(
+		join(DIRECTORY_SEPARATOR, $paths),
+		DIRECTORY_SEPARATOR);
+
+	if(!$no_trailing_slash)
+	{
+		$return_path .= DIRECTORY_SEPARATOR;
+	}
+	return $return_path;
+}
+
+/*
  * Recursively get all files
  */
 function get_files($path, $files = array())

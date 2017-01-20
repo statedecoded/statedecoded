@@ -105,8 +105,8 @@ $content->set('browser_title', $law->catch_line . ' (' . SECTION_SYMBOL . ' '
 /*
  * Define the page title.
  */
-$content->set('page_title', '<h1>' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</h1>');
-$content->append('page_title', '<h2>' . $law->catch_line . '</h2>');
+$content->set('page_title', '<span id="section_id">' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</span>');
+$content->append('page_title', '<span id="catch_line">' . $law->catch_line . '</span>');
 
 /*
  * If we have Dublin Core metadata, display it.
@@ -235,7 +235,7 @@ $body .= '</article>';
  * Display links to representational variants of the text of this law.
  */
 $formats = array('doc' => 'Word doc', 'epub' => 'ePub', 'json' => 'JSON', 'pdf' => 'PDF',
-	'rtf' => 'Rich Text Format', 'txt' => 'Plain Text');
+	'rtf' => 'Rich Text Format', 'txt' => 'Plain Text', 'xml' => 'XML');
 $body .= '<section id="rep_variant">
 			<h2>Download</h2>
 				<ul>';
