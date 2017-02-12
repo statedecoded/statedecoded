@@ -565,8 +565,6 @@ class ParserController
 	public function clear_db()
 	{
 
-		$this->logger->message('Clearing out the database', 5);
-
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
 			'tags', 'text_sections', 'structure', 'permalinks', 'laws_meta');
 		foreach ($tables as $table)
@@ -588,7 +586,7 @@ class ParserController
 				die();
 			}
 
-			$this->logger->message('Deleted ' . $table, 5);
+			$this->logger->message('Deleted all records from ' . $table, 5);
 
 		}
 
@@ -633,7 +631,7 @@ class ParserController
 			 * We are deleting instead of truncating, to handle foreign keys.
 			 */
 			$sql = 'DELETE FROM ' . $table . ' WHERE edition_id = :edition_id';
-			$sql_args = array(':edition_id' => $this->edition_id);
+			$sql_args = array(':edition_id' => $edition_id);
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -646,9 +644,6 @@ class ParserController
 
 			$this->logger->message('Deleted ' . $table, 5);
 		}
-
-		$this->logger->message('Clearing search index', 5);
-		$this->clear_index($edition_id);
 
 		return TRUE;
 	}
@@ -680,7 +675,7 @@ class ParserController
 	public function parse()
 	{
 
-		$this->logger->message('Beginning the import process', 5);
+		$this->logger->message('Starting file parsing.', 5);
 
 		/*
 		 * Create a new instance of Parser.
@@ -731,6 +726,7 @@ class ParserController
 			 * Iterate through the files.
 			 */
 			$this->logger->message('Importing the law files in the import-data directory', 5);
+			$this->logger->progress('parsefiles');
 
 			while ($section = $parser->iterate())
 			{
@@ -739,7 +735,10 @@ class ParserController
 				{
 					$parser->store();
 				}
+				$this->logger->updateProgressFiles('parsefiles', $parser->file,  count($parser->files));
 			}
+
+			$this->logger->finishProgress('parsefiles');
 
 			if(method_exists($parser, 'post_parse'))
 			{
@@ -809,8 +808,6 @@ class ParserController
 				}
 
 			}
-
-			$this->logger->message('Analyzed and stored law codification histories', 3);
 
 		}
 
@@ -1066,6 +1063,10 @@ class ParserController
 	 * There are a handful of bulk downloads that are created. This gathers up the data and creates
 	 * those files. It also creates the downloads directory, if it doesn't exist.
 	 */
+
+	public $export_count;
+	public $export_progress;
+
 	public function export()
 	{
 
@@ -1077,7 +1078,22 @@ class ParserController
 		 * Begin the process of exporting each section.
 		 * We start at the top, with no parents.
 		 */
+		$this->logger->progress('exportfiles');
+
+		// Figure out how many files we're dealing with.
+		$sql = 'SELECT COUNT(*) AS count FROM laws WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $this->edition_id);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result !== FALSE && $statement->rowCount() > 0)
+		{
+			$this->export_count = (int) $statement->fetchColumn();
+		}
+
 		$this->export_structure();
+
+		$this->logger->finishProgress('exportfiles');
 
 		/*
 		 * Zip up all of the JSON files into a single file. We do this via exec(), rather than
@@ -1214,7 +1230,7 @@ class ParserController
 	 */
 	public function export_structure($parent_id = null)
 	{
-		$structure_sql = '	SELECT structure_unified.*
+		$structure_sql = 'SELECT structure_unified.*
 							FROM structure
 							LEFT JOIN structure_unified
 								ON structure.id = structure_unified.s1_id';
@@ -1695,13 +1711,16 @@ class ParserController
 								$this->logger->message('Could not write law XML files', 9);
 								break;
 							}
-							
+
 							$this->logger->message('Wrote file "'. $xml_dir . $filename . '.xml' .'"', 1);
 
 						}
 
 					} // end the $law exists condition
 
+					$this->export_progress++;
+
+					$this->logger->updateProgressFiles('exportfiles', $this->export_progress * 3, $this->export_count * 3);
 				} // end the while() law iterator
 			} // end the $laws condition
 
@@ -1864,6 +1883,10 @@ class ParserController
 			/*
 			 * Instruct the Law class on what, specifically, it should retrieve. (Very little.)
 			 */
+			if(!isset($laws->config))
+			{
+				$laws->config = new stdClass();
+			}
 			$laws->config->get_all = FALSE;
 			$laws->config->get_text = FALSE;
 			$laws->config->get_structure = FALSE;
@@ -2015,7 +2038,7 @@ class ParserController
 			$structure_temp->structure_id = $structure_id;
 			$structure_temp->get_current();
 
-			if(!isset($structure_temp->metadata))
+			if(!isset($structure_temp->metadata) || empty($structure_temp->metadata))
 			{
 				$structure_temp->metadata = new stdClass();
 			}
@@ -2048,6 +2071,7 @@ class ParserController
 		 */
 		$struct = new Structure();
 		$struct->id = $this->structure_id;
+		$struct->edition_id = $this->edition_id;
 		$child_structures = $struct->list_children();
 		$child_laws = $struct->list_laws();
 
@@ -2193,7 +2217,7 @@ class ParserController
 		 */
 		if (is_writable(WEB_ROOT . '/sitemap.xml') !== TRUE)
 		{
-			$this->logger->message('sitemap.xml must be writable by the server', 3);
+			$this->logger->message('sitemap.xml must be writable by the server', 10);
 			$error = TRUE;
 		}
 
@@ -2202,7 +2226,7 @@ class ParserController
 		 */
 		if (is_writable(WEB_ROOT . '/.htaccess') !== TRUE)
 		{
-			$this->logger->message('.htaccess must be writable by the server', 3);
+			$this->logger->message('.htaccess must be writable by the server', 10);
 			$error = TRUE;
 		}
 
@@ -2255,7 +2279,7 @@ class ParserController
 	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
 	 * instead, we do this via cURL.
 	 */
-	public function index_laws($args)
+	public function index_laws($args = array())
 	{
 		if(!isset($this->edition))
 		{
@@ -2299,6 +2323,10 @@ class ParserController
 				// Get the full data of the actual law.
 				$document = new Law(array('db' => $this->db));
 				$document->law_id = $law['id'];
+				if(!isset($document->config))
+				{
+					$document->config = new stdClass();
+				}
 				$document->config->get_all = TRUE;
 				$document->get_law();
 				// Bring over our edition info.

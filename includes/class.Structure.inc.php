@@ -969,4 +969,26 @@ class Structure
 		}
 	}
 
+
+	/**
+	 * Get count of structures.
+	 *
+	 * param int  $edition_id The edition to query.
+	 */
+	public function count($edition_id, $result_handle_only = false)
+	{
+		$query_args = array();
+		$query = 'SELECT count(*) AS count FROM structure ';
+		if($edition_id)
+		{
+			$query .= 'WHERE edition_id = :edition_id ';
+			$query_args[':edition_id'] = $edition_id;
+		}
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($query_args);
+
+		return (int) $statement->fetchColumn();
+	}
+
 }
