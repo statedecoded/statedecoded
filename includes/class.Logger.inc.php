@@ -135,4 +135,60 @@ class Logger
 
 	// }}}
 
+	/*
+	 * Render a progressbar.
+	 */
+	public function progress($name) {
+		if($this->html === TRUE)
+		{
+			echo '<div class="progress">
+			  <div class="progress-bar progress-bar-striped active"
+			  	role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"
+			  	style="width: 0%" id="progress_' . $name .'">
+			    	<span>0% Complete</span>
+			  </div>
+			</div>';
+
+			flush();
+			if(ob_get_length())
+			{
+				ob_flush();
+			}
+		}
+	}
+
+	public function updateProgressFiles($name, $current, $total)
+	{
+		$amount = (int) ($current / $total * 100);
+		$text = 'File ' . $current . ' of ' . $total;
+		$this->updateProgress($name, $amount, $text);
+	}
+
+	public function updateProgress($name, $amount, $text = '')
+	{
+		if($text === '') {
+			$text = $amount . '%';
+		}
+		echo '<script>
+			$("#progress_' . $name .'").css("width", "' . $amount .'%");
+			$("#progress_' . $name .' span").text("'. $text .'");
+		';
+		if($amount == 100) {
+			echo '$("#progress_' . $name .'").removeClass("active");';
+		}
+		echo '</script>';
+		flush();
+		if(ob_get_length())
+		{
+			ob_flush();
+		}
+	}
+
+	public function finishProgress($name)
+	{
+		echo '<script>
+			$("#progress_' . $name .'").removeClass("active");
+		</script>';
+	}
+
 }
