@@ -565,8 +565,6 @@ class ParserController
 	public function clear_db()
 	{
 
-		$this->logger->message('Clearing out the database', 5);
-
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
 			'tags', 'text_sections', 'structure', 'permalinks', 'laws_meta');
 		foreach ($tables as $table)
@@ -588,7 +586,7 @@ class ParserController
 				die();
 			}
 
-			$this->logger->message('Deleted ' . $table, 5);
+			$this->logger->message('Deleted all records from ' . $table, 5);
 
 		}
 
