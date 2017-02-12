@@ -831,6 +831,63 @@ class Law
 
 	}
 
+	/**
+	 * Query laws by metadata.
+	 *
+	 * Usage:
+	 * $lawobj = new Law(array('db' => $db));
+	 * $lawobj->edition_id = 12;
+	 * $data = $lawobj->query_metadata('repealed', 'n', 10, 10);
+	 */
+	public function query_metadata($field, $value = null, $limit = null, $offset = null) {
+		$sql = 'SELECT laws_meta.meta_key, laws_meta.meta_value, laws.id
+				FROM laws_meta
+				LEFT JOIN laws ON laws_meta.law_id = laws.id
+				WHERE meta_key = :meta_key ';
+		$sql_args = array(
+			':meta_key' => $field
+		);
+
+		if(isset($this->edition_id)) {
+			$sql .= 'AND laws.edition_id = :edition_id ';
+			$sql_args[':edition_id'] = $this->edition_id;
+		}
+
+		if($value)
+		{
+			$sql .= 'AND meta_value = :meta_value ';
+			$sql_args[':meta_value'] = $value;
+		}
+
+		if($limit)
+		{
+			$sql .= 'LIMIT ' . $limit . ' ';
+		}
+		if($offset)
+		{
+			$sql .= 'OFFSET ' . $offset . ' ';
+		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		/*
+		 * If the query fails, or if no results are found, return false -- no sections refer to this
+		 * one.
+		 */
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Return the result as an object.
+		 */
+		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
+
+		return $metadata;
+	}
+
 
 	/**
 	 * When provided with a section number, it indicates whether that section exists. This is
