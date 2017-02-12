@@ -382,7 +382,10 @@ elseif ($_POST['action'] == 'test_environment')
  */
 if (isset($_GET['noframe']))
 {
-	echo $body;
+	if(isset($body))
+	{
+		echo $body;
+	}
 }
 
 else
@@ -470,7 +473,7 @@ function show_admin_forms($args = array())
 			<div class="option">
 				<input type="radio" class="radio" name="edition_option"
 					id="edition_option_new" value="new"';
-	if (!$editions || $args['edition_option'] == 'existing')
+	if (!$editions || (isset($args['edition_option']) && $args['edition_option'] == 'existing'))
 	{
 		$body .= 'checked="checked"';
 	}
@@ -508,7 +511,7 @@ function show_admin_forms($args = array())
 	{
 		$body .= 'disabled="disabled"';
 	}
-	elseif ($args['edition_option'] == 'existing')
+	elseif (isset($args['edition_option']) && $args['edition_option'] == 'existing')
 	{
 		$body .= 'checked="checked"';
 	}
@@ -525,7 +528,7 @@ function show_admin_forms($args = array())
 		foreach($editions as $edition)
 		{
 			$body .= '<option value="' . $edition->id . '"';
-			if ($args['edition'] == $edition->id)
+			if (isset($args['edition']) && $args['edition'] == $edition->id)
 			{
 				$body .= ' select="selected"';
 			}
@@ -578,8 +581,9 @@ function show_admin_forms($args = array())
 						<option value="">All Data</option>';
 		foreach($editions as $edition)
 		{
+
 			$body .= '<option value="' . $edition->id . '"';
-			if ($args['edition'] == $edition->id)
+			if (isset($args['edition']) && $args['edition'] == $edition->id)
 			{
 				$body .= ' select="selected"';
 			}
@@ -588,7 +592,7 @@ function show_admin_forms($args = array())
 			{
 				$body .= ' [current]';
 			}
-			$boduy .= '</option>';
+			$body .= '</option>';
 		}
 
 		$body .= '</select>

@@ -630,6 +630,10 @@ class Parser
 				 */
 				if ( !empty( $this->code->section->{$this->i}->text ) )
 				{
+					if(!isset($this->code->text))
+					{
+						$this->code->text = '';
+					}
 					$this->code->text .= (string) $subsection['prefix'] . ' '
 						. trim((string) $subsection) . "\r\r";
 				}
