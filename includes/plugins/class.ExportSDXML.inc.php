@@ -99,7 +99,7 @@ class ExportSDXML extends Export
 		 * Set the edition.
 		 */
 		$edition = $dom->createElement('edition');
-		$edition->appendChild($dom->createTextNode($this->edition->name));
+		$edition->appendChild($dom->createTextNode($law->edition->name));
 
 		$edition_url = $dom->createAttribute('url');
 		$edition_url->value = '';
@@ -107,19 +107,19 @@ class ExportSDXML extends Export
 		{
 			$edition_url->value = SITE_URL;
 		}
-		$edition_url->value .= '/' . $this->edition->slug . '/';
+		$edition_url->value .= '/' . $law->edition->slug . '/';
 		$edition->appendChild($edition_url);
 
 		$edition_id = $dom->createAttribute('id');
-		$edition_id->value = $this->edition->id;
+		$edition_id->value = $law->edition->id;
 		$edition->appendChild($edition_id);
 
 		$edition_last_updated = $dom->createAttribute('last_updated');
-		$edition_last_updated->value = date('Y-m-d', strtotime($this->edition->last_import));
+		$edition_last_updated->value = date('Y-m-d', strtotime($law->edition->last_import));
 		$edition->appendChild($edition_last_updated);
 
 		$edition_current = $dom->createAttribute('current');
-		$edition_current->value = $this->edition->current ? 'TRUE' : 'FALSE';
+		$edition_current->value = $law->edition->current ? 'TRUE' : 'FALSE';
 		$edition->appendChild($edition_current);
 
 		$law_dom->insertBefore($edition, $catch_line);

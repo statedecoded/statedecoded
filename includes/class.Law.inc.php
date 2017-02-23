@@ -31,6 +31,12 @@ class Law
 			global $db;
 			$this->db = $db;
 		}
+
+		if (!isset($this->config) || !is_object($this->config) )
+		{
+			$this->config = new StdClass();
+			$this->config->get_all = TRUE;
+		}
 	}
 
 	/**
@@ -472,22 +478,11 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-		$sql = 'SELECT url, token
-				FROM permalinks
-				WHERE relational_id = :id
-				AND object_type = :object_type';
-		$statement = $this->db->prepare($sql);
 
-		$sql_args = array(
-			':id' => $this->section_id,
-			':object_type' => 'law'
-		);
+		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink = $permalink_obj->get_preferred($this->section_id, 'law', $this->edition_id);
 
-		$result = $statement->execute($sql_args);
-
-		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
-		{
-			$permalink = $statement->fetch(PDO::FETCH_OBJ);
+		if($permalink) {
 			$this->url = $permalink->url;
 			$this->token = $permalink->token;
 		}
@@ -500,9 +495,12 @@ class Law
 			$this->formats = new StdClass();
 		}
 
-		$this->formats->txt = substr($this->url, 0, -1) . '.txt';
-		$this->formats->json = substr($this->url, 0, -1) . '.json';
-		$this->formats->xml = substr($this->url, 0, -1) . '.xml';
+		if(isset($this->url))
+		{
+			$this->formats->txt = substr($this->url, 0, -1) . '.txt';
+			$this->formats->json = substr($this->url, 0, -1) . '.json';
+			$this->formats->xml = substr($this->url, 0, -1) . '.xml';
+		}
 
 		/*
 		 * Create metadata in the Dublin Core format.
@@ -833,6 +831,63 @@ class Law
 
 	}
 
+	/**
+	 * Query laws by metadata.
+	 *
+	 * Usage:
+	 * $lawobj = new Law(array('db' => $db));
+	 * $lawobj->edition_id = 12;
+	 * $data = $lawobj->query_metadata('repealed', 'n', 10, 10);
+	 */
+	public function query_metadata($field, $value = null, $limit = null, $offset = null) {
+		$sql = 'SELECT laws_meta.meta_key, laws_meta.meta_value, laws.id
+				FROM laws_meta
+				LEFT JOIN laws ON laws_meta.law_id = laws.id
+				WHERE meta_key = :meta_key ';
+		$sql_args = array(
+			':meta_key' => $field
+		);
+
+		if(isset($this->edition_id)) {
+			$sql .= 'AND laws.edition_id = :edition_id ';
+			$sql_args[':edition_id'] = $this->edition_id;
+		}
+
+		if($value)
+		{
+			$sql .= 'AND meta_value = :meta_value ';
+			$sql_args[':meta_value'] = $value;
+		}
+
+		if($limit)
+		{
+			$sql .= 'LIMIT ' . $limit . ' ';
+		}
+		if($offset)
+		{
+			$sql .= 'OFFSET ' . $offset . ' ';
+		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		/*
+		 * If the query fails, or if no results are found, return false -- no sections refer to this
+		 * one.
+		 */
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Return the result as an object.
+		 */
+		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
+
+		return $metadata;
+	}
+
 
 	/**
 	 * When provided with a section number, it indicates whether that section exists. This is
@@ -902,7 +957,8 @@ class Law
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
-		if (USE_GENERIC_TERMS !== TRUE)
+		$dictionary->edition_id = $this->edition_id;
+		if (!defined('USE_GENERIC_TERMS') || constant('USE_GENERIC_TERMS') !== TRUE)
 		{
 			$dictionary->generic_terms = FALSE;
 		}
@@ -1304,6 +1360,28 @@ class Law
 		{
 			return $statement->fetchAll();
 		}
+	}
+
+	/**
+	 * Get count of all laws.
+	 *
+	 * param int  $edition_id The edition to query.
+	 */
+
+	public function count($edition_id = null)
+	{
+		$query_args = array();
+		$query = 'SELECT count(*) AS count FROM laws ';
+		if($edition_id)
+		{
+			$query .= 'WHERE edition_id = :edition_id ';
+			$query_args[':edition_id'] = $edition_id;
+		}
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($query_args);
+
+		return (int) $statement->fetchColumn();
 	}
 
 	/**

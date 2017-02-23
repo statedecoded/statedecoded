@@ -410,6 +410,11 @@ class Parser
 			$filename = $this->files[$i];
 
 			/*
+			 * Increment our placeholder counter.
+			 */
+			$this->file++;
+
+			/*
 			 * Determine data type and import
 			 */
 			// TODO : Make this smarter.  We can use the PECL Fileinfo package
@@ -429,13 +434,10 @@ class Parser
 
 				// TODO: Fix this.
 				default:
+					$this->logger->message('Skipping unknown file type "' . $filename .'"', 5);
 					// Anything else, we can't handle.
+					continue 2;
 			}
-
-			/*
-			 * Increment our placeholder counter.
-			 */
-			$this->file++;
 
 			/*
 			 * Send this object back, out of the iterator.
@@ -630,6 +632,10 @@ class Parser
 				 */
 				if ( !empty( $this->code->section->{$this->i}->text ) )
 				{
+					if(!isset($this->code->text))
+					{
+						$this->code->text = '';
+					}
 					$this->code->text .= (string) $subsection['prefix'] . ' '
 						. trim((string) $subsection) . "\r\r";
 				}
