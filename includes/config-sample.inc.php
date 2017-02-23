@@ -26,6 +26,11 @@ if (!defined('INCLUDE_PATH'))
 set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
 
 /*
+ * Path to our plugins.
+ */
+set_include_path( get_include_path() . PATH_SEPARATOR . INCLUDE_PATH . 'plugins/' );
+
+/*
  * What is the title of the website?
  */
 define('SITE_TITLE', 'The State Decoded');
@@ -255,12 +260,14 @@ define('VERSION', '0.81');
 
 /*
  * Enabled plugins.
- * Add our plugins to the include path.
  */
 
-define('PLUGINS', json_encode(array()));
-
-set_include_path( get_include_path() . PATH_SEPARATOR . INCLUDE_PATH . 'plugins/' );
+define('PLUGINS', json_encode(array(
+	'ExportJSON',
+	'ExportText',
+	'ExportSDXML'
+	// 'ExportUSLM',
+)));
 
 /*
  * If you want to enable Disqus <http://www.disqus.com/> commenting for every law, register for
