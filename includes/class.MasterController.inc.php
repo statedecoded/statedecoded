@@ -18,7 +18,6 @@ class MasterController
 
 	protected $router;
 	protected $db;
-	protected $events;
 	protected $cache;
 
 	public function __construct($args = array())
@@ -26,11 +25,6 @@ class MasterController
 		foreach($args as $key => $value)
 		{
 			$this->$key = $value;
-		}
-
-		if(!isset($this->events))
-		{
-			$this->events = new EventManager;
 		}
 
 		if(!isset($this->router))
@@ -46,7 +40,6 @@ class MasterController
 		 */
 		$local_data = array(
 			'db' => $this->db,
-			'events' => $this->events,
 			'cache' => $this->cache
 		);
 
@@ -98,12 +91,7 @@ class MasterController
 			list($url, $query_string) = explode('?', $url);
 		}
 
-		$this->events->trigger('parseRequest', $url, $this->router);
-
 		list($handler, $args) = $router->getRoute($url);
-
-		$this->events->trigger('postParsedRequest', $url, $this->router,
-			$handler, $args);
 
 		return array($handler, $args);
 

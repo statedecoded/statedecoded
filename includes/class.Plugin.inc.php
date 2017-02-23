@@ -37,10 +37,19 @@ abstract class Plugin
 	 * );
 	 */
 
+	public function __construct($args = array())
+	{
+		foreach($args as $key => $value)
+		{
+			$this->$key = $value;
+		}
+	}
+
 	/*
 	 * Gets a list of this plugin's listeners.
 	 */
-	public function register() {
+	public function register()
+	{
 		$classname = get_called_class();
 		$wrapped_listeners = array();
 

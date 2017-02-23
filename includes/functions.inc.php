@@ -513,21 +513,27 @@ function renameElement($element, $newName)
  * By default, adds a trailing slash.
  */
 
-function join_paths($paths, $no_trailing_slash = false)
+function join_paths()
 {
+	$args = func_get_args();
+	$paths = array();
+
+	foreach($args as $arg) {
+		if(is_array($arg)) {
+			$paths = array_merge($paths, $arg);
+		}
+		else {
+			$paths[] = $arg;
+		}
+	}
+
 	foreach($paths as $key => $value)
 	{
 		$paths[$key] = rtrim($value, DIRECTORY_SEPARATOR);
 	}
 
-	$return_path = rtrim(
-		join(DIRECTORY_SEPARATOR, $paths),
-		DIRECTORY_SEPARATOR);
+	$return_path = join(DIRECTORY_SEPARATOR, array_filter($paths));
 
-	if(!$no_trailing_slash)
-	{
-		$return_path .= DIRECTORY_SEPARATOR;
-	}
 	return $return_path;
 }
 
@@ -561,6 +567,29 @@ function get_files($path, $files = array())
 	}
 
 	return $files;
+}
+
+/*
+ * Recursively remove directories. Checks for Windows or not-Windows.
+ */
+function remove_dir($dir)
+{
+	if(defined('PHP_WINDOWS_VERSION_MAJOR'))
+	{
+		return system('rd /Q /S "' . $dir . '"');
+	}
+	else
+	{
+		return system('/bin/rm -rf ' . escapeshellarg($dir));
+	}
+}
+
+/*
+ * Recursively create directories
+ */
+function mkdir_safe($dir)
+{
+	return mkdir($dir, 0755, true);
 }
 
 /*

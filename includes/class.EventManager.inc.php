@@ -17,7 +17,7 @@
 class EventManager
 {
 	public $events = array();
-	public $logger;
+	public $services = array();
 
 	public function __construct($args = array(), $plugins = false)
 	{
@@ -61,11 +61,14 @@ class EventManager
 		$this->events[$name][] = $method;
 	}
 
-	 public function trigger($name, &$args)
+	public function trigger()
 	{
+		$args = func_get_args();
+		$name = array_shift($args);
+
 		if(isset($this->events[$name]))
 		{
-			foreach($this->events[$name] as $listener_name => $listener)
+			foreach($this->events[$name] as $i => $listener)
 			{
 				$this->callListener($listener, $args);
 			}
@@ -88,7 +91,7 @@ class EventManager
 			else
 			{
 				list($classname, $method) = $listener;
-				$class = new $classname();
+				$class = new $classname($this->services);
 			}
 
 			call_user_func_array(array($class, $method), $args);
@@ -118,5 +121,13 @@ class EventManager
 			return FALSE;
 		}
 		return count($this->events[$name]);
+	}
+
+	/*
+	 * Dependency injection for our plugins.
+	 */
+	public function registerService($name, &$object)
+	{
+		$this->services[$name] = $object;
 	}
 }
