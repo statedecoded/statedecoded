@@ -19,6 +19,8 @@ abstract class Export extends Plugin
 {
 	public $listeners = array(
 		'exportLaw',
+		// 'exportStructure', // Not enabled by default
+		// 'exportDictionary', // Not enabled by default
 		'finishExport'
 	);
 
@@ -34,10 +36,14 @@ abstract class Export extends Plugin
 		return $path;
 	}
 
-	public function clearExportDir($path) {
+	public function clearExportDir($path)
+	{
 		remove_dir($path);
 	}
 
+	/*
+	 * Law export
+	 */
 	public function writeLawFile($filename, $data)
 	{
 		$this->logger->message("Writing $filename<br>", 1);
@@ -49,12 +55,13 @@ abstract class Export extends Plugin
 		list($this->path, $this->filename) = $this->getLawPaths($law, $dir);
 
 		$this->createExportDir($this->path);
-		$this->writeLawFile(
-			join_paths($this->path, $this->filename),
-			$this->formatLawForExport($law)
-		);
 
-		return TRUE;
+		$filename = join_paths($this->path, $this->filename);
+		$content = $this->formatLawForExport($law);
+
+		$this->writeLawFile($filename, $content);
+
+		return array($filename, $content);
 	}
 
 	public function formatLawForExport($law)
@@ -73,6 +80,48 @@ abstract class Export extends Plugin
 
 		$path = join_paths($dir, 'code-' . $this->format, $tokens);
 		$filename = $filebase . $this->extension;
+
+		return array($path, $filename);
+	}
+
+	/*
+	 * Structure export
+	 */
+	public function writeStructureFile($filename, $data)
+	{
+		$this->logger->message("Writing $filename<br>", 1);
+		file_put_contents($filename, $data);
+	}
+
+	public function exportStructure($structure, $laws, $dir)
+	{
+		list($this->path, $this->filename) = $this->getStructurePaths($structure, $dir);
+
+		$this->createExportDir($this->path);
+
+		$filename = join_paths($this->path, $this->filename);
+		$content = $this->formatStructureForExport($structure, $laws);
+
+		$this->writeStructureFile($filename, $content);
+
+		return array($filename, $content);
+	}
+
+	public function formatStructureForExport($structure, $laws = array())
+	{
+		return var_export($structure, true);
+	}
+
+	public function getStructurePaths($structure, $dir)
+	{
+		/*
+		 * Remove colons, etc. from tokens, since some OSes can't handle these.
+		 */
+		$token = str_replace(':', '_', $structure->permalink->token);
+		$tokens = explode('/', $token);
+
+		$path = join_paths($dir, 'code-' . $this->format, $tokens);
+		$filename = 'index' . $this->extension;
 
 		return array($path, $filename);
 	}
@@ -110,6 +159,7 @@ abstract class Export extends Plugin
 		 * Define the filename for our dictionary.
 		 */
 		$filename = 'dictionary' . $this->extension;
+		$content = $this->formatDictionaryForExport($dictionary);
 
 		$zip_filename = join_paths($downloads_dir, $filename . '.zip');
 
@@ -117,8 +167,7 @@ abstract class Export extends Plugin
 
 		if($zip)
 		{
-			$zip->addFromString($filename,
-				$this->formatDictionaryForExport($dictionary));
+			$zip->addFromString($filename, $content);
 
 			$zip->close();
 		}
@@ -127,6 +176,8 @@ abstract class Export extends Plugin
 		}
 
 		$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
+
+		return array($filename, $content);
 	}
 
 	public function generateZip($zip_filename)
@@ -151,7 +202,11 @@ abstract class Export extends Plugin
 		return $zip;
 	}
 
-	public function addDirectoryToZip(&$zip, $directory)
+	/*
+	 * Recursively add a directory to a Zip archive.
+	 * Takes an optional $prefix to prepend to the path inside the zip file.
+	 */
+	public function addDirectoryToZip(&$zip, $directory, $prefix = false)
 	{
 		$files = new RecursiveIteratorIterator(
 			new RecursiveDirectoryIterator($directory),
@@ -165,6 +220,11 @@ abstract class Export extends Plugin
 				// Get real and relative path for current file
 				$filePath = $file->getRealPath();
 				$relativePath = substr($filePath, strlen($directory) + 1);
+
+				if($prefix)
+				{
+					$relativePath = join_paths($prefix, $relativePath);
+				}
 
 				// Add current file to archive
 				$zip->addFile($filePath, $relativePath);

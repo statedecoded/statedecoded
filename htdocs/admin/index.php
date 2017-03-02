@@ -54,8 +54,7 @@ $parser = new ParserController(
 	array(
 		'logger' => $logger,
 		'db' => &$db,
-		'import_data_dir' => IMPORT_DATA_DIR,
-		'events' => $events
+		'import_data_dir' => IMPORT_DATA_DIR
 	)
 );
 

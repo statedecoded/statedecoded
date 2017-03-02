@@ -1202,42 +1202,11 @@ class ParserController
 		 */
 		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
 		{
+			$structure = new Structure();
+			$structure->edition_id = $this->edition_id;
+			$structure->structure_id = $item['s1_id'];
+			$structure->get_current();
 
-			/*
-			 * Figure out the URL for this structural unit by iterating through the "identifier"
-			 * columns in this row.
-			 */
-			$identifier_parts = array();
-
-			foreach ($item as $key => $value)
-			{
-				if (preg_match('/s[0-9]_identifier/', $key) == 1)
-				{
-					/*
-					 * Higher-level structural elements (e.g., titles) will have blank columns in
-					 * structure_unified, so we want to omit any blank values. Because a valid
-					 * structural unit identifier is "0" (Virginia does this), we check the string
-					 * length, rather than using empty().
-					 */
-					if (strlen($value) > 0)
-					{
-						$identifier_parts[] = urlencode($value);
-					}
-				}
-			}
-			$identifier_parts = array_reverse($identifier_parts);
-			$token = implode('/', $identifier_parts);
-
-			/*
-			 * This is slightly different from how we handle permalinks since we don't want to
-			 * overwrite files if current has changed.
-			 */
-
-			$url = '/';
-			if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
-			{
-				$url .= $token . '/';
-			}
 			/*
 			 * Now we can use our data to build the child law identifiers
 			 */
@@ -1269,32 +1238,15 @@ class ParserController
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 			$laws_result = $laws_statement->execute( $laws_args );
 
+			$laws = array();
+
 			if ($laws_result !== FALSE && $laws_statement->rowCount() > 0)
 			{
 
 				/*
-				 * Set a flag telling us that we may write XML.
-				 */
-				$write_xml = TRUE;
-
-				/*
-				 * Create a new instance of the Parser class, so that we have access to its
-				 * get_structure_labels() method.
-				 */
-				$parser = new Parser(
-					array(
-						'db' => $this->db,
-						'logger' => $this->logger,
-						'edition_id' => $this->edition_id,
-						'downloads_dir' => $this->downloads_dir,
-						'downloads_url' => $this->downloads_url
-					)
-				);
-
-				/*
 				 * Create a new instance of the class that handles information about individual laws.
 				 */
-				$laws = new Law();
+				$law_object = new Law();
 
 				/*
 				 * Iterate through every section number, to pass to the Laws class.
@@ -1305,40 +1257,52 @@ class ParserController
 					/*
 					 * Instruct the Law class on what, specifically, it should retrieve.
 					 */
-					$laws->config = new stdClass();
-					$laws->config->get_text = TRUE;
-					$laws->config->get_structure = TRUE;
-					$laws->config->get_amendment_attempts = FALSE;
-					$laws->config->get_court_decisions = TRUE;
-					$laws->config->get_metadata = TRUE;
-					$laws->config->get_references = TRUE;
-					$laws->config->get_related_laws = TRUE;
+					$law_object->config = new stdClass();
+					$law_object->config->get_text = TRUE;
+					$law_object->config->get_structure = TRUE;
+					$law_object->config->get_amendment_attempts = FALSE;
+					$law_object->config->get_court_decisions = TRUE;
+					$law_object->config->get_metadata = TRUE;
+					$law_object->config->get_references = TRUE;
+					$law_object->config->get_related_laws = TRUE;
+					$law_object->config->render_html = TRUE;
 
 					/*
 					 * Pass the requested section number to Law.
 					 */
-					$laws->law_id = $section->id;
-					$laws->edition_id = $this->edition_id;
+					$law_object->law_id = $section->id;
+					$law_object->edition_id = $this->edition_id;
 
 					unset($law, $section);
 
 					/*
 					 * Get a list of all of the basic information that we have about this section.
 					 */
-					$law = $laws->get_law();
+					$law = $law_object->get_law();
 
-					if ($law !== FALSE)
+					if ($law !== FALSE && is_object($law))
 					{
 						$law->edition = $this->edition;
-						$this->events->trigger('exportLaw', $law, $this->downloads_dir);
-
 					} // end the $law exists condition
 
-					$this->export_progress++;
-
-					$this->logger->updateProgressFiles('exportfiles', $this->export_progress * 3, $this->export_count * 3);
+					$laws[] = clone($law);
 				} // end the while() law iterator
 			} // end the $laws condition
+
+			/*
+			 * Rearrange our logic a bit, so that we export structures *before* laws.
+			 * However, we still need the list of laws for the structure export, so
+			 * this must be a separate loop.
+			 */
+			$this->events->trigger('exportStructure', $structure, $laws, $this->downloads_dir);
+
+			foreach($laws as $law)
+			{
+				$this->events->trigger('exportLaw', $law, $this->downloads_dir);
+
+				$this->export_progress++;
+				$this->logger->updateProgressFiles('exportfiles', $this->export_progress, $this->export_count);
+			}
 
 			$this->export_structure($item['s1_id']);
 

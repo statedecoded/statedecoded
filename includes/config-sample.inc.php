@@ -265,8 +265,19 @@ define('VERSION', '0.81');
 define('PLUGINS', json_encode(array(
 	'ExportJSON',
 	'ExportText',
-	'ExportSDXML'
+	'ExportSDXML',
+	'ExportHTML',
+	// USLM export isn't 100% working yet. Don't use this.
 	// 'ExportUSLM',
+
+	// The following exports must come after ExportHTML, as they use the html files.
+	// Pandoc *must* be installed to run these!
+	// 'ExportWord',
+	// 'ExportEpub',
+
+	// pdflatex and pandoc are both needed to export PDFs!
+	// PDF generation is *VERY* slow, so you might not want this.
+	// 'ExportPDF'
 )));
 
 /*

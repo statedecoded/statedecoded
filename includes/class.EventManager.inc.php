@@ -38,6 +38,11 @@ class EventManager
 		{
 			$this->includePlugins($plugins);
 		}
+
+		/*
+		 * Always give plugins access to call their own events.
+		 */
+		$this->services['events'] = &$this;
 	}
 
 	public function includePlugins($plugins)

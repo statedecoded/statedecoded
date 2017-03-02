@@ -589,7 +589,10 @@ function remove_dir($dir)
  */
 function mkdir_safe($dir)
 {
-	return mkdir($dir, 0755, true);
+	if(!is_dir($dir))
+	{
+		return mkdir($dir, 0755, true);
+	}
 }
 
 /*
