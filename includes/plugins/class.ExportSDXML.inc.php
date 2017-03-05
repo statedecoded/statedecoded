@@ -14,12 +14,16 @@
 
 class ExportSDXML extends Export
 {
+	public $public_name = 'XML';
 	public $format = 'xml';
 	public $extension = '.xml';
+	public $description = 'This is the basic data about every law, one XML file per law. These are formatted using the <a href="http://docs.statedecoded.com/xml-format.html">State Decoded XML format</a>';
 
 	public $listeners = array(
 		'exportLaw',
-		'finishExport'
+		'finishExport',
+		'postGetLaw',
+		'showBulkDownload'
 	);
 
 	public function formatLawForExport($law_original)

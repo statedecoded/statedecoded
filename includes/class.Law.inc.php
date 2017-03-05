@@ -15,6 +15,9 @@
 class Law
 {
 	protected $db;
+	protected $events;
+
+	public $formats;
 
 	public function __construct($args = array())
 	{
@@ -37,6 +40,8 @@ class Law
 			$this->config = new StdClass();
 			$this->config->get_all = TRUE;
 		}
+
+		$this->events = new EventManager();
 	}
 
 	/**
@@ -428,7 +433,7 @@ class Law
 			{
 				unset($this->court_decisions);
 			}
-			
+
 		}
 
 		/*
@@ -488,21 +493,6 @@ class Law
 		}
 
 		/*
-		 * List the URLs for the textual formats in which this section is available.
-		 */
-		if(!isset($this->formats))
-		{
-			$this->formats = new StdClass();
-		}
-
-		if(isset($this->url))
-		{
-			$this->formats->txt = substr($this->url, 0, -1) . '.txt';
-			$this->formats->json = substr($this->url, 0, -1) . '.json';
-			$this->formats->xml = substr($this->url, 0, -1) . '.xml';
-		}
-
-		/*
 		 * Create metadata in the Dublin Core format.
 		 */
 		$this->dublin_core = new stdClass();
@@ -538,8 +528,19 @@ class Law
 			$this->plain_text .=  "\n" . wordwrap('HISTORY: ' . $this->history, 80, "\n", TRUE);
 		}
 
+		/*
+		 * Get our edition.
+		 */
+		$edition_obj = new Edition();
+		$this->edition =$edition_obj->find_by_id($this->edition_id);
+
 		$law = $this;
 		unset($law->config);
+
+		/*
+		 * Call our hooks.
+		 */
+		$this->events->trigger('postGetLaw', $law);
 
 		return $law;
 

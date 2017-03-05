@@ -17,11 +17,18 @@ class ExportText extends Export
   public $listeners = array(
     'exportLaw',
     'exportStructure',
-    'finishExport'
+    'finishExport',
+    'postGetLaw',
+    'showBulkDownload'
   );
 
-  public $format = 'txt';
+  public $public_name = 'Plain Text';
+  public $format = 'text';
   public $extension = '.txt';
+  public $description = 'This is the basic data about every law, one plain text
+    file per law. Note that any sections that contain colons (e.g.,
+    § 8.01-581.12:2) have an underscore in place of the colon in the filename,
+    because neither Windows nor Mac OS support colons in filenames.';
 
   public function formatLawForExport($law)
   {

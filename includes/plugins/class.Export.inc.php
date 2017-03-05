@@ -21,14 +21,41 @@ abstract class Export extends Plugin
 		'exportLaw',
 		// 'exportStructure', // Not enabled by default
 		// 'exportDictionary', // Not enabled by default
-		'finishExport'
+		'finishExport',
+		'postGetLaw',
+		'showBulkDownload'
 	);
 
+	/*
+	 * The name to display on pages.
+	 */
+	public $public_name = 'Raw Data';
+
+	/*
+	 * The internal name for the directories, etc.
+	 */
 	public $format = 'data';
+
+	/*
+	 * The file extension to use for this type.
+	 */
 	public $extension = '.data';
 
-	// The export should not prescribe paths,
-	// it should just add its own
+	/*
+	 * A general description for the bulk download for this type. Used on the
+	 * Downloads page.
+	 */
+	public $description = 'A generic data file type.';
+
+	/*
+	 * A description for the dictionary download for this type. Used on the
+	 * Downloads page.
+	 */
+	public $dictionary_description = 'All terms defined in the laws, with each
+			term’s definition, the section in which it is defined, and the scope
+			(section, chapter, title, global) of that definition.';
+
+
 	public function createExportDir($path)
 	{
 		mkdir_safe($path);
@@ -71,10 +98,9 @@ abstract class Export extends Plugin
 
 	public function getLawPaths($law, $dir)
 	{
-		/*
-		 * Remove colons, etc. from tokens, since some OSes can't handle these.
-		 */
-		$token = str_replace(':', '_', $law->token);
+		// Trim the beginning and trailing slash from our URL
+		$token = trim($law->url, '/');
+
 		$tokens = explode('/', $token);
 		$filebase = array_pop($tokens);
 
@@ -114,14 +140,29 @@ abstract class Export extends Plugin
 
 	public function getStructurePaths($structure, $dir)
 	{
-		/*
-		 * Remove colons, etc. from tokens, since some OSes can't handle these.
-		 */
-		$token = str_replace(':', '_', $structure->permalink->token);
-		$tokens = explode('/', $token);
+		if(constant('LAW_LONG_URLS'))
+		{
+			/*
+			 * Remove colons, etc. from tokens, since some OSes can't handle these.
+			 */
+			$token = str_replace(':', '_', $structure->permalink->token);
+			$tokens = explode('/', $token);
 
-		$path = join_paths($dir, 'code-' . $this->format, $tokens);
-		$filename = 'index' . $this->extension;
+			$path = join_paths($dir, 'code-' . $this->format, $tokens);
+			$filename = 'index' . $this->extension;
+		}
+		else
+		{
+			// Structures need particular handling for short urls.
+
+			// Trim the beginning and trailing slash from our URL
+			$token = trim($structure->permalink->url, '/');
+
+			$token = str_replace('/', '_', $token);
+
+			$path = join_paths($dir, 'code-' . $this->format);
+			$filename = $token . $this->extension;
+		}
 
 		return array($path, $filename);
 	}
@@ -131,9 +172,9 @@ abstract class Export extends Plugin
 	 */
 	public function finishExport($downloads_dir)
 	{
-		$filename = 'code-' . $this->format;
+		$filename = $this->getFullDownloadName();
 
-		$zip_filename = join_paths($downloads_dir, $filename . '.zip');
+		$zip_filename = join_paths($downloads_dir, $filename);
 
 		$zip = $this->generateZip($zip_filename);
 
@@ -148,6 +189,10 @@ abstract class Export extends Plugin
 		}
 	}
 
+	public function getFullDownloadName() {
+		return 'code-' . $this->format . '.zip';
+	}
+
 	/*
 	 * We don't create dictionaries for every format, but we include the code so
 	 * this is easier for those that do.
@@ -158,7 +203,7 @@ abstract class Export extends Plugin
 		/*
 		 * Define the filename for our dictionary.
 		 */
-		$filename = 'dictionary' . $this->extension;
+		$filename = $this->getDictionaryDownloadName();
 		$content = $this->formatDictionaryForExport($dictionary);
 
 		$zip_filename = join_paths($downloads_dir, $filename . '.zip');
@@ -178,6 +223,10 @@ abstract class Export extends Plugin
 		$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
 
 		return array($filename, $content);
+	}
+
+	public function getDictionaryDownloadName() {
+		return 'dictionary' . $this->extension;
 	}
 
 	public function generateZip($zip_filename)
@@ -231,4 +280,50 @@ abstract class Export extends Plugin
 			}
 		}
 	}
+	/*
+	 * Set this as an available format to download.
+	 */
+	public function postGetLaw(&$law)
+	{
+		if(isset($law->url))
+		{
+			$url = '/downloads/' . $law->edition->slug . '/code-' . $this->format .
+				'/' . trim($law->url, '/') . $this->extension;
+
+			$law->formats[] = array(
+				'name' => $this->public_name,
+				'format' => $this->format,
+				'url' => $url
+			);
+		}
+	}
+
+	/*
+	 * Show a blurb and download link on the Downloads page. This should only be
+	 * used for export types that have the entire code in one file (usually
+	 * created in finishExport).
+	 */
+	public function showBulkDownload($slug = 'current') {
+		$filename = $this->getFullDownloadName();
+		$url = '/downloads/' . $slug . '/' . $filename;
+
+		$content = '<h2>Laws as ' . $this->public_name . '</h2>
+			<a href="' . $url . '">' . $filename . '</a>
+			<p>' . $this->description . '</p>
+			';
+		// If we have an exported dictionary, show that here too.
+		if(in_array('exportDictionary', $this->listeners) !== FALSE)
+		{
+			$dictionary_filename = $this->getDictionaryDownloadName();
+			$dictionary_url = '/downloads/' . $slug . '/' . $dictionary_filename;
+
+			$content .= '<h2>Dictionary as ' . $this->public_name . '</h2>
+				<a href="' . $dictionary_url . '">' . $dictionary_filename . '</a>
+				<p>' . $this->dictionary_description . '</p>
+				';
+		}
+
+		return $content;
+	}
+
 }

@@ -19,11 +19,18 @@ class ExportHTML extends Export
 	public $listeners = array(
 		'exportLaw',
 		'exportStructure',
-		'finishExport'
+		'finishExport',
+		'postGetLaw',
+		'showBulkDownload'
 	);
 
+	public $public_name = 'HTML';
 	public $format = 'html';
 	public $extension = '.html';
+	public $description = 'This is the basic data about every law, one HTML
+    file per law. Note that any sections that contain colons (e.g.,
+    § 8.01-581.12:2) have an underscore in place of the colon in the filename,
+    because neither Windows nor Mac OS support colons in filenames.';
 
 	/*
 	 * Keep a list of what we've exported, in order.

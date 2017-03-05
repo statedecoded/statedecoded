@@ -73,10 +73,12 @@ class EventManager
 
 		if(isset($this->events[$name]))
 		{
+			$results = array();
 			foreach($this->events[$name] as $i => $listener)
 			{
-				$this->callListener($listener, $args);
+				$results[] = $this->callListener($listener, $args);
 			}
+			return $results;
 		}
 	}
 
@@ -99,11 +101,28 @@ class EventManager
 				$class = new $classname($this->services);
 			}
 
-			call_user_func_array(array($class, $method), $args);
+			/*
+			 * Handle PHP's weird dereferencing.
+			 * Without this, variables are not passed by reference to plugin functions.
+			 */
+			$ref = array();
+			foreach($args as $key => $value)
+			{
+				if(is_object($value))
+				{
+					$ref[$key] = &$args[$key];
+				}
+				else
+				{
+					$ref[$key] = $value;
+				}
+			}
+
+			return call_user_func_array(array($class, $method), $ref);
 		}
 		else
 		{
-			call_user_func_array($listener, $args);
+			return call_user_func_array($listener, $args);
 		}
 	}
 

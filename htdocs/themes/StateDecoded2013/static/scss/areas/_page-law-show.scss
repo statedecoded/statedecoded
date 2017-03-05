@@ -97,6 +97,7 @@
     }
 
       #section_id {
+        display: block;
         font-family: $statedecoded-stack1;
         font-size: 65%;
         font-variant: small-caps;
@@ -542,4 +543,32 @@ $border-radius-base: 6px;
     //@extend .nav-justified;
     //@extend .nav-tabs-justified;
   }
+}
+
+// Downloads
+// -------------------------
+.file-download a {
+  display: inline-block;
+  padding-top: 38px;
+  background: transparent url('../images/icon_generic_32.png') no-repeat top center;
+}
+
+.file-text a {
+  background-image: url('../images/icon_txt_32.png');
+}
+
+.file-json a {
+  background-image: url('../images/icon_json_32.png');
+}
+
+.file-doc a {
+  background-image: url('../images/icon_doc_32.png');
+}
+
+.file-epub a {
+  background-image: url('../images/icon_epub_32.png');
+}
+
+.file-pdf a {
+  background-image: url('../images/icon_pdf_32.png');
 }

@@ -13,12 +13,16 @@
 
 class ExportWord extends PandocExport
 {
-	public $format = 'docx';
+	public $public_name = 'MS Word';
+	public $format = 'doc';
 	public $extension = '.docx';
+  public $description = 'All of the laws in one large Word Doc.';
 
 	public $listeners = array(
 		'HTMLExportLaw',
 		'HTMLExportStructure',
-		'HTMLFinishExport'
+		'HTMLFinishExport',
+		'postGetLaw',
+    'showBulkDownload'
 	);
 }

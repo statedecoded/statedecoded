@@ -13,12 +13,16 @@
 
 class ExportEpub extends PandocExport
 {
+  public $public_name = 'EPUB';
 	public $format = 'epub';
 	public $extension = '.epub';
+  public $description = 'All of the laws in one large EPUB file.';
 
 	public $listeners = array(
 		'HTMLExportLaw',
 		'HTMLExportStructure',
-		'HTMLFinishExport'
+		'HTMLFinishExport',
+    'postGetLaw',
+    'showBulkDownload'
 	);
 }

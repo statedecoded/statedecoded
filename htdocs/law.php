@@ -239,10 +239,10 @@ $formats = array('doc' => 'Word doc', 'epub' => 'ePub', 'json' => 'JSON', 'pdf' 
 $body .= '<section id="rep_variant">
 			<h2>Download</h2>
 				<ul>';
-foreach ($law->formats as $type => $url)
+foreach ($law->formats as $format)
 {
-	$body .= '<li><a href="' . $url . '"><img src="/themes/StateDecoded2013/static/images/icon_'
-		. $type . '_32.png" alt="' . $formats[$type] . '"></a></li>';
+	$body .= '<li class="file-download file-' . $format['format'] . '">
+		<a href="' . $format['url'] . '">' . $format['name'] . '</a></li>';
 }
 $body .= '
 				</ul>

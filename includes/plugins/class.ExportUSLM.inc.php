@@ -14,6 +14,7 @@
 
 class ExportUSLM extends Export
 {
+	public $public_name = 'USLM XML';
 	public $format = 'uslm';
 	public $extension = '.uslm.xml';
 

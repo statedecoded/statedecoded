@@ -252,17 +252,7 @@ class Structure
 		}
 
 		$permalink_obj = new Permalink(array('db' => $db));
-		$this->permalink = $permalink_obj->get_permalink($this->structure_id, 'structure', $this->edition_id);
-
-		/*
-		 * Get all of the associated permalinks.
-		 */
-		$sql = 'SELECT permalinks.* FROM permalinks ' .
-			'WHERE object_type = :object_type AND ' .
-			'permalinks.relational_id = :id AND ' .
-			'permalinks.preferred = 1';
-
-		$statement = $db->prepare($sql);
+		$this->permalink = $permalink_obj->get_preferred($this->structure_id, 'structure', $this->edition_id);
 
 		/*
 		 * Reverse the order of the elements of this object and place it in the scope of $this.
@@ -287,21 +277,10 @@ class Structure
 				 */
 				$this->structure->{$j}->level = $j+1;
 
-				$sql_args = array(
-					':object_type' => 'structure',
-					':id' => $structure->{$i}->id
-				);
-				$result = $statement->execute($sql_args);
+				$temp_permalink = $permalink_obj->get_preferred($structure->{$i}->id, 'structure', $this->edition_id);
 
-				if ( ($result === FALSE) || ($statement->rowCount() == 0) )
-				{
-					return FALSE;
-				}
-				$permalink = $statement->fetch(PDO::FETCH_OBJ);
-
-				$this->structure->{$j}->url = $permalink->url;
-				$this->structure->{$j}->token = $permalink->token;
-
+				$this->structure->{$j}->url = $temp_permalink;
+				$this->structure->{$j}->token = $temp_permalink;
 
 				if (isset($prior_id))
 				{

@@ -49,7 +49,7 @@
 
 	public function HTMLFinishExport($exported, $downloads_dir)
 	{
-		$filename = join_paths($downloads_dir, 'code' . $this->extension);
+		$filename = join_paths($downloads_dir, $this->getFullDownloadName());
 
 		/*
 		 * We need a title page.
@@ -76,6 +76,14 @@
 		 */
 		unlink($title_page);
 		unlink($end_page);
+	}
+
+	/*
+	 * These files all use a multiple-page document, not a zipped archive as most
+	 * Exports do.
+	 */
+	public function getFullDownloadName() {
+		return 'code' . $this->extension;
 	}
 
 	/*
