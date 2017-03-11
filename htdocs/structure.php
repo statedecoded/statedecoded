@@ -130,7 +130,7 @@ if (count((array) $structure) > 1)
 		}
 
 		$content->append('breadcrumbs', '<li class="' . $active . '">
-				<a href="' . $level->url . '">' . $level->identifier . ': ' . $level->name . '</a>
+				<a href="' . $level->url->url . '">' . $level->identifier . ': ' . $level->name . '</a>
 			</li>');
 
 		/*
@@ -139,7 +139,7 @@ if (count((array) $structure) > 1)
 		 */
 		if ($level->id == $struct->parent_id)
 		{
-			$content->set('link_rel', '<link rel="up" title="Up" href="' . $level->url . '" />');
+			$content->set('link_rel', '<link rel="up" title="Up" href="' . $level->url->url . '" />');
 		}
 
 	}

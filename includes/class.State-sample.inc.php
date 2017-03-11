@@ -1086,7 +1086,23 @@ class Parser
 		 */
 		foreach ($section as $subsection)
 		{
+			/*
+			 * Preserve tags inside of the XML.
+			 */
 
+			$subsection_text = '';
+			if($subsection->children())
+			{
+				foreach($subsection->children() as $child)
+				{
+					$subsection_text .= trim($child->asXML());
+				}
+			}
+			else
+			{
+				$subsection_text = trim((string) $subsection);
+			}
+var_dump('subsection text', $subsection_text);
 			/*
 			 * Store this subsection's data in our code object.
 			 */
@@ -1095,13 +1111,13 @@ class Parser
 				$this->code->section->{$this->i} = new stdClass();
 			}
 
-			$this->code->section->{$this->i}->text = (string) $subsection;
+			$this->code->section->{$this->i}->text = $subsection_text;
 			if (!empty($subsection['type']))
 			{
-				$this->code->section->{$this->i}->type = (string) $subsection['type'];
+				$this->code->section->{$this->i}->type = $subsection['type'];
 			}
-			$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
-			$this->prefix_hierarchy[] = (string) $subsection['prefix'];
+			$this->code->section->{$this->i}->prefix = $subsection['prefix'];
+			$this->prefix_hierarchy[] = $subsection['prefix'];
 
 			$this->code->section->{$this->i}->prefix_hierarchy = (object) $this->prefix_hierarchy;
 

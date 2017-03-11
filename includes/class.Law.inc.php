@@ -1132,9 +1132,9 @@ class Law
 			}
 
 			/*
-			 * Start a paragraph of the appropriate type.
+			 * Start a paragraph of the appropriate type, if we don't already have p tags.
 			 */
-			if ($paragraph->type == 'section')
+			if ($paragraph->type == 'section' && !$this->has_p_tag($paragraph->text))
 			{
 				$html .= '<p>';
 			}
@@ -1152,7 +1152,7 @@ class Law
 				( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) ) )
 			{
 
-				$html .= $paragraph->prefix;
+				$html .= '<span class="prefix-number">' . $paragraph->prefix;
 
 				/*
 				 * We could use a regular expression to determine if we need to append a period, but
@@ -1162,7 +1162,7 @@ class Law
 				{
 					$html .= '.';
 				}
-				$html .= ' ';
+				$html .= '</span> ';
 			}
 
 			/*
@@ -1189,7 +1189,7 @@ class Law
 				$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
 					.'href="' . $permalink . '"><i class="icon-link"></i></a>';
 			}
-			if ($paragraph->type == 'section')
+			if ($paragraph->type == 'section' && !$this->has_p_tag($paragraph->text))
 			{
 				$html .= '</p>';
 			}
@@ -1216,6 +1216,13 @@ class Law
 
 	} // end render()
 
+
+	public function has_p_tag($text) {
+		if(strpos($text, '<p>') !== FALSE || strpos($text, '<p ') !== FALSE) {
+			return TRUE;
+		}
+		return FALSE;
+	}
 
 	/**
 	 * Takes the instant law object and turns it into a nicely formatted plain text version.
