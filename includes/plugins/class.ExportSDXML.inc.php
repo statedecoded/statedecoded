@@ -60,18 +60,13 @@ class ExportSDXML extends Export
 		$law = html_entity_decode_object($law);
 
 		/*
-		 * Quickly turn this into an XML string.
-		 */
-		$xml = new SimpleXMLElement('<law />');
-		object_to_xml($law, $xml);
-
-		$xml = $xml->asXML();
-
-		/*
 		 * Load the XML string into DOMDocument.
 		 */
-		$dom = new DOMDocument();
-		$dom->loadXML($xml);
+		$doc = new DOMDocument();
+		$dom = $doc->createElement('law');
+		$doc->appendChild($dom);
+
+		object_to_dom($law, $doc, $dom);
 
 		/*
 		 * We're going to be inserting some things before the catch line.
@@ -79,33 +74,36 @@ class ExportSDXML extends Export
 		$catch_lines = $dom->getElementsByTagName('catch_line');
 		$catch_line = $catch_lines->item(0);
 
-		$law_dom = $dom->getElementsByTagName('law');
-		$law_dom = $law_dom->item(0);
+		if(!$dom)
+		{
+			var_dump('!!', $xml, $dom->saveXML());
+			throw new Exception('Couldn\'t find a law in the xml.');
+		}
 
 		/*
 		 * Add the main site info.
 		 */
 		if(defined('SITE_TITLE'))
 		{
-			$site_title = $dom->createElement('site_title');
-			$site_title->appendChild($dom->createTextNode(SITE_TITLE));
-			$law_dom->insertBefore($site_title, $catch_line);
+			$site_title = $doc->createElement('site_title');
+			$site_title->appendChild($doc->createTextNode(SITE_TITLE));
+			$dom->insertBefore($site_title, $catch_line);
 		}
 
 		if(defined('SITE_URL'))
 		{
-			$site_url = $dom->createElement('site_url');
-			$site_url->appendChild($dom->createTextNode(SITE_URL));
-			$law_dom->insertBefore($site_url, $catch_line);
+			$site_url = $doc->createElement('site_url');
+			$site_url->appendChild($doc->createTextNode(SITE_URL));
+			$dom->insertBefore($site_url, $catch_line);
 		}
 
 		/*
 		 * Set the edition.
 		 */
-		$edition = $dom->createElement('edition');
-		$edition->appendChild($dom->createTextNode($law->edition->name));
+		$edition = $doc->createElement('edition');
+		$edition->appendChild($doc->createTextNode($law->edition->name));
 
-		$edition_url = $dom->createAttribute('url');
+		$edition_url = $doc->createAttribute('url');
 		$edition_url->value = '';
 		if(defined('SITE_URL'))
 		{
@@ -114,19 +112,19 @@ class ExportSDXML extends Export
 		$edition_url->value .= '/' . $law->edition->slug . '/';
 		$edition->appendChild($edition_url);
 
-		$edition_id = $dom->createAttribute('id');
+		$edition_id = $doc->createAttribute('id');
 		$edition_id->value = $law->edition->id;
 		$edition->appendChild($edition_id);
 
-		$edition_last_updated = $dom->createAttribute('last_updated');
+		$edition_last_updated = $doc->createAttribute('last_updated');
 		$edition_last_updated->value = date('Y-m-d', strtotime($law->edition->last_import));
 		$edition->appendChild($edition_last_updated);
 
-		$edition_current = $dom->createAttribute('current');
+		$edition_current = $doc->createAttribute('current');
 		$edition_current->value = $law->edition->current ? 'TRUE' : 'FALSE';
 		$edition->appendChild($edition_current);
 
-		$law_dom->insertBefore($edition, $catch_line);
+		$dom->insertBefore($edition, $catch_line);
 
 		/*
 		 * Simplify every reference, stripping them down to the cited sections.
@@ -154,7 +152,7 @@ class ExportSDXML extends Export
 				 * Create a new element, named "reference," which contains the only
 				 * the section number.
 				 */
-				$element = $dom->createElement('reference', $section_number);
+				$element = $doc->createElement('reference', $section_number);
 				$reference->parentNode->insertBefore($element, $reference);
 
 				/*
@@ -175,7 +173,7 @@ class ExportSDXML extends Export
 			$structure_element = $structure_elements->item(0);
 			$structural_units = $structure_element->getElementsByTagName('unit');
 
-			$law_dom->insertBefore($structure_element, $catch_line);
+			$dom->insertBefore($structure_element, $catch_line);
 
 			/*
 			 * Iterate backwards through our elements.
@@ -196,13 +194,13 @@ class ExportSDXML extends Export
 				$structure = $law->structure->{$i};
 				$level_value++;
 
-				$unit = $dom->createElement('unit');
+				$unit = $doc->createElement('unit');
 
 				/*
 				 * Add the "level" attribute.
 				 */
 				$label = trim(strtolower($unit->getAttribute('label')));
-				$level = $dom->createAttribute('level');
+				$level = $doc->createAttribute('level');
 				$level->value = $level_value;
 
 				$unit->appendChild($level);
@@ -210,14 +208,14 @@ class ExportSDXML extends Export
 				/*
 				 * Add the "identifier" attribute.
 				 */
-				$identifier = $dom->createAttribute('identifier');
+				$identifier = $doc->createAttribute('identifier');
 				$identifier->value = trim($structure->identifier);
 				$unit->appendChild($identifier);
 
 				/*
 				 * Add the "url" attribute.
 				 */
-				$url = $dom->createAttribute('url');
+				$url = $doc->createAttribute('url');
 
 				$url->value = '';
 				if(defined('SITE_URL'))
@@ -264,7 +262,7 @@ class ExportSDXML extends Export
 		/*
 		 * Return the cleaned-up XML.
 		 */
-		return $dom->saveXML();
+		return $doc->saveXML();
 	}
 
 }

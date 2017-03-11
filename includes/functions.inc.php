@@ -474,6 +474,68 @@ function object_to_xml( $array, $xml )
 }
 
 /**
+ * Translation of object_to_xml for PHP's DOMDocument class.
+ */
+function object_to_dom( $array, $doc, $node )
+{
+
+	/*
+	 * Array of keys that will be treated as attributes, not children.
+	 */
+	$attributes = array( 'id', 'number', 'label', 'prefix' );
+
+	/*
+	 * Recursively loop through each item.
+	 */
+	foreach ( $array as $key => $value )
+	{
+
+		/*
+		 * If this is a numbered array, grab the parent node to determine the node name.
+		 */
+		if ( is_numeric( $key ) )
+		{
+			$key = 'unit';
+		}
+
+		/*
+		 * If this is an attribute, treat as an attribute.
+		 */
+		if ( in_array( $key, $attributes ) )
+		{
+			$attr = $doc->createAttribute($key);
+			$attr->value = $value;
+
+			$node->appendChild($attr);
+		}
+
+		/*
+		 * If this value is an object or array, add a child node and treat recursively.
+		 */
+		else
+		{
+
+			if ( is_object( $value ) || is_array( $value ) )
+			{
+				$child = $doc->createElement($key);
+				$child = object_to_dom( $value, $doc, $child );
+			}
+			else
+			{
+				$child = $doc->createElement($key, $value);
+				$node->appendChild($child);
+			}
+
+		}
+
+	}
+
+	return $xml;
+
+}
+
+
+/**
  * Change the name of DOMXPath element $element to $newName
  * By Felix E. Klee <felix.klee at inka.de>
  * http://www.php.net/manual/en/class.domelement.php#111494
