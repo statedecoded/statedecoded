@@ -74,17 +74,19 @@ class Logger
 	 */
 	public function message($msg, $level = 1)
 	{
-
 		if ($level >= $this->level)
 		{
-			echo $msg;
-
-			/*
-			 * Provide the correct line endings.
-			 */
 			if ($this->html === TRUE)
 			{
-				echo '<br />';
+				echo '<div class="logmessage" data-time="' . microtime(true) .'">';
+			}
+
+			echo $msg;
+
+
+			if ($this->html === TRUE)
+			{
+				echo '</div>';
 			}
 			else
 			{
@@ -135,13 +137,22 @@ class Logger
 
 	// }}}
 
+	/**
+	 * Debug some content.
+	 */
+	public function debug($data)
+	{
+		$this->message('<pre class="debug" style="white-space:pre">' .
+			print_r($data, true) . '</pre>', 10);
+	}
+
 	/*
 	 * Render a progressbar.
 	 */
 	public function progress($name) {
 		if($this->html === TRUE)
 		{
-			echo '<div class="progress">
+			echo '<div class="progress" data-time="' . microtime(true) .'">
 			  <div class="progress-bar progress-bar-striped active"
 			  	role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"
 			  	style="width: 0%" id="progress_' . $name .'">
