@@ -76,4 +76,8 @@ $bar-color: $base;
   @include animation(progress-bar-stripes 2s linear infinite);
 }
 
+.progress-bar-done {
+  background-image: none;
+  background-color: $positive-green;
+}
 

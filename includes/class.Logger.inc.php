@@ -169,13 +169,10 @@ class Logger
 		if($text === '') {
 			$text = $amount . '%';
 		}
-		echo '<script>
+		echo '<script data-time="' . microtime(true) .'">
 			$("#progress_' . $name .'").css("width", "' . $amount .'%");
 			$("#progress_' . $name .' span").text("'. $text .'");
 		';
-		if($amount == 100) {
-			echo '$("#progress_' . $name .'").removeClass("active");';
-		}
 		echo '</script>';
 		flush();
 		if(ob_get_length())
@@ -186,8 +183,12 @@ class Logger
 
 	public function finishProgress($name)
 	{
-		echo '<script>
-			$("#progress_' . $name .'").removeClass("active");
+		echo '<script data-time="' . microtime(true).'">
+			$("#progress_' . $name .'")
+				.removeClass("active")
+				.removeClass("progress-bar-striped")
+				.addClass("progress-bar-done")
+				.text("Done");
 		</script>';
 	}
 
