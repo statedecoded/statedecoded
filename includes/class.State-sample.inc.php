@@ -455,9 +455,15 @@ class Parser
 	{
 		$xml = file_get_contents($filename);
 
+		/*
+		 * Lexis-Nexis messes up pre tags, so we strip them by default.
+		 */
+		$xml = str_replace('<pre/>', '', $xml);
+
 		try
 		{
-			$this->section = new SimpleXMLElement($xml);
+			$this->doc = new DOMWrapper($xml, TRUE);
+			$this->section = $this->doc->law;
 		}
 		catch(Exception $e)
 		{
@@ -479,7 +485,9 @@ class Parser
 				exec('tidy -xml '.$filename, $output);
 				$xml = join('', $output);
 			}
-			$this->section = new SimpleXMLElement($xml);
+
+			$this->doc = new DOMWrapper($xml, TRUE);
+			$this->section = $this->doc->law;
 		}
 
 		/*
@@ -524,7 +532,7 @@ class Parser
 		/*
 		 * Transfer some data to our object.
 		 */
-		$this->code->catch_line = (string) $this->section->catch_line[0];
+		$this->code->catch_line = (string) $this->section->catch_line;
 		$this->code->section_number = (string) $this->section->section_number;
 		$this->code->order_by = (string) $this->section->order_by;
 		$this->code->history = (string)  $this->section->history;
@@ -564,7 +572,9 @@ class Parser
 		 */
 		foreach ($this->section->structure->unit as $unit)
 		{
-			$level = (string) $unit['level'];
+
+			$level = $unit->attribute('level');
+
 			if(!isset($this->code->structure))
 			{
 				$this->code->structure = new stdClass();
@@ -575,105 +585,33 @@ class Parser
 			}
 
 			$this->code->structure->{$level}->name = (string) $unit;
-			$this->code->structure->{$level}->label = (string) $unit['label'];
-			$this->code->structure->{$level}->level = (string) $unit['level'];
-			$this->code->structure->{$level}->identifier = (string) $unit['identifier'];
-			if ( !empty($unit['order_by']) )
+			$this->code->structure->{$level}->label = $unit->attribute('label');
+			$this->code->structure->{$level}->level = $unit->attribute('level');
+			$this->code->structure->{$level}->identifier = $unit->attribute('identifier');
+			if ( $unit->attribute('order_by') === null )
 			{
-				$this->code->structure->{$level}->order_by = (string) $unit['order_by'];
+				$this->code->structure->{$level}->order_by = $unit->attribute('order_by');
 			}
 		}
 
 		/*
 		 * Iterate through the text.
 		 */
-		$this->i=0;
-		foreach ($this->section->text as $section)
+
+		if(!isset($this->code->section))
 		{
-			/*
-			 * If there are no subsections, but just a single block of text, then simply save that.
-			 */
-			if (count($section) === 0)
-			{
-				if(!isset($this->code->section))
-				{
-					$this->code->section = new stdClass();
-				}
-				if(!isset($this->code->section->{$this->i}))
-				{
-					$this->code->section->{$this->i} = new stdClass();
-				}
-				$this->code->section->{$this->i}->text = trim((string) $section);
-				$this->code->text = trim((string) $section);
-				break;
-			}
-
-			/*
-			 * If this law is broken down into subsections, iterate through those.
-			 */
-			foreach ($section as $subsection)
-			{
-
-				if(!isset($this->code->section))
-				{
-					$this->code->section = new stdClass();
-				}
-				if(!isset($this->code->section->{$this->i}))
-				{
-					$this->code->section->{$this->i} = new stdClass();
-				}
-
-				$this->code->section->{$this->i}->text = trim((string) $subsection);
-
-				/*
-				 * If this subsection has text, save it. Some subsections will not have text, such
-				 * as those that are purely structural, existing to hold sub-subsections, but
-				 * containing no text themselves.
-				 */
-				if ( !empty( $this->code->section->{$this->i}->text ) )
-				{
-					if(!isset($this->code->text))
-					{
-						$this->code->text = '';
-					}
-					$this->code->text .= (string) $subsection['prefix'] . ' '
-						. trim((string) $subsection) . "\r\r";
-				}
-
-				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
-				$this->prefix_hierarchy[] = (string) $subsection['prefix'];
-
-				if(!isset($this->code->section->{$this->i}->prefix_hierarchy))
-				{
-					$this->code->section->{$this->i}->prefix_hierarchy = new stdClass();
-				}
-				$this->code->section->{$this->i}->prefix_hierarchy->{0} = (string) $subsection['prefix'];
-
-				/*
-				 * If this subsection has a specified type (e.g., "table"), save that.
-				 */
-				if (!empty($subsection['type']))
-				{
-					$this->code->section->{$this->i}->type = (string) $subsection['type'];
-				}
-				$this->code->section->{$this->i}->prefix = (string) $subsection['prefix'];
-
-				$this->i++;
-
-				/*
-				 * Recurse through any subsections.
-				 */
-				if (count($subsection) > 0)
-				{
-					$this->recurse($subsection);
-				}
-
-				/*
-				 * Having come to the end of the loop, reset the prefix hierarchy.
-				 */
-				$this->prefix_hierarchy = array();
-			}
+			$this->code->section = new stdClass();
 		}
+
+		if(!isset($this->code->text))
+		{
+			$this->code->text = '';
+		}
+		$this->prefix_hierarchy = array();
+
+		$this->i=0;
+
+		$this->recurse($this->section->text->children());
 
 		/*
 		 * If there any tags, store those, too.
@@ -691,7 +629,7 @@ class Parser
 			 */
 			foreach ($this->section->tags->tag as $tag)
 			{
-				$this->code->tags->tag = trim($tag);
+				$this->code->tags->tag = trim((string) $tag);
 			}
 
 		}
@@ -1063,89 +1001,128 @@ class Parser
 	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
 	 * we call this method recursively to gather their content.
 	 */
-	public function recurse($section)
+	public function recurse($sections)
 	{
-
-		if ( !isset($section) || !isset($this->code) )
+		if ( !isset($sections) || !isset($this->code) )
 		{
 			return FALSE;
 		}
 
-		/* Track how deep we've recursed, in order to create the prefix hierarchy. */
-		if (!isset($this->depth))
-		{
-			$this->depth = 1;
-		}
-		else
-		{
-			$this->depth++;
-		}
+		foreach($sections as $key=>$section) {
 
-		/*
-		 * Iterate through each subsection.
-		 */
-		foreach ($section as $subsection)
-		{
 			/*
-			 * Preserve tags inside of the XML.
+			 * If this is just a single block of text, then simply save that.
 			 */
-
-			$subsection_text = '';
-			if($subsection->children())
+			if ($section->_type == 'text')
 			{
-				foreach($subsection->children() as $child)
+				if(!isset($this->code->section->{$this->i}))
 				{
-					$subsection_text .= trim($child->asXML());
+					$this->code->section->{$this->i} = new stdClass();
+				}
+
+				$this->code->section->{$this->i}->text = trim((string) $section);
+				$this->code->text .= strip_tags(trim((string) $section)) . "\n\n";
+
+				$this->i++;
+			}
+
+			/*
+			 * If this is an element, handle it.
+			 */
+			elseif($section->_type == 'element')
+			{
+				if(!isset($this->code->section->{$this->i}))
+				{
+					$this->code->section->{$this->i} = new stdClass();
+				}
+				/*
+				 * If this isn't a section – a P tag or otherwise – just save it.
+				 */
+				if($section->_tag !== 'section')
+				{
+					$content = trim($section->rawValue());
+					if($this->strip_tags)
+					{
+						$content = strip_tags($content, $this->strip_tags);
+					}
+
+					$this->code->section->{$this->i}->text = $content;
+					$this->code->text .= strip_tags($content);
+
+					$this->i++;
+				}
+				/*
+				 * If this is a section, store our metadata about it, then recurse.
+				 */
+				else
+				{
+					/*
+					 * Default to blank text.
+					 */
+					$this->code->section->{$this->i}->text = '';
+					/*
+					 * If this is a section, we store the metadata that came with it, then
+					 * Recurse through whatever is inside of it.
+					 */
+					if(!isset($this->code->section->{$this->i}->prefix_hierarchy))
+					{
+						$this->code->section->{$this->i}->prefix_hierarchy = array();
+					}
+
+					if($section->attribute('prefix'))
+					{
+						$prefix = $section->attribute('prefix');
+
+						$this->code->section->{$this->i}->prefix = $prefix;
+						$this->prefix_hierarchy[] = $prefix;
+						$this->code->text .= $prefix ."\n\n";
+						$this->code->section->{$this->i}->prefix_hierarchy = $this->prefix_hierarchy;
+					}
+
+					/*
+					 * If this subsection has a specified type (e.g., "table"), save that.
+					 */
+					if ($section->attribute('type'))
+					{
+						$this->code->section->{$this->i}->type = $section->attribute('type');
+					}
+
+					$children = $section->children();
+
+					/*
+					 * If we don't have a section below this, just get the content.
+					 */
+					if($children && !$section->section)
+					{
+						$content = '';
+
+						foreach($children as $child) {
+							$content .= trim($child->rawValue(TRUE));
+						}
+
+						$this->code->text .= $content;
+						$this->code->section->{$this->i}->text = $content;
+
+						/*
+						 * Unset the children.
+						 */
+						$children = null;
+					}
+
+					$this->i++;
+
+					/*
+					 * If we haven't yet handled them, recurse through any subsections.
+					 */
+					if($children)
+					{
+						$this->recurse($section->children());
+					}
+
+					array_pop($this->prefix_hierarchy);
 				}
 			}
-			else
-			{
-				$subsection_text = trim((string) $subsection);
-			}
-var_dump('subsection text', $subsection_text);
-			/*
-			 * Store this subsection's data in our code object.
-			 */
-			if(!isset($this->code->section->{$this->i}))
-			{
-				$this->code->section->{$this->i} = new stdClass();
-			}
-
-			$this->code->section->{$this->i}->text = $subsection_text;
-			if (!empty($subsection['type']))
-			{
-				$this->code->section->{$this->i}->type = $subsection['type'];
-			}
-			$this->code->section->{$this->i}->prefix = $subsection['prefix'];
-			$this->prefix_hierarchy[] = $subsection['prefix'];
-
-			$this->code->section->{$this->i}->prefix_hierarchy = (object) $this->prefix_hierarchy;
-
-			/*
-			 * We increment our counter at this point, rather than at the end of the loop, because
-			 * of the use of the recurse() method after it.
-			 */
-			$this->i++;
-
-			/*
-			 * If this recurses further, keep going.
-			 */
-			if (isset($subsection->section))
-			{
-				$this->recurse($subsection->section);
-			}
-
-			/*
-			 * Reduce the prefix hierarchy back to where it started, for our next loop through.
-			 */
-			$this->prefix_hierarchy = array_slice($this->prefix_hierarchy, 0, ($this->depth));
-
 		}
-
-		/*
-		 * Reset the prefix depth back to its default of 1.
-		 */
-		$this->depth--;
 
 		return TRUE;
 
@@ -1185,19 +1162,29 @@ var_dump('subsection text', $subsection_text);
 
 			foreach ($this->code->structure as $struct)
 			{
-
-				$structure->identifier = $struct->identifier;
-				$structure->name = $struct->name;
-				$structure->label = $struct->label;
-				$structure->level = $struct->level;
 				if(isset($struct->metadata))
 				{
 					$structure->metadata = $struct->metadata;
 				}
 				else
 				{
-					$structure->metadata = '';
+					$structure->metadata = new stdClass();
 				}
+
+				if(!isset($struct->identifier) || $struct->identifier === '')
+				{
+					$structure->identifier = $struct->name;
+					$structure->metadata->admin_division = TRUE;
+				}
+				else
+				{
+					$structure->identifier = $struct->identifier;
+				}
+
+				$structure->name = $struct->name;
+				$structure->label = $struct->label;
+				$structure->level = $struct->level;
+
 
 				/* If we've gone through this loop already, then we have a parent ID. */
 				if (isset($this->code->structure_id))

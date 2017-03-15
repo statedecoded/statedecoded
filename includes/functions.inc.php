@@ -527,11 +527,7 @@ function object_to_dom( $array, $doc, $node )
 			}
 
 		}
-
 	}
-
-	return $xml;
-
 }
 
 
