@@ -268,22 +268,21 @@ class Dictionary
 		{
 			$this->generic_terms = TRUE;
 		}
-		
+
 		/*
 		 * Create an object in which we'll store terms that are identified.
 		 */
 		$terms = new stdClass();
-		
+
 		/*
 		 * Get a listing of all structural units that contain the current structural unit -- that is,
 		 * if this is a chapter, get the ID of both the chapter and the title. And so on.
 		 */
 		if (isset($this->structure_id))
 		{
-		
+
 			$heritage = new Structure;
-			$heritage->id = $this->structure_id;
-			$ancestry = $heritage->id_ancestry();
+			$ancestry = $heritage->id_ancestry($this->structure_id);
 			$tmp = array();
 			foreach ($ancestry as $level)
 			{

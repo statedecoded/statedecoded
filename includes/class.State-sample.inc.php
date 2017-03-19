@@ -1175,10 +1175,16 @@ class Parser
 				{
 					$structure->identifier = $struct->name;
 					$structure->metadata->admin_division = TRUE;
+					/* We almost always want administrative divisions before regular divisions.*/
+					$structure->order_by = 0;
 				}
 				else
 				{
 					$structure->identifier = $struct->identifier;
+					if(!isset($structure->order_by))
+					{
+						$structure->order_by = 1;
+					}
 				}
 
 				$structure->name = $struct->name;
@@ -1695,6 +1701,11 @@ class Parser
 		{
 			$sql .= ', metadata = :metadata';
 			$sql_args[':metadata'] = serialize($this->metadata);
+		}
+		if(isset($this->order_by))
+		{
+			$sql .= ', order_by = :order_by';
+			$sql_args[':order_by'] = $this->order_by;
 		}
 
 		$statement = $this->db->prepare($sql);
