@@ -126,7 +126,16 @@ if (is_object($law->dublin_core))
 $content->set('breadcrumbs', '');
 foreach (array_reverse((array) $law->ancestry) as $ancestor)
 {
-	$content->append('breadcrumbs', '<li><a href="' . $ancestor->url . '">' . $ancestor->identifier
+	if(isset($ancestor->metadata->admin_division) && $ancestor->metadata->admin_division === TRUE)
+	{
+		$identifier = '';
+	}
+	else
+	{
+		$identifier = $ancestor->identifier . ': ';
+	}
+
+	$content->append('breadcrumbs', '<li><a href="' . $ancestor->permalink->url . '">' . $identifier
 		. ' ' . $ancestor->name . '</a></li>');
 }
 
@@ -178,7 +187,7 @@ $content->set('heading', '<nav class="prevnext" role="navigation"><ul>' .
 /*
  * Store the URL for the containing structural unit.
  */
-$content->append('link_rel', '<link rel="up" title="Up" href="' . $law->ancestry->{1}->url . '" />');
+$content->append('link_rel', '<link rel="up" title="Up" href="' . $law->ancestry[1]->url . '" />');
 
 /*
  * Start assembling the body of this page by indicating the beginning of the text of the section.

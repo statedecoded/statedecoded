@@ -266,26 +266,9 @@ class Law
 			$struct = new Structure;
 
 			/*
-			 * Provide the edition ID so that we know which edition to query.
-			 */
-			if (isset($this->edition_id))
-			{
-				$struct->edition_id = $this->edition_id;
-			}
-			else
-			{
-				$struct->edition_id = EDITION_ID;
-			}
-
-			/*
-			 * Our structure ID provides a starting point to identify this law's ancestry.
-			 */
-			$struct->id = $this->structure_id;
-
-			/*
 			 * Save the law's ancestry.
 			 */
-			$this->ancestry = $struct->id_ancestry();
+			$this->ancestry = $struct->id_ancestry($this->structure_id);
 
 			/*
 			 * Short of a parser error, there’s no reason why a law should not have an ancestry. In
