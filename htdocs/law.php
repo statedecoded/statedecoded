@@ -19,16 +19,6 @@ require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 $edition = new Edition(array('db' => $db));
 
 /*
- * Create a new instance of Law.
- */
-$law_object = new Law();
-
-if (isset($args['edition_id']))
-{
-	$law_object->edition_id = $args['edition_id'];
-}
-
-/*
  * Allow multiple laws.
  */
 $laws = array();
@@ -43,7 +33,13 @@ if ( isset($args['relational_id']) )
 	{
 		foreach($args['relational_id'] as $relational_id)
 		{
+			$law_object = new Law();
+			if (isset($args['edition_id']))
+			{
+				$law_object->edition_id = $args['edition_id'];
+			}
 			$law_object->law_id = filter_var($relational_id, FILTER_SANITIZE_STRING);
+
 			$law = $law_object->get_law();
 			$laws[] = clone($law);
 			$titles[] = $law->catch_line;
@@ -283,28 +279,27 @@ foreach($laws as $i=>$law)
 	//}
 
 	/*
+	 * Display links to representational variants of the text of this law.
+	 */
+	$body .= '<section id="rep_variant">
+				<h2>Download</h2>
+					<ul>';
+	foreach ($law->formats as $format)
+	{
+		$body .= '<li class="file-download file-' . $format['format'] . '">
+			<a href="' . $format['url'] . '">' . $format['name'] . '</a></li>';
+	}
+	$body .= '
+					</ul>
+				</section>';
+
+
+	/*
 	 * Indicate the conclusion of the "section" article, which is the container for the text of a
 	 * section of the code.
 	 */
 	$body .= '</article>';
 }
-
-/*
- * Display links to representational variants of the text of this law.
- */
-$formats = array('doc' => 'Word doc', 'epub' => 'ePub', 'json' => 'JSON', 'pdf' => 'PDF',
-	'rtf' => 'Rich Text Format', 'txt' => 'Plain Text', 'xml' => 'XML');
-$body .= '<section id="rep_variant">
-			<h2>Download</h2>
-				<ul>';
-foreach ($laws[0]->formats as $format)
-{
-	$body .= '<li class="file-download file-' . $format['format'] . '">
-		<a href="' . $format['url'] . '">' . $format['name'] . '</a></li>';
-}
-$body .= '
-				</ul>
-			</section>';
 
 /*
  * Establish the $sidebar variable, so that we can append to it in conditionals.

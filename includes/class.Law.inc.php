@@ -515,9 +515,9 @@ class Law
 		 * Get our edition.
 		 */
 		$edition_obj = new Edition();
-		$this->edition =$edition_obj->find_by_id($this->edition_id);
+		$this->edition = $edition_obj->find_by_id($this->edition_id);
 
-		$law = $this;
+		$law =& $this;
 		unset($law->config);
 
 		/*

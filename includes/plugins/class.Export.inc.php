@@ -105,7 +105,13 @@ abstract class Export extends Plugin
 		$filebase = array_pop($tokens);
 
 		$path = join_paths($dir, 'code-' . $this->format, $tokens);
-		$filename = $filebase . $this->extension;
+		$filename = $filebase;
+		if($law->metadata->dupe_number)
+		{
+			$filename .= '_' . $law->metadata->dupe_number;
+		}
+
+		$filename .= $this->extension;
 
 		return array($path, $filename);
 	}
@@ -288,7 +294,13 @@ abstract class Export extends Plugin
 		if(isset($law->url))
 		{
 			$url = '/downloads/' . $law->edition->slug . '/code-' . $this->format .
-				'/' . trim($law->url, '/') . $this->extension;
+				'/' . trim($law->url, '/');
+
+			if(isset($law->metadata) && isset($law->metadata->dupe_number))
+			{
+				$url .= '_' . $law->metadata->dupe_number;
+			}
+			$url .= $this->extension;
 
 			$law->formats[] = array(
 				'name' => $this->public_name,
