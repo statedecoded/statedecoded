@@ -19,31 +19,47 @@ require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 $edition = new Edition(array('db' => $db));
 
 /*
- * Create a new instance of Law.
+ * Allow multiple laws.
  */
-$laws = new Law();
-
-if (isset($args['edition_id']))
-{
-	$laws->edition_id = $args['edition_id'];
-}
+$laws = array();
+$titles = array();
 
 /*
  * Use the ID passed to look up the law.
  */
 if ( isset($args['relational_id']) )
 {
+	if(is_array($args['relational_id']))
+	{
+		foreach($args['relational_id'] as $relational_id)
+		{
+			$law_object = new Law();
+			if (isset($args['edition_id']))
+			{
+				$law_object->edition_id = $args['edition_id'];
+			}
+			$law_object->law_id = filter_var($relational_id, FILTER_SANITIZE_STRING);
 
-	$laws->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
-
-	/*
-	 * Retrieve a copy of the law.
-	 */
-	$law = $laws->get_law();
-
+			$law = $law_object->get_law();
+			$laws[] = clone($law);
+			$titles[] = $law->catch_line;
+			unset($law);
+		}
+	}
+	else
+	{
+		$law_object->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+		$laws[] = $law_object->get_law();
+		$titles[] = $law->catch_line;
+	}
 }
 
-if (!isset($law) || $law === FALSE)
+/*
+ * Get unique titles.
+ */
+$titles = array_filter(array_unique($titles));
+
+if (count($laws) === 0)
 {
 	send_404();
 }
@@ -59,7 +75,7 @@ $law->permalink = $permalink_obj->get_permalink($law->law_id, 'law', $law->editi
 /*
  * Store a record that this section was viewed.
  */
-$laws->record_view();
+$law_object->record_view();
 
 /*
  * If this is a request for a plain text version of this law, simply display that and exit.
@@ -75,7 +91,10 @@ if (isset($_GET['plain_text']))
 	/*
 	 * Send the text, which is already formatted properly.
 	 */
-	echo $law->plain_text;
+	foreach($laws as $law)
+	{
+		echo $law->plain_text ."\n\n";
+	}
 
 	/*
 	 * End processing and exit.
@@ -91,30 +110,31 @@ $content = new Content();
 /*
  * Make some section information available globally to JavaScript.
  */
-$content->set('javascript', "var section_number = '" . $law->section_number . "';");
-$content->append('javascript', "var law_id = '" . $law->law_id . "';");
-$content->append('javascript', "var edition_id = '" . $law->edition_id . "';");
+$content->set('javascript', "var section_number = '" . $laws[0]->section_number . "';");
+$content->append('javascript', "var law_id = '" . $laws[0]->law_id . "';");
+$content->append('javascript', "var edition_id = '" . $laws[0]->edition_id . "';");
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
 
 /*
  * Define the browser title.
  */
-$content->set('browser_title', $law->catch_line . ' (' . SECTION_SYMBOL . ' '
-	. $law->section_number . ')—' . SITE_TITLE);
-
-/*
- * Define the page title.
- */
-$content->set('page_title', '<span id="section_id">' . SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</span>');
-$content->append('page_title', '<span id="catch_line">' . $law->catch_line . '</span>');
+if(count($titles) > 1)
+{
+	$content->set('browser_title', SECTION_SYMBOL . ' ' . $laws[0]->section_number . '—' . SITE_TITLE);
+}
+else
+{
+	$content->set('browser_title', $titles[0] . ' (' . SECTION_SYMBOL . ' '
+		. $laws[0]->section_number . ')—' . SITE_TITLE);
+}
 
 /*
  * If we have Dublin Core metadata, display it.
  */
-if (is_object($law->dublin_core))
+if (is_object($laws[0]->dublin_core))
 {
 	$content->set('meta_tags', '');
-	foreach ($law->dublin_core AS $name => $value)
+	foreach ($laws[0]->dublin_core AS $name => $value)
 	{
 		$content->append('meta_tags', '<meta name="DC.' . $name . '" content="' . $value . '" />');
 	}
@@ -124,7 +144,7 @@ if (is_object($law->dublin_core))
  * Define the breadcrumb trail text.
  */
 $content->set('breadcrumbs', '');
-foreach (array_reverse((array) $law->ancestry) as $ancestor)
+foreach (array_reverse((array) $laws[0]->ancestry) as $ancestor)
 {
 	if(isset($ancestor->metadata->admin_division) && $ancestor->metadata->admin_division === TRUE)
 	{
@@ -139,10 +159,18 @@ foreach (array_reverse((array) $law->ancestry) as $ancestor)
 		. ' ' . $ancestor->name . '</a></li>');
 }
 
-$content->append('breadcrumbs', '<li class="active"><a href="/' . $law->section_number
-	. '/">§&nbsp;' . $law->section_number . ' '
-	. ((strlen($law->catch_line) > 50) ? array_shift(explode("\n", wordwrap($law->catch_line, 50)))
-	. ' . . .' : $law->catch_line) . '</a></li>');
+$title = '';
+if(count($titles) === 1)
+{
+	$title = str_replace("\n", ' ', $laws[0]->catch_line);
+	if(strlen($title) > 50)
+	{
+		$title = wordwrap($laws[0]->catch_line, 50). ' . . .';
+	}
+}
+
+$content->append('breadcrumbs', '<li class="active"><a href="' . $laws[0]->permalink->url
+	. '">§&nbsp;' . $laws[0]->section_number . $title . '</a></li>');
 
 $content->prepend('breadcrumbs', '<nav class="breadcrumbs"><ul class="steps-nav">');
 $content->append('breadcrumbs', '</ul></nav>');
@@ -150,14 +178,14 @@ $content->append('breadcrumbs', '</ul></nav>');
 /*
  * If there is a prior section in this structural unit, provide a back arrow.
  */
-if (isset($law->previous_section))
+if (isset($laws[0]->previous_section))
 {
-	$content->set('prev_next', '<li><a href="' . $law->previous_section->url .
+	$content->set('prev_next', '<li><a href="' . $laws[0]->previous_section->url .
 		'" class="prev" title="Previous section"><span>← Previous</span>' .
-		$law->previous_section->section_number . ' ' . $law->previous_section->catch_line
+		$laws[0]->previous_section->section_number . ' ' . $laws[0]->previous_section->catch_line
 		. '</a></li>');
 	$content->append('link_rel', '<link rel="prev" title="Previous" href="' .
-		$law->previous_section->url . '" />');
+		$laws[0]->previous_section->url . '" />');
 }
 else
 {
@@ -167,13 +195,13 @@ else
 /*
  * If there is a next section in this chapter, provide a forward arrow.
  */
-if (isset($law->next_section))
+if (isset($laws[0]->next_section))
 {
-	$content->append('prev_next', '<li><a href="' . $law->next_section->url .
+	$content->append('prev_next', '<li><a href="' . $laws[0]->next_section->url .
 		'" class="next" title="Next section"><span>Next →</span>' .
-		$law->next_section->section_number . ' ' .
-		$law->next_section->catch_line . '</a></li>');
-	$content->append('link_rel', '<link rel="next" title="Next" href="' . $law->next_section->url . '" />');
+		$laws[0]->next_section->section_number . ' ' .
+		$laws[0]->next_section->catch_line . '</a></li>');
+	$content->append('link_rel', '<link rel="next" title="Next" href="' . $laws[0]->next_section->url . '" />');
 }
 else
 {
@@ -187,75 +215,91 @@ $content->set('heading', '<nav class="prevnext" role="navigation"><ul>' .
 /*
  * Store the URL for the containing structural unit.
  */
-$content->append('link_rel', '<link rel="up" title="Up" href="' . $law->ancestry[1]->url . '" />');
+$content->append('link_rel', '<link rel="up" title="Up" href="' . $laws[0]->ancestry[1]->url . '" />');
 
-/*
- * Start assembling the body of this page by indicating the beginning of the text of the section.
- */
-$body = '<article id="law">';
-
-/*
- * Display the rendered HTML of this law.
- */
-$body .= $law->html;
-
-/*
- * If we both the raw history text and translated (prose-style) history text, display both formats.
- */
-// Commented out temporarily, per https://github.com/statedecoded/statedecoded/issues/283
-//if ( isset($law->history) && isset($law->history_text))
-//{
-//	$body .= '<section id="history">
-//				<h2>History</h2>
-//				<ul class="nav nav-tabs">
-//				  <li class="active"><a href="#">Translated</a></li>
-//				  <li class="active"><a href="#">Original</a></li>
-//				</ul>
-//				<div class="tab-content">
-//				  <div class="tab-pane active" id="tab1">
-//						<p>'.$law->history_text.'</p>
-//				  </div>
-//				  <div class="tab-pane" id="tab2">
-//						<p>'.$law->history.'</p>
-//				  </div>
-//				</section>';
-//}
-//
-/*
- * If we only have the raw history text, display that.
- */
-//elseif (isset($law->history))
-//{
-
-	$body .= '<section id="history">
-				<h2>History</h2>
-				<p>'.$law->history.'</p>
-			</section>';
-
-//}
-
-/*
- * Indicate the conclusion of the "section" article, which is the container for the text of a
- * section of the code.
- */
-$body .= '</article>';
-
-/*
- * Display links to representational variants of the text of this law.
- */
-$formats = array('doc' => 'Word doc', 'epub' => 'ePub', 'json' => 'JSON', 'pdf' => 'PDF',
-	'rtf' => 'Rich Text Format', 'txt' => 'Plain Text', 'xml' => 'XML');
-$body .= '<section id="rep_variant">
-			<h2>Download</h2>
-				<ul>';
-foreach ($law->formats as $format)
-{
-	$body .= '<li class="file-download file-' . $format['format'] . '">
-		<a href="' . $format['url'] . '">' . $format['name'] . '</a></li>';
+$body = '';
+if(count($laws) > 1) {
+	$body .= '<p><strong>Note that there are ' . count($laws) . ' laws with this
+		section number. All of them are listed below.</strong></p>';
 }
-$body .= '
-				</ul>
-			</section>';
+
+/*
+ * Loop over the laws we have.
+ */
+foreach($laws as $i=>$law)
+{
+	/*
+	 * Start assembling the body of this page by indicating the beginning of the text of the section.
+	 */
+	$body .= '<article class="law-contents">';
+
+	$body .= '<h1>
+		<span class="section_id">' . SECTION_SYMBOL .'&nbsp;' . $law->section_number . '</span>
+		<span class="catch_line">' . $law->catch_line .'</span>
+	</h1>';
+
+	/*
+	 * Display the rendered HTML of this law.
+	 */
+	$body .= $law->html;
+
+	/*
+	 * If we both the raw history text and translated (prose-style) history text, display both formats.
+	 */
+	// Commented out temporarily, per https://github.com/statedecoded/statedecoded/issues/283
+	//if ( isset($law->history) && isset($law->history_text))
+	//{
+	//	$body .= '<section id="history">
+	//				<h2>History</h2>
+	//				<ul class="nav nav-tabs">
+	//				  <li class="active"><a href="#">Translated</a></li>
+	//				  <li class="active"><a href="#">Original</a></li>
+	//				</ul>
+	//				<div class="tab-content">
+	//				  <div class="tab-pane active" id="tab1">
+	//						<p>'.$law->history_text.'</p>
+	//				  </div>
+	//				  <div class="tab-pane" id="tab2">
+	//						<p>'.$law->history.'</p>
+	//				  </div>
+	//				</section>';
+	//}
+	//
+	/*
+	 * If we only have the raw history text, display that.
+	 */
+	//elseif (isset($law->history))
+	//{
+
+		$body .= '<section id="history">
+					<h2>History</h2>
+					<p>'.$law->history.'</p>
+				</section>';
+
+	//}
+
+	/*
+	 * Display links to representational variants of the text of this law.
+	 */
+	$body .= '<section id="rep_variant">
+				<h2>Download</h2>
+					<ul>';
+	foreach ($law->formats as $format)
+	{
+		$body .= '<li class="file-download file-' . $format['format'] . '">
+			<a href="' . $format['url'] . '">' . $format['name'] . '</a></li>';
+	}
+	$body .= '
+					</ul>
+				</section>';
+
+
+	/*
+	 * Indicate the conclusion of the "section" article, which is the container for the text of a
+	 * section of the code.
+	 */
+	$body .= '</article>';
+}
 
 /*
  * Establish the $sidebar variable, so that we can append to it in conditionals.
@@ -282,7 +326,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 		                'hitType': 'event',            // Required.
 		                'eventCategory': 'Comments',   // Required.
 		                'eventAction': 'New Comment',  // Required.
-		                'eventLabel': '".$law->section_number."'
+		                'eventLabel': '".$laws[0]->section_number."'
 		            });
 		        });
 		    };");
@@ -290,7 +334,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 
 	$content->append('javascript', "
 			var disqus_shortname = '" . DISQUS_SHORTNAME . "'; // required: replace example with your forum shortname
-			var disqus_identifier = '" . $law->token . "';
+			var disqus_identifier = '" . $laws[0]->permalink->token . "';
 
 			/* * * DON'T EDIT BELOW THIS LINE * * */
 			(function() {
@@ -318,10 +362,10 @@ $sidebar .= '<section class="info-box" id="elsewhere">
 				<h1>Trust, But Verify</h1>
 				<p>If you’re reading this for anything important, you should double-check its
 				accuracy';
-if (isset($law->official_url))
+if (isset($laws[0]->official_url))
 {
-	$sidebar .= '—<a href="' . $law->official_url . '">read ' . SECTION_SYMBOL . '&nbsp;'
-		. $law->section_number . ' ';
+	$sidebar .= '—<a href="' . $laws[0]->official_url . '">read ' . SECTION_SYMBOL . '&nbsp;'
+		. $laws[0]->section_number . ' ';
 }
 $sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
@@ -349,14 +393,14 @@ $sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')
 /*
  * If this section has been cited in any court decisions, list them.
  */
-if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
+if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
 {
 
 	$sidebar .= '<section class="grid-box grid-sizer" id="court-decisions">
 				<h1>Court Decisions</h1>
 				<ul>';
 
-	foreach ($law->court_decisions as $decision)
+	foreach ($laws[0]->court_decisions as $decision)
 	{
 
 		$sidebar .= '<li><a href="' . $decision->url . '"><em>' . $decision->name . '</em></a> ('
@@ -384,14 +428,14 @@ if ( isset($law->court_decisions) && ($law->court_decisions != FALSE) )
 /*
  * If any legislation has attempted to amend this law, list it.
  */
-if ( isset($law->amendment_attempts) && ($law->amendment_attempts != FALSE) )
+if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != FALSE) )
 {
 
 	$sidebar .= '<section class="grid-box grid-sizer" id="amendment-attempts">
 				<h1>Amendment Attempts</h1>
 				<ul>';
 
-	foreach ($law->amendment_attempts as $bill)
+	foreach ($laws[0]->amendment_attempts as $bill)
 	{
 
 		$sidebar .= '<li><a href="' . $bill->url . '">' . $bill->number . '</a>: '
@@ -412,14 +456,14 @@ if ( isset($law->amendment_attempts) && ($law->amendment_attempts != FALSE) )
 /*
  * If we have a list of cross-references, list them.
  */
-if ($law->references !== FALSE)
+if ($laws[0]->references !== FALSE)
 {
 
 	$sidebar .= '
 			<section class="related-group grid-box" id="cross_references">
 				<h1>Cross References</h1>
 				<ul>';
-	foreach ($law->references as $reference)
+	foreach ($laws[0]->references as $reference)
 	{
 		$sidebar .= '<li><span class="identifier">'
 			. SECTION_SYMBOL . '&nbsp;<a href="' . $reference->url . '" class="law">'
@@ -444,7 +488,7 @@ try
 		)
 	);
 
-	$related_laws = $search_client->find_related($law, 3);
+	$related_laws = $search_client->find_related($laws[0], 3);
 
 	if($related_laws && count($related_laws->get_results()) > 0)
 	{
@@ -477,13 +521,13 @@ catch(Exception $exception)
 /*
  *	If we have citation data and it's formatted properly, display it.
  */
-if ( isset($law->citation) && is_object($law->citation) )
+if ( isset($laws[0]->citation) && is_object($laws[0]->citation) )
 {
 
 	$sidebar .= '<section class="related-group grid-box" id="cite-as">
 				<h1>Cite As</h1>
 				<ul>';
-	foreach ($law->citation as $citation)
+	foreach ($laws[0]->citation as $citation)
 	{
 		$sidebar .= '<li>' . $citation->label . ': <span class="' . strtolower($citation->label) . '">'
 			. $citation->text . '</span></li>';
@@ -502,7 +546,7 @@ $sidebar .= '</section>';
  * Show edition info.
  */
 
-$edition_data = $edition->find_by_id($law->edition_id);
+$edition_data = $edition->find_by_id($laws[0]->edition_id);
 $edition_list = $edition->all();
 if($edition_data && count($edition_list) > 1)
 {
@@ -521,15 +565,15 @@ if($edition_data && count($edition_list) > 1)
 	$content->append('edition', '<a href="/editions/?from=' . $_SERVER['REQUEST_URI'] . '" class="edition-link">Browse all editions.</a></p>');
 }
 
-$content->set('current_edition', $law->edition_id);
+$content->set('current_edition', $laws[0]->edition_id);
 
 /*
  * If this isn't the canonical page, show a canonical meta tag.
  */
-if($args['url'] !== $law->permalink->url)
+if($args['url'] !== $laws[0]->permalink->url)
 {
 	$content->append('meta_tags',
-		'<link rel="canonical" href="' . $law->permalink->url . '" />');
+		'<link rel="canonical" href="' . $laws[0]->permalink->url . '" />');
 }
 
 /*

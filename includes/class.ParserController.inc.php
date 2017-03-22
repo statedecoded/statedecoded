@@ -1242,17 +1242,15 @@ class ParserController
 
 			if ($laws_result !== FALSE && $laws_statement->rowCount() > 0)
 			{
-
-				/*
-				 * Create a new instance of the class that handles information about individual laws.
-				 */
-				$law_object = new Law();
-
 				/*
 				 * Iterate through every section number, to pass to the Laws class.
 				 */
 				while ($section = $laws_statement->fetch(PDO::FETCH_OBJ))
 				{
+					/*
+					 * Create a new instance of the class that handles information about individual laws.
+					 */
+					$law_object = new Law();
 
 					/*
 					 * Instruct the Law class on what, specifically, it should retrieve.

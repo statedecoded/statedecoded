@@ -61,8 +61,7 @@ class PermalinkController extends BaseController
 		 */
 		$sql = 'SELECT *
 				FROM permalinks
-				WHERE url = :url
-				LIMIT 1';
+				WHERE url = :url';
 		$sql_args = array(
 			':url' => $url
 		);
@@ -74,7 +73,31 @@ class PermalinkController extends BaseController
 		 */
 		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
 		{
-			$route = $statement->fetch(PDO::FETCH_ASSOC);
+			if($statement->rowCount() > 1)
+			{
+				/*
+				 * In the rare case of duplicate permalinks, they *should* be the same
+				 * object handler, but with different ids. In this case, make a list of
+				 * ids, and just use the first object's other data.
+				 */
+				$permalinks = $statement->fetchAll(PDO::FETCH_ASSOC);
+				foreach($permalinks as $permalink)
+				{
+					if(!$route)
+					{
+						$route = $permalink;
+						$route['relational_id'] = array($route['relational_id']);
+					}
+					else
+					{
+						$route['relational_id'][] = $permalink['relational_id'];
+					}
+				}
+			}
+			else
+			{
+				$route = $statement->fetch(PDO::FETCH_ASSOC);
+			}
 		}
 
 		return $route;

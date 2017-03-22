@@ -904,6 +904,12 @@ class Parser
 
 				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === FALSE)
 				{
+					$token = str_replace(
+						array(':', '/', '\\'),
+						array('_', '_', '_'),
+						$law['section_number']
+					);
+
 					/*
 					 * Current-and-short is the most-preferred (shortest) url.
 					 */
@@ -914,8 +920,8 @@ class Parser
 							':object_type' => 'law',
 							':relational_id' => $law['id'],
 							':identifier' => $law['section_number'],
-							':token' => $structure_token . '/' . $law['section_number'],
-							':url' => '/' . $law['section_number'] . '/',
+							':token' => $structure_token . '/' . $token,
+							':url' => '/' . $token . '/',
 							':edition_id' => $edition_id,
 							':permalink' => 0,
 							':preferred' => 1
@@ -932,8 +938,8 @@ class Parser
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
-						':token' => $structure_token . '/' . $law['section_number'],
-						':url' => '/' . $edition->slug . '/' . $law['section_number'] . '/',
+						':token' => $structure_token . '/' . $token,
+						':url' => '/' . $edition->slug . '/' . $token . '/',
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
@@ -952,8 +958,8 @@ class Parser
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
-						':token' => $structure_token . '/' . $law['section_number'],
-						':url' => '/' . $structure_token . '/' . $law['section_number'] . '/',
+						':token' => $structure_token . '/' . $token,
+						':url' => '/' . $structure_token . '/' . $token . '/',
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
@@ -970,15 +976,14 @@ class Parser
 					':object_type' => 'law',
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
-					':token' => $structure_token . '/' . $law['section_number'],
-					':url' => '/' . $edition->slug . '/' . $structure_token . '/' . $law['section_number'] . '/',
+					':token' => $structure_token . '/' . $token,
+					':url' => '/' . $edition->slug . '/' . $structure_token . '/' . $token . '/',
 					':edition_id' => $edition_id,
 					':permalink' => 1,
 					':preferred' => $preferred
 				);
 				$this->permalink_obj->create($insert_data);
 			}
-
 			$this->build_permalink_subsections($edition_id, $item['s1_id']);
 
 		}
@@ -1227,6 +1232,30 @@ class Parser
 		{
 			$query['history'] = $this->code->history;
 		}
+		$query['edition_id'] = $this->edition_id;
+
+		/*
+		 * See if this is a duplicate law
+		 */
+
+		$dupe_query = 'SELECT COUNT(*) AS count FROM laws WHERE section = :section AND edition_id = :edition_id';
+		$dupe_args = array(':section' => $query['section'], ':edition_id' => $query['edition_id']);
+
+		$dupe_statement = $this->db->prepare($dupe_query);
+		$dupe_result = $dupe_statement->execute($dupe_args);
+
+		if($dupe_result)
+		{
+			$dupe = $dupe_statement->fetch();
+			if($dupe['count'] > 0) {
+				if(!$this->code->metadata)
+				{
+					$this->code->metadata = new stdClass();
+				}
+
+				$this->code->metadata->dupe_number = $dupe['count'];
+			}
+		}
 
 		/*
 		 * Create the beginning of the insertion statement.
@@ -1234,7 +1263,6 @@ class Parser
 		$sql = 'INSERT INTO laws
 				SET date_created=now()';
 		$sql_args = array();
-		$query['edition_id'] = $this->edition_id;
 
 		/*
 		 * Iterate through the array and turn it into SQL.
@@ -1302,7 +1330,8 @@ class Parser
 					SET law_id = :law_id,
 					meta_key = :meta_key,
 					meta_value = :meta_value,
-					edition_id = :edition_id';
+					edition_id = :edition_id,
+					date_created = NOW()';
 			$statement = $this->db->prepare($sql);
 
 			foreach ($this->code->metadata as $key => $value)
