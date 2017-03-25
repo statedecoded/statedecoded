@@ -48,6 +48,7 @@ if ( isset($args['relational_id']) )
 	}
 	else
 	{
+		$law_object = new Law();
 		$law_object->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
 		$laws[] = $law_object->get_law();
 		$titles[] = $law->catch_line;
