@@ -1046,10 +1046,11 @@ class Parser
 				if($section->_tag !== 'section')
 				{
 					$content = trim($section->rawValue());
-					if($this->strip_tags)
-					{
-						$content = strip_tags($content, $this->strip_tags);
-					}
+
+					/*
+					 * We might have some xml fragments, so strip those.
+					 */
+					$content = strip_tags($content, '<?xml>');
 
 					$this->code->section->{$this->i}->text = $content;
 					$this->code->text .= strip_tags($content);
