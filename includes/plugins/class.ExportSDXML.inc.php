@@ -61,7 +61,6 @@ class ExportSDXML extends Export
 			'last_updated' => date('Y-m-d', strtotime($law->edition->last_import))
 		));
 
-		// TODO: This needs more testing.
 		if(isset($law->references) && is_array($law->references) && count($law->references))
 		{
 			$references =& $dom->create('referred_to_by');
