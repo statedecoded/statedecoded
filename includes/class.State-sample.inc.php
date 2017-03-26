@@ -1249,7 +1249,7 @@ class Parser
 		{
 			$dupe = $dupe_statement->fetch();
 			if($dupe['count'] > 0) {
-				if(!$this->code->metadata)
+				if(!isset($this->code->metadata))
 				{
 					$this->code->metadata = new stdClass();
 				}
