@@ -2519,11 +2519,13 @@ class Parser
 
 	public function get_structure_labels($edition_id = null)
 	{
-		$sql = 'SELECT DISTINCT label, depth FROM structure ';
+
+		$sql = 'SELECT label, MIN(depth) AS depth FROM structure ';
 		if($edition_id) {
 			$sql .= 'WHERE edition_id = ' . $edition_id . ' ';
 		}
-		$sql .= 'ORDER BY depth ASC';
+		$sql .= 'GROUP BY label ORDER BY depth ASC';
+
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 

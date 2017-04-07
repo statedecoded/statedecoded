@@ -2683,7 +2683,7 @@ abstract class AmericanLegalParser
 
 	public function get_structure_labels($edition_id = null)
 	{
-		$sql = 'SELECT DISTINCT label, depth FROM structure ';
+		$sql = 'SELECT label, MIN(depth) AS depth FROM structure GROUP BY label ';
 		if($edition_id) {
 			$sql .= 'WHERE edition_id = ' . $edition_id . ' ';
 		}
