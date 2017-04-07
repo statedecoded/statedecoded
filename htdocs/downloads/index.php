@@ -13,6 +13,11 @@
  */
 
 /*
+ * Create our event manager.
+ */
+$events = new EventManager();
+
+/*
  * Create a container for our content.
  */
 $content = new Content();
@@ -49,24 +54,12 @@ $content->set('inline_css',
 		}
 	</style>');
 
-$body = '
-	<h2>Laws as JSON</h2>
-	<p><a href="current/code.json.zip">code.json.zip</a><br />
-	This is the basic data about every law, one JSON file per law. Fields include section, catch
-	line, text, history, and structural ancestry (i.e., title number/name and chapter number/name).
-	Note that any sections that contain colons (e.g., § 8.01-581.12:2) have an underscore in place
-	of the colon in the filename, because neither Windows nor Mac OS support colons in filenames.</p>
+$body = '';
 
-	<h2>Laws as Plain Text</h2>
-	<p><a href="current/code.txt.zip">code.txt.zip</a><br />
-	This is the basic data about every law, one plain text file per law. Note that any sections that
-	contain colons (e.g., § 8.01-581.12:2) have an underscore in place of the colon in the filename,
-	because neither Windows nor Mac OS support colons in filenames.</p>
-
-	<h2>Dictionary as JSON</h2>
-	<p><a href="current/dictionary.json.zip">dictionary.json.zip</a><br />
-	All terms defined in the laws, with each term’s definition, the section in which it is defined,
-	and the scope (section, chapter, title, global) of that definition.</p>';
+$download_content = $events->trigger('showBulkDownload');
+if($download_content && is_array($download_content)) {
+	$body .= join($download_content);
+}
 
 /*
  * Create an instance of the API class.
@@ -105,14 +98,15 @@ if (isset($_POST['form_data']))
 		try
 		{
 			$api->register_key();
+			$body = '<p>You have been sent an e-mail to verify your e-mail address. Please click the
+						link in that e-mail to activate your API key.</p>';
+
 		}
 		catch (Exception $e)
 		{
 			$body = '<p class="error">Error: ' . $e->getMessage() . '</p>';
 		}
 
-		$body .= '<p>You have been sent an e-mail to verify your e-mail address. Please click the
-					link in that e-mail to activate your API key.</p>';
 	}
 
 }

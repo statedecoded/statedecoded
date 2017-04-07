@@ -50,8 +50,6 @@
 
     var $target = $(selector)
 
-  console.log(selector, $target);
-
     this.activate($this.closest('li'), $ul)
     this.activate($target, $target.parent(), function () {
       $previous.trigger({
