@@ -232,7 +232,7 @@ abstract class Export extends Plugin
 	}
 
 	public function getDictionaryDownloadName() {
-		return 'dictionary' . $this->extension;
+		return 'dictionary' . $this->extension . '.zip';
 	}
 
 	public function generateZip($zip_filename)
