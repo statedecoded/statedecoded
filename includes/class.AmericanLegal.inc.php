@@ -1120,7 +1120,7 @@ abstract class AmericanLegalParser
 					':object_type' => 'structure',
 					// ':relational_id' => '',
 					':identifier' => '',
-					':token' => '',
+					':token' => '/browse/',
 					':url' => '/browse/',
 					':edition_id' => $edition_id,
 					':preferred' => $preferred,
@@ -1135,7 +1135,7 @@ abstract class AmericanLegalParser
 				':object_type' => 'structure',
 				// ':relational_id' => '',
 				':identifier' => '',
-				':token' => '',
+				':token' => '/browse/',
 				':url' => '/' . $edition->slug . '/',
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
@@ -1756,14 +1756,17 @@ abstract class AmericanLegalParser
 			 * Determine the position of this structural unit.
 			 */
 
-			$structure = array_reverse($this->get_structure_labels());
+			$structure = array_reverse($this->get_structure_labels($this->edition_id));
 			array_push($structure, 'global');
 
 			/*
 			 * Find and return the position of this structural unit in the hierarchical stack.
 			 */
 
-			$dictionary->scope_specificity = array_search($dictionary->scope, $structure);
+			$dictionary->scope_specificity = array_search(
+				strtolower($dictionary->scope),
+				array_map('strtolower', $structure)
+			);
 
 			/*
 			 * Store these definitions in the database.
@@ -2678,10 +2681,13 @@ abstract class AmericanLegalParser
 
 	} // end extract_history()
 
-	public function get_structure_labels()
+	public function get_structure_labels($edition_id = null)
 	{
-		$sql = 'SELECT label FROM structure GROUP BY label ' .
-			'ORDER BY depth ASC';
+		$sql = 'SELECT DISTINCT label, depth FROM structure ';
+		if($edition_id) {
+			$sql .= 'WHERE edition_id = ' . $edition_id . ' ';
+		}
+		$sql .= 'ORDER BY depth ASC';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
@@ -2705,10 +2711,12 @@ abstract class AmericanLegalParser
 			else{
 				while($row = $statement->fetch(PDO::FETCH_ASSOC))
 				{
-					$structure_labels[] = $row['label'];
+					$structure_labels[$row['depth']] = $row['label'];
 				}
 			}
 		}
+
+		$structure_labels = array_values($structure_labels);
 
 		/*
 		 * Our lowest level, not represented in the structure table, is 'section'

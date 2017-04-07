@@ -15,6 +15,9 @@
 class Law
 {
 	protected $db;
+	protected $events;
+
+	public $formats;
 
 	public function __construct($args = array())
 	{
@@ -31,6 +34,14 @@ class Law
 			global $db;
 			$this->db = $db;
 		}
+
+		if (!isset($this->config) || !is_object($this->config) )
+		{
+			$this->config = new StdClass();
+			$this->config->get_all = TRUE;
+		}
+
+		$this->events = new EventManager();
 	}
 
 	/**
@@ -255,26 +266,9 @@ class Law
 			$struct = new Structure;
 
 			/*
-			 * Provide the edition ID so that we know which edition to query.
-			 */
-			if (isset($this->edition_id))
-			{
-				$struct->edition_id = $this->edition_id;
-			}
-			else
-			{
-				$struct->edition_id = EDITION_ID;
-			}
-
-			/*
-			 * Our structure ID provides a starting point to identify this law's ancestry.
-			 */
-			$struct->id = $this->structure_id;
-
-			/*
 			 * Save the law's ancestry.
 			 */
-			$this->ancestry = $struct->id_ancestry();
+			$this->ancestry = $struct->id_ancestry($this->structure_id);
 
 			/*
 			 * Short of a parser error, there’s no reason why a law should not have an ancestry. In
@@ -422,7 +416,7 @@ class Law
 			{
 				unset($this->court_decisions);
 			}
-			
+
 		}
 
 		/*
@@ -472,37 +466,14 @@ class Law
 		/*
 		 * Provide the URL for this section.
 		 */
-		$sql = 'SELECT url, token
-				FROM permalinks
-				WHERE relational_id = :id
-				AND object_type = :object_type';
-		$statement = $this->db->prepare($sql);
 
-		$sql_args = array(
-			':id' => $this->section_id,
-			':object_type' => 'law'
-		);
+		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink = $permalink_obj->get_preferred($this->section_id, 'law', $this->edition_id);
 
-		$result = $statement->execute($sql_args);
-
-		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
-		{
-			$permalink = $statement->fetch(PDO::FETCH_OBJ);
+		if($permalink) {
 			$this->url = $permalink->url;
 			$this->token = $permalink->token;
 		}
-
-		/*
-		 * List the URLs for the textual formats in which this section is available.
-		 */
-		if(!isset($this->formats))
-		{
-			$this->formats = new StdClass();
-		}
-
-		$this->formats->txt = substr($this->url, 0, -1) . '.txt';
-		$this->formats->json = substr($this->url, 0, -1) . '.json';
-		$this->formats->xml = substr($this->url, 0, -1) . '.xml';
 
 		/*
 		 * Create metadata in the Dublin Core format.
@@ -540,8 +511,19 @@ class Law
 			$this->plain_text .=  "\n" . wordwrap('HISTORY: ' . $this->history, 80, "\n", TRUE);
 		}
 
-		$law = $this;
+		/*
+		 * Get our edition.
+		 */
+		$edition_obj = new Edition();
+		$this->edition = $edition_obj->find_by_id($this->edition_id);
+
+		$law =& $this;
 		unset($law->config);
+
+		/*
+		 * Call our hooks.
+		 */
+		$this->events->trigger('postGetLaw', $law);
 
 		return $law;
 
@@ -568,7 +550,7 @@ class Law
 		 * Get a listing of IDs, section numbers, and catch lines.
 		 */
 		$sql = 'SELECT DISTINCT laws.id, laws.section AS section_number,
-			laws.catch_line FROM laws ';
+			laws.catch_line, laws.order_by FROM laws ';
 		if($to)
 		{
 			$sql .= 'INNER JOIN laws_references
@@ -631,56 +613,12 @@ class Law
 	 */
 	### TODO fix references to this.
 	### TODO replace the body of this with a call to Permalink.
-	public function get_url($law_id, $edition_id = null, $permalink = false)
+	public function get_url($law_id, $edition_id = null)
 	{
-
-		/*
-		 * If a section number hasn't been passed to this function, then there's nothing to do.
-		 */
-		if (empty($law_id))
-		{
-			return FALSE;
-		}
-
-		/*
-		 * Set the default edition.
-		 */
-		if (empty($edition_id))
-		{
-			$edition_obj = new Edition(array('db' => $this->db));
-			$edition = $edition_obj->current();
-			$edition_id = $edition->id;
-		}
-
-		$sql = 'SELECT *
-				FROM permalinks
-				WHERE object_type="law"
-				AND relational_id = :law_id';
-
-		$sql_args = array(
-			':law_id' => $law_id
-		);
-
-		if($permalink === true)
-		{
-			$sql .= ' AND permalink = 1';
-		}
-		else {
-			$sql .= ' AND preferred = 1';
-		}
-
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
-		{
-			return FALSE;
-		}
-
-		$permalink = $statement->fetch(PDO::FETCH_OBJ);
+		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink = $permalink_obj->get_permalink($law_id, 'law', $edition_id);
 
 		return $permalink;
-
 	}
 
 
@@ -877,6 +815,63 @@ class Law
 
 	}
 
+	/**
+	 * Query laws by metadata.
+	 *
+	 * Usage:
+	 * $lawobj = new Law(array('db' => $db));
+	 * $lawobj->edition_id = 12;
+	 * $data = $lawobj->query_metadata('repealed', 'n', 10, 10);
+	 */
+	public function query_metadata($field, $value = null, $limit = null, $offset = null) {
+		$sql = 'SELECT laws_meta.meta_key, laws_meta.meta_value, laws.id
+				FROM laws_meta
+				LEFT JOIN laws ON laws_meta.law_id = laws.id
+				WHERE meta_key = :meta_key ';
+		$sql_args = array(
+			':meta_key' => $field
+		);
+
+		if(isset($this->edition_id)) {
+			$sql .= 'AND laws.edition_id = :edition_id ';
+			$sql_args[':edition_id'] = $this->edition_id;
+		}
+
+		if($value)
+		{
+			$sql .= 'AND meta_value = :meta_value ';
+			$sql_args[':meta_value'] = $value;
+		}
+
+		if($limit)
+		{
+			$sql .= 'LIMIT ' . $limit . ' ';
+		}
+		if($offset)
+		{
+			$sql .= 'OFFSET ' . $offset . ' ';
+		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		/*
+		 * If the query fails, or if no results are found, return false -- no sections refer to this
+		 * one.
+		 */
+		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Return the result as an object.
+		 */
+		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
+
+		return $metadata;
+	}
+
 
 	/**
 	 * When provided with a section number, it indicates whether that section exists. This is
@@ -946,7 +941,8 @@ class Law
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
-		if (USE_GENERIC_TERMS !== TRUE)
+		$dictionary->edition_id = $this->edition_id;
+		if (!defined('USE_GENERIC_TERMS') || constant('USE_GENERIC_TERMS') !== TRUE)
 		{
 			$dictionary->generic_terms = FALSE;
 		}
@@ -1105,7 +1101,7 @@ class Law
 					<section';
 				if (!empty($paragraph->prefix_anchor))
 				{
-					$html .= ' id="' . $paragraph->prefix_anchor . '"';
+					$html .= ' id="' . preg_replace('/[^a-z0-9A-Z]/', '', $paragraph->prefix_anchor) . '"';
 				}
 
 				/*
@@ -1119,9 +1115,9 @@ class Law
 			}
 
 			/*
-			 * Start a paragraph of the appropriate type.
+			 * Start a paragraph of the appropriate type, if we don't already have p tags.
 			 */
-			if ($paragraph->type == 'section')
+			if ($paragraph->type == 'section' && !$this->has_p_tag($paragraph->text))
 			{
 				$html .= '<p>';
 			}
@@ -1139,7 +1135,7 @@ class Law
 				( !isset($paragraph->prior_prefix) || ($paragraph->entire_prefix != $paragraph->prior_prefix) ) )
 			{
 
-				$html .= $paragraph->prefix;
+				$html .= '<span class="prefix-number">' . $paragraph->prefix;
 
 				/*
 				 * We could use a regular expression to determine if we need to append a period, but
@@ -1149,7 +1145,7 @@ class Law
 				{
 					$html .= '.';
 				}
-				$html .= ' ';
+				$html .= '</span> ';
 			}
 
 			/*
@@ -1176,7 +1172,7 @@ class Law
 				$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
 					.'href="' . $permalink . '"><i class="icon-link"></i></a>';
 			}
-			if ($paragraph->type == 'section')
+			if ($paragraph->type == 'section' && !$this->has_p_tag($paragraph->text))
 			{
 				$html .= '</p>';
 			}
@@ -1203,6 +1199,13 @@ class Law
 
 	} // end render()
 
+
+	public function has_p_tag($text) {
+		if(strpos($text, '<p>') !== FALSE || strpos($text, '<p ') !== FALSE) {
+			return TRUE;
+		}
+		return FALSE;
+	}
 
 	/**
 	 * Takes the instant law object and turns it into a nicely formatted plain text version.
@@ -1348,6 +1351,28 @@ class Law
 		{
 			return $statement->fetchAll();
 		}
+	}
+
+	/**
+	 * Get count of all laws.
+	 *
+	 * param int  $edition_id The edition to query.
+	 */
+
+	public function count($edition_id = null)
+	{
+		$query_args = array();
+		$query = 'SELECT count(*) AS count FROM laws ';
+		if($edition_id)
+		{
+			$query .= 'WHERE edition_id = :edition_id ';
+			$query_args[':edition_id'] = $edition_id;
+		}
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($query_args);
+
+		return (int) $statement->fetchColumn();
 	}
 
 	/**

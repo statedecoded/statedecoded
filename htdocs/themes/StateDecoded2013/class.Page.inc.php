@@ -79,10 +79,6 @@ class StateDecoded2013__Page extends Page
 			'path' => '/js/vendor/js-webshim/minified/polyfiller.js',
 			'type' => 'javascript'
 		),
-		'masonry_js' => array(
-			'path' => '/js/vendor/masonry.pkgd.min.js',
-			'type' => 'javascript'
-		),
 		'datatables' => array(
 			'path' => '//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js',
 			'type' => 'javascript',
@@ -92,6 +88,16 @@ class StateDecoded2013__Page extends Page
 			'path' => '//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css',
 			'type' => 'css',
 			'requires' => array('datatables')
+		),
+		'tabs' => array(
+			'path' => '/js/vendor/tab.js',
+			'type' => 'javascript',
+			'requires' => 'jquery'
+		),
+		'favlaws' => array(
+			'path' => '/js/vendor/fav-laws.js',
+			'type' => 'javascript',
+			'requires' => array('jquery')
 		),
 		'main_js' => array(
 			'path' => '/js/vendor/functions.js',

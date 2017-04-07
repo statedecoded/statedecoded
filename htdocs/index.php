@@ -225,21 +225,23 @@ Solarium_Autoloader::register();
  */
 require(CUSTOM_FUNCTIONS);
 
+$mc_args = array(
+	'db' => $db,
+);
+
 /*
  * If Memcached or Redis is installed, instantiate a connection to it.
  */
 if (defined('CACHE_HOST') && defined('CACHE_PORT'))
 {
 	$cache = new Cache();
+	$mc_args['cache'] = $cache;
 }
 
-/*
- * Establish routes
- */
-require('routes.inc.php');
+
 
 /*
  * Initialize the master controller
  */
-$mc = new MasterController();
+$mc = new MasterController($mc_args);
 $mc->execute();

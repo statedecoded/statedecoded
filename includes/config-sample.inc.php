@@ -26,6 +26,11 @@ if (!defined('INCLUDE_PATH'))
 set_include_path(get_include_path() . PATH_SEPARATOR . INCLUDE_PATH);
 
 /*
+ * Path to our plugins.
+ */
+set_include_path( get_include_path() . PATH_SEPARATOR . INCLUDE_PATH . 'plugins/' );
+
+/*
  * What is the title of the website?
  */
 define('SITE_TITLE', 'The State Decoded');
@@ -252,6 +257,28 @@ define('API_KEY', '');
  * upgrade script, and should not be modified manually.)
  */
 define('VERSION', '0.81');
+
+/*
+ * Enabled plugins.
+ */
+
+define('PLUGINS', json_encode(array(
+	'ExportJSON',
+	'ExportText',
+	'ExportSDXML',
+	'ExportHTML',
+	// USLM export isn't 100% working yet. Don't use this.
+	// 'ExportUSLM',
+
+	// The following exports must come after ExportHTML, as they use the html files.
+	// Pandoc *must* be installed to run these!
+	// 'ExportWord',
+	// 'ExportEpub',
+
+	// pdflatex and pandoc are both needed to export PDFs!
+	// PDF generation is *VERY* slow, so you might not want this.
+	// 'ExportPDF'
+)));
 
 /*
  * If you want to enable Disqus <http://www.disqus.com/> commenting for every law, register for

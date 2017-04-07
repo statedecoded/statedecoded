@@ -16,14 +16,15 @@ Licensed to the Apache Software Foundation (ASF) under one or more
  limitations under the License.
 -->
 
-<schema name="statedecoded" version="1.5">
+<schema name="statedecoded" version="1.6">
 
   <fields>
     <!-- State Decoded Law Fields ==
         taken from law table tsv dump -->
    <field name="_version_" type="long" indexed="true" stored="true"/>
    <field name="id" type="string" indexed="true" stored="true" required="true" />
-   <field name="law_id" type="string" indexed="false" stored="true" required="true" />
+   <field name="object_id" type="string" indexed="true" stored="true" required="true" />
+   <field name="object_type" type="string" indexed="true" stored="true" required="true" />
 
    <field name="edition" type="string" indexed="true" stored="true" required="true" />
    <field name="edition_id" type="string" indexed="true" stored="true" required="true" />

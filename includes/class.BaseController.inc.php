@@ -16,9 +16,15 @@
 abstract class BaseController
 {
 	protected $template;
+	protected $local;
 
-	public function __construct()
+	public function __construct($local)
 	{
+		/*
+		 * Store variables that need to be globally available.
+		 */
+		$this->local = $local;
+
 		/**
 		 * Fire up our templating engine.
 		 */
@@ -30,6 +36,10 @@ abstract class BaseController
 	 */
 	public function render($content)
 	{
+		/*
+		 * Put our local variables into the local scope.
+		 */
+		extract($this->local);
 		/*
 		 * Parse the template, which is a shortcut for a few steps that culminate in sending the content
 		 * to the browser.

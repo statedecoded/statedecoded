@@ -12,6 +12,8 @@
  *
  */
 
+global $db;
+
 /*
  * Intialize Solarium and instruct it to use the correct request handler.
  */
@@ -47,7 +49,7 @@ $content->set('javascript', "var api_key = '" . API_KEY . "';");
  * Create a new instance of our search class. We use this to display the search form and the result
  * page numbers.
  */
-$search = new Search();
+$search = new Search(array('db' => $db));
 
 /*
  * If a search is being submitted.
@@ -172,109 +174,209 @@ if (!empty($_GET['q']))
 		/*
 		 * Iterate through the results.
 		 */
-		global $db;
 		$law = new Law(array('db' => $db));
+		$struct = new Structure(array('db' => $db));
+		$edition = new Edition(array('db' => $db));
+		$permalink_obj = new Permalink(array('db' => $db));
+
+		$edition_cache = array();
 
 		foreach ($results->get_results() as $result)
 		{
-			$law->law_id = $result->law_id;
-			$law->get_law();
-
-			$url = $law->get_url( $result->law_id );
-			$url_string = $url->url;
-
-			if(strpos($url, '?') !== FALSE)
-			{
-				$url_string .= '?';
-			}
-			else
-			{
-				$url_string .= '*';
-			}
-			$url_string .= 'q='.urlencode($q);
-
-			$body .= '<li><div class="result">';
-			$body .= '<h1><a href="' . $url_string . '">';
-
-			if(strlen($result->catch_line))
-			{
-				$body .= $result->catch_line;
-			}
-			else
-			{
-				$body .= $law->catch_line;
+			if(!isset($edition_cache[$result->edition_id])) {
+				$edition_cache[$result->edition_id] = $edition->find_by_id($result->edition_id);
 			}
 
-			$body .= ' (' . SECTION_SYMBOL . '&nbsp;';
-			if(strlen($result->section_number))
-			{
-				$body .= $result->section_number;
-			}
-			else
-			{
-				$body .= $law->section_number;
-			}
-			$body .= ')</a></h1>';
+			if($result->object_type === 'law') {
+				$law->law_id = $result->id;
+				$law->get_law();
 
-			/*
-			 * If we're searching all editions, show what edition this law is from.
-			 */
-			if(!strlen($edition_id))
-			{
-				$law_edition = $edition->find_by_id($law->edition_id);
-				$body .= '<div class="edition_heading edition">' . $law_edition->name . '</div>';
-			}
+				$url = $law->get_url( $result->object_id , $result->edition_id );
 
-			/*
-			 * Display this law's structural ancestry as a breadcrumb trail.
-			 */
-			$body .= '<div class="breadcrumbs"><ul>';
+				$url_string = $url->url;
 
-			foreach (array_reverse((array) $law->ancestry) as $structure)
-			{
-				$body .= '<li><a href="' . $structure->url . '">' . $structure->identifier . ' ' .
-					$structure->name . '</a></li>';
-			}
-			$body .= '</ul></div>';
-
-			/*
-			 * Attempt to display a snippet of the indexed law, highlighting the use of the search
-			 * terms within that text.
-			 */
-
-			if (isset($result->highlight) && !empty($result->highlight))
-			{
-
-				foreach ($result->highlight as $field => $highlight)
+				if(strpos($url_string, '?') !== FALSE)
 				{
-					$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
-						. ' .&thinsp;.&thinsp;. ';
+					$url_string .= '&';
+				}
+				else
+				{
+					$url_string .= '?';
+				}
+				$url_string .= 'q='.urlencode($q);
+
+				$body .= '<li><div class="result">';
+				$body .= '<h1><a href="' . $url_string . '">';
+
+				if(strlen($result->catch_line))
+				{
+					$body .= $result->catch_line;
+				}
+				elseif(strlen($result->name)) {
+					$body .= $result->name;
+				}
+				else
+				{
+					$body .= $law->catch_line;
+				}
+
+				$body .= ' (' . SECTION_SYMBOL . '&nbsp;';
+				if(strlen($result->section_number))
+				{
+					$body .= $result->section_number;
+				}
+				else
+				{
+					$body .= $law->section_number;
+				}
+				$body .= ')</a></h1>';
+
+				/*
+				 * If we're searching all editions, show what edition this law is from.
+				 */
+				if(!strlen($edition_id))
+				{
+					$law_edition = $edition->find_by_id($law->edition_id);
+					$body .= '<div class="edition_heading edition">' . $law_edition->name . '</div>';
 				}
 
 				/*
-				 * Use an appropriate closing ellipsis.
+				 * Display this law's structural ancestry as a breadcrumb trail.
 				 */
-				if (substr($body, -22) == '. .&thinsp;.&thinsp;. ')
+				$body .= '<div class="breadcrumbs"><ul>';
+
+				foreach (array_reverse((array) $law->ancestry) as $structure)
 				{
-					$body = substr($body, 0, -22) . '.&thinsp;.&thinsp;.&thinsp;.';
+					$body .= '<li><a href="' . $structure->url . '">' . $structure->identifier . ' ' .
+						$structure->name . '</a></li>';
 				}
-				$body = trim($body);
+				$body .= '</ul></div>';
 
-			}
+				/*
+				 * Attempt to display a snippet of the indexed law, highlighting the use of the search
+				 * terms within that text.
+				 */
 
-			/*
-			 * If we can't get a highlighted snippet, just show the first few lines of the law.
-			 */
-			else
-			{
-				$text = isset($result->text) ? $result->text : $law->full_text;
-				$body .= '<p>' . substr($text , 0, 250) . ' .&thinsp;.&thinsp;.</p>';
-			}
+				if (isset($result->highlight) && !empty($result->highlight))
+				{
 
-			/*
-			 * End the display of this single result.
-			 */
-			$body .= '</div></li>';
+					foreach ($result->highlight as $field => $highlight)
+					{
+						$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
+							. ' .&thinsp;.&thinsp;. ';
+					}
+
+					/*
+					 * Use an appropriate closing ellipsis.
+					 */
+					if (substr($body, -22) == '. .&thinsp;.&thinsp;. ')
+					{
+						$body = substr($body, 0, -22) . '.&thinsp;.&thinsp;.&thinsp;.';
+					}
+					$body = trim($body);
+
+				}
+
+				/*
+				 * If we can't get a highlighted snippet, just show the first few lines of the law.
+				 */
+				else
+				{
+					$text = isset($result->text) ? $result->text : $law->full_text;
+					$body .= '<p>' . substr($text , 0, 250) . ' .&thinsp;.&thinsp;.</p>';
+				}
+
+				/*
+				 * End the display of this single result.
+				 */
+				$body .= '</div></li>';
+			} // end law
+
+			elseif($result->object_type === 'structure') {
+				$struct->structure_id = $result->object_id;
+				$struct->get_current();
+
+				$url_string = $struct->permalink->url;
+
+				if(strpos($url_string, '?') !== FALSE)
+				{
+					$url_string .= '&';
+				}
+				else
+				{
+					$url_string .= '?';
+				}
+				$url_string .= 'q='.urlencode($q);
+
+				$body .= '<li><div class="result">';
+				$body .= '<h1><a href="' . $url_string . '">';
+
+				if(strlen($struct->name))
+				{
+					$body .= $struct->name;
+				}
+
+				$body .= ' (' . $struct->identifier . ')</a></h1>';
+
+				/*
+				 * If we're searching all editions, show what edition this law is from.
+				 */
+				if(!strlen($edition_id))
+				{
+					$law_edition = $edition->find_by_id($struct->edition_id);
+					$body .= '<div class="edition_heading edition">' . $law_edition->name . '</div>';
+				}
+
+				/*
+				 * Display this law's structural ancestry as a breadcrumb trail.
+				 */
+				$body .= '<div class="breadcrumbs"><ul>';
+
+				foreach ($struct->structure as $child)
+				{
+					$body .= '<li><a href="' . $child->url . '">' . $child->identifier
+						. ' ' . $child->name . '</a></li>';
+				}
+
+				$body .= '</ul></div>';
+
+				/*
+				 * Attempt to display a snippet of the indexed law, highlighting the use of the search
+				 * terms within that text.
+				 */
+
+				if (isset($result->highlight) && !empty($result->highlight))
+				{
+
+					foreach ($result->highlight as $field => $highlight)
+					{
+						$body .= strip_tags( implode(' .&thinsp;.&thinsp;. ', $highlight), '<span>' )
+							. ' .&thinsp;.&thinsp;. ';
+					}
+
+					/*
+					 * Use an appropriate closing ellipsis.
+					 */
+					if (substr($body, -22) == '. .&thinsp;.&thinsp;. ')
+					{
+						$body = substr($body, 0, -22) . '.&thinsp;.&thinsp;.&thinsp;.';
+					}
+					$body = trim($body);
+				}
+
+				/*
+				 * If we can't get a highlighted snippet, just show the first few lines of the law.
+				 */
+				elseif($struct->metadata->text)
+				{
+					$body .= '<p>' . substr($struct->metadata->text, 0, 250) . ' .&thinsp;.&thinsp;.</p>';
+				}
+
+				/*
+				 * End the display of this single result.
+				 */
+				$body .= '</div></li>';
+			} // end structure
 
 		}
 

@@ -14,6 +14,24 @@
 
 class Structure
 {
+	protected $db;
+
+	public function __construct($args = array())
+	{
+		foreach($args as $key=>$value)
+		{
+			$this->$key = $value;
+		}
+
+		/*
+		 * We're going to need access to the database connection throughout this class.
+		 */
+		if(!isset($this->db))
+		{
+			global $db;
+			$this->db = $db;
+		}
+	}
 
 	/**
 	 * Takes a URL, returns an object all about that structural component. This isn't for laws,
@@ -22,12 +40,6 @@ class Structure
 	 */
 	function url_to_structure()
 	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-
 		/*
 		 * If we haven't been provided with a URL, let's just assume that it's the current one.
 		 */
@@ -61,7 +73,7 @@ class Structure
 		 */
 		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE url = :url';
 		$permalink_args = array('url' => $this->path);
-		$permalink_statement = $db->prepare($permalink_sql);
+		$permalink_statement = $this->db->prepare($permalink_sql);
 
 		$result = $permalink_statement->execute($permalink_args);
 
@@ -94,15 +106,9 @@ class Structure
 	 */
 	function token_to_structure($token)
 	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-
 		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE token = :token';
 		$permalink_args = array(':token' => $token);
-		$permalink_statement = $db->prepare($permalink_sql);
+		$permalink_statement = $this->db->prepare($permalink_sql);
 
 		$result = $permalink_statement->execute($permalink_args);
 
@@ -138,11 +144,6 @@ class Structure
 	{
 
 		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-
-		/*
 		 * If we don't have an ID of the structure element that we're looking for, then there's
 		 * really nothing for us to do here.
 		 */
@@ -151,146 +152,7 @@ class Structure
 			return false;
 		}
 
-		/*
-		 * Retrieve this structural unit's ancestry.
-		 */
-		$sql = 'SELECT structure_unified.*,
-				structure.edition_id
-				FROM structure_unified
-				LEFT JOIN structure ON structure_unified.s1_id = structure.id
-				WHERE
-				s1_id = :id
-				LIMIT 1';
-		$sql_args = array(
-			':id' => $this->structure_id
-		);
-		$statement = $db->prepare($sql);
-
-
-		$result = $statement->execute($sql_args);
-
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
-		{
-			return FALSE;
-		}
-
-		/*
-		 * Get the result as an object.
-		 */
-		$structure_row = $statement->fetch(PDO::FETCH_OBJ);
-
-		/*
-		 * Pivot this into a multidimensional object. That is, it's presently stored in multiple
-		 * columns in a single row, but we want it in multiple rows, one per hierarchical level.
-		 */
-		$structure = new stdClass();
-		$structure_ids = array();
-
-		foreach($structure_row as $key => $value)
-		{
-
-			$value = stripslashes($value);
-
-			/*
-			 * Determine the table prefix name, so that we can use the number contained within it as
-			 * the object element name.
-			 */
-			$tmp = explode('_', $key);
-			$tmp = $tmp[0];
-			$prefix = str_replace('s', '', $tmp);
-			unset($tmp);
-
-			/*
-			 * Strip out the table prefix from the key name.
-			 */
-			$key = preg_replace('/s[0-9]_/', '', $key);
-
-			if ( ($key == 'id') )
-			{
-				/*
-				 * If we have a null value for an ID, then we've reached the end of the populated
-				 * columns in this row.
-				 */
-				if (empty($value))
-				{
-					break;
-				}
-				/*
-				 * Otherwise, keep track of the ids we've seen.
-				 */
-				else
-				{
-					$structure_ids[] = $value;
-				}
-			}
-
-			if ( !isset($structure->{$prefix-1}) )
-			{
-				$structure->{$prefix-1} = new StdClass();
-			}
-			$structure->{$prefix-1}->$key = $value;
-
-		}
-
-		/*
-		 * Get all of the associated permalinks.
-		 */
-		$sql = 'SELECT permalinks.* FROM permalinks ' .
-			'WHERE object_type = :object_type AND ' .
-			'permalinks.relational_id = :id AND ' .
-			'permalinks.preferred = 1';
-
-		$statement = $db->prepare($sql);
-
-		/*
-		 * Reverse the order of the elements of this object and place it in the scope of $this.
-		 */
-		$j=0;
-
-		if (!isset($this->structure) )
-		{
-			$this->structure = new StdClass();
-		}
-
-		for ($i=count((array) $structure)-1; $i>=0; $i--)
-		{
-
-			if(isset($structure->{$i}))
-			{
-				$this->structure->{$j} = $structure->{$i};
-
-				/*
-				 * Include the level of this structural element. (e.g., in Virginia, "title" is 1,
-				 * "chapter" is 2, "part" is 3.)
-				 */
-				$this->structure->{$j}->level = $j+1;
-
-				$sql_args = array(
-					':object_type' => 'structure',
-					':id' => $structure->{$i}->id
-				);
-				$result = $statement->execute($sql_args);
-
-				if ( ($result === FALSE) || ($statement->rowCount() == 0) )
-				{
-					return FALSE;
-				}
-				$permalink = $statement->fetch(PDO::FETCH_OBJ);
-
-				$this->structure->{$j}->url = $permalink->url;
-				$this->structure->{$j}->token = $permalink->token;
-
-
-				if (isset($prior_id))
-				{
-					$this->structure->{$j}->parent_id = $prior_id;
-				}
-				$j++;
-				$prior_id = $structure->{$i}->id;
-			}
-		}
-
-		unset($structure);
+		$this->structure = array_reverse($this->id_ancestry($this->structure_id));
 
 		/*
 		 * We set these variables for the convenience of other functions in this class.
@@ -300,31 +162,14 @@ class Structure
 		$this->label = $tmp->label;
 		$this->name = $tmp->name;
 		$this->identifier = $tmp->identifier;
+		$this->permalink = $tmp->permalink;
+		$this->metadata = $tmp->metadata;
 		if (isset($tmp->parent_id))
 		{
 			$this->parent_id = $tmp->parent_id;
 		}
 		unset($tmp);
 
-		/*
-		 * Get any metadata available about this structural unit.
-		 */
-		$sql = 'SELECT metadata
-				FROM structure
-				WHERE id=:id
-				AND metadata IS NOT NULL';
-		$sql_args = array(
-			':id' => $this->id
-		);
-
-		$statement = $db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
-		if ( ($result !== FALSE) && ($statement->rowCount() >= 1) )
-		{
-			$structure_row = $statement->fetch(PDO::FETCH_OBJ);
-			$this->metadata = unserialize(stripslashes($structure_row->metadata));
-		}
 
 		/*
 		 * Get a list of all sibling structural units.
@@ -347,11 +192,9 @@ class Structure
 						object_type = :object_type
 					WHERE s2_id = :parent_id
 					AND permalinks.preferred = 1
-					AND structure.edition_id = :edition_id
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
 			$sql_args[':object_type'] = 'structure';
 			$sql_args[':parent_id'] = $this->parent_id;
-			$sql_args[':edition_id'] = $this->edition_id;
 
 		}
 
@@ -368,10 +211,8 @@ class Structure
 						ON structure.id = permalinks.relational_id and
 						object_type = :object_type
 					WHERE parent_id IS NULL
-					AND permalinks.preferred = 1
-					AND structure.edition_id = :edition_id';
+					AND permalinks.preferred = 1';
 			$sql_args[':object_type'] = 'structure';
-			$sql_args[':edition_id'] = $this->edition_id;
 
 			/*
 			 * Order these by the order_by column, which may or may not be populated.
@@ -394,7 +235,7 @@ class Structure
 
 		}
 
-		$statement = $db->prepare($sql);
+		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 		/*
@@ -422,18 +263,11 @@ class Structure
 	 */
 	function list_children()
 	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-
 		/*
 		 * Assemble the SQL query. The subselect is to avoid getting structural units that contain
 		 * only repealed (that is, unlisted) laws.
 		 */
-		$sql = 'SELECT structure_unified.*,
-				permalinks.url, permalinks.token';
+		$sql = 'SELECT structure_unified.*';
 
 		/*
 		 * If we're ordering by views, select that data.
@@ -446,10 +280,7 @@ class Structure
 		$sql .= '
 				FROM structure
 				LEFT JOIN structure_unified
-					ON structure.id = structure_unified.s1_id
-				LEFT JOIN permalinks
-					ON structure.id = permalinks.relational_id and
-					object_type = :object_type';
+					ON structure.id = structure_unified.s1_id';
 
 		/*
 		 * If we're ordering children by views, we need to join the structural table to the
@@ -463,15 +294,12 @@ class Structure
 							ON laws.section = laws_views.section';
 		}
 
-		$sql_args = array(
-			':object_type' => 'structure'
-		);
+		$sql_args = array();
 
 		/*
 		 * Check edition.
 		 */
 		$sql .= ' WHERE structure.edition_id = :edition_id';
-		$sql .= ' AND permalinks.preferred = 1';
 		if(isset($this->edition_id))
 		{
 			$sql_args[':edition_id'] = $this->edition_id;
@@ -547,7 +375,7 @@ class Structure
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
 
-		$statement = $db->prepare($sql);
+		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 		/*
@@ -559,9 +387,9 @@ class Structure
 		}
 
 		/*
-		 * Instantiate the object we'll use to store and return the list of child structures.
+		 * Instantiate the array we'll use to store and return the list of child structures.
 		 */
-		$children = new stdClass();
+		$children = array();
 
 		/*
 		 * Return the result as an object, built up as we loop through the results.
@@ -569,26 +397,7 @@ class Structure
 		$i=0;
 		while ($child = $statement->fetch(PDO::FETCH_OBJ))
 		{
-
-			/*
-			 * Remap the structural column names to simplified column names.
-			 */
-			$child->id = $child->s1_id;
-			$child->label = $child->s1_label;
-			$child->name = $child->s1_name;
-			$child->identifier = $child->s1_identifier;
-
-			/*
-			 *We don't need to display the aggregate view count -- we only use that for sorting.
-			 */
-			unset($child->view_count);
-
-			/*
-			 * Append this child to our list.
-			 */
-			$children->$i = $child;
-			$i++;
-
+			$children[] = $this->get_by_id($child->s1_id);
 		}
 
 		return $children;
@@ -601,21 +410,8 @@ class Structure
 	 * the chapter's ID, identifier, and name, along with its containing title's ID, number, and
 	 * name.
 	 */
-	function id_ancestry()
+	function id_ancestry($id)
 	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-
-		/*
-		 * If a structural ID hasn't been passed to this function, then there's nothing to do.
-		 */
-		if (!isset($this->id))
-		{
-			return FALSE;
-		}
 
 		/*
 		 * We use SELECT * because it's ultimately more efficient. That's because structure_unified
@@ -627,10 +423,11 @@ class Structure
 				FROM structure_unified
 				WHERE s1_id = :id';
 		$sql_args = array(
-			':id' => $this->id
+			':id' => $id
 		);
 
-		$statement = $db->prepare($sql);
+		$statement = $this->db->prepare($sql);
+
 		$result = $statement->execute($sql_args);
 
 		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
@@ -638,17 +435,17 @@ class Structure
 			return FALSE;
 		}
 
-		$structure = $statement->fetch(PDO::FETCH_OBJ);
+		$structure_row = $statement->fetch(PDO::FETCH_OBJ);
 
 		/*
 		 * Create a new, blank object.
 		 */
-		$ancestry = new stdClass();
+		$structure = array();
 
 		/*
 		 * Iterate through $structure, cell by cell.
 		 */
-		foreach ($structure as $column => $cell)
+		foreach ($structure_row as $key => $value)
 		{
 
 			/*
@@ -657,69 +454,48 @@ class Structure
 			 * the string's length because 0 evaluates as empty in PHP, and we want to allow the use
 			 * of 0 as a valid structural unit identifier.
 			 */
-			if (empty($cell) && (strlen($cell) == 0))
+			if (empty($value))
 			{
 				continue;
 			}
 
-			/*
-			 * The first three characters of the column name are the prefix.
-			 */
-			$prefix = substr($column, 0, 2);
+			$value = stripslashes($value);
 
 			/*
-			 * Strip out everything but the number.
+			 * Determine the table prefix name, so that we can use the number contained within it as
+			 * the object element name.
 			 */
-			$prefix = preg_replace('/[^0-9]/', '', $prefix);
+			$tmp = explode('_', $key);
+			$prefix = ltrim($tmp[0], 's');
+			$key = $tmp[1];
+			unset($tmp);
 
-			/*
-			 * Assign this datum to an element within $tmp based on its prefix.
-			 */
-			$label = substr($column, 3);
-
-			if(!isset($ancestry->$prefix))
+			if ( $key === 'id' )
 			{
-				$ancestry->$prefix = new StdClass();
-			}
 
-			$ancestry->$prefix->$label = $cell;
+				/*
+				 * If we have a null value for an ID, then we've reached the end of the populated
+				 * columns in this row.
+				 */
+				if (empty($value))
+				{
+					break;
+				}
+				/*
+				 * Otherwise, keep track of the ids we've seen.
+				 */
+				else
+				{
+					$structure_ids[] = $value;
+					/*
+					 * Get everything about this structure.
+					 */
+					$structure[$prefix-1] = $this->get_by_id($value);
+				}
+			}
 		}
 
-		/*
-		 * Go get our urls from the permalinks table.
-		 */
-		$sql = 'SELECT permalinks.url
-				FROM permalinks
-				WHERE relational_id = :id
-				AND preferred = 1
-				AND object_type = :object_type';
-		$statement = $db->prepare($sql);
-
-		foreach ((array) $ancestry as $key => $level)
-		{
-
-			$sql_args = array(
-				':id' => $ancestry->$key->id,
-				':object_type' => 'structure'
-			);
-
-			$result = $statement->execute($sql_args);
-
-			if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
-			{
-				$permalink = $statement->fetch(PDO::FETCH_OBJ);
-
-				$ancestry->$key->url = $permalink->url;
-			}
-
-		}
-
-		unset($structure);
-		unset($label);
-		unset($cell);
-		unset($row);
-		return $ancestry;
-
+		return $structure;
 	}
 
 
@@ -728,12 +504,6 @@ class Structure
 	 */
 	function id_to_identifier()
 	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-
 		/*
 		 * If a structural ID hasn't been passed to this function, then there's nothing to do.
 		 */
@@ -752,7 +522,7 @@ class Structure
 			':id' => $this->id
 		);
 
-		$statement = $db->prepare($sql);
+		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 
@@ -773,12 +543,6 @@ class Structure
 	 */
 	function identifier_to_id()
 	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
-
 		/*
 		 * If a structural identifier hasn't been passed to this function, then there's nothing to
 		 * do.
@@ -800,7 +564,7 @@ class Structure
 			':edition_id' => $this->edition_id
 		);
 
-		$statement = $db->prepare($sql);
+		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 
@@ -821,11 +585,6 @@ class Structure
 	 */
 	function list_laws()
 	{
-
-		/*
-		 * We're going to need access to the database connection throughout this class.
-		 */
-		global $db;
 
 		/*
 		 * If a structural ID hasn't been passed to this function, then there's nothing to do.
@@ -882,7 +641,7 @@ class Structure
 			);
 		}
 
-		$statement = $db->prepare($sql);
+		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
@@ -916,7 +675,92 @@ class Structure
 		}
 
 		return $laws;
+	}
 
+	/**
+	 * Get ids of all of the laws for a given edition.
+	 *
+	 * param int  $edition_id The edition to query.
+	 * param bool $result_handle_only Get the results or just return the handle.
+	 *                                This is useful when we don't have much memory.
+	 */
+	public function get_all($edition_id, $result_handle_only = false)
+	{
+		$query_args = array(
+			':edition_id' => $edition_id
+		);
+		$query = 'SELECT structure.id
+			FROM structure
+			WHERE edition_id = :edition_id';
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($query_args);
+
+		if($result_handle_only)
+		{
+			return $statement;
+		}
+		else
+		{
+			return $statement->fetchAll();
+		}
+	}
+
+	public function get_by_id($id)
+	{
+		static $statement;
+		if(!$statement)
+		{
+			$query = 'SELECT *
+				FROM structure
+				WHERE id = :id';
+			$statement = $this->db->prepare($query);
+		}
+
+		$query_args = array(
+			':id' => $id
+		);
+		$result = $statement->execute($query_args);
+
+		if($result)
+		{
+			$structure = $statement->fetch(PDO::FETCH_OBJ);
+
+			if($structure->metadata)
+			{
+				$structure->metadata = unserialize($structure->metadata);
+			}
+
+			$permalink_obj = new Permalink(array('db' => $this->	db));
+			$structure->permalink = $permalink_obj->get_preferred($structure->id, 'structure', $structure->edition_id);
+
+			return $structure;
+		}
+		else {
+			return FALSE;
+		}
+	}
+
+
+	/**
+	 * Get count of structures.
+	 *
+	 * param int  $edition_id The edition to query.
+	 */
+	public function count($edition_id, $result_handle_only = false)
+	{
+		$query_args = array();
+		$query = 'SELECT count(*) AS count FROM structure ';
+		if($edition_id)
+		{
+			$query .= 'WHERE edition_id = :edition_id ';
+			$query_args[':edition_id'] = $edition_id;
+		}
+
+		$statement = $this->db->prepare($query);
+		$result = $statement->execute($query_args);
+
+		return (int) $statement->fetchColumn();
 	}
 
 }

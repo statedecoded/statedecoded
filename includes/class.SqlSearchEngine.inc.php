@@ -125,10 +125,22 @@ class SqlSearchEngine extends SearchEngineInterface
 		/*
 		 * Set up our query.
 		 */
-		$fields = array();
-		$fields[] = 'laws.id AS law_id';
-		$fields[] = 'laws.catch_line';
-		$where = array();
+		$select_fields = array('*');
+
+		$law_fields = array();
+		$law_fields[] = 'laws.id';
+		$law_fields[] = 'laws.catch_line AS name';
+		$law_fields[] = 'laws.edition_id';
+		$law_fields[] = '"law" AS object_type';
+		$law_where = array();
+
+		$structure_fields = array();
+		$structure_fields[] = 'structure.id';
+		$structure_fields[] = 'structure.name';
+		$structure_fields[] = 'structure.edition_id';
+		$structure_fields[] = '"structure" AS object_type';
+		$structure_where = array();
+
 		$order = array();
 
 		$query_args = array();
@@ -142,9 +154,14 @@ class SqlSearchEngine extends SearchEngineInterface
 			 * then in the text.
 			 */
 
-			$where_or = array();
+			# TODO: Search structure->metadata->text for matches. Since we're using
+			# PHP's serializer, we can't do this natively in SQL at the moment.
 
-			$where_or[] = 'section = :term';
+			$law_where_or = array();
+			$structure_where_or = array();
+
+			$law_where_or[] = 'section = :term';
+			$structure_where_or[] = 'name = :term';
 			$query_args[':term'] = $query['q'];
 
 			// Remove any quotes, and apply our regexp word boundaries.
@@ -153,16 +170,20 @@ class SqlSearchEngine extends SearchEngineInterface
 			);
 
 			// Add our query
-			$where_or[] = 'catch_line REGEXP :term_boundary';
-			$where_or[] = 'text REGEXP :term_boundary';
+			$law_where_or[] = 'catch_line REGEXP :term_boundary';
+			$law_where_or[] = 'text REGEXP :term_boundary';
+			$structure_where_or[] = 'name REGEXP :term_boundary';
 
 			// Add some fields to use in the order
-			$fields[] = 'catch_line REGEXP :term_boundary AS title_exect_match';
-			$fields[] = 'text REGEXP :term_boundary AS text_exect_match';
+			$law_fields[] = 'catch_line REGEXP :term_boundary AS title_exect_match';
+			$law_fields[] = 'text REGEXP :term_boundary AS text_exect_match';
+			$structure_fields[] = 'name REGEXP :term_boundary AS title_exact_match';
+			$structure_fields[] = '0 AS text_exact_match';
 
-			// Order by
-			$order[] = 'title_exect_match DESC';
-			$order[] = 'text_exect_match DESC';
+			// Order.  In the end, we want 1) exact title, 2) any title, 3) exact text,
+			// 4) any text.  This properly benefits structures as well as laws.
+			$order[0] = 'title_exect_match DESC';
+			$order[2] = 'text_exect_match DESC';
 
 			/*
 			 * If we have tokenized matches turned on, break the words up into
@@ -185,28 +206,46 @@ class SqlSearchEngine extends SearchEngineInterface
 						'catch_line', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$where_or[] = join(' OR ', $title_search);
-					$fields[] = '( ' .
+					$law_where_or[] = join(' OR ', $title_search);
+					$law_fields[] = '( ' .
 						join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
 						. ' ) AS title_match';
-					$order[] = 'title_match DESC';
+
 
 					list($text_search, $new_args) =
 						SqlSearchEngine::build_keyword_search(
 						'text', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$where_or[] = join(' OR ', $text_search);
-					$fields[] = '( ' .
+					$law_where_or[] = join(' OR ', $text_search);
+					$law_fields[] = '( ' .
 						join(' + ', array_map('SqlSearchEngine::ifify', $text_search))
 						. ' ) AS text_match';
-					$order[] = 'text_match DESC';
+
+					list($title_search, $new_args) =
+						SqlSearchEngine::build_keyword_search(
+						'name', $keywords);
+					$query_args = array_merge($query_args, $new_args);
+
+					$structure_where_or[] = join(' OR ', $title_search);
+					$structure_fields[] = '( ' .
+						join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
+						. ' ) AS title_match';
+
+					$structure_fields[] = '"" AS text_match';
+
+					$order[1] = 'title_match DESC';
+					$order[3] = 'text_match DESC';
 				}
 			}
 
-			if(count($where_or))
+			if(count($law_where_or))
 			{
-				$where[] = '(' . join(' OR ', $where_or) . ')';
+				$law_where[] = '(' . join(' OR ', $law_where_or) . ')';
+			}
+			if(count($structure_where_or))
+			{
+				$structure_where[] = '(' . join(' OR ', $structure_where_or) . ')';
 			}
 		}
 
@@ -215,7 +254,8 @@ class SqlSearchEngine extends SearchEngineInterface
 		 */
 		if(isset($query['edition_id']) && strlen($query['edition_id']))
 		{
-			$where[] = 'laws.edition_id = :edition_id';
+			$law_where[] = 'laws.edition_id = :edition_id';
+			$structure_where[] = 'structure.edition_id = :edition_id';
 			$query_args[':edition_id'] = $query['edition_id'];
 		}
 
@@ -237,21 +277,35 @@ class SqlSearchEngine extends SearchEngineInterface
 		 */
 		if($count_query)
 		{
-			$fields = array('count(*) AS count');
+			$select_fields = ['COUNT(*) AS count'];
+			// $law_fields = array('count(*) AS count');
+			// $structure_fields = array('count(*) AS count');
 			unset($order, $offset, $limit);
 		}
 
 		/*
 		 * Assemble our final query.
 		 */
-		$sql_query = 'SELECT ' . join(', ', $fields) . ' FROM laws ';
-		if(count($where))
+		$sql_query = 'SELECT ' . join(',', $select_fields) . ' FROM ';
+
+			$sql_query .= '(SELECT ' . join(', ', $law_fields) . ' FROM laws ';
+			if(count($law_where))
+			{
+				$sql_query .= 'WHERE ' . join(' AND ', $law_where) . ' ';
+			}
+			$sql_query .= 'UNION ';
+
+			$sql_query .= 'SELECT ' . join(', ', $structure_fields) . ' FROM structure ';
+			if(count($structure_where))
+			{
+				$sql_query .= 'WHERE ' . join(' AND ', $structure_where) . ' ';
+			}
+
+		$sql_query .= ') AS records ';
+
+		if(is_array($order) && count($order))
 		{
-			$sql_query .= 'WHERE ' . join(' AND ', $where) . ' ';
-		}
-		if(count($order))
-		{
-			$sql_query .= 'ORDER BY ' . join(', ', $order) . ' ';
+			$sql_query .= 'ORDER BY ' . join(', ', array_filter($order)) . ' ';
 		}
 		if(isset($limit))
 		{
@@ -394,5 +448,10 @@ class SqlSearchEngine extends SearchEngineInterface
 		return 'IF(' . $string . ', 1,0)';
 	}
 
+	// We don't have a real index, so we don't do anything on delete, successfully.
+	public function delete($edition_id)
+	{
+		return TRUE;
+	}
 
 }
