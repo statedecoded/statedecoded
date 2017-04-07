@@ -247,7 +247,7 @@ foreach($laws as $i=>$law)
 	/*
 	 * If we both the raw history text and translated (prose-style) history text, display both formats.
 	 */
-	if ( true || isset($law->history) && isset($law->history_text))
+	if ( isset($law->history) && isset($law->history_text))
 	{
 		$body .= '<section id="history">
 					<h2>History</h2>
