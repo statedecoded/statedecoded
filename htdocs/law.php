@@ -373,14 +373,6 @@ $sidebar .= ' on the official ' . LAWS_NAME . ' website</a>.
 				</p>
 			</section>';
 
-/*
- * Start the Masonry.js wrapper
- */
-$sidebar .= '<div class="grouping js-masonry"
-                  data-masonry-options=\'{
-                    "itemSelector": ".grid-box",
-                    "columnWidth": ".grid-sizer",
-                    "gutter": 10 }\'>';
 
 /*
  * Get the help text for the requested page.
@@ -538,11 +530,6 @@ if ( isset($laws[0]->citation) && is_object($laws[0]->citation) )
 			</section>';
 
 }
-
-/*
- * End Masonry.js wrapper
- */
-$sidebar .= '</section>';
 
 /*
  * Show edition info.
