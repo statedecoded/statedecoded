@@ -75,6 +75,10 @@ class DatabaseStatement extends PDOStatement
 
 	public function execute ( $input_parameters = null )
 	{
+		if(is_array($input_parameters) && count($input_parameters) === 0) {
+			$input_parameters = null;
+		}
+
 		try
 		{
 			$result = $this->pdo_statement->execute($input_parameters);
@@ -84,7 +88,7 @@ class DatabaseStatement extends PDOStatement
 			if(strpos($e->getMessage(), 'Error while sending QUERY packet.') !== FALSE)
 			{
 				$result = FALSE;
-				$error = 'MySQL server has gone away';
+				$error = 'Database server has gone away';
 			}
 			else
 			{
@@ -110,7 +114,7 @@ class DatabaseStatement extends PDOStatement
 	protected function recoverError ()
 	{
 		// If the server has gone away, simply try to reconnect.
-		$disconnect_error = 'MySQL server has gone away';
+		$disconnect_error = 'Database server has gone away';
 
 		$error_info = $this->errorInfo();
 		if ( !isset($error_info[0]) || (boolean) $error_info[0] === FALSE )

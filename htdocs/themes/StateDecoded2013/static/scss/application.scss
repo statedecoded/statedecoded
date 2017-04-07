@@ -40,6 +40,9 @@
 @import "dependencies/variables/_paths.css.scss";
 @import "dependencies/variables/_typography.css.scss";
 
+/* Font Awesome */
+@import "vendor/font-awesome/font-awesome";
+
 /* Variables, etc */
 @import "dependencies/variables/_colors.css.scss";
 @import "dependencies/variables/_drop-downs.css.scss";
@@ -52,6 +55,7 @@
 @import "base/_buttons.css.scss";
 /* Load font stacks and baseline type work */
 @import "base/tables/_tables.css.scss";
+@import "base/tables/_tables_striped.css.scss";
 
 /* Load Print stylesheet */
 @import "base/_print.css.scss";
@@ -60,6 +64,8 @@
 @import "components/_lists-collapseable.scss";
 @import "components/_modal.scss";
 @import "components/_keyboard-shortcuts.scss";
+@import "components/_pin-laws.scss";
+@import "components/_progress-bars.scss";
 
 /* Jquery Plugins */
 @import "vendor/jquery.qtip";
