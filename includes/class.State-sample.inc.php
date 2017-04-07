@@ -731,7 +731,7 @@ class Parser
 			{
 				$insert_data = array(
 					':object_type' => 'structure',
-					':relational_id' => null,
+					// ':relational_id' => null,
 					':identifier' => null,
 					':token' => '/browse/',
 					':url' => '/browse/',
@@ -746,7 +746,7 @@ class Parser
 
 			$insert_data = array(
 				':object_type' => 'structure',
-				':relational_id' => null,
+				// ':relational_id' => null,
 				':identifier' => null,
 				':token' => '/browse/',
 				':url' => '/' . $edition->slug . '/',
@@ -1584,7 +1584,7 @@ class Parser
 			/*
 			 * Find and return the position of this structural unit in the hierarchical stack.
 			 */
-			$dictionary->scope_specificity = array_search(
+			$dictionary->scope_specificity = (int) array_search(
 				strtolower($dictionary->scope),
 				array_map('strtolower', $structure)
 			);
@@ -2245,7 +2245,17 @@ class Parser
 				':structure_id' => $this->structure_id,
 				':edition_id' => $this->edition_id
 			);
-			$result = $statement->execute($sql_args);
+
+			foreach($sql_args as $key => $value)
+			{
+				$statement->bindValue($key, $value, PDO::PARAM_STR);
+			}
+			if(!$sql_args[':structure_id'] || $sql_args[':structure_id'] === 'NULL')
+			{
+				$statement->bindValue(':structure_id', null, PDO::PARAM_INT);
+			}
+
+			$result = $statement->execute();
 
 		}
 
