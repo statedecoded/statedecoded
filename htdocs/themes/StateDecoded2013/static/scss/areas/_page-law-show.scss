@@ -96,14 +96,15 @@
       margin: 0 0 20px 0;
     }
 
-      #section_id {
-        font-family: $statedecoded-stack1;
-        font-size: 65%;
-        font-variant: small-caps;
-        letter-spacing: 0.05em;
-        margin: 0 0 10px 0;
-        text-transform: small-caps;
-      }
+    .section_id {
+      display: block;
+      font-family: $statedecoded-stack1;
+      font-size: 65%;
+      font-variant: small-caps;
+      letter-spacing: 0.05em;
+      margin: 0 0 10px 0;
+      text-transform: small-caps;
+    }
 
     h3 {
       margin: 40px 0 10px 0;
@@ -143,6 +144,13 @@
         }
       }
     }
+
+  .prefix-number {
+    font-weight: bold;
+    float: left;
+    margin-right: 1em;
+  }
+
 	.tabular {
 	  max-width: 100%;
 	  overflow: auto;
@@ -150,6 +158,15 @@
 
     .section-permalink {
       text-decoration: none;
+    }
+
+    // If the permalink is inside of a section, we need to adjust it's position.
+    // This only happens when the <p> tags are already in the content before it
+    // gets to the template.
+    p + .section-permalink {
+      position: relative;
+      top: -1.25em;
+      margin-bottom: 1.25em;
     }
 
     pre.table {
@@ -249,14 +266,6 @@
       position: relative;
       text-align: left;
       width: 100%;
-
-      @include respond-to(desktop) {
-        width: 32%;
-      }
-
-      @include respond-to(laptop) {
-        width: 32%;
-      }
 
       @include respond-to(tablet-landscape) {
         width: 100%;
@@ -507,7 +516,6 @@
 $border-radius-base: 6px;
 // Give the tabs something to sit on
 .nav-tabs {
-  border-bottom: 1px solid $gray-lighter;
   > li {
     float: left;
     // Make the list-items overlay the bottom border
@@ -525,16 +533,27 @@ $border-radius-base: 6px;
     }
 
     // Active state, and it's :hover to override normal :hover
-    &.active > a {
+    &> a {
       &,
       &:hover,
       &:focus {
-        color: $gray-darkest;
-        background-color: white;
-        border: 1px solid $gray;
-        border-bottom-color: transparent;
+        z-index: 2;
+        padding: 4px 8px;
+        margin-right: 3px;
+        margin-bottom: 1px;
+        text-decoration: none;
+        color: $black;
+        background-color: $base-lightest;
+        border: 1px solid $gray-darkest;
+        border-bottom-color: $gray-darkest;
         cursor: default;
       }
+    }
+    &.active > a {
+      margin-bottom: 0;
+      border: 1px solid $gray-darkest;
+      border-bottom-color: transparent;
+      background-color: $gray-lightest;
     }
   }
   // pulling this in mainly for less shorthand
@@ -542,4 +561,48 @@ $border-radius-base: 6px;
     //@extend .nav-justified;
     //@extend .nav-tabs-justified;
   }
+}
+
+.tab-content {
+    position: relative;
+    top: -1px;
+}
+
+.tab-pane {
+  border: 1px solid $gray-darkest;
+  background-color: $gray-lightest;
+  padding: 1em 1em;
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}
+
+// Downloads
+// -------------------------
+.file-download a {
+  display: inline-block;
+  padding-top: 38px;
+  background: transparent url('../images/icon_generic_32.png') no-repeat top center;
+}
+
+.file-text a {
+  background-image: url('../images/icon_txt_32.png');
+}
+
+.file-json a {
+  background-image: url('../images/icon_json_32.png');
+}
+
+.file-doc a {
+  background-image: url('../images/icon_doc_32.png');
+}
+
+.file-epub a {
+  background-image: url('../images/icon_epub_32.png');
+}
+
+.file-pdf a {
+  background-image: url('../images/icon_pdf_32.png');
 }

@@ -245,7 +245,6 @@ $(document).ready(function () {
 
 		// Otherwise, Ajax in the list.
 		else {
-			console.log('/api/law' + elm.attr('href'));
 			content = {
 				text: 'Loading . . .', // Those are U+2009, not regular spaces.
 				ajax: {

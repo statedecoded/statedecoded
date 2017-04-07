@@ -19,6 +19,11 @@ class StructureController extends BaseController
 
 	public function handle($args)
 	{
+		/*
+		 * Put our local variables into the local scope.
+		 */
+		extract($this->local);
+
 		require(WEB_ROOT . '/structure.php');
 
 		$this->render($content);

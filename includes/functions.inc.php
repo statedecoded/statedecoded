@@ -18,11 +18,22 @@ function __autoload_libraries($class_name)
 {
 
 	$filename = 'class.' . $class_name . '.inc.php';
-	if (file_exists(INCLUDE_PATH . $filename) == TRUE)
+
+	$paths = explode(PATH_SEPARATOR, get_include_path());
+
+	foreach($paths as $path)
 	{
-		$result = include_once $filename;
+		if(substr($path, -1, 1) !== DIRECTORY_SEPARATOR)
+		{
+			$path .= DIRECTORY_SEPARATOR;
+		}
+
+		if (file_exists($path . $filename) === TRUE)
+		{
+			$result = include_once $path . $filename;
+			return;
+		}
 	}
-	return;
 
 }
 
@@ -401,122 +412,32 @@ function check_dir_available($dirname, $writable=false)
 
 }
 
-/**
- * Recusively travserses through an array to propagate SimpleXML objects.
- * @param array $array the array to parse
- * @param object $xml the Simple XML object (must be at least a single empty node)
- * @return object the Simple XML object (with array objects added)
- * @author Ben Balter
- */
-function object_to_xml( $array, $xml )
-{
-
-	/*
-	 * Array of keys that will be treated as attributes, not children.
-	 */
-	$attributes = array( 'id', 'number', 'label', 'prefix' );
-
-	/*
-	 * Recursively loop through each item.
-	 */
-	foreach ( $array as $key => $value )
-	{
-
-		/*
-		 * If this is a numbered array, grab the parent node to determine the node name.
-		 */
-		if ( is_numeric( $key ) )
-		{
-			$key = 'unit';
-		}
-
-		/*
-		 * If this is an attribute, treat as an attribute.
-		 */
-		if ( in_array( $key, $attributes ) )
-		{
-			$xml->addAttribute( $key, $value );
-		}
-
-		/*
-		 * If this value is an object or array, add a child node and treat recursively.
-		 */
-		else
-		{
-
-			if ( is_object( $value ) || is_array( $value ) )
-			{
-				$child = $xml->addChild(  $key );
-				$child = object_to_xml( $value, $child );
-			}
-			else
-			{
-				$xml->addChild( $key, $value );
-			}
-
-		}
-
-	}
-
-	return $xml;
-
-}
-
-/**
- * Change the name of DOMXPath element $element to $newName
- * By Felix E. Klee <felix.klee at inka.de>
- * http://www.php.net/manual/en/class.domelement.php#111494
- */
-function renameElement($element, $newName)
-{
-
-	$newElement = $element->ownerDocument->createElement($newName);
-	$parentElement = $element->parentNode;
-	$parentElement->insertBefore($newElement, $element);
-
-	$childNodes = $element->childNodes;
-	while ($childNodes->length > 0)
-	{
-		$newElement->appendChild($childNodes->item(0));
-	}
-
-	$attributes = $element->attributes;
-	while ($attributes->length > 0)
-	{
-		$attribute = $attributes->item(0);
-			if (!is_null($attribute->namespaceURI))
-			{
-				$newElement->setAttributeNS('http://www.w3.org/2000/xmlns/',
-				  'xmlns:'.$attribute->prefix,
-				  $attribute->namespaceURI);
-    		}
-			$newElement->setAttributeNode($attribute);
-	}
-
-	$parentElement->removeChild($element);
-
-}
-
 /*
  * Handle paths, trims extra trailing slashes.
  * By default, adds a trailing slash.
  */
 
-function join_paths($paths, $no_trailing_slash = false)
+function join_paths()
 {
+	$args = func_get_args();
+	$paths = array();
+
+	foreach($args as $arg) {
+		if(is_array($arg)) {
+			$paths = array_merge($paths, $arg);
+		}
+		else {
+			$paths[] = $arg;
+		}
+	}
+
 	foreach($paths as $key => $value)
 	{
 		$paths[$key] = rtrim($value, DIRECTORY_SEPARATOR);
 	}
 
-	$return_path = rtrim(
-		join(DIRECTORY_SEPARATOR, $paths),
-		DIRECTORY_SEPARATOR);
+	$return_path = join(DIRECTORY_SEPARATOR, array_filter($paths));
 
-	if(!$no_trailing_slash)
-	{
-		$return_path .= DIRECTORY_SEPARATOR;
-	}
 	return $return_path;
 }
 
@@ -553,6 +474,32 @@ function get_files($path, $files = array())
 }
 
 /*
+ * Recursively remove directories. Checks for Windows or not-Windows.
+ */
+function remove_dir($dir)
+{
+	if(defined('PHP_WINDOWS_VERSION_MAJOR'))
+	{
+		return system('rd /Q /S "' . $dir . '"');
+	}
+	else
+	{
+		return system('/bin/rm -rf ' . escapeshellarg($dir));
+	}
+}
+
+/*
+ * Recursively create directories
+ */
+function mkdir_safe($dir)
+{
+	if(!is_dir($dir))
+	{
+		return mkdir($dir, 0755, true);
+	}
+}
+
+/*
  * Recursively strip html entities from an entire object
  */
 function html_entity_decode_object($obj)
@@ -580,11 +527,286 @@ function html_entity_decode_object($obj)
  * From php.net: http://us2.php.net/manual/en/function.html-entity-decode.php#47371
  */
 function decode_entities($text) {
-    $text = html_entity_decode($text,ENT_QUOTES,"ISO-8859-1"); #NOTE: UTF-8 does not work!
-    $text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
-    $text = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
-    $text = preg_replace('/&(?!#)/', '&amp;', $text);
+    $text = html_entity_decode($text, ENT_QUOTES | ENT_XML1, "ISO-8859-1"); #NOTE: UTF-8 does not work!
+    // $text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
+    // $text = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
+    // $text = preg_replace('/&(?!#)/', '&amp;', $text);
     return $text;
+}
+
+/*
+ * html_convert_entities($string) -- convert named HTML entities to
+ * XML-compatible numeric entities.
+ *
+ * From: https://gist.github.com/inanimatt/879249
+ */
+
+function html_convert_entities($string) {
+  return preg_replace_callback('/&([a-zA-Z][a-zA-Z0-9]+);/S',
+                               'convert_entity', $string);
+}
+
+/* Swap HTML named entity with its numeric equivalent. If the entity
+ * isn't in the lookup table, this function returns a blank, which
+ * destroys the character in the output - this is probably the
+ * desired behaviour when producing XML. */
+function convert_entity($matches) {
+  static $table = array('quot'    => '&#34;',
+                        'amp'      => '&#38;',
+                        'lt'       => '&#60;',
+                        'gt'       => '&#62;',
+                        'OElig'    => '&#338;',
+                        'oelig'    => '&#339;',
+                        'Scaron'   => '&#352;',
+                        'scaron'   => '&#353;',
+                        'Yuml'     => '&#376;',
+                        'circ'     => '&#710;',
+                        'tilde'    => '&#732;',
+                        'ensp'     => '&#8194;',
+                        'emsp'     => '&#8195;',
+                        'thinsp'   => '&#8201;',
+                        'zwnj'     => '&#8204;',
+                        'zwj'      => '&#8205;',
+                        'lrm'      => '&#8206;',
+                        'rlm'      => '&#8207;',
+                        'ndash'    => '&#8211;',
+                        'mdash'    => '&#8212;',
+                        'lsquo'    => '&#8216;',
+                        'rsquo'    => '&#8217;',
+                        'sbquo'    => '&#8218;',
+                        'ldquo'    => '&#8220;',
+                        'rdquo'    => '&#8221;',
+                        'bdquo'    => '&#8222;',
+                        'dagger'   => '&#8224;',
+                        'Dagger'   => '&#8225;',
+                        'permil'   => '&#8240;',
+                        'lsaquo'   => '&#8249;',
+                        'rsaquo'   => '&#8250;',
+                        'euro'     => '&#8364;',
+                        'fnof'     => '&#402;',
+                        'Alpha'    => '&#913;',
+                        'Beta'     => '&#914;',
+                        'Gamma'    => '&#915;',
+                        'Delta'    => '&#916;',
+                        'Epsilon'  => '&#917;',
+                        'Zeta'     => '&#918;',
+                        'Eta'      => '&#919;',
+                        'Theta'    => '&#920;',
+                        'Iota'     => '&#921;',
+                        'Kappa'    => '&#922;',
+                        'Lambda'   => '&#923;',
+                        'Mu'       => '&#924;',
+                        'Nu'       => '&#925;',
+                        'Xi'       => '&#926;',
+                        'Omicron'  => '&#927;',
+                        'Pi'       => '&#928;',
+                        'Rho'      => '&#929;',
+                        'Sigma'    => '&#931;',
+                        'Tau'      => '&#932;',
+                        'Upsilon'  => '&#933;',
+                        'Phi'      => '&#934;',
+                        'Chi'      => '&#935;',
+                        'Psi'      => '&#936;',
+                        'Omega'    => '&#937;',
+                        'alpha'    => '&#945;',
+                        'beta'     => '&#946;',
+                        'gamma'    => '&#947;',
+                        'delta'    => '&#948;',
+                        'epsilon'  => '&#949;',
+                        'zeta'     => '&#950;',
+                        'eta'      => '&#951;',
+                        'theta'    => '&#952;',
+                        'iota'     => '&#953;',
+                        'kappa'    => '&#954;',
+                        'lambda'   => '&#955;',
+                        'mu'       => '&#956;',
+                        'nu'       => '&#957;',
+                        'xi'       => '&#958;',
+                        'omicron'  => '&#959;',
+                        'pi'       => '&#960;',
+                        'rho'      => '&#961;',
+                        'sigmaf'   => '&#962;',
+                        'sigma'    => '&#963;',
+                        'tau'      => '&#964;',
+                        'upsilon'  => '&#965;',
+                        'phi'      => '&#966;',
+                        'chi'      => '&#967;',
+                        'psi'      => '&#968;',
+                        'omega'    => '&#969;',
+                        'thetasym' => '&#977;',
+                        'upsih'    => '&#978;',
+                        'piv'      => '&#982;',
+                        'bull'     => '&#8226;',
+                        'hellip'   => '&#8230;',
+                        'prime'    => '&#8242;',
+                        'Prime'    => '&#8243;',
+                        'oline'    => '&#8254;',
+                        'frasl'    => '&#8260;',
+                        'weierp'   => '&#8472;',
+                        'image'    => '&#8465;',
+                        'real'     => '&#8476;',
+                        'trade'    => '&#8482;',
+                        'alefsym'  => '&#8501;',
+                        'larr'     => '&#8592;',
+                        'uarr'     => '&#8593;',
+                        'rarr'     => '&#8594;',
+                        'darr'     => '&#8595;',
+                        'harr'     => '&#8596;',
+                        'crarr'    => '&#8629;',
+                        'lArr'     => '&#8656;',
+                        'uArr'     => '&#8657;',
+                        'rArr'     => '&#8658;',
+                        'dArr'     => '&#8659;',
+                        'hArr'     => '&#8660;',
+                        'forall'   => '&#8704;',
+                        'part'     => '&#8706;',
+                        'exist'    => '&#8707;',
+                        'empty'    => '&#8709;',
+                        'nabla'    => '&#8711;',
+                        'isin'     => '&#8712;',
+                        'notin'    => '&#8713;',
+                        'ni'       => '&#8715;',
+                        'prod'     => '&#8719;',
+                        'sum'      => '&#8721;',
+                        'minus'    => '&#8722;',
+                        'lowast'   => '&#8727;',
+                        'radic'    => '&#8730;',
+                        'prop'     => '&#8733;',
+                        'infin'    => '&#8734;',
+                        'ang'      => '&#8736;',
+                        'and'      => '&#8743;',
+                        'or'       => '&#8744;',
+                        'cap'      => '&#8745;',
+                        'cup'      => '&#8746;',
+                        'int'      => '&#8747;',
+                        'there4'   => '&#8756;',
+                        'sim'      => '&#8764;',
+                        'cong'     => '&#8773;',
+                        'asymp'    => '&#8776;',
+                        'ne'       => '&#8800;',
+                        'equiv'    => '&#8801;',
+                        'le'       => '&#8804;',
+                        'ge'       => '&#8805;',
+                        'sub'      => '&#8834;',
+                        'sup'      => '&#8835;',
+                        'nsub'     => '&#8836;',
+                        'sube'     => '&#8838;',
+                        'supe'     => '&#8839;',
+                        'oplus'    => '&#8853;',
+                        'otimes'   => '&#8855;',
+                        'perp'     => '&#8869;',
+                        'sdot'     => '&#8901;',
+                        'lceil'    => '&#8968;',
+                        'rceil'    => '&#8969;',
+                        'lfloor'   => '&#8970;',
+                        'rfloor'   => '&#8971;',
+                        'lang'     => '&#9001;',
+                        'rang'     => '&#9002;',
+                        'loz'      => '&#9674;',
+                        'spades'   => '&#9824;',
+                        'clubs'    => '&#9827;',
+                        'hearts'   => '&#9829;',
+                        'diams'    => '&#9830;',
+                        'nbsp'     => '&#160;',
+                        'iexcl'    => '&#161;',
+                        'cent'     => '&#162;',
+                        'pound'    => '&#163;',
+                        'curren'   => '&#164;',
+                        'yen'      => '&#165;',
+                        'brvbar'   => '&#166;',
+                        'sect'     => '&#167;',
+                        'uml'      => '&#168;',
+                        'copy'     => '&#169;',
+                        'ordf'     => '&#170;',
+                        'laquo'    => '&#171;',
+                        'not'      => '&#172;',
+                        'shy'      => '&#173;',
+                        'reg'      => '&#174;',
+                        'macr'     => '&#175;',
+                        'deg'      => '&#176;',
+                        'plusmn'   => '&#177;',
+                        'sup2'     => '&#178;',
+                        'sup3'     => '&#179;',
+                        'acute'    => '&#180;',
+                        'micro'    => '&#181;',
+                        'para'     => '&#182;',
+                        'middot'   => '&#183;',
+                        'cedil'    => '&#184;',
+                        'sup1'     => '&#185;',
+                        'ordm'     => '&#186;',
+                        'raquo'    => '&#187;',
+                        'frac14'   => '&#188;',
+                        'frac12'   => '&#189;',
+                        'frac34'   => '&#190;',
+                        'iquest'   => '&#191;',
+                        'Agrave'   => '&#192;',
+                        'Aacute'   => '&#193;',
+                        'Acirc'    => '&#194;',
+                        'Atilde'   => '&#195;',
+                        'Auml'     => '&#196;',
+                        'Aring'    => '&#197;',
+                        'AElig'    => '&#198;',
+                        'Ccedil'   => '&#199;',
+                        'Egrave'   => '&#200;',
+                        'Eacute'   => '&#201;',
+                        'Ecirc'    => '&#202;',
+                        'Euml'     => '&#203;',
+                        'Igrave'   => '&#204;',
+                        'Iacute'   => '&#205;',
+                        'Icirc'    => '&#206;',
+                        'Iuml'     => '&#207;',
+                        'ETH'      => '&#208;',
+                        'Ntilde'   => '&#209;',
+                        'Ograve'   => '&#210;',
+                        'Oacute'   => '&#211;',
+                        'Ocirc'    => '&#212;',
+                        'Otilde'   => '&#213;',
+                        'Ouml'     => '&#214;',
+                        'times'    => '&#215;',
+                        'Oslash'   => '&#216;',
+                        'Ugrave'   => '&#217;',
+                        'Uacute'   => '&#218;',
+                        'Ucirc'    => '&#219;',
+                        'Uuml'     => '&#220;',
+                        'Yacute'   => '&#221;',
+                        'THORN'    => '&#222;',
+                        'szlig'    => '&#223;',
+                        'agrave'   => '&#224;',
+                        'aacute'   => '&#225;',
+                        'acirc'    => '&#226;',
+                        'atilde'   => '&#227;',
+                        'auml'     => '&#228;',
+                        'aring'    => '&#229;',
+                        'aelig'    => '&#230;',
+                        'ccedil'   => '&#231;',
+                        'egrave'   => '&#232;',
+                        'eacute'   => '&#233;',
+                        'ecirc'    => '&#234;',
+                        'euml'     => '&#235;',
+                        'igrave'   => '&#236;',
+                        'iacute'   => '&#237;',
+                        'icirc'    => '&#238;',
+                        'iuml'     => '&#239;',
+                        'eth'      => '&#240;',
+                        'ntilde'   => '&#241;',
+                        'ograve'   => '&#242;',
+                        'oacute'   => '&#243;',
+                        'ocirc'    => '&#244;',
+                        'otilde'   => '&#245;',
+                        'ouml'     => '&#246;',
+                        'divide'   => '&#247;',
+                        'oslash'   => '&#248;',
+                        'ugrave'   => '&#249;',
+                        'uacute'   => '&#250;',
+                        'ucirc'    => '&#251;',
+                        'uuml'     => '&#252;',
+                        'yacute'   => '&#253;',
+                        'thorn'    => '&#254;',
+                        'yuml'     => '&#255;'
+
+                        );
+  // Entity not found? Destroy it.
+  return isset($table[$matches[1]]) ? $table[$matches[1]] : '';
 }
 
 /*

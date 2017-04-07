@@ -11,12 +11,11 @@
  * @since		0.1
 */
 
-
 /*
  * Setup the edition object.
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
-global $db;
+
 $edition = new Edition(array('db' => $db));
 
 /*
@@ -43,7 +42,7 @@ else
 /*
  * Create a new instance of the class that handles information about individual laws.
  */
-$struct = new Structure();
+$struct = new Structure(array('db' => $db));
 
 if ( isset($args['edition_id']) )
 {
@@ -106,7 +105,7 @@ if (strlen($structure_id) > 0)
 else
 {
 	$content->set('browser_title', SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.');
-	$content->set('page_title', '<h2>'.ucwords($children->{0}->label) . 's of the ' . LAWS_NAME.'</h2>');
+	$content->set('page_title', '<h2>'.ucwords($children[0]->label) . 's of the ' . LAWS_NAME.'</h2>');
 }
 
 /*
@@ -130,8 +129,17 @@ if (count((array) $structure) > 1)
 			$active = 'active';
 		}
 
+		if(isset($level->metadata->admin_division) && $level->metadata->admin_division === TRUE)
+		{
+			$identifier = '';
+		}
+		else
+		{
+			$identifier = $level->identifier . ': ';
+		}
+
 		$content->append('breadcrumbs', '<li class="' . $active . '">
-				<a href="' . $level->url . '">' . $level->identifier . ': ' . $level->name . '</a>
+				<a href="' . $level->permalink->url . '">' . $identifier . $level->name . '</a>
 			</li>');
 
 		/*
@@ -140,7 +148,7 @@ if (count((array) $structure) > 1)
 		 */
 		if ($level->id == $struct->parent_id)
 		{
-			$content->set('link_rel', '<link rel="up" title="Up" href="' . $level->url . '" />');
+			$content->set('link_rel', '<link rel="up" title="Up" href="' . $level->url->url . '" />');
 		}
 
 	}
@@ -286,18 +294,26 @@ if ($children !== FALSE)
 	/*
 	 * The level of this child structural unit is that of the current unit, plus one.
 	 */
-	$body .= '<table class="title-list sections table-striped level-' . ((isset($structure->{count($structure)-1}->level) ? $structure->{count($structure)-1}->level : 0) + 1) . '"><tbody>';
+	$body .= '<table class="title-list sections table-striped level-' . ((isset($structure[count($structure)-1]->depth) ? $structure[count($structure)-1]->depth : 0) + 1) . '"><tbody>';
 	foreach ($children as $child)
 	{
-		$api_url = '/api/1.0/structure/' . $child->token
-			 . '/?key=' . API_KEY;
 
-		$body .= '<tr><td><a href="' . $child->url . '"
-				data-identifier="' . $child->token . '"
+		$api_url = '/api/1.0/structure/' . $child->permalink->token
+			 . '/?key=' . API_KEY;
+		if(isset($child->metadata->admin_division) && $child->metadata->admin_division === TRUE)
+		{
+			$identifier = '';
+		}
+		else
+		{
+			$identifier = $child->identifier;
+		}
+		$body .= '<tr><td><a href="' . $child->permalink->url . '"
+				data-identifier="' . $child->permalink->token . '"
 				data-api-url="' . $api_url . '"
-				>' . $child->identifier . '</a></td>
-			<td><a href="' . $child->url . '"
-				data-identifier="' . $child->token . '"
+				>' . $identifier . '</a></td>
+			<td class="' . $row_class . '"><a href="' . $child->permalink->url . '"
+				data-identifier="' . $child->permalink->token . '"
 				data-api-url="' . $api_url . '"
 				>' . $child->name . '</a></td></tr>';
 	}
