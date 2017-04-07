@@ -97,6 +97,7 @@ class TaskRunner
 		);
 
 		print $this->postFormat( $action_object->execute($args) );
+		exit($action_object->result);
 	}
 
 	protected function parseExecArgs(&$exec_args)

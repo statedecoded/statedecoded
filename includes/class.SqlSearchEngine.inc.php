@@ -125,15 +125,19 @@ class SqlSearchEngine extends SearchEngineInterface
 		/*
 		 * Set up our query.
 		 */
+		$select_fields = array('*');
+
 		$law_fields = array();
 		$law_fields[] = 'laws.id';
 		$law_fields[] = 'laws.catch_line AS name';
+		$law_fields[] = 'laws.edition_id';
 		$law_fields[] = '"law" AS object_type';
 		$law_where = array();
 
 		$structure_fields = array();
 		$structure_fields[] = 'structure.id';
 		$structure_fields[] = 'structure.name';
+		$structure_fields[] = 'structure.edition_id';
 		$structure_fields[] = '"structure" AS object_type';
 		$structure_where = array();
 
@@ -250,7 +254,7 @@ class SqlSearchEngine extends SearchEngineInterface
 		 */
 		if(isset($query['edition_id']) && strlen($query['edition_id']))
 		{
-			$laws_where[] = 'laws.edition_id = :edition_id';
+			$law_where[] = 'laws.edition_id = :edition_id';
 			$structure_where[] = 'structure.edition_id = :edition_id';
 			$query_args[':edition_id'] = $query['edition_id'];
 		}
@@ -273,15 +277,16 @@ class SqlSearchEngine extends SearchEngineInterface
 		 */
 		if($count_query)
 		{
-			$law_fields = array('count(*) AS count');
-			$structure_fields = array('count(*) AS count');
+			$select_fields = ['COUNT(*) AS count'];
+			// $law_fields = array('count(*) AS count');
+			// $structure_fields = array('count(*) AS count');
 			unset($order, $offset, $limit);
 		}
 
 		/*
 		 * Assemble our final query.
 		 */
-		$sql_query = 'SELECT * FROM ';
+		$sql_query = 'SELECT ' . join(',', $select_fields) . ' FROM ';
 
 			$sql_query .= '(SELECT ' . join(', ', $law_fields) . ' FROM laws ';
 			if(count($law_where))
@@ -298,7 +303,7 @@ class SqlSearchEngine extends SearchEngineInterface
 
 		$sql_query .= ') AS records ';
 
-		if(count($order))
+		if(is_array($order) && count($order))
 		{
 			$sql_query .= 'ORDER BY ' . join(', ', array_filter($order)) . ' ';
 		}
