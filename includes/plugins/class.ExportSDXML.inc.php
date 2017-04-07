@@ -26,243 +26,85 @@ class ExportSDXML extends Export
 		'showBulkDownload'
 	);
 
-	public function formatLawForExport($law_original)
+	public function formatLawForExport($law)
 	{
-		$law = clone($law_original);
-
-		/*
-		 * We need to massage the $law object to match the State Decoded XML
-		 * standard. The first step towards this is removing unnecessary
-		 * elements.
-		 */
-		unset($law->plain_text);
-		unset($law->structure_contents);
-		unset($law->next_section);
-		unset($law->previous_section);
-		unset($law->amendment_years);
-		unset($law->dublin_core);
-		unset($law->plain_text);
-		unset($law->section_id);
-		unset($law->structure_id);
-		unset($law->edition_id);
-		unset($law->full_text);
-		unset($law->formats);
-		unset($law->html);
-		$law->structure = $law->ancestry;
-		unset($law->ancestry);
-		$law->referred_to_by = $law->references;
-		unset($law->references);
-
-		/*
-		 * Encode all entities as their proper Unicode characters, save for the
-		 * few that are necessary in XML.
-		 */
-		$law = html_entity_decode_object($law);
-
 		/*
 		 * Load the XML string into DOMDocument.
 		 */
-		$doc = new DOMDocument();
-		$dom = $doc->createElement('law');
-		$doc->appendChild($dom);
+		$dom = new DOMWriter('law');
 
-		object_to_dom($law, $doc, $dom);
-
-		/*
-		 * We're going to be inserting some things before the catch line.
-		 */
-		$catch_lines = $dom->getElementsByTagName('catch_line');
-		$catch_line = $catch_lines->item(0);
-
-		if(!$dom)
-		{
-			var_dump('!!', $xml, $dom->saveXML());
-			throw new Exception('Couldn\'t find a law in the xml.');
-		}
-
-		/*
-		 * Add the main site info.
-		 */
 		if(defined('SITE_TITLE'))
 		{
-			$site_title = $doc->createElement('site_title');
-			$site_title->appendChild($doc->createTextNode(SITE_TITLE));
-			$dom->insertBefore($site_title, $catch_line);
+			$dom->create('site_title', SITE_TITLE);
 		}
 
+		$base_url = '';
 		if(defined('SITE_URL'))
 		{
-			$site_url = $doc->createElement('site_url');
-			$site_url->appendChild($doc->createTextNode(SITE_URL));
-			$dom->insertBefore($site_url, $catch_line);
+			$base_url = SITE_URL;
+			$dom->create('site_url', SITE_URL);
 		}
 
-		/*
-		 * Set the edition.
-		 */
-		$edition = $doc->createElement('edition');
-		$edition->appendChild($doc->createTextNode($law->edition->name));
+		$dom->create('law_id', $law->law_id);
+		$dom->create('section_number', $law->section_number);
+		$dom->create('catch_line', $law->catch_line);
 
-		$edition_url = $doc->createAttribute('url');
-		$edition_url->value = '';
-		if(defined('SITE_URL'))
+		if(isset($law->order_by) && $law->order_by)
 		{
-			$edition_url->value = SITE_URL;
+			$dom->create('order_by', $law->order_by);
 		}
-		$edition_url->value .= '/' . $law->edition->slug . '/';
-		$edition->appendChild($edition_url);
 
-		$edition_id = $doc->createAttribute('id');
-		$edition_id->value = $law->edition->id;
-		$edition->appendChild($edition_id);
+		$dom->create('edition', $law->edition->name, array(
+			'url' => $base_url . '/' . $law->edition->slug . '/',
+			'slug' => $law->edition->slug,
+			'current' => $law->edition->current ? 'TRUE' : 'FALSE',
+			'last_updated' => date('Y-m-d', strtotime($law->edition->last_import))
+		));
 
-		$edition_last_updated = $doc->createAttribute('last_updated');
-		$edition_last_updated->value = date('Y-m-d', strtotime($law->edition->last_import));
-		$edition->appendChild($edition_last_updated);
-
-		$edition_current = $doc->createAttribute('current');
-		$edition_current->value = $law->edition->current ? 'TRUE' : 'FALSE';
-		$edition->appendChild($edition_current);
-
-		$dom->insertBefore($edition, $catch_line);
-
-		/*
-		 * Simplify every reference, stripping them down to the cited sections.
-		 */
-		$referred_to_by = $dom->getElementsByTagName('referred_to_by');
-		if ( !empty($referred_to_by) && ($referred_to_by->length > 0) )
+		if(isset($law->references) && is_array($law->references) && count($law->references))
 		{
-			$referred_to_by = $referred_to_by->item(0);
-			$references = $referred_to_by->getElementsByTagName('unit');
+			$references =& $dom->create('referred_to_by');
 
-			/*
-			 * Iterate backwards through our elements.
-			 */
-			for ($i = $references->length; --$i >= 0;)
+			foreach($law->references as $reference) {
+				$references->create('reference', $reference->section_number);
+			}
+		}
+
+		$structure =& $dom->create('structure');
+		foreach(array_reverse($law->ancestry) as $ancestor)
+		{
+			$args = array(
+				'label' => $ancestor->label,
+				'level' => $ancestor->depth,
+				'order_by' => $ancestor->order_by
+			);
+
+			if(!isset($ancestor->metadata) ||
+				!isset($ancestor->metadata->admin_division) ||
+				$ancestor->metadata->admin_division !== TRUE)
 			{
-
-				$reference = $references->item($i);
-
-				/*
-				 * Save the section number.
-				 */
-				$section_number = trim($reference->getElementsByTagName('section_number')->item(0)->nodeValue);
-
-				/*
-				 * Create a new element, named "reference," which contains the only
-				 * the section number.
-				 */
-				$element = $doc->createElement('reference', $section_number);
-				$reference->parentNode->insertBefore($element, $reference);
-
-				/*
-				 * Remove the "unit" node.
-				 */
-				$reference->parentNode->removeChild($reference);
-
+				$args['identifier'] = $ancestor->identifier;
 			}
 
+			$structure->create('unit', $ancestor->name, $args);
 		}
 
-		/*
-		 * Simplify and reorganize every structural unit.
-		 */
-		$structure_elements = $dom->getElementsByTagName('structure');
-		if ( !empty($structure_elements) && ($structure_elements->length > 0) )
+		$dom->create('text', html_convert_entities($law->html));
+
+		if(isset($law->history))
 		{
-			$structure_element = $structure_elements->item(0);
-			$structural_units = $structure_element->getElementsByTagName('unit');
-
-			$dom->insertBefore($structure_element, $catch_line);
-
-			/*
-			 * Iterate backwards through our elements.
-			 */
-			for ($i = $structural_units->length; --$i >= 0;)
-			{
-				$structure_element->removeChild($structural_units->item($i));
-			}
-
-			/*
-			 * Build up our structures.
-			 * The count/get_object_vars is really fragile, and not a good way to do this.
-			 * TODO: Refactor all of $law->structure to be an array, not an object.
-			 */
-			$level_value = 0;
-			for ($i = count(get_object_vars($law->structure))+1; --$i >= 1;)
-			{
-				$structure = $law->structure->{$i};
-				$level_value++;
-
-				$unit = $doc->createElement('unit');
-
-				/*
-				 * Add the "level" attribute.
-				 */
-				$label = trim(strtolower($unit->getAttribute('label')));
-				$level = $doc->createAttribute('level');
-				$level->value = $level_value;
-
-				$unit->appendChild($level);
-
-				/*
-				 * Add the "identifier" attribute.
-				 */
-				$identifier = $doc->createAttribute('identifier');
-				$identifier->value = trim($structure->identifier);
-				$unit->appendChild($identifier);
-
-				/*
-				 * Add the "url" attribute.
-				 */
-				$url = $doc->createAttribute('url');
-
-				$url->value = '';
-				if(defined('SITE_URL'))
-				{
-					$url->value = SITE_URL;
-				}
-				$url->value .= $law->url;
-
-				$unit->appendChild($url);
-
-				/*
-				 * Store the name of this structural unit as the contents of <unit>.
-				 */
-				$unit->nodeValue = trim($structure->name);
-
-				/*
-				 * Save these changes.
-				 */
-				$structure_element->appendChild($unit);
-			}
-
+			$dom->create('history', $law->history);
 		}
 
-		/*
-		 * Rename text units as text sections.
-		 */
-		$text = $dom->getElementsByTagName('text');
-		if (!empty($text) && ($text->length > 0))
+		if(isset($law->metadata) && $law != new stdClass())
 		{
-			$text = $text->item(0);
-			$text_units = $text->getElementsByTagName('unit');
-
-			/*
-			 * Iterate backwards through our elements.
-			 */
-			for ($i = $text_units->length; --$i >= 0;)
-			{
-				$text_unit = $text_units->item($i);
-				renameElement($text_unit, 'section');
-			}
-
+			$dom->create('metadata', $law->metadata);
 		}
 
 		/*
-		 * Return the cleaned-up XML.
+		 * Export our DOM as XML.
 		 */
-		return $doc->saveXML();
+		return (string) $dom;
 	}
 
 }

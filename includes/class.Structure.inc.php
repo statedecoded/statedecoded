@@ -192,11 +192,9 @@ class Structure
 						object_type = :object_type
 					WHERE s2_id = :parent_id
 					AND permalinks.preferred = 1
-					AND structure.edition_id = :edition_id
 					ORDER BY structure.order_by, structure_unified.s1_identifier';
 			$sql_args[':object_type'] = 'structure';
 			$sql_args[':parent_id'] = $this->parent_id;
-			$sql_args[':edition_id'] = $this->edition_id;
 
 		}
 
@@ -213,10 +211,8 @@ class Structure
 						ON structure.id = permalinks.relational_id and
 						object_type = :object_type
 					WHERE parent_id IS NULL
-					AND permalinks.preferred = 1
-					AND structure.edition_id = :edition_id';
+					AND permalinks.preferred = 1';
 			$sql_args[':object_type'] = 'structure';
-			$sql_args[':edition_id'] = $this->edition_id;
 
 			/*
 			 * Order these by the order_by column, which may or may not be populated.

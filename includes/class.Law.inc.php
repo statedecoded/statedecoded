@@ -1101,7 +1101,7 @@ class Law
 					<section';
 				if (!empty($paragraph->prefix_anchor))
 				{
-					$html .= ' id="' . $paragraph->prefix_anchor . '"';
+					$html .= ' id="' . preg_replace('/[^a-z0-9A-Z]/', '', $paragraph->prefix_anchor) . '"';
 				}
 
 				/*

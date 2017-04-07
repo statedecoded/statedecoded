@@ -106,7 +106,7 @@ abstract class Export extends Plugin
 
 		$path = join_paths($dir, 'code-' . $this->format, $tokens);
 		$filename = $filebase;
-		if($law->metadata->dupe_number)
+		if(isset($law->metadata) && isset($law->metadata->dupe_number))
 		{
 			$filename .= '_' . $law->metadata->dupe_number;
 		}
