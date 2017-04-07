@@ -19,9 +19,14 @@ class LawController extends BaseController
 
 	public function handle($args)
 	{
+		/*
+		 * Put our local variables into the local scope.
+		 */
+		extract($this->local);
+
 		require(WEB_ROOT.'/law.php');
 
 		$this->render($content);
 	}
-	
+
 }

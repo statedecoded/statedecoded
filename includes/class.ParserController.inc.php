@@ -17,6 +17,7 @@ class ParserController
 {
 	public $db;
 	public $logger;
+	public $events;
 	public $permalink_obj;
 	public $import_data_dir;
 
@@ -61,6 +62,15 @@ class ParserController
 		$this->set_execution_limits();
 
 		/*
+		 * Set up our event manager.
+		 */
+		if(!isset($this->events))
+		{
+			$this->events = new EventManager();
+			$this->events->registerService('logger', $this->logger);
+		}
+
+		/*
 		 * Set the default import location;
 		 */
 		if(!isset($this->import_data_dir))
@@ -93,11 +103,11 @@ class ParserController
     // {{{ init_logger()
 
 	/*
-	 * Let this script run for as long as is necessary to finish.
-     * @access public
-     * @static
-     * @since Method available since Release 0.7
-     */
+	 *
+   * @access public
+   * @static
+   * @since Method available since Release 0.7
+   */
 	public function init_logger()
 	{
 
@@ -565,8 +575,6 @@ class ParserController
 	public function clear_db()
 	{
 
-		$this->logger->message('Clearing out the database', 5);
-
 		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
 			'tags', 'text_sections', 'structure', 'permalinks', 'laws_meta');
 		foreach ($tables as $table)
@@ -588,7 +596,7 @@ class ParserController
 				die();
 			}
 
-			$this->logger->message('Deleted ' . $table, 5);
+			$this->logger->message('Deleted all records from ' . $table, 5);
 
 		}
 
@@ -633,7 +641,7 @@ class ParserController
 			 * We are deleting instead of truncating, to handle foreign keys.
 			 */
 			$sql = 'DELETE FROM ' . $table . ' WHERE edition_id = :edition_id';
-			$sql_args = array(':edition_id' => $this->edition_id);
+			$sql_args = array(':edition_id' => $edition_id);
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -646,9 +654,6 @@ class ParserController
 
 			$this->logger->message('Deleted ' . $table, 5);
 		}
-
-		$this->logger->message('Clearing search index', 5);
-		$this->clear_index($edition_id);
 
 		return TRUE;
 	}
@@ -680,7 +685,7 @@ class ParserController
 	public function parse()
 	{
 
-		$this->logger->message('Beginning the import process', 5);
+		$this->logger->message('Starting file parsing.', 5);
 
 		/*
 		 * Create a new instance of Parser.
@@ -731,6 +736,7 @@ class ParserController
 			 * Iterate through the files.
 			 */
 			$this->logger->message('Importing the law files in the import-data directory', 5);
+			$this->logger->progress('parsefiles');
 
 			while ($section = $parser->iterate())
 			{
@@ -739,7 +745,10 @@ class ParserController
 				{
 					$parser->store();
 				}
+				$this->logger->updateProgressFiles('parsefiles', $parser->file,  count($parser->files));
 			}
+
+			$this->logger->finishProgress('parsefiles');
 
 			if(method_exists($parser, 'post_parse'))
 			{
@@ -809,8 +818,6 @@ class ParserController
 				}
 
 			}
-
-			$this->logger->message('Analyzed and stored law codification histories', 3);
 
 		}
 
@@ -1066,6 +1073,10 @@ class ParserController
 	 * There are a handful of bulk downloads that are created. This gathers up the data and creates
 	 * those files. It also creates the downloads directory, if it doesn't exist.
 	 */
+
+	public $export_count;
+	public $export_progress;
+
 	public function export()
 	{
 
@@ -1077,7 +1088,22 @@ class ParserController
 		 * Begin the process of exporting each section.
 		 * We start at the top, with no parents.
 		 */
+		$this->logger->progress('exportfiles');
+
+		// Figure out how many files we're dealing with.
+		$sql = 'SELECT COUNT(*) AS count FROM laws WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $this->edition_id);
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result !== FALSE && $statement->rowCount() > 0)
+		{
+			$this->export_count = (int) $statement->fetchColumn();
+		}
+
 		$this->export_structure();
+
+		$this->logger->finishProgress('exportfiles');
 
 		/*
 		 * Zip up all of the JSON files into a single file. We do this via exec(), rather than
@@ -1085,46 +1111,9 @@ class ParserController
 		 * exec() is faster and more efficient.
 		 */
 
-		/*
-		 * Set a flag telling us that we may write files.
-		 */
-		$write_json = TRUE;
-		$write_text = TRUE;
-		$write_xml = TRUE;
 
+		$this->events->trigger('finishExport', $this->downloads_dir);
 
-		if ($write_json === TRUE)
-		{
-
-			$output = array();
-			exec('cd ' . $this->downloads_dir . '; zip -9rq code.json.zip code-json');
-			$this->logger->message('Created a ZIP file of the laws as JSON', 3);
-
-		}
-
-		/*
-		 * Zip up all of the text into a single file.
-		 */
-		if ($write_text === TRUE)
-		{
-
-			$output = array();
-			exec('cd ' . $this->downloads_dir . '; zip -9rq code.txt.zip code-text');
-			$this->logger->message('Created a ZIP file of the laws as plain text', 3);
-
-		}
-
-		/*
-		 * Zip up all of the XML into a single file.
-		 */
-		if ($write_xml === TRUE)
-		{
-
-			$output = array();
-			exec('cd ' . $this->downloads_dir . '; zip -9rq code.xml.zip code-xml');
-			$this->logger->message('Created a ZIP file of the laws as XML', 3);
-
-		}
 
 		/*
 		 * Save dictionary as JSON.
@@ -1145,49 +1134,13 @@ class ParserController
 			 */
 			$dictionary = $statement->fetchAll(PDO::FETCH_OBJ);
 
-			/*
-			 * Define the filename for our dictionary.
-			 */
-			$filename = $this->downloads_dir . 'dictionary.json.zip';
-
-			/*
-			 * Create a new ZIP file object.
-			 */
-			$zip = new ZipArchive();
-
-			if (file_exists($filename))
+			if($dictionary !== FALSE)
 			{
-				unlink($filename);
+				$this->events->trigger('exportDictionary', $dictionary, $this->downloads_dir);
+				$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
 			}
-
-			/*
-			 * If we cannot create a new ZIP file, bail.
-			 */
-			if ($zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE)
-			{
-				$this->logger->message('Cannot open ' . $filename . ' to create a new ZIP file.', 10);
-			}
-
-			else
-			{
-
-				/*
-				 * Add this law to our ZIP archive.
-				 */
-				$zip->addFromString('dictionary.json', json_encode($dictionary));
-
-				/*
-				 * Close out our ZIP file.
-				 */
-				$zip->close();
-
-			}
-
-			$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
 
 		}
-
-		$this->logger->message('Creating symlinks', 4);
 
 		if ($this->edition->current == '1')
 		{
@@ -1214,7 +1167,7 @@ class ParserController
 	 */
 	public function export_structure($parent_id = null)
 	{
-		$structure_sql = '	SELECT structure_unified.*
+		$structure_sql = 'SELECT structure_unified.*
 							FROM structure
 							LEFT JOIN structure_unified
 								ON structure.id = structure_unified.s1_id';
@@ -1249,42 +1202,11 @@ class ParserController
 		 */
 		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
 		{
+			$structure = new Structure();
+			$structure->edition_id = $this->edition_id;
+			$structure->structure_id = $item['s1_id'];
+			$structure->get_current();
 
-			/*
-			 * Figure out the URL for this structural unit by iterating through the "identifier"
-			 * columns in this row.
-			 */
-			$identifier_parts = array();
-
-			foreach ($item as $key => $value)
-			{
-				if (preg_match('/s[0-9]_identifier/', $key) == 1)
-				{
-					/*
-					 * Higher-level structural elements (e.g., titles) will have blank columns in
-					 * structure_unified, so we want to omit any blank values. Because a valid
-					 * structural unit identifier is "0" (Virginia does this), we check the string
-					 * length, rather than using empty().
-					 */
-					if (strlen($value) > 0)
-					{
-						$identifier_parts[] = urlencode($value);
-					}
-				}
-			}
-			$identifier_parts = array_reverse($identifier_parts);
-			$token = implode('/', $identifier_parts);
-
-			/*
-			 * This is slightly different from how we handle permalinks since we don't want to
-			 * overwrite files if current has changed.
-			 */
-
-			$url = '/';
-			if(defined('LAW_LONG_URLS') && LAW_LONG_URLS === TRUE)
-			{
-				$url .= $token . '/';
-			}
 			/*
 			 * Now we can use our data to build the child law identifiers
 			 */
@@ -1316,394 +1238,69 @@ class ParserController
 			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 			$laws_result = $laws_statement->execute( $laws_args );
 
+			$laws = array();
+
 			if ($laws_result !== FALSE && $laws_statement->rowCount() > 0)
 			{
-
-				/*
-				 * Establish the path of our code JSON storage directory.
-				 */
-				$json_dir = $this->downloads_dir . 'code-json' . $url;
-				$this->mkdir($json_dir);
-
-				/*
-				 * Set a flag telling us that we may write JSON.
-				 */
-				$write_json = TRUE;
-
-				/*
-				 * Establish the path of our code text storage directory.
-				 */
-				$text_dir = $this->downloads_dir . 'code-text' . $url;
-				$this->mkdir($text_dir);
-
-				/*
-				 * Set a flag telling us that we may write text.
-				 */
-				$write_text = TRUE;
-
-				/*
-				 * Establish the path of our code XML storage directory.
-				 */
-				$xml_dir = $this->downloads_dir . 'code-xml' . $url;
-				$this->mkdir($xml_dir);
-
-				/*
-				 * Set a flag telling us that we may write XML.
-				 */
-				$write_xml = TRUE;
-
-				/*
-				 * Create a new instance of the Parser class, so that we have access to its
-				 * get_structure_labels() method.
-				 */
-				$parser = new Parser(
-					array(
-						'db' => $this->db,
-						'logger' => $this->logger,
-						'edition_id' => $this->edition_id,
-						'downloads_dir' => $this->downloads_dir,
-						'downloads_url' => $this->downloads_url
-					)
-				);
-
-				/*
-				 * Create a new instance of the class that handles information about individual laws.
-				 */
-				$laws = new Law();
-
 				/*
 				 * Iterate through every section number, to pass to the Laws class.
 				 */
 				while ($section = $laws_statement->fetch(PDO::FETCH_OBJ))
 				{
+					/*
+					 * Create a new instance of the class that handles information about individual laws.
+					 */
+					$law_object = new Law();
 
 					/*
 					 * Instruct the Law class on what, specifically, it should retrieve.
 					 */
-					$laws->config = new stdClass();
-					$laws->config->get_text = TRUE;
-					$laws->config->get_structure = TRUE;
-					$laws->config->get_amendment_attempts = FALSE;
-					$laws->config->get_court_decisions = TRUE;
-					$laws->config->get_metadata = TRUE;
-					$laws->config->get_references = TRUE;
-					$laws->config->get_related_laws = TRUE;
+					$law_object->config = new stdClass();
+					$law_object->config->get_text = TRUE;
+					$law_object->config->get_structure = TRUE;
+					$law_object->config->get_amendment_attempts = FALSE;
+					$law_object->config->get_court_decisions = TRUE;
+					$law_object->config->get_metadata = TRUE;
+					$law_object->config->get_references = TRUE;
+					$law_object->config->get_related_laws = TRUE;
+					$law_object->config->render_html = TRUE;
 
 					/*
 					 * Pass the requested section number to Law.
 					 */
-					$laws->law_id = $section->id;
-					$laws->edition_id = $this->edition_id;
+					$law_object->law_id = $section->id;
+					$law_object->edition_id = $this->edition_id;
 
 					unset($law, $section);
 
 					/*
 					 * Get a list of all of the basic information that we have about this section.
 					 */
-					$law = $laws->get_law();
+					$law = $law_object->get_law();
 
-					if ($law !== FALSE)
+					if ($law !== FALSE && is_object($law))
 					{
-
-						/*
-						 * Eliminate colons from section numbers, since some OSes can't handle colons in
-						 * filenames.
-						 */
-						$filename = str_replace(':', '_', $law->section_number);
-
-						/*
-						 * Store the JSON file.
-						 */
-						if ($write_json === TRUE)
-						{
-
-							$success = file_put_contents($json_dir . $filename . '.json', json_encode($law));
-							if ($success === FALSE)
-							{
-								$this->logger->message('Could not write law JSON file "' . $json_dir . $filename . '.json' . '"', 9);
-								break;
-							}
-							else
-							{
-								$this->logger->message('Wrote file "'. $json_dir . $filename . '.json' .'"', 1);
-							}
-
-						}
-
-						/*
-						 * Store the text file.
-						 */
-						if ($write_text === TRUE)
-						{
-
-							$success = file_put_contents($text_dir . $filename . '.txt', $law->plain_text);
-							if ($success === FALSE)
-							{
-								$this->logger->message('Could not write law text files "' . $text_dir . $filename . '.txt', $law->plain_text . '"', 9);
-								break;
-							}
-							else
-							{
-								$this->logger->message('Wrote file "'. $json_dir . $filename . '.txt' .'"', 1);
-							}
-
-						}
-
-						/*
-						 * Store the XML file.
-						 */
-						if ($write_xml === TRUE)
-						{
-
-							/*
-							 * We need to massage the $law object to match the State Decoded XML
-							 * standard. The first step towards this is removing unnecessary
-							 * elements.
-							 */
-							unset($law->plain_text);
-							unset($law->structure_contents);
-							unset($law->next_section);
-							unset($law->previous_section);
-							unset($law->amendment_years);
-							unset($law->dublin_core);
-							unset($law->plain_text);
-							unset($law->section_id);
-							unset($law->structure_id);
-							unset($law->edition_id);
-							unset($law->full_text);
-							unset($law->formats);
-							unset($law->html);
-							$law->structure = $law->ancestry;
-							unset($law->ancestry);
-							$law->referred_to_by = $law->references;
-							unset($law->references);
-
-							/*
-							 * Encode all entities as their proper Unicode characters, save for the
-							 * few that are necessary in XML.
-							 */
-							$law = html_entity_decode_object($law);
-
-							/*
-							 * Quickly turn this into an XML string.
-							 */
-							$xml = new SimpleXMLElement('<law />');
-							object_to_xml($law, $xml);
-
-							$xml = $xml->asXML();
-
-							/*
-							 * Load the XML string into DOMDocument.
-							 */
-							$dom = new DOMDocument();
-							$dom->loadXML($xml);
-
-							/*
-							 * We're going to be inserting some things before the catch line.
-							 */
-							$catch_lines = $dom->getElementsByTagName('catch_line');
-							$catch_line = $catch_lines->item(0);
-
-							$law_dom = $dom->getElementsByTagName('law');
-							$law_dom = $law_dom->item(0);
-
-							/*
-							 * Add the main site info.
-							 */
-							if(defined('SITE_TITLE'))
-							{
-								$site_title = $dom->createElement('site_title');
-								$site_title->appendChild($dom->createTextNode(SITE_TITLE));
-								$law_dom->insertBefore($site_title, $catch_line);
-							}
-
-							if(defined('SITE_URL'))
-							{
-								$site_url = $dom->createElement('site_url');
-								$site_url->appendChild($dom->createTextNode(SITE_URL));
-								$law_dom->insertBefore($site_url, $catch_line);
-							}
-
-							/*
-							 * Set the edition.
-							 */
-							$edition = $dom->createElement('edition');
-							$edition->appendChild($dom->createTextNode($this->edition->name));
-
-							$edition_url = $dom->createAttribute('url');
-							$edition_url->value = '';
-							if(defined('SITE_URL'))
-							{
-								$edition_url->value = SITE_URL;
-							}
-							$edition_url->value .= '/' . $this->edition->slug . '/';
-							$edition->appendChild($edition_url);
-
-							$edition_id = $dom->createAttribute('id');
-							$edition_id->value = $this->edition->id;
-							$edition->appendChild($edition_id);
-
-							$edition_last_updated = $dom->createAttribute('last_updated');
-							$edition_last_updated->value = date('Y-m-d', strtotime($this->edition->last_import));
-							$edition->appendChild($edition_last_updated);
-
-							$edition_current = $dom->createAttribute('current');
-							$edition_current->value = $this->edition->current ? 'TRUE' : 'FALSE';
-							$edition->appendChild($edition_current);
-
-							$law_dom->insertBefore($edition, $catch_line);
-
-							/*
-							 * Simplify every reference, stripping them down to the cited sections.
-							 */
-							$referred_to_by = $dom->getElementsByTagName('referred_to_by');
-							if ( !empty($referred_to_by) && ($referred_to_by->length > 0) )
-							{
-								$referred_to_by = $referred_to_by->item(0);
-								$references = $referred_to_by->getElementsByTagName('unit');
-
-								/*
-								 * Iterate backwards through our elements.
-								 */
-								for ($i = $references->length; --$i >= 0;)
-								{
-
-									$reference = $references->item($i);
-
-									/*
-									 * Save the section number.
-									 */
-									$section_number = trim($reference->getElementsByTagName('section_number')->item(0)->nodeValue);
-
-									/*
-									 * Create a new element, named "reference," which contains the only
-									 * the section number.
-									 */
-									$element = $dom->createElement('reference', $section_number);
-									$reference->parentNode->insertBefore($element, $reference);
-
-									/*
-									 * Remove the "unit" node.
-									 */
-									$reference->parentNode->removeChild($reference);
-
-								}
-
-							}
-
-							/*
-							 * Simplify and reorganize every structural unit.
-							 */
-							$structure_elements = $dom->getElementsByTagName('structure');
-							if ( !empty($structure_elements) && ($structure_elements->length > 0) )
-							{
-								$structure_element = $structure_elements->item(0);
-								$structural_units = $structure_element->getElementsByTagName('unit');
-
-								$law_dom->insertBefore($structure_element, $catch_line);
-
-								/*
-								 * Iterate backwards through our elements.
-								 */
-								for ($i = $structural_units->length; --$i >= 0;)
-								{
-									$structure_element->removeChild($structural_units->item($i));
-								}
-
-								/*
-								 * Build up our structures.
-								 * The count/get_object_vars is really fragile, and not a good way to do this.
-								 * TODO: Refactor all of $law->structure to be an array, not an object.
-								 */
-								$level_value = 0;
-								for ($i = count(get_object_vars($law->structure))+1; --$i >= 1;)
-								{
-									$structure = $law->structure->{$i};
-									$level_value++;
-
-									$unit = $dom->createElement('unit');
-
-									/*
-									 * Add the "level" attribute.
-									 */
-									$label = trim(strtolower($unit->getAttribute('label')));
-									$level = $dom->createAttribute('level');
-									$level->value = $level_value;
-
-									$unit->appendChild($level);
-
-									/*
-									 * Add the "identifier" attribute.
-									 */
-									$identifier = $dom->createAttribute('identifier');
-									$identifier->value = trim($structure->identifier);
-									$unit->appendChild($identifier);
-
-									/*
-									 * Add the "url" attribute.
-									 */
-									$url = $dom->createAttribute('url');
-									$permalink = $this->permalink_obj->get_permalink($structure->id, 'structure', $this->edition_id);
-									$url->value = '';
-									if(defined('SITE_URL'))
-									{
-										$url->value = SITE_URL;
-									}
-									$url->value .= $permalink->url;
-
-									$unit->appendChild($url);
-
-									/*
-									 * Store the name of this structural unit as the contents of <unit>.
-									 */
-									$unit->nodeValue = trim($structure->name);
-
-									/*
-									 * Save these changes.
-									 */
-									$structure_element->appendChild($unit);
-								}
-
-							}
-
-							/*
-							 * Rename text units as text sections.
-							 */
-							$text = $dom->getElementsByTagName('text');
-							if (!empty($text) && ($text->length > 0))
-							{
-								$text = $text->item(0);
-								$text_units = $text->getElementsByTagName('unit');
-
-								/*
-								 * Iterate backwards through our elements.
-								 */
-								for ($i = $text_units->length; --$i >= 0;)
-								{
-									$text_unit = $text_units->item($i);
-									renameElement($text_unit, 'section');
-								}
-
-							}
-
-							/*
-							 * Save the cleaned-up XML to the filesystem.
-							 */
-							$success = file_put_contents($xml_dir . $filename . '.xml', $dom->saveXML());
-							if ($success === FALSE)
-							{
-								$this->logger->message('Could not write law XML files', 9);
-								break;
-							}
-							
-							$this->logger->message('Wrote file "'. $xml_dir . $filename . '.xml' .'"', 1);
-
-						}
-
+						$law->edition = $this->edition;
 					} // end the $law exists condition
 
+					$laws[] = clone($law);
 				} // end the while() law iterator
 			} // end the $laws condition
+
+			/*
+			 * Rearrange our logic a bit, so that we export structures *before* laws.
+			 * However, we still need the list of laws for the structure export, so
+			 * this must be a separate loop.
+			 */
+			$this->events->trigger('exportStructure', $structure, $laws, $this->downloads_dir);
+
+			foreach($laws as $law)
+			{
+				$this->events->trigger('exportLaw', $law, $this->downloads_dir);
+
+				$this->export_progress++;
+				$this->logger->updateProgressFiles('exportfiles', $this->export_progress, $this->export_count);
+			}
 
 			$this->export_structure($item['s1_id']);
 
@@ -1725,38 +1322,9 @@ class ParserController
 		/*
 		 * Delete our old downloads directory.
 		 */
-		$this->logger->message('Removing old downloads directory', 5);
-		exec('cd ' . WEB_ROOT . '/downloads/; rm -R ' . $this->edition->slug);
+		$this->logger->message('Removing old downloads directory', 3);
 
-		/*
-		 * If we cannot write files to the downloads directory, then we can't export anything.
-		 */
-		try
-		{
-			foreach (array('code-json', 'code-text', 'code-xml', 'images') as $data_dir)
-			{
-
-				$this->logger->message('Creating "' . $this->downloads_dir . $data_dir . '"', 4);
-
-				/*
-				* If the JSON directory doesn't exist, create it.
-				*/
-				$this->mkdir($this->downloads_dir . $data_dir);
-
-			}
-
-		}
-		catch (Exception $e)
-		{
-			$this->logger->message('Error: ' . $this->downloads_dir . ' could not be written to, so bulk
-				download files could not be exported', 10);
-			$this->rmdir($this->downloads_dir);
-
-			return FALSE;
-		}
-
-		$this->logger->message('Created output directories for bulk download files', 5);
-
+		remove_dir(WEB_ROOT . '/downloads/' . $this->edition->slug);
 	}
 
 	public function mkdir($dir)
@@ -1864,6 +1432,10 @@ class ParserController
 			/*
 			 * Instruct the Law class on what, specifically, it should retrieve. (Very little.)
 			 */
+			if(!isset($laws->config))
+			{
+				$laws->config = new stdClass();
+			}
 			$laws->config->get_all = FALSE;
 			$laws->config->get_text = FALSE;
 			$laws->config->get_structure = FALSE;
@@ -2015,7 +1587,7 @@ class ParserController
 			$structure_temp->structure_id = $structure_id;
 			$structure_temp->get_current();
 
-			if(!isset($structure_temp->metadata))
+			if(!isset($structure_temp->metadata) || empty($structure_temp->metadata))
 			{
 				$structure_temp->metadata = new stdClass();
 			}
@@ -2048,6 +1620,7 @@ class ParserController
 		 */
 		$struct = new Structure();
 		$struct->id = $this->structure_id;
+		$struct->edition_id = $this->edition_id;
 		$child_structures = $struct->list_children();
 		$child_laws = $struct->list_laws();
 
@@ -2193,7 +1766,7 @@ class ParserController
 		 */
 		if (is_writable(WEB_ROOT . '/sitemap.xml') !== TRUE)
 		{
-			$this->logger->message('sitemap.xml must be writable by the server', 3);
+			$this->logger->message('sitemap.xml must be writable by the server', 10);
 			$error = TRUE;
 		}
 
@@ -2202,7 +1775,7 @@ class ParserController
 		 */
 		if (is_writable(WEB_ROOT . '/.htaccess') !== TRUE)
 		{
-			$this->logger->message('.htaccess must be writable by the server', 3);
+			$this->logger->message('.htaccess must be writable by the server', 10);
 			$error = TRUE;
 		}
 
@@ -2255,7 +1828,7 @@ class ParserController
 	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
 	 * instead, we do this via cURL.
 	 */
-	public function index_laws($args)
+	public function index_laws($args = array())
 	{
 		if(!isset($this->edition))
 		{
@@ -2299,6 +1872,10 @@ class ParserController
 				// Get the full data of the actual law.
 				$document = new Law(array('db' => $this->db));
 				$document->law_id = $law['id'];
+				if(!isset($document->config))
+				{
+					$document->config = new stdClass();
+				}
 				$document->config->get_all = TRUE;
 				$document->get_law();
 				// Bring over our edition info.

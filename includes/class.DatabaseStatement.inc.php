@@ -75,6 +75,10 @@ class DatabaseStatement extends PDOStatement
 
 	public function execute ( $input_parameters = null )
 	{
+		if(is_array($input_parameters) && count($input_parameters) === 0) {
+			$input_parameters = null;
+		}
+
 		try
 		{
 			$result = $this->pdo_statement->execute($input_parameters);
