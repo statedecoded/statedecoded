@@ -650,9 +650,14 @@ class Structure
 		}
 
 		/*
-		 * Create a new, empty class.
+		 * Create a new, empty array.
 		 */
-		$laws = new stdClass();
+		$laws = array();
+
+		/*
+		 * Instantiate our laws class.
+		 */
+		$law = new Law(array('db' => $this->db));
 
 		/*
 		 * Return the result as an object, built up as we loop through the results.
@@ -669,8 +674,10 @@ class Structure
 				$section->catch_line = '[Untitled]';
 			}
 
-			$laws->$i = $section;
-			$i++;
+			$law->section_id = $section->id;
+			$section->metadata = $law->get_metadata();
+
+			$laws[] = $section;
 
 		}
 

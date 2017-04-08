@@ -338,8 +338,13 @@ if ($laws !== FALSE)
 
 	foreach ($laws as $law)
 	{
+		$url = $law->url;
+		if($law->metadata && isset($law->metadata->dupe_number)) {
+			$url .= '#law-' . $law->id;
+		}
+
 		$body .= '<tr>
-				<td><a href="' . $law->url . '">'
+				<td><a href="' . $url . '">'
 					. SECTION_SYMBOL . '&nbsp;' . $law->section_number . '</a></td>
 				<td><a href="' . $law->url . '">'
 					. $law->catch_line . '</a></td></tr>';
