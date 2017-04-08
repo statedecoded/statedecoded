@@ -29,14 +29,16 @@ var favlaws = function () {
   };
 
   this.initLawPin = function () {
-    this.pinLink = $('<a class="pin-law" href="#" title="Pin law"><span class="label">Pin</span></a>');
-    this.pinLink.click(function(e) {
+    var pinLink = $('<a class="pin-law" href="#" title="Pin law"><span class="label">Pin</span></a>');
+    pinLink.click(function(e) {
       e.preventDefault();
       self.toggleLaw();
     });
+    $('.law .law-contents h1').prepend(pinLink);
+
+    this.pinLink = $('.pin-law');
     this.checkActive();
 
-    $('.law .primary-content h1').prepend(this.pinLink);
   };
 
   this.checkActive = function () {
@@ -54,8 +56,7 @@ var favlaws = function () {
     // If we're on a law page, we've already got most of our data in the page.
     var law = {
       section_number: section_number,
-      catch_line: $('#catch_line').text(),
-      law_id: law_id,
+      catch_line: $('.catch_line').first().text(),
       edition_id: edition_id,
       token: disqus_identifier,
       url: window.location.href
@@ -72,7 +73,6 @@ var favlaws = function () {
         var listItem = $('<li><a href="' + law.url + '">§' + law.section_number + '</a> ' + law.catch_line + '</li>');
         var unpin = $('<a class="pin-law pinned" title="Unpin law" data-token="' + law.token + '"><span class="label">Unpin</span></a>');
         unpin.click(function(e) {
-          console.log('token', $(this).data('token'));
           e.preventDefault();
           self.unpinLaw($(this).data('token'));
           $(this).parent().remove();

@@ -112,7 +112,6 @@ $content = new Content();
  * Make some section information available globally to JavaScript.
  */
 $content->set('javascript', "var section_number = '" . $laws[0]->section_number . "';");
-$content->append('javascript', "var law_id = '" . $laws[0]->law_id . "';");
 $content->append('javascript', "var edition_id = '" . $laws[0]->edition_id . "';");
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
 
@@ -235,7 +234,7 @@ foreach($laws as $i=>$law)
 	$body .= '<article class="law-contents" id="law-' . $law->law_id . '">';
 
 	$body .= '<h1>
-		<span class="section_id">' . SECTION_SYMBOL .'&nbsp;' . $law->section_number . '</span>
+		<span class="section_id">' . SECTION_SYMBOL .' ' . $law->section_number . '</span>
 		<span class="catch_line">' . $law->catch_line .'</span>
 	</h1>';
 
@@ -336,7 +335,7 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 
 	$content->append('javascript', "
 			var disqus_shortname = '" . DISQUS_SHORTNAME . "'; // required: replace example with your forum shortname
-			var disqus_identifier = '" . $laws[0]->permalink->token . "';
+			var disqus_identifier = '" . $laws[0]->token . "';
 
 			/* * * DON'T EDIT BELOW THIS LINE * * */
 			(function() {
