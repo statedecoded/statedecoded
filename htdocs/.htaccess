@@ -17,7 +17,7 @@ RewriteBase /
 # mod_pagespeed is running, to its own in-memory repository.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(.*)/$
-RewriteCond %{REQUEST_URI} !\.json|\.xml|\.txt$
+RewriteCond %{REQUEST_URI} !\.json|\.xml|\.txt|\.ico$
 RewriteCond %{REQUEST_URI} !themes/(.+)/static/(.+)$
 RewriteCond %{REQUEST_URI} !mod_pagespeed_static/(.+)$
 RewriteRule ^(.*)$ /$1/ [L,R=301]
