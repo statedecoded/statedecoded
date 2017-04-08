@@ -396,7 +396,7 @@ $(document).ready(function () {
 
 	// We need to make sure every row in our table has the same number of columns.
 	// Otherwise dataTable doesn't work.
-	$('.primary-content table').each(function(i, elm) {
+	$('.law .primary-content table').each(function(i, elm) {
 		elm = $(elm);
 
 		// Get the longest row length.
@@ -423,15 +423,14 @@ $(document).ready(function () {
 				}
 			}
 		});
+
+		elm.dataTable({
+				'scrollY': '400px',
+				'scrollX': true,
+				'scrollCollapse': true,
+				'paging': false,
+				'ordering': false,
+				'info': false
+		});
 	});
-
-	$('.primary-content table').dataTable({
-        'scrollY': '400px',
-        'scrollX': true,
-        'scrollCollapse': true,
-        'paging': false,
-        'ordering': false,
-        'info': false
-    });
-
 });
