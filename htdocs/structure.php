@@ -234,15 +234,23 @@ if(strlen($structure_id) > 0)
 
 	if (count($structure) > 1)
 	{
+		// The end of the list is count($structure) -1,
+		// And the last item is already $struct above.
+		$start = count($structure) -2;
 
-		for ($i = count($structure) -1; $i >= 0; $i--)
+		for ($i = $start; $i >= 0; --$i)
 		{
 			$level = $structure[$i];
 
-			if ($level->label !== $struct->label && !empty($level->label))
+							var_dump(count($structure)-1, $i, $level->label);
+							print "!";
+
+
+			if (!empty($level->label))
 			{
+
 				// If this is the first entry.
-				if ($i === count($structure)-1)
+				if ($i === $start)
 				{
 					$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ' '
 						. '&#8220;' . $level->name . '&#8221;';
