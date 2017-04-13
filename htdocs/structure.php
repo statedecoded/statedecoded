@@ -242,10 +242,6 @@ if(strlen($structure_id) > 0)
 		{
 			$level = $structure[$i];
 
-							var_dump(count($structure)-1, $i, $level->label);
-							print "!";
-
-
 			if (!empty($level->label))
 			{
 
