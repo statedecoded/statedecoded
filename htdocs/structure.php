@@ -230,18 +230,35 @@ if(strlen($structure_id) > 0)
 {
 
 	$body .= '<p>This is '.ucwords($struct->label).' '.$struct->identifier.' of the ' . LAWS_NAME
-		. ', titled “'.$struct->name.'.”';
+		. ', titled &#8220;'.$struct->name.'.&#8221;';
 
-	if (count((array) $structure) > 1)
+	if (count($structure) > 1)
 	{
 
-		foreach ($structure as $level)
+		for ($i = count($structure) -1; $i >= 0; $i--)
 		{
+			$level = $structure[$i];
 
 			if ($level->label !== $struct->label && !empty($level->label))
 			{
-				$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ', '
-				.'titled “' . $level->name . '.”';
+				// If this is the first entry.
+				if ($i === count($structure)-1)
+				{
+					$body .= ' It is part of ' . ucwords($level->label) . ' ' . $level->identifier . ' '
+						. '&#8220;' . $level->name . '&#8221;';
+				}
+				// If it's not the last.
+				else
+				{
+					$body .= ', which  is part of ' . ucwords($level->label) . ' ' . $level->identifier . ' '
+						. '&#8220;' . $level->name . '&#8221;';
+				}
+			}
+
+			// If it's the last, add a period.
+			if ($i === 0)
+			{
+				$body .= '.';
 			}
 
 		}
