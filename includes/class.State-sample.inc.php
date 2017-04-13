@@ -532,10 +532,15 @@ class Parser
 		/*
 		 * Transfer some data to our object.
 		 */
-		$this->code->catch_line = (string) $this->section->catch_line;
+		$this->code->catch_line = '';
+		if(isset($this->section->catch_line)) {
+			$this->code->catch_line = (string) $this->section->catch_line;
+		}
 		$this->code->section_number = (string) $this->section->section_number;
 		$this->code->order_by = (string) $this->section->order_by;
-		$this->code->history = (string)  $this->section->history;
+		if(isset($this->section->history)) {
+			$this->code->history = (string)  $this->section->history;
+		}
 
 		/*
 		 * If additional metadata is present in a "metadata" container, copy it over to our code
@@ -570,7 +575,7 @@ class Parser
 		/*
 		 * Iterate through the structural headers.
 		 */
-		foreach ($this->section->structure->unit as $unit)
+		foreach ($this->section->structure->children() as $unit)
 		{
 
 			$level = $unit->attribute('level');
