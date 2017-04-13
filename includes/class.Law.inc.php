@@ -211,10 +211,10 @@ class Law
 			$result = $statement->execute($sql_args);
 
 			/*
-			 * If the query fails, or if no results are found, return false -- we can't make a
+			 * If the query fails, return false -- we can't make a
 			 * match.
 			 */
-			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+			if ( ($result === FALSE) )
 			{
 				return FALSE;
 			}
