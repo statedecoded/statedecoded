@@ -314,6 +314,8 @@ class Parser
 		' has the same meaning as ',
 		' shall be construed ',
 		' shall also be construed to mean ',
+		' shall mean and include ',
+		' shall mean '
 	);
 
 	public function __construct($options)
