@@ -47,6 +47,7 @@ class DOMWrapper
 
 			case XML_TEXT_NODE:
 				$this->_type = 'text';
+				break;
 		}
 
 		// Map our nodes to an internal lookup for easy access.
