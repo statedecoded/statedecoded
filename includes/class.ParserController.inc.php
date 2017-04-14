@@ -922,10 +922,31 @@ class ParserController
 	 */
 	public function finish_import()
 	{
+		/*
+		 * Update the last-imported date.
+		 */
+		$this->logger->message('Updating the import date', 5);
 		$edition_obj = new Edition(array('db' => $this->db));
 		$edition_obj->update_last_import($this->edition_id);
 
+		/*
+		 * If this edition is current, clear out the court decisions.
+		 */
+		if($this->edition->current) {
+			$this->clear_court_decisions();
+		}
+
 		return TRUE;
+	}
+
+	public function clear_court_decisions() {
+		$this->logger->message('Clearing out all court decisions.', 10);
+
+		$sql = 'DELETE FROM laws_meta WHERE meta_key = :court_decisions';
+		$sql_args = array(':court_decisions' => 'court_decisions');
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
 	}
 
 	/**
