@@ -20,6 +20,7 @@ class DatabaseStatement extends PDOStatement
 	protected $database;
 
 	protected $query;
+	protected $query_args = array();
 
 	public function __construct ( &$database, &$pdo_statement, $query )
 	{
@@ -45,6 +46,10 @@ class DatabaseStatement extends PDOStatement
 
 	public function bindValue ( $parameter, $value, $data_type = null )
 	{
+		$this->query_args[] = array(
+			'parameter' => $parameter,
+			'value' => $value,
+			'data_type' => $data_type);
 		return $this->pdo_statement->bindValue($parameter, $value, $data_type);
 	}
 
@@ -169,6 +174,8 @@ class DatabaseStatement extends PDOStatement
 		}
 
 		$error['Input Parameters'] = $input_parameters;
+
+		$error['Bound Parameters'] = $this->query_args;
 
 		/*
 		 * Capture the parameters from PDO.
