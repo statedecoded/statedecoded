@@ -2056,7 +2056,8 @@ class ParserController
 		 * Let's build a few queries we'll be using later. Do this outside the
 		 * loop for better memory handling.
 		 */
-		$law_sql = 'SELECT laws.id FROM laws WHERE section = :section_number';
+		$law_sql = 'SELECT laws.id FROM laws WHERE section = :section_number
+			AND edition_id = :edition_id';
 		$laws_statement = $this->db->prepare($law_sql);
 
 		$update_sql = 'UPDATE laws_references SET target_law_id = :target_law_id
@@ -2084,8 +2085,10 @@ class ParserController
 			/*
 			 * We may have many-to-one, so handle that.
 			 */
-			$laws_args = array(':section_number' =>
-				$laws_reference['target_section_number']);
+			$laws_args = array(
+				':section_number' => $laws_reference['target_section_number'],
+				':edition_id' => $this->edition_id
+			);
 			$laws_result = $laws_statement->execute($laws_args);
 
 			/*
