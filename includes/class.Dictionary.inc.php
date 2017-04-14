@@ -22,6 +22,21 @@ class Dictionary
 	public $law_id;
 	public $section_number;
 	public $edition_id;
+	public $generic_terms = FALSE;
+
+
+	public function __construct($args = array()) {
+		foreach($args as $key => $value) {
+			$this->$key = $value;
+		}
+		/*
+		 * If we haven't been told to use generic terms explicitly, then default
+		 * to the constant. If we don't have a constant, we default to FALSE.
+		 */
+		if(!isset($args['generic_terms']) && defined('USE_GENERIC_TERMS')) {
+			$this->generic_terms = constant('USE_GENERIC_TERMS');
+		}
+	}
 
 	/**
 	 * Get the definition for a given term for a given section of code.
@@ -61,7 +76,7 @@ class Dictionary
 		/*
 		 * If the query still fails, then the term is found in the generic terms dictionary.
 		 */
-		if(!$dictionary)
+		if(!$dictionary && $this->generic_terms)
 		{
 
 			/*
@@ -261,18 +276,9 @@ class Dictionary
 		}
 
 		/*
-		 * If we haven't specified whether we want to include generic terms
-		 * in this query, include them by default.
+		 * Create an array in which we'll store terms that are identified.
 		 */
-		if (!isset($this->generic_terms))
-		{
-			$this->generic_terms = TRUE;
-		}
-
-		/*
-		 * Create an object in which we'll store terms that are identified.
-		 */
-		$terms = new stdClass();
+		$terms = array();
 
 		/*
 		 * Get a listing of all structural units that contain the current structural unit -- that is,
@@ -367,8 +373,7 @@ class Dictionary
 			 */
 			while ($term = $statement->fetch(PDO::FETCH_OBJ))
 			{
-				$terms->$i = $term->term;
-				$i++;
+				$terms[] = $term->term;
 			}
 
 		}
@@ -389,27 +394,24 @@ class Dictionary
 
 			if ($result !== FALSE && $statement->rowCount() > 0)
 			{
-			
+
 				/*
 				* Append these results to the existing $terms object, continuing to use the previously-
 				* defined $i counter.
 				*/
 				while ($term = $statement->fetch(PDO::FETCH_OBJ))
 				{
-					$terms->$i = $term->term;
-					$i++;
+					$terms[] = $term->term;
 				}
-				
+
 			}
 
 		}
 
-		$tmp = (array) $terms;
-		$tmp = array_unique($tmp);
-		$terms = (object) $tmp;
+		$terms = array_unique($terms);
 
 		return $terms;
-		
+
 	}
-	
+
 }

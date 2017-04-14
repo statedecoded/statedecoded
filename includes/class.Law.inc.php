@@ -942,16 +942,8 @@ class Law
 		$dictionary->structure_id = $this->structure_id;
 		$dictionary->section_id = $this->section_id;
 		$dictionary->edition_id = $this->edition_id;
-		if (!defined('USE_GENERIC_TERMS') || constant('USE_GENERIC_TERMS') !== TRUE)
-		{
-			$dictionary->generic_terms = FALSE;
-		}
-		$tmp = $dictionary->term_list();
-		if ($tmp !== FALSE)
-		{
-			$terms = (array) $tmp;
-			unset($tmp);
-		}
+
+		$terms = $dictionary->term_list();
 
 		/*
 		 * If we've gotten a list of dictionary terms.

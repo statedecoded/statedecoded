@@ -56,7 +56,21 @@ class APIDictionaryController extends BaseAPIController
 			$edition_id = $current_edition->id;
 		}
 
-		$dict = new Dictionary();
+		/*
+		 * If we're told to use generic definitions, pass that through to the Dictionary class.
+		 */
+		$dict_args = array();
+		if($_GET['generic']) {
+			if($_GET['generic'] === '1' || strtolower($_GET['generic']) === 'true') {
+				$dict_args['generic_terms'] = TRUE;
+			}
+			elseif($_GET['generic'] === '0' || strtolower($_GET['generic']) === 'false') {
+				$dict_args['generic_terms'] = FALSE;
+			}
+		}
+
+		$dict = new Dictionary($dict_args);
+
 
 		/*
 		 * Get the definitions for the requested term, if a term has been requested.
