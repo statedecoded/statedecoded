@@ -535,13 +535,15 @@ class Parser
 		 * Transfer some data to our object.
 		 */
 		$this->code->catch_line = '';
-		if(isset($this->section->catch_line)) {
+
+		if($this->section->catch_line->value()) {
 			$this->code->catch_line = (string) $this->section->catch_line;
 		}
 		$this->code->section_number = (string) $this->section->section_number;
 		$this->code->order_by = (string) $this->section->order_by;
-		if(isset($this->section->history)) {
-			$this->code->history = (string)  $this->section->history;
+
+		if($this->section->history->value()) {
+			$this->code->history = (string) $this->section->history;
 		}
 
 		/*

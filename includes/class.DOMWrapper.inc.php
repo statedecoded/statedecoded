@@ -137,7 +137,8 @@ class DOMWrapper
 
 	public function __toString()
 	{
-		return $this->value();
+		$value = $this->value();
+		return is_string($value) ? $value : '';
 	}
 }
 
