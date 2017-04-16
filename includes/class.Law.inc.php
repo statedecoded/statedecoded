@@ -788,10 +788,22 @@ class Law
 			return FALSE;
 		}
 
+		if(!isset($this->edition_id)) {
+			$edition_sql = 'SELECT edition_id FROM laws WHERE id = :id';
+			$edition_args = array(':id' => $this->section_id);
+
+			$edition_statement = $this->db->prepare($edition_sql);
+			$result = $edition_statement->execute($edition_args);
+			$edition = $edition_statement->fetch(PDO::FETCH_OBJ);
+
+			$this->edition_id = $edition->edition_id;
+		}
+
 		$sql = 'INSERT INTO laws_meta
 				SET law_id = :law_id,
 				meta_key = :meta_key,
 				meta_value = :meta_value,
+				edition_id = :edition_id,
 				date_created = now()';
 		$statement = $this->db->prepare($sql);
 
@@ -799,6 +811,7 @@ class Law
 		{
 			$sql_args = array(
 				':law_id' => $this->section_id,
+				':edition_id' => $this->edition_id,
 				':meta_key' => $field->key,
 				':meta_value' => $field->value
 			);

@@ -389,7 +389,7 @@ $sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')
 if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
 {
 
-	$sidebar .= '<section class="grid-box grid-sizer" id="court-decisions">
+	$sidebar .= '<section class="info-box" id="court-decisions">
 				<h1>Court Decisions</h1>
 				<ul>';
 
