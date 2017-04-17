@@ -290,18 +290,15 @@ if (isset($struct->metadata))
 		if (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
 		{
 			$body .= ' divided across ' . number_format($struct->metadata->child_structures)
-				. ' structures.';
+				. ' structures';
 		}
-		else
-		{
-			$body .= '.';
-		}
+		$body .= '.</p>';
 
 	}
 	elseif (isset($struct->metadata->child_structures) && ($struct->metadata->child_structures > 0) )
 	{
 		$body .= ' It is divided into ' . number_format($struct->metadata->child_structures)
-			. ' sub-structures.';
+			. ' sub-structures.</p>';
 	}
 
 }
@@ -354,7 +351,7 @@ $laws = $struct->list_laws();
 if ($laws !== FALSE)
 {
 
-	$body .= ' It’s comprised of the following ' . count((array) $laws) . ' sections.</p>';
+	$body .= '<p>It’s comprised of the following ' . count($laws) . ' sections.</p>';
 	$body .= '<table class="title-list table-striped laws"><tbody>';
 
 	foreach ($laws as $law)
