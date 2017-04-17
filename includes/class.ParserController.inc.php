@@ -829,10 +829,21 @@ class ParserController
 		$result = $statement->execute();
 
 		/*
-		 * The depth of the structure is the number of entries in the structure labels,
-		 * minus one for 'section'.
+		 * Get the depth of our structures.
 		 */
-		$structure_depth = count($parser->get_structure_labels($this->edition_id))-1;
+		$sql = 'SELECT MAX(depth) AS depth FROM structure';
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute();
+
+		if($result)
+		{
+			$structure_depth = $statement->fetchColumn();
+		}
+		else
+		{
+			throw new Exception('Cannot get depth of structures.');
+		}
+
 
 		$select = array();
 		$from = array();
