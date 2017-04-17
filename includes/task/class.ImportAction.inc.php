@@ -38,6 +38,8 @@ class ImportAction extends CliAction
 		$this->logger->message('Starting import.', 10);
 
 		try {
+			$edition_args = array();
+
 			$parser = new ParserController(
 				array(
 					'logger' => $this->logger,
@@ -46,18 +48,41 @@ class ImportAction extends CliAction
 				)
 			);
 
-			// TODO: Do edition stuff
-			$edition_args = array();
+			/*
+			 * We only use existing editions, for simplicity.
+			 */
 			$edition_args['edition_option'] = 'existing';
-			$edition = $parser->get_current_edition();
-			$edition_args['edition'] = $edition->id;
+
+			if(isset($this->options['edition']))
+			{
+				$edition_obj = new Edition($this->db);
+				$edition = $edition_obj->find_by_slug($this->options['edition']);
+
+				if(!$edition) {
+					$this->logger->message('Unable to find edition "'. $this->options['edition'].'".', 10);
+					die();
+				}
+
+				$edition_args['edition'] = $edition->id;
+			}
+			else
+			{
+				$edition = $parser->get_current_edition();
+				$edition_args['edition'] = $edition->id;
+			}
+
+			if(isset($this->options['current'])) {
+				$edition_args['current'] = 1;
+			}
+
+			$this->logger->message('Using edition ' . $edition->name, 10);
 
 			/*
 			 * Step through each parser method.
 			 */
 			if ($parser->test_environment() !== FALSE)
 			{
-				echo 'Environment test succeeded<br />';
+				$this->logger->message('Environment test succeeded', 10);
 
 				if ($parser->populate_db() !== FALSE)
 				{
@@ -134,7 +159,7 @@ This action imports new data.  By default, this replaces the current edition.
 
 Usage:
 
-  statedecoded import [--no-delete] [-v[=#]]
+  statedecoded import [--no-delete] [-v[=#]] [--edition=slug] [--current]
 
 Available options:
 
@@ -147,6 +172,12 @@ Available options:
 
   -d=directory
       Directory to import data from.  Defaults to IMPORT_DATA_DIR
+
+  --edition=slug
+      Which edition to import into.  Defaults to the current edition.
+
+  --current
+      Make the selected edition current.
 
 EOS;
 
