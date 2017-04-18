@@ -324,7 +324,7 @@ if ($children !== FALSE)
 		}
 		else
 		{
-			$identifier = $child->identifier;
+			$identifier = ucwords($child->label) . ' ' . $child->identifier;
 		}
 		$body .= '<tr><td><a href="' . $child->permalink->url . '"
 				data-identifier="' . $child->permalink->token . '"
