@@ -216,6 +216,17 @@ class Edition
 		}
 	}
 
+	public function delete($slug)
+	{
+		$sql = 'DELETE FROM editions WHERE slug = :slug';
+		$sql_args = array(':slug' => $slug);
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		return $result;
+	}
+
 	public function unset_current($exception = FALSE)
 	{
 		$sql = 'UPDATE editions
@@ -229,6 +240,22 @@ class Edition
 			$sql .= ' WHERE id <> :id';
 			$sql_args['id'] = $exception;
 		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		return $result;
+	}
+
+	public function set_current($slug)
+	{
+		$sql = 'UPDATE editions
+				SET current = :current
+				WHERE slug = :slug ';
+		$sql_args = array(
+			':current' => 1,
+			':slug' => $slug
+		);
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);

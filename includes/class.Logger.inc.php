@@ -177,30 +177,36 @@ class Logger
 
 	public function updateProgress($name, $amount, $text = '')
 	{
-		if($text === '') {
-			$text = $amount . '%';
-		}
-		echo '<script data-time="' . microtime(true) .'">
-			$("#progress_' . $name .'").css("width", "' . $amount .'%");
-			$("#progress_' . $name .' span").text("'. $text .'");
-		';
-		echo '</script>';
-		flush();
-		if(ob_get_length())
+		if($this->html === TRUE)
 		{
-			ob_flush();
+			if($text === '') {
+				$text = $amount . '%';
+			}
+			echo '<script data-time="' . microtime(true) .'">
+				$("#progress_' . $name .'").css("width", "' . $amount .'%");
+				$("#progress_' . $name .' span").text("'. $text .'");
+			';
+			echo '</script>';
+			flush();
+			if(ob_get_length())
+			{
+				ob_flush();
+			}
 		}
 	}
 
 	public function finishProgress($name)
 	{
-		echo '<script data-time="' . microtime(true).'">
-			$("#progress_' . $name .'")
-				.removeClass("active")
-				.removeClass("progress-bar-striped")
-				.addClass("progress-bar-done")
-				.text("Done");
-		</script>';
+		if($this->html === TRUE)
+		{
+			echo '<script data-time="' . microtime(true).'">
+				$("#progress_' . $name .'")
+					.removeClass("active")
+					.removeClass("progress-bar-striped")
+					.addClass("progress-bar-done")
+					.text("Done");
+			</script>';
+		}
 	}
 
 }
