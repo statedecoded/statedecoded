@@ -28,11 +28,12 @@ class ClearMetadataAction extends CliAction
 
 		if(isset($this->options['edition']))
 		{
-			$edition_obj = new Edition($this->db);
+			$edition_obj = new Edition(array('db' => $this->db));
 			$edition = $edition_obj->find_by_slug($this->options['edition']);
 
 			if(!$edition) {
-				die('Unable to find edition "'. $this->options['edition'].'"');
+				$this->result = 1;
+				return 'Unable to find edition "'. $this->options['edition'].'"';
 			}
 
 			$query .= 'AND edition_id = :edition_id ';
@@ -50,11 +51,12 @@ class ClearMetadataAction extends CliAction
 
 		if($result)
 		{
-			print "Metadata cleared.";
+			return "Metadata cleared.";
 		}
 		else
 		{
-			print "There was a problem clearing the metadata.";
+	    $this->result = 1;
+      return "There was a problem clearing the metadata.";
 		}
 	}
 
