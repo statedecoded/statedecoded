@@ -266,7 +266,12 @@ class Page
 		 */
 		if (isset($asset['requires']))
 		{
-		
+
+			if(!is_array($asset['requires']))
+			{
+				$asset['requires'] = array($asset['requires']);
+			}
+
 			foreach ($asset['requires'] as $required)
 			{
 			
