@@ -215,7 +215,7 @@ $content->set('heading', '<nav class="prevnext" role="navigation"><ul>' .
 /*
  * Store the URL for the containing structural unit.
  */
-$content->append('link_rel', '<link rel="up" title="Up" href="' . $laws[0]->ancestry[1]->url . '" />');
+$content->append('link_rel', '<link rel="up" title="Up" href="' . $laws->{0}->ancestry[1]->url . '" />');
 
 $body = '';
 if(count($laws) > 1) {
