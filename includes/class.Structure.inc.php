@@ -152,24 +152,29 @@ class Structure
 			return false;
 		}
 
-		$this->structure = array_reverse($this->id_ancestry($this->structure_id));
+		$this->structure = $this->id_ancestry($this->structure_id);
 
 		/*
 		 * We set these variables for the convenience of other functions in this class.
 		 */
-		$tmp = end($this->structure);
-		$this->id = $tmp->id;
-		$this->label = $tmp->label;
-		$this->name = $tmp->name;
-		$this->identifier = $tmp->identifier;
-		$this->permalink = $tmp->permalink;
-		$this->metadata = $tmp->metadata;
-		if (isset($tmp->parent_id))
+		if(is_array($this->structure) && count($this->structure))
 		{
-			$this->parent_id = $tmp->parent_id;
-		}
-		unset($tmp);
+			$this->structure = array_reverse($this->structure);
 
+			$tmp = end($this->structure);
+
+			$this->id = $tmp->id;
+			$this->label = $tmp->label;
+			$this->name = $tmp->name;
+			$this->identifier = $tmp->identifier;
+			$this->permalink = $tmp->permalink;
+			$this->metadata = $tmp->metadata;
+			if (isset($tmp->parent_id))
+			{
+				$this->parent_id = $tmp->parent_id;
+			}
+			unset($tmp);
+		}
 
 		/*
 		 * Get a list of all sibling structural units.

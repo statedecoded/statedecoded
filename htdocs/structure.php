@@ -61,14 +61,9 @@ $struct->structure_id = $structure_id;
 $struct->get_current();
 
 /*
- * If are at the top level, struct->structure is null.
- */
-$response = (isset($struct->structure) ? $struct->structure : '' );
-
-/*
  * If the URL doesn't represent a valid structural portion of the code, then bail.
  */
-if ( $response === FALSE)
+if ( !isset($args['id']) )
 {
 	send_404();
 }
@@ -189,7 +184,11 @@ if (isset($struct->siblings))
 	/*
 	 * Locate the instant structural unit within the structure listing.
 	 */
-	$current_structure = end($structure);
+	if(is_array($structure))
+	{
+		$current_structure = end($structure);
+	}
+
 	$i=0;
 
 	/*
@@ -198,7 +197,7 @@ if (isset($struct->siblings))
 	foreach ($struct->siblings as $sibling)
 	{
 
-		if ($sibling->id === $current_structure->id)
+		if (isset($current_structure) && $sibling->id === $current_structure->id)
 		{
 
 			if ($i >= 1)

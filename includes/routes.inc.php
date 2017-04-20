@@ -27,10 +27,6 @@ $router->addRoute('editions', '^/editions/?(.*)', array('EditionController', 'ha
 // Search
 $router->addRoute('search', '^/search/?(.*)', 'search.php');
 
-// Browse
-$router->addRoute('browse', '^/browse/?((?P<edition>.*?)/)?$', array('StructureController', 'handle'));
-
-
 // New activation
 $router->addRoute('api-activate', '^/api-key/activate/(?P<secret>.*)', array('ApiKeyController', 'activateKey'));
 // Old activation
