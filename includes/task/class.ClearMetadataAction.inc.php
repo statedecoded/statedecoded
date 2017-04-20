@@ -7,7 +7,7 @@ global $db;
 
 class ClearMetadataAction extends CliAction
 {
-	static public $name = 'clearmetadata';
+	static public $name = 'clear-metadata';
 	static public $summary = 'Deletes law metadata from the database.';
 
 	public function __construct($args = array())
@@ -62,22 +62,22 @@ class ClearMetadataAction extends CliAction
 
 	public static function getHelp($args = array()) {
 		return <<<EOS
-statedecoded : import
+statedecoded : clear-metadata
 
 Clears metadata from the database.
 
 Usage:
 
-  statedecoded import [--edition=slug] [--field=name]
+  statedecoded clear-metadata [--edition=slug] [--field=name]
 
 Available options:
 
   --edition=slug
-      The query will only clear out the edition selected. Expects an
-      edition slug.
+    The query will only clear out the edition selected. Expects an
+    edition slug.
 
-	--field=name
-			If specified, only this field will be cleared.
+  --field=name
+    If specified, only this field will be cleared.
 
 EOS;
 

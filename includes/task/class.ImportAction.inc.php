@@ -159,12 +159,9 @@ This action imports new data.  By default, this replaces the current edition.
 
 Usage:
 
-  statedecoded import [--no-delete] [-v[=#]] [--edition=slug] [--current]
+  statedecoded import [-v[=#]] [--edition=slug] [--current]
 
 Available options:
-
-  --no-delete
-      Do not empty the database and search index before importing.
 
   -v, -v=##
       Show verbose output.  ## is an optional value of 1 (default,
