@@ -330,7 +330,7 @@ if ($children !== FALSE)
 				data-identifier="' . $child->permalink->token . '"
 				data-api-url="' . $api_url . '"
 				>' . $identifier . '</a></td>
-			<td class="' . $row_class . '"><a href="' . $child->permalink->url . '"
+			<td><a href="' . $child->permalink->url . '"
 				data-identifier="' . $child->permalink->token . '"
 				data-api-url="' . $api_url . '"
 				>' . $child->name . '</a></td></tr>';
