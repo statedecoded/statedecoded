@@ -140,15 +140,15 @@ foreach (array_reverse((array) $laws[0]->ancestry) as $ancestor)
 {
 	if(isset($ancestor->metadata->admin_division) && $ancestor->metadata->admin_division === TRUE)
 	{
-		$identifier = '';
+		$identifier = '<span>';
 	}
 	else
 	{
-		$identifier = $ancestor->identifier . ': ';
+		$identifier = '<span class="breadcrumb-structure-label">' . ucwords($ancestor->label) . '&nbsp;</span>' . $ancestor->identifier . '<span class="breadcrumb-id-title">: ';
 	}
 
 	$content->append('breadcrumbs', '<li><a href="' . $ancestor->permalink->url . '">' . $identifier
-		. ' ' . $ancestor->name . '</a></li>');
+		. ' ' . $ancestor->name . '</span></a></li>');
 }
 
 $title = '';
@@ -162,7 +162,7 @@ if(count($titles) === 1)
 }
 
 $content->append('breadcrumbs', '<li class="active"><a href="' . $laws[0]->permalink->url
-	. '">§&nbsp;' . $laws[0]->section_number . $title . '</a></li>');
+	. '">§&nbsp;' . $laws[0]->section_number . '<span class="breadcrumb-id-title">&nbsp;' . $title . '</span></a></li>');
 
 $content->prepend('breadcrumbs', '<nav class="breadcrumbs"><ul class="steps-nav">');
 $content->append('breadcrumbs', '</ul></nav>');

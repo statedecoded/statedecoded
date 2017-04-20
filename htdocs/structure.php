@@ -131,15 +131,16 @@ if (count((array) $structure) > 1)
 
 		if(isset($level->metadata->admin_division) && $level->metadata->admin_division === TRUE)
 		{
-			$identifier = '';
+			$identifier = '<span>';
 		}
 		else
 		{
-			$identifier = $level->identifier . ': ';
+			$identifier = '<span class="breadcrumb-structure-label">' . ucwords($level->label) . '&nbsp;</span>' .
+				$level->identifier . '<span class="breadcrumb-id-title">: ';
 		}
 
 		$content->append('breadcrumbs', '<li class="' . $active . '">
-				<a href="' . $level->permalink->url . '">' . $identifier . $level->name . '</a>
+				<a href="' . $level->permalink->url . '">' . $identifier . $level->name . '</span></a>
 			</li>');
 
 		/*
