@@ -603,7 +603,7 @@ class Parser
 
 		if(!isset($this->code->section))
 		{
-			$this->code->section = new stdClass();
+			$this->code->section = array();
 		}
 
 		if(!isset($this->code->text))
@@ -1023,12 +1023,12 @@ class Parser
 			 */
 			if ($section->_type == 'text')
 			{
-				if(!isset($this->code->section->{$this->i}))
+				if(!isset($this->code->section[$this->i]))
 				{
-					$this->code->section->{$this->i} = new stdClass();
+					$this->code->section[$this->i] = new stdClass();
 				}
 
-				$this->code->section->{$this->i}->text = trim((string) $section);
+				$this->code->section[$this->i]->text = trim((string) $section);
 				$this->code->text .= strip_tags(trim((string) $section)) . "\n\n";
 
 				$this->i++;
@@ -1039,9 +1039,9 @@ class Parser
 			 */
 			elseif($section->_type == 'element')
 			{
-				if(!isset($this->code->section->{$this->i}))
+				if(!isset($this->code->section[$this->i]))
 				{
-					$this->code->section->{$this->i} = new stdClass();
+					$this->code->section[$this->i] = new stdClass();
 				}
 				/*
 				 * If this isn't a section – a P tag or otherwise – just save it.
@@ -1055,7 +1055,7 @@ class Parser
 					 */
 					$content = strip_tags($content, '<?xml>');
 
-					$this->code->section->{$this->i}->text = $content;
+					$this->code->section[$this->i]->text = $content;
 					$this->code->text .= strip_tags($content);
 
 					$this->i++;
@@ -1068,24 +1068,24 @@ class Parser
 					/*
 					 * Default to blank text.
 					 */
-					$this->code->section->{$this->i}->text = '';
+					$this->code->section[$this->i]->text = '';
 					/*
 					 * If this is a section, we store the metadata that came with it, then
 					 * Recurse through whatever is inside of it.
 					 */
-					if(!isset($this->code->section->{$this->i}->prefix_hierarchy))
+					if(!isset($this->code->section[$this->i]->prefix_hierarchy))
 					{
-						$this->code->section->{$this->i}->prefix_hierarchy = array();
+						$this->code->section[$this->i]->prefix_hierarchy = array();
 					}
 
 					if($section->attribute('prefix'))
 					{
 						$prefix = $section->attribute('prefix');
 
-						$this->code->section->{$this->i}->prefix = $prefix;
+						$this->code->section[$this->i]->prefix = $prefix;
 						$this->prefix_hierarchy[] = $prefix;
 						$this->code->text .= $prefix ."\n\n";
-						$this->code->section->{$this->i}->prefix_hierarchy = $this->prefix_hierarchy;
+						$this->code->section[$this->i]->prefix_hierarchy = $this->prefix_hierarchy;
 					}
 
 					/*
@@ -1093,7 +1093,7 @@ class Parser
 					 */
 					if ($section->attribute('type'))
 					{
-						$this->code->section->{$this->i}->type = $section->attribute('type');
+						$this->code->section[$this->i]->type = $section->attribute('type');
 					}
 
 					$children = $section->children();
@@ -1110,7 +1110,7 @@ class Parser
 						}
 
 						$this->code->text .= $content;
-						$this->code->section->{$this->i}->text = $content;
+						$this->code->section[$this->i]->text = $content;
 
 						/*
 						 * Unset the children.

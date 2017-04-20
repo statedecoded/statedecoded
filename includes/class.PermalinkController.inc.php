@@ -20,7 +20,7 @@ class PermalinkController extends BaseController
 	public function handle($args)
 	{
 
-		if ( $args['route'] )
+		if ( isset($args['route']) )
 		{
 			$route = $this->find_route($args['route']);
 

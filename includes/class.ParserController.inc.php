@@ -1542,9 +1542,9 @@ class ParserController
 		$structures = $struct->list_children();
 
 		/*
-		 * Create an object to store structural statistics.
+		 * Create an array to store structural statistics.
 		 */
-		$this->stats = new stdClass();
+		$this->stats = array();
 
 		/*
 		 * Iterate through each of those units.
@@ -1574,24 +1574,24 @@ class ParserController
 				{
 					$ancestor_id = $structure->ancestry[$i];
 
-					if (!isset($this->stats->{$ancestor_id}->child_laws))
+					if (!isset($this->stats[$ancestor_id]->child_laws))
 					{
-						$this->stats->{$ancestor_id}->child_laws = 0;
+						$this->stats[$ancestor_id]->child_laws = 0;
 					}
 
-					if (!isset($this->stats->{$ancestor_id}->child_structures))
+					if (!isset($this->stats[$ancestor_id]->child_structures))
 					{
-						$this->stats->{$ancestor_id}->child_structures = 0;
+						$this->stats[$ancestor_id]->child_structures = 0;
 					}
 
 					if (isset($structure->child_laws))
 					{
-						$this->stats->{$ancestor_id}->child_laws = $this->stats->{$ancestor_id}->child_laws + $structure->child_laws;
+						$this->stats[$ancestor_id]->child_laws = $this->stats[$ancestor_id]->child_laws + $structure->child_laws;
 					}
 
 					if (isset($structure->child_structures))
 					{
-						$this->stats->{$ancestor_id}->child_structures = $this->stats->{$ancestor_id}->child_structures + $structure->child_structures;
+						$this->stats[$ancestor_id]->child_structures = $this->stats[$ancestor_id]->child_structures + $structure->child_structures;
 					}
 				}
 			}
@@ -1664,23 +1664,23 @@ class ParserController
 		/*
 		 * Store the tallies.
 		 */
-		$this->stats->{$this->structure_id} = new stdClass();
+		$this->stats[$this->structure_id] = new stdClass();
 		if ($child_structures !== FALSE)
 		{
-			$this->stats->{$this->structure_id}->child_structures = count((array) $child_structures);
+			$this->stats[$this->structure_id]->child_structures = count((array) $child_structures);
 		}
 		if ($child_laws !== FALSE)
 		{
-			$this->stats->{$this->structure_id}->child_laws = count((array) $child_laws);
+			$this->stats[$this->structure_id]->child_laws = count((array) $child_laws);
 		}
-		$this->stats->{$this->structure_id}->depth = $this->depth;
-		$this->stats->{$this->structure_id}->ancestry = $this->ancestry;
+		$this->stats[$this->structure_id]->depth = $this->depth;
+		$this->stats[$this->structure_id]->ancestry = $this->ancestry;
 
 		/*
 		 * If this structural unit has child structural units of its own, recurse into those.
 		 */
-		if (isset($this->stats->{$this->structure_id}->child_structures)
-			&& ($this->stats->{$this->structure_id}->child_structures > 0))
+		if (isset($this->stats[$this->structure_id]->child_structures)
+			&& ($this->stats[$this->structure_id]->child_structures > 0))
 		{
 			foreach ($child_structures as $child_structure)
 			{
