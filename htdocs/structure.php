@@ -105,7 +105,7 @@ if (strlen($structure_id) > 0)
 else
 {
 	$content->set('browser_title', SITE_TITLE . ': The ' . LAWS_NAME . ', for Humans.');
-	$content->set('page_title', '<h2>'.ucwords($children[0]->label) . 's of the ' . LAWS_NAME.'</h2>');
+	$content->set('page_title', '<h2>'.ucwords($children->{0}->label) . 's of the ' . LAWS_NAME.'</h2>');
 }
 
 /*
