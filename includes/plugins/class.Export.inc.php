@@ -291,10 +291,10 @@ abstract class Export extends Plugin
 	 */
 	public function postGetLaw(&$law)
 	{
-		if(isset($law->url))
+		if(isset($law->permalink->url))
 		{
 			$url = '/downloads/' . $law->edition->slug . '/code-' . $this->format .
-				'/' . trim($law->url, '/');
+				'/' . trim($law->permalink->url, '/');
 
 			if(isset($law->metadata) && isset($law->metadata->dupe_number))
 			{

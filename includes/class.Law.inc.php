@@ -468,11 +468,11 @@ class Law
 		 */
 
 		$permalink_obj = new Permalink(array('db' => $this->db));
-		$permalink = $permalink_obj->get_preferred($this->section_id, 'law', $this->edition_id);
+		$this->permalink = $permalink_obj->get_preferred($this->section_id, 'law', $this->edition_id);
 
-		if($permalink) {
-			$this->url = $permalink->url;
-			$this->token = $permalink->token;
+		if($this->permalink) {
+			$this->url = $this->permalink->url;
+			$this->token = $this->permalink->token;
 		}
 
 		/*
@@ -1174,7 +1174,7 @@ class Law
 					 * Assemble the permalink
 					 */
 
-					$permalink = SITE_URL . $this->url . '#'
+					$permalink = SITE_URL . $this->permalink->url . '#'
 						. $paragraph->prefix_anchor;
 
 					$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
