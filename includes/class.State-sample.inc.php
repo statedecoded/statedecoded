@@ -1542,6 +1542,7 @@ class Parser
 			$dictionary->law_id = $law_id;
 			$dictionary->edition_id = $this->edition_id;
 			$dictionary->scope = $definitions->scope;
+			$dictionary->scope_specificity = null;
 
 			/*
 			 * If we have the full structure object in the scope, use it.
