@@ -312,7 +312,7 @@ if ($children !== FALSE)
 	/*
 	 * The level of this child structural unit is that of the current unit, plus one.
 	 */
-	$body .= '<table class="title-list sections table-striped level-' . ((isset($structure[count($structure)-1]->depth) ? $structure[count($structure)-1]->depth : 0) + 1) . '"><tbody>';
+	$body .= '<table class="title-list sections table-striped level-' . ((isset($structure->{count($structure)-1}->depth) ? $structure->{count($structure)-1}->depth : 0) + 1) . '"><tbody>';
 	foreach ($children as $child)
 	{
 
