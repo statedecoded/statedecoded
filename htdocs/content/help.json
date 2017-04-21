@@ -22,6 +22,11 @@
 	"keyboard": {
 		"title": "<i class=icon-keyboard></i> Keyboard Guide",
 		"description": "Keyboard navigation instructions",
-		"content": "<dl><dt>Ctrl →</dt><dd>Next law</dd><dt>Ctrl ←</dt><dd>Prior law</dd><dt>Ctrl ↑</dt><dd>Up to parent</dd></dl>"
+		"content": "<dl><dt>Ctrl →</dt><dd>Next law</dd><dt>Ctrl ←</dt><dd>Prior law</dd><dt>Ctrl ↑</dt><dd>Up to parent</dd><dt>p</dt><dd>Pin this Law</dd></dl>"
+	},
+	"history": {
+		"title": "History",
+		"description": "What is History?",
+		"content": "The history of a law lists when it was passed and amended by the legislature. If its number or identifier was changed, this may also be noted."
 	}
 }

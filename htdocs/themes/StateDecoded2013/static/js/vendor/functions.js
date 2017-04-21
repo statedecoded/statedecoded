@@ -28,9 +28,9 @@ function escapeSelector(str) {
 /**
  * Get help via AJAX callback
  */
-var help = {};
+var help;
 function getHelp(section, callback) {
-	if(!help.length) {
+	if(!help) {
 		$.getJSON('/content/help.json', {}, function(data, textStatus, jqXHR) {
 			if(data) {
 				help = data;
@@ -331,8 +331,8 @@ $(document).ready(function () {
 	});
 
 	/* Modal dialog overlay. */
-	$("#keyhelp").click(function() {
-		showHelp('keyboard');
+	$('.helpbutton').click(function(e) {
+		showHelp( $(e.target).data('help') );
 	});
 
 

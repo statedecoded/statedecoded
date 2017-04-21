@@ -12,9 +12,13 @@ var favlaws = function () {
   this.init = function () {
     this.initInterface();
     this.pinned = this.getPinned();
-    if(section_number) {
+    if(typeof section_number != 'undefined' && section_number) {
       this.law = this.getLaw();
       this.initLawPin();
+
+      Mousetrap.bind(['p'], function(e) {
+        self.toggleLaw();
+      });
     }
   };
 
