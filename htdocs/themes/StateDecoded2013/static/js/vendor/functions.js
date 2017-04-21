@@ -331,8 +331,8 @@ $(document).ready(function () {
 	});
 
 	/* Modal dialog overlay. */
-	$("#keyhelp").click(function() {
-		showHelp('keyboard');
+	$('.helpbutton').click(function(e) {
+		showHelp( $(e.target).data('help') );
 	});
 
 

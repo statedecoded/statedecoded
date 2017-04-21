@@ -264,7 +264,7 @@ foreach($laws as $i=>$law)
 	{
 
 		$body .= '<section id="history">
-					<h2>History</h2>
+					<h2>History <a class="help helpbutton" data-help="history"><span>help</span></a></h2>
 					<p>'.$law->history.'</p>
 				</section>';
 	}
@@ -375,7 +375,7 @@ $help = new Help();
 
 // The help text is now available, as a JSON object, as $help->get_text()
 
-$sidebar .= '<p class="keyboard"><a id="keyhelp">' . $help->get_text('keyboard')->title . '</a></p>';
+$sidebar .= '<p class="keyboard"><a class="helpbutton" data-help="keyboard">' . $help->get_text('keyboard')->title . '</a></p>';
 
 
 /*
