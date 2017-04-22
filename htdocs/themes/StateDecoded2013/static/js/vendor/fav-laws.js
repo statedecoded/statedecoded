@@ -71,35 +71,53 @@ var favlaws = function () {
   };
 
   this.showPinned = function () {
-    var lawList = $('<p>No laws pinned yet.  Click the <span class="fa fa-thumb-tack"></span> icon to pin one.</p>');
+    var defaultContent = $('<p>No laws pinned yet.  Click the <span class="fa fa-thumb-tack"></span> icon to pin one.</p>');
+    var lawList = defaultContent;
+    var modal;
+
     if(this.pinned.length) {
       lawList = $('<ul class="pinned-law-list"></ul>');
       for(i in this.pinned) {
         var law = this.pinned[i];
-        var listItem = $('<li><a href="' + law.url + '">§' + law.section_number + '</a> ' + law.catch_line + '</li>');
+        var listItem = $('<li></li>');
+        var lawLink = $('<a href="' + law.url + '">§' + law.section_number + '</a>');
+        var lawText = ' ' + law.catch_line;
         var unpin = $('<a class="pin-law pinned" title="Unpin law" data-token="' + law.token + '"><span class="label">Unpin</span></a>');
         unpin.click(function(e) {
           e.preventDefault();
           self.unpinLaw($(this).data('token'));
           $(this).parent().remove();
           self.checkActive();
+
+          if(!self.pinned.length) {
+            modal.html(defaultContent);
+          }
+
         });
         listItem.append(unpin);
+        listItem.append(lawLink);
+        listItem.append(lawText);
         lawList.append(listItem);
       }
     }
 
-
-    var closeModal = $('<a href="#" class="close" title="Close"><span class="label">close</span></a>');
-    closeModal.click(function(e) {
-      e.preventDefault();
-      $('.modal-background').remove();
-    });
-
-    var modal = $('<div class="pinned-modal modal-background"></div>')
-      .append($('<div class="modal in"></div>').append(closeModal).append('<h3>Pinned Laws</h3>').append(lawList));
-
-    $('body').append(modal);
+    modal = $("<div></div>")
+      .attr({
+        'id': 'pinnedModal',
+        'title': 'Pinned Laws'
+      })
+      .append(lawList)
+      .dialog({
+        modal: true,
+        draggable: false,
+        width: '',
+        open: function(e, ui) {
+          $('#content').addClass('behind');
+        },
+        beforeClose: function(e, ui) {
+          $('#content').removeClass('behind');
+        }
+      });
   };
 
   this.toggleLaw = function () {

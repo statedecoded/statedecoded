@@ -6,21 +6,21 @@
     }
   }
 }
-.pinned-modal {
-  .close {
-    float: right;
-    @extend .fa;
-    @extend .fa-close;
 
-    .label {
-      @extend %visually-hidden;
+.pinned-law-list {
+  margin-left: 0;
+}
+
+#pinnedModal {
+  .pin-law {
+    float: left;
+    font-size: 22px;
+    &:hover {
+      font-size: 22px;
     }
   }
-  .pin-law {
-    font-size: 18px;
-    &:hover {
-      font-size: 18px;
-    }
+  li {
+    list-style: none;
   }
 }
 
