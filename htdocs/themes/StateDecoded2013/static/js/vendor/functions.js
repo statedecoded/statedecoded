@@ -59,6 +59,7 @@ function displayHelp(section, help_section) {
 		.dialog({
 			modal: true,
 			draggable: false,
+			width: '',
 			open: function(e, ui) {
 				$('#content').addClass('behind');
 			},

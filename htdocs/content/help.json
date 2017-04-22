@@ -22,7 +22,7 @@
 	"keyboard": {
 		"title": "<i class=icon-keyboard></i> Keyboard Guide",
 		"description": "Keyboard navigation instructions",
-		"content": "<dl><dt>Ctrl →</dt><dd>Next law</dd><dt>Ctrl ←</dt><dd>Prior law</dd><dt>Ctrl ↑</dt><dd>Up to parent</dd><dt>p</dt><dd>Pin this Law</dd></dl>"
+		"content": "<table class='table table-striped'><tr><td>Ctrl →</td><td>Next law</td></tr><tr><td>Ctrl ←</td><td>Prior law</td></tr><tr><td>Ctrl ↑</td><td>Up to parent</td></tr><tr><td>p</td><td>Pin this Law</td></tr></table>"
 	},
 	"history": {
 		"title": "History",

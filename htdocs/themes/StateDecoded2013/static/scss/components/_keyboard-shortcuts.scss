@@ -51,12 +51,17 @@ section#sidebar section#keyboard-guide {
   -webkit-box-shadow: 3px 3px 7px 1px #666;
      -moz-box-shadow: 3px 3px 7px 1px #666;
           box-shadow: 3px 3px 7px 1px #666;
-}
-  .ui-dialog .ui-dialog-titlebar {
+
+  @include respond-to(desktop) {
+    width: 50%;
+  }
+
+  .ui-dialog-titlebar {
     padding:5px 15px;
     border-bottom:1px solid #ccc;
   }
-  .ui-dialog .ui-dialog-title {
+
+  .ui-dialog-title {
     color:#404040;
     font-weight:bold;
     margin-top:5px;
@@ -64,14 +69,14 @@ section#sidebar section#keyboard-guide {
     padding:5px;
   }
 
-  .ui-dialog .ui-dialog-content {
+  .ui-dialog-content {
     position: relative;
     border: 0;
     padding: 1em 1em;
     background: none;
     overflow: auto;
   }
-
+}
 
 .ui-icon-closethick {
   display: inline-block;
@@ -81,29 +86,9 @@ section#sidebar section#keyboard-guide {
   font-size: 0.8em;
   background-color: #ddd;
   padding: 1px 5px;
-}
-  .ui-icon-closethick:hover,
-  .ui-icon-closethick:active {
+
+  &:hover,
+  &:active {
     background-color: #d0ddf0;
   }
-
-/**
- * Keyboard navigation instructions
- */
-
-/* Hide this to start */
-#keyboard {
-  display: none;
 }
-  #keyboard dt,
-  #keyboard dd {
-    display: inline-block;
-  }
-  #keyboard dt {
-    width: 5em;
-    margin-right: 1em;
-  }
-  #keyboard dd {
-    width: 9em;
-    clear: both;
-  }
