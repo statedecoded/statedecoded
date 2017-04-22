@@ -159,3 +159,27 @@ nav.prevnext {
     }
   }
 }
+
+// Animation magic
+
+.breadcrumbs {
+  li {
+    white-space: nowrap;
+  }
+
+  span {
+    display: inline-block;
+    overflow: hidden;
+    transition: max-width 0.3s;
+    max-width: 1000px;
+    vertical-align: top;
+  }
+
+  .hide {
+    max-width: 0;
+  }
+}
+
+* .no-animation {
+  transition: none !important;
+}
