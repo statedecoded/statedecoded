@@ -16,9 +16,11 @@ var favlaws = function () {
       this.law = this.getLaw();
       this.initLawPin();
 
-      Mousetrap.bind(['p'], function(e) {
-        self.toggleLaw();
-      });
+      if(Mousetrap) {
+        Mousetrap.bind(['p'], function(e) {
+          self.toggleLaw();
+        });
+      }
     }
   };
 
