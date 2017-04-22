@@ -1,0 +1,14 @@
+.help {
+  @extend .fa;
+  @extend .fa-question-circle;
+  font-size: 0.8em;
+  position: relative;
+  top: -0.3em;
+
+  span {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+}
