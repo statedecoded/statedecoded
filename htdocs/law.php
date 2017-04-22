@@ -375,7 +375,8 @@ $help = new Help();
 
 // The help text is now available, as a JSON object, as $help->get_text()
 
-$sidebar .= '<p class="keyboard"><a class="helpbutton" data-help="keyboard">' . $help->get_text('keyboard')->title . '</a></p>';
+$sidebar .= '<p class="keyboard"><a class="helpbutton" data-help="keyboard" id="keyhelp">' .
+	$help->get_text('keyboard')->title . '</a></p>';
 
 
 /*
