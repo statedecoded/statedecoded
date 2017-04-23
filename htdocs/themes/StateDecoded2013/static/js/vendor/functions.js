@@ -289,8 +289,16 @@ $(document).ready(function () {
 
 	/* Words for which we have dictionary terms.*/
 	$("span.dictionary").each(function() {
-		var term = $(this).text();
-		$(this).qtip({
+		var elm = $(this);
+
+		var container = elm.closest('article.law-contents');
+		var lawid = container.data('law-id');
+		var editionid = container.data('edition-id');
+
+		// Search the ancestors of this element until we find a law; get the id from that.
+
+		var term = elm.text();
+		elm.qtip({
 			tip: true,
 			hide: {
 				when: 'mouseout',
@@ -311,8 +319,8 @@ $(document).ready(function () {
 					url: '/api/dictionary/' + encodeURI(term) + '/',
 					type: 'GET',
 					data: {
-						law_id: law_id,
-						edition_id: edition_id,
+						law_id: lawid,
+						edition_id: editionid,
 						key: api_key
 					},
 					dataType: 'json',
