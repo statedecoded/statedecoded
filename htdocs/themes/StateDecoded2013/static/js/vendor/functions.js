@@ -163,20 +163,6 @@ $(document).ready(function () {
 		}
 	})
 
-    /*
-     * Set the base URL once for use later.
-     * Note that document.location.origin is a Chrome-only thing so far, so we can't use it.
-     */
-    var base_url;
-    if ('https:' == document.location.protocol) {
-        base_url = 'https://';
-    }
-    else {
-        base_url = 'http://';
-    }
-    /* We want the port if it is set, so don't use hostname */
-    base_url += document.location.host;
-
 	/* Get each permalink and add a copy function on it when visible */
 	$('a.section-permalink').bind('inview', function(event, visible, topOrBottomOrBoth) {
 		if(!visible) return false;
@@ -188,7 +174,7 @@ $(document).ready(function () {
 			/* Permit copying URLs to the clipboard. */
 			elm.zclip({
 				path: zclip_swf_file,
-				copy: function() { return base_url + $(this).attr('href'); }
+				copy: function() { return $(this).attr('href'); }
 			});
 
 			/* Ensure zclip only run once per element */
