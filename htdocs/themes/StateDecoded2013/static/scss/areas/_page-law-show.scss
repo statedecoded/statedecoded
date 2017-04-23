@@ -137,13 +137,9 @@
 
     p {
       margin: 0 0 1.25em 0;
-      &:hover {
-       .section-permalink{
-          opacity:1.0
-
-        }
-      }
     }
+
+
 
   .prefix-number {
     font-weight: bold;
@@ -155,19 +151,6 @@
 	  max-width: 100%;
 	  overflow: auto;
 	}
-
-    .section-permalink {
-      text-decoration: none;
-    }
-
-    // If the permalink is inside of a section, we need to adjust it's position.
-    // This only happens when the <p> tags are already in the content before it
-    // gets to the template.
-    p + .section-permalink {
-      position: relative;
-      top: -1.25em;
-      margin-bottom: 1.25em;
-    }
 
     pre.table {
       margin: 0 0 20px 0;
@@ -605,4 +588,25 @@ $border-radius-base: 6px;
 
 .file-pdf a {
   background-image: url('../images/icon_pdf_32.png');
+}
+
+.section-permalink {
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+// If the permalink is inside of a section, we need to adjust it's position.
+// This only happens when the <p> tags are already in the content before it
+// gets to the template.
+p + .section-permalink {
+  position: relative;
+  top: -1.25em;
+  margin-bottom: 1.25em;
+}
+// Show on hover and mobile (touch).
+.touchevents .section-permalink,
+p:hover .section-permalink,
+p:hover + .section-permalink,
+.section-permalink:hover {
+  opacity:1.0;
 }
