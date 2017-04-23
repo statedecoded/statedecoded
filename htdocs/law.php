@@ -223,7 +223,8 @@ foreach($laws as $i=>$law)
 	/*
 	 * Start assembling the body of this page by indicating the beginning of the text of the section.
 	 */
-	$body .= '<article class="law-contents" id="law-' . $law->law_id . '">';
+	$body .= '<article class="law-contents" id="law-' . $law->law_id . '" data-law-id="' . $law->law_id . '"' .
+		' data-edition-id="' . $law->edition_id . '">';
 
 	$body .= '<h1>
 		<span class="section_id">' . SECTION_SYMBOL .' ' . $law->section_number . '</span>
