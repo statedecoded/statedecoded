@@ -99,6 +99,11 @@ class StateDecoded2013__Page extends Page
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),
+		'confmanage' => array(
+			'path' => '/js/vendor/conf-manage.js',
+			'type' => 'javascript',
+			'requires' => array('jquery')
+		),
 		'main_js' => array(
 			'path' => '/js/vendor/functions.js',
 			'type' => 'javascript',

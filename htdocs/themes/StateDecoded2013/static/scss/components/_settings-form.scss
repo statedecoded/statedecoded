@@ -1,0 +1,23 @@
+.settings-button {
+  @extend .fa;
+  @extend .fa-gear;
+  float: right;
+  &:before {
+    margin-right: 3px;
+  }
+}
+
+.settings-form {
+  legend {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+  }
+
+  label {
+    display: block;
+  }
+
+  input {
+    margin-right: 5px;
+  }
+}
