@@ -39,7 +39,7 @@
     @include respond-to(tablet) {
       margin-left: 20px;
       float: none;
-      width: 66%;
+      width: 100%;
     }
 
     article.abstract {
@@ -75,6 +75,7 @@
         }
 
         @include respond-to(tablet) {
+          float: left;
         }
       }
 
