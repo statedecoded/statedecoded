@@ -102,9 +102,9 @@
 					up-to-date and accurate, no guarantee is made as to its accuracy.
 				</p>
 				<p class="credits">
-					Powered by <a href="http://www.statedecoded.com/">The State Decoded</a><br />
-					Copyright 2011–2013 <a href="http://waldo.jaquith.org/">Waldo Jaquith</a><br />
-					Design by <a href="http://www.meticulous.com">Meticulous</a>
+					Powered by <a href="https://github.com/statedecoded/statedecoded/">The State Decoded</a><br />
+					Licensed under <a href="https://github.com/statedecoded/statedecoded/blob/master/LICENSE">GNU GPL 3.0</a><br />
+					Design by <a href="http://www.meticulous.com/">Meticulous</a>
 				</p>
 			</div> <!-- // .nest -->
 		</footer> <!-- // #page_footer -->
