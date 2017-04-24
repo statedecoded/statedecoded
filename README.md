@@ -10,9 +10,9 @@ Sure! This project can be seen in action on sites for [Virginia](http://vacode.o
 
 
 ## Is this ready for prime time?
-Quite nearly! The current release is being used in production on a half-dozen different sites, with [no serious bugs](https://github.com/statedecoded/statedecoded/issues?direction=desc&labels=Bug&milestone=2&state=open), and is certainly in good enough shape to be used on websites that aren't official, government-run repositories of the law. The only catch is that, until v1.0 is released (the next major release due out), there's no built-in upgrade path to new releases. That said, it's easy enough to install a new version and just re-import your site's legal code.
+Quite nearly! The current release is being used in production on a half-dozen different sites, with [no serious bugs](https://github.com/statedecoded/statedecoded/issues?direction=desc&labels=Bug&milestone=2&state=open), and is certainly in good enough shape to be used on websites that aren't official, government-run repositories of the law.
 
-This is a pre-v1.0 release, which is to say that it isn't quite done. A capable developer who is comfortable with legal terminology should be able to wrangle her laws into this release with a couple of hours of work.
+This is a v1.0 release, which is to say that it's functionally complete but may have minor issues. A capable developer who is comfortable with legal terminology should be able to wrangle her laws into this release with a couple of hours of work. There is, however, no built-in upgrade path to new releases. That said, it's easy enough to install a new version and just re-import your site's legal code.
 
 ## How do get my legal code into The State Decoded?
 There are two ways.
