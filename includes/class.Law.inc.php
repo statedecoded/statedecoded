@@ -264,6 +264,8 @@ class Law
 			 * Create a new instance of the Structure class.
 			 */
 			$struct = new Structure;
+			$struct->id = $this->structure_id;
+			$struct->edition_id = $this->edition_id;
 
 			/*
 			 * Save the law's ancestry.
@@ -292,24 +294,24 @@ class Law
 			 */
 			if ($this->structure_contents !== FALSE)
 			{
-				$tmp = count((array) $this->structure_contents);
+				$tmp = count($this->structure_contents);
 				for ($i=0; $i<$tmp; $i++)
 				{
 					/*
 					 * When we get to our current section, that's when we get to work.
 					 */
-					if ($this->structure_contents->$i->id == $this->section_id)
+					if ($this->structure_contents[$i]->id == $this->section_id)
 					{
 						$j = $i-1;
 						$k = $i+1;
-						if (isset($this->structure_contents->$j))
+						if (isset($this->structure_contents[$j]))
 						{
-							$this->previous_section = $this->structure_contents->$j;
+							$this->previous_section = $this->structure_contents[$j];
 						}
 
-						if (isset($this->structure_contents->$k))
+						if (isset($this->structure_contents[$k]))
 						{
-							$this->next_section = $this->structure_contents->$k;
+							$this->next_section = $this->structure_contents[$k];
 						}
 						break;
 					}
