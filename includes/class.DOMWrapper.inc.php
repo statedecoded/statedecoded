@@ -121,18 +121,27 @@ class DOMWrapper
 	}
 
 	public function rawValue($html = FALSE) {
-    $newdoc = new DOMDocument();
-    $cloned = $this->dom->cloneNode(TRUE);
-    $newdoc->appendChild($newdoc->importNode($cloned,TRUE));
+		$newdoc = new DOMDocument();
+		$cloned = $this->dom->cloneNode(TRUE);
+		$node = $newdoc->importNode($cloned,TRUE);
 
-    if($html)
-    {
-	    return $newdoc->saveHTML();
-   	}
-   	else
-   	{
-   		return $newdoc->saveXML();
-   	}
+		if($node)
+		{
+			$newdoc->appendChild($node);
+
+			if($html)
+			{
+				return $newdoc->saveHTML();
+			}
+			else
+			{
+				return $newdoc->saveXML();
+			}
+		 }
+		 else
+		 {
+				return FALSE;
+		 }
 	}
 
 	public function __toString()
