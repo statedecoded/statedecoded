@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 1.0 (April 24, 2017)
+* Created plugin system
+* Refactored file exports, added downloads for EPUB, PDF, Word, and others.
+* Replaced PHP's SimpleXML with DomDocument for better handling of mixed content XML on imports.
+* Finish editions support.
+* Cleaned up import process for better visual display and error handling.
+* Added full environment test and import abilities to the command line tool.
+* Lots of visual tweaks and minor fixes.
+
 ## Version 0.9 (May 12, 2015)
 * Added support for multiple editions of a code in one database, to store revisions of the code over time.
 * Created a generic search wrapper, fixed several search-related bugs.
