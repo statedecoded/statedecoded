@@ -342,6 +342,15 @@ if (defined('DISQUS_SHORTNAME') === TRUE)
 }
 
 /*
+ * Explain what this page is. Useful for the supermajority of visits that come from search engines.
+ */
+$sidebar .= '<section class="info-box" id="explanation">
+				<h1>What This Is</h1>
+				<p>This is a law from the ' . LAWS_NAME . '. This is the actual, unchanged text
+				of one of the many laws that govern ' . PLACE_NAME . '.</p>
+			</section>';
+
+/*
  * Display links to share this law via social services.
  */
 if (defined('SOCIAL_LINKS') == TRUE)
