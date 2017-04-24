@@ -1,7 +1,7 @@
 # Changelog
 
 ## Version 1.0 (April 24, 2017)
-* Created plugin system
+* Created plugin system.
 * Refactored file exports, added downloads for EPUB, PDF, Word, and others.
 * Replaced PHP's SimpleXML with DomDocument for better handling of mixed content XML on imports.
 * Finish editions support.
