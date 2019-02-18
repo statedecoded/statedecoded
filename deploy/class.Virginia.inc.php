@@ -1,0 +1,2513 @@
+<?php
+
+/**
+ * The state-specific function library for The State Decoded.
+ *
+ * PHP version 5
+ *
+ * @license		http://www.gnu.org/licenses/gpl.html GPL 3
+ * @version		1.0
+ * @link		http://www.statedecoded.com/
+ * @since		0.3
+*/
+
+require_once(INCLUDE_PATH . 'class.Edition.inc.php');
+require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
+
+/**
+ * This class may be populated with custom functions.
+ */
+
+class State
+{
+
+	/**
+	 * Generate the URL to view a law on the official government website
+	 *
+	 * @return the URL or false
+	 */
+	function official_url()
+	{
+
+		if (!isset($this->section_number))
+		{
+			return FALSE;
+		}
+		
+		$url = 'http://law.lis.virginia.gov/vacode/' . $this->section_number . '/';
+		
+		/*
+		 * Make this variable available externally.
+		 */
+		$this->url = $url;
+		
+		/*
+		 * But return the URL anyway.
+		 */
+		return $url;
+
+	}
+
+	/**
+	 * Render the often-confusing history text for a law as plain English.
+	 *
+	 * @return the history text or false
+	 */
+	function translate_history()
+	{
+		
+		if (!isset($this->history) || empty($this->history))
+		{
+			return FALSE;
+		}
+
+		$text = '';
+
+
+		# If there's just one history entry, that's for the creation of this section.
+		if ((count((array) $this->history)-1) < 1)
+		{
+			$created = current($this->history);
+			$text .= '<p>This law was first created in '.$created->year.'. ';
+			if ($created->year >= 1994)
+			{
+				$link = 'http://leg1.state.va.us/cgi-bin/legp504.exe?'.$year.'1+ful+CHAP'
+					.str_pad($chapter, 4, '0', STR_PAD_LEFT);
+				$text .= ' The record of its establishment is cataloged in <a href="'
+					.$link.'">chapter '.$created->chapter.'</a> of that year’s edition of “Acts of
+					Assembly,” the annual state publication listing all changes made to the Code of
+					Virginia in that year.';
+			}
+			else
+			{
+				$text .= ' The record of its establishment is cataloged in chapter '
+					.$created->chapter.' of that year’s edition of “Acts of Assembly,” the annual
+					state publication listing all changes made to the Code of Virginia in that year.
+					Unfortunately, the '.$created->year.' “Acts” aren’t available online.';
+			}
+		}
+		
+		else
+		{
+			$created = current($this->history);
+			$text .= 'This law has been modified '.(count((array) $this->history)-1).'
+				time';
+			if ( (count((array) $this->history)-1) > 1)
+			{
+				$text .= 's';
+			}
+			$text .= ' since it was first created in '.$created->year.'. Those modifications
+				are cataloged by “The Acts of Assembly,” a state publication, by year and chapter.
+				Those modifications that can be read on the General Assembly’s website will be
+				linked accordingly. ';
+			if ( (count((array) $this->history)-1) > 1)
+			{
+				$text .= 'Those modifications are';
+			}
+			else
+			{
+				$text .= 'That modification is';
+			}
+			
+			$text .= ' as follows: ';
+	
+			// Iterate through each update, skipping the first one, and display it in plain English.
+			next($this->history);
+			while ($history = current($this->history))
+			{
+				$text .= 'in '.$history->year.', ';
+				
+				// When the history data is from 1994 or after, then a record of it exists on the
+				// state's website, and we can link to it.
+				if ($history->year >= 1994)
+				{
+					$year = substr($history->year, -2);
+					
+					// If we just have one chapter amending this during this year.
+					if (!is_array($history->chapter))
+					{
+						$chapter = str_pad($history->chapter, 4, '0', STR_PAD_LEFT);
+						$text .= ' chapter <a href="http://leg1.state.va.us/cgi-bin/legp504.exe?'
+							.$year.'1+ful+CHAP'.$chapter.'">'.$history->chapter.'</a>';
+					}
+					
+					// Else if we have multiple chapters amending this law during this year.
+					else
+					{
+						$text .= ' chapters ';
+						foreach ($history->chapter as $chapter)
+						{
+							$chap = str_pad($chapter, 4, '0', STR_PAD_LEFT);
+							$text .= '<a href="http://leg1.state.va.us/cgi-bin/legp504.exe?'
+								.$year.'1+ful+CHAP'.$chap.'">'.$chapter.'</a>, ';
+						}
+						$text = substr($text, 0, -2);
+					}
+				}
+				
+				// If the history data is from prior to 1994, we have no external data to link to,
+				// and we just display the text.
+				else
+				{
+					
+					// If we have multiple chapters amending this law during this year.
+					if (!is_array($history->chapter))
+					{
+						$text .= ' chapter '.$history->chapter;
+					}
+					
+					// Else if we just have one chapter amending this during this year.
+					else
+					{
+						$text .= ' chapters ';
+						foreach ($history->chapter as $chapter)
+						{
+							$text .= $chapter.', ';
+						}
+					}
+					
+				}
+				$text .= '; ';
+				next($this->history);
+			}
+		
+			// Back up to hack off the trailing semicolon and space.
+			$text = substr($text, 0, -2).'.';
+		}
+		
+		return $text;
+
+	}
+	
+
+	/**
+	 * Generate one or more citations for a law
+	 *
+	 * Should create an object named "citation" (singular) with one numbered entry for each citation
+	 * style, with values of "label" and "text," the label describing the type of citation (e.g.
+	 * "Official," "Universal") and the text being the citation itself.
+	 *
+	 * @return true or false
+	 */
+	/*function citations()
+	{
+
+		if (!isset($this->section_number))
+		{
+			return FALSE;
+		}
+
+		$this->citation->{0}->label = 'Official';
+		$this->citation->{0}->text = 'St. Code § '.$this->section_number;
+
+		return TRUE;
+	}
+	*/
+
+	/**
+	 * Retrieve a list of every attempt to amend a law
+	 *
+	 * Should create an object named "bills" (plural) with one numbered entry for each bill that
+	 * proposed to amend the law, with values of "year," "number," "catch_line," "outcome," and
+	 * "url."
+	 *
+	 * @return true or false
+	 */
+	function get_amendment_attempts()
+	{
+
+		/*
+		 * If a section number hasn't been passed to this function, then there's nothing to do.
+		 */
+		if (!isset($this->section_number))
+		{
+			return FALSE;
+		}
+		
+		/*
+		 * Get the attempts to amend this bill, from Richmond Sunlight.
+		 */
+		$json = fetch_url('http://api.richmondsunlight.com/1.0/bysection/' . $this->section_number
+			. '.json');
+		if ($json !== FALSE)
+		{
+			
+			$bills = json_decode($json);
+			
+			if (isset($bills->error))
+			{
+				return FALSE;
+			}
+			
+			$this->bills = $bills;
+			return TRUE;
+			
+		}
+		
+		return FALSE;
+
+	} // end get_amendment_attempts()
+	
+
+	/**
+	 * Retrieve a list of every court decision that cites a given law.
+	 *
+	 * A customization is necessary to get this working for your legal code.
+	 *
+	 * You need to experiment with searches on CourtListener and figure out how to build a query
+	 * that will return court decisions that refer to your legal code. In the below example, for
+	 * Virginia, we've created $url by prefixing the section number query with "Virginia Code" (URL
+	 * encoded).
+	 *
+	 * An optional customization is to set the value of court_html. This is the name of court as
+	 * displayed for each ruling, which can look better if abbreviated. You can modify the example
+	 * Virginia text that's provided. Or, if you do nothing, the entire court name will be
+	 * displayed.
+	 *
+	 * @return true or false
+	 */
+	function get_court_decisions()
+	{
+
+		//  We need a section number in order to search for court decisions that cite that law.
+		if (!isset($this->section_number))
+		{
+			return FALSE;
+		}
+
+		// Assemble the URL for our query to the CourtListener API.
+		$url = 'https://www.courtlistener.com/api/rest/v3/search/?q="'
+			. urlencode($this->section_number) . '"&court=ca4,vaeb,vawb,vaed,vawd,va,vactapp'
+			. '&order_by=score+desc&format=json';
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+		curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1200);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_USERPWD, COURTLISTENER_USERNAME . ':' . COURTLISTENER_PASSWORD);
+		$allowed_protocols = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+		curl_setopt($ch, CURLOPT_PROTOCOLS, $allowed_protocols);
+		curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols & ~(CURLPROTO_FILE | CURLPROTO_SCP));
+		$json = curl_exec($ch);
+
+		// If the query failed.
+		if ($json == FALSE)
+		{
+			return FALSE;
+		}
+
+		// Turn this JSON into an object.
+		$cl_list = json_decode($json);
+
+		// If the JSON is invalid.
+		if ($cl_list == FALSE)
+		{
+			return FALSE;
+		}
+
+		// If no results were found, save an empty variable. In this way we cache a lack of court
+		// decisions that cite a given section.
+		if ($cl_list->count === 0)
+		{
+
+			$this->decisions = '';
+
+		}
+
+		// Otherwise if results were found.
+		else
+		{
+
+			// Create an object to store the decisions that we're going to return.
+			$this->decisions = new stdClass();
+
+			// Iterate through the decisions and assign the first 10 to $this->decisions.
+			$i=0;
+			foreach ($cl_list->results as $opinion)
+			{
+
+				if ($i == 10)
+				{
+					break;
+				}
+
+				// Port the fields that we need from $opinion to $this->decisions.
+				if (html_entity_decode(strlen(strip_tags($opinion->caseName))) > 60)
+				{
+					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))) . ' . . . ';
+				}
+				else
+				{
+					$this->decisions->{$i}->name = html_entity_decode(strip_tags($opinion->caseName));
+				}
+				$this->decisions->{$i}->case_number = $opinion->docketNumber;
+				$this->decisions->{$i}->citation = $opinion->citation[0];
+				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->dateFiled));
+				$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
+				$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
+
+				if ($opinion->court == 'Court of Appeals of Virginia')
+				{
+					$this->decisions->{$i}->court_html = '<abbr title="Court of Appeals">COA</abbr>';
+				}
+				elseif ($opinion->court == 'Supreme Court of Virginia')
+				{
+					$this->decisions->{$i}->court_html = '<abbr title="Supreme Court of Virginia">SCV</abbr>';
+				}
+				else
+				{
+					$this->decisions->{$i}->court_html = $opinion->court;
+				}
+
+				$i++;
+
+			}
+
+		}
+
+		// Store these decisions in the metadata table.
+		$law = new Law();
+		$law->section_id = $this->section_id;
+		if (!isset($law->metadata->{0}))
+		{
+			$law->metadata->{0} = new stdClass();
+		}
+		$law->metadata->{0}->key = 'court_decisions';
+		$law->metadata->{0}->value = json_encode($this->decisions);
+		$law->store_metadata();
+
+		return TRUE;
+
+	}
+
+}
+
+
+/**
+ * The parser for importing legal codes. This is fully functional for importing The State Decoded's
+ * prescribed XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
+ * and serves as a guide for those who want to parse an alternate format.
+ */
+class Parser
+{
+
+	public $file = 0;
+	public $directory;
+	public $files = array();
+
+	public $db;
+	public $permalink_obj;
+
+	public $edition_id;
+	public $previous_edition_id;
+
+	/**
+	 * Indicators of dictionary terms.
+	 */
+
+	/*
+	 * The candidate phrases that indicate that the scope of one or more definitions are about
+	 * to be provided. Some phrases are left-padded with a space if they would never occur
+	 * without being preceded by a space; this is to prevent over-broad matches.
+	 */
+	public $scope_indicators = array(
+		' are used in this ',
+		'when used in this ',
+		'as used in this ',
+		'for purposes of this ',
+		'for the purposes of this ',
+		'for the purpose of this ',
+		'in this ',
+	);
+
+	/*
+	 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
+	 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
+	 * spaces, to avoid erroneously matching fragments of other terms.
+	 */
+	public $linking_phrases = array(
+		' mean ',
+		' means ',
+		' shall include ',
+		' includes ',
+		' has the same meaning as ',
+		' shall be construed ',
+		' shall also be construed to mean ',
+		' shall mean and include ',
+		' shall mean '
+	);
+
+	public function __construct($options)
+	{
+
+		/**
+		 * Set our defaults
+		 */
+		foreach ($options as $key => $value)
+		{
+			$this->$key = $value;
+		}
+
+		/**
+		 * Set the directory to parse
+		 */
+		if ($this->directory)
+		{
+
+			if (!isset($this->directory))
+			{
+				$this->directory = getcwd();
+			}
+
+			if (file_exists($this->directory) && is_dir($this->directory))
+			{
+				$directory = dir($this->directory);
+			}
+			else
+			{
+				throw new Exception('Import directory does not exist "' .
+					$this->directory . '"');
+			}
+
+			while (false !== ($filename = $directory->read()))
+			{
+
+				/*
+				 * We should make sure we've got an actual file that's readable.
+				 * Ignore anything that starts with a dot.
+				 */
+				$filepath = $this->directory . $filename;
+				if (is_file($filepath) &&
+					is_readable($filepath) &&
+					substr($filename, 0, 1) !== '.')
+				{
+					$this->files[] = $filepath;
+				}
+
+			}
+
+			/*
+			 * Check that we found at least one file
+			 */
+			if (count($this->files) < 1)
+			{
+				throw new Exception('No Import Files found in path "' .
+					$this->directory . '"');
+			}
+
+		}
+
+		if(!isset($this->permalink_obj))
+		{
+			$this->permalink_obj = new Permalink(
+				array(
+					'db' => $this->db
+				)
+			);
+		}
+
+	}
+	/**
+	 * Step through every line of every file that contains the contents of the code.
+	 */
+	public function iterate()
+	{
+
+		/*
+		 * Iterate through our resulting file listing.
+		 */
+		$file_count = count($this->files);
+		for ($i = $this->file; $i < $file_count; $i++)
+		{
+
+			/*
+			 * Operate on the present file.
+			 */
+			$filename = $this->files[$i];
+
+			/*
+			 * Increment our placeholder counter.
+			 */
+			$this->file++;
+
+			/*
+			 * Determine data type and import
+			 */
+			// TODO : Make this smarter.  We can use the PECL Fileinfo package
+			// instead, but I'd rather not have to require that at this point. -BH
+
+			$extension = substr($filename, strrpos($filename, '.')+1);
+
+			switch($extension)
+			{
+				case 'xml' :
+					$this->import_xml($filename);
+					break;
+
+				case 'json' :
+					$this->import_json($filename);
+					break;
+
+				// TODO: Fix this.
+				default:
+					$this->logger->message('Skipping unknown file type "' . $filename .'"', 5);
+					// Anything else, we can't handle.
+					continue 2;
+			}
+
+			/*
+			 * Send this object back, out of the iterator.
+			 */
+			return $this->section;
+		}
+
+	} // end iterate() function
+
+
+	/**
+	 * Convert the XML into an object.
+	 */
+	public function import_xml($filename)
+	{
+		$xml = file_get_contents($filename);
+
+		/*
+		 * Lexis-Nexis messes up pre tags, so we strip them by default.
+		 */
+		$xml = str_replace('<pre/>', '', $xml);
+
+		try
+		{
+			$this->doc = new DOMWrapper($xml, TRUE);
+			$this->section = $this->doc->law;
+		}
+		catch(Exception $e)
+		{
+			/*
+			 * If we can't convert to XML, try cleaning the data first.
+			 */
+			if (class_exists('tidy', FALSE))
+			{
+
+				$tidy_config = array('input-xml' => TRUE);
+				$tidy = new tidy();
+				$tidy->parseString($xml, $tidy_config, 'utf8');
+				$tidy->cleanRepair();
+				$xml = (string) $tidy;
+
+			}
+			elseif (exec('which tidy'))
+			{
+				exec('tidy -xml '.$filename, $output);
+				$xml = join('', $output);
+			}
+
+			$this->doc = new DOMWrapper($xml, TRUE);
+			$this->section = $this->doc->law;
+		}
+
+		/*
+		 * Send this object back, out of the iterator.
+		 */
+		return $this->section;
+	}
+
+
+	/**
+	 * Convert the JSON into an object.
+	 */
+	public function import_json($filename)
+	{
+		$section_data = file_get_contents($filename);
+
+		$this->section = json_decode($section_data);
+
+		return $this->section;
+	}
+
+
+	/**
+	 * Accept the raw content of a section of code and normalize it.
+	 */
+	public function parse()
+	{
+
+		/*
+		 * If a section of code hasn't been passed to this, then it's of no use.
+		 */
+		if (!isset($this->section))
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Create a new, empty object to store our code's data.
+		 */
+		$this->code = new stdClass();
+
+		/*
+		 * Transfer some data to our object.
+		 */
+		$this->code->catch_line = '';
+
+		if($this->section->catch_line->value()) {
+			$this->code->catch_line = (string) $this->section->catch_line;
+		}
+		$this->code->section_number = (string) $this->section->section_number;
+		$this->code->order_by = (string) $this->section->order_by;
+
+		if($this->section->history->value()) {
+			$this->code->history = (string) $this->section->history;
+		}
+
+		/*
+		 * If additional metadata is present in a "metadata" container, copy it over to our code
+		 * object.
+		 */
+		if (isset($this->section->metadata))
+		{
+
+			foreach ($this->section->metadata as $field)
+			{
+
+				foreach ($field as $key => $value)
+				{
+					/*
+					 * Convert true/false values to y/n values.
+					 */
+					if ($value == 'true')
+					{
+						$value = 'y';
+					}
+					elseif ($value == 'true')
+					{
+						$value = 'n';
+					}
+					$this->code->metadata->$key = $value;
+				}
+
+			}
+
+		}
+
+		/*
+		 * Iterate through the structural headers.
+		 */
+		foreach ($this->section->structure->children() as $unit)
+		{
+
+			$level = $unit->attribute('level');
+
+			if(!isset($this->code->structure))
+			{
+				$this->code->structure = array();
+			}
+			if(!isset($this->code->structure[$level]))
+			{
+				$this->code->structure[$level] = new stdClass();
+			}
+
+			$this->code->structure[$level]->name = (string) $unit;
+			$this->code->structure[$level]->label = $unit->attribute('label');
+			$this->code->structure[$level]->level = $unit->attribute('level');
+			$this->code->structure[$level]->identifier = $unit->attribute('identifier');
+			if ( $unit->attribute('order_by') === null )
+			{
+				$this->code->structure[$level]->order_by = $unit->attribute('order_by');
+			}
+		}
+
+		/*
+		 * Iterate through the text.
+		 */
+
+		if(!isset($this->code->section))
+		{
+			$this->code->section = array();
+		}
+
+		if(!isset($this->code->text))
+		{
+			$this->code->text = '';
+		}
+		$this->prefix_hierarchy = array();
+
+		$this->i=0;
+
+		$this->recurse($this->section->text->children());
+
+		/*
+		 * If there any tags, store those, too.
+		 */
+		if (isset($this->section->tags))
+		{
+
+			/*
+			 * Create an object to store the tags.
+			 */
+			$this->code->tags = new stdClass();
+
+			/*
+			 * Iterate through each of the tags and move them over to $this->code.
+			 */
+			foreach ($this->section->tags->tag as $tag)
+			{
+				$this->code->tags->tag = trim((string) $tag);
+			}
+
+		}
+
+		return TRUE;
+	}
+
+	/**
+	 * Create permalinks from what's in the database
+	 */
+	public function build_permalinks()
+	{
+		/*
+		 * Reset permalinks.
+		 */
+		$this->move_old_permalinks($this->edition_id);
+
+		$this->delete_permalinks($this->edition_id);
+		$this->build_permalink_subsections($this->edition_id);
+	}
+
+	/**
+	 * Move old permalinks
+	 */
+	public function move_old_permalinks($edition_id)
+	{
+		/*
+		 * Get the current edition.
+		 */
+		$edition_obj = new Edition(array('db' => $this->db));
+		$current_edition = $edition_obj->current();
+
+		/*
+		 * First, delete anything that's not a real permalink for any edition
+		 * that's not current.
+		 */
+		$sql = 'DELETE FROM permalinks
+			WHERE permalink = 0 AND edition_id <> :edition_id';
+		$sql_args = array(':edition_id' => $current_edition->id);
+		$statement = $this->db->prepare($sql);
+		$statement->execute($sql_args);
+
+		/*
+		 * Then make all remaining permalinks preferred for any edition that's
+		 * not current.
+		 */
+		$sql = 'UPDATE permalinks
+			SET preferred = 1
+			WHERE permalink = 1 AND preferred = 0 AND
+			edition_id <> :edition_id';
+		$sql_args = array(':edition_id' => $edition_id);
+		$statement = $this->db->prepare($sql);
+
+		$statement->execute($sql_args);
+	}
+
+
+	/**
+	 * Remove all old permalinks
+	 */
+	// TODO: eventually, we'll want to keep these and have multiple versions.
+	// See issues #314 #362 #363
+	public function delete_permalinks($edition_id)
+	{
+
+		$sql = 'DELETE FROM permalinks WHERE edition_id = :edition_id';
+		$sql_args = array(':edition_id' => $edition_id);
+		$statement = $this->db->prepare($sql);
+
+		$statement->execute($sql_args);
+	}
+
+	/**
+	 * Recurse through all subsections to build permalink data.
+	 */
+	public function build_permalink_subsections($edition_id, $parent_id = null)
+	{
+
+		$edition_obj = new Edition(array('db' => $this->db));
+		$edition = $edition_obj->find_by_id($edition_id);
+
+		/*
+		 * If we don't have a parent, set the base url.
+		 * We only want to do this once.
+		 */
+		if (!isset($parent_id))
+		{
+			/*
+			 * By default, the actual permalink is preferred.
+			 */
+			$preferred = 1;
+
+			/*
+			 * If this is the current edition, add links to the urls
+			 * without the edition slug.  This becomes the preferred
+			 * link url.
+			 */
+			if ($edition->current)
+			{
+				$insert_data = array(
+					':object_type' => 'structure',
+					// ':relational_id' => null,
+					':identifier' => null,
+					':token' => '/browse/',
+					':url' => '/browse/',
+					':edition_id' => $edition_id,
+					':preferred' => $preferred,
+					':permalink' => 0
+				);
+				$this->permalink_obj->create($insert_data);
+
+				$preferred = 0;
+			}
+
+			$insert_data = array(
+				':object_type' => 'structure',
+				// ':relational_id' => null,
+				':identifier' => null,
+				':token' => '/browse/',
+				':url' => '/' . $edition->slug . '/',
+				':edition_id' => $edition_id,
+				':preferred' => $preferred,
+				':permalink' => 1
+			);
+			$this->permalink_obj->create($insert_data);
+
+		}
+
+		$structure_sql =
+			'SELECT structure_unified.*
+			FROM structure
+			LEFT JOIN structure_unified
+				ON structure.id = structure_unified.s1_id
+			WHERE structure.edition_id = :edition_id';
+
+		/*
+		 * We use prepared statements for efficiency.  As a result,
+		 * we need to keep an array of our arguments rather than
+		 * hardcoding them in the SQL.
+		 */
+		$structure_args = array(
+			':edition_id' => $edition_id
+		);
+
+		if (isset($parent_id))
+		{
+			$structure_sql .= ' AND parent_id = :parent_id';
+			$structure_args[':parent_id'] = $parent_id;
+		}
+		else
+		{
+			$structure_sql .= ' AND parent_id IS NULL';
+		}
+
+		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_statement->execute($structure_args);
+
+		/*
+		 * Get results as an array to save memory
+		 */
+		while ($item = $structure_statement->fetch(PDO::FETCH_ASSOC))
+		{
+			/*
+			 * Figure out the URL for this structural unit by iterating through the "identifier"
+			 * columns in this row.
+			 */
+			$identifier_parts = array();
+
+			foreach ($item as $key => $value)
+			{
+				if (preg_match('/s[0-9]_identifier/', $key) == 1)
+				{
+					/*
+					 * Higher-level structural elements (e.g., titles) will have blank columns in
+					 * structure_unified, so we want to omit any blank values. Because a valid
+					 * structural unit identifier is "0" (Virginia does this), we check the string
+					 * length, rather than using empty().
+					 */
+					if (strlen($value) > 0)
+					{
+						$identifier_parts[] = urlencode($value);
+					}
+				}
+			}
+			$identifier_parts = array_reverse($identifier_parts);
+			$structure_token = implode('/', $identifier_parts);
+
+			/*
+			 * Insert the structure
+			 */
+
+			/*
+			 * By default, the actual permalink is preferred.
+			 */
+			$preferred = 1;
+
+			/*
+			 * If this is the current edition, add links to the urls
+			 * without the edition slug.  This becomes the preferred
+			 * link url.
+			 */
+			if ($edition->current)
+			{
+				$insert_data = array(
+					':object_type' => 'structure',
+					':relational_id' => $item['s1_id'],
+					':identifier' => $item['s1_identifier'],
+					':token' => $structure_token,
+					':url' => '/' . $structure_token . '/',
+					':edition_id' => $edition_id,
+					':preferred' => 1,
+					':permalink' => 0
+				);
+				$this->permalink_obj->create($insert_data);
+
+				$preferred = 0;
+			}
+
+			/*
+			 * Insert actual permalinks.
+			 */
+			$insert_data = array(
+				':object_type' => 'structure',
+				':relational_id' => $item['s1_id'],
+				':identifier' => $item['s1_identifier'],
+				':token' => $structure_token,
+				':url' => '/' . $edition->slug . '/' . $structure_token . '/',
+				':edition_id' => $edition_id,
+				':preferred' => $preferred,
+				':permalink' => 1
+			);
+			$this->permalink_obj->create($insert_data);
+
+			/*
+			 * Now we can use our data to build the child law identifiers
+			 */
+			if (INCLUDES_REPEALED !== TRUE)
+			{
+				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
+								FROM laws
+								WHERE structure_id = :s_id
+								AND laws.edition_id = :edition_id
+								ORDER BY order_by, section';
+			}
+			else
+			{
+				$laws_sql = '	SELECT laws.id, laws.structure_id, laws.section AS section_number,
+								laws.catch_line
+								FROM laws
+								LEFT OUTER JOIN laws_meta
+									ON laws_meta.law_id = laws.id AND laws_meta.meta_key = "repealed"
+								WHERE structure_id = :s_id
+								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
+								AND laws.edition_id = :edition_id
+								ORDER BY order_by, section';
+			}
+			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+			$laws_sql_args = array(
+				':s_id' => $item['s1_id'],
+				':edition_id' => $edition_id
+			);
+			$laws_statement->execute( $laws_sql_args );
+
+			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
+			{
+
+				/*
+				 * Note that we descend from our most-preferred url option
+				 * to our least, depending on what flags have been set.
+				 */
+				$preferred = 1;
+
+				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === FALSE)
+				{
+					$token = str_replace(
+						array(':', '/', '\\'),
+						array('_', '_', '_'),
+						$law['section_number']
+					);
+
+					/*
+					 * Current-and-short is the most-preferred (shortest) url.
+					 */
+
+					if ($edition->current)
+					{
+						$insert_data = array(
+							':object_type' => 'law',
+							':relational_id' => $law['id'],
+							':identifier' => $law['section_number'],
+							':token' => $structure_token . '/' . $token,
+							':url' => '/' . $token . '/',
+							':edition_id' => $edition_id,
+							':permalink' => 0,
+							':preferred' => 1
+						);
+						$this->permalink_obj->create($insert_data);
+
+						$preferred = 0;
+					}
+
+					/*
+					 * If this is not-current, then short is the most-preferred.
+					 */
+					$insert_data = array(
+						':object_type' => 'law',
+						':relational_id' => $law['id'],
+						':identifier' => $law['section_number'],
+						':token' => $structure_token . '/' . $token,
+						':url' => '/' . $edition->slug . '/' . $token . '/',
+						':edition_id' => $edition_id,
+						':permalink' => 0,
+						':preferred' => $preferred
+					);
+					$this->permalink_obj->create($insert_data);
+
+					$preferred = 0;
+				}
+
+				/*
+				 * Long and current is our third choice.
+				 */
+				if ($edition->current)
+				{
+					$insert_data = array(
+						':object_type' => 'law',
+						':relational_id' => $law['id'],
+						':identifier' => $law['section_number'],
+						':token' => $structure_token . '/' . $token,
+						':url' => '/' . $structure_token . '/' . $token . '/',
+						':edition_id' => $edition_id,
+						':permalink' => 0,
+						':preferred' => $preferred
+					);
+					$this->permalink_obj->create($insert_data);
+
+					$preferred = 0;
+				}
+
+				/*
+				 * Failing everything else, use the super-long url.
+				 */
+				$insert_data = array(
+					':object_type' => 'law',
+					':relational_id' => $law['id'],
+					':identifier' => $law['section_number'],
+					':token' => $structure_token . '/' . $token,
+					':url' => '/' . $edition->slug . '/' . $structure_token . '/' . $token . '/',
+					':edition_id' => $edition_id,
+					':permalink' => 1,
+					':preferred' => $preferred
+				);
+				$this->permalink_obj->create($insert_data);
+			}
+			$this->build_permalink_subsections($edition_id, $item['s1_id']);
+
+		}
+	}
+
+	/**
+	 * Do any setup.
+	 */
+	public function pre_parse()
+	{
+	}
+	/**
+	 * Do any cleanup.
+	 */
+	public function post_parse()
+	{
+	}
+
+	/**
+	 * Recurse through subsections of arbitrary depth. Subsections can be nested quite deeply, so
+	 * we call this method recursively to gather their content.
+	 */
+	public function recurse($sections)
+	{
+		if ( !isset($sections) || !isset($this->code) )
+		{
+			return FALSE;
+		}
+
+		foreach($sections as $key=>$section) {
+
+			/*
+			 * If this is just a single block of text, then simply save that.
+			 */
+			if ($section->_type == 'text')
+			{
+				if(!isset($this->code->section[$this->i]))
+				{
+					$this->code->section[$this->i] = new stdClass();
+				}
+
+				$this->code->section[$this->i]->text = trim((string) $section);
+				$this->code->text .= strip_tags(trim((string) $section)) . "\n\n";
+
+				$this->i++;
+			}
+
+			/*
+			 * If this is an element, handle it.
+			 */
+			elseif($section->_type == 'element')
+			{
+				if(!isset($this->code->section[$this->i]))
+				{
+					$this->code->section[$this->i] = new stdClass();
+				}
+				/*
+				 * If this isn't a section – a P tag or otherwise – just save it.
+				 */
+				if($section->_tag !== 'section')
+				{
+					$content = trim($section->rawValue());
+
+					/*
+					 * We might have some xml fragments, so strip those.
+					 */
+					$content = strip_tags($content, '<?xml>');
+
+					$this->code->section[$this->i]->text = $content;
+					$this->code->text .= strip_tags($content);
+
+					$this->i++;
+				}
+				/*
+				 * If this is a section, store our metadata about it, then recurse.
+				 */
+				else
+				{
+					/*
+					 * Default to blank text.
+					 */
+					$this->code->section[$this->i]->text = '';
+					/*
+					 * If this is a section, we store the metadata that came with it, then
+					 * Recurse through whatever is inside of it.
+					 */
+					if(!isset($this->code->section[$this->i]->prefix_hierarchy))
+					{
+						$this->code->section[$this->i]->prefix_hierarchy = array();
+					}
+
+					if($section->attribute('prefix'))
+					{
+						$prefix = $section->attribute('prefix');
+
+						$this->code->section[$this->i]->prefix = $prefix;
+						$this->prefix_hierarchy[] = $prefix;
+						$this->code->text .= $prefix ."\n\n";
+						$this->code->section[$this->i]->prefix_hierarchy = $this->prefix_hierarchy;
+					}
+
+					/*
+					 * If this subsection has a specified type (e.g., "table"), save that.
+					 */
+					if ($section->attribute('type'))
+					{
+						$this->code->section[$this->i]->type = $section->attribute('type');
+					}
+
+					$children = $section->children();
+
+					/*
+					 * If we don't have a section below this, just get the content.
+					 */
+					if($children && !$section->section)
+					{
+						$content = '';
+
+						foreach($children as $child) {
+							$content .= trim($child->rawValue(TRUE));
+						}
+
+						$this->code->text .= $content;
+						$this->code->section[$this->i]->text = $content;
+
+						/*
+						 * Unset the children.
+						 */
+						$children = null;
+					}
+
+					$this->i++;
+
+					/*
+					 * If we haven't yet handled them, recurse through any subsections.
+					 */
+					if($children)
+					{
+						$this->recurse($section->children());
+					}
+
+					array_pop($this->prefix_hierarchy);
+				}
+			}
+		}
+
+		return TRUE;
+
+	}
+
+
+	/**
+	 * Take an object containing the normalized code data and store it.
+	 */
+	public function store()
+	{
+		if (!isset($this->code))
+		{
+			die('No data provided.');
+		}
+
+		/*
+		 * This first section creates the record for the law, but doesn't do anything with the
+		 * content of it just yet.
+		 */
+
+		/*
+		 * Try to create this section's structural element(s). If they already exist,
+		 * create_structure() will handle that silently. Either way a structural ID gets returned.
+		 */
+		$structure = new Parser(
+			array(
+				'db' => $this->db,
+				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id
+			)
+		);
+
+		$structure_labels = array();
+
+		if(isset($this->code->structure))
+		{
+
+			foreach ($this->code->structure as $key => $struct)
+			{
+				if(isset($struct->metadata))
+				{
+					$structure->metadata = $struct->metadata;
+				}
+				else
+				{
+					$structure->metadata = new stdClass();
+				}
+
+				if(!isset($struct->identifier) || $struct->identifier === '')
+				{
+					$structure->identifier = $struct->name;
+					$structure->metadata->admin_division = TRUE;
+					/* We almost always want administrative divisions before regular divisions.*/
+					$structure->order_by = 0;
+				}
+				else
+				{
+					$structure->identifier = $struct->identifier;
+					if(!isset($structure->order_by))
+					{
+						$structure->order_by = 1;
+					}
+				}
+
+				$structure->name = $struct->name;
+				$structure->label = $struct->label;
+				$structure->level = $struct->level;
+
+				$structure_labels[] = strtolower($struct->label);
+
+
+				/* If we've gone through this loop already, then we have a parent ID. */
+				if (isset($this->code->structure_id))
+				{
+					$structure->parent_id = $this->code->structure_id;
+				}
+
+				$struct->id = $this->code->structure_id = $structure->create_structure();
+
+			}
+
+			/*
+			 * When that loop is finished, because structural units are ordered from most general to
+			 * most specific, we're left with the section's parent ID. Preserve it.
+			 */
+			$query['structure_id'] = $this->code->structure_id;
+		}
+		else
+		{
+			$this->logger->error('ERROR Section without structure found: '. print_r($this->code, TRUE), 10);
+		}
+
+		/*
+		 * Build up an array of field names and values, using the names of the database columns as
+		 * the key names.
+		 */
+		$query['catch_line'] = $this->code->catch_line;
+		$query['section'] = $this->code->section_number;
+		$query['text'] = $this->code->text;
+		if (!empty($this->code->order_by))
+		{
+			$query['order_by'] = $this->code->order_by;
+		}
+		if (isset($this->code->history))
+		{
+			$query['history'] = $this->code->history;
+		}
+		$query['edition_id'] = $this->edition_id;
+
+		/*
+		 * See if this is a duplicate law
+		 */
+
+		$dupe_query = 'SELECT COUNT(*) AS count FROM laws WHERE section = :section AND edition_id = :edition_id';
+		$dupe_args = array(':section' => $query['section'], ':edition_id' => $query['edition_id']);
+
+		$dupe_statement = $this->db->prepare($dupe_query);
+		$dupe_result = $dupe_statement->execute($dupe_args);
+
+		if($dupe_result)
+		{
+			$dupe = $dupe_statement->fetch();
+			if($dupe['count'] > 0) {
+				if(!isset($this->code->metadata))
+				{
+					$this->code->metadata = new stdClass();
+				}
+
+				$this->code->metadata->dupe_number = $dupe['count'];
+			}
+		}
+
+		/*
+		 * Create the beginning of the insertion statement.
+		 */
+		$sql = 'INSERT INTO laws
+				SET date_created=now()';
+		$sql_args = array();
+
+		/*
+		 * Iterate through the array and turn it into SQL.
+		 */
+		foreach ($query as $name => $value)
+		{
+			$sql .= ', ' . $name . ' = :' . $name;
+			$sql_args[':' . $name] = $value;
+		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE)
+		{
+			echo '<p>Failure: ' . $sql . '</p>';
+			var_dump($sql_args);
+		}
+
+		/*
+		 * Preserve the insert ID from this law, since we'll need it below.
+		 */
+		$law_id = $this->db->lastInsertID();
+
+		/*
+		 * This second section inserts the textual portions of the law.
+		 */
+
+		/*
+		 * Pull out any mentions of other sections of the code that are found within its text and
+		 * save a record of those, for crossreferencing purposes.
+		 */
+		$references = new Parser(
+			array(
+				'db' => $this->db,
+				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id
+			)
+		);
+		$references->text = $this->code->text;
+		$sections = $references->extract_references();
+		if ( ($sections !== FALSE) && (count($sections) > 0) )
+		{
+			$references->section_id = $law_id;
+			$references->sections = $sections;
+			$success = $references->store_references();
+			if ($success === FALSE)
+			{
+				echo '<p>References for section ID '.$law_id.' were found, but could not be
+					stored.</p>';
+			}
+		}
+
+		/*
+		 * Store any metadata.
+		 */
+		if (isset($this->code->metadata))
+		{
+
+			/*
+			 * Step through every metadata field and add it.
+			 */
+			$sql = 'INSERT INTO laws_meta
+					SET law_id = :law_id,
+					meta_key = :meta_key,
+					meta_value = :meta_value,
+					edition_id = :edition_id,
+					date_created = NOW()';
+			$statement = $this->db->prepare($sql);
+
+			foreach ($this->code->metadata as $key => $value)
+			{
+				$sql_args = array(
+					':law_id' => $law_id,
+					':meta_key' => $key,
+					':meta_value' => $value,
+					':edition_id' => $this->edition_id
+				);
+				$result = $statement->execute($sql_args);
+
+				if ($result === FALSE)
+				{
+					echo '<p>Failure: '.$sql.'</p>';
+				}
+			}
+
+		}
+
+		/*
+		 * Store any tags associated with this law.
+		 */
+		if (isset($this->code->tags))
+		{
+			$sql = 'INSERT INTO tags
+					SET law_id = :law_id,
+					section_number = :section_number,
+					text = :tag,
+					edition_id = :edition_id';
+			$statement = $this->db->prepare($sql);
+
+			foreach ($this->code->tags as $tag)
+			{
+				$sql_args = array(
+					':law_id' => $law_id,
+					':section_number' => $this->code->section_number,
+					':tag' => $tag,
+					':edition_id' => $this->edition_id
+				);
+				$result = $statement->execute($sql_args);
+
+				if ($result === FALSE)
+				{
+					echo '<p>Failure: '.$sql.'</p>';
+					var_dump($sql_args);
+				}
+			}
+		}
+
+		/*
+		 * Step through each section.
+		 */
+		$i=1;
+		foreach ($this->code->section as $section)
+		{
+
+			/*
+			 * If no section type has been specified, make it your basic section.
+			 */
+			if (empty($section->type))
+			{
+				$section->type = 'section';
+			}
+
+			/*
+			 * Insert this subsection into the text table.
+			 */
+			$sql = 'INSERT INTO text
+					SET law_id = :law_id,
+					sequence = :sequence,
+					type = :type,
+					date_created=now(),
+					edition_id = :edition_id';
+			$sql_args = array(
+				':law_id' => $law_id,
+				':sequence' => $i,
+				':type' => $section->type,
+				':edition_id' => $this->edition_id
+			);
+			if (!empty($section->text))
+			{
+				$sql .= ', text = :text';
+				$sql_args[':text'] = $section->text;
+			}
+
+			$statement = $this->db->prepare($sql);
+			$result = $statement->execute($sql_args);
+
+			if ($result === FALSE)
+			{
+				echo '<p>Failure: '.$sql.'</p>';
+			}
+
+			/*
+			 * Preserve the insert ID from this section of text, since we'll need it below.
+			 */
+			$text_id = $this->db->lastInsertID();
+
+			/*
+			 * Start a new counter. We'll use it to track the sequence of subsections.
+			 */
+			$j = 1;
+
+			/*
+			 * Step through every portion of the prefix (i.e. A4b is three portions) and insert
+			 * each.
+			 */
+			if (isset($section->prefix_hierarchy))
+			{
+
+				foreach ($section->prefix_hierarchy as $prefix)
+				{
+					$sql = 'INSERT INTO text_sections
+							SET text_id = :text_id,
+							identifier = :identifier,
+							sequence = :sequence,
+							date_created=now(),
+							edition_id = :edition_id';
+					$sql_args = array(
+						':text_id' => $text_id,
+						':identifier' => $prefix,
+						':sequence' => $j,
+						':edition_id' => $this->edition_id
+					);
+
+					$statement = $this->db->prepare($sql);
+					$result = $statement->execute($sql_args);
+
+					if ($result === FALSE)
+					{
+						echo '<p>Failure: ' . $sql . '</p>';
+					}
+
+					$j++;
+				}
+
+			}
+
+			$i++;
+		}
+
+
+		/*
+		 * Trawl through the text for definitions.
+		 */
+		$dictionary = new Parser(
+			array(
+				'db' => $this->db,
+				'edition_id' => $this->edition_id,
+				'previous_edition_id' => $this->previous_edition_id
+			)
+		);
+
+		/*
+		 * Pass this section of text to $dictionary.
+		 */
+		$dictionary->text = $this->code->text;
+
+		/*
+		 * Get a normalized listing of definitions.
+		 */
+		$definitions = $this->extract_definitions($this->code);
+
+		/*
+		 * Check to see if this section or its containing structural unit were specified in the
+		 * config file as a container for global definitions. If it was, then we override the
+		 * presumed scope and provide a global scope.
+		 */
+		$ancestry = array();
+		if (isset($this->code->structure))
+		{
+			foreach ($this->code->structure as $struct)
+			{
+				$ancestry[] = $struct->identifier;
+			}
+		}
+		$ancestry = implode(',', $ancestry);
+		$ancestry_section = $ancestry . ','.$this->code->section_number;
+		if (defined('GLOBAL_DEFINITIONS') &&
+				(GLOBAL_DEFINITIONS === $ancestry
+				||
+				GLOBAL_DEFINITIONS === $ancestry_section)
+			)
+		{
+			$definitions->scope = 'global';
+		}
+		unset($ancestry);
+		unset($ancestry_section);
+
+		/*
+		 * If any definitions were found in this text, store them.
+		 */
+		if ($definitions !== FALSE)
+		{
+
+			/*
+			 * Populate the appropriate variables.
+			 */
+			$dictionary->terms = $definitions->terms;
+			$dictionary->law_id = $law_id;
+			$dictionary->edition_id = $this->edition_id;
+			$dictionary->scope = $definitions->scope;
+			$dictionary->scope_specificity = null;
+
+			/*
+			 * If we have the full structure object in the scope, use it.
+			 */
+			if(is_object($definitions->scope)) {
+				$dictionary->scope = strtolower($definitions->scope->label);
+				$dictionary->scope_specificity = $definitions->scope->level;
+				$dictionary->structure_id = $definitions->scope->id;
+			}
+
+			/*
+			 * Store these definitions in the database.
+			 */
+			$dictionary->store_definitions();
+
+		}
+
+		/*
+		 * Memory management.
+		 */
+		unset($references);
+		unset($dictionary);
+		unset($definitions);
+		unset($chapter);
+		unset($sections);
+		unset($query);
+	}
+
+
+	/**
+	 * When provided with a structural identifier, verifies whether that structural unit exists.
+	 * Returns the structural database ID if it exists; otherwise, returns false.
+	 */
+	function structure_exists()
+	{
+
+		if (!isset($this->identifier))
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Assemble the query.
+		 */
+		$sql = 'SELECT id
+				FROM structure
+				WHERE identifier = :identifier
+				AND edition_id = :edition_id';
+		$sql_args = array(
+			':identifier' => $this->identifier,
+			':edition_id' => $this->edition_id
+		);
+
+		/*
+		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
+		 * include that in our query.
+		 */
+		if ( !empty($this->parent_id) )
+		{
+			$sql .= ' AND parent_id = :parent_id';
+			$sql_args[':parent_id'] = $this->parent_id;
+		}
+		else
+		{
+			$sql .= ' AND parent_id IS NULL';
+		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ( ($result === FALSE) || ($statement->rowCount() === 0) )
+		{
+			return FALSE;
+		}
+
+		$structure = $statement->fetch(PDO::FETCH_OBJ);
+		return $structure->id;
+	}
+
+
+	/**
+	 * When provided with a structural unit identifier and type, it creates a record for that
+	 * structural unit. Save for top-level structural units (e.g., titles), it should always be
+	 * provided with a $parent_id, which is the ID of the parent structural unit. Most structural
+	 * units will have a name, but not all.
+	 */
+	function create_structure()
+	{
+
+		/*
+		 * Sometimes the code contains references to no-longer-existent chapters and even whole
+		 * titles of the code. These are void of necessary information. We want to ignore these
+		 * silently. Though you'd think we should require a chapter name, we actually shouldn't,
+		 * because sometimes chapters don't have names. In the Virginia Code, for instance, titles
+		 * 8.5A, 8.6A, 8.10, and 8.11 all have just one chapter ("part"), and none of them have a
+		 * name.
+		 *
+		 * Because a valid structural identifier can be "0" we can't simply use empty(), but must
+		 * also verify that the string is longer than zero characters. We do both because empty()
+		 * will valuate faster than strlen(), and because these two strings will almost never be
+		 * empty.
+		 */
+		if (
+				( empty($this->identifier) && (strlen($this->identifier) === 0) )
+				||
+				( empty($this->label) )
+			)
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
+		 */
+		$structure_id = $this->structure_exists();
+		if ($structure_id !== FALSE)
+		{
+			return $structure_id;
+		}
+
+		/* Now we know that this structural unit does not exist, so Insert this structural record
+		 * into the database. It's tempting to use ON DUPLICATE KEY here, and eliminate the use of
+		 * structure_exists(), but then MDB2's lastInsertID() becomes unreliable. That means we need
+		 * a second query to determine the ID of this structural unit. Better to check if it exists
+		 * first and insert it if it doesn't than to insert it every time and then query its ID
+		 * every time, since the former approach will require many less queries than the latter.
+		 */
+		$sql = 'INSERT INTO structure
+				SET identifier = :identifier';
+		$sql_args = array(
+			':identifier' => $this->identifier
+		);
+		if (!empty($this->name))
+		{
+			$sql .= ', name = :name';
+			$sql_args[':name'] = $this->name;
+		}
+		$sql .= ', label = :label, edition_id = :edition_id';
+		$sql .= ', depth = :depth, date_created=now()';
+		$sql_args[':label'] = $this->label;
+		$sql_args[':edition_id'] = $this->edition_id;
+		$sql_args[':depth'] = $this->level;
+		if (isset($this->parent_id))
+		{
+			$sql .= ', parent_id = :parent_id';
+			$sql_args[':parent_id'] = $this->parent_id;
+
+		}
+		if(isset($this->metadata))
+		{
+			$sql .= ', metadata = :metadata';
+			$sql_args[':metadata'] = serialize($this->metadata);
+		}
+		if(isset($this->order_by))
+		{
+			$sql .= ', order_by = :order_by';
+			$sql_args[':order_by'] = $this->order_by;
+		}
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		if ($result === FALSE)
+		{
+			echo '<p>Failure: '.$sql.'</p>';
+			var_dump($sql_args);
+			return FALSE;
+		}
+
+		return $this->db->lastInsertID();
+
+	}
+
+	/**
+	 * When fed a section of the code that contains definitions, extracts the definitions from that
+	 * section and returns them as an object. Requires only a block of text.
+	 */
+	function extract_definitions($code)
+	{
+		/*
+		 * Get the length of the longest label in our structure.
+		 */
+		$longest_label = array_reduce($code->structure, function($longest, $struct) {
+			if(strlen($struct->label) > $longest) {
+				$longest = strlen($struct->label);
+			}
+			return $longest;
+		}, 0);
+
+		/*
+		 * Sort our labels by length to text-match correctly, e.g. "subtitle"
+		 * before "title".
+		 */
+		$length_sorted_labels = $code->structure;
+		usort($length_sorted_labels, function($a, $b) {
+			return strlen($b->label) - strlen($a->label);
+		});
+
+		$text = $code->text;
+
+		$scope = 'section';
+
+		if (!isset($text))
+		{
+			return FALSE;
+		}
+
+		/* Measure whether there are more straight quotes or directional quotes in this passage
+		 * of text, to determine which type are used in these definitions. We double the count of
+		 * directional quotes since we're only counting one of the two directions.
+		 */
+		if ( substr_count($text, '"') > (substr_count($text, '”') * 2) )
+		{
+			$quote_type = 'straight';
+			$quote_sample = '"';
+		}
+		else
+		{
+			$quote_type = 'directional';
+			$quote_sample = '”';
+		}
+
+		/*
+		 * Break up this section into paragraphs. If HTML paragraph tags are present, break it up
+		 * with those. If they're not, break it up with carriage returns.
+		 */
+		if (strpos($text, '<p>') !== FALSE)
+		{
+			$paragraphs = explode('<p>', $text);
+		}
+		else
+		{
+			$text = str_replace("\n", "\r", $text);
+			$paragraphs = explode("\r", $text);
+		}
+
+		/*
+		 * Discard any empty paragraphs.
+		 */
+		$paragraphs = array_values(array_filter($paragraphs));
+
+		/*
+		 * Create the empty array that we'll build up with the definitions found in this section.
+		 */
+		$definitions = array();
+
+		/*
+		 * Step through each paragraph and determine which contain definitions.
+		 */
+		foreach ($paragraphs as $index => $paragraph)
+		{
+
+			/*
+			 * Any remaining paired paragraph tags are within an individual, multi-part definition,
+			 * and can be turned into spaces.
+			 */
+			$paragraph = str_replace('</p><p>', ' ', $paragraph);
+
+			/*
+			 * Strip out any remaining HTML.
+			 */
+			$paragraph = strip_tags($paragraph);
+
+			/*
+			 * Calculate the scope of these definitions using the first line.
+			 */
+			if ($index === 0)
+			{
+
+				/*
+				 * Iterate through every scope indicator.
+				 */
+				foreach ($this->scope_indicators as $scope_indicator)
+				{
+
+					/*
+					 * See if the scope indicator is present in this paragraph.
+					 */
+					$pos = stripos($paragraph, $scope_indicator);
+
+					/*
+					 * The term was found.
+					 */
+					if ($pos !== FALSE)
+					{
+
+						/*
+						 * Now figure out the specified scope by examining the text that appears
+						 * immediately after the scope indicator. Pull out as many characters as the
+						 * length of the longest structural label.
+						 */
+						$phrase = substr( $paragraph, ($pos + strlen($scope_indicator)), $longest_label );
+
+						/*
+						 * Iterate through the structural labels and check each one to see if it's
+						 * present in the phrase that we're examining.
+						 */
+						foreach ($length_sorted_labels as $structure)
+						{
+
+							if (stripos($phrase, $structure->label) !== FALSE)
+							{
+
+								/*
+								 * We've made a match -- we've successfully identified the scope of
+								 * these definitions.
+								 */
+								$scope = $structure;
+
+								/*
+								 * Now that we have a match, we can break out of both the label
+								 * foreach() and the scope foreach().
+								 */
+								break(2);
+
+							}
+
+						}
+					}
+
+				}
+
+				/*
+				 * That's all we're going to get out of this paragraph, so move onto the next one.
+				 */
+				continue;
+
+			}
+
+			/*
+			 * All defined terms are surrounded by quotation marks, so let's use that as a criteria
+			 * to round down our candidate paragraphs.
+			 */
+			if (strpos($paragraph, $quote_sample) !== FALSE)
+			{
+
+				/*
+				 * Iterate through every linking phrase and see if it's present in this paragraph.
+				 * We need to find the right one that will allow us to connect a term to its
+				 * definition.
+				 */
+				foreach ($this->linking_phrases as $linking_phrase)
+				{
+
+					if (strpos($paragraph, $linking_phrase) !== FALSE)
+					{
+
+						/*
+						 * Extract every word in quotation marks in this paragraph as a term that's
+						 * being defined here. Most definitions will have just one term being
+						 * defined, but some will have two or more.
+						 */
+						preg_match_all('/("|“)([A-Za-z]{1})([A-Za-z,\'\s-]*)([A-Za-z]{1})("|”)/', $paragraph, $terms);
+
+						/*
+						 * If we've made any matches.
+						 */
+						if ( ($terms !== FALSE) && (count($terms) > 0) )
+						{
+
+							/*
+							 * We only need the first element in this multi-dimensional array, which
+							 * has the actual matched term. It includes the quotation marks in which
+							 * the term is enclosed, so we strip those out.
+							 */
+							if ($quote_type == 'straight')
+							{
+								$terms = str_replace('"', '', $terms[0]);
+							}
+							elseif ($quote_type == 'directional')
+							{
+								$terms = str_replace('“', '', $terms[0]);
+								$terms = str_replace('”', '', $terms);
+							}
+
+							/*
+							 * Eliminate whitespace.
+							 */
+							$terms = array_map('trim', $terms);
+
+							/* Lowercase most (but not necessarily all) terms. Any term that
+							 * contains any lowercase characters will be made entirely lowercase.
+							 * But any term that is in all caps is surely an acronym, and should be
+							 * stored in its original case so that we don't end up with overzealous
+							 * matches. For example, a two-letter acronym like "CA" is a valid
+							 * (real-world) definition, and we don't want to match every time "ca"
+							 * appears within a word. (Though note that we only match terms
+							 * surrounded by word boundaries.)
+							 */
+							foreach ($terms as &$term)
+							{
+								/*
+								 * Drop noise words that occur in lists of words.
+								 */
+								if (($term == 'and') || ($term == 'or'))
+								{
+									unset($term);
+									continue;
+								}
+
+								/*
+								 * Step through each character in this word.
+								 */
+								for ($i=0; $i<strlen($term); $i++)
+								{
+									/*
+									 * If there are any lowercase characters, then make the whole
+									 * thing lowercase.
+									 */
+									if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
+									{
+										$term = strtolower($term);
+										break;
+									}
+								}
+							}
+
+							/*
+							 * This is absolutely necessary. Without it, the following foreach()
+							 * loop will simply use $term as-is through each loop, rather than
+							 * spawning new instances based on $terms. This is presumably a bug in
+							 * the current version of PHP (5.2), because it surely doesn't make any
+							 * sense.
+							 */
+							unset($term);
+
+							/*
+							 * Step through all of our matches and save them as discrete
+							 * definitions.
+							 */
+							foreach ($terms as $term)
+							{
+
+								/*
+								 * It's possible for a definition to be preceded by a subsection
+								 * number. We want to pare down our definition down to the minimum,
+								 * which means excluding that. Solution: Start definitions at the
+								 * first quotation mark.
+								 */
+								if ($quote_type == 'straight')
+								{
+									$paragraph = substr($paragraph, strpos($paragraph, '"'));
+								}
+								elseif ($quote_type == 'directional')
+								{
+									$paragraph = substr($paragraph, strpos($paragraph, '“'));
+								}
+
+								/*
+								 * Comma-separated lists of multiple words being defined need to
+								 * have the trailing commas removed.
+								 */
+								if (substr($term, -1) == ',')
+								{
+									$term = substr($term, 0, -1);
+								}
+
+								/*
+								 * If we don't yet have a record of this term.
+								 */
+								if (!isset($definitions[$term]))
+								{
+									/*
+									 * Append this definition to our list of definitions.
+									 */
+									$definitions[$term] = $paragraph;
+								}
+
+								/* If we already have a record of this term. This is for when a word
+								 * is defined twice, once to indicate what it means, and one to list
+								 * what it doesn't mean. This is actually pretty common.
+								 */
+								else
+								{
+									/*
+									 * Make sure that they're not identical -- this can happen if
+									 * the defined term is repeated, in quotation marks, in the body
+									 * of the definition.
+									 */
+									if ( trim($definitions[$term]) != trim($paragraph) )
+									{
+										/*
+										 * Append this definition to our list of definitions.
+										 */
+										$definitions[$term] .= ' '.$paragraph;
+									}
+								}
+							} // end iterating through matches
+						} // end dealing with matches
+
+						/*
+						 * Because we have identified the linking phrase for this paragraph, we no
+						 * longer need to continue to iterate through linking phrases.
+						 */
+						break;
+
+					} // end matched linking phrase
+				} // end iterating through linking phrases
+			} // end this candidate paragraph
+
+			/*
+			 * We don't want to accidentally use this the next time we loop through.
+			 */
+			unset($terms);
+		}
+
+		if (count($definitions) == 0)
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Make the list of definitions a subset of a larger variable, so that we can store things
+		 * other than terms.
+		 */
+		$return = new stdClass();
+		$return->terms = $definitions;
+		$return->scope = $scope;
+
+		/*
+		 * Return our list of definitions, converted from an array to an object.
+		 */
+		return $return;
+
+	} // end extract_definitions()
+
+
+	/**
+	 * When provided with an object containing a list of terms, their definitions, their scope,
+	 * and their section number, this will store them in the database.
+	 */
+	function store_definitions()
+	{
+
+		if ( !isset($this->terms) || !isset($this->law_id) || !isset($this->scope) )
+		{
+			return FALSE;
+		}
+
+		/*
+		 * If we have no structure ID, just substitute NULL, to avoid creating blank entries in the
+		 * structure_id column.
+		 */
+		if (!isset($this->structure_id))
+		{
+			$this->structure_id = null;
+		}
+
+		/*
+		 * Iterate through our definitions to build up our SQL.
+		 */
+
+		/*
+		 * Start assembling our SQL string.
+		 */
+		$sql = 'INSERT INTO dictionary (law_id, term, definition, scope, scope_specificity,
+				structure_id, date_created, edition_id)
+				VALUES (:law_id, :term, :definition, :scope, :scope_specificity,
+				:structure_id, now(), :edition_id)';
+		$statement = $this->db->prepare($sql);
+
+		foreach ($this->terms as $term => $definition)
+		{
+
+			$sql_args = array(
+				':law_id' => $this->law_id,
+				':term' => $term,
+				':definition' => $definition,
+				':scope' => $this->scope,
+				':scope_specificity' => $this->scope_specificity,
+				':structure_id' => $this->structure_id,
+				':edition_id' => $this->edition_id
+			);
+
+			foreach($sql_args as $key => $value)
+			{
+				$statement->bindValue($key, $value, PDO::PARAM_STR);
+			}
+			if(!$sql_args[':structure_id'] || $sql_args[':structure_id'] === 'NULL')
+			{
+				$statement->bindValue(':structure_id', null, PDO::PARAM_INT);
+			}
+
+			$result = $statement->execute();
+
+		}
+
+
+		/*
+		 * Memory management.
+		 */
+		unset($this);
+
+		return $result;
+
+	} // end store_definitions()
+
+
+	function query($sql)
+	{
+		$result = $this->db->exec($sql);
+		if ($result === FALSE)
+		{
+			return $this->db->errorInfo();
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+	/**
+	 * Find mentions of other sections within a section and return them as an array.
+	 */
+	function extract_references()
+	{
+
+		/*
+		 * If we don't have any text to analyze, then there's nothing more to do be done.
+		 */
+		if (!isset($this->text))
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Find every string that fits the acceptable format for a state code citation.
+		 */
+		preg_match_all(SECTION_REGEX, $this->text, $matches);
+
+		/*
+		 * We don't need all of the matches data -- just the first set. (The others are arrays of
+		 * subset matches.)
+		 */
+		$matches = $matches[0];
+
+		/*
+		 * We assign the count to a variable because otherwise we're constantly diminishing the
+		 * count, meaning that we don't process the entire array.
+		 */
+		$total_matches = count($matches);
+		for ($j=0; $j<$total_matches; $j++)
+		{
+
+			$matches[$j] = trim($matches[$j]);
+
+			/*
+			 * Lop off trailing periods, colons, and hyphens.
+			 */
+			if ( (substr($matches[$j], -1) == '.') || (substr($matches[$j], -1) == ':')
+				|| (substr($matches[$j], -1) == '-') )
+			{
+				$matches[$j] = substr($matches[$j], 0, -1);
+			}
+
+		}
+
+		/*
+		 * Make unique, but with counts.
+		 */
+		$sections = array_count_values($matches);
+		unset($matches);
+
+		return $sections;
+
+	} // end extract_references()
+
+
+	/**
+	 * Take an array of references to other sections contained within a section of text and store
+	 * them in the database.
+	 */
+	function store_references()
+	{
+
+		/*
+		 * If we don't have any section numbers or a section number to tie them to, then we can't
+		 * do anything at all.
+		 */
+		if ( (!isset($this->sections)) || (!isset($this->section_id)) )
+		{
+			return FALSE;
+		}
+
+		/*
+		 * Start creating our insertion query.
+		 */
+		$sql = 'INSERT INTO laws_references
+				(law_id, target_section_number, target_law_id, mentions, date_created, edition_id)
+				VALUES (:law_id, :section_number, :target_law_id, :mentions, now(), :edition_id)
+				ON DUPLICATE KEY UPDATE mentions=mentions';
+				$statement = $this->db->prepare($sql);
+		$i=0;
+		foreach ($this->sections as $section => $mentions)
+		{
+			$sql_args = array(
+				':law_id' => $this->section_id,
+				':section_number' => $section,
+				':target_law_id' => '0',
+				':mentions' => $mentions,
+				':edition_id' => $this->edition_id
+			);
+
+			$result = $statement->execute($sql_args);
+
+			if ($result === FALSE)
+			{
+				echo '<p>Failed: '.$sql.'</p>';
+				return FALSE;
+			}
+		}
+
+		return TRUE;
+
+	} // end store_references()
+
+
+	/**
+	 * Turn the history sections into atomic data.
+	 */
+	function extract_history()
+	{
+
+		/*
+		 * If we have no history text, then we're done here.
+		 */
+		if (!isset($this->history))
+		{
+			return FALSE;
+		}
+
+		/*
+		 * The list is separated by semicolons and spaces.
+		 */
+		$updates = explode('; ', $this->history);
+
+		$i=0;
+		foreach ($updates as &$update)
+		{
+
+			/*
+			 * Match lines of the format "2010, c. 402, § 1-15.1"
+			 */
+			$pcre = '/([0-9]{4}), c\. ([0-9]+)(.*)/';
+
+			/*
+			 * First check for single matches.
+			 */
+			$result = preg_match($pcre, $update, $matches);
+			if ( ($result !== FALSE) && ($result !== 0) )
+			{
+
+				if (!empty($matches[1]))
+				{
+					$final->{$i}->year = $matches[1];
+				}
+				if (!empty($matches[2]))
+				{
+					$final->{$i}->chapter = trim($matches[2]);
+				}
+				if (!empty($matches[3]))
+				{
+					$result = preg_match(SECTION_REGEX, $update, $matches[3]);
+					if ( ($result !== FALSE) && ($result !== 0) )
+					{
+						$final->{$i}->section = $matches[0];
+					}
+				}
+
+			}
+
+			/*
+			 * Then check for multiple matches.
+			 */
+			else
+			{
+
+				/*
+				 * Match lines of the format "2009, cc. 401,, 518, 726, § 2.1-350.2"
+				 */
+				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
+				$result = preg_match_all($pcre, $update, $matches);
+
+				if ( ($result !== FALSE) && ($result !== 0) )
+				{
+
+					/*
+					 * Save the year.
+					 */
+					$final->{$i}->year = $matches[1][0];
+
+					/*
+					 * Save the chapter listing. We eliminate any trailing slash and space to avoid
+					 * saving empty array elements.
+					 */
+					$chapters = rtrim(trim($matches[2][0]), ',');
+
+					/*
+					 * We explode on a comma, rather than a comma and a space, because of occasional
+					 * typographical errors in histories.
+					 */
+					$chapters = explode(',', $chapters);
+
+					/*
+					 * Step through each of these chapter references and trim down the leading
+					 * spaces (a result of creating the array based on commas rather than commas and
+					 * spaces) and eliminate any that are blank.
+					 */
+					$chapter_count = count($chapters);
+
+					for ($j=0; $j<$chapter_count; $j++)
+					{
+						$chapters[$j] = trim($chapters[$j]);
+						if (empty($chapters[$j]))
+						{
+							unset($chapters[$j]);
+						}
+					}
+
+					$final->{$i}->chapter = $chapters;
+
+					/*
+					 * Locate any section identifier.
+					 */
+					$result = preg_match(SECTION_REGEX, $update, $matches);
+					if ( ($result !== FALSE) && ($result !== 0) )
+					{
+						$final->{$i}->section = $matches[0];
+					}
+
+				}
+
+			}
+
+			$i++;
+
+		}
+
+		if ( isset($final) && is_object($final) )
+		{
+			return $final;
+		}
+
+	} // end extract_history()
+
+} // end Parser class

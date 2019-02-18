@@ -1,0 +1,27 @@
+version: '3.2'
+services:
+  web:
+    build:
+      context: deploy/
+      dockerfile: Web.Dockerfile
+    links:
+      - db:db
+    ports:
+      - "5000:80"
+    volumes:
+      - type: bind
+        source: .
+        target: /var/www
+    container_name: rs_web
+  db:
+    build:
+      context: deploy/
+      dockerfile: MySQL.Dockerfile
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    container_name: db
+volumes:
+    db_data: {}
