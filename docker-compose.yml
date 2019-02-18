@@ -12,7 +12,7 @@ services:
       - type: bind
         source: .
         target: /var/www
-    container_name: rs_web
+    container_name: sd_web
   db:
     build:
       context: deploy/
@@ -22,6 +22,6 @@ services:
     restart: always
     ports:
       - "3306:3306"
-    container_name: db
+    container_name: sd_db
 volumes:
     db_data: {}

@@ -139,7 +139,7 @@ define('LAW_LONG_URLS', FALSE);
 /*
  * The DSN to connect to MySQL.
  */
-define('PDO_DSN', 'mysql:dbname=statedecoded;host=db;charset=utf8');
+define('PDO_DSN', 'mysql:dbname=statedecoded;host=sd_db;charset=utf8');
 define('PDO_USERNAME', 'username');
 define('PDO_PASSWORD', 'password');
 
