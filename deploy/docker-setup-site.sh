@@ -3,10 +3,10 @@
 cd /var/www/
 
 # What this image calls html, we call htdocs
-if [ -f html ]; then
+if [ -d html ]; then
     rmdir html
     ln -s htdocs html
-else
+elif [ ! -e html]; then
     ln -s htdocs html
 fi
 
