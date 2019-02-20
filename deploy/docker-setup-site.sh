@@ -18,5 +18,5 @@ cp deploy/class.Virginia.inc.php includes/class.Virginia.inc.php
 
 # Move over the sample import data.
 cp deploy/import-data.zip htdocs/admin/
-cd htdocs/admin/ && unzip import-data.zip
+cd htdocs/admin/ && unzip -f import-data.zip
 rm import-data.zip
