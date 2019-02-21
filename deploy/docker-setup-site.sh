@@ -20,3 +20,6 @@ cp deploy/class.Virginia.inc.php includes/class.Virginia.inc.php
 cp deploy/import-data.zip htdocs/admin/
 cd htdocs/admin/ && unzip -u import-data.zip
 rm import-data.zip
+
+cd /var/www/
+./statedecoded import
