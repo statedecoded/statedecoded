@@ -72,12 +72,12 @@ define('SITE_URL', $url);
 /*
  * What is the name of the place that these laws govern?
  */
-define('PLACE_NAME', 'State');
+define('PLACE_NAME', 'Virginia');
 
 /*
  * What does this place call its laws?
  */
-define('LAWS_NAME', 'Code of State');
+define('LAWS_NAME', 'Code of Virginia');
 
 /*
  * What is the prefix that indicates a section? In many states, this is §, but in others it might be
@@ -103,7 +103,7 @@ define('IMPORT_MEMORY_LIMIT', '128M');
 /*
  * The file in the /includes/ directory that contains functions custom to this installation.
  */
-define('CUSTOM_FUNCTIONS', 'class.State-sample.inc.php');
+define('CUSTOM_FUNCTIONS', 'class.Virginia.inc.php');
 
 /*
  * The directory in which templates are stored.
