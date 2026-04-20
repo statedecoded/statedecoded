@@ -27,7 +27,7 @@ class APIStructureController extends BaseAPIController
 			 */
 			if ($_GET['sort'] == 'views')
 			{
-				$order_by = filter_var($_GET['sort'], FILTER_SANITIZE_STRING);
+				$order_by = filter_var($_GET['sort'], FILTER_DEFAULT);
 			}
 
 		}

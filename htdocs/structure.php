@@ -36,7 +36,7 @@ else
 	/*
 	 * Localize the identifier, filtering out unsafe characters.
 	 */
-	$structure_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+	$structure_id = filter_var($args['relational_id'], FILTER_DEFAULT);
 }
 
 /*

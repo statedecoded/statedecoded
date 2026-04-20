@@ -91,7 +91,7 @@ class BaseAPIController extends BaseController
 
 		if (isset($_REQUEST['callback']))
 		{
-			$callback = filter_var($_REQUEST['callback'], FILTER_SANITIZE_STRING);
+			$callback = filter_var($_REQUEST['callback'], FILTER_DEFAULT);
 		}
 
 		/*
@@ -149,7 +149,7 @@ class BaseAPIController extends BaseController
 		 */
 		if (isset($args['api_version']) && strlen($_REQUEST['api_version']))
 		{
-			$response->api_version = filter_var($_REQUEST['api_version'], FILTER_SANITIZE_STRING);
+			$response->api_version = filter_var($_REQUEST['api_version'], FILTER_DEFAULT);
 		}
 		else
 		{

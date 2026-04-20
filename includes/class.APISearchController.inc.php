@@ -29,7 +29,7 @@ class APISearchController extends BaseAPIController
 		/*
 		 * Clean up the search term.
 		 */
-		$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
+		$term = filter_var($args['term'], FILTER_DEFAULT);
 
 		/*
 		 * Determine if the search results should display detailed information about each law.
@@ -41,7 +41,7 @@ class APISearchController extends BaseAPIController
 		else
 		{
 
-			$detailed = filter_var($_GET['detailed'], FILTER_SANITIZE_STRING);
+			$detailed = filter_var($_GET['detailed'], FILTER_DEFAULT);
 			if ($detailed == "true")
 			{
 				$detailed = TRUE;
@@ -89,6 +89,9 @@ class APISearchController extends BaseAPIController
 		 */
 		$highlighted = $search_results->getHighlighting();
 
+		$response = new stdClass();
+		$response->results = new stdClass();
+
 		/*
 		 * If there are no results.
 		 */
@@ -116,7 +119,7 @@ class APISearchController extends BaseAPIController
 		 */
 		$code_structures = array_slice(explode(',', STRUCTURE), 0, -1);
 
-		$i=0;
+		$i = 0;
 		foreach ($search_results as $document)
 		{
 
@@ -126,6 +129,12 @@ class APISearchController extends BaseAPIController
 			$snippet = $highlighted->getResult($document->id);
 			if ($snippet != FALSE)
 			{
+
+				if (!isset($response->results->{$i}))
+				{
+					$response->results->{$i} = new stdClass();
+					$response->results->{$i}->excerpt = '';
+				}
 
 				/*
 				 * Build the snippet up from the snippet object.
@@ -199,7 +208,7 @@ class APISearchController extends BaseAPIController
 			/*
 			 * Turn that list into an array.
 			 */
-			$returned_fields = explode(',', urldecode(filter_var($args['fields'], FILTER_SANITIZE_STRING)));
+			$returned_fields = explode(',', urldecode(filter_var($args['fields'], FILTER_DEFAULT)));
 			foreach ($returned_fields as &$field)
 			{
 				$field = trim($field);

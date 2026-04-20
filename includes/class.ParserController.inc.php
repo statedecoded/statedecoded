@@ -354,7 +354,7 @@ class ParserController
 		if ($post_data['edition_option'] == 'new')
 		{
 
-			if ($name = filter_var($post_data['new_edition_name'], FILTER_SANITIZE_STRING))
+			if ($name = filter_var($post_data['new_edition_name'], FILTER_DEFAULT))
 			{
 				$create_data['name'] = $name;
 			}
@@ -363,7 +363,7 @@ class ParserController
 				$errors[] = 'Please enter a valid edition name.';
 			}
 
-			if ($slug = filter_var($post_data['new_edition_slug'], FILTER_SANITIZE_STRING))
+			if ($slug = filter_var($post_data['new_edition_slug'], FILTER_DEFAULT))
 			{
 				$create_data['slug'] = $slug;
 			}

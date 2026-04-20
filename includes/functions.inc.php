@@ -14,7 +14,7 @@
 /**
  * Autoload any class file when it is called.
  */
-function __autoload_libraries($class_name)
+function statedecoded_autoload_libraries($class_name)
 {
 
 	$filename = 'class.' . $class_name . '.inc.php';
@@ -37,7 +37,7 @@ function __autoload_libraries($class_name)
 
 }
 
-spl_autoload_register('__autoload_libraries');
+spl_autoload_register('statedecoded_autoload_libraries');
 
 
 /**
@@ -528,9 +528,6 @@ function html_entity_decode_object($obj)
  */
 function decode_entities($text) {
     $text = html_entity_decode($text, ENT_QUOTES | ENT_XML1, "ISO-8859-1"); #NOTE: UTF-8 does not work!
-    // $text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
-    // $text = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
-    // $text = preg_replace('/&(?!#)/', '&amp;', $text);
     return $text;
 }
 

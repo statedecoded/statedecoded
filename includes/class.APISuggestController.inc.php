@@ -29,7 +29,7 @@ class APISuggestController extends BaseAPIController
 		/*
 		 * Clean up the search term.
 		 */
-		$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
+		$term = filter_var($args['term'], FILTER_DEFAULT);
 
 		/*
 		 * Append an asterix to the search term, so that Solr can suggest autocomplete terms.

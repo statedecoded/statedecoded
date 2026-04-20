@@ -60,14 +60,14 @@ if (!empty($_GET['q']))
 	/*
 	 * Localize the search string, filtering out unsafe characters.
 	 */
-	$q = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
+	$q = filter_input(INPUT_GET, 'q', FILTER_DEFAULT);
 
 	/*
 	 * If a page number has been specified, include that. Otherwise, it's page 1.
 	 */
 	if (!empty($_GET['p']))
 	{
-		$page = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_STRING);
+		$page = filter_input(INPUT_GET, 'p', FILTER_DEFAULT);
 	}
 	else
 	{
@@ -80,7 +80,7 @@ if (!empty($_GET['q']))
 	 */
 	if (!empty($_GET['num']))
 	{
-		$per_page = filter_input(INPUT_GET, 'num', FILTER_SANITIZE_STRING);
+		$per_page = filter_input(INPUT_GET, 'num', FILTER_DEFAULT);
 	}
 	else
 	{
@@ -95,7 +95,7 @@ if (!empty($_GET['q']))
 
 	if(!empty($_GET['edition_id']))
 	{
-		$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
+		$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_DEFAULT);
 	}
 	$content->set('current_edition', $edition_id);
 

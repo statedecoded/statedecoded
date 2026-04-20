@@ -30,24 +30,24 @@ class APIDictionaryController extends BaseAPIController
 		/*
 		 * Clean up the term.
 		 */
-		$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
+		$term = filter_var($args['term'], FILTER_DEFAULT);
 
 		/*
 		 * If a section has been specified, then clean that up.
 		 */
 		if (isset($_GET['section']))
 		{
-			$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
+			$section = filter_input(INPUT_GET, 'section', FILTER_DEFAULT);
 		}
 
 		if (isset($_GET['law_id']))
 		{
-			$law_id = filter_input(INPUT_GET, 'law_id', FILTER_SANITIZE_STRING);
+			$law_id = filter_input(INPUT_GET, 'law_id', FILTER_DEFAULT);
 		}
 
 		if (isset($_GET['edition_id']))
 		{
-			$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
+			$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_DEFAULT);
 		}
 		else
 		{

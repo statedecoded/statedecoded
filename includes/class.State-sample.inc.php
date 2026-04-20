@@ -214,7 +214,7 @@ class State
 				// Port the fields that we need from $opinion to $this->decisions.
 				if (html_entity_decode(strlen(strip_tags($opinion->caseName))) > 60)
 				{
-					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))) . ' . . . ';
+					$this->decisions->{$i}->name = ' . . . ' . explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))[0] . ' . . . ';
 				}
 				else
 				{
@@ -224,7 +224,7 @@ class State
 				$this->decisions->{$i}->citation = $opinion->citation[0];
 				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->dateFiled));
 				$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
-				$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
+				$this->decisions->{$i}->abstract = ' . . . ' . explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))[0] . ' . . . ';
 
 				if ($opinion->court == 'Court of Appeals of Virginia')
 				{
@@ -1952,7 +1952,7 @@ class Parser
 									 * If there are any lowercase characters, then make the whole
 									 * thing lowercase.
 									 */
-									if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
+									if ( (ord($term[$i]) >= 97) && (ord($term[$i]) <= 122) )
 									{
 										$term = strtolower($term);
 										break;
@@ -2131,11 +2131,6 @@ class Parser
 		}
 
 
-		/*
-		 * Memory management.
-		 */
-		unset($this);
-
 		return $result;
 
 	} // end store_definitions()
@@ -2279,7 +2274,8 @@ class Parser
 		 */
 		$updates = explode('; ', $this->history);
 
-		$i=0;
+		$i = 0;
+		$final = new stdClass();
 		foreach ($updates as &$update)
 		{
 

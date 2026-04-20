@@ -38,7 +38,7 @@ if ( isset($args['relational_id']) )
 			{
 				$law_object->edition_id = $args['edition_id'];
 			}
-			$law_object->law_id = filter_var($relational_id, FILTER_SANITIZE_STRING);
+			$law_object->law_id = filter_var($relational_id, FILTER_DEFAULT);
 
 			$law = $law_object->get_law();
 			$laws[] = clone($law);
@@ -49,7 +49,7 @@ if ( isset($args['relational_id']) )
 	else
 	{
 		$law_object = new Law();
-		$law_object->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+		$law_object->law_id = filter_var($args['relational_id'], FILTER_DEFAULT);
 		$laws[] = $law_object->get_law();
 		$titles[] = $laws[0]->catch_line;
 	}

@@ -1650,7 +1650,7 @@ class Parser
 									 * If there are any lowercase characters, then make the whole
 									 * thing lowercase.
 									 */
-									if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
+									if ( (ord($term[$i]) >= 97) && (ord($term[$i]) <= 122) )
 									{
 										$term = strtolower($term);
 										break;
@@ -1820,11 +1820,6 @@ class Parser
 		}
 
 
-		/*
-		 * Memory management.
-		 */
-		unset($this);
-
 		return $result;
 
 	} // end store_definitions()
@@ -1966,7 +1961,8 @@ class Parser
 		 */
 		$updates = explode('; ', $this->history);
 
-		$i=0;
+		$i = 0;
+		$final = new stdClass();
 		foreach ($updates as &$update)
 		{
 

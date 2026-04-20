@@ -14,7 +14,7 @@
  * @since		0.9
  */
 
-class DatabaseStatement extends PDOStatement
+class DatabaseStatement
 {
 	protected $pdo_statement;
 	protected $database;
@@ -22,14 +22,14 @@ class DatabaseStatement extends PDOStatement
 	protected $query;
 	protected $query_args = array();
 
-	public function __construct ( &$database, &$pdo_statement, $query )
+	public function __construct ( $database, $pdo_statement, $query )
 	{
-		$this->database =& $database;
-		$this->pdo_statement =& $pdo_statement;
+		$this->database = $database;
+		$this->pdo_statement = $pdo_statement;
 		$this->query = $query;
 	}
 
-	public function bindColumn ( $column, &$param, $type = null, $maxlen = null,
+	public function bindColumn ( $column, &$param, $type = PDO::PARAM_STR, $maxlen = 0,
 		$driverdata = null )
 
 	{
@@ -37,14 +37,14 @@ class DatabaseStatement extends PDOStatement
 			$driverdata);
 	}
 
-	public function bindParam ( $parameter, &$variable, $data_type = null, $length = null,
+	public function bindParam ( $parameter, &$variable, $data_type = PDO::PARAM_STR, $length = 0,
 		$driver_options = null )
 	{
 		return $this->pdo_statement->bindParam($parameter, $variable, $data_type,
 			$length, $driver_options);
 	}
 
-	public function bindValue ( $parameter, $value, $data_type = null )
+	public function bindValue ( $parameter, $value, $data_type = PDO::PARAM_STR )
 	{
 		$this->query_args[] = array(
 			'parameter' => $parameter,
@@ -136,7 +136,7 @@ class DatabaseStatement extends PDOStatement
 			$statement = $this->database->prepare($this->query);
 
 			// Replace our old statement with a new one.
-			$this->pdo_statement =& $statement->pdo_statement;
+			$this->pdo_statement = $statement->pdo_statement;
 
 			return TRUE;
 		}
@@ -193,29 +193,22 @@ class DatabaseStatement extends PDOStatement
 		return print_r($errors, TRUE);
 	}
 
-	public function fetch ( $fetch_style = null, $cursor_orientation = null, $cursor_offset = null )
+	public function fetch ( $fetch_style = PDO::FETCH_DEFAULT, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0 )
 	{
 		return $this->pdo_statement->fetch($fetch_style, $cursor_orientation, $cursor_offset);
 	}
 
-	public function fetchAll ( $fetch_style = null, $fetch_argument = null, $actor_args = null )
+	public function fetchAll ( $fetch_style = PDO::FETCH_DEFAULT, ...$args )
 	{
-		if(isset($fetch_argument))
-		{
-			return $this->pdo_statement->fetchAll($fetch_style, $fetch_argument, $actor_args);
-		}
-		else
-		{
-			return $this->pdo_statement->fetchAll($fetch_style);
-		}
+		return $this->pdo_statement->fetchAll($fetch_style, ...$args);
 	}
 
-	public function fetchColumn ( $column_number = null )
+	public function fetchColumn ( $column_number = 0 )
 	{
 		return $this->pdo_statement->fetchColumn($column_number);
 	}
 
-	public function fetchObject ( $class_name = null, $actor_args = null )
+	public function fetchObject ( $class_name = 'stdClass', $actor_args = array() )
 	{
 		return $this->pdo_statement->fetchObject($class_name, $actor_args);
 	}
@@ -245,9 +238,9 @@ class DatabaseStatement extends PDOStatement
 		return $this->pdo_statement->setAttribute($attribute, $value);
 	}
 
-	public function setFetchMode ( $mode, $params = null, $ctorargs = null )
+	public function setFetchMode ( $mode, ...$args )
 	{
-		return $this->pdo_statement->setFetchMode($mode, $params, $ctorargs);
+		return $this->pdo_statement->setFetchMode($mode, ...$args);
 	}
 
 }

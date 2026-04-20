@@ -991,7 +991,7 @@ class Law
 					 * If there are any uppercase characters, then make this PCRE string case
 					 * sensitive.
 					 */
-					if ( (ord($term{$i}) >= 65) && (ord($term{$i}) <= 90) )
+					if ( (ord($term[$i]) >= 65) && (ord($term[$i]) <= 90) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
 						$caps = TRUE;

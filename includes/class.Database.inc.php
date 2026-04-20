@@ -14,6 +14,7 @@
 class Database extends PDO
 {
 	public $_properties = array();
+	public $_query = null;
 
 	public function __construct(
 		$dsn,
@@ -21,6 +22,11 @@ class Database extends PDO
 		$password       = null,
 		$driver_options = null)
 	{
+		$driver_options = array_replace(
+			array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT),
+			(array) $driver_options
+		);
+
 		parent::__construct($dsn, $username, $password, $driver_options);
 
 		$this->_properties = array(
@@ -31,26 +37,33 @@ class Database extends PDO
 		);
 	}
 
-	public function query( $query )
+	public function query( string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs ): \PDOStatement|false
 	{
 		$this->_query = $query;
-		$result = parent::query($query);
-
-		return($result);
+		if ($fetchMode !== null) {
+			$result = parent::query($query, $fetchMode, ...$fetchModeArgs);
+		} else {
+			$result = parent::query($query);
+		}
+		return $result;
 	}
 
-	public function exec( $query )
+	public function exec( string $query ): int|false
 	{
 		$this->_query = $query;
 		$result = parent::exec($query);
 
-		return($result);
+		return $result;
 	}
 
-	public function prepare( $query, $driver_options = array() )
+	#[\ReturnTypeWillChange]
+	public function prepare( string $query, array $driver_options = array() ): DatabaseStatement|false
 	{
 		$this->_query = $query;
 		$pdo_statement = parent::prepare( $query, $driver_options );
+		if ($pdo_statement === false) {
+			return false;
+		}
 		return new DatabaseStatement($this, $pdo_statement, $query);
 	}
 

@@ -178,7 +178,7 @@ class API
 		/*
 		 * Clean up the API key, filtering out unsafe characters.
 		 */
-		$this->key = filter_var($this->key, FILTER_SANITIZE_STRING);
+		$this->key = filter_var($this->key, FILTER_DEFAULT);
 		
 		/*
 		 * Retrieve a list of every valid key.
