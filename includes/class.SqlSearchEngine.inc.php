@@ -303,7 +303,7 @@ class SqlSearchEngine extends SearchEngineInterface
 
 		$sql_query .= ') AS records ';
 
-		if(is_array($order) && count($order))
+		if(isset($order) && is_array($order) && count($order))
 		{
 			$sql_query .= 'ORDER BY ' . join(', ', array_filter($order)) . ' ';
 		}
@@ -322,6 +322,7 @@ class SqlSearchEngine extends SearchEngineInterface
 
 	public static function build_keyword_search($search_field, $keywords) {
 		$fields = array();
+		$sql_args = array();
 
 		if($keywords) {
 			$i = 0;

@@ -16,6 +16,8 @@ class APIStructureController extends BaseAPIController
 {
 	function handle($args)
 	{
+		$order_by = '';
+
 		/*
 		 * If the request is for the structural units sorted by a specific criteria.
 		 */

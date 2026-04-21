@@ -17,8 +17,9 @@ abstract class BaseController
 {
 	protected $template;
 	protected $local;
+	protected $content;
 
-	public function __construct($local)
+	public function __construct($local = array())
 	{
 		/*
 		 * Store variables that need to be globally available.
@@ -29,6 +30,18 @@ abstract class BaseController
 		 * Fire up our templating engine.
 		 */
 		$this->template = Template::create();
+
+		$this->content = new Content();
+	}
+
+	public function setContent($field, $value)
+	{
+		return $this->content->set($field, $value);
+	}
+
+	public function renderContent()
+	{
+		return $this->render($this->content);
 	}
 
 	/**

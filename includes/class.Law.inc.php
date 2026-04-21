@@ -733,7 +733,7 @@ class Law
 			/*
 			 * If unserializing this value works, then we've got serialized data here.
 			 */
-			if (@unserialize($row->meta_value) !== FALSE)
+			if (@unserialize($field->meta_value) !== FALSE)
 			{
 				$field->meta_value = unserialize($field->meta_value);
 			}
@@ -741,7 +741,7 @@ class Law
 			/*
 			 * If JSON decoding this value works, then we've got JSON data here.
 			 */
-			if (@json_decode($row->meta_value) !== FALSE)
+			if (@json_decode($field->meta_value) !== FALSE)
 			{
 				$field->meta_value = json_decode($field->meta_value);
 			}

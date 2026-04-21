@@ -83,13 +83,13 @@ class BaseAPIController extends BaseController
 	/**
 	 * Render the content.
 	 */
-	public function render($response, $status)
+	public function render($response, $status = 'OK', $callback = null)
 	{
 		$this->sendHeaders($status);
 
 		$this->setApiVersion($response);
 
-		if (isset($_REQUEST['callback']))
+		if ($callback === null && isset($_REQUEST['callback']))
 		{
 			$callback = filter_var($_REQUEST['callback'], FILTER_DEFAULT);
 		}
@@ -147,7 +147,7 @@ class BaseAPIController extends BaseController
 		/*
 		 * Include the API version in this response.
 		 */
-		if (isset($args['api_version']) && strlen($_REQUEST['api_version']))
+		if (isset($_REQUEST['api_version']) && strlen($_REQUEST['api_version']))
 		{
 			$response->api_version = filter_var($_REQUEST['api_version'], FILTER_DEFAULT);
 		}

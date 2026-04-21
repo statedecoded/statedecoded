@@ -56,11 +56,17 @@ abstract class Export extends Plugin
 			(section, chapter, title, global) of that definition.';
 
 
-	public function createExportDir($path)
+	public function createExportDir($path, $url = null)
 	{
 		mkdir_safe($path);
 
 		return $path;
+	}
+
+	public function getLawFilename($law, $dir = '')
+	{
+		list(, $filename) = $this->getLawPaths($law, $dir);
+		return $filename;
 	}
 
 	public function clearExportDir($path)
@@ -191,7 +197,7 @@ abstract class Export extends Plugin
 			$zip->close();
 		}
 		else {
-			$this->logger('Unable to create zip archive.', 10);
+			$this->logger->message('Unable to create zip archive.', 10);
 		}
 	}
 
@@ -223,12 +229,17 @@ abstract class Export extends Plugin
 			$zip->close();
 		}
 		else {
-			$this->logger('Unable to create zip archive.', 10);
+			$this->logger->message('Unable to create zip archive.', 10);
 		}
 
 		$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
 
 		return array($filename, $content);
+	}
+
+	public function formatDictionaryForExport($dictionary)
+	{
+		return var_export($dictionary, true);
 	}
 
 	public function getDictionaryDownloadName() {

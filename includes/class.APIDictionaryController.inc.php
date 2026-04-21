@@ -27,6 +27,9 @@ class APIDictionaryController extends BaseAPIController
 			die();
 		}
 
+		$section = null;
+		$response = array();
+
 		/*
 		 * Clean up the term.
 		 */

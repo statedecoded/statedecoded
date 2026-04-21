@@ -207,10 +207,6 @@ class Page
 			$asset['resolved_path'] = $asset['path'];
 		}
 
-		if(isset($requires))
-		{
-			$asset['requires'] = $requires;
-		}
 		$this->assets[$name] = $asset;
 		
 	}

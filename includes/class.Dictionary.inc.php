@@ -54,6 +54,7 @@ class Dictionary
 		 */
 		$dictionary = FALSE;
 		$lowercase = FALSE;
+		$plural = FALSE;
 
 		/*
 		 * If no term has been defined, there is nothing to be done.
@@ -129,6 +130,7 @@ class Dictionary
 
 		global $db;
 
+		$plural = FALSE;
 		$heritage = new Law;
 		$heritage->config = new stdClass();
 		$heritage->config->get_structure = TRUE;
@@ -284,6 +286,7 @@ class Dictionary
 		 * Get a listing of all structural units that contain the current structural unit -- that is,
 		 * if this is a chapter, get the ID of both the chapter and the title. And so on.
 		 */
+		$ancestry = array();
 		if (isset($this->structure_id))
 		{
 

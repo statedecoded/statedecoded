@@ -25,6 +25,7 @@ class HelpAction extends CliAction
 
 	public function showDefaultHelp()
 	{
+		$actions = array();
 		$name_length = 0;
 
 		$local_dir = dirname(__FILE__);
@@ -87,6 +88,8 @@ EOS;
 
 	public function showHelp($args = array())
 	{
+		$obj = null;
+		$file = null;
 		if($action_info = TaskRunner::parseActionInfo($args[0]))
 		{
 			list($obj, $file) = $action_info;

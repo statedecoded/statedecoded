@@ -51,7 +51,7 @@ class DebugLogger extends Logger
 	/**
 	 * Prints the message, adds the time elapsed and memory usage.
 	 */
-	public function message($msg, $level)
+	public function message($msg, $level = 1)
 	{
 	
 		echo $this->get_time_elapsed() . "ms ";
@@ -84,7 +84,7 @@ class DebugLogger extends Logger
 	 *                      This log level must be greater than the log level
 	 *                      set on the class to actually be printed.
 	 */
-	public function get_time_elapsed($time)
+	public function get_time_elapsed($time = null)
 	{
 	
 		if(!$time)

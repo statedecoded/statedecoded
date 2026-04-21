@@ -319,32 +319,29 @@ class SolrSearchEngine extends SearchEngineInterface
 			throw new Exception('Record has a bad type in SolrSearchEngine->find_related');
 		}
 
-		if(isset($id))
+		$query = $this->client->createMoreLikeThis();
+
+		$query->setQuery('id:' . $id);
+		$query->setMltFields('catch_line,text,definition');
+		$query->setRows($count);
+		$query->setMinimumDocumentFrequency(1);
+		$query->setMinimumTermFrequency(1);
+		$query->createFilterQuery('edition_id')->setQuery('edition_id:'.$object->edition_id);
+		$query->setInterestingTerms('details');
+		$query->setMatchInclude(true);
+
+		$results = $this->client->moreLikeThis($query);
+
+		$this->last_result = $results;
+
+		if($results)
 		{
-			$query = $this->client->createMoreLikeThis();
-
-			$query->setQuery('id:' . $id);
-			$query->setMltFields('catch_line,text,definition');
-			$query->setRows($count);
-			$query->setMinimumDocumentFrequency(1);
-			$query->setMinimumTermFrequency(1);
-			$query->createFilterQuery('edition_id')->setQuery('edition_id:'.$object->edition_id);
-			$query->setInterestingTerms('details');
-			$query->setMatchInclude(true);
-
-			$results = $this->client->moreLikeThis($query);
-
-			$this->last_result = $results;
-
-			if($results)
-			{
-				// Wrap the results and return them.
-				return new SolrSearchResults($query, $results);
-			}
-			else
-			{
-				return FALSE;
-			}
+			// Wrap the results and return them.
+			return new SolrSearchResults($query, $results);
+		}
+		else
+		{
+			return FALSE;
 		}
 	}
 

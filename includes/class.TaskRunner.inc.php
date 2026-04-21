@@ -60,6 +60,11 @@ class TaskRunner
 
 		$this->parseExecArgs($exec_args);
 
+		$action = '';
+		$args = array();
+		$obj = null;
+		$file = null;
+
 		// This will do for now, but really this should be wrapped in a class
 		// and all actions should register themselves with that class.
 		if(isset($exec_args) && count($exec_args) > 0)
@@ -150,7 +155,7 @@ class TaskRunner
 		switch($format)
 		{
 			case 'html' :
-				return $this->preFormatHtml($text);
+				return $this->preFormatHtml();
 
 			default :
 				return;

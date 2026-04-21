@@ -1566,7 +1566,6 @@ class Parser
 		unset($references);
 		unset($dictionary);
 		unset($definitions);
-		unset($chapter);
 		unset($sections);
 		unset($query);
 	}
@@ -2104,6 +2103,7 @@ class Parser
 				:structure_id, now(), :edition_id)';
 		$statement = $this->db->prepare($sql);
 
+		$result = FALSE;
 		foreach ($this->terms as $term => $definition)
 		{
 
@@ -2377,7 +2377,7 @@ class Parser
 
 		}
 
-		if ( isset($final) && is_object($final) )
+		if ( is_object($final) )
 		{
 			return $final;
 		}

@@ -254,6 +254,17 @@ class Parser
 	}
 
 	/**
+	 * Recurse into nested subsections during parse_section().
+	 */
+	public function recurse($subsection)
+	{
+		foreach ($subsection->subsection as $sub)
+		{
+			$this->parse_section($sub, null);
+		}
+	}
+
+	/**
 	 * Our text is nested, so we have to dig it out while
 	 * preserving the hierarchy.
 	 */
@@ -700,8 +711,8 @@ class Parser
 			$insert_result = $insert_statement->execute($insert_data);
 			if ($insert_result === FALSE)
 			{
-				echo '<p>'.$sql.'</p>';
-				echo '<p>'.$structure_result->getMessage().'</p>';
+				echo '<p>'.$insert_sql.'</p>';
+				echo '<p>'.$insert_statement->errorInfo()[2].'</p>';
 				return;
 			}
 
@@ -1167,7 +1178,6 @@ class Parser
 		unset($references);
 		unset($dictionary);
 		unset($definitions);
-		unset($chapter);
 		unset($sections);
 		unset($query);
 	}
@@ -1407,6 +1417,8 @@ class Parser
 		{
 			return FALSE;
 		}
+
+		$scope = '';
 
 		/*
 		 * The candidate phrases that indicate that the scope of one or more definitions are about
@@ -1804,6 +1816,7 @@ class Parser
 				:structure_id, now())';
 		$statement = $this->db->prepare($sql);
 
+		$result = FALSE;
 		foreach ($this->terms as $term => $definition)
 		{
 
@@ -2064,7 +2077,7 @@ class Parser
 
 		}
 
-		if ( isset($final) && is_object($final) )
+		if ( is_object($final) )
 		{
 			return $final;
 		}
@@ -2084,7 +2097,6 @@ class Parser
 		if ( ($result === FALSE) )
 		{
 			echo '<p>Query failed: '.$sql.'</p>';
-			var_dump($sql_args);
 			return FALSE;
 		}
 		else
@@ -2137,6 +2149,7 @@ class RecursiveDataStructure implements RecursiveIterator
 		$this->index = 0;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function getChildren()
 	{
 		$child_element = './level' . ($this->depth + 1);
@@ -2146,6 +2159,7 @@ class RecursiveDataStructure implements RecursiveIterator
 		return $children;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function hasChildren()
 	{
 		$child_element = './level' . ($this->depth + 1);
@@ -2160,6 +2174,7 @@ class RecursiveDataStructure implements RecursiveIterator
 	}
 
 	/* Inherited methods */
+	#[\ReturnTypeWillChange]
 	public function current()
 	{
 		$return_value = new stdClass();
@@ -2169,19 +2184,25 @@ class RecursiveDataStructure implements RecursiveIterator
 		return $return_value;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function key()
 	{
 		return $this->index;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function next()
 	{
 		$this->index++;
 	}
+
+	#[\ReturnTypeWillChange]
 	public function rewind()
 	{
 		$this->index = 0;
 	}
+
+	#[\ReturnTypeWillChange]
 	public function valid()
 	{
 		if(isset($this->data[$this->index]))

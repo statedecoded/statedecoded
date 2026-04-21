@@ -37,6 +37,10 @@ define('API_KEY',              'test-api-key');
 define('VERSION',              '1.0');
 define('PLUGINS',              json_encode([]));
 define('DEBUG_LEVEL',          5);
+// STRUCTURE is a comma-separated list of structural levels defined per deployment in config.inc.php
+define('STRUCTURE',            'title,chapter,article,section');
+define('SOLR_URL',             'http://localhost:8983/solr/statedecoded');
+define('GLOBAL_DEFINITIONS',   FALSE);
 
 // Web server stubs
 $_SERVER['SERVER_NAME']  = 'localhost';

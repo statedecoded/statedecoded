@@ -9,14 +9,31 @@ parameters:
     bootstrapFiles:
         - phpstan-bootstrap.php
     ignoreErrors:
-        # The custom spl_autoload_register shim loads class.Foo.inc.php files on
-        # demand; PHPStan cannot follow it, so all "class not found" errors for
-        # project classes are false positives at this stage.
-        - '#Class [A-Z][A-Za-z]+ not found\.#'
-        - '#Instantiated class [A-Z][A-Za-z]+ not found\.#'
-        - '#Call to method .+ of an unknown class [A-Z][A-Za-z]+\.#'
-        - '#Access to property \$\w+ of an unknown class [A-Z][A-Za-z]+\.#'
         # Dynamic property pattern: SearchEngineInterface.__construct() and
         # several other classes assign $args keys as object properties.
         # TODO: add #[\AllowDynamicProperties] to affected classes.
-        - '#Access to an undefined property [A-Z][A-Za-z]+::\$\w+\.#'
+        - '#Access to an undefined property (\$this\([A-Z][A-Za-z]+\)|[A-Z][A-Za-z]+)::\$\w+\.#'
+        # Include-file context: routes.inc.php is always included from within
+        # MasterController::parseRequest() where $router is a local variable.
+        - message: '#Variable \$router might not be defined\.#'
+          path: includes/routes.inc.php
+        # Include-file context: htdocs page files are always included from
+        # htdocs/index.php where $db is already defined.
+        - message: '#Variable \$db might not be defined\.#'
+          path: htdocs
+        # Include-file context: EditionController and StructureController require()
+        # page PHP files that define $content before render() is called; same for
+        # LawController.
+        - message: '#Variable \$content might not be defined\.#'
+          path: includes/class.EditionController.inc.php
+        - message: '#Variable \$content might not be defined\.#'
+          path: includes/class.StructureController.inc.php
+        - message: '#Variable \$content might not be defined\.#'
+          path: includes/class.LawController.inc.php
+        # Include-file context: htdocs include files use variables set by their
+        # callers (htdocs/index.php bootstrap or the controller that included them).
+        - message: '#Variable \$(sidebar|law_object|args) might not be defined\.#'
+          path: htdocs
+        # require() paths use INCLUDE_PATH / WEB_ROOT constants resolved at runtime;
+        # PHPStan cannot evaluate them statically.
+        - '#Path in require(_once)?\(\) .+ is not a file or it does not exist\.#'

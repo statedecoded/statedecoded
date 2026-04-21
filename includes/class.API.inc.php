@@ -435,6 +435,7 @@ class API
 
 		$url .= '/downloads/?secret=' . $this->secret;
 
+		$email = new stdClass();
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
 			. "\r\r"
 			. $url;

@@ -65,7 +65,7 @@ class ContentController extends BaseController
 		/*
 		 * Initialize the body variable.
 		 */
-		$body .= '
+		$body = '
 			<article>
 			<h1>'.ucwords($structures[0]->label).'s of the '.LAWS_NAME.'</h1>
 			<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';

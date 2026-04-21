@@ -18,7 +18,7 @@ class ExportUSLM extends Export
 	public $format = 'uslm';
 	public $extension = '.uslm.xml';
 
-	public function exportLaw($law, $dir, $url)
+	public function exportLaw($law, $dir, $url = null)
 	{
 		$path = $this->createExportDir($dir, $url);
 
@@ -157,6 +157,7 @@ class ExportUSLM extends Export
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $law->structure_id;
 		$dictionary->section_id = $law->section_id;
+		$terms = FALSE;
 		$tmp = $dictionary->term_list();
 		if ($tmp !== FALSE)
 		{
@@ -251,7 +252,7 @@ class ExportUSLM extends Export
 			/*
 			 * Use our dictionary to embed dictionary terms in the form of span titles.
 			 */
-			if (isset($term_pcres))
+			if (!empty($term_pcres))
 			{
 				$section->text = preg_replace_callback($term_pcres, array($autolinker, 'replace_terms'), $section->text);
 			}

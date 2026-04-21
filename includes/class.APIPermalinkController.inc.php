@@ -59,6 +59,24 @@ class APIPermalinkController extends BaseAPIController
 
 	}
 
+	public function handleDictionary($args)
+	{
+		$controller = new APIDictionaryController($this->local);
+		return $controller->handle($args);
+	}
+
+	public function handleSearch($args)
+	{
+		$controller = new APISearchController($this->local);
+		return $controller->handle($args);
+	}
+
+	public function handleSuggest($args)
+	{
+		$controller = new APISuggestController($this->local);
+		return $controller->handle($args);
+	}
+
 	public function handlePermalinks($args)
 	{
 
@@ -99,7 +117,7 @@ class APIPermalinkController extends BaseAPIController
 
 					if ( class_exists($object_name) == TRUE)
 					{
-						$controller = new $object_name();
+						$controller = new $object_name($this->local);
 						return $controller->handle($route);
 					}
 					else
@@ -118,8 +136,8 @@ class APIPermalinkController extends BaseAPIController
 		 */
 		else
 		{
-			$controller = new APIStructureController();
-			return $controller->handle($route);
+			$controller = new APIStructureController($this->local);
+			return $controller->handle($args);
 		}
 
 		/*

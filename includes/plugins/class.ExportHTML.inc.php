@@ -101,7 +101,7 @@ class ExportHTML extends Export
 		);
 	}
 
-	public function formatStructureForExport($structure, $laws)
+	public function formatStructureForExport($structure, $laws = array())
 	{
 		$title = ucwords($structure->label) . ' ' . $structure->identifier . ' ' .
 			$structure->name;

@@ -960,9 +960,10 @@ abstract class AmericanLegalParser
 				if(!copy($image_source, $image_download))
 				{
 					$message = 'Can\'t copy image from "' . $image_source . '" to "' . $image_download . '"';
-					if(ini_get('track_errors'))
+					$last_error = error_get_last();
+				if($last_error !== null)
 					{
-						$message .= ' message: "' . $php_errormsg . '"';
+						$message .= ' message: "' . $last_error['message'] . '"';
 					}
 
 					$this->logger->error($message, 10);
@@ -1781,7 +1782,6 @@ abstract class AmericanLegalParser
 		unset($references);
 		unset($dictionary);
 		unset($definitions);
-		unset($chapter);
 		unset($sections);
 		unset($query);
 	}
@@ -2407,6 +2407,7 @@ abstract class AmericanLegalParser
 				:structure_id, now(), :edition_id)';
 		$statement = $this->db->prepare($sql);
 
+		$result = FALSE;
 		foreach ($this->terms as $term => $definition)
 		{
 
@@ -2670,7 +2671,7 @@ abstract class AmericanLegalParser
 
 		}
 
-		if ( isset($final) && is_object($final) )
+		if ( is_object($final) )
 		{
 			return $final;
 		}
@@ -2692,7 +2693,7 @@ abstract class AmericanLegalParser
 
 		if ( ($result === FALSE) )
 		{
-			$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
+			$this->logger->error('SQL ERROR: ' . $sql, 10);
 			return FALSE;
 		}
 		else

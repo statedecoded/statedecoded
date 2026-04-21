@@ -209,22 +209,27 @@ class DOMListWrapper implements Iterator
 		}
 	}
 
+	#[\ReturnTypeWillChange]
 	public function rewind() {
 		$this->position = 0;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function current() {
 		return new DOMWrapper($this->nodes[$this->position], $this->strip_whitespace );
 	}
 
+	#[\ReturnTypeWillChange]
 	public function key() {
 		return $this->position;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function next() {
 		++$this->position;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function valid() {
 		if(isset($this->nodes) && is_array($this->nodes) && isset($this->nodes[$this->position]))
 		{
