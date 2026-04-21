@@ -1,0 +1,14 @@
+{
+    "require": {
+        "php": ">=8.0",
+        "solarium/solarium": "^6"
+    },
+    "autoload": {
+        "psr-4": {
+            "StateDecoded\\": "includes/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

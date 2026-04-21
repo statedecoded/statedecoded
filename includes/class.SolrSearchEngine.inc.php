@@ -3,7 +3,7 @@
 /**
  * Wrapper class for Solarium.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0
@@ -11,10 +11,10 @@
  * @since		0.9
  */
 
-require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');
+use Solarium\Client as SolariumClient;
+use Solarium\Core\Client\Adapter\Curl as SolariumCurl;
 
-require_once(INCLUDE_PATH . 'Solarium/Autoloader.php');
-Solarium_Autoloader::register();
+require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');
 
 class SolrSearchEngine extends SearchEngineInterface
 {
@@ -53,6 +53,31 @@ class SolrSearchEngine extends SearchEngineInterface
 	 */
 	protected $last_result;
 
+	/*
+	 * Build a Solarium v6 client from a flat config array (host/port/path/core/timeout).
+	 * Accepts the same structure as the SEARCH_CONFIG constant.
+	 */
+	public static function make_client($config)
+	{
+		$adapter = new SolariumCurl();
+
+		$dispatcher = new class implements \Psr\EventDispatcher\EventDispatcherInterface {
+			public function dispatch(object $event): object { return $event; }
+		};
+
+		$endpoint = array(
+			'host'    => $config['host']    ?? 'localhost',
+			'port'    => (int) ($config['port']    ?? 8983),
+			'path'    => $config['path']    ?? '/solr/',
+			'core'    => $config['core']    ?? 'statedecoded',
+			'timeout' => (int) ($config['timeout'] ?? 30),
+		);
+
+		return new SolariumClient($adapter, $dispatcher, array(
+			'endpoint' => array('default' => $endpoint)
+		));
+	}
+
 	public function __construct($args = array())
 	{
 		parent::__construct($args);
@@ -62,11 +87,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			$this->config['batch_size'] = $this->batch_size;
 		}
 
-		$this->client = new Solarium_Client(
-			array(
-				'adapteroptions' => $this->config
-			)
-		);
+		$this->client = self::make_client($this->config);
 	}
 
 	public function start_update()
@@ -140,8 +161,8 @@ class SolrSearchEngine extends SearchEngineInterface
 	public function debug()
 	{
 		echo 'Query type: ' . $this->transaction_type . "\n";
-		echo 'Query status: ' . $result->getStatus(). "\n";
-		echo 'Query time: ' . $result->getQueryTime() . "\n";
+		echo 'Query status: ' . $this->last_result->getStatus() . "\n";
+		echo 'Query time: ' . $this->last_result->getQueryTime() . "\n";
 	}
 
 	public function law_to_document($law)
@@ -280,7 +301,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		}
 		catch (Exception $error)
 		{
-			throw new Exception( $error->getStatusMessage() );
+			throw new Exception($error->getMessage());
 		}
 	}
 
@@ -295,7 +316,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			$id = 's_' . $object->edition_id . '_' . $object->permalink->token;
 		}
 		else {
-			throw new Exception('Record has a bad type in SolrSearchEngine->add_document');
+			throw new Exception('Record has a bad type in SolrSearchEngine->find_related');
 		}
 
 		if(isset($id))
@@ -311,7 +332,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			$query->setInterestingTerms('details');
 			$query->setMatchInclude(true);
 
-			$results = $this->client->select($query);
+			$results = $this->client->moreLikeThis($query);
 
 			$this->last_result = $results;
 

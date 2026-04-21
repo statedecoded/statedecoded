@@ -39,6 +39,11 @@ function statedecoded_autoload_libraries($class_name)
 
 spl_autoload_register('statedecoded_autoload_libraries');
 
+if (file_exists(INCLUDE_PATH . '../vendor/autoload.php'))
+{
+	require_once INCLUDE_PATH . '../vendor/autoload.php';
+}
+
 
 /**
  * Get the contents of a given URL. A wrapper for cURL.

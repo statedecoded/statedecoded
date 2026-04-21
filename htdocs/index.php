@@ -214,14 +214,7 @@ if (version_compare(PHP_VERSION, '5.3.6', '<'))
 global $db;
 
 /*
- * Include Solarium's autoloader, for queries to Solr.
- */
-require('Solarium/Autoloader.php');
-Solarium_Autoloader::register();
-
-
-/*
- * Include the custom functions file.
+ * Include the custom functions file (also loads vendor/autoload.php).
  */
 require(CUSTOM_FUNCTIONS);
 

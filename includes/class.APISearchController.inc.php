@@ -58,9 +58,9 @@ class APISearchController extends BaseAPIController
 		}
 
 		/*
-		 * Intialize Solarium.
+		 * Initialize Solarium.
 		 */
-		$client = new Solarium_Client($GLOBALS['solr_config']);
+		$client = SolrSearchEngine::make_client(json_decode(SEARCH_CONFIG, true));
 
 		/*
 		 * Set up our query.
