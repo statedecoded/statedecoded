@@ -24,7 +24,7 @@ class SolrSearchResults implements SearchResultsInterface
 
 		$this->fixed_results = $this->fix_results($results);
 
-		$this->spelling = $results->getSpellcheck();
+		$this->spelling = method_exists($results, 'getSpellcheck') ? $results->getSpellcheck() : null;
 	}
 
 	public function get_results()
@@ -42,7 +42,7 @@ class SolrSearchResults implements SearchResultsInterface
 		/*
 		 * If we know something is misspelled.
 		 */
-		if ($this->spelling->getCorrectlySpelled() === FALSE)
+		if ($this->spelling && $this->spelling->getCorrectlySpelled() === FALSE)
 		{
 			/*
 			 * Step through each term that appears to be misspelled, and create a modified query string.

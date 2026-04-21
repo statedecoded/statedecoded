@@ -422,9 +422,8 @@ function check_dir_available($dirname, $writable=false)
  * By default, adds a trailing slash.
  */
 
-function join_paths()
+function join_paths(...$args)
 {
-	$args = func_get_args();
 	$paths = array();
 
 	foreach($args as $arg) {
@@ -483,14 +482,26 @@ function get_files($path, $files = array())
  */
 function remove_dir($dir)
 {
-	if(defined('PHP_WINDOWS_VERSION_MAJOR'))
+	if (!is_dir($dir))
 	{
-		return system('rd /Q /S "' . $dir . '"');
+		return FALSE;
 	}
-	else
+	$it = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+		RecursiveIteratorIterator::CHILD_FIRST
+	);
+	foreach ($it as $file)
 	{
-		return system('/bin/rm -rf ' . escapeshellarg($dir));
+		if ($file->isDir())
+		{
+			rmdir($file->getRealPath());
+		}
+		else
+		{
+			unlink($file->getRealPath());
+		}
 	}
+	return rmdir($dir);
 }
 
 /*
@@ -532,7 +543,7 @@ function html_entity_decode_object($obj)
  * From php.net: http://us2.php.net/manual/en/function.html-entity-decode.php#47371
  */
 function decode_entities($text) {
-    $text = html_entity_decode($text, ENT_QUOTES | ENT_XML1, "ISO-8859-1"); #NOTE: UTF-8 does not work!
+    $text = html_entity_decode($text, ENT_QUOTES | ENT_XML1, 'UTF-8');
     return $text;
 }
 

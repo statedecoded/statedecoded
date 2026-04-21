@@ -37,7 +37,7 @@ class Cache
 		/*
 		 * Namespace keys, using the first 8 characters of a hash of the server name.
 		 */
-		$this->prefix = substr(md5($_SERVER['SERVER_NAME']), 0, 8) . ':';
+		$this->prefix = substr(md5($_SERVER['SERVER_NAME'] ?? ''), 0, 8) . ':';
 
 	}
 	
@@ -48,9 +48,6 @@ class Cache
 	 */
 	function store($key, $data, $expiration = 86400)
 	{
-		
-		global $cache;
-		
 		if ( empty($key) || empty($data) )
 		{
 			return FALSE;
@@ -70,9 +67,6 @@ class Cache
 	 */
 	function erase($key)
 	{
-		
-		global $cache;
-		
 		if (empty($key))
 		{
 			return FALSE;
@@ -95,9 +89,6 @@ class Cache
 	 */
 	function retrieve($key)
 	{
-		
-		global $cache;
-		
 		if (empty($key))
 		{
 			return FALSE;
@@ -120,9 +111,6 @@ class Cache
 	 */
 	function flush()
 	{
-		
-		global $cache;
-		
 		/*
 		 * Erase every cached item that has the correct prefix. We do this to avoid invalidating
 		 * cached items for the whole of Memcached (e.g., other website).

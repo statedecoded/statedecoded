@@ -47,9 +47,7 @@ class APISuggestController extends BaseAPIController
 		$query = $client->createSuggester();
 		$query->setHandler('suggest');
 		$query->setQuery($term);
-		$query->setOnlyMorePopular(TRUE);
 		$query->setCount(5);
-		$query->setCollate(TRUE);
 
 		/*
 		 * Execute the query.
@@ -57,9 +55,16 @@ class APISuggestController extends BaseAPIController
 		$search_results = $client->suggester($query);
 
 		/*
+		 * getAll() returns a flat array of all suggestion strings across all dictionaries.
+		 */
+		$all_suggestions = $search_results->getAll();
+
+		$response = new stdClass();
+
+		/*
 		 * If there are no results.
 		 */
-		if (count($search_results) == 0)
+		if (count($all_suggestions) == 0)
 		{
 
 			$response->terms = FALSE;
@@ -73,18 +78,14 @@ class APISuggestController extends BaseAPIController
 		{
 
 			$response->terms = array();
-			foreach ($search_results as $term => $term_result)
+			$i = 0;
+			foreach ($all_suggestions as $suggestion)
 			{
-				$i=0;
-				foreach ($term_result as $suggestion)
-				{
-					$response->terms[] = array(
-						'id' => $i,
-						'term' => $suggestion
-					);
-					$i++;
-				}
-
+				$response->terms[] = array(
+					'id' => $i,
+					'term' => $suggestion
+				);
+				$i++;
 			}
 		}
 

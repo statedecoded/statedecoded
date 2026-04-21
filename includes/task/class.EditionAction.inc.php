@@ -3,8 +3,6 @@
 require_once 'class.CliAction.inc.php';
 require_once CUSTOM_FUNCTIONS;
 
-global $db;
-
 // TODO: Allow editions to be made current.
 //       When this happens, permalinks will need to be created.
 

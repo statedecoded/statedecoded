@@ -338,7 +338,7 @@ class Law
 
 			$result = $this->db->query($sql);
 
-			if ( ($result !== TRUE) && ($result->rowCount() > 0) )
+			if ( $result !== FALSE && $result->rowCount() > 0 )
 			{
 
 				$this->tags = new stdClass();
@@ -649,7 +649,7 @@ class Law
 		/*
 		 * Record the view.
 		 */
-		$sql = 'INSERT DELAYED INTO laws_views
+		$sql = 'INSERT INTO laws_views
 				SET section = :section';
 		$sql_args = array(
 			':section' => $this->section_number
@@ -991,7 +991,7 @@ class Law
 					 * If there are any uppercase characters, then make this PCRE string case
 					 * sensitive.
 					 */
-					if ( (ord($term[$i]) >= 65) && (ord($term[$i]) <= 90) )
+					if ( ctype_upper($term[$i]) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
 						$caps = TRUE;

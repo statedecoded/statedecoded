@@ -3,8 +3,6 @@
 require_once 'class.CliAction.inc.php';
 require_once CUSTOM_FUNCTIONS;
 
-global $db;
-
 class ClearMetadataAction extends CliAction
 {
 	static public $name = 'clear-metadata';

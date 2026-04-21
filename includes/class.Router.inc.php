@@ -93,12 +93,9 @@ class Router
 
 		foreach($this->routes as $name) {
 
-			/*
-			 * Escape slashes.
-			 */
-			$route_regex = str_replace('/', '\\/', $this->handlers[$name][0]);
+			$route_regex = $this->handlers[$name][0];
 
-			if (preg_match('/' . $route_regex . '/', $url, $matches))
+			if (preg_match('#' . $route_regex . '#', $url, $matches))
 			{
 				return array($this->handlers[$name][1], $matches);
 			}
@@ -108,7 +105,7 @@ class Router
 		/*
 		 * The last route is the default.
 		 */
-		return array($this->handlers[end($this->routes)], array());
+		return array($this->handlers[end($this->routes)][1], array());
 
 	}
 }

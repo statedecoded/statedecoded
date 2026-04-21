@@ -30,7 +30,7 @@ $logger = new Logger($logger_args);
  * Require that the user log in.
  */
 if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
-    $_SERVER['PHP_AUTH_USER'] != ADMIN_USERNAME || $_SERVER['PHP_AUTH_PW'] != ADMIN_PASSWORD)
+    !hash_equals(ADMIN_USERNAME, $_SERVER['PHP_AUTH_USER']) || !hash_equals(ADMIN_PASSWORD, $_SERVER['PHP_AUTH_PW']))
 {
 
     Header('WWW-Authenticate: Basic realm="The State Decoded Admin"');
@@ -74,6 +74,9 @@ if (isset($_GET['noframe']))
 	$template->parse($content);
 
 }
+
+$body = '';
+$action = $_POST['action'] ?? '';
 
 /*
  * When first loading the page, show options.
@@ -155,7 +158,7 @@ if (count($_POST) === 0)
 /*
  * If we're doing the initial setup.
  */
-elseif ($_POST['action'] == 'setup')
+elseif ($action == 'setup')
 {
 		/*
 	 * Step through each parser method.
@@ -197,7 +200,7 @@ elseif ($_POST['action'] == 'setup')
 	}
 }
 
-elseif ($_POST['action'] == 'update_db')
+elseif ($action == 'update_db')
 {
 	$body .= $parser->run_migrations();
 	$body .= '<p>Migration complete.</p>';
@@ -207,7 +210,7 @@ elseif ($_POST['action'] == 'update_db')
 /*
  * If the request is to empty the database.
  */
-elseif ($_POST['action'] == 'empty')
+elseif ($action == 'empty')
 {
 
 	echo 'Emptying the database<br />';
@@ -237,7 +240,7 @@ elseif ($_POST['action'] == 'empty')
 /*
  * Else if we're actually running the parser.
  */
-elseif ($_POST['action'] == 'parse')
+elseif ($action == 'parse')
 {
 	define('EXPORT_IN_PROGRESS', true);
 
@@ -302,7 +305,7 @@ elseif ($_POST['action'] == 'parse')
 
 		else
 		{
-			$this->logger->message('The database isn\'t populated.  Please run the setup function.', 10);
+			$logger->message('The database isn\'t populated.  Please run the setup function.', 10);
 		}
 	}
 
@@ -317,7 +320,7 @@ elseif ($_POST['action'] == 'parse')
 
 }
 
-elseif ($_POST['action'] == 'permalinks')
+elseif ($action == 'permalinks')
 {
 
 	ob_start();
@@ -335,7 +338,7 @@ elseif ($_POST['action'] == 'permalinks')
 
 }
 
-elseif ($_POST['action'] == 'cache')
+elseif ($action == 'cache')
 {
 
 	ob_start();
@@ -353,7 +356,7 @@ elseif ($_POST['action'] == 'cache')
 
 }
 
-elseif ($_POST['action'] == 'test_environment')
+elseif ($action == 'test_environment')
 {
 
 	ob_start();
@@ -439,18 +442,19 @@ function show_admin_forms($args = array())
 		$editions = FALSE;
 	}
 
-	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+	$server_port = $_SERVER['SERVER_PORT'] ?? 80;
+	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($server_port == 443) )
 	{
-		$base_url = 'https://';
+		$edition_url_base = 'https://';
 	}
 	else
 	{
 		$edition_url_base = 'http://';
 	}
-	$edition_url_base .= $_SERVER['SERVER_NAME'];
-	if ($_SERVER['SERVER_PORT'] != 80)
+	$edition_url_base .= $_SERVER['SERVER_NAME'] ?? 'localhost';
+	if ($server_port != 80)
 	{
-		$edition_url_base .= ':' . $_SERVER['SERVER_PORT'];
+		$edition_url_base .= ':' . $server_port;
 	}
 	$edition_url_base .= '/';
 

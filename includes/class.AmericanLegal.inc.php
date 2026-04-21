@@ -2253,7 +2253,7 @@ abstract class AmericanLegalParser
 									 * If there are any lowercase characters, then make the whole
 									 * thing lowercase.
 									 */
-									if ( (ord($term[$i]) >= 97) && (ord($term[$i]) <= 122) )
+									if ( ctype_lower($term[$i]) )
 									{
 										$term = strtolower($term);
 										break;
