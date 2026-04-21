@@ -1,0 +1,22 @@
+parameters:
+    level: 1
+    paths:
+        - includes
+        - htdocs
+    excludePaths:
+        - includes/test
+        - vendor
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    ignoreErrors:
+        # The custom spl_autoload_register shim loads class.Foo.inc.php files on
+        # demand; PHPStan cannot follow it, so all "class not found" errors for
+        # project classes are false positives at this stage.
+        - '#Class [A-Z][A-Za-z]+ not found\.#'
+        - '#Instantiated class [A-Z][A-Za-z]+ not found\.#'
+        - '#Call to method .+ of an unknown class [A-Z][A-Za-z]+\.#'
+        - '#Access to property \$\w+ of an unknown class [A-Z][A-Za-z]+\.#'
+        # Dynamic property pattern: SearchEngineInterface.__construct() and
+        # several other classes assign $args keys as object properties.
+        # TODO: add #[\AllowDynamicProperties] to affected classes.
+        - '#Access to an undefined property [A-Z][A-Za-z]+::\$\w+\.#'
