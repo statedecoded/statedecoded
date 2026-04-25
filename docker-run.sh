@@ -10,3 +10,6 @@ fi
 
 docker compose up --build -d
 docker compose ps
+echo ""
+echo "Site: http://localhost:8080/"
+echo "Admin: http://localhost:8080/admin/  (user: admin  pass: admin)"
