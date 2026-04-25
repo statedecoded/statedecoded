@@ -8,6 +8,41 @@ The State Decoded is a free, open source, web-based application to display laws 
 ## Can I try it out?
 Sure! This project can be seen in action on sites for [Virginia](http://vacode.org/), [Chicago](http://chicagocode.org/), [San Francisco](http://sanfranciscocode.org/), and [a growing list of others](http://americadecoded.org/). If you want to install it, you can also [download a Vagrant image from GitMachines](https://github.com/GitMachines/statedecoded-gm-centos6), or just [download and install it from scratch](https://github.com/statedecoded/statedecoded/releases).
 
+### Running locally with Docker
+
+You can run The State Decoded on your own machine with Docker.
+
+**Requirements:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or any Docker Engine + Compose v2 install).
+
+**Start:**
+
+```bash
+cp .env.example .env   # first time only; defaults work out of the box
+./docker-run.sh
+```
+
+This builds the PHP 8 / Apache image, starts a MySQL 8 database, and serves the site at `http://localhost:8080/`. The admin panel is at `http://localhost:8080/admin/` (username `admin`, password `admin` — both configurable in `.env`).
+
+The site will be empty until you import a legal code. See the [import documentation](http://docs.statedecoded.com/parser.html) for instructions, then use the admin panel or run `docker compose exec app php statedecoded parse` to kick off the parser.
+
+**Stop:**
+
+```bash
+./docker-stop.sh        # stops containers; database is preserved
+docker compose down -v  # stops containers and wipes the database
+```
+
+**Run tests:**
+```bash
+./docker-tests.sh
+```
+
+**Optional: Memcached**
+
+```bash
+docker compose --profile cache up -d
+# Add CACHE_HOST=memcached and CACHE_PORT=11211 to .env and restart the app.
+```
 
 ## Is this ready for prime time?
 Quite nearly! The current release is being used in production on a half-dozen different sites, with [no serious bugs](https://github.com/statedecoded/statedecoded/issues?direction=desc&labels=Bug&milestone=2&state=open), and is certainly in good enough shape to be used on websites that aren't official, government-run repositories of the law.
