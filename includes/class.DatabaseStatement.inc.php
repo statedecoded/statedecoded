@@ -116,7 +116,7 @@ class DatabaseStatement
 		return $result;
 	}
 
-	protected function recoverError ()
+	public function recoverError ()
 	{
 		// If the server has gone away, simply try to reconnect.
 		$disconnect_error = 'Database server has gone away';
@@ -149,7 +149,7 @@ class DatabaseStatement
 	 * return the error we need, or it may be the statement itself.  Either way,
 	 * we try to get what useful data we can from it.
 	 */
-	protected function fetchErrors ( $input_parameters = array() )
+	public function fetchErrors ( $input_parameters = array() )
 	{
 		$error = array();
 		if ( strlen($this->query) )
@@ -188,7 +188,7 @@ class DatabaseStatement
 		return $error;
 	}
 
-	protected function formatErrors ( $errors = array() )
+	public function formatErrors ( $errors = array() )
 	{
 		return print_r($errors, TRUE);
 	}
