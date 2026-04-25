@@ -12,3 +12,5 @@ package.box
 .project
 .buildpath
 /vendor
+.env
+includes/test/.phpunit.result.cache
