@@ -181,7 +181,7 @@ class Law
 		/*
 		 * Now get the text for this law, subsection by subsection.
 		 */
-		if ($this->config->get_text === TRUE)
+		if (($this->config->get_text ?? null) === TRUE)
 		{
 
 			/*
@@ -323,7 +323,7 @@ class Law
 		/*
 		 * Gather all metadata stored about this law.
 		 */
-		if ($this->config->get_metadata == TRUE)
+		if (!empty($this->config->get_metadata))
 		{
 			$this->metadata = Law::get_metadata();
 		}
@@ -367,7 +367,7 @@ class Law
 		 * this will be making a call to a third-party service (e.g., Open States), and such a call
 		 * is expensive.
 		 */
-		if ($this->config->get_amendment_attempts == TRUE)
+		if (!empty($this->config->get_amendment_attempts))
 		{
 
 			if (method_exists($state, 'get_amendment_attempts'))
@@ -385,7 +385,7 @@ class Law
 		 * only if we have specifically requested this data. That's because, on most installations,
 		 * this will be making a call to a third-party service and such a call is expensive.
 		 */
-		if ($this->config->get_court_decisions == TRUE)
+		if (!empty($this->config->get_court_decisions))
 		{
 
 			/*
@@ -455,7 +455,7 @@ class Law
 		/*
 		 * Get the references to this law among other laws and include those (if there are any).
 		 */
-		if ($this->config->get_references == TRUE)
+		if (!empty($this->config->get_references))
 		{
 			$this->references = Law::get_references();
 			$this->refers_to = Law::get_references(true);
