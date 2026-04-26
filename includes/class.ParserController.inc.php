@@ -13,6 +13,7 @@
 
 require_once(INCLUDE_PATH . 'task/class.MigrateAction.inc.php');
 
+#[\AllowDynamicProperties]
 class ParserController
 {
 	public $db;

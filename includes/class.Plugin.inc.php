@@ -14,6 +14,7 @@
  *
  */
 
+#[\AllowDynamicProperties]
 abstract class Plugin
 {
 	public $listeners = array('test');

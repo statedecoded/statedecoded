@@ -12,6 +12,7 @@
  *
  */
 
+#[\AllowDynamicProperties]
 class Law
 {
 	protected $db;

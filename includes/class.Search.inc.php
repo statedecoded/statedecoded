@@ -12,6 +12,7 @@
  *
  */
 
+#[\AllowDynamicProperties]
 class Search
 {
 	public function __construct($args = null)

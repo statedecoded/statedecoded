@@ -18,6 +18,7 @@ require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
  * This class may be populated with custom functions.
  */
 
+#[\AllowDynamicProperties]
 class State
 {
 
@@ -268,6 +269,7 @@ class State
  * prescribed XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
  * and serves as a guide for those who want to parse an alternate format.
  */
+#[\AllowDynamicProperties]
 class Parser
 {
 

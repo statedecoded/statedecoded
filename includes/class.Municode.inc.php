@@ -20,6 +20,7 @@
 /**
  * This class may be populated with custom functions.
  */
+#[\AllowDynamicProperties]
 class State
 {
 }

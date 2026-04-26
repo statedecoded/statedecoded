@@ -13,6 +13,7 @@
  * @since		0.9
  */
 
+#[\AllowDynamicProperties]
 abstract class SearchEngineInterface
 {
 	public function __construct($args)

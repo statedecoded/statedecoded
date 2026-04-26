@@ -13,6 +13,7 @@
  * @since		0.8
  */
 
+#[\AllowDynamicProperties]
 class MasterController
 {
 

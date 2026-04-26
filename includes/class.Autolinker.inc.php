@@ -15,6 +15,7 @@
 /**
  * Finds linkable strings of text within laws and turns them into links.
  */
+#[\AllowDynamicProperties]
 class Autolinker
 {
 

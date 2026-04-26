@@ -15,6 +15,7 @@
 /**
  *
  */
+#[\AllowDynamicProperties]
 class Dictionary
 {
 

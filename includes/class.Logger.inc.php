@@ -13,6 +13,7 @@
  * @since		0.7
 */
 
+#[\AllowDynamicProperties]
 class Logger
 {
 

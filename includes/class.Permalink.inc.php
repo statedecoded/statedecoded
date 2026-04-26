@@ -11,6 +11,7 @@
  * @since		0.9
  */
 
+#[\AllowDynamicProperties]
 class Permalink
 {
 	protected $db;

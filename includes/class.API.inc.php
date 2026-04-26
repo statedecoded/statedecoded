@@ -15,6 +15,7 @@
 /**
  * Functions for the API.
  */
+#[\AllowDynamicProperties]
 class API
 {
 

@@ -13,6 +13,7 @@
  *
  */
 
+#[\AllowDynamicProperties]
 class Edition
 {
 	protected $db;

@@ -14,6 +14,7 @@
  *
  */
 
+#[\AllowDynamicProperties]
 class EventManager
 {
 	public $events = array();

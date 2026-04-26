@@ -22,6 +22,7 @@
  * $searchIndex->commit();
  */
 
+#[\AllowDynamicProperties]
 class SearchIndex
 {
 	/*

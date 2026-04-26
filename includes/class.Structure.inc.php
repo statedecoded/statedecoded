@@ -12,6 +12,7 @@
  *
  */
 
+#[\AllowDynamicProperties]
 class Structure
 {
 	protected $db;

@@ -21,6 +21,7 @@
 require 'class.AmericanLegal.inc.php';
 
 // All we need is a derivative of both State and Parser.
+#[\AllowDynamicProperties]
 class State extends AmericanLegalState {}
 
 // We should probably list the images to ignore, though!
