@@ -46,7 +46,7 @@ class DatabaseStatement
 
 	public function bindValue ( $parameter, $value, $data_type = PDO::PARAM_STR )
 	{
-		$this->query_args[] = array(
+		$this->query_args[$parameter] = array(
 			'parameter' => $parameter,
 			'value' => $value,
 			'data_type' => $data_type);
