@@ -616,7 +616,25 @@ class Parser
 
 		$this->i=0;
 
-		$this->recurse($this->section->text->children());
+		$children = $this->section->text->children();
+		if (count($children) === 0)
+		{
+			/*
+			 * Plain text with no child elements — treat the whole <text> block as one section.
+			 */
+			$plain = trim((string) $this->section->text);
+			if ($plain !== '')
+			{
+				$this->code->section[0] = new stdClass();
+				$this->code->section[0]->text = $plain;
+				$this->code->text = $plain;
+				$this->i = 1;
+			}
+		}
+		else
+		{
+			$this->recurse($children);
+		}
 
 		/*
 		 * If there any tags, store those, too.

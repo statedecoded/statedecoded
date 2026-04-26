@@ -227,7 +227,7 @@ class Law
 			while ($tmp = $statement->fetch(PDO::FETCH_OBJ))
 			{
 
-				$tmp->prefixes = explode('|', $tmp->prefixes);
+				$tmp->prefixes = explode('|', $tmp->prefixes ?? '');
 				$tmp->prefix = end($tmp->prefixes);
 				$tmp->entire_prefix = implode('', $tmp->prefixes);
 				$tmp->prefix_anchor = str_replace(' ', '_', $tmp->entire_prefix);
