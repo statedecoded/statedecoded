@@ -224,7 +224,7 @@ abstract class Export extends Plugin
 
 		if($zip)
 		{
-			$zip->addFromString($filename, $content);
+			$zip->addFromString('dictionary' . $this->extension, $content);
 
 			$zip->close();
 		}
