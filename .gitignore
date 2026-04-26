@@ -14,3 +14,4 @@ package.box
 /vendor
 .env
 includes/test/.phpunit.result.cache
+/htdocs/downloads/2026
