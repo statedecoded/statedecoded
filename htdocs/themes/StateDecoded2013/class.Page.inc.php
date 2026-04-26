@@ -18,8 +18,13 @@ class StateDecoded2013__Page extends Page
 
 	public $assets = array(
 		'font_awesome_css' => array(
-			'path' => '//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css',
+			'path' => '/css/font-awesome.css',
 			'type' => 'css'
+		),
+		'jquery_qtip_css' => array(
+			'path' => '/css/jquery.qtip.min.css',
+			'type' => 'css',
+			'requires' => array('jquery_qtip')
 		),
 		'main_css' => array(
 			'path' => '/css/application.css',
@@ -100,7 +105,7 @@ class StateDecoded2013__Page extends Page
 		'main_js' => array(
 			'path' => '/js/vendor/functions.js',
 			'type' => 'javascript',
-			'requires' => array('jquery', 'jquery_zclip', 'mousetrap', 'jquery_qtip', 'datatables')
+			'requires' => array('jquery', 'jquery_zclip', 'mousetrap', 'jquery_qtip', 'jquery_qtip_css', 'datatables')
 		)
 	);
 
