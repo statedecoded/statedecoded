@@ -204,14 +204,20 @@ if (isset($struct->siblings))
 			{
 				prev($struct->siblings);
 				$tmp = prev($struct->siblings);
-				$content->append('link_rel', '<link rel="prev" title="Previous" href="' . $tmp->url . '" />');
+				if ($tmp !== FALSE)
+				{
+					$content->append('link_rel', '<link rel="prev" title="Previous" href="' . $tmp->url . '" />');
+				}
 			}
 
 			if ( $i < (count($struct->siblings)-1) )
 			{
 				next($struct->siblings);
 				$tmp = next($struct->siblings);
-				$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
+				if ($tmp !== FALSE)
+				{
+					$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
+				}
 			}
 
 			break;
