@@ -114,6 +114,7 @@ class Dictionary
 			 * We assign this to the first element of an object because that is the format that the
 			 * API expects to receive a list of terms in. In this case, we have just one term.
 			 */
+			$dictionary = new stdClass();
 			$dictionary->{0} = $statement->fetch(PDO::FETCH_OBJ);
 			$dictionary->{0}->formatted = wptexturize($dictionary->{0}->definition) .
 				' (<a href="' . $dictionary->{0}->url . '">' . $dictionary->{0}->source . '</a>)';
