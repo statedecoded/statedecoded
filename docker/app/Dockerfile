@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zlib1g-dev \
         default-mysql-client \
         unzip \
+        zip \
     && rm -rf /var/lib/apt/lists/*
 
 # xml, dom, simplexml, and mbstring are already compiled into the base image.
