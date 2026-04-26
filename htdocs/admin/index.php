@@ -338,6 +338,24 @@ elseif ($action == 'permalinks')
 
 }
 
+elseif ($action == 'export')
+{
+
+	ob_start();
+
+	echo 'Beginning export<br />';
+
+	$parser->export();
+
+	echo 'Done<br />';
+
+	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
+
+	$body = ob_get_contents();
+	ob_end_clean();
+
+}
+
 elseif ($action == 'cache')
 {
 
