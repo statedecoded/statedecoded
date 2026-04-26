@@ -218,7 +218,7 @@ abstract class Export extends Plugin
 		$filename = $this->getDictionaryDownloadName();
 		$content = $this->formatDictionaryForExport($dictionary);
 
-		$zip_filename = join_paths($downloads_dir, $filename . '.zip');
+		$zip_filename = join_paths($downloads_dir, $filename);
 
 		$zip = $this->generateZip($zip_filename);
 
