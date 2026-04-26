@@ -169,6 +169,9 @@ function sort_by_length($a, $b)
  */
 function wptexturize($text)
 {
+	if (!isset($text)) {
+		return '';
+	}
 
 	global $wp_cockneyreplace;
 	static $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements,
