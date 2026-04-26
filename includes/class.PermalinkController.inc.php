@@ -24,22 +24,25 @@ class PermalinkController extends BaseController
 		{
 			$route = $this->find_route($args['route']);
 
-			/*
-			 * Try to intelligently determine if there's a matching controller
-			 */
-			$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
-				'Controller';
+			if ($route !== FALSE)
+			{
+				/*
+				 * Try to intelligently determine if there's a matching controller
+				 */
+				$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
+					'Controller';
 
-			try {
-				if (class_exists($object_name) !== FALSE)
-				{
-					$controller = new $object_name($this->local);
+				try {
+					if (class_exists($object_name) !== FALSE)
+					{
+						$controller = new $object_name($this->local);
 
-					return $controller->handle($route);
+						return $controller->handle($route);
+					}
 				}
-			}
-			catch (Exception $error) {
-				return $this->handleNotFound($args);
+				catch (Exception $error) {
+					return $this->handleNotFound($args);
+				}
 			}
 		}
 
