@@ -28,9 +28,9 @@ class DOMWrapper
 			$this->strip_whitespace = $strip_whitespace;
 		}
 
-		if(is_object($xml) && get_class($xml) === 'DOMElement')
+		if($xml instanceof DOMNode)
 		{
-			$this->dom =& $xml;
+			$this->dom = $xml;
 		}
 		else
 		{

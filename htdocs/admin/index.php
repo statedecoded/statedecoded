@@ -246,7 +246,7 @@ elseif ($action == 'parse')
 
 	echo 'Beginning import<br />';
 	flush();
-	ob_flush();
+	if (ob_get_level() > 0) { ob_flush(); }
 
 	/*
 	 * Step through each parser method.
@@ -275,7 +275,7 @@ elseif ($action == 'parse')
 
 
 				$parser->clear_cache();
-				$parser->clear_edition($_POST['edition']);
+				$parser->clear_edition($_POST['edition'] ?? null);
 
 				/*
 				 * We should only continue if parsing was successful.

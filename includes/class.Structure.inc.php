@@ -403,7 +403,11 @@ class Structure
 		$i=0;
 		while ($child = $statement->fetch(PDO::FETCH_OBJ))
 		{
-			$children[] = $this->get_by_id($child->s1_id);
+			$result = $this->get_by_id($child->s1_id);
+			if ($result !== FALSE && $result->permalink !== FALSE)
+			{
+				$children[] = $result;
+			}
 		}
 
 		return $children;

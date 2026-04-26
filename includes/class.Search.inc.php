@@ -125,7 +125,7 @@ class Search
 			$output .= '</select>';
 		}
 		// If we only have one edition, just use it.
-		elseif(count($editions) == 1)
+		elseif($editions && count($editions) == 1)
 		{
 			$output .= '<input type="hidden" name="edition_id" value="' .
 				$editions[0]->id .'">';

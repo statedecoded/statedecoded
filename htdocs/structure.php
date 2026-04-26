@@ -72,7 +72,7 @@ if ( !isset($args['id']) )
  * Set aside the ancestry for this structural unit, to be accessed separately.
  */
 // Again, if we at the top level, this will return null
-$structure = (isset($struct->structure) ? $struct->structure : '' );
+$structure = (isset($struct->structure) && is_array($struct->structure)) ? $struct->structure : [];
 
 /*
  * Get a listing of all the structural children of this portion of the structure.
@@ -197,7 +197,7 @@ if (isset($struct->siblings))
 	foreach ($struct->siblings as $sibling)
 	{
 
-		if (isset($current_structure) && $sibling->id === $current_structure->id)
+		if (isset($current_structure) && $current_structure !== FALSE && $sibling->id === $current_structure->id)
 		{
 
 			if ($i >= 1)

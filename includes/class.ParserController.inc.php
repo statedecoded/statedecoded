@@ -325,7 +325,7 @@ class ParserController
 	public function handle_editions($post_data)
 	{
 		$previous_edition = $this->get_current_edition();
-		if($previous_edition->id !== $this->edition_id)
+		if($previous_edition && $previous_edition->id !== $this->edition_id)
 		{
 			$this->previous_edition_id = $previous_edition->id;
 		}
