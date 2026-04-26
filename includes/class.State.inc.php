@@ -813,7 +813,7 @@ class Parser
 					 * structural unit identifier is "0" (Virginia does this), we check the string
 					 * length, rather than using empty().
 					 */
-					if (strlen($value) > 0)
+					if (isset($value) && strlen($value) > 0)
 					{
 						$identifier_parts[] = urlencode($value);
 					}
