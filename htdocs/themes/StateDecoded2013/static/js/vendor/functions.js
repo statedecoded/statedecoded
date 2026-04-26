@@ -247,6 +247,7 @@ $(document).ready(function () {
 							}
 						}
 						var content = content + section.catch_line;
+						console.log('[dict] this.set type:', typeof this.set);
 						this.set('content.text', content);
 					}
 				}
@@ -274,6 +275,7 @@ $(document).ready(function () {
 	});
 
 	/* Words for which we have dictionary terms.*/
+	console.log('[dict] qtip available:', typeof $.fn.qtip, '| spans:', $("span.dictionary").length);
 	$("span.dictionary").each(function() {
 		var elm = $(this);
 
@@ -311,6 +313,7 @@ $(document).ready(function () {
 					},
 					dataType: 'json',
 					success: function(data, status) {
+						console.log('[dict] ajax success:', data);
 						var content = truncate(data.definition);
 						if (data.section_number != null) {
 							content = content + ' (<a href="' + data.url + '">§&nbsp;' + data.section_number + '</a>)';
@@ -318,8 +321,10 @@ $(document).ready(function () {
 						else if (data.source) {
 							content = content + ' (Source: <a href="' + data.url + '">' + data.source + '</a>)';
 						}
+						console.log('[dict] this.set type:', typeof this.set);
 						this.set('content.text', content);
-					}
+					},
+					error: function(xhr, s, e) { console.log('[dict] ajax error:', s, e, xhr.status, xhr.responseText.substring(0,200)); }
 				}
 			}
 		})

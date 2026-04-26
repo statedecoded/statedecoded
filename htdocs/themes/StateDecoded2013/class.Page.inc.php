@@ -27,21 +27,21 @@ class StateDecoded2013__Page extends Page
 			'requires' => array('font_awesome_css', 'datatables_css')
 		),
 		'jquery_ui_css' => array(
-			'path' => '//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css',
+			'path' => '/css/jquery-ui.css',
 			'type' => 'css',
 			'requires' => array('jquery_ui')
 		),
 		'jquery' => array(
-			'path' => '//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js',
+			'path' => '/js/vendor/jquery.min.js',
 			'type' => 'javascript'
 		),
 		'jquery_ui' => array(
-			'path' => '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js',
+			'path' => '/js/vendor/jquery-ui.min.js',
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),
 		'jquery_qtip' => array(
-			'path' => '//cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js',
+			'path' => '/js/vendor/jquery.qtip.min.js',
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),
@@ -78,12 +78,12 @@ class StateDecoded2013__Page extends Page
 			'type' => 'javascript'
 		),
 		'datatables' => array(
-			'path' => '//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js',
+			'path' => '/js/vendor/jquery.dataTables.min.js',
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),
 		'datatables_css' => array(
-			'path' => '//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css',
+			'path' => '/css/jquery.dataTables.min.css',
 			'type' => 'css',
 			'requires' => array('datatables')
 		),
