@@ -42,6 +42,9 @@ cp(path.join(nm, 'qtip2/dist/jquery.qtip.min.map'),             path.join(vendor
 cp(path.join(nm, 'jquery-ui-dist/jquery-ui.css'),               path.join(css, 'jquery-ui.css'));
 cp(path.join(nm, 'qtip2/dist/jquery.qtip.min.css'),             path.join(css, 'jquery.qtip.min.css'));
 
+// jQuery UI sprite images — must sit in images/ relative to jquery-ui.css
+cpDir(path.join(nm, 'jquery-ui-dist/images'),                   path.join(css, 'images'));
+
 // Font Awesome fonts (the CSS is compiled into application.css via SCSS)
 cpDir(path.join(nm, 'font-awesome/fonts'), fonts);
 
