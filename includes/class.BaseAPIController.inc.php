@@ -143,18 +143,17 @@ class BaseAPIController extends BaseController
 	 */
 	public function setApiVersion(&$response)
 	{
-	
-		/*
-		 * Include the API version in this response.
-		 */
-		if (isset($_REQUEST['api_version']) && strlen($_REQUEST['api_version']))
+		$version = (isset($_REQUEST['api_version']) && strlen($_REQUEST['api_version']))
+			? filter_var($_REQUEST['api_version'], FILTER_DEFAULT)
+			: CURRENT_API_VERSION;
+
+		if (is_array($response))
 		{
-			$response->api_version = filter_var($_REQUEST['api_version'], FILTER_DEFAULT);
+			$response['api_version'] = $version;
 		}
 		else
 		{
-			$response->api_version = CURRENT_API_VERSION;
+			$response->api_version = $version;
 		}
-		
 	}
 }
