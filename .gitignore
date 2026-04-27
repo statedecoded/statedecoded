@@ -1,4 +1,15 @@
 .DS_Store
+node_modules/
+package-lock.json
+
+# Front-end assets managed by npm — built via `npm run build`
+htdocs/themes/StateDecoded2013/static/js/vendor/jquery.min.js
+htdocs/themes/StateDecoded2013/static/js/vendor/jquery-ui.min.js
+htdocs/themes/StateDecoded2013/static/js/vendor/mousetrap.min.js
+htdocs/themes/StateDecoded2013/static/js/vendor/jquery.qtip.min.js
+htdocs/themes/StateDecoded2013/static/css/jquery-ui.css
+htdocs/themes/StateDecoded2013/static/css/jquery.qtip.min.css
+htdocs/themes/StateDecoded2013/static/fonts/font-awesome/
 .vagrant/
 Vagrantfile
 htdocs/admin/.htpasswd
