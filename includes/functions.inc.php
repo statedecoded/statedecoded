@@ -169,7 +169,7 @@ function sort_by_length($a, $b)
  */
 function wptexturize($text)
 {
-	if (!isset($text)) {
+	if ($text === null) {
 		return '';
 	}
 
