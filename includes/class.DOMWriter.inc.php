@@ -53,7 +53,7 @@ class DOMWriter {
      */
     else
     {
-      $elm->appendChild($this->dom->createTextNode($value));
+      $elm->appendChild($this->dom->createTextNode($value ?? ''));
     }
 
     if(count($attributes))

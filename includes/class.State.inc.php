@@ -617,7 +617,7 @@ class Parser
 		$this->i=0;
 
 		$children = $this->section->text->children();
-		if (count($children) === 0)
+		if (!$this->section->text->hasElementChildren())
 		{
 			/*
 			 * Plain text with no child elements — treat the whole <text> block as one section.

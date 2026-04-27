@@ -112,6 +112,10 @@ class DOMWrapper
 		return new DOMListWrapper($this->dom->childNodes, $this->strip_whitespace );
 	}
 
+	public function hasElementChildren(): bool {
+		return !empty($this->nodeMap);
+	}
+
 	public function value() {
 		if($this->dom->childNodes->length === 1 &&
 			$this->dom->childNodes->item(0)->nodeType === XML_TEXT_NODE)
@@ -151,7 +155,7 @@ class DOMWrapper
 	}
 }
 
-class DOMListWrapper implements Iterator
+class DOMListWrapper implements Iterator, Countable
 {
 	protected $nodes = array();
 	private $position = 0;
@@ -196,6 +200,10 @@ class DOMListWrapper implements Iterator
 		{
 			$this->nodes = $tmp_nodes;
 		}
+	}
+
+	public function count(): int {
+		return count($this->nodes);
 	}
 
 	public function length() {

@@ -193,7 +193,7 @@ class TaskRunner
 	 */
 	protected function formatText($text)
 	{
-		return "\n" . wordwrap($text) . "\n\n";
+		return "\n" . wordwrap($text ?? '') . "\n\n";
 	}
 
 	protected function formatCow($text)
