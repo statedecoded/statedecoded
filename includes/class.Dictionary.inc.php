@@ -55,7 +55,7 @@ class Dictionary
 		 */
 		$dictionary = FALSE;
 		$lowercase = FALSE;
-		$plural = FALSE;
+		$plural = (isset($this->term) && substr($this->term, -1) === 's');
 
 		/*
 		 * If no term has been defined, there is nothing to be done.
