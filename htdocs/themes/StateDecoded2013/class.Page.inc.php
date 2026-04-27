@@ -17,10 +17,6 @@ class StateDecoded2013__Page extends Page
 	public $theme_name = 'StateDecoded2013';
 
 	public $assets = array(
-		'font_awesome_css' => array(
-			'path' => '/css/font-awesome.css',
-			'type' => 'css'
-		),
 		'jquery_qtip_css' => array(
 			'path' => '/css/jquery.qtip.min.css',
 			'type' => 'css',
@@ -28,8 +24,7 @@ class StateDecoded2013__Page extends Page
 		),
 		'main_css' => array(
 			'path' => '/css/application.css',
-			'type' => 'css',
-			'requires' => array('font_awesome_css', 'datatables_css')
+			'type' => 'css'
 		),
 		'jquery_ui_css' => array(
 			'path' => '/css/jquery-ui.css',
@@ -50,52 +45,14 @@ class StateDecoded2013__Page extends Page
 			'type' => 'javascript',
 			'requires' => array('jquery')
 		),
-		'modernizr' => array(
-			'path' => '/js/vendor/modernizr.min.js',
-			'type' => 'javascript'
-		),
-		'jquery_slideto' => array(
-			'path' => '/js/vendor/jquery.slideto.min.js',
-			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'jquery_color' => array(
-			'path' => '/js/vendor/jquery.color-2.1.1.min.js',
-			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
 		'mousetrap' => array(
 			'path' => '/js/vendor/mousetrap.min.js',
 			'type' => 'javascript'
 		),
-		'jquery_zclip' => array(
-			'path' => '/js/vendor/jquery.zclip.min.js',
-			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'jquery_inview' => array(
-			'path' => '/js/vendor/jquery.inview.min.js',
-			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'polyfiller' => array(
-			'path' => '/js/vendor/js-webshim/minified/polyfiller.js',
-			'type' => 'javascript'
-		),
-		'datatables' => array(
-			'path' => '/js/vendor/jquery.dataTables.min.js',
-			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'datatables_css' => array(
-			'path' => '/css/jquery.dataTables.min.css',
-			'type' => 'css',
-			'requires' => array('datatables')
-		),
 		'tabs' => array(
 			'path' => '/js/vendor/tab.js',
 			'type' => 'javascript',
-			'requires' => 'jquery'
+			'requires' => array('jquery')
 		),
 		'favlaws' => array(
 			'path' => '/js/vendor/fav-laws.js',
@@ -105,7 +62,7 @@ class StateDecoded2013__Page extends Page
 		'main_js' => array(
 			'path' => '/js/vendor/functions.js',
 			'type' => 'javascript',
-			'requires' => array('jquery', 'jquery_zclip', 'mousetrap', 'jquery_qtip', 'jquery_qtip_css', 'datatables')
+			'requires' => array('jquery', 'mousetrap', 'jquery_qtip', 'jquery_qtip_css')
 		)
 	);
 
@@ -197,9 +154,6 @@ class StateDecoded2013__Page extends Page
 			$content->append('javascript',
 				'try{Typekit.load();}catch(e){};');
 		}
-
-		$content->append('javascript',
-			'var zclip_swf_file = "' . THEME_WEB_PATH . 'static/js/vendor/ZeroClipboard.swf";');
 
 		/*
 		 * Setup assets

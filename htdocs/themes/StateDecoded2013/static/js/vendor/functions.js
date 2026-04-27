@@ -124,24 +124,17 @@ $(document).ready(function () {
 	originating traffic, the second is for when clicking on an anchor link within a page. */
 	if (document.location.hash) {
 		var id = escapeSelector(document.location.hash);
-		$(id).slideto({
-			slide_duration: 500
-		});
-
+		var target = document.querySelector(id);
+		if (target) { target.scrollIntoView({behavior: 'smooth'}); }
 		$(id).show('highlight', {color: '#ffff00'}, 'fast');
 	}
 
-	$('a[href*=#]').click(function(){
-
+	$('a[href*=#]').on('click', function(){
 		var elemId = '#' + escapeSelector($(this).attr('href').split('#')[1]);
-
-		$(elemId).slideto({
-			slide_duration: 500
-		});
-
+		var target = document.querySelector(elemId);
+		if (target) { target.scrollIntoView({behavior: 'smooth'}); }
 		var id = escapeSelector(document.location.hash);
 		$(id).show('highlight', {color: '#ffff00'}, 'fast');
-
 	});
 
 
@@ -163,22 +156,12 @@ $(document).ready(function () {
 		}
 	})
 
-	/* Get each permalink and add a copy function on it when visible */
-	$('a.section-permalink').bind('inview', function(event, visible, topOrBottomOrBoth) {
-		if(!visible) return false;
-
-		var elm = $(this);
-		var id = escapeSelector(elm.attr('id'));
-
-		if(!elm.data('copyable')){
-			/* Permit copying URLs to the clipboard. */
-			elm.zclip({
-				path: zclip_swf_file,
-				copy: function() { return $(this).attr('href'); }
-			});
-
-			/* Ensure zclip only run once per element */
-			elm.data('copyable', true);
+	/* Copy permalink URL to clipboard when clicked. */
+	$('a.section-permalink').on('click', function(e) {
+		e.preventDefault();
+		var url = $(this).attr('href');
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(url);
 		}
 	});
 
