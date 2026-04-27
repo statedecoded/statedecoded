@@ -63,14 +63,14 @@ class ExportSDXML extends Export
 
 		if(isset($law->references) && is_array($law->references) && count($law->references))
 		{
-			$references =& $dom->create('referred_to_by');
+			$references = $dom->create('referred_to_by');
 
 			foreach($law->references as $reference) {
 				$references->create('reference', $reference->section_number);
 			}
 		}
 
-		$structure =& $dom->create('structure');
+		$structure = $dom->create('structure');
 		foreach(array_reverse($law->ancestry) as $ancestor)
 		{
 			$args = array(
