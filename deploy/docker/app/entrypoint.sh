@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-CONFIG_SRC="/var/www/html/docker/config/config.inc.docker.php"
+CONFIG_SRC="/var/www/html/deploy/docker/config/config.inc.docker.php"
 CONFIG_DST="/var/www/html/includes/config.inc.php"
 STATE_SRC="/var/www/html/includes/class.State-sample.inc.php"
 STATE_DST="/var/www/html/includes/class.State.inc.php"
-CONFIG_TEST_SRC="/var/www/html/docker/config/config-test.inc.docker.php"
+CONFIG_TEST_SRC="/var/www/html/deploy/docker/config/config-test.inc.docker.php"
 CONFIG_TEST_DST="/var/www/html/includes/config-test.inc.php"
 
 # Drop in config.inc.php from the Docker template unless a real one is already present

@@ -68,6 +68,6 @@ jobs:
 
       - name: PHPUnit
         env:
-          STATEDECODED_CONFIG: docker/config/config-test.inc.docker.php
+          STATEDECODED_CONFIG: deploy/docker/config/config-test.inc.docker.php
           PDO_DSN_TEST: "mysql:dbname=statedecoded_test;host=127.0.0.1;charset=utf8"
         run: vendor/bin/phpunit -c includes/test/phpunit.xml

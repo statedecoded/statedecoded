@@ -36,10 +36,10 @@ RUN pecl install memcached \
 RUN a2enmod env rewrite headers
 
 # PHP runtime config
-COPY docker/app/php.ini /usr/local/etc/php/conf.d/statedecoded.ini
+COPY deploy/docker/app/php.ini /usr/local/etc/php/conf.d/statedecoded.ini
 
 # Apache vhost (disables the default site, enables ours)
-COPY docker/app/apache-vhost.conf /etc/apache2/sites-available/statedecoded.conf
+COPY deploy/docker/app/apache-vhost.conf /etc/apache2/sites-available/statedecoded.conf
 RUN a2dissite 000-default && a2ensite statedecoded
 
 # Install Composer from official image
@@ -55,7 +55,7 @@ RUN composer install --no-interaction --no-scripts --optimize-autoloader
 
 COPY . .
 
-COPY docker/app/entrypoint.sh /entrypoint.sh
+COPY deploy/docker/app/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

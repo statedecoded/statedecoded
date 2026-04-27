@@ -14,13 +14,13 @@ tables on each run. Never point it at a production database.**
 From the repo root:
 
 ```bash
-./docker-phpunit.sh                        # run all tests
-./docker-phpunit.sh --filter testConstruct # run one test by name
-./docker-phpunit.sh DatabaseTest.php       # run one file
+./docker-test.sh phpunit                        # run all tests
+./docker-test.sh phpunit --filter testConstruct # run one test by name
+./docker-test.sh phpunit DatabaseTest.php       # run one file
 ```
 
 The Docker environment provides a pre-configured `statedecoded_test` database and drops
-`includes/config-test.inc.php` in place automatically via `docker/config/config-test.inc.docker.php`.
+`includes/config-test.inc.php` in place automatically via `deploy/docker/config/config-test.inc.docker.php`.
 
 ## Running outside Docker
 
@@ -60,7 +60,7 @@ The Docker environment provides a pre-configured `statedecoded_test` database an
 - Extend `PHPUnit\Framework\TestCase`.
 - Keep fixture data local to the test method or in a `@dataProvider`; avoid shared
   state in `setUp()` beyond mocks and DB connections.
-- Run `./docker-phpstan.sh` after adding tests — PHPStan analyses `includes/` and will
+- Run `./docker-test.sh phpstan` after adding tests — PHPStan analyses `includes/` and will
   catch type errors before the tests run.
 
 ## Known skipped tests

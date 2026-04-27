@@ -18,29 +18,29 @@ You can run The State Decoded on your own machine with Docker.
 
 ```bash
 cp .env.example .env   # first time only; defaults work out of the box
-./docker-run.sh
+./deploy/docker-run.sh
 ```
 
 This builds the PHP 8 / Apache image, starts a MySQL 8 database, and serves the site at `http://localhost:8080/`. The admin panel is at `http://localhost:8080/admin/` (username `admin`, password `admin` — both configurable in `.env`).
 
-The site will be empty until you import a legal code. See the [import documentation](http://docs.statedecoded.com/parser.html) for instructions, then use the admin panel or run `docker compose exec app php statedecoded parse` to kick off the parser.
+The site will be empty until you import a legal code. See the [import documentation](http://docs.statedecoded.com/parser.html) for instructions, then use the admin panel or run `docker compose -f deploy/docker-compose.yml exec app php statedecoded parse` to kick off the parser.
 
 **Stop:**
 
 ```bash
-./docker-stop.sh        # stops containers; database is preserved
-docker compose down -v  # stops containers and wipes the database
+./deploy/docker-stop.sh                     # stops containers; database is preserved
+docker compose -f deploy/docker-compose.yml down -v  # stops containers and wipes the database
 ```
 
 **Run tests:**
 ```bash
-./docker-tests.sh
+./docker-test.sh
 ```
 
 **Optional: Memcached**
 
 ```bash
-docker compose --profile cache up -d
+docker compose -f deploy/docker-compose.yml --profile cache up -d
 # Add CACHE_HOST=memcached and CACHE_PORT=11211 to .env and restart the app.
 ```
 

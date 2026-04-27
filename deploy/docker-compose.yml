@@ -1,3 +1,5 @@
+name: statedecoded
+
 services:
 
   # -----------------------------------------------------------------------
@@ -5,8 +7,8 @@ services:
   # -----------------------------------------------------------------------
   app:
     build:
-      context: .
-      dockerfile: docker/app/Dockerfile
+      context: ..
+      dockerfile: deploy/docker/app/Dockerfile
     ports:
       - "8080:80"
     environment:
@@ -24,13 +26,13 @@ services:
       DEBUG_LEVEL: ${DEBUG_LEVEL:-5}
     volumes:
       # Bind-mount the repo root so edits are reflected immediately
-      - .:/var/www/html
+      - ..:/var/www/html
       # Shadow vendor/ with a container-owned anonymous volume so the host's
       # Composer artifacts (compiled against host PHP) don't leak in
       - vendor_data:/var/www/html/vendor
       # Persist generated downloads and content across restarts
-      - ./htdocs/downloads:/var/www/html/htdocs/downloads
-      - ./htdocs/content:/var/www/html/htdocs/content
+      - ../htdocs/downloads:/var/www/html/htdocs/downloads
+      - ../htdocs/content:/var/www/html/htdocs/content
     depends_on:
       db:
         condition: service_healthy
@@ -49,7 +51,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-statedecoded}
     volumes:
       # Preload the application schema on first init
-      - ./htdocs/admin/statedecoded.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ../htdocs/admin/statedecoded.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       # Create test DB and mirror schema on first init
       - ./docker/db/init/02-test-db.sql:/docker-entrypoint-initdb.d/02-test-db.sql:ro
       # Persist data across restarts; `docker compose down -v` to reset
@@ -65,7 +67,7 @@ services:
 
   # -----------------------------------------------------------------------
   # memcached — optional cache backend
-  # Enabled with: docker compose --profile cache up
+  # Enabled with: docker compose -f deploy/docker-compose.yml --profile cache up
   # Set CACHE_HOST=memcached and CACHE_PORT=11211 in .env
   # -----------------------------------------------------------------------
   memcached:
