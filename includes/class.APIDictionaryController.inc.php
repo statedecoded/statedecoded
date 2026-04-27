@@ -115,15 +115,6 @@ class APIDictionaryController extends BaseAPIController
 				 * some write '"Whale" is a large sea-going mammal' and some write 'Whale is a large
 				 * sea-going mammal.")
 				 */
-				if (preg_match('/[A-Za-z]/', $dictionary->definition[0]) === 1)
-				{
-					$dictionary->definition[0] = strtoupper($dictionary->definition[0]);
-				}
-				elseif (preg_match('/[A-Za-z]/', $dictionary->definition[1]) === 1)
-				{
-					$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
-				}
-
 				/*
 				 * If the request contains a specific list of fields to be returned.
 				 */
@@ -172,6 +163,21 @@ class APIDictionaryController extends BaseAPIController
 				if (isset($section) || isset($law_id))
 				{
 					$dictionary = $dictionary->{0};
+				}
+
+				/*
+				 * Uppercase the first letter of the definition.
+				 */
+				if (isset($dictionary->definition) && strlen($dictionary->definition) > 0)
+				{
+					if (preg_match('/[A-Za-z]/', $dictionary->definition[0]) === 1)
+					{
+						$dictionary->definition[0] = strtoupper($dictionary->definition[0]);
+					}
+					elseif (strlen($dictionary->definition) > 1 && preg_match('/[A-Za-z]/', $dictionary->definition[1]) === 1)
+					{
+						$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
+					}
 				}
 
 				/*
