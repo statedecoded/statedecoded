@@ -24,7 +24,7 @@
   }
 
   #place_logo {
-    @include background-image(image-url("faux_seal.png"));
+    background-image: url('../images/faux_seal.png');
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
@@ -216,43 +216,43 @@
           }
 
           &#browse {
-            @include background-image(image-url("nav-icons/nav_browse.svg"));
+            background-image: url('../images/nav-icons/nav_browse.svg');
             &:hover {
-              @include background-image(image-url("nav-icons/nav_browse-hover.svg"));
+              background-image: url('../images/nav-icons/nav_browse-hover.svg');
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_browse.png"));
+              background-image: url('../images/nav-icons/fallbacks/nav_browse.png');
             }
           } // &#browse
 
           &#court_cases {
-            @include background-image(image-url("nav-icons/nav_court-cases.svg"));
+            background-image: url('../images/nav-icons/nav_court-cases.svg');
             &:hover {
-              @include background-image(image-url("nav-icons/nav_court-cases-hover.svg"));
+              background-image: url('../images/nav-icons/nav_court-cases-hover.svg');
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_court-cases.png"));
+              background-image: url('../images/nav-icons/fallbacks/nav_court-cases.png');
             }
           } // &#browse
 
           &#about {
-            @include background-image(image-url("nav-icons/nav_about-us.svg"));
+            background-image: url('../images/nav-icons/nav_about-us.svg');
             //background-size: 50px 50px;
             &:hover {
-              @include background-image(image-url("nav-icons/nav_about-us-hover.svg"));
+              background-image: url('../images/nav-icons/nav_about-us-hover.svg');
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_about-us.png"));
+              background-image: url('../images/nav-icons/fallbacks/nav_about-us.png');
             }
           } // &#browse
 
           &#downloads {
-            @include background-image(image-url("nav-icons/nav_downloads.svg"));
+            background-image: url('../images/nav-icons/nav_downloads.svg');
             &:hover {
-              @include background-image(image-url("nav-icons/nav_downloads-hover.svg"));
+              background-image: url('../images/nav-icons/nav_downloads-hover.svg');
             }
             .lt-ie9 & {
-              @include background-image(image-url("nav-icons/fallbacks/nav_downloads.png"));
+              background-image: url('../images/nav-icons/fallbacks/nav_downloads.png');
             }
           } // &#browse
         } // a

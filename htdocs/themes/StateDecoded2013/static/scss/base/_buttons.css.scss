@@ -84,7 +84,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
   // Hover state
   &:hover {
-    @include transition(background-position .1s linear);
+    transition: background-position .1s linear;
     color: $gray-darker;
     text-decoration: none;
     background-color: darken($white, 10%);
@@ -102,7 +102,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
   &.active, &:active {
     $shadow-for-box: inset 0 2px 4px $shadow-light, 0 1px 2px $shadow-lightest;
     box-shadow: $shadow-for-box;
-    @include transition(background-position .1s linear);
+    transition: background-position .1s linear;
     background-image: none;
     background-color: darken($white, 10%);
     color: $shadow-light;
@@ -112,12 +112,12 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
   // Disabled state
   &.disabled, &[disabled] {
     box-shadow: none;
-    @include opacity(65);
+    opacity: 0.65;
     cursor: default;
     background-image: none;
     background-color: darken($white, 10%);
     &:hover {
-      @include transition(background-position .1s linear);
+      transition: background-position .1s linear;
       background-color: none;
       background-position: none;
       color: $gray-darker;
@@ -296,7 +296,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
   &.btn-primary, &.btn-danger, &.btn-info, &.btn-success, &.btn-inverse {
     &:after {
       border-top-color: $white;
-      @include opacity(75);
+      opacity: 0.75;
     }
   }
 }

@@ -1,8 +1,8 @@
 .pinned-laws {
   a {
-    @include background-image(image-url("nav-icons/nav_pinned.svg"));
+    background-image: url('../images/nav-icons/nav_pinned.svg');
     &:hover {
-      @include background-image(image-url("nav-icons/nav_pinned-hover.svg"));
+      background-image: url('../images/nav-icons/nav_pinned-hover.svg');
     }
   }
 }
@@ -36,7 +36,7 @@
   color: $gray-darker;
   margin-right: 10px;
 
-  @include transition(all 0.1s linear);
+  transition: all 0.1s linear;
 
   span {
     @extend %visually-hidden;
@@ -48,6 +48,6 @@
 
   &.pinned {
     color: $base-light;
-    @include rotate(45deg);
+    transform: rotate(45deg);
   }
 }

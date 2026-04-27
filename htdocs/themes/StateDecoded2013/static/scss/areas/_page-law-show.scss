@@ -131,7 +131,7 @@
         &.indent-#{$num} {
           margin-left: $num * $indent;
         } // &-#{num}
-        $num: $num +1;
+        $num: $num + 1;
       } // @while
     }
 
@@ -165,7 +165,7 @@
 		top: 0;
 		height: 100%;
 		width: 30px;
-		@include background-image(linear-gradient(right, rgba(255,255,255,1), rgba(255,255,255,0.7) 50%, rgba(255,255,255,0)));
+		background-image: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0.7) 50%, rgba(255,255,255,0));
 	}
 
     span.dictionary {
@@ -240,7 +240,6 @@
     .related-group,
     .info-box {
 
-  //    @include opacity(.5); // layer alpha
       border: 1px solid #e4e9e7; // stroke
       background-color: #fcfdfa; // layer fill content + color overlay
       box-shadow:inset 0 2px 20px rgba(111,114,117,.15); // inner shadow
@@ -444,7 +443,7 @@
   margin-bottom: 0;
   padding-left: 0; // Override default ul/ol
   list-style: none;
-  @include clearfix();
+  @extend %clearfix;
 
   > li {
     position: relative;
