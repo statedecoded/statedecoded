@@ -72,7 +72,7 @@ jobs:
           php statedecoded \
             -c deploy/docker/config/config-test.inc.docker.php \
             import \
-            -d deploy/import-data/
+            -d=deploy/import-data/
 
       - name: PHPStan
         run: vendor/bin/phpstan analyse

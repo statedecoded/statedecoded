@@ -22,7 +22,7 @@ LAW_COUNT=$(docker compose exec -T db \
     -e "SELECT COUNT(*) FROM laws;" 2>/dev/null || echo 0)
 if [ "${LAW_COUNT:-0}" = "0" ]; then
     echo "Database is empty — importing sample data..."
-    docker compose exec -T app php statedecoded import
+    docker compose exec -T app php statedecoded import -d=/var/www/html/deploy/import-data/
     echo "Import complete."
 fi
 
