@@ -5,7 +5,7 @@
  *
  * You can create your own tasks by adding them to includes/tasks/
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0

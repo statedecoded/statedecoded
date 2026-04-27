@@ -6,7 +6,7 @@
  * Implements a search engine (e.g. Solr, Elasticsearch)
  * Basically a thin wrapper for the search engine.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0

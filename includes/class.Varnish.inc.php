@@ -5,7 +5,7 @@
  *
  * Interact with the Varnish server, should there be one.
  * 
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0

@@ -5,7 +5,7 @@
  *
  * This controller will catch any routes in the permalinks table.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0
