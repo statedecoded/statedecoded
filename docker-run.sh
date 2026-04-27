@@ -8,6 +8,11 @@ if [ ! -f .env ]; then
     echo "Created .env from .env.example — edit it if needed before re-running."
 fi
 
+if [ ! -f htdocs/themes/StateDecoded2013/static/js/vendor/jquery.min.js ]; then
+    echo "Front-end assets missing — running npm install && npm run build..."
+    npm install && npm run build
+fi
+
 docker compose up --build -d
 docker compose ps
 echo ""

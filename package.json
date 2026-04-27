@@ -1,0 +1,15 @@
+{
+  "name": "statedecoded",
+  "private": true,
+  "description": "Front-end dependency management for The State Decoded",
+  "scripts": {
+    "build": "node scripts/build-assets.js"
+  },
+  "dependencies": {
+    "font-awesome": "4.7.0",
+    "jquery": "3.7.1",
+    "jquery-ui-dist": "1.13.3",
+    "mousetrap": "1.6.5",
+    "qtip2": "2.2.1"
+  }
+}
