@@ -1024,7 +1024,7 @@ class ParserController
 
 			$api = new API();
 			$api->form->email = EMAIL_ADDRESS;
-			$api->form->url = 'http://' . $_SERVER['SERVER_NAME'] . '/';
+			$api->form->url = 'http://' . ($_SERVER['SERVER_NAME'] ?? 'localhost') . '/';
 			$api->suppress_activation_email = TRUE;
 			$api->register_key();
 			$api->activate_key();
