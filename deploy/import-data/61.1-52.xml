@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="5" level="2">Prevention of Frauds in Sale of Leaf Tobacco</unit>
+	</structure>
+	<section_number>61.1-52</section_number>
+	<catch_line>Punishment for misdemeanor</catch_line>
+	<text>
+		Any person guilty of a misdemeanor under the provisions of this chapter shall be punished as provided in § 18.2-12.
+	</text>
+	<history>Code 1950, § 61-151; 1968, c. 69.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.2" level="3">Terrorism Offenses</unit>
+	</structure>
+	<section_number>18.2-46.8</section_number>
+	<catch_line>Venue</catch_line>
+	<text>
+		Venue for any violation of this article may be had in the county or city where such crime is alleged to have occurred or where any act in furtherance of an act prohibited by this article was committed.
+	</text>
+	<history>2002, cc. 588, 623.</history>
+</law>

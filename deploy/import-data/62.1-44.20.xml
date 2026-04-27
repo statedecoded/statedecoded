@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="5" level="3">Enforcement and Appeal Procedure</unit>
+	</structure>
+	<section_number>62.1-44.20</section_number>
+	<catch_line>Right to entry to obtain information, etc</catch_line>
+	<text>
+		Any duly authorized agent of the Board may, at reasonable times and under reasonable circumstances, enter any establishment or upon any property, public or private, for the purpose of obtaining information or conducting surveys or investigations necessary in the enforcement of the provisions of this chapter.
+	</text>
+	<history>Code 1950, § 62.1-34; 1968, c. 659; 1970, c. 638.</history>
+</law>

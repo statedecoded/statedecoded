@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="9" level="3">Abortion</unit>
+	</structure>
+	<section_number>18.2-73</section_number>
+	<catch_line>When abortion lawful during second trimester of pregnancy</catch_line>
+	<text>
+		Notwithstanding any of the provisions of § 18.2-71 and in addition to the provisions of § 18.2-72, it shall be lawful for any physician licensed by the Board of Medicine to practice medicine and surgery, to terminate or attempt to terminate a human pregnancy or aid or assist in the termination of a human pregnancy by performing an abortion or causing a miscarriage on any woman during the second trimester of pregnancy and prior to the third trimester of pregnancy provided such procedure is performed in a hospital licensed by the State Department of Health or operated by the Department of Behavioral Health and Developmental Services.
+	</text>
+	<history>1975, cc. 14, 15; 2009, cc. 813, 840.</history>
+</law>

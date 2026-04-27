@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:46</section_number>
+	<catch_line>Appeals</catch_line>
+	<text>
+		Any permittee or party aggrieved by (i) a permit or permit enforcement decision of the Board under this article or (ii) a decision of the Board under this article concerning a land-disturbing activity in a locality subject to the Chesapeake Bay Preservation Act (§ 62.1-44.15:67 et seq.), or any person who has participated, in person or by submittal of written comments, in the public comment process related to such decision of the Board under this article, whether such decision is affirmative or negative, is entitled to judicial review thereof in accordance with § 62.1-44.29. Appeals of other final decisions of the Board under this article shall be subject to judicial review in accordance with the provisions of the Administrative Process Act (§ 2.2-4000 et seq.).
+		A final decision by a locality, when serving as a VESMP authority, shall be subject to judicial review, provided that an appeal is filed in the appropriate court within 30 days from the date of any written decision adversely affecting the rights, duties, or privileges of the person engaging in or proposing to engage in a land-disturbing activity.
+	</text>
+	<history>1989, cc. 467, 499, § 10.1-603.13; 2004, c. 372; 2012, cc. 785, 819; 2013, cc. 756, 793; 2014, cc. 303, 598; 2016, cc. 68, 758.</history>
+</law>

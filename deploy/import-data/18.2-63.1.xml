@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="7" level="3">Criminal Sexual Assault</unit>
+	</structure>
+	<section_number>18.2-63.1</section_number>
+	<catch_line>Death of victim</catch_line>
+	<text>
+		When the death of the victim occurs in connection with an offense under this article, it shall be immaterial in the prosecution thereof whether the alleged offense occurred before or after the death of the victim.
+	</text>
+	<history>1978, c. 803; 1981, c. 397.</history>
+</law>

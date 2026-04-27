@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="5" level="3">Enforcement and Appeal Procedure</unit>
+	</structure>
+	<section_number>62.1-44.21</section_number>
+	<catch_line>Information to be furnished to Board</catch_line>
+	<text>
+		The Board may require every owner to furnish when requested such plans, specifications, and other pertinent information as may be necessary to determine the effect of the wastes from his discharge on the quality of state waters, or such other information as may be necessary to accomplish the purposes of this chapter. The Board shall not at any time disclose to any person other than appropriate officials of the Environmental Protection Agency pursuant to the requirements of the Federal Water Pollution Control Act Amendments of 1972 (P.L. 92-500) any secret formulae, secret processes, or secret methods other than effluent data used by any owner or under that owner's direction.
+	</text>
+	<history>Code 1950, § 62.1-35; 1968, c. 659; 1970, c. 638; 1974, c. 237.</history>
+</law>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="3" level="3">Right to Farm</unit>
+	</structure>
+	<section_number>3.2-300</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this chapter, unless the context requires a different meaning:
+		"Agricultural operation" means any operation devoted to the bona fide production of crops, animals, or fowl, including the production of fruits and vegetables of all kinds, meat, dairy, and poultry products, nuts, tobacco, nursery, and floral products and the production and harvest of products from silviculture activity. "Agricultural operation" also includes any operation devoted to the housing of livestock as defined in § 3.2-6500.
+		"Production agriculture and silviculture" means the bona fide production or harvesting of agricultural or silvicultural products but does not include the processing of agricultural or silvicultural products or the above ground application or storage of sewage sludge.
+	</text>
+	<history>1981, c. 384, §§ 3.1-22.28, 3.1-22.29; 1991, c. 293; 1994, c. 779; 2007, c. 444; 2008, c. 860; 2022, c. 487.</history>
+</law>

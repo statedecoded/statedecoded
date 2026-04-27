@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.2" level="2">Conservation of Water Resources; State Water Control Board</unit>
+	</structure>
+	<section_number>62.1-44.39</section_number>
+	<catch_line>Technical advice and information to be made available</catch_line>
+	<text>
+		The Board may make available technical advice and information on water resources to any agency or political subdivision of this Commonwealth, any committee, association or person interested in the conservation or use of water resources, any interstate agency or any agency of the federal government, all for the purpose of assisting in the preparation or effectuation of any plan or program concerning the use or control of the water resources of this Commonwealth in harmony with the state water resources policy or otherwise with the public interest in encouraging, promoting and securing the maximum beneficial use and control of the water resources of this Commonwealth.
+	</text>
+	<history>Code 1950, § 10-17.4; 1966, c. 561; 1972, c. 728.</history>
+</law>

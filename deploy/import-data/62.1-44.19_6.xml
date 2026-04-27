@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4.01" level="3">Water Quality Monitoring, Information and Restoration Act</unit>
+	</structure>
+	<section_number>62.1-44.19:6</section_number>
+	<catch_line>Citizen right-to-know provisions</catch_line>
+	<text>
+		<section prefix="A">The Board, based on the information in the 303(d) and 305(b) reports, shall:</section>
+		<section prefix="1">Request the Department of Wildlife Resources or the Virginia Marine Resources Commission to post notices at public access points to all toxic impaired waters. The notice shall be prepared by the Board and shall contain (i) the basis for the impaired designation and (ii) a statement of the potential health risks provided by the Virginia Department of Health. The Board shall annually notify local newspapers, and persons who request notice, of any posting and its contents. The Board shall coordinate with the Virginia Marine Resources Commission and the Department of Wildlife Resources to assure that adequate notice of posted waters is provided to those purchasing hunting and fishing licenses.</section>
+		<section prefix="2">Maintain a "citizen hot-line" for citizens to obtain, either telephonically or electronically, information about the condition of waterways, including information on toxics, toxic discharges, permit violations and other water quality related issues.</section>
+		<section prefix="3">Make information regarding the presence of toxics in fish tissue and sediments available to the public on the Internet and through other reasonable means for at least five years after the information is received by the Department of Environmental Quality. The Department of Environmental Quality shall post on the Internet and in the Virginia Register on or about January 1 and July 1 of each year an announcement of any new data that has been received over the past six months and shall make a copy of the information available upon request.</section>
+		<section prefix="B">The Department of Environmental Quality shall provide to the Virginia Department of Health and local newspapers, television stations, and radio stations, and shall disseminate via official social media accounts and email notification lists, the discharge information reported to the Director of the Department of Environmental Quality pursuant to subsection B of § 62.1-44.5, when the Virginia Department of Health determines that the discharge may be detrimental to the public health or the Department determines that the discharge may impair beneficial uses of state waters.</section>
+	</text>
+	<history>1997, c. 519; 2000, cc. 17, 1043; 2020, cc. 958, 1182.</history>
+</law>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="11" level="3">Discharge of Oil Into Waters</unit>
+	</structure>
+	<section_number>62.1-44.34:14</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this article unless the context requires a different meaning:
+		"Aboveground storage tank" means any one or combination of tanks, including pipes, used to contain an accumulation of oil at atmospheric pressure, and the volume of which, including the volume of the pipes, is more than ninety percent above the surface of the ground. This term does not include line pipe and breakout tanks of an interstate pipeline regulated under the Hazardous Liquid Pipeline Safety Act of 1979 or the Natural Gas Pipeline Safety Act of 1968, as amended.
+		"Containment and cleanup" means abatement, containment, removal and disposal of oil and, to the extent possible, the restoration of the environment to its existing state prior to an oil discharge.
+		"Discharge" means any spilling, leaking, pumping, pouring, emitting, emptying or dumping.
+		"Facility" means any development or installation within the Commonwealth that deals in, stores or handles oil, and includes a pipeline.
+		"Oil" means oil of any kind and in any form, including, but not limited to, petroleum and petroleum by-products, fuel oil, lubricating oils, sludge, oil refuse, oil mixed with other wastes, crude oils and all other liquid hydrocarbons regardless of specific gravity.
+		"Operator" means any person who owns, operates, charters, rents or otherwise exercises control over or responsibility for a facility or a vehicle or vessel.
+		"Person" means any firm, corporation, association or partnership, one or more individuals, or any governmental unit or agency thereof.
+		"Pipeline" means all new and existing pipe, rights-of-way, and any equipment, facility, or building used in the transportation of oil, including, but not limited to, line pipe, valves and other appurtenances connected to line pipe, pumping units, fabricated assemblies associated with pumping units, metering and delivery stations and fabricated assemblies therein, and breakout tanks.
+		"Tank" means a device designed to contain an accumulation of oil and constructed of nonearthen materials, such as concrete, steel or plastic, which provide structural support. This term does not include flow-through process tanks as defined in 40 CFR Part 280.
+		"Tank vessel" means any vessel used in the transportation of oil as cargo.
+		"Vehicle" means any motor vehicle, rolling stock or other artificial contrivance for transport whether self-propelled or otherwise, except vessels.
+		"Vessel" includes every description of watercraft or other contrivance used as a means of transporting on water, whether self-propelled or otherwise, and shall include barges and tugs.
+	</text>
+	<history>1973, c. 417; 1976, c. 51; 1978, c. 816; 1990, c. 917; 1992, c. 456; 1994, c. 277; 1996, c. 737.</history>
+</law>

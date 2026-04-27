@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-33</section_number>
+	<catch_line>Felony homicide defined; punishment</catch_line>
+	<text>
+		The killing of one accidentally, contrary to the intention of the parties, while in the prosecution of some felonious act other than those specified in §§ 18.2-31 and 18.2-32, is murder of the second degree and is punishable by confinement in a state correctional facility for not less than five years nor more than forty years.
+	</text>
+	<history>1975, cc. 14, 15; 1999, c. 282.</history>
+</law>

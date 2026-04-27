@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division of Engineering and Buildings</unit>
+	</structure>
+	<section_number>2.2-1152</section_number>
+	<catch_line>Conveyances to Department of Transportation by state institutions or public corporations owned by Commonwealth</catch_line>
+	<text>
+		Any state institution or public corporation whose funds and property are owned solely by the Commonwealth may through its governing board convey to the Virginia Department of Transportation the lands necessary for highway purposes or other incidental uses, either for such consideration deemed proper or in exchange for other lands, and to execute the instruments necessary to effectuate the conveyance.
+		No transaction authorized by this section shall be made without the prior written recommendation of the Department to the Governor, the written approval of the Governor of the transaction itself, and the approval of the Attorney General as to the form of the instruments prior to execution.
+		The proceeds from the sale, with the written approval of the Governor, may be used by the state institution or public corporation for the purchase of other property or for capital improvements.
+	</text>
+	<history>1984, c. 641, § 2.1-504.5; 2001, c. 844.</history>
+</law>

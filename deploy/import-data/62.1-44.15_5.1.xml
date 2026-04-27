@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:5.1</section_number>
+	<catch_line>General permit for certain water quality improvement activities</catch_line>
+	<text>
+		<section prefix="A">The Board shall coordinate the development of a general permit for activities such as bioengineered streambank stabilization projects and livestock stream crossings that: (i) are coverable by the Nationwide Permit Program (33 C.F.R. Part 330) of the United States Army Corps of Engineers and for which certification has not been waived by the Board; (ii) are conservation practices designed and supervised by a soil and water conservation district; (iii) meet the design standards of the Department of Conservation and Recreation and the United States Department of Agriculture's Natural Resource Conservation Service; and (iv) are intended to improve water quality. The development of the general permit shall be exempt from Article 2 (§ 2.2-4006 et seq.) of the Administrative Process Act.</section>
+		<section prefix="B">The development of the general permit shall be a coordinated effort between the Department of Environmental Quality, the Virginia Marine Resources Commission and such other agencies as may be needed to develop a single, unified, process that will expedite the implementation of the projects described in subsection A and unify and streamline the permitting process for such projects.</section>
+		<section prefix="C">A general permit pursuant to this section shall be promulgated as final by July 1, 1998.</section>
+	</text>
+	<history>1997, c. 845.</history>
+</law>

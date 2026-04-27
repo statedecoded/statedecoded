@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="3" level="3">Larceny and Receiving Stolen Goods</unit>
+	</structure>
+	<section_number>18.2-99</section_number>
+	<catch_line>Larceny of things fixed to the freehold</catch_line>
+	<text>
+		Things which savor of the realty, and are at the time they are taken part of the freehold, whether they be of the substance or produce thereof, or affixed thereto, shall be deemed goods and chattels of which larceny may be committed, although there be no interval between the severing and taking away.
+	</text>
+	<history>Code 1950, § 18.1-106; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

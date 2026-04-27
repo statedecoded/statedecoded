@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-110</section_number>
+	<catch_line>Officers of Commonwealth and its institutions to make reports to Governor</catch_line>
+	<text>
+		The officers of the executive branch of state government and superintendents and boards of state institutions shall make to the Governor reports at the times prescribed by law or at any time the Governor may require on any subject relating to their offices and institutions. The reports shall be in a written or electronic format and contain such information as the Governor may require. The reports shall be filed in the office of the Secretary of the Commonwealth, and under his supervision, summarized and recorded in books kept for the purpose.
+	</text>
+	<history>Code 1950, § 2-38; 1966, c. 677, § 2.1-42; 2001, c. 844; 2012, c. 434.</history>
+</law>

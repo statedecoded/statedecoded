@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.8" level="2">Chesapeake Bay Watershed Implementation Plan Initiatives</unit>
+		<unit label="article" identifier="3" level="3">Chesapeake Bay Watershed Livestock Stream Exclusion</unit>
+	</structure>
+	<section_number>62.1-44.123</section_number>
+	<catch_line>(For contingent effective date, see § 62.1-44.119:1) Bovine livestock stream exclusion</catch_line>
+	<text>
+		Any person who owns property in the Chesapeake Bay watershed on which 20 or more bovines are pastured shall install and maintain stream exclusion practices sufficient to exclude all such bovines from any perennial stream in the watershed.
+	</text>
+	<history>2020, cc. 1185, 1186.</history>
+</law>

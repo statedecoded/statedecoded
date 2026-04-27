@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="12" level="3">Virginia Spill Response Council</unit>
+	</structure>
+	<section_number>62.1-44.34:28</section_number>
+	<catch_line>Council to submit annual report</catch_line>
+	<text>
+		The Council shall submit a report annually to the Secretaries of Natural and Historic Resources and Transportation and Public Safety, which includes (i) an evaluation of the emergency response preparedness activities undertaken and the emergency response activities conducted during the year and (ii) a description of the activities of the Council during the year.
+	</text>
+	<history>1990, c. 598; 2021, Sp. Sess. I, c. 401.</history>
+</law>

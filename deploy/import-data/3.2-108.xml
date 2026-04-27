@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="1" level="4">Department and Commissioner of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-108</section_number>
+	<catch_line>Department to establish a program to support new and emerging crops and technologies</catch_line>
+	<text>
+		<section prefix="A">From such funds as may be appropriated for such purposes and from gifts, donations, grants, bequests, and other funds as may be received, the Department shall establish a program to:</section>
+		<section prefix="1">Encourage the production of alternative crops in the Commonwealth that may be used as a feedstock for energy generation and transportation, thereby supporting farmers and farm communities in their efforts to: (i) sustain and enhance economically viable business opportunities in agriculture; (ii) reduce nonpoint source pollution in the Chesapeake Bay and other waters of the Commonwealth; (iii) restore depleted soils; (iv) provide wildlife habitat; (v) reduce greenhouse gases; and (vi) reduce the country's dependence on foreign supplies of energy;</section>
+		<section prefix="2">Assist the development of bioenergy feedstock crop technologies, including but not limited to, seed stock supplies, production technology, harvest equipment, transportation infrastructure and storage facilities;</section>
+		<section prefix="3">Identify and assist in the development of commercially viable bioenergy market opportunities, including recruitment, expansion and establishment of renewable bioenergy businesses in Virginia; and</section>
+		<section prefix="4">Promote the aquaculture of the species that are natives to or reside within the waters of the Chesapeake Bay and the Virginia Coast, in concert with the efforts of Virginia higher education institutions and the Virginia Marine Resources Commission, with a focus on assisting "traditional watermen" who rely on harvesting marine fish and shellfish. This effort shall also include watermen who are viable working participants of the aquaculture industry as contract growers, cooperatives or other business entities.</section>
+		<section prefix="B">The Department shall provide funds in the form of grants to accomplish the objectives described in subsection A. The Department shall develop guidelines for the operation of the program that shall include, at a minimum, eligibility criteria for receiving grant awards, financial accountability for receiving grant awards, allowable uses of grant funds, and agricultural programmatic priorities. The Department shall consult with the Department of Conservation and Recreation and the U.S. Department of Agriculture's Natural Resources Conservation Service, when appropriate, to ensure compatibility with existing cost-share and other agricultural incentive programs.</section>
+	</text>
+	<history>2007, c. 806, § 3.1-14.5; 2008, c. 860.</history>
+</law>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="7" level="3">Criminal Sexual Assault</unit>
+	</structure>
+	<section_number>18.2-63</section_number>
+	<catch_line>Carnal knowledge of child between thirteen and fifteen years of age</catch_line>
+	<text>
+		<section prefix="A">If any person carnally knows, without the use of force, a child thirteen years of age or older but under fifteen years of age, such person shall be guilty of a Class 4 felony.</section>
+		<section prefix="B">If any person carnally knows, without the use of force, a child thirteen years of age or older but under fifteen years of age who consents to sexual intercourse and the accused is a minor and such consenting child is three years or more the accused's junior, the accused shall be guilty of a Class 6 felony. If such consenting child is less than three years the accused's junior, the accused shall be guilty of a Class 4 misdemeanor.</section>
+		In calculating whether such child is three years or more a junior of the accused minor, the actual dates of birth of the child and the accused, respectively, shall be used.
+		<section prefix="C">For the purposes of this section, (i) a child under the age of thirteen years shall not be considered a consenting child and (ii) "carnal knowledge" includes the acts of sexual intercourse, cunnilingus, fellatio, anilingus, anal intercourse, and animate and inanimate object sexual penetration.</section>
+	</text>
+	<history>Code 1950, § 18.1-44; 1960, c. 358; 1972, c. 394; 1975, cc. 14, 15, 606; 1981, c. 397; 1993, c. 852; 2007, c. 718.</history>
+</law>

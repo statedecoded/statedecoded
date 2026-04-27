@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.2" level="2">Conservation of Water Resources; State Water Control Board</unit>
+	</structure>
+	<section_number>62.1-44.41</section_number>
+	<catch_line>Board authorized to speak and act for Commonwealth</catch_line>
+	<text>
+		<section prefix="1">In all matters directly related to conservation or use of the Commonwealth's water resources, except as otherwise provided by law, the Board is authorized to speak and act for the Commonwealth in all relations with the federal government or with the government of other states or with interstate agencies or authorities directly concerning conservation or use of the Commonwealth's water resources.</section>
+		<section prefix="2">In regard to such matters, the Board, or such person or state agency as may be designated by it, may appear and testify for the Commonwealth before any committee of the United States Congress or any branch or agency of the federal government or the legislature or any court or commission of any state.</section>
+	</text>
+	<history>Code 1950, § 10-17.6; 1966, c. 561; 1972, c. 728.</history>
+</law>

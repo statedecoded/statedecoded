@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="3" level="3">Classification of Criminal Offenses and Punishment Therefor</unit>
+	</structure>
+	<section_number>18.2-13</section_number>
+	<catch_line>Same; by reference</catch_line>
+	<text>
+		Where a statute in this Code prescribes punishment by stating that the offense is a misdemeanor, or that it is punishable as provided for in § 18.2-12, the offense shall be deemed to be a Class 1 misdemeanor.
+	</text>
+	<history>1975, cc. 14, 15.</history>
+</law>

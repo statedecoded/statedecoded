@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.8" level="2">Chesapeake Bay Watershed Implementation Plan Initiatives</unit>
+		<unit label="article" identifier="2" level="3">Nutrient Management Plans for Chesapeake Bay Cropland</unit>
+	</structure>
+	<section_number>62.1-44.120</section_number>
+	<catch_line>(For contingent effective date, see § 62.1-44.119:1) Definitions</catch_line>
+	<text>
+		As used in this article, unless the context requires a different meaning:
+		"Chesapeake Bay cropland" means cropland in the Commonwealth located in the Chesapeake Bay watershed on which fertilizer, manure, sewage sludge, or another compound containing nitrogen or phosphorous is applied. "Chesapeake Bay cropland" does not include lands on which bovines are pastured.
+		"Department" means the Department of Conservation and Recreation.
+		"Nutrient management plan" means a plan prepared by a certified nutrient management planner pursuant to § 10.1-104.2 and regulations adopted thereunder.
+		"Operator" means any person who exercises managerial control over Chesapeake Bay cropland.
+	</text>
+	<history>2020, cc. 1185, 1186.</history>
+</law>

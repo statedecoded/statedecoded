@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4" level="3">Regulation of Sewage Discharges</unit>
+	</structure>
+	<section_number>62.1-44.19:2</section_number>
+	<catch_line>Additional requirements on sewage discharge in the Cities of Chesapeake, Hampton, Newport News, Norfolk and Virginia Beach</catch_line>
+	<text>
+		<section prefix="A">Beginning January 1, 1973, every sewage pumping station in the Cities of Chesapeake, Hampton, Newport News, Norfolk, and Virginia Beach shall:</section>
+		<section prefix="1">Have adequate personnel on call at all times, each of whom may serve multiple pumping stations, as prescribed by the Chesapeake, Hampton, Newport News, Norfolk, or Virginia Beach City Council, respectively;</section>
+		<section prefix="2">As prescribed by the Board, be inspected at such intervals and maintain such records of inspection. Such records shall be open for review by the Board or its representatives at any reasonable time it designates;</section>
+		<section prefix="3">Have an automatic alarm system installed to give immediate warning of any pump station failure;</section>
+		<section prefix="4">Have emergency pump connections installed and have portable pumps available to pump sewage to downstream sewer lines during any period of pump station failure;</section>
+		<section prefix="5">Not use, except in an emergency pursuant to regulations as provided by the Board, any overflow line from any such pumping station except as provided in subdivision 4.</section>
+		<section prefix="B">Any sewerage system within the City of Chesapeake, Hampton, Newport News, Norfolk, or Virginia Beach that complies with the requirements of this section is deemed to meet the requirements for continuous operability as set forth in regulations of the Board or the State Department of Health.</section>
+	</text>
+	<history>1972, c. 840; 1975, c. 373; 1976, c. 188; 2022, c. 235.</history>
+</law>

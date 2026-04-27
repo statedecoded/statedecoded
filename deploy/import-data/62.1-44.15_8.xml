@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.1" level="3">Permit Fees</unit>
+	</structure>
+	<section_number>62.1-44.15:8</section_number>
+	<catch_line>Conformance with federal requirements</catch_line>
+	<text>
+		Notwithstanding the provisions of this article, any fee system developed by the Board may be modified by regulation promulgated by the Board, as may be necessary to conform with the requirements of the federal Clean Water Act and any regulations promulgated thereunder.  Any modification imposed under this section shall be submitted to the members of the Senate Committees on Agriculture, Conservation and Natural Resources, and on Finance and Appropriations; and the House Committees on Appropriations, Agriculture, Chesapeake and Natural Resources, and Finance.
+	</text>
+	<history>1992, cc. 621, 657.</history>
+</law>

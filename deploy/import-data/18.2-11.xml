@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="3" level="3">Classification of Criminal Offenses and Punishment Therefor</unit>
+	</structure>
+	<section_number>18.2-11</section_number>
+	<catch_line>Punishment for conviction of misdemeanor</catch_line>
+	<text>
+		The authorized punishments for conviction of a misdemeanor are:
+		<section prefix="a">For Class 1 misdemeanors, confinement in jail for not more than twelve months and a fine of not more than $2,500, either or both.</section>
+		<section prefix="b">For Class 2 misdemeanors, confinement in jail for not more than six months and a fine of not more than $1,000, either or both.</section>
+		<section prefix="c">For Class 3 misdemeanors, a fine of not more than $500.</section>
+		<section prefix="d">For Class 4 misdemeanors, a fine of not more than $250.</section>
+		For a misdemeanor offense prohibiting proximity to children as described in subsection A of § 18.2-370.2, the sentencing court is authorized to impose the punishment set forth in subsection B of that section in addition to any other penalty provided by law.
+	</text>
+	<history>1975, cc. 14, 15; 1990, c. 788; 2000, c. 770.</history>
+</law>

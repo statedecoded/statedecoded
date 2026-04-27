@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.2" level="2">Conservation of Water Resources; State Water Control Board</unit>
+	</structure>
+	<section_number>62.1-44.44</section_number>
+	<catch_line>Construction of chapter</catch_line>
+	<text>
+		Nothing in this chapter shall be construed as altering, or as authorizing any alteration of, any existing riparian rights or other vested rights in water or water use.
+	</text>
+	<history>Code 1950, § 10-17.9; 1966, c. 561; 1972, c. 728; 2013, cc. 756, 793.</history>
+</law>

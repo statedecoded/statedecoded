@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="2" level="3">Construction and Definitions</unit>
+	</structure>
+	<section_number>18.2-7</section_number>
+	<catch_line>Criminal act not to merge civil remedy</catch_line>
+	<text>
+		The commission of a crime shall not stay or merge any civil remedy.
+	</text>
+	<history>Code 1950, § 18.1-7; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="1" level="4">Department and Commissioner of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-105</section_number>
+	<catch_line>Century farm program</catch_line>
+	<text>
+		The Commissioner shall establish a century farm program to honor farm families in the Commonwealth whose property has been in the same family for 100 years or more. In order to be eligible for recognition under the program, a farm shall (i) have been owned by the same family for at least 100 consecutive years; (ii) be lived on, or actually farmed, by a descendant of the original owners; and (iii) gross more than $2,500 annually from the sale of farm products.
+	</text>
+	<history>1997, c. 161, § 3.1-17.1; 1999, c. 346; 2008, c. 860; 2016, c. 6.</history>
+</law>

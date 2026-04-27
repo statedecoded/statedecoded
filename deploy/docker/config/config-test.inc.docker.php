@@ -20,7 +20,7 @@ define('SECTION_SYMBOL', '§');
 define('SITE_URL',    'http://localhost');
 
 define('WEB_ROOT',         dirname(INCLUDE_PATH) . '/htdocs/');
-define('IMPORT_DATA_DIR',  WEB_ROOT . '/admin/import-data/');
+define('IMPORT_DATA_DIR',  dirname(WEB_ROOT) . '/deploy/import-data/');
 define('IMPORT_MEMORY_LIMIT', '256M');
 define('CUSTOM_FUNCTIONS', 'class.State.inc.php');
 define('THEMES_DIR',       WEB_ROOT . '/themes/');

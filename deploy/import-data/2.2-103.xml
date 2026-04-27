@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-103</section_number>
+	<catch_line>Authority to formulate executive branch policies; chief officer for personnel administration and planning and budget</catch_line>
+	<text>
+		<section prefix="A">Except as otherwise provided by the Constitution or law, the Governor shall have the authority and responsibility for the formulation and administration of the policies of the executive branch, including resolution of policy and administrative conflicts between and among agencies.</section>
+		<section prefix="B">The Governor shall be the Chief Personnel Officer of the Commonwealth. He shall direct the execution of Chapter 29 (§ 2.2-2900 et seq.). The Governor may employ personnel assistants and employees necessary to carry out Chapter 29 (§ 2.2-2900 et seq.). The Governor shall have the following powers and duties relating to state personnel administration:</section>
+		<section prefix="1">Establish and maintain a classification plan for the service of the Commonwealth, and from time to time, make such amendments as may be necessary. The classification plan shall provide for the grouping of all positions in classes based upon the respective duties, authority, and responsibilities. Each position in the service of the Commonwealth shall be allocated to the appropriate class title.</section>
+		<section prefix="2">Establish and administer a compensation plan for all employees, and from time to time make such amendments as may be necessary. The compensation plan shall be uniform; and for each class of positions there shall be set forth a minimum and a maximum rate of compensation and any necessary or equitable intermediate rates.</section>
+		<section prefix="3">Adopt necessary rules, not in conflict with Chapter 29 (§ 2.2-2900 et seq.), to provide for the administration of the duties imposed by Chapter 29 (§ 2.2-2900 et seq.), and to govern minimum hours of work, attendance regulations, leaves of absences for employees and the order and manner in which layoffs shall be made.</section>
+		<section prefix="C">The Governor shall be the chief planning and budget officer of the Commonwealth.</section>
+	</text>
+	<history>Code 1950, §§ 2-46, 2-81; 1966, cc. 55, 677, §§ 2.1-52, 2.1-113; 1975, c. 390; 1976, cc. 725, 760, 761 §§ 2.1-41.1, 2.1-114.2, 2.1-387; 1978, c. 846; 1984, c. 720; 2001, c. 844.</history>
+</law>

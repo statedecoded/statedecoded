@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-54</section_number>
+	<catch_line>Conviction of lesser offenses under certain indictments</catch_line>
+	<text>
+		On any indictment for maliciously shooting, stabbing, cutting or wounding a person or by any means causing him bodily injury, with intent to maim, disfigure, disable or kill him, or of causing bodily injury by means of any acid, lye or other caustic substance or agent, the jury or the court trying the case without a jury may find the accused not guilty of the offense charged but guilty of unlawfully doing such act with the intent aforesaid, or of assault and battery if the evidence warrants.
+	</text>
+	<history>Code 1950, § 19.1-251; 1960, c. 366; 1975, cc. 14, 15.</history>
+</law>

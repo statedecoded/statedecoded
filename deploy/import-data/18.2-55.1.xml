@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-55.1</section_number>
+	<catch_line>Hazing of youth gang members unlawful; criminal liability</catch_line>
+	<text>
+		It shall be unlawful to cause bodily injury by hazing (i) any member of a criminal street gang as defined in § 18.2-46.1, or (ii) a person seeking to become a member of a youth gang or criminal street gang. Any person found guilty of hazing is guilty of a Class 1 misdemeanor.
+		For the purposes of this section, "hazing" means to recklessly or intentionally endanger the health or safety of a person or to inflict bodily injury on a person in connection with or for the purpose of initiation, admission into or affiliation with or as a condition for continued membership in a youth gang or criminal street gang regardless of whether the person so endangered or injured participated voluntarily in the relevant activity.
+	</text>
+	<history>2004, c. 850; 2005, c. 843.</history>
+</law>

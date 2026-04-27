@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="5" level="3">Enforcement and Appeal Procedure</unit>
+	</structure>
+	<section_number>62.1-44.24</section_number>
+	<catch_line>Testing validity of regulations; judicial review</catch_line>
+	<text>
+		<section prefix="1">The validity of any regulation may be determined through judicial review in accordance with the provisions of the Administrative Process Act (§ 2.2-4000 et seq.).</section>
+		<section prefix="2">[Repealed.]</section>
+		<section prefix="3">An appeal may be taken from the decision of the court to the Court of Appeals as provided by law.</section>
+	</text>
+	<history>1970, c. 638; 1984, c. 703; 1986, c. 615.</history>
+</law>

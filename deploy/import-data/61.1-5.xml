@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="1" level="2">Warehouse Receipts</unit>
+	</structure>
+	<section_number>61.1-5</section_number>
+	<catch_line>Delivery of goods without obtaining negotiable receipt</catch_line>
+	<text>
+		A warehouseman, or any officer, agent or servant of a warehouseman, who delivers goods out of the possession of such warehouseman, knowing that a negotiable receipt the negotiation of which would transfer the right to the possession of such goods is outstanding and uncanceled, without obtaining the possession of such receipt at or before the time of such delivery, shall, except as otherwise provided by law, be guilty of a misdemeanor, and upon conviction shall be punished as provided in § 18.2-12.
+	</text>
+	<history>Code 1950, § 61-57; 1968, c. 69.</history>
+</law>

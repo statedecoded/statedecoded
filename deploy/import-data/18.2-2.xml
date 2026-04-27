@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="1" level="3">Transition Provisions</unit>
+	</structure>
+	<section_number>18.2-2</section_number>
+	<catch_line>Effect of repeal of Title 18.1 and enactment of this title</catch_line>
+	<text>
+		The repeal of Title 18.1, effective as of October 1, 1975, shall not affect any act or offense done or committed, or any penalty or forfeiture incurred, or any right established, accrued or accruing on or before such date, or any prosecution, suit or action pending on that day. Except as herein otherwise provided, neither the repeal of Title 18.1 nor the enactment of this title shall apply to offenses committed prior to October 1, 1975, and prosecutions for such offenses shall be governed by the prior law, which is continued in effect for that purpose. For the purposes of this section, an offense was committed prior to October 1, 1975, if any of the essential elements of the offense occurred prior thereto.
+	</text>
+	<history>1975, cc. 14, 15.</history>
+</law>

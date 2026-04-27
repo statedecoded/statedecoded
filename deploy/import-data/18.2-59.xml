@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="6" level="3">Extortion and Other Threats</unit>
+	</structure>
+	<section_number>18.2-59</section_number>
+	<catch_line>Extortion of money, property or pecuniary benefit</catch_line>
+	<text>
+		Any person who (i) threatens injury to the character, person, or property of another person, (ii) accuses him of any offense, (iii) threatens to report him as being illegally present in the United States, or (iv) knowingly destroys, conceals, removes, confiscates, withholds or threatens to withhold, or possesses any actual or purported passport or other immigration document, or any other actual or purported government identification document, of another person, and thereby extorts money, property, or pecuniary benefit or any note, bond, or other evidence of debt from him or any other person, is guilty of a Class 5 felony.
+		For the purposes of this section, injury to property includes the sale, distribution, or release of identifying information defined in clauses (iii) through (xii) of subsection C of § 18.2-186.3, but does not include the distribution or release of such information by a person who does so with the intent to obtain money, property or a pecuniary benefit to which he reasonably believes he is lawfully entitled.
+	</text>
+	<history>Code 1950, § 18.1-184; 1960, c. 358; 1975, cc. 14, 15; 2006, c. 313; 2007, cc. 453, 547; 2010, c. 298.</history>
+</law>

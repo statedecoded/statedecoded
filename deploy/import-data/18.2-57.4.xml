@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-57.4</section_number>
+	<catch_line>Reporting findings of assault and battery to military family advocacy representatives</catch_line>
+	<text>
+		If any active duty member of the United States Armed Forces is found guilty of a violation of § 18.2-57.2 or § 18.2-57.3, the court shall report the conviction to family advocacy representatives of the United States Armed Forces.
+	</text>
+	<history>2004, c. 681.</history>
+</law>

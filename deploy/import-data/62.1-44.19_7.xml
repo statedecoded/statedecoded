@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4.01" level="3">Water Quality Monitoring, Information and Restoration Act</unit>
+	</structure>
+	<section_number>62.1-44.19:7</section_number>
+	<catch_line>Plans to address impaired waters</catch_line>
+	<text>
+		<section prefix="A">The Board shall develop and implement a plan to achieve fully supporting status for impaired waters, except when the impairment is established as naturally occurring. The plan shall include the date of expected achievement of water quality objectives, measurable goals, the corrective actions necessary, and the associated costs, benefits, and environmental impact of addressing impairment and the expeditious development and implementation of total maximum daily loads when appropriate and as required pursuant to subsection C.</section>
+		<section prefix="B">The plan required by subsection A shall include, but not be limited to, the promulgation of water quality standards for those substances: (i) listed on the Chesapeake Bay Program's "toxics of concern" list as of January 1, 1997; (ii) listed by the USEPA Administrator pursuant to § 307 (a) of the Clean Water Act; or (iii) identified by the Board as having a particularly adverse effect on state water quality or living resources. The standards shall be promulgated pursuant to a schedule established by the Board following public notice and comment. Standards shall be adopted according to applicable federal criteria or standards unless the Board determines that an additional or more stringent standard is necessary to protect public health, aquatic life or drinking water supplies.</section>
+		<section prefix="C">The plan required by subsection A shall, upon identification by the Board of impaired waters, establish a priority ranking for such waters, taking into account the severity of the pollution and the uses to be made of such waters. The Board shall develop and implement pursuant to a schedule total maximum daily loads of pollutants that may enter the water for each impaired water body as required by the Clean Water Act.</section>
+		<section prefix="D">The plan required by subsection A shall, upon identification by the Board of toxic-impaired waters, include provisions as required by § 62.1-44.19:8.</section>
+		<section prefix="E">If an aggrieved party presents to the Board reasonable grounds indicating that the attainment of the designated use for a water is not feasible, then the Board, after public notice and at least 30 days provided for public comment, may allow the aggrieved party to conduct a use attainability analysis according to criteria established pursuant to the Clean Water Act and a schedule established by the Board. If applicable, the schedule shall also address whether TMDL development or implementation for the water should be delayed.</section>
+		<section prefix="F">The plan required by subsection A shall be controlling unless and until amended or withdrawn by the Board.</section>
+	</text>
+	<history>1997, c. 519; 2006, c. 154; 2011, cc. 281, 322.</history>
+</law>

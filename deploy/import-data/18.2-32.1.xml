@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-32.1</section_number>
+	<catch_line>Murder of a pregnant woman; penalty</catch_line>
+	<text>
+		The willful and deliberate killing of a pregnant woman without premeditation by one who knows that the woman is pregnant and has the intent to cause the involuntary termination of the woman's pregnancy without a live birth shall be punished by a term of imprisonment of not less than ten years nor more than forty years.
+	</text>
+	<history>1997, c. 709.</history>
+</law>

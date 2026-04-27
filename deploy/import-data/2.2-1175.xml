@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1175</section_number>
+	<catch_line>Responsibilities of Director</catch_line>
+	<text>
+		The Director shall establish an appropriate administrative unit within the Department to manage the centralized fleet. The Director's responsibilities for the centralized fleet shall include, but not be limited to, the following:
+		<section prefix="1">Administering the assignment of vehicles to officers and employees of the Commonwealth;</section>
+		<section prefix="2">Managing a pool of vehicles for short-term use;</section>
+		<section prefix="3">Purchasing vehicles necessary to the operation of the centralized fleet;</section>
+		<section prefix="4">Repairing and maintaining vehicles;</section>
+		<section prefix="5">Monitoring the use of vehicles and enforcing guidance documents regarding their proper use; and</section>
+		<section prefix="6">Maintaining records related to the operation and maintenance of vehicles, and the administration of the centralized fleet.</section>
+	</text>
+	<history>1989, c. 479, § 33.1-402; 2001, cc. 815, 842, § 2.1-548.03; 2013, c. 485.</history>
+</law>

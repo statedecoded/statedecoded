@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division of Engineering and Buildings</unit>
+	</structure>
+	<section_number>2.2-1161.1</section_number>
+	<catch_line>Code Adam alerts in public buildings</catch_line>
+	<text>
+		Each state building that is open to the public shall have in place a Code Adam or similar program for the prevention of child abduction. Code Adam is a protocol used as a preventive tool against child abductions and for locating lost children in public buildings. The Department of General Services shall develop model plans and ensure that each building covered by this section is prepared to activate Code Adam or a similar program under appropriate circumstances. All state agencies shall render assistance to the Department, upon request, in implementing this statute and the Department's plan within their buildings.
+	</text>
+	<history>2003, cc. 83, 86.</history>
+</law>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="3" level="2">Inchoate Offenses</unit>
+		<unit label="article" identifier="1" level="3">Conspiracies</unit>
+	</structure>
+	<section_number>18.2-22</section_number>
+	<catch_line>Conspiracy to commit felony</catch_line>
+	<text>
+		<section prefix="a">If any person shall conspire, confederate or combine with another, either within or outside the Commonwealth, to commit a felony within the Commonwealth, or if he shall so conspire, confederate or combine with another within the Commonwealth to commit a felony either within or outside the Commonwealth, he shall be guilty of a felony that shall be punishable as follows:</section>
+		<section prefix="1">Every person who so conspires to commit an offense that is punishable as a Class 1 felony is guilty of a Class 3 felony;</section>
+		<section prefix="2">Every person who so conspires to commit an offense that is any other felony is guilty of a Class 5 felony; and</section>
+		<section prefix="3">Every person who so conspires to commit an offense the maximum punishment for which is confinement in a state correctional facility for a period of less than five years shall be confined in a state correctional facility for a period of one year, or, in the discretion of the jury or the court trying the case without a jury, may be confined in jail not exceeding 12 months and fined not exceeding $500, either or both.</section>
+		<section prefix="b">However, in no event shall the punishment for a conspiracy to commit an offense exceed the maximum punishment for the commission of the offense itself.</section>
+		<section prefix="c">Jurisdiction for the trial of any person accused of a conspiracy under this section shall be in the county or city wherein any part of such conspiracy is planned or in the county or city wherein any act is done toward the consummation of such plan or conspiracy.</section>
+		<section prefix="d">The penalty provisions of this section shall not apply to any person who conspires to commit any offense defined in the Drug Control Act (§ 54.1-3400 et seq.) or of Article 1 (§ 18.2-247 et seq.) of Chapter 7. The penalty for any such violation shall be as provided in § 18.2-256.</section>
+	</text>
+	<history>Code 1950, § 18.1-15.3; 1972, c. 484; 1973, c. 399; 1975, cc. 14, 15; 1983, c. 19; 2021, Sp. Sess. I, cc. 344, 345.</history>
+</law>

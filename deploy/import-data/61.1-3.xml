@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="1" level="2">Warehouse Receipts</unit>
+	</structure>
+	<section_number>61.1-3</section_number>
+	<catch_line>Issue of duplicate receipts not so marked</catch_line>
+	<text>
+		A warehouseman, or any officer, agent or servant of a warehouseman, who issues or aids in issuing a duplicate or additional negotiable receipt for goods, knowing that a former negotiable receipt for the same goods or any part of them is outstanding and uncanceled, without plainly placing upon the face thereof the word "Duplicate," except as otherwise provided by law, shall be guilty of a misdemeanor.
+	</text>
+	<history>Code 1950, § 61-55; 1968, c. 69.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.5" level="3">Chesapeake Bay Preservation Act</unit>
+	</structure>
+	<section_number>62.1-44.15:70</section_number>
+	<catch_line>Exclusive authority of Board to institute legal actions</catch_line>
+	<text>
+		The Board shall have the exclusive authority to institute or intervene in legal and administrative actions to ensure compliance by local governing bodies with this article and with any criteria or regulations adopted hereunder.
+	</text>
+	<history>1988, cc. 608, 891, § 10.1-2104; 1997, c. 266; 2013, cc. 756, 793.</history>
+</law>

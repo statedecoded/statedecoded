@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.5" level="3">Chesapeake Bay Preservation Act</unit>
+	</structure>
+	<section_number>62.1-44.15:68</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		For the purposes of this article, the following words shall have the meanings respectively ascribed to them:
+		"Chesapeake Bay Preservation Area" means an area delineated by a local government in accordance with criteria established pursuant to § 62.1-44.15:72.
+		"Criteria" means criteria developed by the Board pursuant to § 62.1-44.15:72 for the purpose of determining the ecological and geographic extent of Chesapeake Bay Preservation Areas and for use by local governments in permitting, denying, or modifying requests to rezone, subdivide, or use and develop land in Chesapeake Bay Preservation Areas.
+		"Daylighted stream" means a stream that had been previously diverted into an underground drainage system, has been redirected into an aboveground channel using natural channel design concepts as defined in § 62.1-44.15:51, and would meet the criteria for being designated as a Resource Protection Area (RPA) as defined by the Board under this article.
+		"Department" means the Department of Environmental Quality.
+		"Director" means the Director of the Department of Environmental Quality.
+		"Secretary" means the Secretary of Natural and Historic Resources.
+		"Tidewater Virginia" means the following jurisdictions:
+		The Counties of Accomack, Arlington, Caroline, Charles City, Chesterfield, Essex, Fairfax, Gloucester, Hanover, Henrico, Isle of Wight, James City, King and Queen, King George, King William, Lancaster, Mathews, Middlesex, New Kent, Northampton, Northumberland, Prince George, Prince William, Richmond, Spotsylvania, Stafford, Surry, Westmoreland, and York, and the Cities of Alexandria, Chesapeake, Colonial Heights, Fairfax, Falls Church, Fredericksburg, Hampton, Hopewell, Newport News, Norfolk, Petersburg, Poquoson, Portsmouth, Richmond, Suffolk, Virginia Beach, and Williamsburg.
+	</text>
+	<history>1988, cc. 608, 891, § 10.1-2101; 2005, c. 41; 2012, cc. 785, 819; 2013, cc. 756, 793; 2015, c. 674; 2021, Sp. Sess. I, c. 401.</history>
+</law>

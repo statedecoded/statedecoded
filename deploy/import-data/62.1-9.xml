@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="1" level="2">Watercourses Generally</unit>
+	</structure>
+	<section_number>62.1-9</section_number>
+	<catch_line>Construction of two preceding sections</catch_line>
+	<text>
+		Sections 62.1-7 and 62.1-8 shall not be construed to give any greater or other right to any person who has erected or may erect any dam or other obstruction across or in any watercourse, than such person would have had if such sections had not been enacted.
+	</text>
+	<history>Code 1950, § 62-7; 1968, c. 659.</history>
+</law>

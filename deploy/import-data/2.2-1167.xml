@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="5" level="5">Abatement Of Risk Of Asbestos In State-Owned And Public School Buildings</unit>
+	</structure>
+	<section_number>2.2-1167</section_number>
+	<catch_line>Commonwealth immune from civil liability</catch_line>
+	<text>
+		The Commonwealth and its officers, agents and employees shall be immune from civil liability for actions (i) arising from the establishment and implementation of asbestos inspection standards developed pursuant to § 2.2-1164 and (ii) undertaken pursuant to the provisions of this article, Chapter 5 (§ 54.1-500 et seq.) of Title 54.1, and §§ 22.1-289.052 and 32.1-126.1.
+	</text>
+	<history>1988, c. 723, § 2.1-526.17:1; 2001, c. 844; 2020, cc. 860, 861.</history>
+</law>

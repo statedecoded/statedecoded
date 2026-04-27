@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-102</section_number>
+	<catch_line>Personal staff as commander in chief</catch_line>
+	<text>
+		The personal staff of the Governor and commander in chief shall consist of the Adjutant General of the Commonwealth and any additional aides detailed by the Governor from the commissioned personnel of the National Guard of Virginia, the officers reserve corps or the naval reserve corps, or officers of the army or navy of the United States, retired or former officers of the army or navy of the United States, which detail shall operate for the time being as a commission to each officer so detailed as aide-de-camp. Commissions as military aides to the Governor shall be issued by the Secretary of the Commonwealth with the rank the Governor deems appropriate and shall continue in effect at the pleasure of the Governor during his term in office. The commissions shall be honorary in nature and shall not constitute a commission in the militia of the Commonwealth or entitle the recipient to any pay or benefits. The insignia to be worn by aides when performing their duties shall be prescribed by the Governor. No officer so detailed shall be compelled to serve. Officers so detailed shall not be relieved from their ordinary duties, except when actually on duty with the Governor. No officer shall be detailed under this section unless he is a qualified voter of the Commonwealth. In addition, the Governor may appoint and commission with the rank of colonel as a personal aide, the Clerk of the House of Delegates.
+	</text>
+	<history>Code 1950, § 2-36; 1958, c. 119; 1966, c. 677, § 2.1-40; 1984, c. 17; 2001, c. 844.</history>
+</law>

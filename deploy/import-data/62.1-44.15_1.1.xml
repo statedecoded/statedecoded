@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:1.1</section_number>
+	<catch_line>Special orders; penalties</catch_line>
+	<text>
+		The Board is authorized to issue special orders in compliance with the Administrative Process Act (§ 2.2-4000 et seq.) requiring that an owner file with the Board a plan to abate, control, prevent, remove, or contain any substantial and imminent threat to public health or the environment that is reasonably likely to occur if such facility ceases operations. Such plan shall also include a demonstration of financial capability to implement the plan. Financial capability may be demonstrated by the establishment of an escrow account, the creation of a trust fund to be maintained within the Board, submission of a bond, corporate guarantee based upon audited financial statements, or such other instruments as the Board may deem appropriate. The Board may require that such plan and instruments be updated as appropriate. The Board shall give due consideration to any plan submitted by the owner in accordance with §§ 10.1-1309.1, 10.1-1410, and 10.1-1428, in determining the necessity for and suitability of any plan submitted under this section.
+		For the purposes of this section, "ceases operation" means to cease conducting the normal operation of a facility which is regulated under this chapter under circumstances where it would be reasonable to expect that such operation will not be resumed by the owner at the facility. The term shall not include the sale or transfer of a facility in the ordinary course of business or a permit transfer in accordance with Board regulations.
+		Any person who ceases operations and who knowingly and willfully fails to implement a closure plan or to provide adequate funds for implementation of such plan shall, if such failure results in a significant harm or an imminent and substantial threat of significant harm to human health or the environment, be liable to the Commonwealth and any political subdivision thereof for the costs incurred in abating, controlling, preventing, removing, or containing such harm or threat.
+		Any person who ceases operations and who knowingly and willfully fails to implement a closure plan or to provide adequate funds for implementation of such plan shall, if such failure results in a significant harm or an imminent and substantial threat of significant harm to human health or the environment, be guilty of a Class 4 felony.
+	</text>
+	<history>1991, c. 702.</history>
+</law>

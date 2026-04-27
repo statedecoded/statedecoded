@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-106</section_number>
+	<catch_line>Appointment of agency heads; disclosure of resumes; severance</catch_line>
+	<text>
+		<section prefix="A">Notwithstanding any provision of law to the contrary, the Governor shall appoint the administrative head of each agency of the executive branch of state government except the:</section>
+		<section prefix="1">Executive Director of the Virginia Port Authority;</section>
+		<section prefix="2">Executive Director of the State Council of Higher Education for Virginia;</section>
+		<section prefix="3">Executive Director of the Department of Wildlife Resources;</section>
+		<section prefix="4">Executive Director of the Jamestown-Yorktown Foundation;</section>
+		<section prefix="5">Executive Director of the Motor Vehicle Dealer Board;</section>
+		<section prefix="6">Librarian of Virginia;</section>
+		<section prefix="7">Administrator of the Commonwealth's Attorneys' Services Council;</section>
+		<section prefix="8">Executive Director of the Virginia Housing Development Authority; and</section>
+		<section prefix="9">Executive Director of the Board of Accountancy.</section>
+		However, the manner of selection of those heads of agencies chosen as set forth in the Constitution of Virginia shall continue without change. Each administrative head and Secretary appointed by the Governor pursuant to this section shall (i) be subject to confirmation by the General Assembly, (ii) have the professional qualifications prescribed by law, and (iii) serve at the pleasure of the Governor.
+		<section prefix="B">As part of the confirmation process for each administrative head and Secretary, the Secretary of the Commonwealth shall provide copies of the resumes and statements of economic interests filed pursuant to § 2.2-3117 to the chairs of the House of Delegates and Senate Committees on Privileges and Elections. For appointments made before January 1, copies shall be provided to the chairs within 30 days of the appointment or by January 7 whichever time is earlier; and for appointments made after January 1 through the regular session of that year, copies shall be provided to the chairs within seven days of the appointment. Each appointee shall be available for interviews by the Committees on Privileges and Elections or other applicable standing committee. For the purposes of this section and § 2.2-107, there shall be a joint subcommittee of the House of Delegates and Senate Committees on Privileges and Elections consisting of five members of the House Committee and three members of the Senate Committee appointed by the respective chairs of the committees to review the resumes and statements of economic interests of gubernatorial appointees. The members of the House of Delegates shall be appointed in accordance with the principles of proportional representation contained in the Rules of the House of Delegates. No appointment confirmed by the General Assembly shall be subject to challenge by reason of a failure to comply with the provisions of this subsection pertaining to the confirmation process.</section>
+		<section prefix="C">For the purpose of this section, "agency" includes all administrative units established by law or by executive order that are not (i) arms of the legislative or judicial branches of government; (ii) institutions of higher education as classified under §§ 22.1-346, 23.1-1100, 23.1-3210, and 23.1-3216; (iii) regional planning districts, regional transportation authorities or districts, or regional sanitation districts; and (iv) assigned by law to other departments or agencies, not including assignments to secretaries under Article 7 (§ 2.2-215 et seq.) of Chapter 2 of this title.</section>
+		<section prefix="D">The resumes and applications for appointment submitted by persons who are appointed by the Governor pursuant to this section shall be available to the public upon request.</section>
+		<section prefix="E">Severance benefits provided to any departing agency head, whether or not appointed by the Governor, shall be publicly announced by the appointing authority prior to such departure.</section>
+	</text>
+	<history>1977, c. 542, § 2.1-41.2; 1979, c. 294; 1981, c. 589; 1983, c. 298; 1984, c. 104; 1986, c. 565; 1994, c. 661; 1995, cc. 767, 816; 1996, c. 812; 1998, c. 427; 2000, cc. 382, 400; 2001, cc. 832, 844; 2003, cc. 981, 1021; 2005, cc. 803, 938; 2006, c. 254; 2010, cc. 136, 145; 2016, c. 729; 2020, c. 958; 2025, c. 144.</history>
+</law>

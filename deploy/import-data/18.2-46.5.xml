@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.2" level="3">Terrorism Offenses</unit>
+	</structure>
+	<section_number>18.2-46.5</section_number>
+	<catch_line>Committing, conspiring and aiding and abetting acts of terrorism prohibited; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who commits or conspires to commit, or aids and abets the commission of an act of terrorism, as defined in § 18.2-46.4, is guilty of a Class 2 felony if the base offense of such act of terrorism may be punished by life imprisonment, or a term of imprisonment of not less than twenty years.</section>
+		<section prefix="B">Any person who commits, conspires to commit, or aids and abets the commission of an act of terrorism, as defined in § 18.2-46.4, is guilty of a Class 3 felony if the maximum penalty for the base offense of such act of terrorism is a term of imprisonment or incarceration in jail of less than twenty years.</section>
+		<section prefix="C">Any person who solicits, invites, recruits, encourages, or otherwise causes or attempts to cause another to participate in an act or acts of terrorism, as defined in § 18.2-46.4, is guilty of a Class 4 felony.</section>
+		<section prefix="D">Any person who knowingly provides any material support (i) to an individual or organization whose primary objective is to commit an act of terrorism and (ii) does so with the intent to further such individual's or organization's objective is guilty of a Class 3 felony. If the death of any person results from providing any material support, then the person who provided such material support is guilty of a Class 2 felony.</section>
+	</text>
+	<history>2002, cc. 588, 623; 2007, c. 409; 2017, cc. 624, 668.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.5" level="3">Chesapeake Bay Preservation Act</unit>
+	</structure>
+	<section_number>62.1-44.15:76</section_number>
+	<catch_line>Local government requirements for water quality protection</catch_line>
+	<text>
+		Local governments shall employ the criteria promulgated by the Board to ensure that the use and development of land in Chesapeake Bay Preservation Areas shall be accomplished in a manner that protects the quality of state waters consistent with the provisions of this article.
+	</text>
+	<history>1988, cc. 608, 891, § 10.1-2111; 2013, cc. 756, 793.</history>
+</law>

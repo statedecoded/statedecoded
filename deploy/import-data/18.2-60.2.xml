@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="6" level="3">Extortion and Other Threats</unit>
+	</structure>
+	<section_number>18.2-60.2</section_number>
+	<catch_line>Members of the Governor's immediate family</catch_line>
+	<text>
+		As used in § 18.2-60.1, the immediate family of the Governor shall include any parent, sibling, child, grandchild, spouse, parent of a spouse, and spouse of a sibling, child or grandchild who resides in the same household as the Governor.
+	</text>
+	<history>1982, c. 568.</history>
+</law>

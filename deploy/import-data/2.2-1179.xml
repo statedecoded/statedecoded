@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1179</section_number>
+	<catch_line>Use of vehicles for commuting</catch_line>
+	<text>
+		No passenger-type vehicle purchased or leased with public funds shall be used to commute between an employee's home and official work station without the prior written approval of the agency head and, in the case of vehicles assigned to the centralized fleet, the Director. The Director shall establish guidance documents governing such use of vehicles and shall ensure that costs associated with such use shall be recovered from employees. Employees who do not report to an official work station shall not be required to pay for travel between their homes and field sites. Guidance documents established by the Director and recovery of costs shall not apply to use of vehicles by law-enforcement officers. By executive order of the Governor, such guidance documents may extend to all motor vehicles of any type owned by the Commonwealth, or such of them as the Governor may designate.
+	</text>
+	<history>1989, c. 479, § 33.1-406; 2001, cc. 815, 842, § 2.1-548.07; 2013, c. 485.</history>
+</law>

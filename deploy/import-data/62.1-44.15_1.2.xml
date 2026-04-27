@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:1.2</section_number>
+	<catch_line>Lake level contingency plans</catch_line>
+	<text>
+		Any Virginia Pollutant Discharge Elimination System permit issued for a surface water impoundment whose primary purpose is to provide cooling water to power generators shall include a lake level contingency plan to allow specific reductions in the flow required to be released when the water level above the dam drops below designated levels due to drought conditions. The plan shall take into account and minimize any adverse effects of any release reduction requirements on beneficial uses, as defined in § 62.1-10, within the impoundment, and on downstream users. The reduction in release amounts required by a lake level contingency plan shall not be implemented to the extent they result in an adverse impact to (i) the ability to meet water quality standards based upon permitted discharge amounts, (ii) the ability to provide adequate water supplies for consumptive purposes such as drinking water and fire protection, and (iii) fish and wildlife resources. In the event there is an imminent threat of such an adverse impact, the permit holder and the Department of Environmental Quality shall be notified. Upon such notification, the permit holder may increase release amounts as specified in the permit for up to forty-eight hours or until such time as the Department of Environmental Quality determines whether or not the increase in release amounts is necessary. This section shall not apply to any such facility that addresses releases and flow requirements during drought conditions in a Virginia Water Protection Permit.
+	</text>
+	<history>2000, cc. 103, 119; 2001, c. 116.</history>
+</law>

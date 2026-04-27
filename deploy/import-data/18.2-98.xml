@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="3" level="3">Larceny and Receiving Stolen Goods</unit>
+	</structure>
+	<section_number>18.2-98</section_number>
+	<catch_line>Larceny of bank notes, checks, etc., or any book of accounts</catch_line>
+	<text>
+		If any person steal any bank note, check, or other writing or paper of value, whether the same represents money and passes as currency, or otherwise, or any book of accounts, for or concerning money or goods due or to be delivered, he shall be deemed guilty of larceny thereof, and may be charged for such larceny under § 18.2-95 or 18.2-96, and if convicted shall receive the same punishment, according to the value of the thing stolen, prescribed for the punishment of the larceny of goods and chattels. The provisions of this section shall be construed to embrace all bank notes and papers of value representing money and passing as currency, whether the same be the issue of this Commonwealth or any other state, or of the United States, or of any corporation, and shall include all other papers of value, of whatever description. In a prosecution under this section, the money due on or secured by the writing, paper or book, and remaining unsatisfied, or which in any event might be collected thereon, or the value of the property or money affected thereby, shall be deemed to be the value of the article stolen.
+	</text>
+	<history>Code 1950, §§ 18.1-104, 18.1-105; 1960, c. 358; 1975, cc. 14, 15; 2009, c. 591.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="9" level="3">Abortion</unit>
+	</structure>
+	<section_number>18.2-75</section_number>
+	<catch_line>Conscience clause</catch_line>
+	<text>
+		Nothing in §§ 18.2-72, 18.2-73 or § 18.2-74 shall require a hospital or other medical facility or physician to admit any patient under the provisions hereof for the purpose of performing an abortion. In addition, any person who shall state in writing an objection to any abortion or all abortions on personal, ethical, moral or religious grounds shall not be required to participate in procedures which will result in such abortion, and the refusal of such person, hospital or other medical facility to participate therein shall not form the basis of any claim for damages on account of such refusal or for any disciplinary or recriminatory action against such person, nor shall any such person be denied employment because of such objection or refusal. The written objection shall remain in effect until such person shall revoke it in writing or terminate his association with the facility with which it is filed.
+	</text>
+	<history>Code 1950, § 18.1-63.1; 1974, c. 679; 1975, cc. 14, 15.</history>
+</law>

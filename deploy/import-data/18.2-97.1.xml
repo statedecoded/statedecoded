@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="3" level="3">Larceny and Receiving Stolen Goods</unit>
+	</structure>
+	<section_number>18.2-97.1</section_number>
+	<catch_line>Removal of a transmitting device; penalty</catch_line>
+	<text>
+		Any person who removes an electronic or radio transmitting device from a dog, falcon, hawk, or owl without the permission of the owner and with the intent to prevent or hinder the owner from locating the dog, falcon, hawk, or owl is guilty of a Class 1 misdemeanor. Upon a finding of guilt, the court shall order that the defendant pay as restitution the actual value of any dog, falcon, hawk, or owl lost or killed as a result of such removal. The court may also order restitution to the owner for any lost breeding revenues.
+	</text>
+	<history>2007, cc. 484, 721; 2011, c. 191.</history>
+</law>

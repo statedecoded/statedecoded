@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.8" level="2">Chesapeake Bay Watershed Implementation Plan Initiatives</unit>
+		<unit label="article" identifier="1" level="3">Chesapeake Bay Watershed Implementation Plan</unit>
+	</structure>
+	<section_number>62.1-44.119:1</section_number>
+	<catch_line>Effective date</catch_line>
+	<text>
+		<section prefix="A">The provisions of this chapter shall not become effective unless, on or after July 1, 2028, the Secretary of Agriculture and Forestry and the Secretary of Natural and Historic Resources jointly determine that the Commonwealth's commitments in the Chesapeake Bay Total Maximum Daily Load Phase III Watershed Implementation Plan have not been satisfied by a combination of (i) agricultural best management conservation practices, including the coverage of a sufficient portion of Chesapeake Bay cropland by nutrient management plans or the installation of a sufficient number of livestock stream exclusion practices, and (ii) other point or nonpoint source pollution reduction commitments.</section>
+		<section prefix="B">In making the determination required in subsection A, the effective date of the provisions of this chapter shall be extended for a period of one calendar year for each calendar year that the Commonwealth has not fully funded the amount calculated pursuant to § 10.1-2128.1 for effective Soil and Water Conservation District technical assistance and implementation of agricultural best management practices pursuant to § 10.1-546.1 from July 1, 2023, through the end of the biennial period in which the Secretary of Agriculture and Forestry and the Secretary of Natural and Historic Resources have made the joint determination required in subsection A. Nothing in this subsection shall prohibit adding funding to the Virginia Natural Resources Commitment Fund as established in § 10.1-2128.1 in any year from July 1, 2023, to the year the joint determination is made pursuant to subsection A for distribution in another program year in order to achieve full funding.</section>
+		<section prefix="C">In no case shall the effective date of the provisions of this chapter be extended beyond July 1, 2030, unless sufficient funding for effective Soil and Water Conservation District technical assistance and implementation of agricultural best management practices has not been provided pursuant to § 10.1-2128.1 in any calendar year.</section>
+	</text>
+	<history>2020, cc. 1185, 1186; 2021, Sp. Sess. I, c. 401; 2023, cc. 735, 736.</history>
+</law>

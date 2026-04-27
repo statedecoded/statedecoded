@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.5" level="3">Chesapeake Bay Preservation Act</unit>
+	</structure>
+	<section_number>62.1-44.15:67</section_number>
+	<catch_line>Cooperative state-local program</catch_line>
+	<text>
+		<section prefix="A">Healthy state and local economies and a healthy Chesapeake Bay are integrally related; balanced economic development and water quality protection are not mutually exclusive. The protection of the public interest in the Chesapeake Bay, its tributaries, and other state waters and the promotion of the general welfare of the people of the Commonwealth require that (i) the counties, cities, and towns of Tidewater Virginia incorporate general water quality protection measures into their comprehensive plans, zoning ordinances, and subdivision ordinances; (ii) the counties, cities, and towns of Tidewater Virginia establish programs, in accordance with criteria established by the Commonwealth, that define and protect certain lands, hereinafter called Chesapeake Bay Preservation Areas, which if improperly developed may result in substantial damage to the water quality of the Chesapeake Bay and its tributaries; (iii) the Commonwealth make its resources available to local governing bodies by providing financial and technical assistance, policy guidance, and oversight when requested or otherwise required to carry out and enforce the provisions of this article; and (iv) all agencies of the Commonwealth exercise their delegated authority in a manner consistent with water quality protection provisions of local comprehensive plans, zoning ordinances, and subdivision ordinances when it has been determined that they comply with the provisions of this article.</section>
+		<section prefix="B">Local governments have the initiative for planning and for implementing the provisions of this article, and the Commonwealth shall act primarily in a supportive role by providing oversight for local governmental programs, by establishing criteria as required by this article, and by providing those resources necessary to carry out and enforce the provisions of this article.</section>
+		<section prefix="C">Each local government in Tidewater Virginia shall publish on its website the elements and criteria adopted to implement its local plan as required by this article, including those elements and criteria required by 9VAC25-830-60 for local programs.</section>
+	</text>
+	<history>1988, cc. 608, 891, § 10.1-2100; 2013, cc. 756, 793; 2022, c. 207.</history>
+</law>

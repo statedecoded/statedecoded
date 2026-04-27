@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="3" level="3">Larceny and Receiving Stolen Goods</unit>
+	</structure>
+	<section_number>18.2-96.1</section_number>
+	<catch_line>Identification of certain personalty</catch_line>
+	<text>
+		<section prefix="A">The owner of personal property may permanently mark such property, including any part thereof, for the purpose of identification with the social security number of the owner, preceded by the letters "VA."</section>
+		<section prefix="B">[Repealed.]</section>
+		<section prefix="C">It shall be unlawful for any person to remove, alter, deface, destroy, conceal, or otherwise obscure the manufacturer's serial number or marks, including personalty marked with a social security number preceded by the letters "VA," from such personal property or any part thereof, without the consent of the owner, with intent to render it or other property unidentifiable.</section>
+		<section prefix="D">It shall be unlawful for any person to possess such personal property or any part thereof, without the consent of the owner, knowing that the manufacturer's serial number or any other distinguishing identification number or mark, including personalty marked with a social security number preceded by the letters "VA," has been removed, altered, defaced, destroyed, concealed, or otherwise obscured with the intent to violate the provisions of this section.</section>
+		<section prefix="E">A person in possession of such property which is otherwise in violation of this section may apply in writing to the Bureau of Criminal Investigation, Virginia State Police, for assignment of a number for the personal property providing he can show that he is the lawful owner of the property. If a number is issued in conformity with the provisions of this section, then the person to whom it was issued and any person to whom the property is lawfully disposed of shall not be in violation of this section. This subsection shall apply only when the application has been filed by a person prior to arrest or authorization of a warrant of arrest for that person by a court.</section>
+		<section prefix="F">Any person convicted of an offense under this section, when the value of the personalty is less than $1,000, shall be guilty of a Class 1 misdemeanor and, when the value of the personalty is $1,000 or more, shall be guilty of a Class 5 felony.</section>
+	</text>
+	<history>1981, c. 165; 1982, c. 382; 2018, cc. 764, 765; 2020, cc. 89, 401.</history>
+</law>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="2" level="4">Board of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-110</section_number>
+	<catch_line>Officers of the Board; meetings</catch_line>
+	<text>
+		<section prefix="A">The Board shall annually elect a president, vice president, and secretary.</section>
+		<section prefix="B">The Board shall meet at least three times a year for the transaction of business. Special meetings may be held at any time upon the call of the president of the Board, the request of the Commissioner, or the written request of a majority of the Board members.</section>
+	</text>
+	<history>Code 1950, §§ 3-2, 3-3; 1966, c. 702, §§ 3.1-2, 3.1-3; 1978, c. 219; 2008, c. 860.</history>
+</law>

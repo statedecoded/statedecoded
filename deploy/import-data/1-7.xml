@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="1" level="1">General Provisions</unit>
+		<unit label="chapter" identifier="1" level="2">Code of Virginia</unit>
+	</structure>
+	<section_number>1-7</section_number>
+	<catch_line>Acts passed between certain dates not affected</catch_line>
+	<text>
+		The enactment of this Code shall not affect any act passed by the General Assembly, which shall have become a law after January 14, 1948, and before February 1, 1950; but every such act shall have full effect, and so far as the same varies from or conflicts with any provision contained in this Code it shall have effect as a subsequent act, and as repealing any part of this Code inconsistent therewith; provided, however, that any such act which becomes a law between said dates and which amends and reenacts, or reenacts any previously existing provisions of law conferring any power or imposing any duty upon any department, board, commission, agency or officer of the state government whose functions, powers and duties are affected by any of the provisions of this Code becoming effective July 1, 1948, shall be construed as conferring the powers and imposing the duties specified therein upon the department, board, commission, agency or officer of the state government to which or to whom the duties and powers imposed or conferred by such previously existing provisions of law were transferred by the provisions of this Code becoming effective July 1, 1948.
+	</text>
+	<history>Code 1919, § 6568; R. P. 1948, § 1-7.</history>
+</law>

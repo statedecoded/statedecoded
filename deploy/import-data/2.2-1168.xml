@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="6" level="5">Division of Support Services</unit>
+	</structure>
+	<section_number>2.2-1168</section_number>
+	<catch_line>Division of Support Services may be established</catch_line>
+	<text>
+		The Director of the Department may establish a Division of Support Services (the "Division") and assign to this Division or to any other division any or all of the duties described in this article or otherwise imposed upon the Department.
+	</text>
+	<history>1977, c. 672, § 2.1-527; 2001, c. 844.</history>
+</law>

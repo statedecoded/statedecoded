@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:28.1</section_number>
+	<catch_line>Pollutant removal by dredging</catch_line>
+	<text>
+		Upon approval by the Chesapeake Bay Program as a creditable practice for pollutant removal, the Board shall establish a procedure for the approval of dredging operations in the Chesapeake Bay Watershed as a method of meeting pollutant reduction and loading requirements. The dredging operation and disposal of dredged material shall be conducted in compliance with all applicable local, state, and federal laws and regulations. Any locality imposing a fee relating to stormwater pursuant to § 15.2-2114 may make funds available for stormwater maintenance dredging, including at the point of discharge, where stormwater has contributed to the deposition of sediment in state waters.
+	</text>
+	<history>2015, c. 753.</history>
+</law>

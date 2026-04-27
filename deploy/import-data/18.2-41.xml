@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2" level="3">Crimes by Mobs</unit>
+	</structure>
+	<section_number>18.2-41</section_number>
+	<catch_line>Shooting, stabbing, etc., with intent to maim, kill, etc., by mob</catch_line>
+	<text>
+		Any and every person composing a mob which shall maliciously or unlawfully shoot, stab, cut or wound any person, or by any means cause him bodily injury with intent to maim, disable, disfigure or kill him, shall be guilty of a Class 3 felony.
+	</text>
+	<history>Code 1950, § 18.1-30; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="11" level="3">Discharge of Oil Into Waters</unit>
+	</structure>
+	<section_number>62.1-44.34:23</section_number>
+	<catch_line>Exceptions</catch_line>
+	<text>
+		<section prefix="A">Nothing in this article shall apply to: (i) normal discharges from properly functioning vehicles and equipment, marine engines, outboard motors or hydroelectric facilities; (ii) accidental discharges from farm vehicles or noncommercial vehicles; (iii) accidental discharges from the fuel tanks of commercial vehicles or vessels that have a fuel tank capacity of 150 gallons or less; (iv) discharges authorized by a valid permit issued by the Board pursuant to § 62.1-44.15 (5) or by the United States Environmental Protection Agency; (v) underground storage tanks regulated under a state program; (vi) releases from underground storage tanks as defined in § 62.1-44.34:8, regardless of when the release occurred; (vii) discharges of hydrostatic test media from a pipeline undergoing a hydrostatic test in accordance with federal pipeline safety regulations; or (viii) discharges authorized by the federal on-scene coordinator and the Executive Director or his designee in connection with activities related to the recovery of spilled oil where such activities are undertaken to minimize overall environmental damage due to an oil spill into or on state waters. However, the exception provided in clause (viii) shall in no way reduce the liability of the person who initially spilled the oil which is being recovered.</section>
+		<section prefix="B">Notwithstanding the exemption set forth in clause (vi) of subsection A of this section, a political subdivision may recover pursuant to subsection C of § 62.1-44.34:18 for a discharge of oil into or upon state waters, lands, or storm drain systems from an underground storage tank regulated under a state program at facilities with an aggregate capacity of one million gallons or greater.</section>
+	</text>
+	<history>1978, c. 816; 1987, c. 677; 1990, c. 917; 1992, cc. 302, 456; 1993, cc. 18, 231; 1994, c. 416.</history>
+</law>

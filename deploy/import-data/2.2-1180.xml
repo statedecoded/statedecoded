@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1180</section_number>
+	<catch_line>Guidance documents governing state-owned passenger-type vehicles</catch_line>
+	<text>
+		The Director may establish guidance documents for the purchase, use, storage, maintenance, repair, and disposal of all passenger-type vehicles owned by the Commonwealth and assigned to the centralized fleet. By executive order of the Governor, such guidance documents may extend to all motor vehicles of any type owned by the Commonwealth, or such of them as the Governor may designate.
+		If any state officer, agent, or employee fails to comply with any guidance documents of the Director made pursuant to the provisions of this section, the Secretary of Administration shall be so notified, and the Comptroller shall, upon request of the Secretary, refuse to issue any warrant or warrants on account of expenses incurred, or to be incurred in the purchase, operation, maintenance, or repair of any motor vehicle now or to be in the possession or under the control of such officer, agent, or employee, or the Secretary of Administration may order the Director to take possession of any such vehicle and to return or transfer it to the centralized fleet for assignment or use as prescribed by this chapter. Regulations previously promulgated by the Commonwealth Transportation Board under the authority granted by former § 33.1-407 concerning the purchase, use, storage, maintenance, repair, and disposal of all passenger-type vehicles owned by the Commonwealth and assigned to the centralized fleet shall remain in effect until the Director establishes replacement guidance documents under the authority granted by this article.
+	</text>
+	<history>1989, c. 479, § 33.1-407; 1990, cc. 1, 317; 2001, cc. 815, 842, § 2.1-548.08; 2013, c. 485.</history>
+</law>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4" level="3">Regulation of Sewage Discharges</unit>
+	</structure>
+	<section_number>62.1-44.19:3.1</section_number>
+	<catch_line>Certification of sewage sludge land applicators</catch_line>
+	<text>
+		<section prefix="A">The Board, with the assistance of the Department of Health, and the Department of Professional and Occupational Regulation shall adopt regulations and standards for training, testing, and certification of persons land applying Class B sewage sludge in the Commonwealth, and for revoking, suspending, or denying such certification from any person for cause. The regulations shall include standards and criteria for the approval of programs of instruction taught by governmental entities and by the private sector for the purpose of certifying sewage sludge land applicators. The Board shall promulgate the regulations and standards required by this subsection no later than July 1, 2008.</section>
+		<section prefix="B">No person shall land apply Class B sewage sludge pursuant to a permit under § 62.1-44.19:3 unless a certified sewage sludge land applicator is onsite at all times during such land application, as of 180 days following the effective date of regulations required by this section.</section>
+	</text>
+	<history>2007, cc. 881, 929.</history>
+</law>

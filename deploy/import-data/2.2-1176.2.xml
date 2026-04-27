@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1176.2</section_number>
+	<catch_line>Declaration of policy supporting cost-effective vehicle purchase and lease; total cost of ownership calculator; report</catch_line>
+	<text>
+		<section prefix="A">It is the policy of the Commonwealth to encourage and promote the use of cost-effective vehicles by considering the total cost of ownership by agencies of the Commonwealth.</section>
+		<section prefix="B">By October 1, 2022, the Department shall identify a publicly available total cost of ownership calculator that will be used to assess and compare the total cost to purchase, own, lease, and operate light-duty internal combustion-engine vehicles (ICEVs) versus comparable electric vehicles (EVs). Beginning on January 1, 2023, the Department and all agencies of the Commonwealth shall utilize the calculator prior to purchasing or leasing any light-duty vehicles and shall purchase or lease an EV unless the calculator clearly indicates that purchasing or leasing an ICEV has a lower cost of ownership.</section>
+		<section prefix="1">The calculator shall, at a minimum, account for the vehicle's make, model, and age; the average miles traveled per year for similarly used vehicles; the expected life expectancy of the vehicle and average annual depreciation; the upfront and annual costs of purchasing such vehicle and all other costs of vehicle ownership or lease; and all costs the agency must incur to add chargers or other fueling facilities to support such vehicles. The calculator shall be updated at least annually to account for updates in information, including information on the latest light-duty vehicle models available.</section>
+		<section prefix="2">The Department shall make the calculator available to all state and local public bodies and transit agencies. The Department shall also provide technical assistance to such public bodies utilizing the calculator upon request.</section>
+		For purposes of this subsection, "light-duty vehicle" means a motor vehicle with a gross vehicle weight of 14,000 pounds or less.
+		<section prefix="C">Beginning January 1, 2026, and every three years thereafter, the Department shall submit to the Governor and the General Assembly a report summarizing the Department's vehicle procurements and the vehicle procurements of other agencies of the Commonwealth. The report shall, at a minimum, include a compilation of types of vehicles by size, fuel sources, and the total estimated cost savings and avoided emissions attributable to purchasing or leasing of EVs instead of ICEVs.</section>
+		<section prefix="D">Emergency vehicles, as defined in § 46.2-920, and any vehicles used by an agency of the Commonwealth in law-enforcement, incident response, or other emergency response activities shall be exempt from the requirements of this section. The Department may authorize other exemptions from the requirements of this section upon finding that an EV is not a practicable alternative to an ICEV for a particular use, or for some other compelling reason.</section>
+		<section prefix="E">The Department shall develop guidance documents regarding the procedure for requesting exemptions from the requirements of this section and the criteria for evaluating such exemption requests. Before adopting or revising such guidance documents, the Department shall publish the document on its website and provide a 30-day period for public review and comment.</section>
+		<section prefix="F">The Department may issue any directives or guidance documents or promulgate any regulations as may be necessary to implement the requirements of this section.</section>
+	</text>
+	<history>2022, c. 789.</history>
+</law>

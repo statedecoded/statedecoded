@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division Of Engineering And Buildings</unit>
+	</structure>
+	<section_number>2.2-1151.1</section_number>
+	<catch_line>Conveyances of right-of-way usage to certain nonpublic service companies by the Department of Transportation</catch_line>
+	<text>
+		<section prefix="A">As used in this section:</section>
+		"Department" means the Virginia Department of Transportation.
+		"Developer" means a person who undertakes to develop real estate.
+		"Social welfare organization" means an organization as defined in § 501(c)(4) of the Internal Revenue Code.
+		<section prefix="B">No land use permit shall be issued by the Department to any company other than a public service company as defined in § 56-76, a company owning or operating an interstate natural gas pipeline, a social welfare organization operating a wholesale open-access fiber network, or a franchised cable television systems operator owning or operating a utility line as defined in § 56-265.15, unless such company, organization, or operator has (i) registered as an operator with the appropriate notification center as defined by § 56-265.15 and (ii) notified the commercial and residential developer, owner of commercial, multifamily, or residential real estate, or local government entities with a property interest in any parcel of land located adjacent to the property over which the land use is being requested that application for the permit has been made. Any permit application approved by the Department shall include an affidavit indicating compliance with the registration and notification requirements provided by this subsection.</section>
+		<section prefix="C">The provisions of subsection B shall not apply to a land use permit issued by the Department to (i) a person providing utility service solely for his own agricultural or residential use, provided that the utilities are located on property owned by the person, or (ii) the owner of a private residence or business for water or sewer service to cross the Department's right-of-way when no viable alternative exists to provide potable water or to transfer sewer effluent to a qualified drain field. In the case of any application for a land use permit under this subsection, the utilities shall be marked in accord with requirements established by the Department.</section>
+		<section prefix="D">No performance surety held by the Department in association with a land use permit issued to a company pursuant to subsection B to perform work within the Department's right-of-way shall be released until such time as all claims against the company associated with the work have been resolved, provided a claimant has notified the Department of a claim against such company within 30 days after completion of the work. A claimant shall have no more than one year after the notification is received by the Department to complete any action against the company associated with the work for which the claim has been made. After the expiration of the one-year period, the Department may release the performance surety.</section>
+		<section prefix="E">Nothing in this section shall be construed or interpreted to create a cause of action or administrative claim against the Department.</section>
+	</text>
+	<history>2003, c. 330; 2004, c. 636; 2014, c. 277; 2018, c. 270; 2020, cc. 1026, 1027.</history>
+</law>

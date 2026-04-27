@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="3.1" level="3">Governor's Agriculture and Forestry Industries Development Fund</unit>
+	</structure>
+	<section_number>3.2-311</section_number>
+	<catch_line>Local Food and Farming Infrastructure Grant Program</catch_line>
+	<text>
+		<section prefix="A">The Governor may award grants from the Fund for the Local Food and Farming Infrastructure Grant Program to encourage efforts by political subdivisions to support agriculture and forestry.</section>
+		<section prefix="B">Any funds awarded by the Governor pursuant to this section shall be awarded as reimbursable grants of no more than $50,000 per grant to political subdivisions to support community infrastructure development projects that support local food production and sustainable agriculture.</section>
+		<section prefix="C">The Secretary of Agriculture and Forestry shall develop guidelines for the Local Grant Program and administer the Local Grant Program on behalf of the Governor. Such guidelines shall (i) include a requirement that any political subdivision applying for a grant provide matching funds, (ii) require that grants be awarded on a competitive basis, and (iii) state the criteria the Governor will use in evaluating any grant application submitted pursuant to this section. Such guidelines shall favor projects that establish or maintain (a) farmers markets pursuant to Chapter 35 (§ 3.2-3500 et seq.); (b) food hubs; or (c) processing facilities that are primarily locally owned, including commercial kitchens, packaging and labeling facilities, animal slaughtering facilities, or other facilities, and that are primarily utilized for the processing of meats, dairy products, produce, or other products. Such guidelines shall favor projects that create infrastructure in proximity to small-scale agricultural producers.</section>
+		<section prefix="D">The guidelines developed pursuant to subsection C may (i) allow contributions to a project by certain specified entities, such as a nonprofit organization or charitable foundation, to count as eligible local matching funds and (ii) accept a reduced match requirement for an economically distressed locality applying for an award.</section>
+	</text>
+	<history>2021, Sp. Sess. I, c. 185; 2022, c. 287.</history>
+</law>

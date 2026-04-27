@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2" level="3">Crimes by Mobs</unit>
+	</structure>
+	<section_number>18.2-42.1</section_number>
+	<catch_line>Acts of violence by mob</catch_line>
+	<text>
+		Any and every person composing a mob which commits an act of violence as defined in § 19.2-297.1 shall be guilty of that act of violence and, upon conviction, shall be punished as provided in the section of this title which makes that act of violence unlawful.
+	</text>
+	<history>1999, c. 623.</history>
+</law>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division Of Engineering And Buildings</unit>
+	</structure>
+	<section_number>2.2-1157</section_number>
+	<catch_line> Exploration for and extraction of minerals on state-owned uplands</catch_line>
+	<text>
+		<section prefix="A">The Department of Energy, in cooperation with the Division, shall develop, with the assistance of affected state agencies, departments, and institutions, a State Minerals Management Plan (the Plan). The Plan shall include provisions for the holding of public hearings and the public advertising for competitive bids or proposals for mineral exploration, leasing, and extraction activities on state-owned uplands. Sales of mineral exploration permits and leases for these lands shall be administered by the Division, with the advice of the Department of Energy.</section>
+		<section prefix="B">Upon receiving the recommendation of both the Director of the Department of General Services and the Director of the Department of Energy, the Governor shall determine whether the proposed mineral exploration, leasing, or extraction of minerals on state-owned uplands is in the public interest. No state-owned uplands shall be approved for mineral exploration, leasing, or extraction without a public hearing in the locality where the affected land or the greater portion thereof is located and a competitive bid or proposal process as described in the Plan. The provisions of this section shall not apply to the extraction of minerals on state-owned uplands pursuant to an oil or gas pooling order unless the well through which the extraction will occur is situated on such land.</section>
+		For purposes of this section, "state-owned uplands" means lands owned by the Commonwealth that (i) lie landward of the mean low water mark in tidal areas or (ii) have an elevation above the average surface water level in nontidal areas.
+		<section prefix="C">The agencies, departments, or institutions proposing or receiving applications for mineral exploration, leasing or extraction on state-owned uplands shall, through their boards or commissions, recommend all such activities to the Division following guidelines set forth in the Plan. The Division and the Department of Energy shall review and recommend to the Governor such proposed activities. Such agencies, departments or institutions, through their boards or commissions, may execute the leases or contracts that have been approved by the Governor.</section>
+		<section prefix="D">The proceeds from all such sales or leases above the costs of the sale to the Department of Energy or to the agency, department or institution sponsoring the sale shall be paid into the general fund of the state treasury, so long as the sales or leases pertain to general fund agencies or the property involved was originally acquired through the general fund. Net proceeds from sales or leases of special-fund agency properties or property acquired through a gift shall be retained by such agency or institution or used in accordance with the original terms of the gift if so stated.</section>
+		<section prefix="E">Mining, leasing, and extraction activities in state-owned submerged lands shall be authorized and administered by the Virginia Marine Resources Commission pursuant to Title 28.2 ( § 28.2-100 et seq.).</section>
+	</text>
+	<history>1982, c. 238, § 2.1-512.1; 1984, c. 750; 1986, c. 488; 2001, c. 844; 2009, c. 612; 2019, cc. 659, 660; 2021, Sp. Sess. I, c. 532.</history>
+</law>

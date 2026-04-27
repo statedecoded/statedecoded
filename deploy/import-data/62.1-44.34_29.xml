@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="13" level="3">Per- and Polyfluoroalkyl Substances</unit>
+	</structure>
+	<section_number>62.1-44.34:29</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this article, unless the context requires a different meaning:
+		"Committee" means the PFAS Expert Advisory Committee established in § 62.1-44.34:33.
+		"EPA" means the U.S. Environmental Protection Agency.
+		"HFPO-DA" means hexafluoropropylene oxide dimer acid.
+		"PFAS" means per- and polyfluoroalkyl substances, which are any fluorinated substances that contain at least one fully fluorinated methyl or methylene carbon atom and any precursors of such substances. "PFAS" includes HFPO-DA, PFBS, PFHxS, PFNA, PFOA, and PFOS.
+		"PFAS maximum contaminant level" or "PFAS MCL" means any maximum contaminant level for any PFAS chemical or mixture of PFAS chemicals (i) established by the EPA as a national primary drinking water regulation or (ii) for the interim period of time between the EPA's proposal and final agency action for adopting a national primary drinking water regulation, the EPA's proposed level, provided that the EPA's proposed level may be used only for nonregulatory purposes of self-reporting of manufacturing or use, monitoring, and PFAS assessments as provided in this article.
+		"PFBS" means perfluorobutane sulfonate.
+		"PFHxS" means perfluorohexane sulfonate.
+		"PFNA" means perfluorononanoic acid.
+		"PFOA" means perfluorooctanoic acid.
+		"PFOS" means perfluorooctane sulfonate.
+		"Public water system" means a system that provides piped water for human consumption and (i) serves at least 15 service connections used by year-round residents or regularly serves at least 25 year-round residents or (ii) regularly serves at least 25 of the same persons over six months of the year.
+		"VDH" means the Virginia Department of Health.
+		"VPDES" means the Virginia Pollutant Discharge Elimination System.
+	</text>
+	<history>2024, cc. 316, 343.</history>
+</law>

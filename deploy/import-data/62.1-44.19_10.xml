@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4.01" level="3">Water Quality Monitoring, Information and Restoration Act</unit>
+	</structure>
+	<section_number>62.1-44.19:10</section_number>
+	<catch_line>Assessment of sources of toxic contamination</catch_line>
+	<text>
+		The Department of Environmental Quality shall develop a written policy describing the circumstances or factors that indicate the need to conduct an assessment of potential sources of toxic contamination. The Department of Environmental Quality shall conduct source assessments as provided for in the written policy and shall develop strategies to remediate the contamination. A copy of the written policy shall be provided to the Chairman of the House Committee on Agriculture, Chesapeake and Natural Resources and the Senate Committee on Agriculture, Conservation and Natural Resources no later than one month prior to the adoption of the policy but no later than December 1, 2000. Any revision of the policy shall be submitted to the chairmen of these committees no later than one month prior to the adoption of the revision by the Department.
+	</text>
+	<history>2000, cc. 17, 1043.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="3" level="3">Kidnapping and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-50.3</section_number>
+	<catch_line>Enticing, etc., another into a dwelling house with intent to commit certain felonies; penalty</catch_line>
+	<text>
+		Any person who commits a violation of § 18.2-31, 18.2-32, 18.2-32.1, 18.2-48, 18.2-51.2, 18.2-58, 18.2-61, 18.2-67.1, or 18.2-67.2 within a dwelling house and who, with the intent to commit a felony listed in this section, enticed, solicited, requested, or otherwise caused the victim to enter such dwelling house is guilty of a Class 6 felony. A violation of this section is a separate and distinct felony.
+	</text>
+	<history>2015, c. 392.</history>
+</law>

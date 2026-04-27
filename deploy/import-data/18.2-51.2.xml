@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-51.2</section_number>
+	<catch_line>Aggravated malicious wounding; penalty</catch_line>
+	<text>
+		<section prefix="A">If any person maliciously shoots, stabs, cuts or wounds any other person, or by any means causes bodily injury, with the intent to maim, disfigure, disable or kill, he shall be guilty of a Class 2 felony if the victim is thereby severely injured and is caused to suffer permanent and significant physical impairment.</section>
+		<section prefix="B">If any person maliciously shoots, stabs, cuts or wounds any other woman who is pregnant, or by any other means causes bodily injury, with the intent to maim, disfigure, disable or kill the pregnant woman or to cause the involuntary termination of her pregnancy, he shall be guilty of a Class 2 felony if the victim is thereby severely injured and is caused to suffer permanent and significant physical impairment.</section>
+		<section prefix="C">For purposes of this section, the involuntary termination of a woman's pregnancy shall be deemed a severe injury and a permanent and significant physical impairment.</section>
+	</text>
+	<history>1986, c. 460; 1991, c. 670; 1997, c. 709.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:2</section_number>
+	<catch_line>Extraordinary hardship program</catch_line>
+	<text>
+		There is hereby established a supplemental program of financial assistance for the construction of water quality control facilities by political subdivisions of the Commonwealth. All sums appropriated for this program shall be apportioned by the Board among the political subdivisions qualifying, to provide financial assistance in addition to that otherwise available to help relieve extraordinary hardship in local funding of the construction of such facilities.
+	</text>
+	<history>1975, c. 339.</history>
+</law>

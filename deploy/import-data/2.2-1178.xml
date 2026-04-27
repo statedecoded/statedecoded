@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1178</section_number>
+	<catch_line>Use of passenger-type vehicles on an assigned basis</catch_line>
+	<text>
+		<section prefix="A">Passenger-type vehicles assigned to the centralized fleet may be assigned to persons performing state duties only if deemed necessary by the head of the agency or institution requesting such vehicle and approved in writing by the Director. Request for such vehicle shall be made in writing on forms prepared by the Department of General Services by the head of the agency or institution explaining in detail the purpose of or reason for such assignment.</section>
+		<section prefix="B">Assignments shall be approved by the Director only on the basis of one of the following criteria:</section>
+		<section prefix="1">The vehicle shall be driven not less than the annual usage standard. The Director shall promulgate a minimum mileage standard taking into account best value, industry standard practices, and the use of alternative transportation methods;</section>
+		<section prefix="2">The vehicle shall be used by an employee whose duties are routinely related to public safety or response to life-threatening situations:</section>
+		a. A law-enforcement officer as defined in § 9.1-101, with general or limited police powers;
+		b. An employee whose job duties require the constant use or continuous availability of specialized equipment directly related to their routine functions; or
+		c. An employee on 24-hour call who must respond to emergencies on a regular or continuing basis, and emergency response is normally to a location other than the employee's official work station; or
+		<section prefix="3">The vehicle shall be used for essential travel related to the transportation of clients or wards of the Commonwealth on a routine basis, or for essential administrative functions of the agency for which it is demonstrated that use of a temporary assignment or personal mileage reimbursement is neither feasible nor economical.</section>
+		<section prefix="C">No assignment shall be for a period exceeding two years except upon review by the Director as to the continued need for the assignment.</section>
+		<section prefix="D">The use of such vehicle shall be limited to official state business.</section>
+	</text>
+	<history>1989, c. 479, § 33.1-405; 2001, cc. 815, 842, § 2.1-548.06; 2011, c. 611.</history>
+</law>

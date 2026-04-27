@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division Of Engineering And Buildings</unit>
+	</structure>
+	<section_number>2.2-1159</section_number>
+	<catch_line>Facilities for persons with physical disabilities in certain buildings; definitions; construction standards; waiver; temporary buildings</catch_line>
+	<text>
+		<section prefix="A">For the purposes of this section and § 2.2-1160:</section>
+		"Building" means any building or facility, used by the public, which is constructed in whole or in part or altered by the use of state, county or municipal funds, or the funds of any political subdivision of the Commonwealth. "Building" shall not include public school buildings and facilities, which shall be governed by standards established by the Board of Education pursuant to § 22.1-138.
+		"Persons with physical disabilities" means persons with:
+		<section prefix="1">Impairments that, regardless of cause or manifestation, for all practical purposes, confine individuals to wheelchairs;</section>
+		<section prefix="2">Impairments that cause individuals to walk with difficulty or insecurity;</section>
+		<section prefix="3">Total blindness or impairments affecting sight to the extent that the individual functioning in public areas is insecure or exposed to dangers;</section>
+		<section prefix="4">Deafness or hearing loss that might make an individual insecure in public areas because he is unable to communicate or hear warning signals;</section>
+		<section prefix="5">Faulty coordination or palsy from brain, spinal, or peripheral nerve injury; or</section>
+		<section prefix="6">Those manifestations of the aging processes that significantly reduce mobility, flexibility, coordination and perceptiveness but are not accounted for in the aforementioned categories.</section>
+		<section prefix="B">The Division shall prescribe standards for the design, construction, and alteration of buildings constructed in whole or in part or altered by the use of state funds, other than school funds, necessary to ensure that persons with physical disabilities will have ready access to, and use of, such buildings.</section>
+		<section prefix="C">The governing body of a county, city or town or other political subdivision shall prescribe standards for the design, construction and alteration of buildings, not including public school facilities, constructed in whole or in part or altered by the use of the funds of such locality or political subdivision necessary to ensure that persons with physical disabilities will have ready access to, and use of, such buildings. The Division shall consult with the governing bodies upon request.</section>
+		<section prefix="D">The Division, with respect to standards issued by it, and the governing body of any county, city or town or other political subdivision with respect to standards issued by it may:</section>
+		<section prefix="1">Modify or waive any such standard, on a case-by-case basis, upon application made by the head of the department, agency or other instrumentality concerned, upon determining that a modification or waiver is clearly necessary; and</section>
+		<section prefix="2">Conduct necessary surveys and investigations to ensure compliance with such standards.</section>
+		<section prefix="E">The provisions of this section and § 2.2-1160 shall apply to temporary and emergency construction as well as permanent buildings.</section>
+	</text>
+	<history>1970, c. 539, §§ 2.1-109.01, 2.1-109.02, 2.1-109.03, 2.1-109.04, 2.1-109.06, 2.1-109.07; 1972, c. 223; 1977, c. 672, §§ 2.1-514, 2.1-515, 2.1-516, 2.1-517, 2.1-519, 2.1-520, 2.1-521; 1993, c. 226; 2001, c. 844; 2023, cc. 148, 149.</history>
+</law>

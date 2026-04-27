@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-87.1</section_number>
+	<catch_line>Setting off chemical bombs capable of producing smoke in certain public buildings</catch_line>
+	<text>
+		It shall be unlawful for any person to willfully and intentionally set off or cause to be set off any chemical bomb capable of producing smoke in any building used for public assembly or regularly used by the public including, but not limited to, schools, theaters, stores, office buildings, shopping malls, coliseums and arenas. Any person convicted of a violation of this section shall be guilty of a Class 2 misdemeanor.
+	</text>
+	<history>1976, c. 153.</history>
+</law>

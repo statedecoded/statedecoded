@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="7" level="3">Criminal Sexual Assault</unit>
+	</structure>
+	<section_number>18.2-67.4:1</section_number>
+	<catch_line>Infected sexual battery; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who is diagnosed with a sexually transmitted infection and engages in sexual behavior that poses a substantial risk of transmission to another person with the intent to transmit the infection to that person and transmits such infection to that person is guilty of a Class 6 felony.</section>
+		<section prefix="B">Nothing in this section shall prevent the prosecution of any other crime against persons under Chapter 4 (§ 18.2-30 et seq.).</section>
+	</text>
+	<history>2000, c. 831; 2004, c. 449; 2021, Sp. Sess. I, c. 465.</history>
+</law>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="5" level="5">Abatement of Risk of Asbestos in State-Owned and Public School Buildings</unit>
+	</structure>
+	<section_number>2.2-1163</section_number>
+	<catch_line>Inspection of state-owned buildings; marking locations where asbestos found; risk abatement and estimate of cost thereof</catch_line>
+	<text>
+		The Director at the direction of the Secretary and in cooperation with any other appropriate agencies including but not limited to the Department of Education shall ensure that every building owned by the Commonwealth or any agency of the Commonwealth which has not previously been inspected by competent personnel as provided below is inspected as soon as practical by competent personnel who have the training and equipment necessary to identify (i) the presence of asbestos, and (ii) to the extent practicable the relative hazard or hazards to health and safety posed at each location at which asbestos is identified. Every location at which asbestos is identified shall be clearly marked with suitably designed signs or labels. The Director shall prepare an accurate estimate of the cost of abating the risk of all asbestos so identified. The Director shall also establish a list of abatement priorities, which shall include the estimated cost of abating the risk at each location on the list. To the extent that funds are available, and in accordance with the priorities established by the Director, the agency or institution of the Commonwealth responsible for the maintenance of buildings at any such location shall proceed to abate the risk at such locations.
+	</text>
+	<history>1985, c. 534, § 2.1-526.13; 1986, cc. 288, 560; 2001, c. 844.</history>
+</law>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-32.2</section_number>
+	<catch_line>Killing a fetus; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who unlawfully, willfully, deliberately, maliciously and with premeditation kills the fetus of another is guilty of a Class 2 felony.</section>
+		<section prefix="B">Any person who unlawfully, willfully, deliberately and maliciously kills the fetus of another is guilty of a felony punishable by confinement in a state correctional facility for not less than five nor more than 40 years.</section>
+	</text>
+	<history>2004, cc. 1023, 1026.</history>
+</law>

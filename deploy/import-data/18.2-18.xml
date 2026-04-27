@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="2" level="2">Principals and Accessories</unit>
+	</structure>
+	<section_number>18.2-18</section_number>
+	<catch_line>How principals in second degree and accessories before the fact punished</catch_line>
+	<text>
+		In the case of every felony, every principal in the second degree and every accessory before the fact may be indicted, tried, convicted and punished in all respects as if a principal in the first degree; provided, however, that except in the case of a killing for hire under the provisions of subdivision A 2 of § 18.2-31 or a killing pursuant to the direction or order of one who is engaged in a continuing criminal enterprise under the provisions of subdivision A 10 of § 18.2-31 or a killing pursuant to the direction or order of one who is engaged in the commission of or attempted commission of an act of terrorism under the provisions of subdivision A 13 of § 18.2-31, an accessory before the fact or principal in the second degree to an aggravated murder shall be indicted, tried, convicted and punished as though the offense were murder in the first degree.
+	</text>
+	<history>Code 1950, § 18.1-11; 1960, c. 358; 1975, cc. 14, 15; 1977, c. 478; 1997, c. 313; 2002, cc. 588, 623; 2021, Sp. Sess. I, cc. 344, 345.</history>
+</law>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="5" level="3">Robbery</unit>
+	</structure>
+	<section_number>18.2-58.1</section_number>
+	<catch_line>Carjacking; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who commits carjacking, as herein defined, shall be guilty of a felony punishable by imprisonment for life or a term not less than fifteen years.</section>
+		<section prefix="B">As used in this section, "carjacking" means the intentional seizure or seizure of control of a motor vehicle of another with intent to permanently or temporarily deprive another in possession or control of the vehicle of that possession or control by means of partial strangulation, or suffocation, or by striking or beating, or by other violence to the person, or by assault or otherwise putting a person in fear of serious bodily harm, or by the threat or presenting of firearms, or other deadly weapon or instrumentality whatsoever. "Motor vehicle" shall have the same meaning as set forth in § 46.2-100.</section>
+		<section prefix="C">The provisions of this section shall not preclude the applicability of any other provision of the criminal law of the Commonwealth which may apply to any course of conduct which violates this section.</section>
+	</text>
+	<history>1993, c. 500.</history>
+</law>

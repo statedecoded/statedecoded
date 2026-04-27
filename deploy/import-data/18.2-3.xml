@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="1" level="3">Transition Provisions</unit>
+	</structure>
+	<section_number>18.2-3</section_number>
+	<catch_line>Certain notices, recognizances and processes validated</catch_line>
+	<text>
+		Any notice given, recognizance taken, or process or writ issued before October 1, 1975, shall be valid although given, taken or to be returned to a day after such date, in like manner as if this title had been effective before the same was given, taken or issued.
+	</text>
+	<history>1975, cc. 14, 15.</history>
+</law>

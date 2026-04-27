@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="13" level="3">Per- and Polyfluoroalkyl Substances</unit>
+	</structure>
+	<section_number>62.1-44.34:32</section_number>
+	<catch_line>Monitoring of PFAS sources for PFAS assessments</catch_line>
+	<text>
+		<section prefix="A">For the purpose of PFAS assessments required pursuant to § 62.1-44.34:30, the Department shall require, after three months' advance notice, the owner or operator of any of the following facilities, if deemed by the Department to be a potentially significant source of PFAS in the public water system's raw water source, to perform and promptly report the results as received of representative quarterly discharge monitoring for an initial characterization period of one year, provided, however, that the Department may discontinue remaining quarterly monitoring by a facility with proper monitoring results that are below the method detection level for the first two quarters:</section>
+		<section prefix="1">Any facility subject to self-reporting pursuant to § 62.1-44.34:31;</section>
+		<section prefix="2">Any facility manufacturing PFAS, any electroplating or metal finishing facility using PFAS, any semiconductor or circuit board facility using PFAS, any paper or packaging manufacturing facility using PFAS, and any textile mills, tanneries, or leather, fabric, or carpet treaters using PFAS;</section>
+		<section prefix="3">Any other facility that the Department has a reasonable basis to believe may use or manufacture PFAS based on the facility or activity type;</section>
+		<section prefix="4">Any centralized waste treatment industrial facility;</section>
+		<section prefix="5">Any industrial launderers defined by NAICS 812332;</section>
+		<section prefix="6">Any facility discharging groundwater remediation wastewaters pursuant to the VPDES General Permit Regulation for Discharges from Groundwater Remediation of Contaminated Sites, Dewatering Activities of Contaminated Sites, and Hydrostatic Tests; and</section>
+		<section prefix="7">Any airport, air base, air station, fire training facility, landfill, or other facility or site that the Department has a reasonable basis to believe has significant soil or groundwater PFAS contamination significantly impacting finished water levels.</section>
+		<section prefix="B">For purposes of this section, using or use of PFAS (i) means intentionally using or use of PFAS or PFAS-containing substances as a product ingredient or as a production process aid or additive, such as wetting agents, fume suppressants, photoresists, etchants, cleaners, coatings, surfactants, or flame retardants, and (ii) does not mean using or use of manufacturing equipment that contains PFAS.</section>
+		<section prefix="C">For purposes of monitoring under subsection A, the applicable laboratory test method is Method 1633 or such other method approved by the EPA that may be allowed by the Department. Monitoring reports shall include all PFAS analytes measured by the test method. For purposes of this section, the Department shall not require, and the facility and its laboratory shall be exempt from, environmental laboratory certification or accreditation requirements specifically for use of Method 1633.</section>
+	</text>
+	<history>2024, cc. 316, 343.</history>
+</law>

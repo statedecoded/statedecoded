@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="14" level="3">Hazardous Substance Facility Response Plans</unit>
+	</structure>
+	<section_number>62.1-44.34:38</section_number>
+	<catch_line>Recordkeeping and access to records and facilities</catch_line>
+	<text>
+		<section prefix="A">All records relating to compliance with the requirements of this article shall be maintained by the operator of a facility at the facility or at an alternate location approved by the Department for a period of at least five years. Such records shall be available for inspection and copying by the Department and shall include all records relating to discharge events or other discharges of hazardous substances from the facility and all supporting documentation for developed facility response plans.</section>
+		<section prefix="B">A record of all discharges of hazardous substances to state lands in amounts less than the reportable quantity in 40 C.F.R. Part 117 shall be established and maintained for a period of five years in accordance with subsection A.</section>
+		<section prefix="C">Every operator of a facility shall, upon reasonable notice, permit at reasonable times and under reasonable circumstances, the local director or coordinator of emergency services appointed pursuant to § 44-146.19 for the political subdivision in which the facility is located or of any political subdivision within one mile of the facility to have access to and to copy all information required to be kept in subsections A and B.</section>
+		<section prefix="D">Any local director or coordinator of emergency services appointed pursuant to § 44-146.19 for the political subdivision in which the facility is located or of any political subdivision within one mile of the facility may enter and inspect any facility at a reasonable time and under reasonable circumstances, provided that in nonemergency situations such local director, coordinator, or a designated agent of such local director or coordinator shall be accompanied by the operator or his designee.</section>
+		<section prefix="E">The Director may withhold information submitted or obtained pursuant to this section from public disclosure pursuant to (i) an exemption provided under the Virginia Freedom of Information Act (§ 2.2-3700 et seq.), (ii) confidentiality claims asserted at the time of submission pursuant to § 62.1-44.21, or (iii) requirements set forth by the U.S. Department of Homeland Security.</section>
+	</text>
+	<history>2025, c. 279.</history>
+</law>

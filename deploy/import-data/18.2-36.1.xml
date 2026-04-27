@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-36.1</section_number>
+	<catch_line>Certain conduct punishable as involuntary manslaughter</catch_line>
+	<text>
+		<section prefix="A">Any person who, as a result of driving under the influence in violation of clause (ii), (iii), or (iv) of § 18.2-266 or any local ordinance substantially similar thereto unintentionally causes the death of another person, shall be guilty of involuntary manslaughter.</section>
+		<section prefix="B">If, in addition, the conduct of the defendant was so gross, wanton and culpable as to show a reckless disregard for human life, he shall be guilty of aggravated involuntary manslaughter, a felony punishable by a term of imprisonment of not less than one nor more than 20 years, one year of which shall be a mandatory minimum term of imprisonment.</section>
+		<section prefix="C">The provisions of this section shall not preclude prosecution under any other homicide statute. This section shall not preclude any other revocation or suspension required by law. The driver's license of any person convicted under this section shall be revoked pursuant to subsection B of § 46.2-391.</section>
+	</text>
+	<history>1989, cc. 554, 574; 1992, c. 862; 1994, cc. 635, 682; 1999, cc. 945, 987; 2000, cc. 956, 982; 2004, c. 461.</history>
+</law>

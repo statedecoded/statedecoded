@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="3" level="3">Kidnapping and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-49.1</section_number>
+	<catch_line>Violation of court order regarding custody and visitation; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who knowingly, wrongfully and intentionally withholds a child from either of a child's parents or other legal guardian in a clear and significant violation of a court order respecting the custody or visitation of such child, provided such child is withheld outside of the Commonwealth, is guilty of a Class 6 felony.</section>
+		<section prefix="B">Any person who knowingly, wrongfully and intentionally engages in conduct that constitutes a clear and significant violation of a court order respecting the custody or visitation of a child is guilty of a Class 3 misdemeanor upon conviction of a first offense. Any person who commits a second violation of this section within 12 months of a first conviction is guilty of a Class 2 misdemeanor, and any person who commits a third violation occurring within 24 months of the first conviction is guilty of a Class 1 misdemeanor.</section>
+	</text>
+	<history>1987, c. 704; 1989, c. 486; 1994, c. 575; 2002, cc. 576, 596; 2003, c. 261.</history>
+</law>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="1" level="1">General Provisions</unit>
+		<unit label="chapter" identifier="1" level="2">Code of Virginia</unit>
+	</structure>
+	<section_number>1-8</section_number>
+	<catch_line>Notice, recognizance or process given, taken or issued before Code in force</catch_line>
+	<text>
+		Although a notice, recognizance or process shall have been given, taken or issued before the day prescribed for the commencement of this Code, or of any provisions of this Code, it may, nevertheless, be given, taken or returnable to a day after such commencement, or to a court established by this Code or the clerk's office of such court, in like manner as if this Code had commenced before the same was given, taken, or issued.
+	</text>
+	<history>Code 1919, § 6570; R. P. 1948, § 1-8.</history>
+</law>

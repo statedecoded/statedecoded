@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="1" level="3">General Provisions</unit>
+	</structure>
+	<section_number>62.1-44.2</section_number>
+	<catch_line>Short title; purpose</catch_line>
+	<text>
+		The short title of this chapter is the State Water Control Law. It is the policy of the Commonwealth of Virginia and the purpose of this law to: (1) protect existing high quality state waters and restore all other state waters to such condition of quality that any such waters will permit all reasonable public uses and will support the propagation and growth of all aquatic life, including game fish, which might reasonably be expected to inhabit them; (2) safeguard the clean waters of the Commonwealth from pollution; (3) prevent any increase in pollution; (4) reduce existing pollution; (5) promote and encourage the reclamation and reuse of wastewater in a manner protective of the environment and public health; and (6) promote water resource conservation, management and distribution, and encourage water consumption reduction in order to provide for the health, safety, and welfare of the present and future citizens of the Commonwealth.
+	</text>
+	<history>Code 1950, § 62.1-14; 1968, c. 659; 1970, c. 638; 1978, c. 827; 2000, c. 972.</history>
+</law>

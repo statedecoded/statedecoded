@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="3" level="3">Kidnapping and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-50</section_number>
+	<catch_line>Disclosure of information and assistance to law-enforcement officers required</catch_line>
+	<text>
+		Whenever it is brought to the attention of the members of the immediate family of any person that such person has been abducted, or that threats or attempts have been made to abduct any such person, such members shall make immediate report thereof to the police or other law-enforcement officers of the county, city or town where such person resides, and shall render all such possible assistance to such officers in the capture and conviction of the person or persons guilty of the alleged offense. Any person violating any of the provisions of this section shall be guilty of a Class 2 misdemeanor.
+	</text>
+	<history>Code 1950, § 18.1-40; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

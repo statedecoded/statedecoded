@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:25.1</section_number>
+	<catch_line>Additional local authority</catch_line>
+	<text>
+		Any locality serving as a VESMP authority shall have the authority to:
+		<section prefix="1">Issue orders in accordance with the procedures of subdivision 10 a of § 15.2-2122 to any owner subject to the requirements of this article. Such orders may include civil penalties in specific sums not to exceed the limit specified in subdivision A 2 or B 2, as applicable, of § 62.1-44.15:48, and such civil penalties shall be paid into the treasury of the locality in accordance with subdivision A 2 of § 62.1-44.15:48. The provisions of this section notwithstanding, the locality may proceed directly under § 62.1-44.15:48 for any past violation or violations of any provision of this article or any ordinance duly adopted hereunder.</section>
+		<section prefix="2">Issue consent orders with the consent of any person who has violated or failed, neglected, or refused to obey any ordinance adopted pursuant to the provisions of this article, any condition of a locality's land-disturbance approval, or any order of a locality serving as a VESMP authority. Such consent order may provide for the payment of civil charges not to exceed the limits specified in subdivision A 2 or B 2, as applicable, of § 62.1-44.15:48. Such civil charges shall be in lieu of any appropriate civil penalty that could be imposed under this article. Any civil charges collected shall be paid to the treasury of the locality in accordance with subdivision A 2 of § 62.1-44.15:48.</section>
+	</text>
+	<history>2016, cc. 68, 758.</history>
+</law>

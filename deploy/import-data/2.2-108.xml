@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-108</section_number>
+	<catch_line>Removal of members of certain boards, commissions, etc</catch_line>
+	<text>
+		<section prefix="A">Notwithstanding any provision of law to the contrary, the Governor may remove from office for malfeasance, misfeasance, incompetence, misconduct, neglect of duty, absenteeism, conflict of interests, failure to carry out the policies of the Commonwealth as established in the Constitution or by the General Assembly, or refusal to carry out a lawful directive of the Governor any member of any board, commission, council or other collegial body established by the General Assembly in the executive branch of state government except those boards provided for in subsection C of § 23.1-1300, subsection A of § 23.1-3100, and subsection A of § 23.1-3200 and fill the vacancy resulting from the removal subject to confirmation by the General Assembly.</section>
+		<section prefix="B">The Governor shall set forth in a written public statement his reasons for removing any member pursuant to this section at the time the removal occurs. The Governor is the sole judge of the sufficiency of the cause for removal as set forth in this section.</section>
+	</text>
+	<history>Code 1950, § 2-39; 1966, c. 677, § 2.1-43; 1977, c. 446; 1988, c. 765; 2001, c. 844; 2016, c. 588.</history>
+</law>

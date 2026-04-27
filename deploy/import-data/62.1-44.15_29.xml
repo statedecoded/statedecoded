@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:29</section_number>
+	<catch_line>Virginia Stormwater Management Fund</catch_line>
+	<text>
+		There is hereby created in the state treasury a special nonreverting fund to be known as the Virginia Stormwater Management Fund, hereafter referred to as "the Fund." The Fund shall be established on the books of the Comptroller. All moneys collected by the Department pursuant to § 62.1-44.15:28 shall be paid into the state treasury and credited to the Fund. Interest earned on moneys in the Fund shall remain in the Fund and be credited to it. Any moneys remaining in the Fund, including interest thereon, at the end of each fiscal year shall not revert to the general fund but shall remain in the Fund. Moneys in the Fund shall be used solely for the purposes of carrying out the Department's responsibilities under this article. Expenditures and disbursements from the Fund shall be made by the State Treasurer on warrants issued by the Comptroller upon written request signed by the Director.
+		An accounting of moneys received by and distributed from the Fund shall be kept by the State Comptroller.
+	</text>
+	<history>2004, c. 372, § 10.1-603.4:1; 2012, cc. 748, 785, 808, 819; 2013, cc. 756, 793; 2016, cc. 68, 758.</history>
+</law>

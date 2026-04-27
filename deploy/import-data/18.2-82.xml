@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-82</section_number>
+	<catch_line>Burning building or structure while in such building or structure with intent to commit felony</catch_line>
+	<text>
+		If any person while in any building or other structure unlawfully, with intent to commit a felony therein, shall burn or cause to be burned, in whole or in part, such building or other structure, the burning of which is not punishable under any other section of this chapter, he shall be guilty of a Class 4 felony.
+	</text>
+	<history>Code 1950, § 18.1-80.1; 1970, c. 356; 1975, cc. 14, 15.</history>
+</law>

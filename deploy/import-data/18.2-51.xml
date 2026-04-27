@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-51</section_number>
+	<catch_line>Shooting, stabbing, etc., with intent to maim, kill, etc</catch_line>
+	<text>
+		If any person maliciously shoot, stab, cut, or wound any person or by any means cause him bodily injury, with the intent to maim, disfigure, disable, or kill, he shall, except where it is otherwise provided, be guilty of a Class 3 felony. If such act be done unlawfully but not maliciously, with the intent aforesaid, the offender shall be guilty of a Class 6 felony.
+	</text>
+	<history>Code 1950, § 18.1-65; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.2" level="2">Conservation of Water Resources; State Water Control Board</unit>
+	</structure>
+	<section_number>62.1-44.37</section_number>
+	<catch_line>Resolution of conflicts as to water use; public hearings</catch_line>
+	<text>
+		The Board shall upon application of any state agency or political subdivision, and may upon its own motion, recommend a plan to resolve any conflict as to actual or proposed water use or other practice directly affecting water use that involves a potential or existing conflict between water use functions under the jurisdiction of different state agencies. If requested by any state agency or political subdivision directly affected, or at the Board's discretion, the Board shall hold public hearings on such question at which all persons concerned shall be heard.
+	</text>
+	<history>Code 1950, § 10-17.2; 1966, c. 561; 1972, c. 728.</history>
+</law>

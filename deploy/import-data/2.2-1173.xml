@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1173</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this article:
+		"Centralized fleet" means those passenger-type vehicles assigned to the Department of General Services and available for use by state agencies.
+		"Contract rental" means a contract for the use of motor vehicles by employees for official state business within the confines of their normal work locations. This does not include rental vehicles used by travelers after reaching their destination.
+		"Director" means the Director of the Department of General Services.
+		"Lease" means a contract for the use of a passenger-type vehicle for a term of more than thirty days.
+		"Passenger-type vehicle" means any automobile, including sedans and station wagons, or van used primarily for the transportation of the operator and no more than fifteen passengers.
+	</text>
+	<history>1989, c. 479, § 33.1-400; 1998, c. 329; 2001, cc. 815, 842, § 2.1-548.01.</history>
+</law>

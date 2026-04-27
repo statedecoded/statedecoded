@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="2" level="3">Burglary and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-91</section_number>
+	<catch_line>Entering dwelling house, etc., with intent to commit larceny, assault and battery or other felony</catch_line>
+	<text>
+		If any person commits any of the acts mentioned in § 18.2-90 with intent to commit larceny, or any felony other than murder, rape, robbery or arson in violation of §§ 18.2-77, 18.2-79 or § 18.2-80, or if any person commits any of the acts mentioned in § 18.2-89 or § 18.2-90 with intent to commit assault and battery, he shall be guilty of statutory burglary, punishable by confinement in a state correctional facility for not less than one or more than twenty years or, in the discretion of the jury or the court trying the case without a jury, be confined in jail for a period not exceeding twelve months or fined not more than $2,500, either or both. However, if the person was armed with a deadly weapon at the time of such entry, he shall be guilty of a Class 2 felony.
+	</text>
+	<history>Code 1950, § 18.1-89; 1960, c. 358; 1962, c. 505; 1970, c. 381; 1975, cc. 14, 15, 602; 1991, c. 710; 1992, c. 486; 1996, c. 1040; 1997, c. 832.</history>
+</law>

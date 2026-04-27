@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-78</section_number>
+	<catch_line>What not deemed dwelling house</catch_line>
+	<text>
+		No outhouse, not adjoining a dwelling house, nor under the same roof, although within the curtilage thereof, shall be deemed a part of such dwelling house, within the meaning of this chapter, unless some person usually lodge therein at night.
+	</text>
+	<history>Code 1950, § 18.1-77; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

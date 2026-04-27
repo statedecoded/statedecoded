@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:27.3</section_number>
+	<catch_line>Acceptance of signed and sealed plan in lieu of local plan review</catch_line>
+	<text>
+		<section prefix="A">Any rural Tidewater locality, whether or not it administers a VSMP or VESCP pursuant to § 62.1-44.15:27, may require that a licensed professional retained by the applicant prepare and submit a set of plans and supporting calculations for a land-disturbing activity of 2,500 square feet or more but less than one acre in extent.</section>
+		<section prefix="B">Such professional shall be licensed to engage in practice in the Commonwealth under Chapter 4 (§ 54.1-400 et seq.) or 22 (§ 54.1-2200 et seq.) of Title 54.1 and shall hold a certificate of competence in the appropriate subject area, as provided in § 62.1-44.15:30.</section>
+		<section prefix="C">Such plans and supporting calculations shall be appropriately signed and sealed by the professional with a certification that states: "This plan is designed in accordance with applicable state law and regulations."</section>
+		<section prefix="D">The rural Tidewater locality is authorized to accept such signed and sealed plans in satisfaction of the requirement of this article that, for a land-disturbing activity of 2,500 square feet or more but less than one acre in extent, it retain a local certified plan reviewer or conduct a local plan review. This section shall not excuse any applicable performance bond requirement pursuant to § 62.1-44.15:34 or 62.1-44.15:57.</section>
+	</text>
+	<history>2018, c. 155.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="3" level="3">Classification of Criminal Offenses and Punishment Therefor</unit>
+	</structure>
+	<section_number>18.2-8</section_number>
+	<catch_line>Felonies, misdemeanors and traffic infractions defined</catch_line>
+	<text>
+		Offenses are either felonies or misdemeanors. Such offenses as are punishable with confinement in a state correctional facility are felonies; all other offenses are misdemeanors. Traffic infractions are violations of public order as defined in § 46.2-100 and not deemed to be criminal in nature.
+	</text>
+	<history>Code 1950, § 18.1-6; 1960, c. 358; 1975, cc. 14, 15; 1977, c. 585; 2021, Sp. Sess. I, cc. 344, 345.</history>
+</law>

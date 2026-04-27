@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="9" level="3">Abortion</unit>
+	</structure>
+	<section_number>18.2-72</section_number>
+	<catch_line>When abortion lawful during first trimester of pregnancy</catch_line>
+	<text>
+		Notwithstanding any of the provisions of § 18.2-71, it shall be lawful for (i) any physician licensed by the Board of Medicine to practice medicine and surgery or (ii) any person jointly licensed by the Boards of Medicine and Nursing as an advanced practice registered nurse and acting within such person's scope of practice to terminate or attempt to terminate a human pregnancy or aid or assist in the termination of a human pregnancy by performing an abortion or causing a miscarriage on any woman during the first trimester of pregnancy.
+	</text>
+	<history>1975, cc. 14, 15; 2020, cc. 898, 899; 2023, c. 183.</history>
+</law>

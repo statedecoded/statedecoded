@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="11" level="3">Discharge of Oil Into Waters</unit>
+	</structure>
+	<section_number>62.1-44.34:19.2</section_number>
+	<catch_line>Recordkeeping and access to records and facilities</catch_line>
+	<text>
+		<section prefix="A">All records relating to compliance with the requirements of this article shall be maintained by the operator of a facility at the facility or at an alternate location approved by the Board for a period of at least five years. Such records shall be available for inspection and copying by the Board and shall include books, papers, documents and records relating to the daily measurement and inventory of oil stored at a facility, all information relating to tank testing, all records relating to spill events or other discharges of oil from the facility, all supporting documentation for developed contingency plans, and any records required to be kept by regulations of the Board.</section>
+		<section prefix="B">In the case of a pipeline, all records relating to compliance with the requirements of the Hazardous Liquid Pipeline Safety Act of 1979, all records relating to spill events or other discharges of oil from the pipeline in the Commonwealth, and all supporting documentation for approved contingency plans shall be maintained by the operator of a pipeline at the facility or at an alternate location approved by the Board for a period of at least five years.</section>
+		<section prefix="C">A record of all discharges of oil to state lands in amounts less than twenty-five gallons shall be established and maintained for a period of five years in accordance with subsections A and B of this section.</section>
+		<section prefix="D">Every operator of a facility shall, upon reasonable notice, permit at reasonable times and under reasonable circumstances a duly designated official of the political subdivision in which the facility is located or of any political subdivision within one mile of the facility or duly designated agent retained or employed by such political subdivisions to have access to and to copy all information required to be kept in subsections A, B and C.</section>
+		<section prefix="E">Any duly designated official of the political subdivision in which the facility is located or of any political subdivision within one mile of the facility or duly designated agent retained or employed by such political subdivisions may, at reasonable times and under reasonable circumstances, enter and inspect any facility, provided that in nonemergency situations such local official, agent or employee shall be accompanied by the operator or his designee.</section>
+	</text>
+	<history>1992, c. 456.</history>
+</law>

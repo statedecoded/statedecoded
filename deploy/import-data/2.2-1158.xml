@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division of Engineering and Buildings</unit>
+	</structure>
+	<section_number>2.2-1158</section_number>
+	<catch_line>Management, harvesting and sale of timber on lands under control of Division</catch_line>
+	<text>
+		The Division may manage and harvest timber on lands placed under its control in accordance with the best timber management practices, after receiving the advice of the State Forester. The Division may also sell the timber, but before the sale is made, the State Forester or his deputy shall furnish the Division with an estimate of the value of the timber. In the event of sale, the proceeds shall first be used to defray the cost of the sale and the cost of maintenance of the property from which the timber is removed and the remainder, if any, of the funds shall be deposited in the Forest Management of State-owned Lands Fund created in § 10.1-1120.
+	</text>
+	<history>1968, c. 717, § 2.1-106.8; 1977, c. 672, § 2.1-513; 1980, c. 525; 2001, c. 844.</history>
+</law>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="1" level="4">Department and Commissioner of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-101</section_number>
+	<catch_line>Department continued; appointment of Commissioner; agriculture education</catch_line>
+	<text>
+		<section prefix="A">The Department of Agriculture and Consumer Services is continued. The Department shall be under the management and control of a Commissioner appointed by the Governor, subject to confirmation by the General Assembly, for a term coincident with that of the Governor. Any vacancy in the office of the Commissioner shall be filled by appointment by the Governor pursuant to the provisions of Article V, Section 10 of the Constitution of Virginia.</section>
+		<section prefix="B">There shall be established, within the Department, to be administered by the Department of Agriculture Education at Virginia Polytechnic Institute and State University, a unit of specialists in agriculture education. The unit shall: (i) assist in developing and revising local agriculture curricula to integrate the Standards of Learning; (ii) provide professional development for agriculture instructional personnel to improve the quality of agriculture education; (iii) conduct site visits to the schools providing agriculture education; and (iv) seek the input of business and industry representatives regarding the content and direction of agriculture education programs in the public schools of the Commonwealth.</section>
+		<section prefix="1">Any required reduction in the Department's budget shall be reflected in a proportional reduction in the operation of the agriculture education unit. The reduction in the allocation for operation of the agriculture education unit shall not exceed the percentage reduction provided for in the appropriation act for the Department.</section>
+		<section prefix="2">In the event that additional funds are not allocated for these positions, the Department shall not be required to absorb the costs of these positions.</section>
+	</text>
+	<history>Code 1950, § 3-7; 1966, c. 702, § 3.1-8; 1971, Ex. Sess., c. 34; 1978, c. 219; 1985, c. 397; 2004, c. 180, § 3.1-14.2; 2008, c. 860.</history>
+</law>

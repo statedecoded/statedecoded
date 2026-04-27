@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-57.01</section_number>
+	<catch_line>Pointing laser at law-enforcement officer unlawful; penalty</catch_line>
+	<text>
+		If any person, knowing or having reason to know another person is a law-enforcement officer as defined in § 18.2-57, a probation or parole officer appointed pursuant to § 53.1-143, a correctional officer as defined in § 53.1-1, or a person employed by the Department of Corrections directly involved in the care, treatment or supervision of inmates in the custody of the Department engaged in the performance of his public duties as such, intentionally projects at such other person a beam or a point of light from a laser, a laser gun sight, or any device that simulates a laser, shall be guilty of a Class 2 misdemeanor.
+	</text>
+	<history>2000, c. 350.</history>
+</law>

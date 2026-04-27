@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="3" level="3">Larceny and Receiving Stolen Goods</unit>
+	</structure>
+	<section_number>18.2-95</section_number>
+	<catch_line>Grand larceny defined; how punished</catch_line>
+	<text>
+		<section prefix="A">Any person who (i) commits larceny from the person of another of money or other thing of value of $5 or more, (ii) commits simple larceny not from the person of another of goods and chattels of the value of $1,000 or more, or (iii) commits simple larceny not from the person of another of any firearm, regardless of the firearm's value, shall be guilty of grand larceny, punishable by imprisonment in a state correctional facility for not less than one nor more than 20 years or, in the discretion of the jury or court trying the case without a jury, be confined in jail for a period not exceeding 12 months or fined not more than $2,500, either or both.</section>
+		<section prefix="B">A prosecution for a violation of this section may be had in (i) any place of venue under Article 2 (§ 19.2-244 et seq.) of Chapter 15 of Title 19.2 or (ii) any county or city where the victim of the larceny resides.</section>
+	</text>
+	<history>Code 1950, § 18.1-100; 1960, c. 358; 1966, c. 247; 1975, cc. 14, 15, 603; 1980, c. 175; 1991, c. 710; 1992, c. 822; 1998, c. 821; 2018, cc. 764, 765; 2020, cc. 89, 401; 2024, c. 475.</history>
+</law>

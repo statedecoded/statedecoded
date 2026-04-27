@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-54.2</section_number>
+	<catch_line>Adulteration of food, drink, drugs, cosmetics, etc.; penalty</catch_line>
+	<text>
+		Any person who adulterates or causes to be adulterated any food, drink, prescription or over-the-counter medicine, cosmetic or other substance with the intent to kill or injure any individual who ingests, inhales or uses such substance shall be guilty of a Class 3 felony.
+	</text>
+	<history>1983, c. 129.</history>
+</law>

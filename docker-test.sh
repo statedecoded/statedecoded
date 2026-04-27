@@ -20,6 +20,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Populate the database with sample data if it is empty
+LAW_COUNT=$(docker compose -f deploy/docker-compose.yml exec -T db \
+    mysql -u statedecoded -pstatedecoded statedecoded -sN \
+    -e "SELECT COUNT(*) FROM laws;" 2>/dev/null || echo 0)
+if [ "${LAW_COUNT:-0}" = "0" ]; then
+    echo "Database is empty — importing sample data..."
+    docker compose -f deploy/docker-compose.yml exec -T app php statedecoded import
+    echo "Import complete."
+fi
+
 case "$TOOL" in
     phpstan)
         docker compose -f deploy/docker-compose.yml exec app vendor/bin/phpstan analyse "$@"

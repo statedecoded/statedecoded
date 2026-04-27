@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-56.1</section_number>
+	<catch_line>Reckless handling of firearms; reckless handling while hunting</catch_line>
+	<text>
+		<section prefix="A">It shall be unlawful for any person to handle recklessly any firearm so as to endanger the life, limb or property of any person. Any person violating this section shall be guilty of a Class 1 misdemeanor.</section>
+		<section prefix="A1">Any person who handles any firearm in a manner so gross, wanton, and culpable as to show a reckless disregard for human life and causes the serious bodily injury of another person resulting in permanent and significant physical impairment is guilty of a Class 6 felony.</section>
+		<section prefix="B">If this section is violated while the person is engaged in hunting, trapping or pursuing game, the trial judge may, in addition to the penalty imposed by the jury or the court trying the case without a jury, revoke such person's hunting or trapping license and privileges to hunt or trap while possessing a firearm for a period of one to five years.</section>
+		<section prefix="C">Upon a revocation pursuant to subsection B hereof, the clerk of the court in which the case is tried pursuant to this section shall forthwith send to the Department of Wildlife Resources (i) such person's revoked hunting or trapping license or notice that such person's privilege to hunt or trap while in possession of a firearm has been revoked and (ii) a notice of the length of revocation imposed. The Department shall keep a list which shall be furnished upon request to any law-enforcement officer, the attorney for the Commonwealth or court in this Commonwealth, and such list shall contain the names and addresses of all persons whose license or privilege to hunt or trap while in possession of a firearm has been revoked and the court which took such action.</section>
+		<section prefix="D">If any person whose license to hunt and trap, or whose privilege to hunt and trap while in possession of a firearm, has been revoked pursuant to this section, thereafter hunts or traps while in possession of a firearm, he shall be guilty of a Class 1 misdemeanor, and, in addition to any penalty imposed by the jury or the court trying the case without a jury, the trial judge may revoke such person's hunting or trapping license and privileges to hunt or trap while in possession of a firearm for a period of one year to life. The clerk of the court shall notify the Department of Wildlife Resources as is provided in subsection C herein.</section>
+	</text>
+	<history>1977, c. 194; 1985, c. 182; 1991, c. 384; 2010, c. 183; 2011, c. 684; 2014, cc. 444, 579; 2020, c. 958.</history>
+</law>

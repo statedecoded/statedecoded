@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4" level="3">Regulation of Sewage Discharges</unit>
+	</structure>
+	<section_number>62.1-44.18:2</section_number>
+	<catch_line>When Board may prohibit discharge; permits</catch_line>
+	<text>
+		<section prefix="A">Notwithstanding any other provision of this chapter, the Board shall have the authority to prohibit any present or proposed discharge of sewage, industrial wastes, or other wastes into any sewerage system or treatment works when it has determined that such discharge would threaten the public health and safety, or would substantially interfere or be incompatible with the treatment works, or would substantially interfere with usage of state waters as designated by the Board. Before making any such determination, the Board shall consult with and receive the advice of the State Department of Health.</section>
+		<section prefix="B">The Board shall have the authority to issue permits which prescribe the terms and conditions upon which the discharge of sewage, industrial wastes, or other wastes may be made into any sewerage system or treatment works. The Board may revoke or amend any such permit for good cause and after proper hearing. Notwithstanding the requirement for notice and a hearing, the Board may, after consultation with the State Department of Health, summarily revoke or amend such permit when it determines that the permitted discharge poses a threat to the public health and safety, or is interfering substantially with the treatment works, or is grossly affecting usage of state waters as designated by the Board. In such case, the Board shall hold a hearing as soon as practicable but in no event later than twenty days after the revocation or amendment with reasonable notice to the owner as to the time and place thereof to affirm, modify, or rescind the summary revocation or amendment of such permit.</section>
+		<section prefix="C">Nothing in this section shall limit the authority of the Board to proceed against such owner directly under § 62.1-44.23 or § 62.1-44.32 after the Board has prohibited discharge, or after the Board has summarily amended or revoked the permit which authorized the discharge. If a proposed revocation or amendment of a permit is mutually agreeable to the Board and the owner, the hearing and notice thereof may be dispensed with.</section>
+	</text>
+	<history>1976, c. 626.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="3.1" level="3">Toxics Discharge Reduction</unit>
+	</structure>
+	<section_number>62.1-44.17:4</section_number>
+	<catch_line>Evaluation of toxics removal and remediation technology</catch_line>
+	<text>
+		The Board shall conduct a review of instream toxics removal or remediation technologies, a minimum of once every five years, to determine whether (i) new technologies for responding to toxic contamination will necessitate any changes in the selection of removal or remediation strategies previously included as provisions of Board agreements and (ii) any of the Department of Environmental Quality's current strategies for responding to toxic contamination need to be revised.
+	</text>
+	<history>2000, cc. 17, 1043.</history>
+</law>

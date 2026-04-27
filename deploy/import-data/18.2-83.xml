@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-83</section_number>
+	<catch_line>Threats to bomb, damage, or discharge a firearm within or at buildings or means of transportation; false information as to danger to such buildings, etc.; punishment; venue</catch_line>
+	<text>
+		<section prefix="A">Any person (i) who makes and communicates to another by any means any threat to bomb, burn, destroy, discharge a firearm within or at, or in any manner damage any place of assembly, building or other structure, or means of transportation or (ii) who communicates to another, by any means, information, knowing the same to be false, as to the existence of any peril of bombing, burning, destruction, discharging of a firearm within or at, or damage to any such place of assembly, building or other structure, or means of transportation is guilty of a Class 5 felony, provided, however, that if such person is under 18 years of age, he is guilty of a Class 1 misdemeanor.</section>
+		<section prefix="B">A violation of this section may be prosecuted either in the jurisdiction from which the communication was made or in the jurisdiction where the communication was received.</section>
+	</text>
+	<history>Code 1950, §§ 18.1-78.1 through 18.2-78.4; 1960, c. 358; 1975, cc. 14, 15; 1982, c. 502; 2020, c. 1002; 2022, c. 336; 2025, c. 368.</history>
+</law>

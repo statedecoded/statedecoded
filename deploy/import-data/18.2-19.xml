@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="2" level="2">Principals and Accessories</unit>
+	</structure>
+	<section_number>18.2-19</section_number>
+	<catch_line>How accessories after the fact punished; certain exceptions</catch_line>
+	<text>
+		Every accessory after the fact is guilty of (i) a Class 6 felony in the case of a homicide offense that is punishable as a Class 1 or Class 2 felony or (ii) a Class 1 misdemeanor in the case of any other felony. However, no person in the relation of spouse, parent or grandparent, child or grandchild, or sibling, by consanguinity or affinity, or servant to the offender, who, after the commission of a felony, aids or assists a principal felon or accessory before the fact to avoid or escape from prosecution or punishment, shall be deemed an accessory after the fact.
+	</text>
+	<history>Code 1950, §§ 18.1-11, 18.1-12; 1960, c. 358; 1975, cc. 14, 15; 2014, c. 668; 2020, c. 900; 2021, Sp. Sess. I, cc. 344, 345.</history>
+</law>

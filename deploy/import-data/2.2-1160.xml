@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division of Engineering and Buildings</unit>
+	</structure>
+	<section_number>2.2-1160</section_number>
+	<catch_line>Facilities for persons with physical disabilities; what buildings to be constructed in accordance with standards</catch_line>
+	<text>
+		Every building or facility designed, constructed or substantially altered after the effective date of a standard issued under subsection B of § 2.2-1159, which is applicable to such building shall be designed, constructed or altered in accordance with such standard.
+	</text>
+	<history>1970, c. 539, § 2.1-109.05; 1977, c. 672, § 2.1-519; 2001, c. 844.</history>
+</law>

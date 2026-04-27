@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="3" level="3">Classification of Criminal Offenses and Punishment Therefor</unit>
+	</structure>
+	<section_number>18.2-10</section_number>
+	<catch_line>Punishment for conviction of felony; penalty</catch_line>
+	<text>
+		The authorized punishments for conviction of a felony are:
+		<section prefix="a">For Class 1 felonies, imprisonment for life and, subject to subdivision (g), a fine of not more than $100,000. Any person who was 18 years of age or older at the time of the offense and who is sentenced to imprisonment for life upon conviction of a Class 1 felony shall not be eligible for (i) parole, (ii) any good conduct allowance or any earned sentence credits under Chapter 6 (§ 53.1-186 et seq.) of Title 53.1, or (iii) conditional release pursuant to § 53.1-40.01 or 53.1-40.02.</section>
+		<section prefix="b">For Class 2 felonies, imprisonment for life or for any term not less than 20 years and, subject to subdivision (g), a fine of not more than $100,000.</section>
+		<section prefix="c">For Class 3 felonies, a term of imprisonment of not less than five years nor more than 20 years and, subject to subdivision (g), a fine of not more than $100,000.</section>
+		<section prefix="d">For Class 4 felonies, a term of imprisonment of not less than two years nor more than 10 years and, subject to subdivision (g), a fine of not more than $100,000.</section>
+		<section prefix="e">For Class 5 felonies, a term of imprisonment of not less than one year nor more than 10 years, or in the discretion of the jury or the court trying the case without a jury, confinement in jail for not more than 12 months and a fine of not more than $2,500, either or both.</section>
+		<section prefix="f">For Class 6 felonies, a term of imprisonment of not less than one year nor more than five years, or in the discretion of the jury or the court trying the case without a jury, confinement in jail for not more than 12 months and a fine of not more than $2,500, either or both.</section>
+		<section prefix="g">Except as specifically authorized in subdivision (e) or (f), the court shall impose either a sentence of imprisonment together with a fine, or imprisonment only. However, if the defendant is not a natural person, the court shall impose only a fine.</section>
+		For any felony offense committed (i) on or after January 1, 1995, the court may, and (ii) on or after July 1, 2000, shall, except in cases in which the court orders a suspended term of confinement of at least six months, impose an additional term of incarceration of not less than six months nor more than three years, which shall be suspended conditioned upon successful completion of a period of probation pursuant to § 19.2-295.2 and compliance with such other terms as the sentencing court may require. However, such additional term may only be imposed when the sentence includes an active term of incarceration in a correctional facility.
+		For a felony offense prohibiting proximity to children as described in subsection A of § 18.2-370.2, the sentencing court is authorized to impose the punishment set forth in that section in addition to any other penalty provided by law.
+	</text>
+	<history>1975, cc. 14, 15; 1977, c. 492; 1990, c. 788; 1991, c. 7; 1994, Sp. Sess. II, cc. 1, 2; 1995, c. 427; 2000, cc. 361, 767, 770; 2003, cc. 1031, 1040; 2006, cc. 36, 733; 2008, c. 579; 2017, cc. 86, 212; 2020, cc. 1115, 1116; 2021, Sp. Sess. I, cc. 344, 345; 2025, c. 716.</history>
+</law>

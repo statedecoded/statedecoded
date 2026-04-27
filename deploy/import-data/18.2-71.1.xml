@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="9" level="3">Abortion</unit>
+	</structure>
+	<section_number>18.2-71.1</section_number>
+	<catch_line>Partial birth infanticide; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who knowingly performs partial birth infanticide and thereby kills a human infant is guilty of a Class 4 felony.</section>
+		<section prefix="B">For the purposes of this section, "partial birth infanticide" means any deliberate act that (i) is intended to kill a human infant who has been born alive, but who has not been completely extracted or expelled from its mother, and that (ii) does kill such infant, regardless of whether death occurs before or after extraction or expulsion from its mother has been completed.</section>
+		The term "partial birth infanticide" shall not under any circumstances be construed to include any of the following procedures: (i) the suction curettage abortion procedure, (ii) the suction aspiration abortion procedure, (iii) the dilation and evacuation abortion procedure involving dismemberment of the fetus prior to removal from the body of the mother, or (iv) completing delivery of a living human infant and severing the umbilical cord of any infant who has been completely delivered.
+		<section prefix="C">For the purposes of this section, "human infant who has been born alive" means a product of human conception that has been completely or substantially expelled or extracted from its mother, regardless of the duration of pregnancy, which after such expulsion or extraction breathes or shows any other evidence of life such as beating of the heart, pulsation of the umbilical cord, or definite movement of voluntary muscles, whether or not the umbilical cord has been cut or the placenta is attached.</section>
+		<section prefix="D">For purposes of this section, "substantially expelled or extracted from its mother" means, in the case of a headfirst presentation, the infant's entire head is outside the body of the mother, or, in the case of breech presentation, any part of the infant's trunk past the navel is outside the body of the mother.</section>
+		<section prefix="E">This section shall not prohibit the use by a physician of any procedure that, in reasonable medical judgment, is necessary to prevent the death of the mother, so long as the physician takes every medically reasonable step, consistent with such procedure, to preserve the life and health of the infant. A procedure shall not be deemed necessary to prevent the death of the mother if completing the delivery of the living infant would prevent the death of the mother.</section>
+		<section prefix="F">The mother may not be prosecuted for any criminal offense based on the performance of any act or procedure by a physician in violation of this section.</section>
+	</text>
+	<history>2003, cc. 961, 963.</history>
+</law>

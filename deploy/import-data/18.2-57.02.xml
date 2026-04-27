@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-57.02</section_number>
+	<catch_line>Disarming a law-enforcement or correctional officer; penalty</catch_line>
+	<text>
+		Any person who knows or has reason to know a person is a law-enforcement officer as defined in § 18.2-57, a correctional officer as defined in § 53.1-1, or a person employed by the Department of Corrections directly involved in the care, treatment or supervision of inmates in the custody of the Department, who is engaged in the performance of his duties as such and, with the intent to impede or prevent any such person from performing his official duties, knowingly and without the person's permission removes a chemical irritant weapon or impact weapon from the possession of the officer or deprives the officer of the use of the weapon is guilty of a Class 1 misdemeanor. However, if the weapon removed or deprived in violation of this section is the officer's firearm or stun weapon as defined in § 18.2-308.1, he shall be guilty of a Class 6 felony. A violation of this section shall constitute a separate and distinct offense.
+	</text>
+	<history>2001, c. 2; 2007, c. 519.</history>
+</law>

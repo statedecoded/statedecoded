@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="1" level="2">Warehouse Receipts</unit>
+	</structure>
+	<section_number>61.1-6</section_number>
+	<catch_line>Fraudulent negotiation of receipt for mortgaged goods</catch_line>
+	<text>
+		Any person who deposits goods to which he has not title, upon which there is a lien or security interest, and who takes for such goods a negotiable receipt which he afterwards negotiates for value with intent to deceive, and without disclosing his want of title or the existence of the lien or security interest, shall be guilty of a misdemeanor, and upon conviction shall be punished as provided in § 18.2-12.
+	</text>
+	<history>Code 1950, § 61-58; 1968, c. 69.</history>
+</law>
