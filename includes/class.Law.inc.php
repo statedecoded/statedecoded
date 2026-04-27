@@ -614,8 +614,6 @@ class Law
 	 * By default, this will get the preferred link.
 	 *
 	 */
-	### TODO fix references to this.
-	### TODO replace the body of this with a call to Permalink.
 	public function get_url($law_id, $edition_id = null)
 	{
 		$permalink_obj = new Permalink(array('db' => $this->db));

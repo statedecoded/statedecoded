@@ -1822,7 +1822,6 @@ class ParserController
 			$error = TRUE;
 		}
 
-		// TODO: Fix me
 		if(defined('SOLR_URL'))
 		{
 			/*
@@ -1952,8 +1951,7 @@ class ParserController
 
 			$search_index->commit();
 
-			// $this->logger->message('Indexing structures', 6);
-			### TODO: Index structures
+			// Structure-level indexing is not implemented; only laws are indexed.
 
 			$this->logger->message('Laws were indexed', 5);
 

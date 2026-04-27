@@ -3,8 +3,8 @@
 require_once 'class.CliAction.inc.php';
 require_once CUSTOM_FUNCTIONS;
 
-// TODO: Allow editions to be made current.
-//       When this happens, permalinks will need to be created.
+// Note: making an edition current via CLI is not yet implemented;
+//       use the admin web UI instead. Permalinks must be rebuilt after any such change.
 
 class EditionAction extends CliAction
 {

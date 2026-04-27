@@ -169,8 +169,6 @@ class ExportHTML extends Export
 			$content .= "</ul>\n</section>\n";
 		}
 
-		# TODO: Handle History, Ed. Note, etc.
-
 		return str_replace(
 			array(
 				'{{title}}',
@@ -190,7 +188,6 @@ class ExportHTML extends Export
 		 * We must strip out most html, including links, since we don't the
 		 * context the file will be used in.
 		 */
-		# TODO: fix images.
 		return strip_tags($content,
 					'<p><br><section><div><pre><ul><li><table><tr><td><i><b><em><strong>');
 	}

@@ -415,8 +415,8 @@ class Parser
 			/*
 			 * Determine data type and import
 			 */
-			// TODO : Make this smarter.  We can use the PECL Fileinfo package
-			// instead, but I'd rather not have to require that at this point. -BH
+			
+			
 
 			$extension = substr($filename, strrpos($filename, '.')+1);
 
@@ -430,7 +430,7 @@ class Parser
 					$this->import_json($filename);
 					break;
 
-				// TODO: Fix this.
+				
 				default:
 					$this->logger->message('Skipping unknown file type "' . $filename .'"', 5);
 					// Anything else, we can't handle.
@@ -695,8 +695,6 @@ class Parser
 	/**
 	 * Remove all old permalinks
 	 */
-	// TODO: eventually, we'll want to keep these and have multiple versions.
-	// See issues #314 #362 #363
 	public function delete_permalinks($edition_id)
 	{
 

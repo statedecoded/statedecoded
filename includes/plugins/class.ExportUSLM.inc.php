@@ -140,8 +140,6 @@ class ExportUSLM extends Export
  		$content = $doc->createElement('content');
  		$section->appendChild($content);
 
- 		// TODO: Be smarter about handling this.  Just using raw HTML is not great,
- 		// we should be handling paragraphs properly.
 		$section_content = $doc->createCDATASection($law->html);
 		$content->appendChild($section_content);
 

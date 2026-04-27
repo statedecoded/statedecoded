@@ -409,10 +409,8 @@ class API
 	/**
 	 * E-mail an API activation URL to the provided e-mail address.
 	 *
-	 * TODO
-	 * This is an awfully crude way to send an e-mail. At present (v0.5), there is no other e-mail
-	 * functionality, so there's no more advanced functionality to hook into, nor is it worth
-	 * establishing a system just for this functionality.
+	 * Uses PHP's mail() directly — no templating or queuing — as there is no
+	 * other e-mail infrastructure in the project to hook into.
 	 */
 	function send_activation_email()
 	{

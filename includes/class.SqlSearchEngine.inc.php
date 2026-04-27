@@ -154,8 +154,7 @@ class SqlSearchEngine extends SearchEngineInterface
 			 * then in the text.
 			 */
 
-			# TODO: Search structure->metadata->text for matches. Since we're using
-			# PHP's serializer, we can't do this natively in SQL at the moment.
+			# Note: structure->metadata->text is serialized and not directly searchable in SQL.
 
 			$law_where_or = array();
 			$structure_where_or = array();

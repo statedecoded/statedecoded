@@ -6,10 +6,7 @@
  * Updates the database to the latest version.
  *
  * NOTE: Currently only supports upgrading to the latest version.
- *
- * TODO:
- *   + Support rolling to a specific version.
- *   + Support rolling back.
+ *       Targeting a specific version and rollback are not implemented.
  */
 
 require_once 'class.CliAction.inc.php';
