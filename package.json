@@ -10,6 +10,9 @@
     "jquery": "3.7.1",
     "jquery-ui-dist": "1.13.3",
     "mousetrap": "1.6.5",
-    "qtip2": "2.2.1"
+    "qtip2": "3.0.3"
+  },
+  "devDependencies": {
+    "sass": "^1.0.0"
   }
 }
