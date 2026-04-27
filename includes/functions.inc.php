@@ -73,7 +73,6 @@ function fetch_url($url)
 	curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols & ~(CURLPROTO_FILE | CURLPROTO_SCP));
 
 	$html = curl_exec($ch);
-	curl_close($ch);
 	return $html;
 
 }
