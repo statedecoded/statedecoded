@@ -36,6 +36,7 @@ cp(path.join(nm, 'jquery/dist/jquery.min.js'),                  path.join(vendor
 cp(path.join(nm, 'jquery-ui-dist/jquery-ui.min.js'),            path.join(vendor, 'jquery-ui.min.js'));
 cp(path.join(nm, 'mousetrap/mousetrap.min.js'),                  path.join(vendor, 'mousetrap.min.js'));
 cp(path.join(nm, 'qtip2/dist/jquery.qtip.min.js'),              path.join(vendor, 'jquery.qtip.min.js'));
+cp(path.join(nm, 'qtip2/dist/jquery.qtip.min.map'),             path.join(vendor, 'jquery.qtip.min.map'));
 
 // CSS
 cp(path.join(nm, 'jquery-ui-dist/jquery-ui.css'),               path.join(css, 'jquery-ui.css'));
