@@ -129,7 +129,7 @@ $(document).ready(function () {
 		$(id).show('highlight', {color: '#ffff00'}, 'fast');
 	}
 
-	$('a[href*=#]').on('click', function(){
+	$('a[href*="#"]').on('click', function(){
 		var elemId = '#' + escapeSelector($(this).attr('href').split('#')[1]);
 		var target = document.querySelector(elemId);
 		if (target) { target.scrollIntoView({behavior: 'smooth'}); }
