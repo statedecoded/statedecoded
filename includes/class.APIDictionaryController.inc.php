@@ -63,7 +63,7 @@ class APIDictionaryController extends BaseAPIController
 		 * If we're told to use generic definitions, pass that through to the Dictionary class.
 		 */
 		$dict_args = array();
-		if($_GET['generic']) {
+		if(!empty($_GET['generic'])) {
 			if($_GET['generic'] === '1' || strtolower($_GET['generic']) === 'true') {
 				$dict_args['generic_terms'] = TRUE;
 			}
@@ -225,7 +225,7 @@ class APIDictionaryController extends BaseAPIController
 		} // end elseif (!empty($args['section']))
 
 
-		$this->render($response, 'OK', $_REQUEST['callback']);
+		$this->render($response, 'OK', $_REQUEST['callback'] ?? null);
 
 	} /* handle() */
 
