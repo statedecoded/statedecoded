@@ -1,6 +1,5 @@
 .DS_Store
 node_modules/
-package-lock.json
 
 # Front-end assets managed by npm — built via `npm run build`
 htdocs/themes/StateDecoded2013/static/css/application.css
