@@ -46,11 +46,6 @@ class ImportAction extends CliAction
 				)
 			);
 
-			/*
-			 * We only use existing editions, for simplicity.
-			 */
-			$edition_args['edition_option'] = 'existing';
-
 			if(isset($this->options['edition']))
 			{
 				$edition_obj = new Edition($this->db);
@@ -61,6 +56,7 @@ class ImportAction extends CliAction
 					die();
 				}
 
+				$edition_args['edition_option'] = 'existing';
 				$edition_args['edition'] = $edition->id;
 			}
 			else
