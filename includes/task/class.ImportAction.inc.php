@@ -62,7 +62,20 @@ class ImportAction extends CliAction
 			else
 			{
 				$edition = $parser->get_current_edition();
-				$edition_args['edition'] = $edition->id;
+
+				if($edition !== FALSE)
+				{
+					$edition_args['edition_option'] = 'existing';
+					$edition_args['edition'] = $edition->id;
+				}
+				else
+				{
+					// No editions exist yet — create a default one.
+					$edition_args['edition_option'] = 'new';
+					$edition_args['new_edition_name'] = defined('SITE_TITLE') ? SITE_TITLE : 'Default';
+					$edition_args['new_edition_slug'] = 'default';
+					$edition_args['make_current'] = 1;
+				}
 			}
 
 			if(isset($this->options['current'])) {
