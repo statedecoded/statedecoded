@@ -40,6 +40,7 @@ class ExportHTML extends Export
 	public $htmlTemplate = '<!doctype html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>{{title}}</title>
 </head>
 <body>
