@@ -104,7 +104,7 @@ class ImportAction extends CliAction
 					else
 					{
 						$parser->clear_cache();
-						$parser->clear_edition($edition->id);
+						$parser->clear_edition($parser->edition_id);
 
 						/*
 						 * We should only continue if parsing was successful.
