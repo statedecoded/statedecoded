@@ -58,7 +58,7 @@ class ExportSDXML extends Export
 			'url' => $base_url . '/' . $law->edition->slug . '/',
 			'slug' => $law->edition->slug,
 			'current' => $law->edition->current ? 'TRUE' : 'FALSE',
-			'last_updated' => date('Y-m-d', strtotime($law->edition->last_import))
+			'last_updated' => ($law->edition->last_import ? date('Y-m-d', strtotime($law->edition->last_import)) : '')
 		));
 
 		if(isset($law->references) && is_array($law->references) && count($law->references))
