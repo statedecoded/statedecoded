@@ -8,15 +8,23 @@
 	<section_number>18.2-67.5:3</section_number>
 	<catch_line>Punishment upon conviction of certain subsequent violent felony sexual assault</catch_line>
 	<text>
-		<section prefix="A">Any person convicted of more than one offense specified in subsection B, when such offenses were not part of a common act, transaction or scheme, and who has been at liberty as defined in § 53.1-151 between each conviction shall, upon conviction of the second or subsequent such offense, be sentenced to life imprisonment and shall not have all or any portion of the sentence suspended, provided it is admitted, or found by the jury or judge before whom he is tried, that he has been previously convicted of at least one of the specified offenses.</section>
-		<section prefix="B">The provisions of subsection A shall apply to convictions for:</section>
-		<section prefix="1">Rape in violation of § 18.2-61;</section>
-		<section prefix="2">Forcible sodomy in violation of § 18.2-67.1;</section>
-		<section prefix="3">Object sexual penetration in violation of § 18.2-67.2;</section>
-		<section prefix="4">Abduction with intent to defile in violation of § 18.2-48; or</section>
-		<section prefix="5">Conspiracy to commit any offense listed in subdivisions 1 through 4 pursuant to § 18.2-22.</section>
-		<section prefix="C">For purposes of this section, prior convictions shall include (i) adult convictions for felonies under the laws of any state or the United States that are substantially similar to those listed in subsection B and (ii) findings of not innocent, adjudications or convictions in the case of a juvenile if the juvenile offense is substantially similar to those listed in subsection B, the offense would be a felony if committed by an adult in the Commonwealth and the offense was committed less than twenty years before the second offense.</section>
-		The Commonwealth shall notify the defendant in the indictment, information, or warrant, at least thirty days prior to trial, of its intention to seek punishment pursuant to this section.
+		<section prefix="A">Any person convicted of more than one offense specified in subsection B, when such offenses were not part of a common act, transaction or scheme, and who has been at liberty as defined in § 53.1-151 between each conviction shall, upon conviction of the second or subsequent such offense, be sentenced to life imprisonment and shall not have all or any portion of the sentence suspended, provided it is admitted, or found by the jury or judge before whom he is tried, that he has been previously convicted of at least one of the specified offenses.
+		</section>
+		<section prefix="B">The provisions of subsection A shall apply to convictions for:
+			<section prefix="1">Rape in violation of § 18.2-61;
+			</section>
+			<section prefix="2">Forcible sodomy in violation of § 18.2-67.1;
+			</section>
+			<section prefix="3">Object sexual penetration in violation of § 18.2-67.2;
+			</section>
+			<section prefix="4">Abduction with intent to defile in violation of § 18.2-48; or
+			</section>
+			<section prefix="5">Conspiracy to commit any offense listed in subdivisions 1 through 4 pursuant to § 18.2-22.
+			</section>
+		</section>
+		<section prefix="C">For purposes of this section, prior convictions shall include (i) adult convictions for felonies under the laws of any state or the United States that are substantially similar to those listed in subsection B and (ii) findings of not innocent, adjudications or convictions in the case of a juvenile if the juvenile offense is substantially similar to those listed in subsection B, the offense would be a felony if committed by an adult in the Commonwealth and the offense was committed less than twenty years before the second offense.
+			The Commonwealth shall notify the defendant in the indictment, information, or warrant, at least thirty days prior to trial, of its intention to seek punishment pursuant to this section.
+		</section>
 	</text>
 	<history>1995, c. 834; 2007, c. 506.</history>
 </law>

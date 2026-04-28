@@ -11,22 +11,38 @@
 	<catch_line>Standards for inspection of buildings for asbestos</catch_line>
 	<text>
 		The Director, at the direction of the Secretary and in cooperation with any other appropriate agencies including, but not limited to, the Department of Education shall adopt standards for the inspection of state-owned and local education agency buildings of all types and the ancillary facilities used in connection therewith for the purpose of identifying the presence of asbestos and to the extent practicable the relative hazard to health or safety posed by any asbestos identified. The Administrative Process Act (§ 2.2-4000 et seq.) shall not apply to the adoption of standards under this section.
-		<section prefix="A">The standards shall include:</section>
-		<section prefix="1">Inspection for the presence, location and condition of asbestos-containing materials;</section>
-		<section prefix="2">Development of a building asbestos profile for each building inspected and found to contain asbestos-containing material, which profile shall:</section>
-		<section prefix="a">Include information regarding product type (surfacing material, thermal system insulation, or miscellaneous material), specific location, estimated quantity (in square or linear feet), type and percentage of asbestos content, and physical condition;</section>
-		<section prefix="b">Be kept in possession of the person designated pursuant to subsection E, at a location in the building where it is readily accessible to building employees or their designated representatives;</section>
-		<section prefix="c">Be updated as surveillance, test results and/or response actions are undertaken in the building.</section>
-		<section prefix="B">The following standards are established for state-owned buildings:</section>
-		<section prefix="1">When air monitoring is used for building assessment, it shall be used in conjunction with comprehensive visual assessment techniques for determining the priority and nature of response action.</section>
-		<section prefix="2">The airborne asbestos reoccupancy level, to be measured upon completion of response actions, shall be equal to the reoccupancy standards established for buildings pursuant to subsection C.</section>
-		<section prefix="C">The Director, in conjunction with the state Departments of Professional and Occupational Regulation, Health, Labor and Industry, Education, and Environmental Quality, shall adopt standards governing aggressive air sampling after completion of an asbestos project for airborne asbestos for local education agencies and public institutions of higher education.</section>
-		<section prefix="D">Asbestos management plans for state-owned buildings shall include:</section>
-		<section prefix="1">Operation and maintenance programs, including procedures for the notification of maintenance and housekeeping personnel of the location of asbestos-containing materials likely to be disturbed during routine building operations; the labeling of asbestos-containing materials in routine maintenance areas; and work practices, engineering controls or personal protective measures to minimize asbestos exposure to such personnel and other building occupants;</section>
-		<section prefix="2">Training requirements for maintenance workers and maintenance supervisory personnel;</section>
-		<section prefix="3">Assurance of compliance by contractors with licensing under applicable state laws and regulations; and</section>
-		<section prefix="4">Provisions for setting priorities of buildings for response actions.</section>
-		<section prefix="E">Each person responsible for such management plans shall designate one member of the maintenance personnel in or responsible for each building containing asbestos-containing materials to serve as the liaison to coordinate the specific efforts of such program within the particular building to which the liaison is assigned.</section>
+		<section prefix="A">The standards shall include:
+			<section prefix="1">Inspection for the presence, location and condition of asbestos-containing materials;
+			</section>
+			<section prefix="2">Development of a building asbestos profile for each building inspected and found to contain asbestos-containing material, which profile shall:
+				<section prefix="a">Include information regarding product type (surfacing material, thermal system insulation, or miscellaneous material), specific location, estimated quantity (in square or linear feet), type and percentage of asbestos content, and physical condition;
+				</section>
+				<section prefix="b">Be kept in possession of the person designated pursuant to subsection E, at a location in the building where it is readily accessible to building employees or their designated representatives;
+				</section>
+				<section prefix="c">Be updated as surveillance, test results and/or response actions are undertaken in the building.
+				</section>
+			</section>
+		</section>
+		<section prefix="B">The following standards are established for state-owned buildings:
+			<section prefix="1">When air monitoring is used for building assessment, it shall be used in conjunction with comprehensive visual assessment techniques for determining the priority and nature of response action.
+			</section>
+			<section prefix="2">The airborne asbestos reoccupancy level, to be measured upon completion of response actions, shall be equal to the reoccupancy standards established for buildings pursuant to subsection C.
+			</section>
+		</section>
+		<section prefix="C">The Director, in conjunction with the state Departments of Professional and Occupational Regulation, Health, Labor and Industry, Education, and Environmental Quality, shall adopt standards governing aggressive air sampling after completion of an asbestos project for airborne asbestos for local education agencies and public institutions of higher education.
+		</section>
+		<section prefix="D">Asbestos management plans for state-owned buildings shall include:
+			<section prefix="1">Operation and maintenance programs, including procedures for the notification of maintenance and housekeeping personnel of the location of asbestos-containing materials likely to be disturbed during routine building operations; the labeling of asbestos-containing materials in routine maintenance areas; and work practices, engineering controls or personal protective measures to minimize asbestos exposure to such personnel and other building occupants;
+			</section>
+			<section prefix="2">Training requirements for maintenance workers and maintenance supervisory personnel;
+			</section>
+			<section prefix="3">Assurance of compliance by contractors with licensing under applicable state laws and regulations; and
+			</section>
+			<section prefix="4">Provisions for setting priorities of buildings for response actions.
+			</section>
+		</section>
+		<section prefix="E">Each person responsible for such management plans shall designate one member of the maintenance personnel in or responsible for each building containing asbestos-containing materials to serve as the liaison to coordinate the specific efforts of such program within the particular building to which the liaison is assigned.
+		</section>
 	</text>
 	<history>1985, c. 534, § 2.1-526.14; 1986, cc. 288, 560; 1988, c. 723; 1993, c. 660; 2001, c. 844.</history>
 </law>

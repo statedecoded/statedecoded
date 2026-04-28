@@ -11,9 +11,12 @@
 	<catch_line>Vehicles assigned to the centralized fleet</catch_line>
 	<text>
 		Passenger-type vehicles purchased with public funds by any department, agency, institution, or commission of the Commonwealth, or any officer or employee on behalf of the Commonwealth, shall be assigned to the centralized fleet with the following exceptions:
-		<section prefix="1">Vehicles that have special equipment or performance requirements related to use by law-enforcement officers;</section>
-		<section prefix="2">Vehicles for use by any elected official of the people of the Commonwealth; and</section>
-		<section prefix="3">Such other special category of vehicles as may be excepted by the Director.</section>
+		<section prefix="1">Vehicles that have special equipment or performance requirements related to use by law-enforcement officers;
+		</section>
+		<section prefix="2">Vehicles for use by any elected official of the people of the Commonwealth; and
+		</section>
+		<section prefix="3">Such other special category of vehicles as may be excepted by the Director.
+		</section>
 	</text>
 	<history>1989, c. 479, § 33.1-401; 2001, cc. 815, 842, § 2.1-548.02.</history>
 </law>

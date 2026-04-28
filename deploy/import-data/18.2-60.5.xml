@@ -8,17 +8,26 @@
 	<section_number>18.2-60.5</section_number>
 	<catch_line>Unauthorized use of electronic tracking device; penalty</catch_line>
 	<text>
-		<section prefix="A">Any person who installs or places an electronic tracking device through intentionally deceptive means and without consent, or causes an electronic tracking device to be installed or placed through intentionally deceptive means and without consent, and uses such device to track the location of any person is guilty of a Class 1 misdemeanor.</section>
-		<section prefix="B">The provisions of this section shall not apply to the installation, placement, or use of an electronic tracking device by:</section>
-		<section prefix="1">A law-enforcement officer, judicial officer, probation or parole officer, or employee of the Department of Corrections when any such person is engaged in the lawful performance of official duties and in accordance with other state or federal law;</section>
-		<section prefix="2">The parent or legal guardian of a minor when tracking (i) the minor or (ii) any person authorized by the parent or legal guardian as a caretaker of the minor at any time when the minor is under the person's sole care;</section>
-		<section prefix="3">A legally authorized representative of a vulnerable adult, as defined in § 18.2-369;</section>
-		<section prefix="4">The owner of fleet vehicles, when tracking such vehicles;</section>
-		<section prefix="5">An electronic communications provider to the extent that such installation, placement, or use is disclosed in the provider's terms of use, privacy policy, or similar document made available to the customer; or</section>
-		<section prefix="6">A registered private investigator, as defined in § 9.1-138, who is regulated in accordance with § 9.1-139 and is acting in the normal course of his business and with the consent of the owner of the property upon which the electronic tracking device is installed and placed. However, such exception shall not apply if the private investigator is working on behalf of a client who is subject to a protective order under § 16.1-253, 16.1-253.1, 16.1-253.4, 16.1-279.1, 19.2-152.8, 19.2-152.9, or 19.2-152.10 or subsection B of § 20-103, or if the private investigator knows or should reasonably know that the client seeks the private investigator's services to aid in the commission of a crime.</section>
-		<section prefix="C">For the purposes of this section:</section>
-		"Electronic tracking device" means an electronic or mechanical device that permits a person to remotely determine or track the position and movement of another person.
-		"Fleet vehicle" means (i) one or more motor vehicles owned by a single entity and operated by employees or agents of the entity for business or government purposes, (ii) motor vehicles held for lease or rental to the general public, or (iii) motor vehicles held for sale by motor vehicle dealers.
+		<section prefix="A">Any person who installs or places an electronic tracking device through intentionally deceptive means and without consent, or causes an electronic tracking device to be installed or placed through intentionally deceptive means and without consent, and uses such device to track the location of any person is guilty of a Class 1 misdemeanor.
+		</section>
+		<section prefix="B">The provisions of this section shall not apply to the installation, placement, or use of an electronic tracking device by:
+			<section prefix="1">A law-enforcement officer, judicial officer, probation or parole officer, or employee of the Department of Corrections when any such person is engaged in the lawful performance of official duties and in accordance with other state or federal law;
+			</section>
+			<section prefix="2">The parent or legal guardian of a minor when tracking (i) the minor or (ii) any person authorized by the parent or legal guardian as a caretaker of the minor at any time when the minor is under the person's sole care;
+			</section>
+			<section prefix="3">A legally authorized representative of a vulnerable adult, as defined in § 18.2-369;
+			</section>
+			<section prefix="4">The owner of fleet vehicles, when tracking such vehicles;
+			</section>
+			<section prefix="5">An electronic communications provider to the extent that such installation, placement, or use is disclosed in the provider's terms of use, privacy policy, or similar document made available to the customer; or
+			</section>
+			<section prefix="6">A registered private investigator, as defined in § 9.1-138, who is regulated in accordance with § 9.1-139 and is acting in the normal course of his business and with the consent of the owner of the property upon which the electronic tracking device is installed and placed. However, such exception shall not apply if the private investigator is working on behalf of a client who is subject to a protective order under § 16.1-253, 16.1-253.1, 16.1-253.4, 16.1-279.1, 19.2-152.8, 19.2-152.9, or 19.2-152.10 or subsection B of § 20-103, or if the private investigator knows or should reasonably know that the client seeks the private investigator's services to aid in the commission of a crime.
+			</section>
+		</section>
+		<section prefix="C">For the purposes of this section:
+			"Electronic tracking device" means an electronic or mechanical device that permits a person to remotely determine or track the position and movement of another person.
+			"Fleet vehicle" means (i) one or more motor vehicles owned by a single entity and operated by employees or agents of the entity for business or government purposes, (ii) motor vehicles held for lease or rental to the general public, or (iii) motor vehicles held for sale by motor vehicle dealers.
+		</section>
 	</text>
 	<history>2013, c. 434; 2020, c. 140; 2022, cc. 259, 642.</history>
 </law>

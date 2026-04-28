@@ -8,25 +8,44 @@
 	<section_number>62.1-44.18</section_number>
 	<catch_line>Sewerage systems, etc., under supervision of Board and Department of Environmental Quality; Board to regulate design specification and plans</catch_line>
 	<text>
-		<section prefix="A">All sewerage systems and sewage treatment works shall be under the general supervision of the Board.</section>
-		<section prefix="B">The Department of Environmental Quality shall, when requested, consult with and advise the authorities of cities, towns, sanitary districts, and any owner having or intending to have installed sewage treatment works as to the most appropriate type of treatment, but the Department shall not prepare plans, specifications, or detailed estimates of cost for any improvement of an existing or proposed sewage treatment works.</section>
-		<section prefix="C">It shall be the duty of the owner of any such sewerage system or sewage treatment works from which sewage is being discharged into any state waters to furnish, when requested by the Board, information with regard to the quantities and character of the raw and treated sewage and the operation results obtained in the removal and disposal of organic matter and other pertinent information as is required.</section>
-		<section prefix="D">The regulations of the Board shall govern the collection, conveyance, treatment and disposal of sewage. Such regulations shall be designed to protect the public health and promote the public welfare and may include, without limitation:</section>
-		<section prefix="1">A requirement that the owner obtain a permit prior to the construction, installation, modification or operation of a sewerage system or treatment;</section>
-		<section prefix="2">Criteria for the granting or denial of such permits;</section>
-		<section prefix="3">Standards for the design, construction, installation, modification and operation of sewerage systems and treatment works;</section>
-		<section prefix="4">Standards specifying the minimum distance between sewerage systems or treatment works and:</section>
-		<section prefix="a">Public and private wells supplying water for human consumption,</section>
-		<section prefix="b">Lakes and other impounded waters,</section>
-		<section prefix="c">Streams and rivers,</section>
-		<section prefix="d">Shellfish waters,</section>
-		<section prefix="e">Ground waters,</section>
-		<section prefix="f">Areas and places of human habitation, and</section>
-		<section prefix="g">Property lines;</section>
-		<section prefix="5">Standards as to the adequacy of an approved water supply;</section>
-		<section prefix="6">A prohibition against the discharge of untreated sewage onto land or into waters of the Commonwealth; and</section>
-		<section prefix="7">Criteria for determining the demonstrated ability of alternative onsite systems, which are not permitted through the then current sewage handling and disposal regulations, to treat and dispose of sewage as effectively as approved methods.</section>
-		<section prefix="E">In addition to factors related to the Board's responsibilities for the safe and sanitary treatment and disposal of sewage as they affect the public health and welfare, the Board shall, in establishing standards, give due consideration to economic costs of such standards in accordance with the applicable provisions of the Administrative Process Act (§ 2.2-4000 et seq.).</section>
+		<section prefix="A">All sewerage systems and sewage treatment works shall be under the general supervision of the Board.
+		</section>
+		<section prefix="B">The Department of Environmental Quality shall, when requested, consult with and advise the authorities of cities, towns, sanitary districts, and any owner having or intending to have installed sewage treatment works as to the most appropriate type of treatment, but the Department shall not prepare plans, specifications, or detailed estimates of cost for any improvement of an existing or proposed sewage treatment works.
+		</section>
+		<section prefix="C">It shall be the duty of the owner of any such sewerage system or sewage treatment works from which sewage is being discharged into any state waters to furnish, when requested by the Board, information with regard to the quantities and character of the raw and treated sewage and the operation results obtained in the removal and disposal of organic matter and other pertinent information as is required.
+		</section>
+		<section prefix="D">The regulations of the Board shall govern the collection, conveyance, treatment and disposal of sewage. Such regulations shall be designed to protect the public health and promote the public welfare and may include, without limitation:
+			<section prefix="1">A requirement that the owner obtain a permit prior to the construction, installation, modification or operation of a sewerage system or treatment;
+			</section>
+			<section prefix="2">Criteria for the granting or denial of such permits;
+			</section>
+			<section prefix="3">Standards for the design, construction, installation, modification and operation of sewerage systems and treatment works;
+			</section>
+			<section prefix="4">Standards specifying the minimum distance between sewerage systems or treatment works and:
+				<section prefix="a">Public and private wells supplying water for human consumption,
+				</section>
+				<section prefix="b">Lakes and other impounded waters,
+				</section>
+				<section prefix="c">Streams and rivers,
+				</section>
+				<section prefix="d">Shellfish waters,
+				</section>
+				<section prefix="e">Ground waters,
+				</section>
+				<section prefix="f">Areas and places of human habitation, and
+				</section>
+				<section prefix="g">Property lines;
+				</section>
+			</section>
+			<section prefix="5">Standards as to the adequacy of an approved water supply;
+			</section>
+			<section prefix="6">A prohibition against the discharge of untreated sewage onto land or into waters of the Commonwealth; and
+			</section>
+			<section prefix="7">Criteria for determining the demonstrated ability of alternative onsite systems, which are not permitted through the then current sewage handling and disposal regulations, to treat and dispose of sewage as effectively as approved methods.
+			</section>
+		</section>
+		<section prefix="E">In addition to factors related to the Board's responsibilities for the safe and sanitary treatment and disposal of sewage as they affect the public health and welfare, the Board shall, in establishing standards, give due consideration to economic costs of such standards in accordance with the applicable provisions of the Administrative Process Act (§ 2.2-4000 et seq.).
+		</section>
 	</text>
 	<history>Code 1950, §§ 62-39, § 62.1-31; 1968, c. 659; 1970, c. 638; 1991, c. 194; 2003, c. 614.</history>
 </law>

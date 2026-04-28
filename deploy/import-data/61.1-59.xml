@@ -8,8 +8,10 @@
 	<catch_line>Sales of burley tobacco</catch_line>
 	<text>
 		Sales of burley tobacco at warehouses or loosefloors shall be conducted so as to conform to one of the following methods:
-		<section prefix="1">Sales to be at the rate of not more than 90,000 pounds per hour, per set of buyers, or</section>
-		<section prefix="2">Sales to be at the rate of not more than 360 baskets per hour per set of buyers.</section>
+		<section prefix="1">Sales to be at the rate of not more than 90,000 pounds per hour, per set of buyers, or
+		</section>
+		<section prefix="2">Sales to be at the rate of not more than 360 baskets per hour per set of buyers.
+		</section>
 	</text>
 	<history>Code 1950, § 61-158; 1950, p. 66; 1968, c. 69.</history>
 </law>

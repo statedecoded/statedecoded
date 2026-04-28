@@ -10,12 +10,18 @@
 	<catch_line>Records to be held in confidence</catch_line>
 	<text>
 		The Commissioner shall hold the following records of the Department in confidence unless otherwise directed by the Governor or the Board:
-		<section prefix="1">Schedules of work for regulatory inspection;</section>
-		<section prefix="2">Trade secrets and commercial or financial information supplied by individuals or business entities to the Department;</section>
-		<section prefix="3">Reports of criminal violations made to the Department by persons outside the Department;</section>
-		<section prefix="4">Records of active investigations until the investigations are closed;</section>
-		<section prefix="5">Financial records of applicants for assistance from the Virginia Farm Loan Revolving Account except those records that are otherwise a matter of public record; and</section>
-		<section prefix="6">Tax returns required by the agricultural commodity boards established pursuant to this title to the extent necessary to protect the privacy of individual taxpayers.</section>
+		<section prefix="1">Schedules of work for regulatory inspection;
+		</section>
+		<section prefix="2">Trade secrets and commercial or financial information supplied by individuals or business entities to the Department;
+		</section>
+		<section prefix="3">Reports of criminal violations made to the Department by persons outside the Department;
+		</section>
+		<section prefix="4">Records of active investigations until the investigations are closed;
+		</section>
+		<section prefix="5">Financial records of applicants for assistance from the Virginia Farm Loan Revolving Account except those records that are otherwise a matter of public record; and
+		</section>
+		<section prefix="6">Tax returns required by the agricultural commodity boards established pursuant to this title to the extent necessary to protect the privacy of individual taxpayers.
+		</section>
 	</text>
 	<history>Code 1950, § 3-13; 1966, c. 702, § 3.1-14; 1975, c. 260; 1977, c. 186; 1978, cc. 219, 540; 1982, c. 150; 1993, c. 455; 1994, cc. 261, 370; 1995, c. 10; 1996, c. 996; 2005, c. 633; 2008, c. 860.</history>
 </law>

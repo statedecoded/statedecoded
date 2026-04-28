@@ -9,15 +9,24 @@
 	<section_number>3.2-108.1</section_number>
 	<catch_line>Virginia Pollinator Protection Strategy</catch_line>
 	<text>
-		<section prefix="A">The Department shall develop and maintain a Virginia Pollinator Protection Strategy (the Strategy) to (i) promote the health of and mitigate the risks to all pollinator species and (ii) ensure a robust agriculture economy and apiary industry for honeybees and other managed pollinators.</section>
-		<section prefix="B">In developing the Strategy, the Department shall seek the assistance of the Department of Conservation and Recreation, the Department of Wildlife Resources, and the Department of Environmental Quality and shall establish a stakeholder group composed of representatives of affected groups, including beekeepers, agricultural producers, commercial pesticide applicators, private pesticide applicators, pesticide manufacturers, retailers, lawn and turf service providers, agribusiness and farmer organizations, conservation interests, Virginia Polytechnic Institute and State University, Virginia State University, and the Virginia Cooperative Extension.</section>
-		<section prefix="C">The Strategy shall include a plan for the protection of managed pollinators that provides voluntary best management practices for pesticide users, beekeepers, and landowners and agricultural producers. The protection plan shall support:</section>
-		<section prefix="1">Communication between beekeepers and applicators;</section>
-		<section prefix="2">Reduction of the risk to pollinators from pesticides;</section>
-		<section prefix="3">Increases in pollinator habitat;</section>
-		<section prefix="4">Maintenance of existing compliance with state pesticide use requirements;</section>
-		<section prefix="5">Identification of needs for further research to promote robust agriculture and apiary industries; and</section>
-		<section prefix="6">Identification of additional opportunities for education and outreach on pollinators.</section>
+		<section prefix="A">The Department shall develop and maintain a Virginia Pollinator Protection Strategy (the Strategy) to (i) promote the health of and mitigate the risks to all pollinator species and (ii) ensure a robust agriculture economy and apiary industry for honeybees and other managed pollinators.
+		</section>
+		<section prefix="B">In developing the Strategy, the Department shall seek the assistance of the Department of Conservation and Recreation, the Department of Wildlife Resources, and the Department of Environmental Quality and shall establish a stakeholder group composed of representatives of affected groups, including beekeepers, agricultural producers, commercial pesticide applicators, private pesticide applicators, pesticide manufacturers, retailers, lawn and turf service providers, agribusiness and farmer organizations, conservation interests, Virginia Polytechnic Institute and State University, Virginia State University, and the Virginia Cooperative Extension.
+		</section>
+		<section prefix="C">The Strategy shall include a plan for the protection of managed pollinators that provides voluntary best management practices for pesticide users, beekeepers, and landowners and agricultural producers. The protection plan shall support:
+			<section prefix="1">Communication between beekeepers and applicators;
+			</section>
+			<section prefix="2">Reduction of the risk to pollinators from pesticides;
+			</section>
+			<section prefix="3">Increases in pollinator habitat;
+			</section>
+			<section prefix="4">Maintenance of existing compliance with state pesticide use requirements;
+			</section>
+			<section prefix="5">Identification of needs for further research to promote robust agriculture and apiary industries; and
+			</section>
+			<section prefix="6">Identification of additional opportunities for education and outreach on pollinators.
+			</section>
+		</section>
 	</text>
 	<history>2016, c. 11; 2020, c. 958.</history>
 </law>

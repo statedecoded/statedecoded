@@ -8,17 +8,27 @@
 	<section_number>18.2-67.5:2</section_number>
 	<catch_line>Punishment upon conviction of certain subsequent felony sexual assault</catch_line>
 	<text>
-		<section prefix="A">Any person convicted of (i) more than one offense specified in subsection B or (ii) one of the offenses specified in subsection B of this section and one of the offenses specified in subsection B of § 18.2-67.5:3 when such offenses were not part of a common act, transaction, or scheme and who has been at liberty as defined in § 53.1-151 between each conviction shall, upon conviction of the second or subsequent such offense, be sentenced to the maximum term authorized by statute for such offense and shall not have all or any part of such sentence suspended, provided that it is admitted, or found by the jury or judge before whom the person is tried, that he has been previously convicted of at least one of the specified offenses.</section>
-		<section prefix="B">The provisions of subsection A shall apply to felony convictions for:</section>
-		<section prefix="1">Carnal knowledge of a child between 13 and 15 years of age in violation of § 18.2-63 when the offense is committed by a person over the age of 18;</section>
-		<section prefix="2">Carnal knowledge of certain minors in violation of § 18.2-64.1;</section>
-		<section prefix="3">Aggravated sexual battery in violation of § 18.2-67.3;</section>
-		<section prefix="4">Crimes against nature in violation of subsection B of § 18.2-361;</section>
-		<section prefix="5">Sexual intercourse with one's own child or grandchild in violation of § 18.2-366;</section>
-		<section prefix="6">Taking indecent liberties with a child in violation of § 18.2-370 or 18.2-370.1; or</section>
-		<section prefix="7">Conspiracy to commit any offense listed in subdivisions 1 through 6 pursuant to § 18.2-22.</section>
-		<section prefix="C">For purposes of this section, prior convictions shall include (i) adult convictions for felonies under the laws of any state or the United States that are substantially similar to those listed in subsection B and (ii) findings of not innocent, adjudications, or convictions in the case of a juvenile if the juvenile offense is substantially similar to those listed in subsection B, the offense would be a felony if committed by an adult in the Commonwealth, and the offense was committed less than 20 years before the second offense.</section>
-		The Commonwealth shall notify the defendant in writing, at least 30 days prior to trial, of its intention to seek punishment pursuant to this section.
+		<section prefix="A">Any person convicted of (i) more than one offense specified in subsection B or (ii) one of the offenses specified in subsection B of this section and one of the offenses specified in subsection B of § 18.2-67.5:3 when such offenses were not part of a common act, transaction, or scheme and who has been at liberty as defined in § 53.1-151 between each conviction shall, upon conviction of the second or subsequent such offense, be sentenced to the maximum term authorized by statute for such offense and shall not have all or any part of such sentence suspended, provided that it is admitted, or found by the jury or judge before whom the person is tried, that he has been previously convicted of at least one of the specified offenses.
+		</section>
+		<section prefix="B">The provisions of subsection A shall apply to felony convictions for:
+			<section prefix="1">Carnal knowledge of a child between 13 and 15 years of age in violation of § 18.2-63 when the offense is committed by a person over the age of 18;
+			</section>
+			<section prefix="2">Carnal knowledge of certain minors in violation of § 18.2-64.1;
+			</section>
+			<section prefix="3">Aggravated sexual battery in violation of § 18.2-67.3;
+			</section>
+			<section prefix="4">Crimes against nature in violation of subsection B of § 18.2-361;
+			</section>
+			<section prefix="5">Sexual intercourse with one's own child or grandchild in violation of § 18.2-366;
+			</section>
+			<section prefix="6">Taking indecent liberties with a child in violation of § 18.2-370 or 18.2-370.1; or
+			</section>
+			<section prefix="7">Conspiracy to commit any offense listed in subdivisions 1 through 6 pursuant to § 18.2-22.
+			</section>
+		</section>
+		<section prefix="C">For purposes of this section, prior convictions shall include (i) adult convictions for felonies under the laws of any state or the United States that are substantially similar to those listed in subsection B and (ii) findings of not innocent, adjudications, or convictions in the case of a juvenile if the juvenile offense is substantially similar to those listed in subsection B, the offense would be a felony if committed by an adult in the Commonwealth, and the offense was committed less than 20 years before the second offense.
+			The Commonwealth shall notify the defendant in writing, at least 30 days prior to trial, of its intention to seek punishment pursuant to this section.
+		</section>
 	</text>
 	<history>1995, c. 834; 2000, c. 333; 2020, cc. 122, 900.</history>
 </law>

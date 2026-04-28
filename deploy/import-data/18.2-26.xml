@@ -9,9 +9,12 @@
 	<catch_line>Attempts to commit felonies other than Class 1 felony offenses; how punished</catch_line>
 	<text>
 		Except as provided in § 18.2-25, every person who attempts to commit an offense that is a felony shall be punished as follows:
-		<section prefix="1">If the felony attempted is punishable by a maximum punishment of life imprisonment or a term of years in excess of twenty years, an attempt thereat shall be punishable as a Class 4 felony.</section>
-		<section prefix="2">If the felony attempted is punishable by a maximum punishment of twenty years' imprisonment, an attempt thereat shall be punishable as a Class 5 felony.</section>
-		<section prefix="3">If the felony attempted is punishable by a maximum punishment of less than twenty years' imprisonment, an attempt thereat shall be punishable as a Class 6 felony.</section>
+		<section prefix="1">If the felony attempted is punishable by a maximum punishment of life imprisonment or a term of years in excess of twenty years, an attempt thereat shall be punishable as a Class 4 felony.
+		</section>
+		<section prefix="2">If the felony attempted is punishable by a maximum punishment of twenty years' imprisonment, an attempt thereat shall be punishable as a Class 5 felony.
+		</section>
+		<section prefix="3">If the felony attempted is punishable by a maximum punishment of less than twenty years' imprisonment, an attempt thereat shall be punishable as a Class 6 felony.
+		</section>
 	</text>
 	<history>Code 1950, §§ 18.1-17, 18.1-18; 1960, c. 358; 1975, cc. 14, 15; 1994, c. 639; 2021, Sp. Sess. I, cc. 344, 345.</history>
 </law>

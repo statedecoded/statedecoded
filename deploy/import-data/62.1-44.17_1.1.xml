@@ -8,33 +8,52 @@
 	<section_number>62.1-44.17:1.1</section_number>
 	<catch_line>Poultry waste management program</catch_line>
 	<text>
-		<section prefix="A">As used in this section, unless the context requires a different meaning:</section>
-		"Commercial poultry processor" means any animal food manufacturer, as defined in § 3.2-5400, that contracts with poultry growers for the raising of poultry.
-		"Confined poultry feeding operation" means any confined animal feeding operation with 200 or more animal units of poultry.
-		"Nutrient management plan" means a plan developed or approved by the Department of Conservation and Recreation that requires proper storage, treatment and management of poultry waste, including dry litter, and limits accumulation of excess nutrients in soils and leaching or discharge of nutrients into state waters.
-		"Poultry grower" means any person who owns or operates a confined poultry feeding operation.
-		<section prefix="B">The Board shall develop a regulatory program governing the storage, treatment and management of poultry waste, including dry litter, that:</section>
-		<section prefix="1">Requires the development and implementation of nutrient management plans for any person owning or operating a confined poultry feeding operation;</section>
-		<section prefix="2">Provides for waste tracking and accounting; and</section>
-		<section prefix="3">Ensures proper storage of waste consistent with the terms and provisions of a nutrient management plan.</section>
-		<section prefix="C">The program shall include, at a minimum:</section>
-		<section prefix="1">Provisions for permitting confined poultry feeding operations under a general permit; however, the Board may require an individual permit upon determining that an operation is in violation of the program developed under this section;</section>
-		<section prefix="2">Provisions requiring that:</section>
-		a. Nitrogen application rates contained in nutrient management plans developed pursuant to this section shall not exceed crop nutrient needs as determined by the Department of Conservation and Recreation. The application of poultry waste shall be managed to minimize runoff, leaching, and volatilization losses, and reduce adverse water quality impacts from nitrogen;
-		b. For all nutrient management plans developed pursuant to this section after October 1, 2001, phosphorous application rates shall not exceed the greater of crop nutrient needs or crop nutrient removal, as determined by the Department of Conservation and Recreation. The application of poultry waste shall be managed to minimize runoff and leaching and reduce adverse water quality impacts from phosphorus;
-		c. By December 31, 2005, the Department of Conservation and Recreation, in consultation with the Department of Environmental Quality, shall (i) complete an examination of current developments in scientific research and technology that shall include a review of land application of poultry waste, soil nutrient retention capacity, and water quality degradation and (ii) adopt and implement regulatory or other changes, if any, to its nutrient management plan program that it concludes are appropriate as a result of this examination; and
-		d. Notwithstanding subdivision 2 b, upon the effective date of the Department of Conservation and Recreation's revised regulatory criteria and standards governing phosphorous application rates adopted pursuant to subdivision 2 c, or on October 31, 2005, whichever is later, phosphorous application rates for all nutrient management plans developed pursuant to this section shall conform solely to such regulatory criteria and standards adopted by the Department of Conservation and Recreation to protect water quality or to reduce soil concentrations of phosphorus or phosphorous loadings. The application of poultry waste shall be managed to minimize runoff and leaching and reduce adverse water quality impacts from phosphorus.
-		<section prefix="D">The program shall reflect Board consideration of existing state-approved nutrient management plans and existing general permit programs for other confined animal feeding operations, and may include such other provisions as the Board determines appropriate for the protection of state waters.</section>
-		<section prefix="E">After October 1, 2001, all persons owning or operating a confined poultry feeding operation shall operate in compliance with the provisions of this section and any regulations promulgated thereunder.</section>
-		<section prefix="F">Any person violating this section shall be subject only to the provisions of §§ 62.1-44.23 and 62.1-44.32 (a), except that any civil penalty shall not exceed $2,500 for any confined animal feeding operation covered by a Virginia Pollution Abatement permit.</section>
-		<section prefix="G">On or before January 1, 2000, or prior to commencing operations, each commercial poultry processor operating in the Commonwealth shall file with the Board a plan under which the processor, either directly or under contract with a third party, shall:</section>
-		<section prefix="1">Provide technical assistance to the poultry growers with whom it contracts on the proper management and storage of poultry waste in accordance with best management practices;</section>
-		<section prefix="2">Provide education programs on poultry waste nutrient management for the poultry growers with whom it contracts as well as for poultry litter brokers and persons utilizing poultry waste;</section>
-		<section prefix="3">Provide a toll-free hotline and advertising program to assist poultry growers with excess amounts of poultry waste to make available such waste to persons in other areas who can use such waste as a fertilizer consistent with the provisions of subdivision C 2 or for other alternative purposes;</section>
-		<section prefix="4">Participate in the development of a poultry waste transportation and alternative use equal matching grant program between the Commonwealth and commercial poultry processors to (i) facilitate the transportation of excess poultry waste in the possession of poultry growers with whom it contracts to persons in other areas who can use such waste as a fertilizer consistent with the provisions of subdivision C 2 or for other alternative purposes and (ii) encourage alternative uses to land application of poultry waste;</section>
-		<section prefix="5">Conduct research on the reduction of phosphorus in poultry waste, innovative best management practices for poultry waste, water quality issues concerning poultry waste, or alternative uses of poultry waste; and</section>
-		<section prefix="6">Conduct research on and consider implementation of nutrient reduction strategies in the formulation of feed. Such nutrient reduction strategies may include the addition of phytase or other feed additives or modifications to reduce nutrients in poultry waste.</section>
-		<section prefix="H">Any amendments to the plan required by subsection G shall be filed with the Board before they are implemented. After January 1, 2000, each commercial poultry processor shall implement its plan and any amendments thereto. Each commercial poultry processor shall report annually to the Board on the activities it has undertaken pursuant to its plan and any amendments thereto. Failure to comply with the provisions of this section or to implement and follow a filed plan or any amendments thereto shall constitute a violation of this section.</section>
+		<section prefix="A">As used in this section, unless the context requires a different meaning:
+			"Commercial poultry processor" means any animal food manufacturer, as defined in § 3.2-5400, that contracts with poultry growers for the raising of poultry.
+			"Confined poultry feeding operation" means any confined animal feeding operation with 200 or more animal units of poultry.
+			"Nutrient management plan" means a plan developed or approved by the Department of Conservation and Recreation that requires proper storage, treatment and management of poultry waste, including dry litter, and limits accumulation of excess nutrients in soils and leaching or discharge of nutrients into state waters.
+			"Poultry grower" means any person who owns or operates a confined poultry feeding operation.
+		</section>
+		<section prefix="B">The Board shall develop a regulatory program governing the storage, treatment and management of poultry waste, including dry litter, that:
+			<section prefix="1">Requires the development and implementation of nutrient management plans for any person owning or operating a confined poultry feeding operation;
+			</section>
+			<section prefix="2">Provides for waste tracking and accounting; and
+			</section>
+			<section prefix="3">Ensures proper storage of waste consistent with the terms and provisions of a nutrient management plan.
+			</section>
+		</section>
+		<section prefix="C">The program shall include, at a minimum:
+			<section prefix="1">Provisions for permitting confined poultry feeding operations under a general permit; however, the Board may require an individual permit upon determining that an operation is in violation of the program developed under this section;
+			</section>
+			<section prefix="2">Provisions requiring that:
+				a. Nitrogen application rates contained in nutrient management plans developed pursuant to this section shall not exceed crop nutrient needs as determined by the Department of Conservation and Recreation. The application of poultry waste shall be managed to minimize runoff, leaching, and volatilization losses, and reduce adverse water quality impacts from nitrogen;
+				b. For all nutrient management plans developed pursuant to this section after October 1, 2001, phosphorous application rates shall not exceed the greater of crop nutrient needs or crop nutrient removal, as determined by the Department of Conservation and Recreation. The application of poultry waste shall be managed to minimize runoff and leaching and reduce adverse water quality impacts from phosphorus;
+				c. By December 31, 2005, the Department of Conservation and Recreation, in consultation with the Department of Environmental Quality, shall (i) complete an examination of current developments in scientific research and technology that shall include a review of land application of poultry waste, soil nutrient retention capacity, and water quality degradation and (ii) adopt and implement regulatory or other changes, if any, to its nutrient management plan program that it concludes are appropriate as a result of this examination; and
+				d. Notwithstanding subdivision 2 b, upon the effective date of the Department of Conservation and Recreation's revised regulatory criteria and standards governing phosphorous application rates adopted pursuant to subdivision 2 c, or on October 31, 2005, whichever is later, phosphorous application rates for all nutrient management plans developed pursuant to this section shall conform solely to such regulatory criteria and standards adopted by the Department of Conservation and Recreation to protect water quality or to reduce soil concentrations of phosphorus or phosphorous loadings. The application of poultry waste shall be managed to minimize runoff and leaching and reduce adverse water quality impacts from phosphorus.
+			</section>
+		</section>
+		<section prefix="D">The program shall reflect Board consideration of existing state-approved nutrient management plans and existing general permit programs for other confined animal feeding operations, and may include such other provisions as the Board determines appropriate for the protection of state waters.
+		</section>
+		<section prefix="E">After October 1, 2001, all persons owning or operating a confined poultry feeding operation shall operate in compliance with the provisions of this section and any regulations promulgated thereunder.
+		</section>
+		<section prefix="F">Any person violating this section shall be subject only to the provisions of §§ 62.1-44.23 and 62.1-44.32 (a), except that any civil penalty shall not exceed $2,500 for any confined animal feeding operation covered by a Virginia Pollution Abatement permit.
+		</section>
+		<section prefix="G">On or before January 1, 2000, or prior to commencing operations, each commercial poultry processor operating in the Commonwealth shall file with the Board a plan under which the processor, either directly or under contract with a third party, shall:
+			<section prefix="1">Provide technical assistance to the poultry growers with whom it contracts on the proper management and storage of poultry waste in accordance with best management practices;
+			</section>
+			<section prefix="2">Provide education programs on poultry waste nutrient management for the poultry growers with whom it contracts as well as for poultry litter brokers and persons utilizing poultry waste;
+			</section>
+			<section prefix="3">Provide a toll-free hotline and advertising program to assist poultry growers with excess amounts of poultry waste to make available such waste to persons in other areas who can use such waste as a fertilizer consistent with the provisions of subdivision C 2 or for other alternative purposes;
+			</section>
+			<section prefix="4">Participate in the development of a poultry waste transportation and alternative use equal matching grant program between the Commonwealth and commercial poultry processors to (i) facilitate the transportation of excess poultry waste in the possession of poultry growers with whom it contracts to persons in other areas who can use such waste as a fertilizer consistent with the provisions of subdivision C 2 or for other alternative purposes and (ii) encourage alternative uses to land application of poultry waste;
+			</section>
+			<section prefix="5">Conduct research on the reduction of phosphorus in poultry waste, innovative best management practices for poultry waste, water quality issues concerning poultry waste, or alternative uses of poultry waste; and
+			</section>
+			<section prefix="6">Conduct research on and consider implementation of nutrient reduction strategies in the formulation of feed. Such nutrient reduction strategies may include the addition of phytase or other feed additives or modifications to reduce nutrients in poultry waste.
+			</section>
+		</section>
+		<section prefix="H">Any amendments to the plan required by subsection G shall be filed with the Board before they are implemented. After January 1, 2000, each commercial poultry processor shall implement its plan and any amendments thereto. Each commercial poultry processor shall report annually to the Board on the activities it has undertaken pursuant to its plan and any amendments thereto. Failure to comply with the provisions of this section or to implement and follow a filed plan or any amendments thereto shall constitute a violation of this section.
+		</section>
 	</text>
 	<history>1999, c. 1; 2004, c. 455; 2005, c. 78.</history>
 </law>

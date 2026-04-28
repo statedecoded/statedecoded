@@ -9,8 +9,10 @@
 	<catch_line>Petit larceny defined; how punished</catch_line>
 	<text>
 		Any person who:
-		<section prefix="1">Commits larceny from the person of another of money or other thing of value of less than $5, or</section>
-		<section prefix="2">Commits simple larceny not from the person of another of goods and chattels of the value of less than $1,000, except as provided in clause (iii) of § 18.2-95, shall be deemed guilty of petit larceny, which shall be punishable as a Class 1 misdemeanor.</section>
+		<section prefix="1">Commits larceny from the person of another of money or other thing of value of less than $5, or
+		</section>
+		<section prefix="2">Commits simple larceny not from the person of another of goods and chattels of the value of less than $1,000, except as provided in clause (iii) of § 18.2-95, shall be deemed guilty of petit larceny, which shall be punishable as a Class 1 misdemeanor.
+		</section>
 	</text>
 	<history>Code 1950, § 18.1-101; 1960, c. 358; 1966, c. 247; 1975, cc. 14, 15; 1980, c. 175; 1992, c. 822; 2018, cc. 764, 765; 2020, cc. 89, 401.</history>
 </law>

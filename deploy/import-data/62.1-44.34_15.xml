@@ -8,16 +8,26 @@
 	<section_number>62.1-44.34:15</section_number>
 	<catch_line>Oil discharge contingency plans</catch_line>
 	<text>
-		<section prefix="A">No operator shall cause or permit the operation of a facility in the Commonwealth unless an oil discharge contingency plan applicable to the facility has been filed with and approved by the Board. No operator shall cause or permit a tank vessel to transport or transfer oil in state waters unless an oil discharge contingency plan applicable to the tank vessel has been filed with and approved by the Board or a vessel response plan applicable to the tank vessel and approved by the U.S. Coast Guard, pursuant to § 4202 of the federal Oil Pollution Act of 1990.</section>
-		<section prefix="B">Application for approval of an oil discharge contingency plan shall be made to the Board and shall be accompanied by plans, specifications, maps and such other relevant information as may be required, in scope and detail satisfactory to the Board. An oil discharge contingency plan must conform to the requirements and standards determined by the Board to be necessary to ensure that the applicant can take such steps as are necessary to protect environmentally sensitive areas, to respond to the threat of an oil discharge, and to contain, clean up and mitigate an oil discharge within the shortest feasible time. Each such plan shall provide for the use of the best available technology at the time the plan is submitted for approval. The applicant shall notify the Board immediately of any significant change in the operation or capacity of or the type of product dealt in, stored, handled, transported or transferred in or by any facility or vessel covered by the plan that will necessitate a change in the plan and shall update the plan periodically as required by the Board, but in no event more frequently than once every 36 months. The Board, on a finding of need, may require an oil discharge exercise designed to demonstrate the facility's or vessel's ability to implement its oil discharge contingency plan either before or after the plan is approved.</section>
-		<section prefix="C">The Board, after notice and opportunity for a conference pursuant to § 2.2-4019, may modify its approval of an oil discharge contingency plan if it determines that:</section>
-		<section prefix="1">A change has occurred in the operation of any facility or vessel covered by the plan that necessitates an amended or supplemented plan;</section>
-		<section prefix="2">The facility's or vessel's discharge experience or its inability to implement its plan in an oil discharge exercise demonstrates a necessity for modification; or</section>
-		<section prefix="3">There has been a significant change in the best available technology since the plan was approved.</section>
-		<section prefix="D">The Board, after notice and opportunity for hearing, may revoke its approval of an oil discharge contingency plan if it determines that:</section>
-		<section prefix="1">Approval was obtained by fraud or misrepresentation;</section>
-		<section prefix="2">The plan cannot be implemented as approved; or</section>
-		<section prefix="3">A term or condition of approval has been violated.</section>
+		<section prefix="A">No operator shall cause or permit the operation of a facility in the Commonwealth unless an oil discharge contingency plan applicable to the facility has been filed with and approved by the Board. No operator shall cause or permit a tank vessel to transport or transfer oil in state waters unless an oil discharge contingency plan applicable to the tank vessel has been filed with and approved by the Board or a vessel response plan applicable to the tank vessel and approved by the U.S. Coast Guard, pursuant to § 4202 of the federal Oil Pollution Act of 1990.
+		</section>
+		<section prefix="B">Application for approval of an oil discharge contingency plan shall be made to the Board and shall be accompanied by plans, specifications, maps and such other relevant information as may be required, in scope and detail satisfactory to the Board. An oil discharge contingency plan must conform to the requirements and standards determined by the Board to be necessary to ensure that the applicant can take such steps as are necessary to protect environmentally sensitive areas, to respond to the threat of an oil discharge, and to contain, clean up and mitigate an oil discharge within the shortest feasible time. Each such plan shall provide for the use of the best available technology at the time the plan is submitted for approval. The applicant shall notify the Board immediately of any significant change in the operation or capacity of or the type of product dealt in, stored, handled, transported or transferred in or by any facility or vessel covered by the plan that will necessitate a change in the plan and shall update the plan periodically as required by the Board, but in no event more frequently than once every 36 months. The Board, on a finding of need, may require an oil discharge exercise designed to demonstrate the facility's or vessel's ability to implement its oil discharge contingency plan either before or after the plan is approved.
+		</section>
+		<section prefix="C">The Board, after notice and opportunity for a conference pursuant to § 2.2-4019, may modify its approval of an oil discharge contingency plan if it determines that:
+			<section prefix="1">A change has occurred in the operation of any facility or vessel covered by the plan that necessitates an amended or supplemented plan;
+			</section>
+			<section prefix="2">The facility's or vessel's discharge experience or its inability to implement its plan in an oil discharge exercise demonstrates a necessity for modification; or
+			</section>
+			<section prefix="3">There has been a significant change in the best available technology since the plan was approved.
+			</section>
+		</section>
+		<section prefix="D">The Board, after notice and opportunity for hearing, may revoke its approval of an oil discharge contingency plan if it determines that:
+			<section prefix="1">Approval was obtained by fraud or misrepresentation;
+			</section>
+			<section prefix="2">The plan cannot be implemented as approved; or
+			</section>
+			<section prefix="3">A term or condition of approval has been violated.
+			</section>
+		</section>
 	</text>
 	<history>1990, c. 917; 2004, c. 276.</history>
 </law>

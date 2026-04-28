@@ -9,11 +9,16 @@
 	<catch_line>Responsibilities of the Council</catch_line>
 	<text>
 		The Council shall have the following responsibilities:
-		<section prefix="1">To foster the exchange of information between the federal, state, and local government;</section>
-		<section prefix="2">To enhance Virginia's participation in the United States Environmental Protection Agency's Region III Response Team;</section>
-		<section prefix="3">To review and evaluate the response to emergency situations and recommend changes to the Commonwealth of Virginia's Oil and Hazardous Materials Emergency Response Plan;</section>
-		<section prefix="4">To provide ongoing analysis of the most recent technical developments for the remediation of discharges; and</section>
-		<section prefix="5">To coordinate its activities with the Secure and Resilient Commonwealth Panel.</section>
+		<section prefix="1">To foster the exchange of information between the federal, state, and local government;
+		</section>
+		<section prefix="2">To enhance Virginia's participation in the United States Environmental Protection Agency's Region III Response Team;
+		</section>
+		<section prefix="3">To review and evaluate the response to emergency situations and recommend changes to the Commonwealth of Virginia's Oil and Hazardous Materials Emergency Response Plan;
+		</section>
+		<section prefix="4">To provide ongoing analysis of the most recent technical developments for the remediation of discharges; and
+		</section>
+		<section prefix="5">To coordinate its activities with the Secure and Resilient Commonwealth Panel.
+		</section>
 	</text>
 	<history>1990, c. 598; 2011, cc. 594, 681.</history>
 </law>

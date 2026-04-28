@@ -8,10 +8,14 @@
 	<section_number>62.1-44.15:27.1</section_number>
 	<catch_line>Virginia Stormwater Management Programs administered by the Board</catch_line>
 	<text>
-		<section prefix="A">The Board shall administer a Virginia Stormwater Management Program (VSMP) on behalf of any locality that notifies the Department pursuant to subsection B of § 62.1-44.15:27 that it has chosen to not administer a VESMP as provided by subdivision B 3 of § 62.1-44.15:27. In such a locality:</section>
-		<section prefix="1">The Board shall implement a VSMP in order to manage the quality and quantity of stormwater runoff resulting from any land-disturbing activity that (i) disturbs one acre or more of land or (ii) disturbs less than one acre of land and is part of a larger common plan of development or sale that results in one acre or greater of land disturbance, as required by this article.</section>
-		<section prefix="2">No person shall conduct a land-disturbing activity until he has obtained land-disturbance approval from the VESCP authority and, if required, submitted to the Department an application that includes a permit registration statement and stormwater management plan, and the Department has issued permit coverage.</section>
-		<section prefix="B">The Board shall adopt regulations establishing specifications for the VSMP, including permit requirements and requirements for plan review, inspection, and enforcement that reflect the analogous stormwater management requirements for a VESMP set forth in applicable provisions of this article.</section>
+		<section prefix="A">The Board shall administer a Virginia Stormwater Management Program (VSMP) on behalf of any locality that notifies the Department pursuant to subsection B of § 62.1-44.15:27 that it has chosen to not administer a VESMP as provided by subdivision B 3 of § 62.1-44.15:27. In such a locality:
+			<section prefix="1">The Board shall implement a VSMP in order to manage the quality and quantity of stormwater runoff resulting from any land-disturbing activity that (i) disturbs one acre or more of land or (ii) disturbs less than one acre of land and is part of a larger common plan of development or sale that results in one acre or greater of land disturbance, as required by this article.
+			</section>
+			<section prefix="2">No person shall conduct a land-disturbing activity until he has obtained land-disturbance approval from the VESCP authority and, if required, submitted to the Department an application that includes a permit registration statement and stormwater management plan, and the Department has issued permit coverage.
+			</section>
+		</section>
+		<section prefix="B">The Board shall adopt regulations establishing specifications for the VSMP, including permit requirements and requirements for plan review, inspection, and enforcement that reflect the analogous stormwater management requirements for a VESMP set forth in applicable provisions of this article.
+		</section>
 	</text>
 	<history>2016, cc. 68, 758.</history>
 </law>

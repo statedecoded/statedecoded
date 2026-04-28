@@ -11,12 +11,18 @@
 	<catch_line>Responsibilities of Director</catch_line>
 	<text>
 		The Director shall establish an appropriate administrative unit within the Department to manage the centralized fleet. The Director's responsibilities for the centralized fleet shall include, but not be limited to, the following:
-		<section prefix="1">Administering the assignment of vehicles to officers and employees of the Commonwealth;</section>
-		<section prefix="2">Managing a pool of vehicles for short-term use;</section>
-		<section prefix="3">Purchasing vehicles necessary to the operation of the centralized fleet;</section>
-		<section prefix="4">Repairing and maintaining vehicles;</section>
-		<section prefix="5">Monitoring the use of vehicles and enforcing guidance documents regarding their proper use; and</section>
-		<section prefix="6">Maintaining records related to the operation and maintenance of vehicles, and the administration of the centralized fleet.</section>
+		<section prefix="1">Administering the assignment of vehicles to officers and employees of the Commonwealth;
+		</section>
+		<section prefix="2">Managing a pool of vehicles for short-term use;
+		</section>
+		<section prefix="3">Purchasing vehicles necessary to the operation of the centralized fleet;
+		</section>
+		<section prefix="4">Repairing and maintaining vehicles;
+		</section>
+		<section prefix="5">Monitoring the use of vehicles and enforcing guidance documents regarding their proper use; and
+		</section>
+		<section prefix="6">Maintaining records related to the operation and maintenance of vehicles, and the administration of the centralized fleet.
+		</section>
 	</text>
 	<history>1989, c. 479, § 33.1-402; 2001, cc. 815, 842, § 2.1-548.03; 2013, c. 485.</history>
 </law>
