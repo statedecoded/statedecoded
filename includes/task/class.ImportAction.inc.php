@@ -82,7 +82,7 @@ class ImportAction extends CliAction
 				$edition_args['current'] = 1;
 			}
 
-			$this->logger->message('Using edition ' . $edition->name, 10);
+			$this->logger->message('Using edition ' . ($edition ? $edition->name : $edition_args['new_edition_name']), 10);
 
 			/*
 			 * Step through each parser method.
