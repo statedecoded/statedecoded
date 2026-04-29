@@ -153,9 +153,12 @@ class Dictionary
 
 		$law = $heritage->get_law();
 		$ancestry = array();
-		foreach ($law->ancestry as $tmp)
+		if ($law !== false && !empty($law->ancestry))
 		{
-			$ancestry[] = $tmp->id;
+			foreach ($law->ancestry as $tmp)
+			{
+				$ancestry[] = $tmp->id;
+			}
 		}
 
 		/*
