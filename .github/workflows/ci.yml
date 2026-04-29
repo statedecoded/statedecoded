@@ -63,6 +63,16 @@ jobs:
           mysql -h 127.0.0.1 -u root statedecoded_test \
             < htdocs/admin/statedecoded.sql
 
+      - name: Run migrations on test database
+        env:
+          PDO_DSN_TEST: "mysql:dbname=statedecoded_test;host=127.0.0.1;charset=utf8"
+          MYSQL_USER: statedecoded
+          MYSQL_PASSWORD: statedecoded
+        run: |
+          php statedecoded \
+            -c deploy/docker/config/config-test.inc.docker.php \
+            migrate
+
       - name: Import sample data
         env:
           PDO_DSN_TEST: "mysql:dbname=statedecoded_test;host=127.0.0.1;charset=utf8"
