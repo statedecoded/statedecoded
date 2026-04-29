@@ -43,7 +43,7 @@ class APIStructureController extends BaseAPIController
 		/*
 		 * Get the structure based on our identifier.
 		 */
-		if ($args['relational_id'])
+		if (!empty($args['relational_id']))
 		{
 			$struct->structure_id = $args['relational_id'];
 		}
@@ -60,6 +60,7 @@ class APIStructureController extends BaseAPIController
 		if ($response === FALSE)
 		{
 			$this->handleNotFound();
+			return;
 		}
 
 		/*
