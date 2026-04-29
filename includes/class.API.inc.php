@@ -83,11 +83,10 @@ class API
 		/*
 		 * If API keys have been registered, iterate through them and store them.
 		 */
-		$i=0;
+		$this->all_keys = new stdClass();
 		while ($key = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			$this->all_keys->{$key->api_key} = TRUE;
-			$i++;
 		}
 
 		/*
@@ -190,12 +189,12 @@ class API
 		 * If the provided API key has no content, post-filtering, or if there are no registered API
 		 * keys.
 		 */
-		if ( empty($this->key) || (count($this->all_keys) == 0) )
+		if ( empty($this->key) || empty(get_object_vars($this->all_keys ?? new stdClass())) )
 		{
 			throw new Exception('API key not provided. Please register for an API key.');
 			return FALSE;
 		}
-		
+
 		/*
 		 * But if there are API keys, and our key is valid-looking, check whether the key is registered.
 		 */
