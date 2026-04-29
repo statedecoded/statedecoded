@@ -51,7 +51,12 @@ define('SEARCH_CONFIG', json_encode([
 define('EMAIL_ADDRESS', '');
 define('EMAIL_NAME',    SITE_TITLE);
 define('API_KEY',       '');
-define('PLUGINS',       json_encode([]));
+define('PLUGINS', json_encode([
+	'ExportJSON',
+	'ExportText',
+	'ExportSDXML',
+	'ExportHTML',
+]));
 define('VERSION',       '1.0');
 define('DEBUG_LEVEL',   1);
 
