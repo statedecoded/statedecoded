@@ -430,7 +430,7 @@ if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
 if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != FALSE) )
 {
 
-	$sidebar .= '<section class="grid-box grid-sizer" id="amendment-attempts">
+	$sidebar .= '<section class="info-box" id="amendment-attempts">
 				<h1>Amendment Attempts</h1>
 				<ul>';
 
