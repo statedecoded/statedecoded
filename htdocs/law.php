@@ -415,8 +415,8 @@ if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
 	$sidebar .= '</ul>
 
 				<p><small>Court opinions are provided by <a
-				href="http://www.courtlistener.com/">CourtListener</a>, which is
-				developed by the <a href="http://freelawproject.org/">Free Law
+				href="https://www.courtlistener.com/">CourtListener</a>, which is
+				developed by the <a href="https://freelawproject.org/">Free Law
 				Project</a>.</small></p>
 
 			</section>';
