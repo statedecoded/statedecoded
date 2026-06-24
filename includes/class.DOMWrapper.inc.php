@@ -117,6 +117,10 @@ class DOMWrapper
 	}
 
 	public function value() {
+		if($this->dom->nodeType === XML_TEXT_NODE)
+		{
+			return $this->dom->textContent;
+		}
 		if($this->dom->childNodes->length === 1 &&
 			$this->dom->childNodes->item(0)->nodeType === XML_TEXT_NODE)
 		{
