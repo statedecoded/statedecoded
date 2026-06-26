@@ -744,7 +744,17 @@ class ParserController
 				$parser->section = $section;
 				if ($parser->parse() === TRUE)
 				{
-					$parser->store();
+					$this->db->beginTransaction();
+					try
+					{
+						$parser->store();
+						$this->db->commit();
+					}
+					catch (Exception $e)
+					{
+						$this->db->rollBack();
+						throw $e;
+					}
 				}
 				$this->logger->updateProgressFiles('parsefiles', $parser->file,  count($parser->files));
 			}
