@@ -1179,7 +1179,7 @@ class Law
 						. $paragraph->prefix_anchor;
 
 					$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
-						.'href="' . $permalink . '"><i class="icon-link"></i></a>';
+						.'href="' . $permalink . '"><i class="fa fa-link"></i></a>';
 				}
 				if ($paragraph->type == 'section' && !$this->has_p_tag($paragraph->text))
 				{
