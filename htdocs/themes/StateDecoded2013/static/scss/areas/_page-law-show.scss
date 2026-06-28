@@ -137,14 +137,18 @@
 
     p {
       margin: 0 0 1.25em 0;
+
+      &:has(.prefix-number) {
+        padding-left: 2.5em;
+      }
     }
 
-
-
   .prefix-number {
+    display: inline-block;
     font-weight: bold;
-    float: left;
-    margin-right: 1em;
+    margin-left: -2.5em;
+    min-width: 2.5em;
+    vertical-align: top;
   }
 
 	.tabular {
