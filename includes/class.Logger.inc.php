@@ -172,7 +172,7 @@ class Logger
 	public function updateProgressFiles($name, $current, $total)
 	{
 		$amount = (int) ($current / $total * 100);
-		$text = 'File ' . $current . ' of ' . $total;
+		$text = 'Importing ' . number_format($current) . ' of ' . number_format($total);
 		$this->updateProgress($name, $amount, $text);
 	}
 
@@ -193,6 +193,10 @@ class Logger
 			{
 				ob_flush();
 			}
+		}
+		else
+		{
+			echo $text . "\n";
 		}
 	}
 
