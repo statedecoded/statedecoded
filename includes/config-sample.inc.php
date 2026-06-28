@@ -256,7 +256,7 @@ define('API_KEY', '');
  * The version of The State Decoded that is installed. (This is populated automatically by the
  * upgrade script, and should not be modified manually.)
  */
-define('VERSION', '0.81');
+define('VERSION', '1.0');
 
 /*
  * Enabled plugins.
