@@ -53,7 +53,7 @@ function displayHelp(section, help_section) {
 	$("<div></div>")
 		.attr({
 			'id': section,
-			'title': help_section['title']
+			'title': section
 		})
 		.append(help_section['content'])
 		.dialog({
@@ -61,6 +61,9 @@ function displayHelp(section, help_section) {
 			draggable: false,
 			width: '',
 			open: function(e, ui) {
+				$(this).closest('.ui-dialog')
+					.find('.ui-dialog-title')
+					.html(help_section['title']);
 				$('#content').addClass('behind');
 			},
 			beforeClose: function(e, ui) {
