@@ -598,6 +598,22 @@ $border-radius-base: 6px;
   opacity: 0;
   transition: opacity 0.25s;
 }
+// Briefly pulse green when the link has been copied to the clipboard,
+// staying visible even after the mouse leaves.
+.section-permalink.copied {
+  opacity: 1;
+}
+.section-permalink.copied i {
+  animation: section-permalink-copied 1.5s ease;
+}
+@keyframes section-permalink-copied {
+  0%, 100% {
+    color: inherit;
+  }
+  15% {
+    color: $success-text;
+  }
+}
 // If the permalink is inside of a section, we need to adjust it's position.
 // This only happens when the <p> tags are already in the content before it
 // gets to the template.

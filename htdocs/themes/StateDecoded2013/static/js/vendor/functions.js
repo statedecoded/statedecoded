@@ -162,10 +162,20 @@ $(document).ready(function () {
 	/* Copy permalink URL to clipboard when clicked. */
 	$('a.section-permalink').on('click', function(e) {
 		e.preventDefault();
-		var url = $(this).attr('href');
+		var link = $(this).addClass('copied');
+		var icon = link.find('i').removeClass('fa-link').addClass('fa-copy');
+		var url = link.attr('href');
 		if (navigator.clipboard) {
 			navigator.clipboard.writeText(url);
 		}
+		setTimeout(function() {
+			link.removeClass('copied');
+			/* Wait for the opacity transition to finish before swapping the
+			 * icon back, so the link icon never flashes into view mid-fade. */
+			setTimeout(function() {
+				icon.removeClass('fa-copy').addClass('fa-link');
+			}, 250);
+		}, 1500);
 	});
 
 	/* Mentions of other sections of the code. */
