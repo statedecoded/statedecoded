@@ -466,7 +466,7 @@ if ($laws[0]->references !== FALSE)
 	{
 		$sidebar .= '<li><span class="identifier">'
 			. SECTION_SYMBOL . '&nbsp;<a href="' . $reference->url . '" class="law">'
-			. $reference->section_number . '</a></span>
+			. $reference->section_number . '</a></span>: '
 			. '<span class="title">' . $reference->catch_line . '</span></li>';
 	}
 	$sidebar .= '</ul>
