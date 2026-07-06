@@ -143,7 +143,7 @@ $(document).ready(function () {
 
 	/* Display a tooltip for permalinks. */
 	$('a.section-permalink').qtip({
-		content: "Copy permanent link to this subsection",
+		content: "Copy a link to this subsection",
 		show: {
 			event: "mouseover"
 		},
