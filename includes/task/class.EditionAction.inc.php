@@ -3,9 +3,6 @@
 require_once 'class.CliAction.inc.php';
 require_once CUSTOM_FUNCTIONS;
 
-// Note: making an edition current via CLI is not yet implemented;
-//       use the admin web UI instead. Permalinks must be rebuilt after any such change.
-
 class EditionAction extends CliAction
 {
   static public $name = 'edition';
@@ -38,6 +35,13 @@ class EditionAction extends CliAction
 
       case 'delete' :
         return $this->deleteEdition($args);
+
+      case 'current' :
+        if(count($args) > 0)
+        {
+          return $this->setCurrentEdition($args);
+        }
+        return $this->showCurrentEdition($args);
 
       default:
         return $this->showCurrentEdition($args);
@@ -134,6 +138,71 @@ class EditionAction extends CliAction
     }
   }
 
+  public function setCurrentEdition($args = array())
+  {
+    $edition_obj = new Edition(array('db' => $this->db));
+
+    $edition = $edition_obj->find_by_slug($args[0]);
+
+    if(!$edition)
+    {
+      $this->result = 1;
+      return 'Unable to find edition "' . $args[0] . '".';
+    }
+
+    if($edition->current)
+    {
+      return 'Edition "' . $edition->name . '" is already current.';
+    }
+
+    /*
+     * Promote the edition through the same code path that the importer and
+     * the admin web UI use, so that the previous edition is demoted and the
+     * edition ID is stored in .htaccess.
+     */
+    $parser = $this->getParserController();
+
+    $edition_errors = $parser->handle_editions(
+      array(
+        'edition_option' => 'existing',
+        'edition' => $edition->id,
+        'make_current' => 1
+      )
+    );
+
+    if(count($edition_errors) > 0)
+    {
+      $this->result = 1;
+      return join("\n", $edition_errors);
+    }
+
+    /*
+     * The site's URLs are derived from the current edition, so they must be
+     * rebuilt, and any cached copies of the old URLs invalidated.
+     */
+    $parser->clear_cache();
+    $parser->build_permalinks();
+
+    $varnish = new Varnish;
+    $varnish->purge();
+
+    return 'Edition "' . $edition->name . '" is now current.';
+  }
+
+  /*
+   * Instantiate the parser controller that setCurrentEdition() drives.
+   * A separate method so that tests can substitute a test double.
+   */
+  public function getParserController()
+  {
+    return new ParserController(
+      array(
+        'logger' => $this->logger,
+        'db' => &$this->db
+      )
+    );
+  }
+
   public function showCurrentEdition($args = array())
   {
     $edition_obj = new Edition(array('db' => $this->db));
@@ -166,6 +235,10 @@ Usage:
 
   statedecoded edition create name slug
     Creates a new edition.
+
+  statedecoded edition current slug
+    Makes an edition current, and rebuilds the site's permalinks so that
+    the edition is served from the site root.
 
   statedecoded edition delete slug
     Delete an edition.

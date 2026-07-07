@@ -36,8 +36,6 @@ class ImportAction extends CliAction
 		$this->logger->message('Starting import.', 10);
 
 		try {
-			$edition_args = array();
-
 			$parser = new ParserController(
 				array(
 					'logger' => $this->logger,
@@ -46,43 +44,9 @@ class ImportAction extends CliAction
 				)
 			);
 
-			if(isset($this->options['edition']))
-			{
-				$edition_obj = new Edition($this->db);
-				$edition = $edition_obj->find_by_slug($this->options['edition']);
+			$edition_args = $this->buildEditionArgs($parser);
 
-				if(!$edition) {
-					$this->logger->message('Unable to find edition "'. $this->options['edition'].'".', 10);
-					die();
-				}
-
-				$edition_args['edition_option'] = 'existing';
-				$edition_args['edition'] = $edition->id;
-			}
-			else
-			{
-				$edition = $parser->get_current_edition();
-
-				if($edition !== FALSE)
-				{
-					$edition_args['edition_option'] = 'existing';
-					$edition_args['edition'] = $edition->id;
-				}
-				else
-				{
-					// No editions exist yet — create a default one.
-					$edition_args['edition_option'] = 'new';
-					$edition_args['new_edition_name'] = defined('SITE_TITLE') ? SITE_TITLE : 'Default';
-					$edition_args['new_edition_slug'] = 'default';
-					$edition_args['make_current'] = 1;
-				}
-			}
-
-			if(isset($this->options['current'])) {
-				$edition_args['current'] = 1;
-			}
-
-			$this->logger->message('Using edition ' . ($edition ? $edition->name : $edition_args['new_edition_name']), 10);
+			$this->logger->message('Using edition ' . $edition_args['edition_name'], 10);
 
 			/*
 			 * Step through each parser method.
@@ -140,6 +104,61 @@ class ImportAction extends CliAction
 			exit(1);
 		}
 
+	}
+
+	/*
+	 * Assemble the edition arguments for ParserController::handle_editions().
+	 *
+	 * Note that handle_editions() honors the "make_current" key, so that is
+	 * what the --current option must set. (It once set a "current" key, which
+	 * handle_editions() ignored, quietly breaking --current for existing
+	 * editions.)
+	 */
+	public function buildEditionArgs($parser)
+	{
+
+		$edition_args = array();
+
+		if(isset($this->options['edition']))
+		{
+			$edition_obj = new Edition(array('db' => $this->db));
+			$edition = $edition_obj->find_by_slug($this->options['edition']);
+
+			if(!$edition) {
+				$this->logger->message('Unable to find edition "'. $this->options['edition'].'".', 10);
+				die();
+			}
+
+			$edition_args['edition_option'] = 'existing';
+			$edition_args['edition'] = $edition->id;
+			$edition_args['edition_name'] = $edition->name;
+		}
+		else
+		{
+			$edition = $parser->get_current_edition();
+
+			if($edition !== FALSE)
+			{
+				$edition_args['edition_option'] = 'existing';
+				$edition_args['edition'] = $edition->id;
+				$edition_args['edition_name'] = $edition->name;
+			}
+			else
+			{
+				// No editions exist yet — create a default one.
+				$edition_args['edition_option'] = 'new';
+				$edition_args['new_edition_name'] = defined('SITE_TITLE') ? SITE_TITLE : 'Default';
+				$edition_args['new_edition_slug'] = 'default';
+				$edition_args['edition_name'] = $edition_args['new_edition_name'];
+				$edition_args['make_current'] = 1;
+			}
+		}
+
+		if(isset($this->options['current'])) {
+			$edition_args['make_current'] = 1;
+		}
+
+		return $edition_args;
 	}
 
 	public function handleVerbosity()
