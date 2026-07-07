@@ -59,7 +59,7 @@ class DOMWrapper
 				{
 					if(!is_array($this->nodeMap[$node->nodeName]))
 					{
-						$this->nodeMap[$node->nodeName] = array($this->nodeMap[$node->nodeName]);
+						$this->nodeMap[$node->nodeName] = [$this->nodeMap[$node->nodeName]];
 					}
 
 					$this->nodeMap[$node->nodeName][] = $node;
@@ -161,7 +161,7 @@ class DOMWrapper
 
 class DOMListWrapper implements Iterator, Countable
 {
-	protected $nodes = array();
+	protected $nodes = [];
 	private $position = 0;
 	public $strip_whitespace = true;
 
@@ -172,7 +172,7 @@ class DOMListWrapper implements Iterator, Countable
 			$this->strip_whitespace = $strip_whitespace;
 		}
 
-		$tmp_nodes = array();
+		$tmp_nodes = [];
 
 		if(is_array($nodes))
 		{

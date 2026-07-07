@@ -8,7 +8,7 @@ class ClearMetadataAction extends CliAction
 	static public $name = 'clear-metadata';
 	static public $summary = 'Deletes law metadata from the database.';
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		parent::__construct($args);
 
@@ -19,14 +19,14 @@ class ClearMetadataAction extends CliAction
 		$this->logger = new Logger();
 	}
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 		$query = 'DELETE FROM laws_meta WHERE 1=1 ';
-		$query_args = array();
+		$query_args = [];
 
 		if(isset($this->options['edition']))
 		{
-			$edition_obj = new Edition(array('db' => $this->db));
+			$edition_obj = new Edition(['db' => $this->db]);
 			$edition = $edition_obj->find_by_slug($this->options['edition']);
 
 			if(!$edition) {
@@ -58,7 +58,7 @@ class ClearMetadataAction extends CliAction
 		}
 	}
 
-	public static function getHelp($args = array()) {
+	public static function getHelp($args = []) {
 		return <<<EOS
 statedecoded : clear-metadata
 

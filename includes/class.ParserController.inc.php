@@ -82,7 +82,7 @@ class ParserController
 		/*
 		 * Set our objects
 		 */
-		$this->permalink_obj = new Permalink(array('db' => $this->db));
+		$this->permalink_obj = new Permalink(['db' => $this->db]);
 
 		/*
 		 * Setup downloads directory.
@@ -98,7 +98,7 @@ class ParserController
 		{
 			$this->downloads_url = '/downloads/';
 		}
-		$this->downloads_dir = join_paths(array(realpath($this->downloads_dir)));
+		$this->downloads_dir = join_paths([realpath($this->downloads_dir)]);
 	}
 
     // {{{ init_logger()
@@ -203,9 +203,9 @@ class ParserController
 	 */
 	public function check_migrations()
 	{
-		$migrate_action = new MigrateAction(array(
+		$migrate_action = new MigrateAction([
 			'db' => $this->db
-		));
+		]);
 
 		$migrations = $migrate_action->getUndoneMigrations();
 
@@ -214,9 +214,9 @@ class ParserController
 
 	public function run_migrations()
 	{
-		$migrate_action = new MigrateAction(array(
+		$migrate_action = new MigrateAction([
 			'db' => $this->db
-		));
+		]);
 
 		ob_start();
 		$result = $migrate_action->doMigrations();
@@ -257,9 +257,9 @@ class ParserController
 		$sql = 'INSERT INTO
 				editions
 				SET year = :date, date_created=now()';
-		$sql_args = array(
+		$sql_args = [
 			':date' => date('Y-M-d')
-		);
+		];
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -294,7 +294,7 @@ class ParserController
 		}
 		else
 		{
-			$editions = array();
+			$editions = [];
 			$editions = $statement->fetchAll(PDO::FETCH_OBJ);
 		}
 		return $editions;
@@ -330,9 +330,9 @@ class ParserController
 			$this->previous_edition_id = $previous_edition->id;
 		}
 
-		$errors = array();
+		$errors = [];
 
-		$create_data = array();
+		$create_data = [];
 
 		if (!empty($post_data['make_current']))
 		{
@@ -448,18 +448,18 @@ class ParserController
 	public function set_edition($edition)
 	{
 		$this->edition = $edition;
-		$this->downloads_dir = join_paths(array($this->downloads_dir, $edition->slug));
-		$this->downloads_url = join_paths(array($this->downloads_url, $edition->slug));
+		$this->downloads_dir = join_paths([$this->downloads_dir, $edition->slug]);
+		$this->downloads_url = join_paths([$this->downloads_url, $edition->slug]);
 	}
 
 
 	/**
 	 * Create a new edition.
 	 */
-	public function create_edition($edition = array())
+	public function create_edition($edition = [])
 	{
 
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 
 		/*
 		 * Make sure we have a unique edition.
@@ -493,7 +493,7 @@ class ParserController
 			{
 				$sql = 'UPDATE editions
 						SET ';
-				$update = array();
+				$update = [];
 				foreach($data as $key => $value)
 				{
 					$sql_args[':' . $key] = $value;
@@ -576,8 +576,8 @@ class ParserController
 	public function clear_db()
 	{
 
-		$tables = array('dictionary', 'laws', 'laws_references', 'text', 'laws_views',
-			'tags', 'text_sections', 'structure', 'permalinks', 'laws_meta');
+		$tables = ['dictionary', 'laws', 'laws_references', 'text', 'laws_views',
+			'tags', 'text_sections', 'structure', 'permalinks', 'laws_meta'];
 		foreach ($tables as $table)
 		{
 
@@ -607,10 +607,10 @@ class ParserController
 		$sql = 'DELETE FROM laws_meta
 				WHERE meta_key = :meta_key_history
 				OR meta_key = :meta_key_repealed';
-		$sql_args = array(
+		$sql_args = [
 			':meta_key_history' => 'history',
 			':meta_key_repealed' => 'repealed'
-		);
+		];
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -620,7 +620,7 @@ class ParserController
 
 	public function clear_edition($edition_id)
 	{
-		$tables = array(
+		$tables = [
 			'dictionary',
 			'laws',
 			'laws_references',
@@ -631,7 +631,7 @@ class ParserController
 			'structure',
 			'permalinks',
 			'laws_meta'
-		);
+		];
 
 		foreach ($tables as $table)
 		{
@@ -642,7 +642,7 @@ class ParserController
 			 * We are deleting instead of truncating, to handle foreign keys.
 			 */
 			$sql = 'DELETE FROM ' . $table . ' WHERE edition_id = :edition_id';
-			$sql_args = array(':edition_id' => $edition_id);
+			$sql_args = [':edition_id' => $edition_id];
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -668,9 +668,9 @@ class ParserController
 		$sql = 'DELETE FROM
 				laws_views
 				WHERE DATEDIFF(now(), date) > :date_diff';
-		$sql_args = array(
+		$sql_args = [
 			':date_diff' => 365
-		);
+		];
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -697,7 +697,7 @@ class ParserController
 		{
 
 			$parser = new Parser(
-				array(
+				[
 					/*
 					 * Tell the parser what the working directory
 					 * should be for the data files to import.
@@ -725,7 +725,7 @@ class ParserController
 					'downloads_dir' => $this->downloads_dir,
 					'downloads_url' => $this->downloads_url
 
-				)
+				]
 			);
 
 			if(method_exists($parser, 'pre_parse'))
@@ -818,12 +818,12 @@ class ParserController
 					/*
 					 * Save this object to the metadata table pair.
 					 */
-					$sql_args = array(
+					$sql_args = [
 						':law_id' => $law->id,
 						':meta_key' => 'history',
 						':meta_value' => serialize($history),
 						':edition_id' => $this->edition_id
-					);
+					];
 					$result = $statement->execute($sql_args);
 
 				}
@@ -856,9 +856,9 @@ class ParserController
 		}
 
 
-		$select = array();
-		$from = array();
-		$order = array();
+		$select = [];
+		$from = [];
+		$order = [];
 		for ($i=1; $i<=$structure_depth; $i++)
 		{
 			$select[] = 's'.$i.'.id AS s'.$i.'_id, s'.$i.'.name AS s'.$i.'_name,
@@ -948,7 +948,7 @@ class ParserController
 		 * Update the last-imported date.
 		 */
 		$this->logger->message('Updating the import date', 5);
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 		$edition_obj->update_last_import($this->edition_id);
 
 		/*
@@ -965,7 +965,7 @@ class ParserController
 		$this->logger->message('Clearing out all court decisions.', 10);
 
 		$sql = 'DELETE FROM laws_meta WHERE meta_key = :court_decisions';
-		$sql_args = array(':court_decisions' => 'court_decisions');
+		$sql_args = [':court_decisions' => 'court_decisions'];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -981,7 +981,7 @@ class ParserController
 		 * Create a new instance of Parser.
 		 */
 		$parser = new Parser(
-			array(
+			[
 				/*
 				 * Set the database
 				 */
@@ -1007,7 +1007,7 @@ class ParserController
 				 */
 				'downloads_dir' => $this->downloads_dir,
 				'downloads_url' => $this->downloads_url
-			)
+			]
 		);
 
 		$parser->build_permalinks();
@@ -1136,7 +1136,7 @@ class ParserController
 
 		// Figure out how many files we're dealing with.
 		$sql = 'SELECT COUNT(*) AS count FROM laws WHERE edition_id = :edition_id';
-		$sql_args = array(':edition_id' => $this->edition_id);
+		$sql_args = [':edition_id' => $this->edition_id];
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -1216,7 +1216,7 @@ class ParserController
 							LEFT JOIN structure_unified
 								ON structure.id = structure_unified.s1_id';
 
-		$structure_args = array();
+		$structure_args = [];
 
 		if (isset($parent_id))
 		{
@@ -1231,7 +1231,7 @@ class ParserController
 		$structure_sql .= ' AND edition_id = :edition_id';
 		$structure_args[':edition_id'] = $this->edition_id;
 
-		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_statement = $this->db->prepare($structure_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
 		$structure_result = $structure_statement->execute($structure_args);
 
 		if ($structure_result === false)
@@ -1274,15 +1274,15 @@ class ParserController
 								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
-			$laws_args = array(
+			$laws_args = [
 				':s_id' => $item['s1_id'],
 				':edition_id' => $this->edition_id
-			);
+			];
 
-			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+			$laws_statement = $this->db->prepare($laws_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
 			$laws_result = $laws_statement->execute( $laws_args );
 
-			$laws = array();
+			$laws = [];
 
 			if ($laws_result !== false && $laws_statement->rowCount() > 0)
 			{
@@ -1444,9 +1444,9 @@ class ParserController
 				WHERE edition_id = :edition_id
 				LIMIT 50000';
 
-		$sql_args = array(
+		$sql_args = [
 			':edition_id' => EDITION_ID
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -1556,7 +1556,7 @@ class ParserController
 		/*
 		 * Create an array to store structural statistics.
 		 */
-		$this->stats = array();
+		$this->stats = [];
 
 		/*
 		 * Iterate through each of those units.
@@ -1638,10 +1638,10 @@ class ParserController
 			$structure_temp->metadata->child_laws = $structure->child_laws;
 			$structure_temp->metadata->child_structures = $structure->child_structures;
 
-			$sql_args = array(
+			$sql_args = [
 				':metadata' => serialize($structure_temp->metadata),
 				':structure_id' => $structure_id
-			);
+			];
 			$result = $statement->execute($sql_args);
 
 		}
@@ -1871,11 +1871,11 @@ class ParserController
 	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
 	 * instead, we do this via cURL.
 	 */
-	public function index_laws($args = array())
+	public function index_laws($args = [])
 	{
 		if(!isset($this->edition))
 		{
-			$edition_obj = new Edition(array('db' => $this->db));
+			$edition_obj = new Edition(['db' => $this->db]);
 			$this->set_edition($edition_obj->current());
 		}
 
@@ -1900,12 +1900,12 @@ class ParserController
 			$this->logger->message('Indexing laws', 6);
 
 			$search_index = new SearchIndex(
-				array(
+				[
 					'config' => json_decode(SEARCH_CONFIG, true)
-				)
+				]
 			);
 
-			$law_obj = new Law(array('db' => $this->db));
+			$law_obj = new Law(['db' => $this->db]);
 			$result = $law_obj->get_all_laws($this->edition->id, true);
 
 			$search_index->start_update();
@@ -1913,7 +1913,7 @@ class ParserController
 			while($law = $result->fetch())
 			{
 				// Get the full data of the actual law.
-				$document = new Law(array('db' => $this->db));
+				$document = new Law(['db' => $this->db]);
 				$document->law_id = $law['id'];
 				if(!isset($document->config))
 				{
@@ -1936,13 +1936,13 @@ class ParserController
 			}
 
 			// Store our structures in the index.
-			$struct_obj = new Structure(array('db' => $this->db));
+			$struct_obj = new Structure(['db' => $this->db]);
 			$result = $struct_obj->get_all($this->edition->id, true);
 
 			while($struct = $result->fetch())
 			{
 				// Get the full data of the structure.
-				$document = new Structure(array('db' => $this->db));
+				$document = new Structure(['db' => $this->db]);
 				$document->structure_id = $struct['id'];
 				$document->get_current();
 
@@ -1977,9 +1977,9 @@ class ParserController
 		if(defined('SEARCH_CONFIG'))
 		{
 			$search_index = new SearchIndex(
-				array(
+				[
 					'config' => json_decode(SEARCH_CONFIG, true)
-				)
+				]
 			);
 			if($search_index->delete($edition_id)) {
 
@@ -1999,7 +1999,7 @@ class ParserController
 
 	}
 
-	protected function handle_solr_request($fields = array(), $multipart = false, $parameters = array())
+	protected function handle_solr_request($fields = [], $multipart = false, $parameters = [])
 	{
 
 		$solr_update_url = SOLR_URL . 'update';
@@ -2008,10 +2008,10 @@ class ParserController
 		 * Instruct Solr to return its response as JSON, and commit the change.
 		 */
 
-		$solr_parameters = array_merge($parameters, array(
+		$solr_parameters = array_merge($parameters, [
 				'wt' => 'json',
 				'commit' => 'true'
-				)
+				]
 			);
 
 		$url = $solr_update_url . '?' . http_build_query($solr_parameters);
@@ -2021,11 +2021,11 @@ class ParserController
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		if($multipart)
 		{
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
+			curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form; charset=US-ASCII'] );
 		}
 		else
 		{
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml; charset=US-ASCII') );
+			curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: text/xml; charset=US-ASCII'] );
 		}
 
 		curl_setopt($ch, CURLOPT_POST, true);
@@ -2090,7 +2090,7 @@ class ParserController
 
 		$existing_sql = 'SELECT * FROM laws_references
 			WHERE edition_id = :edition_id';
-		$existing_args = array(':edition_id' => $this->edition_id);
+		$existing_args = [':edition_id' => $this->edition_id];
 		$existing_statement =  $this->db->prepare($existing_sql);
 		$existing_result = $existing_statement->execute($existing_args);
 
@@ -2127,10 +2127,10 @@ class ParserController
 			/*
 			 * We may have many-to-one, so handle that.
 			 */
-			$laws_args = array(
+			$laws_args = [
 				':section_number' => $laws_reference['target_section_number'],
 				':edition_id' => $this->edition_id
-			);
+			];
 			$laws_result = $laws_statement->execute($laws_args);
 
 			/*
@@ -2144,12 +2144,12 @@ class ParserController
 					$laws_reference['target_section_number'] . ' with ' .
 					$law['id'], 1);
 
-				$update_args = array(
+				$update_args = [
 					':target_law_id' => $law['id'],
 					':target_section_number' =>
 						$laws_reference['target_section_number'],
 					':edition_id' => $this->edition_id
-				);
+				];
 				$update_statement->execute($update_args);
 			}
 
@@ -2164,7 +2164,7 @@ class ParserController
 						$laws_reference['target_section_number'] . ' with ' .
 						$law['id'], 1);
 
-					$insert_args = array(
+					$insert_args = [
 						':law_id' => $laws_reference['law_id'],
 						':target_section_number' =>
 							$laws_reference['target_section_number'],
@@ -2172,7 +2172,7 @@ class ParserController
 						':mentions' => $laws_reference['mentions'],
 						':date_created' => $laws_reference['date_created'],
 						':edition_id' => $this->edition_id
-					);
+					];
 					$insert_statement->execute($insert_args);
 				}
 			}
@@ -2195,11 +2195,11 @@ class ParserController
 
 		$sql = 'DELETE FROM laws_references WHERE target_law_id = :target_law_id
 			AND edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':target_law_id' => 0,
 			':edition_id' => $this->edition_id
 
-		);
+		];
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 	}

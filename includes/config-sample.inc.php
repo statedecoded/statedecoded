@@ -208,7 +208,7 @@ define('USE_GENERIC_TERMS', true);
  * Solr configuration.
  */
 define('SEARCH_CONFIG', json_encode(
-	array(
+	[
 		// By default, we use Solr.  You can also use 'SqlSearchEngine'
 		// to just use the database search with no external search engine.
 		'engine' => 'SolrSearchEngine',
@@ -225,15 +225,15 @@ define('SEARCH_CONFIG', json_encode(
 		// We want to include the headers from Solr for error catching.
 		'omitheader' => false,
 		// Setup our local data to pass to the seach index.
-		'site' => array(
+		'site' => [
 			// On sites where multiple codes are stored in one Solr core, set
 			// a unique identifier for each site here.  You may also want to
 			// customize the default site name and url here.
 			'identifier' => 'statedecoded',
 			'name' => SITE_TITLE,
 			'url' => SITE_URL
-		)
-	)
+		]
+	]
 ));
 
 /*
@@ -262,7 +262,7 @@ define('VERSION', '1.0');
  * Enabled plugins.
  */
 
-define('PLUGINS', json_encode(array(
+define('PLUGINS', json_encode([
 	'ExportJSON',
 	'ExportText',
 	'ExportSDXML',
@@ -278,7 +278,7 @@ define('PLUGINS', json_encode(array(
 	// pdflatex and pandoc are both needed to export PDFs!
 	// PDF generation is *VERY* slow, so you might not want this.
 	// 'ExportPDF'
-)));
+]));
 
 /*
  * If you want to enable Disqus <http://www.disqus.com/> commenting for every law, register for

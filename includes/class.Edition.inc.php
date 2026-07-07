@@ -18,7 +18,7 @@ class Edition
 {
 	protected $db;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		/*
 		 * Set our defaults
@@ -132,7 +132,7 @@ class Edition
 		}
 		else
 		{
-			$editions = array();
+			$editions = [];
 			$editions = $statement->fetchAll(PDO::FETCH_OBJ);
 		}
 		return $editions;
@@ -199,12 +199,12 @@ class Edition
 			$edition['order_by'] = $this->get_max_order() + 1;
 		}
 
-		$sql_args = array(
+		$sql_args = [
 			':name' => $edition['name'],
 			':slug' => $edition['slug'],
 			':current' => $edition['current'],
 			':order_by' => $edition['order_by']
-		);
+		];
 		$result = $statement->execute($sql_args);
 
 		if ($result !== false)
@@ -220,7 +220,7 @@ class Edition
 	public function delete($slug)
 	{
 		$sql = 'DELETE FROM editions WHERE slug = :slug';
-		$sql_args = array(':slug' => $slug);
+		$sql_args = [':slug' => $slug];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -232,9 +232,9 @@ class Edition
 	{
 		$sql = 'UPDATE editions
 				SET current = :current';
-		$sql_args = array(
+		$sql_args = [
 			':current' => 0
-		);
+		];
 
 		if($exception)
 		{
@@ -253,10 +253,10 @@ class Edition
 		$sql = 'UPDATE editions
 				SET current = :current
 				WHERE slug = :slug ';
-		$sql_args = array(
+		$sql_args = [
 			':current' => 1,
 			':slug' => $slug
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);

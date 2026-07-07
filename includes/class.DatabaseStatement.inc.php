@@ -20,7 +20,7 @@ class DatabaseStatement
 	protected $database;
 
 	protected $query;
-	protected $query_args = array();
+	protected $query_args = [];
 
 	public function __construct ( $database, $pdo_statement, $query )
 	{
@@ -46,10 +46,10 @@ class DatabaseStatement
 
 	public function bindValue ( $parameter, $value, $data_type = PDO::PARAM_STR )
 	{
-		$this->query_args[$parameter] = array(
+		$this->query_args[$parameter] = [
 			'parameter' => $parameter,
 			'value' => $value,
-			'data_type' => $data_type);
+			'data_type' => $data_type];
 		return $this->pdo_statement->bindValue($parameter, $value, $data_type);
 	}
 
@@ -149,9 +149,9 @@ class DatabaseStatement
 	 * return the error we need, or it may be the statement itself.  Either way,
 	 * we try to get what useful data we can from it.
 	 */
-	public function fetchErrors ( $input_parameters = array() )
+	public function fetchErrors ( $input_parameters = [] )
 	{
-		$error = array();
+		$error = [];
 		if ( strlen($this->query) )
 		{
 			$error['Query'] = $this->query;
@@ -188,7 +188,7 @@ class DatabaseStatement
 		return $error;
 	}
 
-	public function formatErrors ( $errors = array() )
+	public function formatErrors ( $errors = [] )
 	{
 		return print_r($errors, true);
 	}
@@ -208,7 +208,7 @@ class DatabaseStatement
 		return $this->pdo_statement->fetchColumn($column_number);
 	}
 
-	public function fetchObject ( $class_name = 'stdClass', $actor_args = array() )
+	public function fetchObject ( $class_name = 'stdClass', $actor_args = [] )
 	{
 		return $this->pdo_statement->fetchObject($class_name, $actor_args);
 	}

@@ -53,9 +53,9 @@ class API
 		$sql = 'SELECT api_key
 				FROM api_keys
 				WHERE verified=:verified';
-		$sql_args = array(
+		$sql_args = [
 			':verified' => 'y'
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -117,9 +117,9 @@ class API
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
 				WHERE api_key = :key';
-		$sql_args = array(
+		$sql_args = [
 			':key' => $this->key
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -304,11 +304,11 @@ class API
 				email = :email,
 				secret = :secret,
 				date_created = now()';
-		$sql_args = array(
+		$sql_args = [
 			':key' => $this->key,
 			':email' => $this->email,
 			':secret' => $this->secret
-		);
+		];
 
 		if (!empty($this->name))
 		{
@@ -361,9 +361,9 @@ class API
 		$sql = 'UPDATE api_keys
 				SET verified = "y"
 				WHERE secret = :secret';
-		$sql_args = array(
+		$sql_args = [
 			':secret' => $this->secret
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -376,9 +376,9 @@ class API
 		$sql = 'SELECT api_key
 				FROM api_keys
 				WHERE secret = :secret';
-		$sql_args = array(
+		$sql_args = [
 			':secret' => $this->secret
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);

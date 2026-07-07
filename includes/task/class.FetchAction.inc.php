@@ -7,11 +7,11 @@ class FetchAction extends CliAction
 	static public $name = 'fetch';
 	static public $summary = "Fetch data from a remote host.";
 
-	public $default_options = array(
+	public $default_options = [
 		'tmp' => '/tmp/statedecoded/',
 		'ftype' => 'xml',
 		'extra-args' => '-nd'
-	);
+	];
 
 	public function __construct($args)
 	{
@@ -49,7 +49,7 @@ class FetchAction extends CliAction
 		}
 	}
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 		try
 		{
@@ -104,7 +104,7 @@ var_dump($this->options['extra-args']);
 		}
 	}
 
-	public static function getHelp($args = array()) {
+	public static function getHelp($args = []) {
 		return <<<EOS
 statedecoded : fetch
 

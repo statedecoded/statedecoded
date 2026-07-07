@@ -17,7 +17,7 @@
 #[\AllowDynamicProperties]
 abstract class Plugin
 {
-	public $listeners = array('test');
+	public $listeners = ['test'];
 	/*
 	 * Listeners can be a list of events that automatically map to the
 	 * matching functions, *or* an associative array with the event name as
@@ -38,7 +38,7 @@ abstract class Plugin
 	 * );
 	 */
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key => $value)
 		{
@@ -52,7 +52,7 @@ abstract class Plugin
 	public function register()
 	{
 		$classname = get_called_class();
-		$wrapped_listeners = array();
+		$wrapped_listeners = [];
 
 		/*
 		 * We translate the listeners into something that's easily
@@ -66,7 +66,7 @@ abstract class Plugin
 		if(array_keys($this->listeners) === range(0, count($this->listeners) - 1)) {
 			foreach($this->listeners as $value)
 			{
-				$wrapped_listeners[$value] = array( $classname, $value );
+				$wrapped_listeners[$value] = [ $classname, $value ];
 			}
 		}
 		/*
@@ -75,7 +75,7 @@ abstract class Plugin
 		else
 		{
 			foreach($this->listeners as $key => $value) {
-				$wrapped_listeners[$key] = array( $classname, $value );
+				$wrapped_listeners[$key] = [ $classname, $value ];
 			}
 		}
 

@@ -92,7 +92,7 @@ class EditionActionTest extends PHPUnit\Framework\TestCase
 		$db = new Database(PDO_DSN, PDO_USERNAME, PDO_PASSWORD);
 
 		return $this->getMockBuilder(ParserController::class)
-			->setConstructorArgs([array('logger' => new Logger(array('level' => 10)), 'db' => $db)])
+			->setConstructorArgs([['logger' => new Logger(['level' => 10]), 'db' => $db]])
 			->onlyMethods(['build_permalinks', 'clear_cache', 'export_edition_id'])
 			->getMock();
 	}
@@ -103,15 +103,15 @@ class EditionActionTest extends PHPUnit\Framework\TestCase
 			->fetch()->name;
 
 		$action = new EditionAction();
-		$this->assertSame($expected, $action->execute(array()));
-		$this->assertSame($expected, $action->execute(array('current')),
+		$this->assertSame($expected, $action->execute([]));
+		$this->assertSame($expected, $action->execute(['current']),
 			'"edition current" without a slug must show the current edition.');
 	}
 
 	public function testSetCurrentWithUnknownSlugFails(): void
 	{
 		$action = new TestableEditionAction();
-		$output = $action->execute(array('current', 'no-such-edition'));
+		$output = $action->execute(['current', 'no-such-edition']);
 
 		$this->assertSame(1, $action->result);
 		$this->assertStringContainsString('Unable to find edition', $output);
@@ -126,7 +126,7 @@ class EditionActionTest extends PHPUnit\Framework\TestCase
 		 * No parser is injected, so any attempt to promote would throw.
 		 */
 		$action = new TestableEditionAction();
-		$output = $action->execute(array('current', $slug));
+		$output = $action->execute(['current', $slug]);
 
 		$this->assertSame(0, $action->result);
 		$this->assertStringContainsString('already current', $output);
@@ -141,7 +141,7 @@ class EditionActionTest extends PHPUnit\Framework\TestCase
 
 		$action = new TestableEditionAction();
 		$action->parser = $parser;
-		$output = $action->execute(array('current', self::TEMP_SLUG));
+		$output = $action->execute(['current', self::TEMP_SLUG]);
 
 		$this->assertSame(0, $action->result);
 		$this->assertStringContainsString('is now current', $output);

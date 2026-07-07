@@ -8,7 +8,7 @@ class ImportAction extends CliAction
 	static public $name = 'import';
 	static public $summary = 'Imports new data.';
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		/*
 		 * Note: PHP can't use constants as class defaults,
@@ -30,18 +30,18 @@ class ImportAction extends CliAction
 		$this->handleVerbosity();
 	}
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 
 		$this->logger->message('Starting import.', 10);
 
 		try {
 			$parser = new ParserController(
-				array(
+				[
 					'logger' => $this->logger,
 					'db' => &$this->db,
 					'import_data_dir' => $this->options['d']
-				)
+				]
 			);
 
 			$edition_args = $this->buildEditionArgs($parser);
@@ -117,11 +117,11 @@ class ImportAction extends CliAction
 	public function buildEditionArgs($parser)
 	{
 
-		$edition_args = array();
+		$edition_args = [];
 
 		if(isset($this->options['edition']))
 		{
-			$edition_obj = new Edition(array('db' => $this->db));
+			$edition_obj = new Edition(['db' => $this->db]);
 			$edition = $edition_obj->find_by_slug($this->options['edition']);
 
 			if(!$edition) {
@@ -177,7 +177,7 @@ class ImportAction extends CliAction
 		$this->logger->level = $level;
 	}
 
-	public static function getHelp($args = array()) {
+	public static function getHelp($args = []) {
 		return <<<EOS
 statedecoded : import
 

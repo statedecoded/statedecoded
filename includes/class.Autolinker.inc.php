@@ -20,7 +20,7 @@ class Autolinker
 {
 
 	public $terms;
-	public $term_blacklist = array();
+	public $term_blacklist = [];
 	public $edition_id;
 	public $db;
 
@@ -31,7 +31,7 @@ class Autolinker
 	 *
 	 * This is completely unnecessary for the replace_sections() method, but it doesn't do any harm.
 	 */
-	function __construct($args = array())
+	function __construct($args = [])
 	{
 		/*
 		 * Set our defaults
@@ -143,7 +143,7 @@ class Autolinker
 		/*
 		 * Create an instance of the Law class.
 		 */
-		$law = new Law(array('db' => $this->db));
+		$law = new Law(['db' => $this->db]);
 
 		/*
 		 * Get the law, so we can get the proper url.
@@ -162,7 +162,7 @@ class Autolinker
 		else
 		{
 
-			$permalink_obj = new Permalink(array('db' => $this->db));
+			$permalink_obj = new Permalink(['db' => $this->db]);
 
 			/*
 			 * If we have a single law, we just link to it.

@@ -41,7 +41,7 @@ class SolrSearchEngine extends SearchEngineInterface
 	/*
 	 * The documents to put into our current transaction.
 	 */
-	public $documents = array();
+	public $documents = [];
 
 	/*
 	 * Number of documents to store before automatically flushing.
@@ -65,20 +65,20 @@ class SolrSearchEngine extends SearchEngineInterface
 			public function dispatch(object $event): object { return $event; }
 		};
 
-		$endpoint = array(
+		$endpoint = [
 			'host'    => $config['host']    ?? 'localhost',
 			'port'    => (int) ($config['port']    ?? 8983),
 			'path'    => $config['path']    ?? '/solr/',
 			'core'    => $config['core']    ?? 'statedecoded',
 			'timeout' => (int) ($config['timeout'] ?? 30),
-		);
+		];
 
-		return new SolariumClient($adapter, $dispatcher, array(
-			'endpoint' => array('default' => $endpoint)
-		));
+		return new SolariumClient($adapter, $dispatcher, [
+			'endpoint' => ['default' => $endpoint]
+		]);
 	}
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		parent::__construct($args);
 
@@ -146,7 +146,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			if($this->last_result->getStatus() === 0)
 			{
 				unset($this->transaction);
-				$this->documents = array();
+				$this->documents = [];
 				return true;
 			}
 
@@ -193,20 +193,20 @@ class SolrSearchEngine extends SearchEngineInterface
 
 		$document->repealed = $law->metadata->repealed;
 
-		$structure = array();
+		$structure = [];
 		foreach($law->ancestry as $key=>$value)
 		{
 			$structure[] = $value->identifier . ' ' . $value->name;
 		}
 		$document->structure = join('/', $structure);
 
-		$document->refers_to = array();
+		$document->refers_to = [];
 		foreach($document->refers_to as $law)
 		{
 			$document->refers_to[] = $law->section;
 		}
 
-		$document->referred_to_by = array();
+		$document->referred_to_by = [];
 		foreach($document->referred_to_by as $law)
 		{
 			$document->referred_to_by[] = $law->section;
@@ -240,7 +240,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			$document->text = $structure->metadata->text;
 		}
 
-		$ancestry = array();
+		$ancestry = [];
 		foreach($structure->structure as $key=>$value)
 		{
 			$ancestry[] = $value->identifier . ' ' . $value->name;
@@ -250,7 +250,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		return $document;
 	}
 
-	public function search($query = array())
+	public function search($query = [])
 	{
 		// We try our query here so we can wrap the exception into a standard one.
 		try

@@ -15,7 +15,7 @@
 class Content
 {
 
-	public $data = array();
+	public $data = [];
 
 	/**
 	 * Add a property to our content.

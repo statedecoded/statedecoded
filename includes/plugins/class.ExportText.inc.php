@@ -14,13 +14,13 @@
 
 class ExportText extends Export
 {
-  public $listeners = array(
+  public $listeners = [
     'exportLaw',
     'exportStructure',
     'finishExport',
     'postGetLaw',
     'showBulkDownload'
-  );
+  ];
 
   public $public_name = 'Plain Text';
   public $format = 'text';
@@ -35,7 +35,7 @@ class ExportText extends Export
     return $law->plain_text;
   }
 
-  public function formatStructureForExport($structure, $laws = array())
+  public function formatStructureForExport($structure, $laws = [])
   {
     $content = ucwords($structure->label) . ' ' . $structure->identifier . ': ' .
       $structure->name;

@@ -13,7 +13,7 @@
 
 class Database extends PDO
 {
-	public $_properties = array();
+	public $_properties = [];
 	public $_query = null;
 
 	public function __construct(
@@ -23,18 +23,18 @@ class Database extends PDO
 		$driver_options = null)
 	{
 		$driver_options = array_replace(
-			array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT),
+			[PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT],
 			(array) $driver_options
 		);
 
 		parent::__construct($dsn, $username, $password, $driver_options);
 
-		$this->_properties = array(
+		$this->_properties = [
 			'dsn'            => $dsn,
 			'username'       => $username,
 			'password'       => $password,
 			'driver_options' => $driver_options
-		);
+		];
 	}
 
 	public function query( string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs ): \PDOStatement|false
@@ -57,7 +57,7 @@ class Database extends PDO
 	}
 
 	#[\ReturnTypeWillChange]
-	public function prepare( string $query, array $driver_options = array() ): DatabaseStatement|false
+	public function prepare( string $query, array $driver_options = [] ): DatabaseStatement|false
 	{
 		$this->_query = $query;
 		$pdo_statement = parent::prepare( $query, $driver_options );

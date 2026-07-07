@@ -190,12 +190,12 @@ class Parser
 
 	public function pre_parse_structure(&$structure_data, &$structure)
 	{
-		return array($structure_data, $structure);
+		return [$structure_data, $structure];
 	}
 
 	public function post_parse_structure(&$structure_data, &$structure)
 	{
-		return array($structure_data, $structure);
+		return [$structure_data, $structure];
 	}
 
 	public function get_structure_order_by($structure_data, $structure)
@@ -238,7 +238,7 @@ class Parser
 		}
 
 		// Container to hold discrete text sections.
-		$section->section = array();
+		$section->section = [];
 
 		$section = $this->recurse_text($section, $section_xml);
 
@@ -269,7 +269,7 @@ class Parser
 	 * Our text is nested, so we have to dig it out while
 	 * preserving the hierarchy.
 	 */
-	public function recurse_text($section, $text, $prefix_hierarchy = array())
+	public function recurse_text($section, $text, $prefix_hierarchy = [])
 	{
 
 		if($text->content) {
@@ -549,7 +549,7 @@ class Parser
 				/*
 				 * Having come to the end of the loop, reset the prefix hierarchy.
 				 */
-				$this->prefix_hierarchy = array();
+				$this->prefix_hierarchy = [];
 			}
 		}
 
@@ -628,7 +628,7 @@ class Parser
 		 * we need to keep an array of our arguments rather than
 		 * hardcoding them in the SQL.
 		 */
-		$structure_args = array();
+		$structure_args = [];
 
 		if (isset($parent_id))
 		{
@@ -640,7 +640,7 @@ class Parser
 			$structure_sql .= ' WHERE parent_id IS NULL';
 		}
 
-		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_statement = $this->db->prepare($structure_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
 		$structure_result = $structure_statement->execute($structure_args);
 
 		if ($structure_result === false)
@@ -660,7 +660,7 @@ class Parser
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
 			 */
-			$identifier_parts = array();
+			$identifier_parts = [];
 
 			foreach ($item as $key => $value)
 			{
@@ -700,13 +700,13 @@ class Parser
 				token = :token,
 				url = :url';
 			$insert_statement = $this->db->prepare($insert_sql);
-			$insert_data = array(
+			$insert_data = [
 				':object_type' => 'structure',
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
 				':token' => $token,
 				':url' => $url,
-			);
+			];
 
 
 			$insert_result = $insert_statement->execute($insert_data);
@@ -738,8 +738,8 @@ class Parser
 								AND (laws_meta.meta_value = "n" OR laws_meta.meta_value IS NULL)
 								ORDER BY order_by, section';
 			}
-			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-			$laws_result = $laws_statement->execute( array( ':s_id' => $item['s1_id'] ) );
+			$laws_statement = $this->db->prepare($laws_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+			$laws_result = $laws_statement->execute( [ ':s_id' => $item['s1_id'] ] );
 
 			if ($structure_result === false)
 			{
@@ -778,13 +778,13 @@ class Parser
 								token = :token,
 								url = :url';
 				$insert_statement = $this->db->prepare($insert_sql);
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'law',
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
 					':token' => $law_token,
 					':url' => $law_url,
-				);
+				];
 
 				$insert_result = $insert_statement->execute($insert_data);
 
@@ -852,7 +852,7 @@ class Parser
 		 */
 		$sql = 'INSERT INTO laws
 				SET date_created=now()';
-		$sql_args = array();
+		$sql_args = [];
 		$query['edition_id'] = $this->edition_id;
 
 		/*
@@ -887,12 +887,12 @@ class Parser
 		 * save a record of those, for crossreferencing purposes.
 		 */
 		$references = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'logger' => $this->logger,
 				'edition_id' => $this->edition_id,
 				'structure_labels' => $this->structure_labels
-			)
+			]
 		);
 		$references->text = $code->text;
 		$sections = $references->extract_references();
@@ -925,11 +925,11 @@ class Parser
 
 			foreach ($code->metadata as $key => $value)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':meta_key' => $key,
 					':meta_value' => $value
-				);
+				];
 				$result = $statement->execute($sql_args);
 
 				if ($result === false)
@@ -953,11 +953,11 @@ class Parser
 
 			foreach ($code->tags as $tag)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':section_number' => $code->section_number,
 					':tag' => $tag
-				);
+				];
 				$result = $statement->execute($sql_args);
 
 				if ($result === false)
@@ -991,11 +991,11 @@ class Parser
 					sequence = :sequence,
 					type = :type,
 					date_created=now()';
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $law_id,
 				':sequence' => $i,
 				':type' => $section->type
-			);
+			];
 			if (!empty($section->text))
 			{
 				$sql .= ', text = :text';
@@ -1034,11 +1034,11 @@ class Parser
 							identifier = :identifier,
 							sequence = :sequence,
 							date_created=now()';
-					$sql_args = array(
+					$sql_args = [
 						':text_id' => $text_id,
 						':identifier' => $prefix,
 						':sequence' => $j
-					);
+					];
 
 					$statement = $this->db->prepare($sql);
 					$result = $statement->execute($sql_args);
@@ -1061,12 +1061,12 @@ class Parser
 		 * Trawl through the text for definitions.
 		 */
 		$dictionary = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'logger' => $this->logger,
 				'edition_id' => $this->edition_id,
 				'structure_labels' => $this->structure_labels
-			)
+			]
 		);
 
 		/*
@@ -1084,7 +1084,7 @@ class Parser
 		 * config file as a container for global definitions. If it was, then we override the
 		 * presumed scope and provide a global scope.
 		 */
-		$ancestry = array();
+		$ancestry = [];
 		if (isset($code->structure))
 		{
 			foreach ($code->structure as $struct)
@@ -1126,12 +1126,12 @@ class Parser
 			if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
 			{
 				$find_scope = new Parser(
-					array(
+					[
 						'db' => $this->db,
 						'logger' => $this->logger,
 						'edition_id' => $this->edition_id,
 						'structure_labels' => $this->structure_labels
-					)
+					]
 				);
 				$find_scope->label = $dictionary->scope;
 				$find_scope->structure_id = $dictionary->structure_id;
@@ -1203,10 +1203,10 @@ class Parser
 				FROM structure
 				WHERE identifier = :identifier
 				AND edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $structure->identifier,
 			':edition_id' => $structure->edition_id
-		);
+		];
 
 		/*
 		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
@@ -1286,9 +1286,9 @@ class Parser
 		 */
 		$sql = 'INSERT INTO structure
 				SET identifier = :identifier';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $structure->identifier
-		);
+		];
 		if (!empty($structure->name))
 		{
 			$sql .= ', name = :name';
@@ -1360,9 +1360,9 @@ class Parser
 			$sql = 'SELECT id, parent_id, label
 					FROM structure
 					WHERE id = :id';
-			$sql_args = array(
+			$sql_args = [
 				':id' => $parent_id
-			);
+			];
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -1426,27 +1426,27 @@ class Parser
 		 * to be provided. Some phrases are left-padded with a space if they would never occur
 		 * without being preceded by a space; this is to prevent over-broad matches.
 		 */
-		$scope_indicators = array(	' are used in this ',
+		$scope_indicators = [	' are used in this ',
 									'when used in this ',
 									'for purposes of this ',
 									'for the purposes of this ',
 									'for the purpose of this ',
 									'in this ',
-								);
+								];
 
 		/*
 		 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
 		 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
 		 * spaces, to avoid erroneously matching fragments of other terms.
 		 */
-		$linking_phrases = array(	' mean ',
+		$linking_phrases = [	' mean ',
 									' means ',
 									' shall include ',
 									' includes ',
 									' has the same meaning as ',
 									' shall be construed ',
 									' shall also be construed to mean ',
-								);
+								];
 
 		/* Measure whether there are more straight quotes or directional quotes in this passage
 		 * of text, to determine which type are used in these definitions. We double the count of
@@ -1480,7 +1480,7 @@ class Parser
 		/*
 		 * Create the empty array that we'll build up with the definitions found in this section.
 		 */
-		$definitions = array();
+		$definitions = [];
 
 		/*
 		 * Step through each paragraph and determine which contain definitions.
@@ -1769,7 +1769,7 @@ class Parser
 		 * Make the list of definitions a subset of a larger variable, so that we can store things
 		 * other than terms.
 		 */
-		$tmp = array();
+		$tmp = [];
 		$tmp['terms'] = $definitions;
 		$tmp['scope'] = $scope;
 		$definitions = $tmp;
@@ -1821,14 +1821,14 @@ class Parser
 		foreach ($this->terms as $term => $definition)
 		{
 
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->law_id,
 				':term' => $term,
 				':definition' => $definition,
 				':scope' => $this->scope,
 				':scope_specificity' => $this->scope_specificity,
 				':structure_id' => $this->structure_id
-			);
+			];
 			$result = $statement->execute($sql_args);
 
 		}
@@ -1936,11 +1936,11 @@ class Parser
 		$i=0;
 		foreach ($this->sections as $section => $mentions)
 		{
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id,
 				':section_number' => $section,
 				':mentions' => $mentions
-			);
+			];
 
 			$result = $statement->execute($sql_args);
 
@@ -2093,7 +2093,7 @@ class Parser
 		$result = $statement->execute();
 
 
-		$structure_labels = array();
+		$structure_labels = [];
 
 		if ( ($result === false) )
 		{

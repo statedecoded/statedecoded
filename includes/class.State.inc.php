@@ -275,7 +275,7 @@ class Parser
 
 	public $file = 0;
 	public $directory;
-	public $files = array();
+	public $files = [];
 
 	public $db;
 	public $permalink_obj;
@@ -292,7 +292,7 @@ class Parser
 	 * to be provided. Some phrases are left-padded with a space if they would never occur
 	 * without being preceded by a space; this is to prevent over-broad matches.
 	 */
-	public $scope_indicators = array(
+	public $scope_indicators = [
 		' are used in this ',
 		'when used in this ',
 		'as used in this ',
@@ -300,14 +300,14 @@ class Parser
 		'for the purposes of this ',
 		'for the purpose of this ',
 		'in this ',
-	);
+	];
 
 	/*
 	 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
 	 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
 	 * spaces, to avoid erroneously matching fragments of other terms.
 	 */
-	public $linking_phrases = array(
+	public $linking_phrases = [
 		' mean ',
 		' means ',
 		' shall include ',
@@ -317,7 +317,7 @@ class Parser
 		' shall also be construed to mean ',
 		' shall mean and include ',
 		' shall mean '
-	);
+	];
 
 	public function __construct($options)
 	{
@@ -382,9 +382,9 @@ class Parser
 		if(!isset($this->permalink_obj))
 		{
 			$this->permalink_obj = new Permalink(
-				array(
+				[
 					'db' => $this->db
-				)
+				]
 			);
 		}
 
@@ -471,7 +471,7 @@ class Parser
 			if (class_exists('tidy', false))
 			{
 
-				$tidy_config = array('input-xml' => true);
+				$tidy_config = ['input-xml' => true];
 				$tidy = new tidy();
 				$tidy->parseString($xml, $tidy_config, 'utf8');
 				$tidy->cleanRepair();
@@ -582,7 +582,7 @@ class Parser
 
 			if(!isset($this->code->structure))
 			{
-				$this->code->structure = array();
+				$this->code->structure = [];
 			}
 			if(!isset($this->code->structure[$level]))
 			{
@@ -605,14 +605,14 @@ class Parser
 
 		if(!isset($this->code->section))
 		{
-			$this->code->section = array();
+			$this->code->section = [];
 		}
 
 		if(!isset($this->code->text))
 		{
 			$this->code->text = '';
 		}
-		$this->prefix_hierarchy = array();
+		$this->prefix_hierarchy = [];
 
 		$this->i=0;
 
@@ -682,7 +682,7 @@ class Parser
 		/*
 		 * Get the current edition.
 		 */
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 		$current_edition = $edition_obj->current();
 
 		/*
@@ -691,7 +691,7 @@ class Parser
 		 */
 		$sql = 'DELETE FROM permalinks
 			WHERE permalink = 0 AND edition_id <> :edition_id';
-		$sql_args = array(':edition_id' => $current_edition->id);
+		$sql_args = [':edition_id' => $current_edition->id];
 		$statement = $this->db->prepare($sql);
 		$statement->execute($sql_args);
 
@@ -703,7 +703,7 @@ class Parser
 			SET preferred = 1
 			WHERE permalink = 1 AND preferred = 0 AND
 			edition_id <> :edition_id';
-		$sql_args = array(':edition_id' => $edition_id);
+		$sql_args = [':edition_id' => $edition_id];
 		$statement = $this->db->prepare($sql);
 
 		$statement->execute($sql_args);
@@ -717,7 +717,7 @@ class Parser
 	{
 
 		$sql = 'DELETE FROM permalinks WHERE edition_id = :edition_id';
-		$sql_args = array(':edition_id' => $edition_id);
+		$sql_args = [':edition_id' => $edition_id];
 		$statement = $this->db->prepare($sql);
 
 		$statement->execute($sql_args);
@@ -729,7 +729,7 @@ class Parser
 	public function build_permalink_subsections($edition_id, $parent_id = null)
 	{
 
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 		$edition = $edition_obj->find_by_id($edition_id);
 
 		/*
@@ -750,7 +750,7 @@ class Parser
 			 */
 			if ($edition->current)
 			{
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'structure',
 					// ':relational_id' => null,
 					':identifier' => null,
@@ -759,13 +759,13 @@ class Parser
 					':edition_id' => $edition_id,
 					':preferred' => $preferred,
 					':permalink' => 0
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 
 				$preferred = 0;
 			}
 
-			$insert_data = array(
+			$insert_data = [
 				':object_type' => 'structure',
 				// ':relational_id' => null,
 				':identifier' => null,
@@ -774,7 +774,7 @@ class Parser
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
 				':permalink' => 1
-			);
+			];
 			$this->permalink_obj->create($insert_data);
 
 		}
@@ -791,9 +791,9 @@ class Parser
 		 * we need to keep an array of our arguments rather than
 		 * hardcoding them in the SQL.
 		 */
-		$structure_args = array(
+		$structure_args = [
 			':edition_id' => $edition_id
-		);
+		];
 
 		if (isset($parent_id))
 		{
@@ -805,7 +805,7 @@ class Parser
 			$structure_sql .= ' AND parent_id IS NULL';
 		}
 
-		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_statement = $this->db->prepare($structure_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
 		$structure_statement->execute($structure_args);
 
 		/*
@@ -817,7 +817,7 @@ class Parser
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
 			 */
-			$identifier_parts = array();
+			$identifier_parts = [];
 
 			foreach ($item as $key => $value)
 			{
@@ -854,7 +854,7 @@ class Parser
 			 */
 			if ($edition->current)
 			{
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'structure',
 					':relational_id' => $item['s1_id'],
 					':identifier' => $item['s1_identifier'],
@@ -863,7 +863,7 @@ class Parser
 					':edition_id' => $edition_id,
 					':preferred' => 1,
 					':permalink' => 0
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 
 				$preferred = 0;
@@ -872,7 +872,7 @@ class Parser
 			/*
 			 * Insert actual permalinks.
 			 */
-			$insert_data = array(
+			$insert_data = [
 				':object_type' => 'structure',
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
@@ -881,7 +881,7 @@ class Parser
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
 				':permalink' => 1
-			);
+			];
 			$this->permalink_obj->create($insert_data);
 
 			/*
@@ -907,11 +907,11 @@ class Parser
 								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
-			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-			$laws_sql_args = array(
+			$laws_statement = $this->db->prepare($laws_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+			$laws_sql_args = [
 				':s_id' => $item['s1_id'],
 				':edition_id' => $edition_id
-			);
+			];
 			$laws_statement->execute( $laws_sql_args );
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
@@ -926,8 +926,8 @@ class Parser
 				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === false)
 				{
 					$token = str_replace(
-						array(':', '/', '\\'),
-						array('_', '_', '_'),
+						[':', '/', '\\'],
+						['_', '_', '_'],
 						$law['section_number']
 					);
 
@@ -937,7 +937,7 @@ class Parser
 
 					if ($edition->current)
 					{
-						$insert_data = array(
+						$insert_data = [
 							':object_type' => 'law',
 							':relational_id' => $law['id'],
 							':identifier' => $law['section_number'],
@@ -946,7 +946,7 @@ class Parser
 							':edition_id' => $edition_id,
 							':permalink' => 0,
 							':preferred' => 1
-						);
+						];
 						$this->permalink_obj->create($insert_data);
 
 						$preferred = 0;
@@ -955,7 +955,7 @@ class Parser
 					/*
 					 * If this is not-current, then short is the most-preferred.
 					 */
-					$insert_data = array(
+					$insert_data = [
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
@@ -964,7 +964,7 @@ class Parser
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
-					);
+					];
 					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
@@ -975,7 +975,7 @@ class Parser
 				 */
 				if ($edition->current)
 				{
-					$insert_data = array(
+					$insert_data = [
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
@@ -984,7 +984,7 @@ class Parser
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
-					);
+					];
 					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
@@ -993,7 +993,7 @@ class Parser
 				/*
 				 * Failing everything else, use the super-long url.
 				 */
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'law',
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
@@ -1002,7 +1002,7 @@ class Parser
 					':edition_id' => $edition_id,
 					':permalink' => 1,
 					':preferred' => $preferred
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 			}
 			$this->build_permalink_subsections($edition_id, $item['s1_id']);
@@ -1093,7 +1093,7 @@ class Parser
 					 */
 					if(!isset($this->code->section[$this->i]->prefix_hierarchy))
 					{
-						$this->code->section[$this->i]->prefix_hierarchy = array();
+						$this->code->section[$this->i]->prefix_hierarchy = [];
 					}
 
 					if($section->attribute('prefix'))
@@ -1176,14 +1176,14 @@ class Parser
 		 * create_structure() will handle that silently. Either way a structural ID gets returned.
 		 */
 		$structure = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id
-			)
+			]
 		);
 
-		$structure_labels = array();
+		$structure_labels = [];
 
 		if(isset($this->code->structure))
 		{
@@ -1265,7 +1265,7 @@ class Parser
 		 */
 
 		$dupe_query = 'SELECT COUNT(*) AS count FROM laws WHERE section = :section AND edition_id = :edition_id';
-		$dupe_args = array(':section' => $query['section'], ':edition_id' => $query['edition_id']);
+		$dupe_args = [':section' => $query['section'], ':edition_id' => $query['edition_id']];
 
 		$dupe_statement = $this->db->prepare($dupe_query);
 		$dupe_result = $dupe_statement->execute($dupe_args);
@@ -1288,7 +1288,7 @@ class Parser
 		 */
 		$sql = 'INSERT INTO laws
 				SET date_created=now()';
-		$sql_args = array();
+		$sql_args = [];
 
 		/*
 		 * Iterate through the array and turn it into SQL.
@@ -1322,11 +1322,11 @@ class Parser
 		 * save a record of those, for crossreferencing purposes.
 		 */
 		$references = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id
-			)
+			]
 		);
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
@@ -1361,12 +1361,12 @@ class Parser
 
 			foreach ($this->code->metadata as $key => $value)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':meta_key' => $key,
 					':meta_value' => $value,
 					':edition_id' => $this->edition_id
-				);
+				];
 				$result = $statement->execute($sql_args);
 
 				if ($result === false)
@@ -1391,12 +1391,12 @@ class Parser
 
 			foreach ($this->code->tags as $tag)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':section_number' => $this->code->section_number,
 					':tag' => $tag,
 					':edition_id' => $this->edition_id
-				);
+				];
 				$result = $statement->execute($sql_args);
 
 				if ($result === false)
@@ -1431,12 +1431,12 @@ class Parser
 					type = :type,
 					date_created=now(),
 					edition_id = :edition_id';
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $law_id,
 				':sequence' => $i,
 				':type' => $section->type,
 				':edition_id' => $this->edition_id
-			);
+			];
 			if (!empty($section->text))
 			{
 				$sql .= ', text = :text';
@@ -1476,12 +1476,12 @@ class Parser
 							sequence = :sequence,
 							date_created=now(),
 							edition_id = :edition_id';
-					$sql_args = array(
+					$sql_args = [
 						':text_id' => $text_id,
 						':identifier' => $prefix,
 						':sequence' => $j,
 						':edition_id' => $this->edition_id
-					);
+					];
 
 					$statement = $this->db->prepare($sql);
 					$result = $statement->execute($sql_args);
@@ -1504,11 +1504,11 @@ class Parser
 		 * Trawl through the text for definitions.
 		 */
 		$dictionary = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id
-			)
+			]
 		);
 
 		/*
@@ -1526,7 +1526,7 @@ class Parser
 		 * config file as a container for global definitions. If it was, then we override the
 		 * presumed scope and provide a global scope.
 		 */
-		$ancestry = array();
+		$ancestry = [];
 		if (isset($this->code->structure))
 		{
 			foreach ($this->code->structure as $struct)
@@ -1608,10 +1608,10 @@ class Parser
 				FROM structure
 				WHERE identifier = :identifier
 				AND edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $this->identifier,
 			':edition_id' => $this->edition_id
-		);
+		];
 
 		/*
 		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
@@ -1689,9 +1689,9 @@ class Parser
 		 */
 		$sql = 'INSERT INTO structure
 				SET identifier = :identifier';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $this->identifier
-		);
+		];
 		if (!empty($this->name))
 		{
 			$sql .= ', name = :name';
@@ -1804,7 +1804,7 @@ class Parser
 		/*
 		 * Create the empty array that we'll build up with the definitions found in this section.
 		 */
-		$definitions = array();
+		$definitions = [];
 
 		/*
 		 * Step through each paragraph and determine which contain definitions.
@@ -2125,7 +2125,7 @@ class Parser
 		foreach ($this->terms as $term => $definition)
 		{
 
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->law_id,
 				':term' => $term,
 				':definition' => $definition,
@@ -2133,7 +2133,7 @@ class Parser
 				':scope_specificity' => $this->scope_specificity,
 				':structure_id' => $this->structure_id,
 				':edition_id' => $this->edition_id
-			);
+			];
 
 			foreach($sql_args as $key => $value)
 			{
@@ -2251,13 +2251,13 @@ class Parser
 		$i=0;
 		foreach ($this->sections as $section => $mentions)
 		{
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id,
 				':section_number' => $section,
 				':target_law_id' => '0',
 				':mentions' => $mentions,
 				':edition_id' => $this->edition_id
-			);
+			];
 
 			$result = $statement->execute($sql_args);
 

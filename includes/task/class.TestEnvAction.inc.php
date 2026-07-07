@@ -9,7 +9,7 @@ class TestEnvAction extends CliAction
 	static public $name = 'test-env';
 	static public $summary = 'Tests the local environment for requirements to run.';
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		parent::__construct($args);
 
@@ -19,7 +19,7 @@ class TestEnvAction extends CliAction
 		}
 	}
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 		$return_data = $this->runEnvironmentTests();
 
@@ -28,15 +28,15 @@ class TestEnvAction extends CliAction
 
 	public function runEnvironmentTests()
 	{
-		$logger_args = array(
+		$logger_args = [
 			'html' => false
-		);
+		];
 		$logger = new Logger($logger_args);
-		$parser = new ParserController(array(
+		$parser = new ParserController([
 			'db' => &$this->db,
 			'logger' => $logger,
 			'import_data_dir' => IMPORT_DATA_DIR
-		));
+		]);
 		if($parser->test_environment()) {
 			return 'Environment test succeeded.';
 		}

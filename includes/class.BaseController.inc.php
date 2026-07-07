@@ -19,7 +19,7 @@ abstract class BaseController
 	protected $local;
 	protected $content;
 
-	public function __construct($local = array())
+	public function __construct($local = [])
 	{
 		/*
 		 * Store variables that need to be globally available.

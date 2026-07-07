@@ -17,8 +17,8 @@
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 global $db;
-$edition_obj = new Edition(array('db' => $db));
-$permalink_obj = new Permalink(array('db' => $db));
+$edition_obj = new Edition(['db' => $db]);
+$permalink_obj = new Permalink(['db' => $db]);
 
 /*
  * Create a container for our content.

@@ -21,11 +21,11 @@
 	 * This class uses the already generated HTML files, translating them into
 	 * the destination formats.
 	 */
-	public $listeners = array(
+	public $listeners = [
 		'HTMLExportLaw',
 		'HTMLExportStructure',
 		'HTMLFinishExport'
-	);
+	];
 
 	public function HTMLExportLaw($law, $dir, $html_filename, $content)
 	{
@@ -56,7 +56,7 @@
 		 */
 		$title_page = $this->createTitlePage($downloads_dir);
 
-		$input_files = array($title_page);
+		$input_files = [$title_page];
 
 		foreach($exported as $file) {
 			$input_files[] = $file['filename'];

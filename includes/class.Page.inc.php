@@ -30,13 +30,13 @@ class Page
 	public $theme_web_path = '';
 	public $static_path = '';
 
-	public $assets = array(
+	public $assets = [
 		/* 'asset_name' => array(
 				'path' => '/relative/path/to/file.css',
 				'resolved_path' => '/absolute/path/to/file.css', // This is generated.
 				'type' => 'stylesheet', // or javascript or whatever.
 				'requires' => array('first_asset_name', 'second_asset_name')) */
-	);
+	];
 
 	public function __construct($page=null)
 	{
@@ -189,7 +189,7 @@ class Page
 	/**
 	 * Add a new asset.
 	 */
-	public function add_asset($name, $asset = array())
+	public function add_asset($name, $asset = [])
 	{
 	
 		/*
@@ -232,7 +232,7 @@ class Page
 	public function parse_assets()
 	{
 	
-		$collated_assets = array();
+		$collated_assets = [];
 
 		foreach ($this->assets as $name => $asset)
 		{
@@ -254,7 +254,7 @@ class Page
 		$type = $asset['type'];
 		if(!isset($collated_assets[$type]))
 		{
-			$collated_assets[$type] = array();
+			$collated_assets[$type] = [];
 		}
 
 		/*
@@ -265,7 +265,7 @@ class Page
 
 			if(!is_array($asset['requires']))
 			{
-				$asset['requires'] = array($asset['requires']);
+				$asset['requires'] = [$asset['requires']];
 			}
 
 			foreach ($asset['requires'] as $required)

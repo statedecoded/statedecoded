@@ -21,7 +21,7 @@ class MasterController
 	protected $db;
 	protected $cache;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key => $value)
 		{
@@ -39,10 +39,10 @@ class MasterController
 		/*
 		 * Setup the data we'll pass to any instances.
 		 */
-		$local_data = array(
+		$local_data = [
 			'db' => $this->db,
 			'cache' => $this->cache
-		);
+		];
 
 		/*
 		 * Explode the request into a method and some args.
@@ -94,7 +94,7 @@ class MasterController
 
 		list($handler, $args) = $router->getRoute($url);
 
-		return array($handler, $args);
+		return [$handler, $args];
 
 	}
 

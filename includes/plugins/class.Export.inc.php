@@ -17,14 +17,14 @@
 
 abstract class Export extends Plugin
 {
-	public $listeners = array(
+	public $listeners = [
 		'exportLaw',
 		// 'exportStructure', // Not enabled by default
 		// 'exportDictionary', // Not enabled by default
 		'finishExport',
 		'postGetLaw',
 		'showBulkDownload'
-	);
+	];
 
 	/*
 	 * The name to display on pages.
@@ -94,7 +94,7 @@ abstract class Export extends Plugin
 
 		$this->writeLawFile($filename, $content);
 
-		return array($filename, $content);
+		return [$filename, $content];
 	}
 
 	public function formatLawForExport($law)
@@ -119,7 +119,7 @@ abstract class Export extends Plugin
 
 		$filename .= $this->extension;
 
-		return array($path, $filename);
+		return [$path, $filename];
 	}
 
 	/*
@@ -142,10 +142,10 @@ abstract class Export extends Plugin
 
 		$this->writeStructureFile($filename, $content);
 
-		return array($filename, $content);
+		return [$filename, $content];
 	}
 
-	public function formatStructureForExport($structure, $laws = array())
+	public function formatStructureForExport($structure, $laws = [])
 	{
 		return var_export($structure, true);
 	}
@@ -176,7 +176,7 @@ abstract class Export extends Plugin
 			$filename = $token . $this->extension;
 		}
 
-		return array($path, $filename);
+		return [$path, $filename];
 	}
 
 	/*
@@ -234,7 +234,7 @@ abstract class Export extends Plugin
 
 		$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
 
-		return array($filename, $content);
+		return [$filename, $content];
 	}
 
 	public function formatDictionaryForExport($dictionary)
@@ -313,11 +313,11 @@ abstract class Export extends Plugin
 			}
 			$url .= $this->extension;
 
-			$law->formats[] = array(
+			$law->formats[] = [
 				'name' => $this->public_name,
 				'format' => $this->format,
 				'url' => $url
-			);
+			];
 		}
 	}
 

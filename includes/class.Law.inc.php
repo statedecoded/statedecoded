@@ -20,7 +20,7 @@ class Law
 
 	public $formats;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key=>$value)
 		{
@@ -91,7 +91,7 @@ class Law
 				section AS section_number, catch_line,
 				history, text AS full_text, order_by
 				FROM laws';
-		$sql_args = array();
+		$sql_args = [];
 
 		/*
 		 * If we're requesting a specific law by ID.
@@ -204,9 +204,9 @@ class Law
 					FROM text
 					WHERE law_id = :law_id
 					ORDER BY text.sequence ASC';
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id
-			);
+			];
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -470,7 +470,7 @@ class Law
 		 * Provide the URL for this section.
 		 */
 
-		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink_obj = new Permalink(['db' => $this->db]);
 		$this->permalink = $permalink_obj->get_preferred($this->section_id, 'law', $this->edition_id);
 
 		if($this->permalink) {
@@ -568,10 +568,10 @@ class Law
 		}
 		$sql .= 'AND laws.edition_id = :edition_id
 			ORDER BY laws.order_by, laws.section ASC';
-		$sql_args = array(
+		$sql_args = [
 			':law_id' => $this->section_id,
 			':edition_id' => $this->edition_id
-		);
+		];
 		/*
 		 * Execute the query.
 		 */
@@ -587,9 +587,9 @@ class Law
 			return false;
 		}
 
-		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink_obj = new Permalink(['db' => $this->db]);
 
-		$references = array();
+		$references = [];
 		while ($reference = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
@@ -616,7 +616,7 @@ class Law
 	 */
 	public function get_url($law_id, $edition_id = null)
 	{
-		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink_obj = new Permalink(['db' => $this->db]);
 		$permalink = $permalink_obj->get_permalink($law_id, 'law', $edition_id);
 
 		return $permalink;
@@ -650,9 +650,9 @@ class Law
 		 */
 		$sql = 'INSERT INTO laws_views
 				SET section = :section';
-		$sql_args = array(
+		$sql_args = [
 			':section' => $this->section_number
-		);
+		];
 		if (!empty($_SERVER['REMOTE_ADDR']))
 		{
 			$sql .= ', ip_address=INET_ATON(:ip)';
@@ -697,9 +697,9 @@ class Law
 		$sql = 'SELECT id, meta_key, meta_value
 				FROM laws_meta
 				WHERE law_id = :law_id';
-		$sql_args = array(
+		$sql_args = [
 			':law_id' => $this->section_id
-		);
+		];
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -791,7 +791,7 @@ class Law
 
 		if(!isset($this->edition_id)) {
 			$edition_sql = 'SELECT edition_id FROM laws WHERE id = :id';
-			$edition_args = array(':id' => $this->section_id);
+			$edition_args = [':id' => $this->section_id];
 
 			$edition_statement = $this->db->prepare($edition_sql);
 			$result = $edition_statement->execute($edition_args);
@@ -810,12 +810,12 @@ class Law
 
 		foreach ($this->metadata as $field)
 		{
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id,
 				':edition_id' => $this->edition_id,
 				':meta_key' => $field->key,
 				':meta_value' => $field->value
-			);
+			];
 			$result = $statement->execute($sql_args);
 
 			if ($result === false)
@@ -842,9 +842,9 @@ class Law
 				FROM laws_meta
 				LEFT JOIN laws ON laws_meta.law_id = laws.id
 				WHERE meta_key = :meta_key ';
-		$sql_args = array(
+		$sql_args = [
 			':meta_key' => $field
-		);
+		];
 
 		if(isset($this->edition_id)) {
 			$sql .= 'AND laws.edition_id = :edition_id ';
@@ -918,9 +918,9 @@ class Law
 				FROM laws
 				WHERE section = :section
 				AND edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':section' => $this->section_number,
-		);
+		];
 
 		if(isset($this->edition_id))
 		{
@@ -977,7 +977,7 @@ class Law
 			 * Store a list of the dictionary terms as an array, which is required for
 			 * preg_replace_callback, the function that we use to insert the definitions.
 			 */
-			$term_pcres = array();
+			$term_pcres = [];
 			foreach ($terms as $term)
 			{
 
@@ -1028,10 +1028,10 @@ class Law
 			$autolinker = new State_Autolinker;
 		}
 		$autolinker = new Autolinker(
-			array(
+			[
 				'edition_id' => $this->edition_id,
 				'db' => $this->db
-			)
+			]
 		);
 
 		if(isset($this->text) && $this->text)
@@ -1064,7 +1064,7 @@ class Law
 				/*
 				 * Turn every code reference in every paragraph into a link.
 				 */
-				$section->text = preg_replace_callback(SECTION_REGEX, array($autolinker, 'replace_sections'), $section->text);
+				$section->text = preg_replace_callback(SECTION_REGEX, [$autolinker, 'replace_sections'], $section->text);
 
 				/*
 				 * Turn every pair of newlines into carriage returns.
@@ -1076,7 +1076,7 @@ class Law
 				 */
 				if (isset($term_pcres))
 				{
-					$section->text = preg_replace_callback($term_pcres, array($autolinker, 'replace_terms'), $section->text);
+					$section->text = preg_replace_callback($term_pcres, [$autolinker, 'replace_terms'], $section->text);
 				}
 			}
 
@@ -1343,9 +1343,9 @@ class Law
 	 */
 	public function get_all_laws($edition_id, $result_handle_only = false)
 	{
-		$query_args = array(
+		$query_args = [
 			':edition_id' => $edition_id
-		);
+		];
 		$query = 'SELECT laws.id
 			FROM laws
 			WHERE edition_id = :edition_id';
@@ -1371,7 +1371,7 @@ class Law
 
 	public function count($edition_id = null)
 	{
-		$query_args = array();
+		$query_args = [];
 		$query = 'SELECT count(*) AS count FROM laws ';
 		if($edition_id)
 		{
@@ -1388,7 +1388,7 @@ class Law
 	/**
 	 * A stripped down version of the get_law() function.  Used by the Autolinker.
 	 */
-	public function get_matching_sections($section, $edition_id, $fields = array())
+	public function get_matching_sections($section, $edition_id, $fields = [])
 	{
 		static $select_statement;
 		if(!isset($select_statement))
@@ -1398,10 +1398,10 @@ class Law
 			$select_statement = $this->db->prepare($sql);
 		}
 
-		$sql_args = array(
+		$sql_args = [
 			':section' => $section,
 			':edition_id' => $edition_id
-		);
+		];
 
 		$select_result = $select_statement->execute($sql_args);
 
@@ -1411,7 +1411,7 @@ class Law
 		}
 		else
 		{
-			$permalink_obj = new Permalink(array('db' => $this->db));
+			$permalink_obj = new Permalink(['db' => $this->db]);
 
 			$laws = $select_statement->fetchAll(PDO::FETCH_OBJ);
 			foreach($laws as $key=>$law)

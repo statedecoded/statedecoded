@@ -55,7 +55,7 @@ abstract class AmericanLegalParser
 
 	public $file = 0;
 	public $directory;
-	public $files = array();
+	public $files = [];
 
 	public $db;
 	public $logger;
@@ -67,7 +67,7 @@ abstract class AmericanLegalParser
 
 	public $section_count = 1;
 
-	public $structures = array();
+	public $structures = [];
 
 	/*
 	 * Regexes.
@@ -96,21 +96,21 @@ abstract class AmericanLegalParser
 	 * to be provided. Some phrases are left-padded with a space if they would never occur
 	 * without being preceded by a space; this is to prevent over-broad matches.
 	 */
-	public $scope_indicators = array(
+	public $scope_indicators = [
 		' are used in this ',
 		'when used in this ',
 		'for purposes of this ',
 		'for the purposes of this ',
 		'for the purpose of this ',
 		'in this ',
-	);
+	];
 
 	/*
 	 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
 	 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
 	 * spaces, to avoid erroneously matching fragments of other terms.
 	 */
-	public $linking_phrases = array(
+	public $linking_phrases = [
 		' mean ',
 		' means ',
 		' shall include ',
@@ -118,15 +118,15 @@ abstract class AmericanLegalParser
 		' has the same meaning as ',
 		' shall be construed ',
 		' shall also be construed to mean ',
-	);
+	];
 
 	/*
 	 * Files to ignore.
 	 */
-	public $ignore_files = array(
+	public $ignore_files = [
 		'0-0-0-1.xml',
 		'0-0-0-2.xml'
-	);
+	];
 
 	/*
 	 * Unfortunately, there are some images that we cannot use, for a variety of reasons.
@@ -134,12 +134,12 @@ abstract class AmericanLegalParser
 	 * anyone other than the city.  This is going to be locality-specific, so put them here.
 	 * If you need more complex rules, override check_image()
 	 */
-	public $image_blacklist = array('ALP Icon', 'SFSeal');
+	public $image_blacklist = ['ALP Icon', 'SFSeal'];
 
 	/*
 	 * Images to store.
 	 */
-	public $images = array();
+	public $images = [];
 
 	/*
 	 * Count the structures and appendices statically
@@ -215,9 +215,9 @@ abstract class AmericanLegalParser
 		if(!isset($this->permalink_obj))
 		{
 			$this->permalink_obj = new Permalink(
-				array(
+				[
 					'db' => $this->db
-				)
+				]
 			);
 		}
 
@@ -306,7 +306,7 @@ abstract class AmericanLegalParser
 			if (class_exists('tidy', false))
 			{
 
-				$tidy_config = array('input-xml' => true);
+				$tidy_config = ['input-xml' => true];
 				$tidy = new tidy();
 				$tidy->parseString($xml, $tidy_config, 'utf8');
 				$tidy->cleanRepair();
@@ -333,7 +333,7 @@ abstract class AmericanLegalParser
 	public function parse()
 	{
 		unset($this->structures);
-		$this->structures = array();
+		$this->structures = [];
 
 		/*
 		 * If a section of code hasn't been passed to this, then it's of no use.
@@ -356,7 +356,7 @@ abstract class AmericanLegalParser
 		/*
 		 * There are multiple sections per file.
 		 */
-		$this->sections = array();
+		$this->sections = [];
 		$this->section_count = 1;
 
 		$this->parse_recurse($chapter);
@@ -710,9 +710,9 @@ abstract class AmericanLegalParser
 		}
 		$code->text = '';
 		$code->history = '';
-		$code->metadata = array(
+		$code->metadata = [
 			'repealed' => 'n'
-		);
+		];
 
 		if(!isset($code->order_by))
 		{
@@ -768,7 +768,7 @@ abstract class AmericanLegalParser
 						/*
 						 * TODO: !IMPORTANT Deal with hierarchy.  This is just a hack.
 						 */
-						$code->section->{$i}->prefix_hierarchy = array($paragraph_id['letter']);
+						$code->section->{$i}->prefix_hierarchy = [$paragraph_id['letter']];
 
 						/*
 						 * Remove the section letter from the section.
@@ -861,10 +861,10 @@ abstract class AmericanLegalParser
 		$xml = preg_replace('/<SCROLL_TABLE[^>]*>(.*?)<\/SCROLL_TABLE>/sm', '<table>$1</table>', $xml);
 
 		// Replace ROW with tr.
-		$xml = str_replace(array('<ROW>', '</ROW>'), array('<tr>', '</tr>'), $xml);
+		$xml = str_replace(['<ROW>', '</ROW>'], ['<tr>', '</tr>'], $xml);
 
 		// Replace COL with td.
-		$xml = str_replace(array('<COL>', '</COL>'), array('<td>', '</td>'), $xml);
+		$xml = str_replace(['<COL>', '</COL>'], ['<td>', '</td>'], $xml);
 
 		// Replace CELLFORMAT.
 		$xml = preg_replace('/<CELLFORMAT[^>]*>(.*?)<\/CELLFORMAT>/sm', '$1', $xml);
@@ -900,8 +900,8 @@ abstract class AmericanLegalParser
 				if(substr_count($table_pair[1], '<tr>') === 1)
 				{
 					$table_pair[1] = str_replace(
-						array('<tbody>', '</tbody>', '<td>', '</td>'),
-						array('<thead>', '</thead>', '<th>', '</th>'),
+						['<tbody>', '</tbody>', '<td>', '</td>'],
+						['<thead>', '</thead>', '<th>', '</th>'],
 						$table_pair[1]);
 
 					$table_pair[1] = trim($table_pair[1]);
@@ -936,7 +936,7 @@ abstract class AmericanLegalParser
 			preg_match_all('/(?P<name>[a-zA-Z_-]+)="(?P<value>[^"]*)"/',
 				$current_image['args'], $image_attrs, PREG_SET_ORDER);
 
-			$image = array();
+			$image = [];
 
 			foreach($image_attrs as $image_attr)
 			{
@@ -1048,7 +1048,7 @@ abstract class AmericanLegalParser
 		/*
 		 * Get the current edition.
 		 */
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 		$current_edition = $edition_obj->current();
 
 		/*
@@ -1057,7 +1057,7 @@ abstract class AmericanLegalParser
 		 */
 		$sql = 'DELETE FROM permalinks
 			WHERE permalink = 0 AND edition_id <> :edition_id';
-		$sql_args = array(':edition_id' => $current_edition->id);
+		$sql_args = [':edition_id' => $current_edition->id];
 		$statement = $this->db->prepare($sql);
 		$statement->execute($sql_args);
 
@@ -1069,7 +1069,7 @@ abstract class AmericanLegalParser
 			SET preferred = 1
 			WHERE permalink = 1 AND preferred = 0 AND
 			edition_id <> :edition_id';
-		$sql_args = array(':edition_id' => $edition_id);
+		$sql_args = [':edition_id' => $edition_id];
 		$statement = $this->db->prepare($sql);
 
 		$statement->execute($sql_args);
@@ -1085,7 +1085,7 @@ abstract class AmericanLegalParser
 	{
 
 		$sql = 'DELETE FROM permalinks WHERE edition_id = :edition_id';
-		$sql_args = array(':edition_id' => $edition_id);
+		$sql_args = [':edition_id' => $edition_id];
 		$statement = $this->db->prepare($sql);
 
 		$statement->execute($sql_args);
@@ -1097,7 +1097,7 @@ abstract class AmericanLegalParser
 	public function build_permalink_subsections($edition_id, $parent_id = null)
 	{
 
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 		$edition = $edition_obj->find_by_id($edition_id);
 
 		/*
@@ -1118,7 +1118,7 @@ abstract class AmericanLegalParser
 			 */
 			if ($edition->current)
 			{
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'structure',
 					// ':relational_id' => '',
 					':identifier' => '',
@@ -1127,13 +1127,13 @@ abstract class AmericanLegalParser
 					':edition_id' => $edition_id,
 					':preferred' => $preferred,
 					':permalink' => 0
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 
 				$preferred = 0;
 			}
 
-			$insert_data = array(
+			$insert_data = [
 				':object_type' => 'structure',
 				// ':relational_id' => '',
 				':identifier' => '',
@@ -1142,7 +1142,7 @@ abstract class AmericanLegalParser
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
 				':permalink' => 1
-			);
+			];
 			$this->permalink_obj->create($insert_data);
 
 		}
@@ -1159,9 +1159,9 @@ abstract class AmericanLegalParser
 		 * we need to keep an array of our arguments rather than
 		 * hardcoding them in the SQL.
 		 */
-		$structure_args = array(
+		$structure_args = [
 			':edition_id' => $edition_id
-		);
+		];
 
 		if (isset($parent_id))
 		{
@@ -1173,7 +1173,7 @@ abstract class AmericanLegalParser
 			$structure_sql .= ' AND parent_id IS NULL';
 		}
 
-		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_statement = $this->db->prepare($structure_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
 		$structure_statement->execute($structure_args);
 
 		/*
@@ -1185,7 +1185,7 @@ abstract class AmericanLegalParser
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
 			 */
-			$identifier_parts = array();
+			$identifier_parts = [];
 
 			foreach ($item as $key => $value)
 			{
@@ -1222,7 +1222,7 @@ abstract class AmericanLegalParser
 			 */
 			if ($edition->current)
 			{
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'structure',
 					':relational_id' => $item['s1_id'],
 					':identifier' => $item['s1_identifier'],
@@ -1231,7 +1231,7 @@ abstract class AmericanLegalParser
 					':edition_id' => $edition_id,
 					':preferred' => 1,
 					':permalink' => 0
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 
 				$preferred = 0;
@@ -1240,7 +1240,7 @@ abstract class AmericanLegalParser
 			/*
 			 * Insert actual permalinks.
 			 */
-			$insert_data = array(
+			$insert_data = [
 				':object_type' => 'structure',
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
@@ -1249,7 +1249,7 @@ abstract class AmericanLegalParser
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
 				':permalink' => 1
-			);
+			];
 			$this->permalink_obj->create($insert_data);
 
 			/*
@@ -1275,11 +1275,11 @@ abstract class AmericanLegalParser
 								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
-			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-			$laws_sql_args = array(
+			$laws_statement = $this->db->prepare($laws_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+			$laws_sql_args = [
 				':s_id' => $item['s1_id'],
 				':edition_id' => $edition_id
-			);
+			];
 			$laws_statement->execute( $laws_sql_args );
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
@@ -1299,7 +1299,7 @@ abstract class AmericanLegalParser
 
 					if ($edition->current)
 					{
-						$insert_data = array(
+						$insert_data = [
 							':object_type' => 'law',
 							':relational_id' => $law['id'],
 							':identifier' => $law['section_number'],
@@ -1308,7 +1308,7 @@ abstract class AmericanLegalParser
 							':edition_id' => $edition_id,
 							':permalink' => 0,
 							':preferred' => 1
-						);
+						];
 						$this->permalink_obj->create($insert_data);
 
 						$preferred = 0;
@@ -1317,7 +1317,7 @@ abstract class AmericanLegalParser
 					/*
 					 * If this is not-current, then short is the most-preferred.
 					 */
-					$insert_data = array(
+					$insert_data = [
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
@@ -1326,7 +1326,7 @@ abstract class AmericanLegalParser
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
-					);
+					];
 					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
@@ -1337,7 +1337,7 @@ abstract class AmericanLegalParser
 				 */
 				if ($edition->current)
 				{
-					$insert_data = array(
+					$insert_data = [
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
@@ -1346,7 +1346,7 @@ abstract class AmericanLegalParser
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
-					);
+					];
 					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
@@ -1355,7 +1355,7 @@ abstract class AmericanLegalParser
 				/*
 				 * Failing everything else, use the super-long url.
 				 */
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'law',
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
@@ -1364,7 +1364,7 @@ abstract class AmericanLegalParser
 					':edition_id' => $edition_id,
 					':permalink' => 1,
 					':preferred' => $preferred
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 			}
 
@@ -1444,7 +1444,7 @@ abstract class AmericanLegalParser
 		 */
 		$sql = 'INSERT INTO laws
 				SET date_created=now()';
-		$sql_args = array();
+		$sql_args = [];
 		$query['edition_id'] = $this->edition_id;
 
 		/*
@@ -1472,14 +1472,14 @@ abstract class AmericanLegalParser
 		 * save a record of those, for crossreferencing purposes.
 		 */
 		$references = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id,
 				'structure_labels' => $this->structure_labels,
 				'downloads_dir' => $this->downloads_dir,
 				'downloads_url' => $this->downloads_url
-			)
+			]
 		);
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
@@ -1513,12 +1513,12 @@ abstract class AmericanLegalParser
 
 			foreach ($this->code->metadata as $key => $value)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':meta_key' => $key,
 					':meta_value' => $value,
 					':edition_id' => $this->edition_id
-				);
+				];
 				$result = $statement->execute($sql_args);
 
 				if ($result === false)
@@ -1543,12 +1543,12 @@ abstract class AmericanLegalParser
 
 			foreach ($this->code->tags as $tag)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':section_number' => $this->code->section_number,
 					':tag' => $tag,
 					':edition_id' => $this->edition_id
-				);
+				];
 				$result = $statement->execute($sql_args);
 
 				if ($result === false)
@@ -1582,12 +1582,12 @@ abstract class AmericanLegalParser
 					type = :type,
 					date_created=now(),
 					edition_id = :edition_id';
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $law_id,
 				':sequence' => $i,
 				':type' => $section->type,
 				':edition_id' => $this->edition_id
-			);
+			];
 			if (!empty($section->text))
 			{
 				$sql .= ', text = :text';
@@ -1627,12 +1627,12 @@ abstract class AmericanLegalParser
 							sequence = :sequence,
 							date_created=now(),
 							edition_id = :edition_id';
-					$sql_args = array(
+					$sql_args = [
 						':text_id' => $text_id,
 						':identifier' => $prefix,
 						':sequence' => $j,
 						':edition_id' => $this->edition_id
-					);
+					];
 
 					$statement = $this->db->prepare($sql);
 					$result = $statement->execute($sql_args);
@@ -1655,14 +1655,14 @@ abstract class AmericanLegalParser
 		 * Trawl through the text for definitions.
 		 */
 		$dictionary = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id,
 				'structure_labels' => $this->structure_labels,
 				'downloads_dir' => $this->downloads_dir,
 				'downloads_url' => $this->downloads_url
-			)
+			]
 		);
 
 		/*
@@ -1680,7 +1680,7 @@ abstract class AmericanLegalParser
 		 * config file as a container for global definitions. If it was, then we override the
 		 * presumed scope and provide a global scope.
 		 */
-		$ancestry = array();
+		$ancestry = [];
 		if (isset($this->code->structure))
 		{
 			foreach ($this->code->structure as $struct)
@@ -1723,14 +1723,14 @@ abstract class AmericanLegalParser
 			if ( ($dictionary->scope != 'section') && ($dictionary->scope != 'global') )
 			{
 				$find_scope = new Parser(
-					array(
+					[
 						'db' => $this->db,
 						'edition_id' => $this->edition_id,
 						'previous_edition_id' => $this->previous_edition_id,
 						'structure_labels' => $this->structure_labels,
 						'downloads_dir' => $this->downloads_dir,
 						'downloads_url' => $this->downloads_url
-					)
+					]
 				);
 				$find_scope->label = $dictionary->scope;
 				$find_scope->structure_id = $dictionary->structure_id;
@@ -1809,12 +1809,12 @@ abstract class AmericanLegalParser
 				AND edition_id = :edition_id
 				AND depth = :depth
 				AND name = :name';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $structure->identifier,
 			':edition_id' => $structure->edition_id,
 			':depth' => $structure->level,
 			':name' => $structure->name
-		);
+		];
 
 		/*
 		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
@@ -1898,9 +1898,9 @@ abstract class AmericanLegalParser
 		 */
 		$sql = 'INSERT INTO structure
 				SET identifier = :identifier';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $structure->identifier
-		);
+		];
 		if (!empty($structure->name))
 		{
 			$sql .= ', name = :name';
@@ -1976,9 +1976,9 @@ abstract class AmericanLegalParser
 			$sql = 'SELECT id, parent_id, label
 					FROM structure
 					WHERE id = :id';
-			$sql_args = array(
+			$sql_args = [
 				':id' => $parent_id
-			);
+			];
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -2072,7 +2072,7 @@ abstract class AmericanLegalParser
 		/*
 		 * Create the empty array that we'll build up with the definitions found in this section.
 		 */
-		$definitions = array();
+		$definitions = [];
 
 		/*
 		 * Step through each paragraph and determine which contain definitions.
@@ -2360,7 +2360,7 @@ abstract class AmericanLegalParser
 		 * Make the list of definitions a subset of a larger variable, so that we can store things
 		 * other than terms.
 		 */
-		$tmp = array();
+		$tmp = [];
 		$tmp['terms'] = $definitions;
 		$tmp['scope'] = $scope;
 		$definitions = $tmp;
@@ -2412,7 +2412,7 @@ abstract class AmericanLegalParser
 		foreach ($this->terms as $term => $definition)
 		{
 
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->law_id,
 				':term' => $term,
 				':definition' => $definition,
@@ -2420,7 +2420,7 @@ abstract class AmericanLegalParser
 				':scope_specificity' => $this->scope_specificity,
 				':structure_id' => $this->structure_id,
 				':edition_id' => $this->edition_id
-			);
+			];
 			$result = $statement->execute($sql_args);
 
 		}
@@ -2528,13 +2528,13 @@ abstract class AmericanLegalParser
 		$i=0;
 		foreach ($this->sections as $section => $mentions)
 		{
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id,
 				':section_number' => $section,
 				':target_law_id' => '0',
 				':mentions' => $mentions,
 				':edition_id' => $this->edition_id
-			);
+			];
 
 			$result = $statement->execute($sql_args);
 
@@ -2690,7 +2690,7 @@ abstract class AmericanLegalParser
 		$result = $statement->execute();
 
 
-		$structure_labels = array();
+		$structure_labels = [];
 
 		if ( ($result === false) )
 		{

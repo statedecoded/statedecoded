@@ -36,10 +36,10 @@ class Search
 	 */
 	public function display_form($current_edition = null)
 	{
-		$law = new Law(array('db' => $this->db));
+		$law = new Law(['db' => $this->db]);
 		$lawCount = $law->count($current_edition);
 
-		$structure = new Structure(array('db' => $this->db));
+		$structure = new Structure(['db' => $this->db]);
 		$structureCount = $structure->count($current_edition);
 
 		$this->form = '
@@ -81,7 +81,7 @@ class Search
 	public function build_edition($current_edition)
 	{
 		$output = '';
-		$editions = array();
+		$editions = [];
 
 		// Since we don't have any conditions in our template, we have to build
 		// html here.
@@ -98,7 +98,7 @@ class Search
 		catch(Exception $error)
 		{
 			// It's ok if we get an error here, as this happens before we have a database setup.
-			$editions = array();
+			$editions = [];
 		}
 
 		if($editions && count($editions) > 1)

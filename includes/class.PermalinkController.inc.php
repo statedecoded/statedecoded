@@ -65,9 +65,9 @@ class PermalinkController extends BaseController
 		$sql = 'SELECT *
 				FROM permalinks
 				WHERE url = :url';
-		$sql_args = array(
+		$sql_args = [
 			':url' => $url
-		);
+		];
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -89,7 +89,7 @@ class PermalinkController extends BaseController
 					if(!$route)
 					{
 						$route = $permalink;
-						$route['relational_id'] = array($route['relational_id']);
+						$route['relational_id'] = [$route['relational_id']];
 					}
 					else
 					{

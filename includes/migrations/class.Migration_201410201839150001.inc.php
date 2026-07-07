@@ -4,13 +4,13 @@ require_once(INCLUDE_PATH . '/class.DatabaseMigration.inc.php');
 
 class Migration_201410201839150001 extends DatabaseMigration
 {
-	public $tables = array(
+	public $tables = [
 		'laws_references',
 		'text',
 		'text_sections',
 		'tags',
 		'laws_meta'
-	);
+	];
 
 	// Roll forward
 	public function up() {

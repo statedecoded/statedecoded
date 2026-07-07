@@ -53,7 +53,7 @@ class Logger
 	 * @param array    Hash of all values to override in the class
 	 */
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 
 		foreach($args as $key=>$value)

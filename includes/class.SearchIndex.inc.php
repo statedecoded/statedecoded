@@ -30,7 +30,7 @@ class SearchIndex
 	 */
 	public $engine;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key=>$value)
 		{

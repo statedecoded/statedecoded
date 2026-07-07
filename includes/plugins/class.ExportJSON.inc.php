@@ -14,13 +14,13 @@
 
 class ExportJSON extends Export
 {
-	public $listeners = array(
+	public $listeners = [
 		'exportLaw',
 		'finishExport',
 		'exportDictionary',
 		'postGetLaw',
 		'showBulkDownload'
-	);
+	];
 
 	public $public_name = 'JSON';
 	public $format = 'json';

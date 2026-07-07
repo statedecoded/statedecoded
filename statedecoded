@@ -42,7 +42,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 		 * These are the directories that we want to peer into the child directories of -- the
 		 * current directory and its parent directory.
 		 */
-		$parent_directories = array('.', '..');
+		$parent_directories = ['.', '..'];
 		foreach ($parent_directories as $parent_directory)
 		{
 

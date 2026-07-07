@@ -17,10 +17,10 @@
 #[\AllowDynamicProperties]
 class EventManager
 {
-	public $events = array();
-	public $services = array();
+	public $events = [];
+	public $services = [];
 
-	public function __construct($args = array(), $plugins = false)
+	public function __construct($args = [], $plugins = false)
 	{
 		foreach($args as $key => $value)
 		{
@@ -62,7 +62,7 @@ class EventManager
 	{
 		if(!isset($this->events[$name]))
 		{
-			$this->events[$name] = array();
+			$this->events[$name] = [];
 		}
 		$this->events[$name][] = $method;
 	}
@@ -74,7 +74,7 @@ class EventManager
 
 		if(isset($this->events[$name]))
 		{
-			$results = array();
+			$results = [];
 			foreach($this->events[$name] as $i => $listener)
 			{
 				$results[] = $this->callListener($listener, $args);
@@ -83,7 +83,7 @@ class EventManager
 		}
 	}
 
-	public function callListener($listener, &$args = array())
+	public function callListener($listener, &$args = [])
 	{
 		// Simplest possible implementation:
 		// * calls a listener function
@@ -106,7 +106,7 @@ class EventManager
 			 * Handle PHP's weird dereferencing.
 			 * Without this, variables are not passed by reference to plugin functions.
 			 */
-			$ref = array();
+			$ref = [];
 			foreach($args as $key => $value)
 			{
 				if(is_object($value))
@@ -119,7 +119,7 @@ class EventManager
 				}
 			}
 
-			return call_user_func_array(array($class, $method), $ref);
+			return call_user_func_array([$class, $method], $ref);
 		}
 		else
 		{

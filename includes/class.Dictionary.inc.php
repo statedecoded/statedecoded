@@ -26,7 +26,7 @@ class Dictionary
 	public $generic_terms = false;
 
 
-	public function __construct($args = array()) {
+	public function __construct($args = []) {
 		foreach($args as $key => $value) {
 			$this->$key = $value;
 		}
@@ -87,9 +87,9 @@ class Dictionary
 			$sql = 'SELECT term, definition, source, source_url AS url
 					FROM dictionary_general
 					WHERE term = :term';
-			$sql_args = array(
+			$sql_args = [
 				':term' => $this->term
-			);
+			];
 			if ($plural === true)
 			{
 				$sql .= ' OR term = :term_single';
@@ -152,7 +152,7 @@ class Dictionary
 		}
 
 		$law = $heritage->get_law();
-		$ancestry = array();
+		$ancestry = [];
 		if ($law !== false && !empty($law->ancestry))
 		{
 			foreach ($law->ancestry as $tmp)
@@ -187,10 +187,10 @@ class Dictionary
 					AND permalinks.object_type = :object_type
 					AND permalinks.preferred=1
 				WHERE (dictionary.term = :term';
-		$sql_args = array(
+		$sql_args = [
 			':term' => $term,
 			':object_type' => 'law'
-		);
+		];
 		if ($plural === true)
 		{
 			$sql .= ' OR dictionary.term = :term_single';
@@ -285,19 +285,19 @@ class Dictionary
 		/*
 		 * Create an array in which we'll store terms that are identified.
 		 */
-		$terms = array();
+		$terms = [];
 
 		/*
 		 * Get a listing of all structural units that contain the current structural unit -- that is,
 		 * if this is a chapter, get the ID of both the chapter and the title. And so on.
 		 */
-		$ancestry = array();
+		$ancestry = [];
 		if (isset($this->structure_id))
 		{
 
 			$heritage = new Structure;
 			$ancestry = $heritage->id_ancestry($this->structure_id);
-			$tmp = array();
+			$tmp = [];
 			foreach ($ancestry as $level)
 			{
 				$tmp[] = $level->id;
@@ -310,9 +310,9 @@ class Dictionary
 		/*
 		 * Get a list of all globally scoped terms.
 		 */
-		$sql_args = array(
+		$sql_args = [
 			':global_scope' => 'global'
-		);
+		];
 		if ( isset($this->scope) && ($this->scope == 'global') )
 		{
 		

@@ -16,7 +16,7 @@ class Permalink
 {
 	protected $db;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		/*
 		 * Set our defaults
@@ -70,11 +70,11 @@ class Permalink
 			$preferred_statement = $this->db->prepare($preferred_sql);
 		}
 
-		$preferred_args = array(
+		$preferred_args = [
 			':relational_id' => $id,
 			':object_type' => $type,
 			':edition_id' => $edition_id
-		);
+		];
 
 		$preferred_result = $preferred_statement->execute($preferred_args);
 
@@ -101,11 +101,11 @@ class Permalink
 			$preferred_statement = $this->db->prepare($preferred_sql);
 		}
 
-		$preferred_args = array(
+		$preferred_args = [
 			':relational_id' => $id,
 			':object_type' => $type,
 			':edition_id' => $edition_id
-		);
+		];
 
 		$preferred_result = $preferred_statement->execute($preferred_args);
 
@@ -132,10 +132,10 @@ class Permalink
 		 AND p1.object_type = p2.object_type
 		WHERE p1.url = :url
 		AND p2.edition_id = :edition_id ';
-		$sql_args = array(
+		$sql_args = [
 			':url' => $url,
 			':edition_id' => $edition_id
-		);
+		];
 		// If it's preferred, we want that.
 		if($preferred)
 		{
@@ -164,7 +164,7 @@ class Permalink
 			{
 				$law_statement = $this->db->prepare('SELECT * FROM laws
 					WHERE id = :law_id');
-				$law_args = array(':law_id' => $permalink->relational_id);
+				$law_args = [':law_id' => $permalink->relational_id];
 
 				$law_result = $law_statement->execute($law_args);
 				if ($law_result !== false && $law_statement->rowCount() > 0)
@@ -179,7 +179,7 @@ class Permalink
 			{
 				$structure_statement = $this->db->prepare('SELECT * FROM
 					structure WHERE id = :structure_id');
-				$structure_args = array(':structure_id' => $permalink->relational_id);
+				$structure_args = [':structure_id' => $permalink->relational_id];
 
 				$structure_result = $structure_statement->execute($structure_args);
 				if ($structure_result !== false &&

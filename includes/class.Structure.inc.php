@@ -17,7 +17,7 @@ class Structure
 {
 	protected $db;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key=>$value)
 		{
@@ -73,7 +73,7 @@ class Structure
 		 * Get the url from the permalinks table
 		 */
 		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE url = :url';
-		$permalink_args = array('url' => $this->path);
+		$permalink_args = ['url' => $this->path];
 		$permalink_statement = $this->db->prepare($permalink_sql);
 
 		$result = $permalink_statement->execute($permalink_args);
@@ -108,7 +108,7 @@ class Structure
 	function token_to_structure($token)
 	{
 		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE token = :token';
-		$permalink_args = array(':token' => $token);
+		$permalink_args = [':token' => $token];
 		$permalink_statement = $this->db->prepare($permalink_sql);
 
 		$result = $permalink_statement->execute($permalink_args);
@@ -184,7 +184,7 @@ class Structure
 		 * stored in structure_unified (the most specific structural units are in s1), the parent
 		 * is always found in s2.
 		 */
-		$sql_args = array();
+		$sql_args = [];
 		if (!empty($this->parent_id))
 		{
 
@@ -300,7 +300,7 @@ class Structure
 							ON laws.section = laws_views.section';
 		}
 
-		$sql_args = array();
+		$sql_args = [];
 
 		/*
 		 * Check edition.
@@ -395,7 +395,7 @@ class Structure
 		/*
 		 * Instantiate the array we'll use to store and return the list of child structures.
 		 */
-		$children = array();
+		$children = [];
 
 		/*
 		 * Return the result as an object, built up as we loop through the results.
@@ -432,9 +432,9 @@ class Structure
 		$sql = 'SELECT structure_unified.*
 				FROM structure_unified
 				WHERE s1_id = :id';
-		$sql_args = array(
+		$sql_args = [
 			':id' => $id
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 
@@ -450,7 +450,7 @@ class Structure
 		/*
 		 * Create a new, blank object.
 		 */
-		$structure = array();
+		$structure = [];
 
 		/*
 		 * Iterate through $structure, cell by cell.
@@ -528,9 +528,9 @@ class Structure
 		$sql = 'SELECT identifier
 				FROM structure
 				WHERE id = :id';
-		$sql_args = array(
+		$sql_args = [
 			':id' => $this->id
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -569,10 +569,10 @@ class Structure
 				FROM structure
 				WHERE identifier = :identifier
 				AND structure.edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $this->identifier,
 			':edition_id' => $this->edition_id
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -622,11 +622,11 @@ class Structure
 					AND laws.edition_id = :edition_id
 					AND permalinks.preferred = 1
 					ORDER BY order_by, section';
-			$sql_args = array(
+			$sql_args = [
 				':object_type' => 'law',
 				':edition_id' => $this->edition_id,
 				':id' => $this->id
-			);
+			];
 		}
 
 		else
@@ -644,11 +644,11 @@ class Structure
 					AND laws.edition_id = :edition_id
 					AND permalinks.preferred = 1
 					ORDER BY order_by, section';
-			$sql_args = array(
+			$sql_args = [
 				':object_type' => 'law',
 				':edition_id' => $this->edition_id,
 				':id' => $this->id
-			);
+			];
 		}
 
 		$statement = $this->db->prepare($sql);
@@ -662,12 +662,12 @@ class Structure
 		/*
 		 * Create a new, empty array.
 		 */
-		$laws = array();
+		$laws = [];
 
 		/*
 		 * Instantiate our laws class.
 		 */
-		$law = new Law(array('db' => $this->db));
+		$law = new Law(['db' => $this->db]);
 
 		/*
 		 * Return the result as an object, built up as we loop through the results.
@@ -703,9 +703,9 @@ class Structure
 	 */
 	public function get_all($edition_id, $result_handle_only = false)
 	{
-		$query_args = array(
+		$query_args = [
 			':edition_id' => $edition_id
-		);
+		];
 		$query = 'SELECT structure.id
 			FROM structure
 			WHERE edition_id = :edition_id';
@@ -734,9 +734,9 @@ class Structure
 			$statement = $this->db->prepare($query);
 		}
 
-		$query_args = array(
+		$query_args = [
 			':id' => $id
-		);
+		];
 		$result = $statement->execute($query_args);
 
 		if($result)
@@ -748,7 +748,7 @@ class Structure
 				$structure->metadata = unserialize($structure->metadata);
 			}
 
-			$permalink_obj = new Permalink(array('db' => $this->	db));
+			$permalink_obj = new Permalink(['db' => $this->	db]);
 			$structure->permalink = $permalink_obj->get_preferred($structure->id, 'structure', $structure->edition_id);
 
 			return $structure;
@@ -766,7 +766,7 @@ class Structure
 	 */
 	public function count($edition_id, $result_handle_only = false)
 	{
-		$query_args = array();
+		$query_args = [];
 		$query = 'SELECT count(*) AS count FROM structure ';
 		if($edition_id)
 		{

@@ -99,12 +99,12 @@ function json_error($text)
 		return false;
 	}
 
-	$error = array('error',
-		array(
+	$error = ['error',
+		[
 			'message' => 'An Error Occurred',
 			'details' => $text
-		)
-	);
+		]
+	];
 	$error = json_encode($error);
 
 	/*
@@ -202,8 +202,8 @@ function wptexturize($text)
 		/* translators: em dash */
 		$em_dash = '&#8212;'; // em dash
 
-		$default_no_texturize_tags = array('pre', 'code', 'kbd', 'style', 'script', 'tt');
-		$default_no_texturize_shortcodes = array('code');
+		$default_no_texturize_tags = ['pre', 'code', 'kbd', 'style', 'script', 'tt'];
+		$default_no_texturize_shortcodes = ['code'];
 
 		// if a plugin has provided an autocorrect array, use it
 		if ( isset($wp_cockneyreplace) )
@@ -214,19 +214,19 @@ function wptexturize($text)
 
 		elseif ( "'" != $apos ) // Only bother if we're doing a replacement.
 		{
-			$cockney = array( "'tain't", "'twere", "'twas", "'tis", "'twill", "'til", "'bout", "'nuff", "'round", "'cause" );
-			$cockneyreplace = array( $apos . "tain" . $apos . "t", $apos . "twere", $apos . "twas", $apos . "tis", $apos . "twill", $apos . "til", $apos . "bout", $apos . "nuff", $apos . "round", $apos . "cause" );
+			$cockney = [ "'tain't", "'twere", "'twas", "'tis", "'twill", "'til", "'bout", "'nuff", "'round", "'cause" ];
+			$cockneyreplace = [ $apos . "tain" . $apos . "t", $apos . "twere", $apos . "twas", $apos . "tis", $apos . "twill", $apos . "til", $apos . "bout", $apos . "nuff", $apos . "round", $apos . "cause" ];
 		}
 
 		else
 		{
-			$cockney = $cockneyreplace = array();
+			$cockney = $cockneyreplace = [];
 		}
 
-		$static_characters = array_merge( array( '---', ' -- ', '--', ' - ', 'xn&#8211;', '...', '``', '\'\'', ' (tm)' ), $cockney );
-		$static_replacements = array_merge( array( $em_dash, ' ' . $em_dash . ' ', $en_dash, ' ' . $en_dash . ' ', 'xn--', '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ), $cockneyreplace );
+		$static_characters = array_merge( [ '---', ' -- ', '--', ' - ', 'xn&#8211;', '...', '``', '\'\'', ' (tm)' ], $cockney );
+		$static_replacements = array_merge( [ $em_dash, ' ' . $em_dash . ' ', $en_dash, ' ' . $en_dash . ' ', 'xn--', '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ], $cockneyreplace );
 
-		$dynamic = array();
+		$dynamic = [];
 		if ( "'" != $apos )
 		{
 			$dynamic[ '/\'(\d\d(?:&#8217;|\')?s)/' ] = $apos . '$1'; // '99's
@@ -258,8 +258,8 @@ function wptexturize($text)
 	$no_texturize_tags = '(' . implode('|', $default_no_texturize_tags ) . ')';
 	$no_texturize_shortcodes = '(' . implode('|', $default_no_texturize_shortcodes ) . ')';
 
-	$no_texturize_tags_stack = array();
-	$no_texturize_shortcodes_stack = array();
+	$no_texturize_tags_stack = [];
+	$no_texturize_shortcodes_stack = [];
 
 	$textarr = preg_split('/(<.*>|\[.*\])/Us', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -426,7 +426,7 @@ function check_dir_available($dirname, $writable=false)
 
 function join_paths(...$args)
 {
-	$paths = array();
+	$paths = [];
 
 	foreach($args as $arg) {
 		if(is_array($arg)) {
@@ -450,7 +450,7 @@ function join_paths(...$args)
 /*
  * Recursively get all files
  */
-function get_files($path, $files = array())
+function get_files($path, $files = [])
 {
 	if(substr($path, -1, 1) != '/')
 	{
@@ -566,7 +566,7 @@ function html_convert_entities($string) {
  * destroys the character in the output - this is probably the
  * desired behaviour when producing XML. */
 function convert_entity($matches) {
-  static $table = array('quot'    => '&#34;',
+  static $table = ['quot'    => '&#34;',
                         'amp'      => '&#38;',
                         'lt'       => '&#60;',
                         'gt'       => '&#62;',
@@ -819,7 +819,7 @@ function convert_entity($matches) {
                         'thorn'    => '&#254;',
                         'yuml'     => '&#255;'
 
-                        );
+                        ];
   // Entity not found? Destroy it.
   return isset($table[$matches[1]]) ? $table[$matches[1]] : '';
 }

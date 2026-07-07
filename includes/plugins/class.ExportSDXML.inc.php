@@ -19,12 +19,12 @@ class ExportSDXML extends Export
 	public $extension = '.xml';
 	public $description = 'This is the basic data about every law, one XML file per law. These are formatted using the <a href="http://docs.statedecoded.com/xml-format.html">State Decoded XML format</a>';
 
-	public $listeners = array(
+	public $listeners = [
 		'exportLaw',
 		'finishExport',
 		'postGetLaw',
 		'showBulkDownload'
-	);
+	];
 
 	public function formatLawForExport($law)
 	{
@@ -54,12 +54,12 @@ class ExportSDXML extends Export
 			$dom->create('order_by', $law->order_by);
 		}
 
-		$dom->create('edition', $law->edition->name, array(
+		$dom->create('edition', $law->edition->name, [
 			'url' => $base_url . '/' . $law->edition->slug . '/',
 			'slug' => $law->edition->slug,
 			'current' => $law->edition->current ? 'TRUE' : 'FALSE',
 			'last_updated' => ($law->edition->last_import ? date('Y-m-d', strtotime($law->edition->last_import)) : '')
-		));
+		]);
 
 		if(isset($law->references) && is_array($law->references) && count($law->references))
 		{
@@ -73,11 +73,11 @@ class ExportSDXML extends Export
 		$structure = $dom->create('structure');
 		foreach(array_reverse($law->ancestry) as $ancestor)
 		{
-			$args = array(
+			$args = [
 				'label' => $ancestor->label,
 				'level' => $ancestor->depth,
 				'order_by' => $ancestor->order_by
-			);
+			];
 
 			if(!isset($ancestor->metadata) ||
 				!isset($ancestor->metadata->admin_division) ||

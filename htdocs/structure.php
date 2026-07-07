@@ -16,7 +16,7 @@
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 
-$edition = new Edition(array('db' => $db));
+$edition = new Edition(['db' => $db]);
 
 /*
  * If no identifier has been specified, explicitly make it a null variable. This is when the request
@@ -42,7 +42,7 @@ else
 /*
  * Create a new instance of the class that handles information about individual laws.
  */
-$struct = new Structure(array('db' => $db));
+$struct = new Structure(['db' => $db]);
 
 if ( isset($args['edition_id']) )
 {
@@ -381,7 +381,7 @@ if ($laws !== false)
  */
 if(strlen($structure_id) > 0)
 {
-	$permalink_obj = new Permalink(array('db' => $db));
+	$permalink_obj = new Permalink(['db' => $db]);
 	$permalink = $permalink_obj->get_permalink($struct->structure_id, 'structure', $struct->edition_id);
 	if($args['url'] !== $permalink->url)
 	{

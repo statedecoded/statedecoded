@@ -18,9 +18,9 @@ global $db;
  * Intialize Solarium and instruct it to use the correct request handler.
  */
 $client = new SearchIndex(
-	array(
+	[
 		'config' => json_decode(SEARCH_CONFIG, true)
-	)
+	]
 );
 
 /*
@@ -49,7 +49,7 @@ $content->set('javascript', "var api_key = '" . API_KEY . "';");
  * Create a new instance of our search class. We use this to display the search form and the result
  * page numbers.
  */
-$search = new Search(array('db' => $db));
+$search = new Search(['db' => $db]);
 
 /*
  * If a search is being submitted.
@@ -111,12 +111,12 @@ if (!empty($_GET['q']))
 	try
 	{
 		$results = $client->search(
-			array(
+			[
 				'q' => decode_entities($q),
 				'edition_id' => $edition_id,
 				'page' => $page,
 				'per_page' => $per_page
-			)
+			]
 		);
 	}
 	catch (Exception $error)
@@ -174,12 +174,12 @@ if (!empty($_GET['q']))
 		/*
 		 * Iterate through the results.
 		 */
-		$law = new Law(array('db' => $db));
-		$struct = new Structure(array('db' => $db));
-		$edition = new Edition(array('db' => $db));
-		$permalink_obj = new Permalink(array('db' => $db));
+		$law = new Law(['db' => $db]);
+		$struct = new Structure(['db' => $db]);
+		$edition = new Edition(['db' => $db]);
+		$permalink_obj = new Permalink(['db' => $db]);
 
-		$edition_cache = array();
+		$edition_cache = [];
 
 		foreach ($results->get_results() as $result)
 		{

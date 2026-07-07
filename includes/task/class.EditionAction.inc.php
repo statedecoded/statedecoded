@@ -8,7 +8,7 @@ class EditionAction extends CliAction
   static public $name = 'edition';
   static public $summary = 'Manage editions.';
 
-  public function __construct($args = array())
+  public function __construct($args = [])
   {
     parent::__construct($args);
 
@@ -19,7 +19,7 @@ class EditionAction extends CliAction
     $this->logger = new Logger();
   }
 
-  public function execute($args = array())
+  public function execute($args = [])
   {
     $method = array_shift($args);
 
@@ -48,11 +48,11 @@ class EditionAction extends CliAction
     }
   }
 
-  public function createEdition($args = array())
+  public function createEdition($args = [])
   {
-    $edition_obj = new Edition(array('db' => $this->db));
+    $edition_obj = new Edition(['db' => $this->db]);
 
-    $edition = array();
+    $edition = [];
 
     if(isset($args[0]))
     {
@@ -71,8 +71,8 @@ class EditionAction extends CliAction
     else
     {
       $edition['slug'] = preg_replace(
-        array('/( )/', '/([^a-z0-9-])/'),
-        array('-', ''),
+        ['/( )/', '/([^a-z0-9-])/'],
+        ['-', ''],
         strtolower($edition['name'])
       );
     }
@@ -90,11 +90,11 @@ class EditionAction extends CliAction
 
   }
 
-  public function deleteEdition($args = array())
+  public function deleteEdition($args = [])
   {
     if($args[0])
     {
-      $edition_obj = new Edition(array('db' => $this->db));
+      $edition_obj = new Edition(['db' => $this->db]);
       if($edition_obj->delete($args[0]))
       {
         return 'Edition deleted.';
@@ -114,9 +114,9 @@ class EditionAction extends CliAction
 
   }
 
-  public function listEdition($args = array())
+  public function listEdition($args = [])
   {
-    $edition_obj = new Edition(array('db' => $this->db));
+    $edition_obj = new Edition(['db' => $this->db]);
 
     $editions = $edition_obj->all();
 
@@ -138,9 +138,9 @@ class EditionAction extends CliAction
     }
   }
 
-  public function setCurrentEdition($args = array())
+  public function setCurrentEdition($args = [])
   {
-    $edition_obj = new Edition(array('db' => $this->db));
+    $edition_obj = new Edition(['db' => $this->db]);
 
     $edition = $edition_obj->find_by_slug($args[0]);
 
@@ -163,11 +163,11 @@ class EditionAction extends CliAction
     $parser = $this->getParserController();
 
     $edition_errors = $parser->handle_editions(
-      array(
+      [
         'edition_option' => 'existing',
         'edition' => $edition->id,
         'make_current' => 1
-      )
+      ]
     );
 
     if(count($edition_errors) > 0)
@@ -196,16 +196,16 @@ class EditionAction extends CliAction
   public function getParserController()
   {
     return new ParserController(
-      array(
+      [
         'logger' => $this->logger,
         'db' => &$this->db
-      )
+      ]
     );
   }
 
-  public function showCurrentEdition($args = array())
+  public function showCurrentEdition($args = [])
   {
-    $edition_obj = new Edition(array('db' => $this->db));
+    $edition_obj = new Edition(['db' => $this->db]);
 
     $edition = $edition_obj->current();
 
@@ -219,7 +219,7 @@ class EditionAction extends CliAction
     }
   }
 
-  public static function getHelp($args = array())
+  public static function getHelp($args = [])
   {
     return <<<EOS
 statedecoded : edition

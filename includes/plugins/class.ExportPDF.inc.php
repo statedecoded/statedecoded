@@ -18,11 +18,11 @@ class ExportPDF extends PandocExport
 	public $extension = '.pdf';
   public $description = 'All of the laws in one large PDF.';
 
-	public $listeners = array(
+	public $listeners = [
 		'HTMLExportLaw',
 		'HTMLExportStructure',
 		'HTMLFinishExport',
     'postGetLaw',
     'showBulkDownload'
-	);
+	];
 }

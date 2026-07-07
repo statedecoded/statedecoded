@@ -19,7 +19,7 @@
 /*
  * Log parser output.
  */
-$logger_args = array('html' => true);
+$logger_args = ['html' => true];
 if(defined('DEBUG_LEVEL'))
 {
 	$logger_args['level'] = DEBUG_LEVEL;
@@ -49,11 +49,11 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
  */
 
 $parser = new ParserController(
-	array(
+	[
 		'logger' => $logger,
 		'db' => &$db,
 		'import_data_dir' => IMPORT_DATA_DIR
-	)
+	]
 );
 
 if (isset($_GET['noframe']))
@@ -447,11 +447,11 @@ else
 
 }
 
-function show_admin_forms($args = array())
+function show_admin_forms($args = [])
 {
 
 	global $db;
-	$edition = new Edition(array('db' => $db));
+	$edition = new Edition(['db' => $db]);
 
 	try {
 		$editions = $edition->all();

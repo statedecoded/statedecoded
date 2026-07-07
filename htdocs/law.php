@@ -16,13 +16,13 @@
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 
-$edition = new Edition(array('db' => $db));
+$edition = new Edition(['db' => $db]);
 
 /*
  * Allow multiple laws.
  */
-$laws = array();
-$titles = array();
+$laws = [];
+$titles = [];
 
 /*
  * Use the ID passed to look up the law.
@@ -482,9 +482,9 @@ if ($laws[0]->references !== false)
 try
 {
 	$search_client = new SearchIndex(
-		array(
+		[
 			'config' => json_decode(SEARCH_CONFIG, true)
-		)
+		]
 	);
 
 	$related_laws = $search_client->find_related($laws[0], 3);

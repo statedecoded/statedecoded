@@ -41,7 +41,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	/*
 	 * The documents to put into our current transaction.
 	 */
-	public $documents = array();
+	public $documents = [];
 
 	/*
 	 * Number of documents to store before automatically flushing.
@@ -58,7 +58,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	 */
 	public $use_token_match = true;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		parent::__construct($args);
 
@@ -93,7 +93,7 @@ class SqlSearchEngine extends SearchEngineInterface
 
 	}
 
-	public function search($query = array())
+	public function search($query = [])
 	{
 		/*
 		 * Do our count first
@@ -125,25 +125,25 @@ class SqlSearchEngine extends SearchEngineInterface
 		/*
 		 * Set up our query.
 		 */
-		$select_fields = array('*');
+		$select_fields = ['*'];
 
-		$law_fields = array();
+		$law_fields = [];
 		$law_fields[] = 'laws.id';
 		$law_fields[] = 'laws.catch_line AS name';
 		$law_fields[] = 'laws.edition_id';
 		$law_fields[] = '"law" AS object_type';
-		$law_where = array();
+		$law_where = [];
 
-		$structure_fields = array();
+		$structure_fields = [];
 		$structure_fields[] = 'structure.id';
 		$structure_fields[] = 'structure.name';
 		$structure_fields[] = 'structure.edition_id';
 		$structure_fields[] = '"structure" AS object_type';
-		$structure_where = array();
+		$structure_where = [];
 
-		$order = array();
+		$order = [];
 
-		$query_args = array();
+		$query_args = [];
 
 		if(isset($query['q']))
 		{
@@ -156,8 +156,8 @@ class SqlSearchEngine extends SearchEngineInterface
 
 			# Note: structure->metadata->text is serialized and not directly searchable in SQL.
 
-			$law_where_or = array();
-			$structure_where_or = array();
+			$law_where_or = [];
+			$structure_where_or = [];
 
 			$law_where_or[] = 'section = :term';
 			$structure_where_or[] = 'name = :term';
@@ -316,12 +316,12 @@ class SqlSearchEngine extends SearchEngineInterface
 			$sql_query .= $limit . ' ';
 		}
 
-		return array($sql_query, $query_args);
+		return [$sql_query, $query_args];
 	}
 
 	public static function build_keyword_search($search_field, $keywords) {
-		$fields = array();
-		$sql_args = array();
+		$fields = [];
+		$sql_args = [];
 
 		if($keywords) {
 			$i = 0;
@@ -347,7 +347,7 @@ class SqlSearchEngine extends SearchEngineInterface
 			}
 		}
 
-		return array($fields, $sql_args);
+		return [$fields, $sql_args];
 
 	}
 
@@ -359,7 +359,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	public static function tokenize($string)
 	{
 		$buffer = '';
-		$keywords = array();
+		$keywords = [];
 		$quote_string = false;
 
 		for($i = 0; $i< strlen($string); $i++)

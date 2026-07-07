@@ -26,7 +26,7 @@ class GenerateMigrationAction extends CliAction
 	static public $name = 'generate-migration';
 	static public $summary = 'Creates a database migration.';
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 
 		if (!file_exists(INCLUDE_PATH . 'migrations'))
@@ -90,11 +90,11 @@ EOS;
 
 		$fullpath = INCLUDE_PATH . 'migrations/' . $filename;
 
-		return array(
+		return [
 			'basename' => $basename,
 			'filename' => $filename,
 			'fullpath' => $fullpath
-		);
+		];
 	}
 
 	static public function getHelp()

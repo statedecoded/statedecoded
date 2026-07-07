@@ -25,7 +25,7 @@ class DOMWriter {
     }
   }
 
-  public function create($name, $value = null, $attributes = array()) {
+  public function create($name, $value = null, $attributes = []) {
     $elm = $this->dom->createElement($name);
 
     /*

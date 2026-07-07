@@ -91,9 +91,9 @@ class APIPermalinkController extends BaseAPIController
 			$sql = 'SELECT *
 					FROM permalinks
 					WHERE url = :url LIMIT 1';
-			$sql_args = array(
+			$sql_args = [
 				':url' => $args['route']
-			);
+			];
 			$statement = $db->prepare($sql);
 			$result = $statement->execute($sql_args);
 

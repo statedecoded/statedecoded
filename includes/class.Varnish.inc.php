@@ -35,12 +35,12 @@ class Varnish
 		/*
 		 * Set our Varnish options.
 		 */
-		$options = array(
+		$options = [
 			CURLOPT_URL				=>	'http://' . $_SERVER['SERVER_NAME'] . '/',
 			CURLOPT_CUSTOMREQUEST	=>	'BAN',
 			CURLOPT_RETURNTRANSFER	=>	true,
-			CURLOPT_HTTPHEADER		=> 	array ('Host: ' . VARNISH_HOST ),
-		);
+			CURLOPT_HTTPHEADER		=> 	 ['Host: ' . VARNISH_HOST ],
+		];
 		
 		/*
 		 * If a URL has been specified, then replace the default URL (for the entire site)

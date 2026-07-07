@@ -22,7 +22,7 @@ class TaskRunner
 	/*
 	 * Our main options.
 	 */
-	public $options = array();
+	public $options = [];
 
 	/*
 	 * The currently executing action.
@@ -36,7 +36,7 @@ class TaskRunner
 
 		if(file_exists($file))
 		{
-			return array($obj, $file);
+			return [$obj, $file];
 		}
 		return false;
 	}
@@ -61,7 +61,7 @@ class TaskRunner
 		$this->parseExecArgs($exec_args);
 
 		$action = '';
-		$args = array();
+		$args = [];
 		$obj = null;
 		$file = null;
 
@@ -88,7 +88,7 @@ class TaskRunner
 				list($obj, $file) = $action_info;
 			}
 
-			$args = array();
+			$args = [];
 		}
 
 		$this->action = $action;
@@ -98,7 +98,7 @@ class TaskRunner
 		print $this->preFormat();
 
 		$action_object = new $obj(
-			array('options' => &$this->options)
+			['options' => &$this->options]
 		);
 
 		print $this->postFormat( $action_object->execute($args) );

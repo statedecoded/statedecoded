@@ -15,7 +15,7 @@ abstract class DatabaseMigration
 {
 	protected $db;
 
-	public $queries = array();
+	public $queries = [];
 	public $verbose = false;
 
 	public function __construct(&$db)
@@ -45,7 +45,7 @@ abstract class DatabaseMigration
 			'SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS
 			 WHERE CONSTRAINT_SCHEMA = DATABASE() AND CONSTRAINT_NAME = ?'
 		);
-		$statement->execute(array($constraint_name));
+		$statement->execute([$constraint_name]);
 		if ((int) $statement->fetchColumn() === 0)
 		{
 			$this->queries[] = $query;
@@ -61,7 +61,7 @@ abstract class DatabaseMigration
 			'SELECT COUNT(*) FROM information_schema.COLUMNS
 			 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?'
 		);
-		$statement->execute(array($table, $column));
+		$statement->execute([$table, $column]);
 		if ((int) $statement->fetchColumn() === 0)
 		{
 			$this->queries[] = $query;
@@ -77,7 +77,7 @@ abstract class DatabaseMigration
 			'SELECT COUNT(*) FROM information_schema.STATISTICS
 			 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?'
 		);
-		$statement->execute(array($table, $index_name));
+		$statement->execute([$table, $index_name]);
 		if ((int) $statement->fetchColumn() === 0)
 		{
 			$this->queries[] = $query;
@@ -95,7 +95,7 @@ abstract class DatabaseMigration
 			 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?
 			 AND COLUMN_TYPE = ?'
 		);
-		$statement->execute(array($table, $column, $target_type));
+		$statement->execute([$table, $column, $target_type]);
 		if ((int) $statement->fetchColumn() === 0)
 		{
 			$this->queries[] = $query;

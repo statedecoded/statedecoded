@@ -19,12 +19,12 @@ class Router
 	/*
 	 * $routes keeps the order.
 	 */
-	public $routes = array();
+	public $routes = [];
 
 	/*
 	 * $handlers is our lookup table.
 	 */
-	public $handlers = array();
+	public $handlers = [];
 
 	/*
 	 * Adds a new route.  Takes a name, a route, a handler, and optionally
@@ -41,7 +41,7 @@ class Router
 				'The route "' . $name . '" already exists and will be replaced.',
 				E_USER_WARNING
 			);
-			$this->handlers[$name] = array($route, $handler);
+			$this->handlers[$name] = [$route, $handler];
 		}
 		/*
 		 * Otherwise, splice in the route.
@@ -72,7 +72,7 @@ class Router
 			 */
 			array_splice($this->routes, $index, 0, $name);
 
-			$this->handlers[$name] = array($route, $handler);
+			$this->handlers[$name] = [$route, $handler];
 		}
 	}
 
@@ -97,7 +97,7 @@ class Router
 
 			if (preg_match('#' . $route_regex . '#', $url, $matches))
 			{
-				return array($this->handlers[$name][1], $matches);
+				return [$this->handlers[$name][1], $matches];
 			}
 
 		}
@@ -105,7 +105,7 @@ class Router
 		/*
 		 * The last route is the default.
 		 */
-		return array($this->handlers[end($this->routes)][1], array());
+		return [$this->handlers[end($this->routes)][1], []];
 
 	}
 }

@@ -52,7 +52,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 		 * These are the directories that we want to peer into the child directories of -- the
 		 * current directory and its parent directory.
 		 */
-		$parent_directories = array('.', '..');
+		$parent_directories = ['.', '..'];
 		foreach ($parent_directories as $parent_directory)
 		{
 			
@@ -150,7 +150,7 @@ require('functions.inc.php');
  */
 try
 {
-	$db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+	$db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, [PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT] );
 }
 
 /*
@@ -218,9 +218,9 @@ global $db;
  */
 require(CUSTOM_FUNCTIONS);
 
-$mc_args = array(
+$mc_args = [
 	'db' => $db,
-);
+];
 
 /*
  * If Memcached or Redis is installed, instantiate a connection to it.

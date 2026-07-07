@@ -16,55 +16,55 @@ class StateDecoded2013__Page extends Page
 {
 	public $theme_name = 'StateDecoded2013';
 
-	public $assets = array(
-		'jquery_qtip_css' => array(
+	public $assets = [
+		'jquery_qtip_css' => [
 			'path' => '/css/jquery.qtip.min.css',
 			'type' => 'css',
-			'requires' => array('jquery_qtip')
-		),
-		'main_css' => array(
+			'requires' => ['jquery_qtip']
+		],
+		'main_css' => [
 			'path' => '/css/application.css',
 			'type' => 'css'
-		),
-		'jquery_ui_css' => array(
+		],
+		'jquery_ui_css' => [
 			'path' => '/css/jquery-ui.css',
 			'type' => 'css',
-			'requires' => array('jquery_ui')
-		),
-		'jquery' => array(
+			'requires' => ['jquery_ui']
+		],
+		'jquery' => [
 			'path' => '/js/vendor/jquery.min.js',
 			'type' => 'javascript'
-		),
-		'jquery_ui' => array(
+		],
+		'jquery_ui' => [
 			'path' => '/js/vendor/jquery-ui.min.js',
 			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'jquery_qtip' => array(
+			'requires' => ['jquery']
+		],
+		'jquery_qtip' => [
 			'path' => '/js/vendor/jquery.qtip.min.js',
 			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'mousetrap' => array(
+			'requires' => ['jquery']
+		],
+		'mousetrap' => [
 			'path' => '/js/vendor/mousetrap.min.js',
 			'type' => 'javascript'
-		),
-		'tabs' => array(
+		],
+		'tabs' => [
 			'path' => '/js/vendor/tab.js',
 			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'favlaws' => array(
+			'requires' => ['jquery']
+		],
+		'favlaws' => [
 			'path' => '/js/vendor/fav-laws.js',
 			'type' => 'javascript',
-			'requires' => array('jquery')
-		),
-		'main_js' => array(
+			'requires' => ['jquery']
+		],
+		'main_js' => [
 			'path' => '/js/vendor/functions.js',
 			'type' => 'javascript',
-			'requires' => array('jquery', 'mousetrap', 'jquery_qtip', 'jquery_qtip_css')
-		)
-	);
+			'requires' => ['jquery', 'mousetrap', 'jquery_qtip', 'jquery_qtip_css']
+		]
+	];
 
 	/*
 	 * We want to set a lot of defaults!
@@ -145,10 +145,10 @@ class StateDecoded2013__Page extends Page
 		if (defined('TYPEKIT_ID'))
 		{
 			$this->add_asset('typekit_js',
-				array(
+				[
 					'path' => '//use.typekit.net/' .  TYPEKIT_ID . '.js',
 					'type' => 'javascript'
-				)
+				]
 			);
 
 			$content->append('javascript',
@@ -190,7 +190,7 @@ class StateDecoded2013__Page extends Page
 		/*
 		 * First, javascript includes.
 		 */
-		$javascripts = array();
+		$javascripts = [];
 		foreach($assets['javascript'] as $asset)
 		{
 			$javascripts[] = '<script src="' . $asset . '"></script>';
@@ -200,7 +200,7 @@ class StateDecoded2013__Page extends Page
 		/*
 		 * Second, css includes.
 		 */
-		$stylesheets = array();
+		$stylesheets = [];
 		foreach($assets['css'] as $asset)
 		{
 			$stylesheets[] = '<link rel="stylesheet" href="'.$asset.'" />';

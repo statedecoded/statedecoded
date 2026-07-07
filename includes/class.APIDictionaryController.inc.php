@@ -28,7 +28,7 @@ class APIDictionaryController extends BaseAPIController
 		}
 
 		$section = null;
-		$response = array();
+		$response = [];
 
 		/*
 		 * Clean up the term.
@@ -62,7 +62,7 @@ class APIDictionaryController extends BaseAPIController
 		/*
 		 * If we're told to use generic definitions, pass that through to the Dictionary class.
 		 */
-		$dict_args = array();
+		$dict_args = [];
 		if(!empty($_GET['generic'])) {
 			if($_GET['generic'] === '1' || strtolower($_GET['generic']) === 'true') {
 				$dict_args['generic_terms'] = true;
@@ -103,7 +103,7 @@ class APIDictionaryController extends BaseAPIController
 			 */
 			if ($dictionary === false)
 			{
-				$response = array('definition' => 'Definition not available.');
+				$response = ['definition' => 'Definition not available.'];
 			}
 
 			else
@@ -204,7 +204,7 @@ class APIDictionaryController extends BaseAPIController
 			$result = $law->get_law();
 			if ($result == false)
 			{
-				$response = array('terms' => 'Term list not available.');
+				$response = ['terms' => 'Term list not available.'];
 			}
 			else
 			{
@@ -217,7 +217,7 @@ class APIDictionaryController extends BaseAPIController
 				$response = $dict->term_list();
 				if ($response == false)
 				{
-					$response = array('terms' => 'Term list not available.');
+					$response = ['terms' => 'Term list not available.'];
 				}
 
 			}

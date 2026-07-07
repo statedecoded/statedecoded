@@ -20,7 +20,7 @@ class ImportActionTest extends PHPUnit\Framework\TestCase
 
 	protected function setUp(): void
 	{
-		$this->action = new ImportAction(array('options' => array()));
+		$this->action = new ImportAction(['options' => []]);
 	}
 
 	/*
@@ -36,7 +36,7 @@ class ImportActionTest extends PHPUnit\Framework\TestCase
 
 	public function testDefaultsToExistingCurrentEdition(): void
 	{
-		$parser = $this->stubParser((object) array('id' => 42, 'name' => 'Test Edition'));
+		$parser = $this->stubParser((object) ['id' => 42, 'name' => 'Test Edition']);
 
 		$edition_args = $this->action->buildEditionArgs($parser);
 
@@ -49,7 +49,7 @@ class ImportActionTest extends PHPUnit\Framework\TestCase
 	public function testCurrentOptionSetsMakeCurrent(): void
 	{
 		$this->action->options['current'] = true;
-		$parser = $this->stubParser((object) array('id' => 42, 'name' => 'Test Edition'));
+		$parser = $this->stubParser((object) ['id' => 42, 'name' => 'Test Edition']);
 
 		$edition_args = $this->action->buildEditionArgs($parser);
 

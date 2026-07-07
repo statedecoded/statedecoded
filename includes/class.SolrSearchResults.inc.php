@@ -97,7 +97,7 @@ class SolrSearchResults implements SearchResultsInterface
 	protected function fix_results($results)
 	{
 		$highlighted = $results->getHighlighting();
-		$fixed_results = array();
+		$fixed_results = [];
 
 		foreach($results as $result)
 		{

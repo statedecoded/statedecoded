@@ -77,14 +77,14 @@ class APISuggestController extends BaseAPIController
 		else
 		{
 
-			$response->terms = array();
+			$response->terms = [];
 			$i = 0;
 			foreach ($all_suggestions as $suggestion)
 			{
-				$response->terms[] = array(
+				$response->terms[] = [
 					'id' => $i,
 					'term' => $suggestion
-				);
+				];
 				$i++;
 			}
 		}

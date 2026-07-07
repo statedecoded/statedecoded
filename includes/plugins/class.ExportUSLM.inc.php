@@ -179,7 +179,7 @@ class ExportUSLM extends Export
 			 * Store a list of the dictionary terms as an array, which is required for
 			 * preg_replace_callback, the function that we use to insert the definitions.
 			 */
-			$term_pcres = array();
+			$term_pcres = [];
 			foreach ($terms as $term)
 			{
 
@@ -245,14 +245,14 @@ class ExportUSLM extends Export
 			/*
 			 * Turn every code reference in every paragraph into a link.
 			 */
-			$section->text = preg_replace_callback(SECTION_REGEX, array($autolinker, 'replace_sections'), $section->text);
+			$section->text = preg_replace_callback(SECTION_REGEX, [$autolinker, 'replace_sections'], $section->text);
 
 			/*
 			 * Use our dictionary to embed dictionary terms in the form of span titles.
 			 */
 			if (!empty($term_pcres))
 			{
-				$section->text = preg_replace_callback($term_pcres, array($autolinker, 'replace_terms'), $section->text);
+				$section->text = preg_replace_callback($term_pcres, [$autolinker, 'replace_terms'], $section->text);
 			}
 		}
 

@@ -18,11 +18,11 @@ class ExportWord extends PandocExport
 	public $extension = '.docx';
   public $description = 'All of the laws in one large Word Doc.';
 
-	public $listeners = array(
+	public $listeners = [
 		'HTMLExportLaw',
 		'HTMLExportStructure',
 		'HTMLFinishExport',
 		'postGetLaw',
     'showBulkDownload'
-	);
+	];
 }
