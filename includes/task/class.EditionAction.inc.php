@@ -173,7 +173,7 @@ class EditionAction extends CliAction
     if(count($edition_errors) > 0)
     {
       $this->result = 1;
-      return join("\n", $edition_errors);
+      return implode("\n", $edition_errors);
     }
 
     /*

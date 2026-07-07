@@ -68,7 +68,7 @@
 		$end_page = $this->createEndPage($downloads_dir);
 		$input_files[] = $end_page;
 
-		$cmd = 'pandoc -S ' . join(' ', $input_files) . ' -o ' . $filename;
+		$cmd = 'pandoc -S ' . implode(' ', $input_files) . ' -o ' . $filename;
 		exec($cmd);
 
 		/*

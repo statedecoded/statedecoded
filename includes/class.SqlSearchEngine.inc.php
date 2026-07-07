@@ -205,9 +205,9 @@ class SqlSearchEngine extends SearchEngineInterface
 						'catch_line', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$law_where_or[] = join(' OR ', $title_search);
+					$law_where_or[] = implode(' OR ', $title_search);
 					$law_fields[] = '( ' .
-						join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
+						implode(' + ', array_map('SqlSearchEngine::ifify', $title_search))
 						. ' ) AS title_match';
 
 
@@ -216,9 +216,9 @@ class SqlSearchEngine extends SearchEngineInterface
 						'text', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$law_where_or[] = join(' OR ', $text_search);
+					$law_where_or[] = implode(' OR ', $text_search);
 					$law_fields[] = '( ' .
-						join(' + ', array_map('SqlSearchEngine::ifify', $text_search))
+						implode(' + ', array_map('SqlSearchEngine::ifify', $text_search))
 						. ' ) AS text_match';
 
 					list($title_search, $new_args) =
@@ -226,9 +226,9 @@ class SqlSearchEngine extends SearchEngineInterface
 						'name', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$structure_where_or[] = join(' OR ', $title_search);
+					$structure_where_or[] = implode(' OR ', $title_search);
 					$structure_fields[] = '( ' .
-						join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
+						implode(' + ', array_map('SqlSearchEngine::ifify', $title_search))
 						. ' ) AS title_match';
 
 					$structure_fields[] = '"" AS text_match';
@@ -240,11 +240,11 @@ class SqlSearchEngine extends SearchEngineInterface
 
 			if(count($law_where_or))
 			{
-				$law_where[] = '(' . join(' OR ', $law_where_or) . ')';
+				$law_where[] = '(' . implode(' OR ', $law_where_or) . ')';
 			}
 			if(count($structure_where_or))
 			{
-				$structure_where[] = '(' . join(' OR ', $structure_where_or) . ')';
+				$structure_where[] = '(' . implode(' OR ', $structure_where_or) . ')';
 			}
 		}
 
@@ -285,26 +285,26 @@ class SqlSearchEngine extends SearchEngineInterface
 		/*
 		 * Assemble our final query.
 		 */
-		$sql_query = 'SELECT ' . join(',', $select_fields) . ' FROM ';
+		$sql_query = 'SELECT ' . implode(',', $select_fields) . ' FROM ';
 
-			$sql_query .= '(SELECT ' . join(', ', $law_fields) . ' FROM laws ';
+			$sql_query .= '(SELECT ' . implode(', ', $law_fields) . ' FROM laws ';
 			if(count($law_where))
 			{
-				$sql_query .= 'WHERE ' . join(' AND ', $law_where) . ' ';
+				$sql_query .= 'WHERE ' . implode(' AND ', $law_where) . ' ';
 			}
 			$sql_query .= 'UNION ';
 
-			$sql_query .= 'SELECT ' . join(', ', $structure_fields) . ' FROM structure ';
+			$sql_query .= 'SELECT ' . implode(', ', $structure_fields) . ' FROM structure ';
 			if(count($structure_where))
 			{
-				$sql_query .= 'WHERE ' . join(' AND ', $structure_where) . ' ';
+				$sql_query .= 'WHERE ' . implode(' AND ', $structure_where) . ' ';
 			}
 
 		$sql_query .= ') AS records ';
 
 		if(isset($order) && is_array($order) && count($order))
 		{
-			$sql_query .= 'ORDER BY ' . join(', ', array_filter($order)) . ' ';
+			$sql_query .= 'ORDER BY ' . implode(', ', array_filter($order)) . ' ';
 		}
 		if(isset($limit))
 		{

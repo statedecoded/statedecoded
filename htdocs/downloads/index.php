@@ -58,7 +58,7 @@ $body = '';
 
 $download_content = $events->trigger('showBulkDownload');
 if($download_content && is_array($download_content)) {
-	$body .= join($download_content);
+	$body .= implode($download_content);
 }
 
 /*

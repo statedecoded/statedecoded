@@ -499,7 +499,7 @@ class ParserController
 					$sql_args[':' . $key] = $value;
 					$update[] = $key .' = :' . $key;
 				}
-				$sql .= join(',', $update);
+				$sql .= implode(',', $update);
 				$sql .= ' WHERE id = :id';
 
 				$statement = $this->db->prepare($sql);

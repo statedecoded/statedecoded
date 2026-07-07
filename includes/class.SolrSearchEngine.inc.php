@@ -198,7 +198,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		{
 			$structure[] = $value->identifier . ' ' . $value->name;
 		}
-		$document->structure = join('/', $structure);
+		$document->structure = implode('/', $structure);
 
 		$document->refers_to = [];
 		foreach($document->refers_to as $law)
@@ -245,7 +245,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		{
 			$ancestry[] = $value->identifier . ' ' . $value->name;
 		}
-		$document->structure = join('/', $ancestry);
+		$document->structure = implode('/', $ancestry);
 
 		return $document;
 	}

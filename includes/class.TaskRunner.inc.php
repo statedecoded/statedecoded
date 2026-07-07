@@ -202,7 +202,7 @@ class TaskRunner
 		{
 			 exec('cowsay -W 75 "' . $text . '"', $output);
 
-			 return join("\n", $output) . "\n\n";
+			 return implode("\n", $output) . "\n\n";
 		}
 		else
 		{

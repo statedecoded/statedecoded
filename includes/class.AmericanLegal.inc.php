@@ -316,7 +316,7 @@ abstract class AmericanLegalParser
 			elseif (exec('which tidy'))
 			{
 				exec('tidy -xml '.$filename, $output);
-				$xml = join('', $output);
+				$xml = implode('', $output);
 			}
 			$this->chapter = new SimpleXMLElement($xml);
 		}

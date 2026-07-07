@@ -195,7 +195,7 @@ class StateDecoded2013__Page extends Page
 		{
 			$javascripts[] = '<script src="' . $asset . '"></script>';
 		}
-		$content->set('javascript_files', join("\n", $javascripts));
+		$content->set('javascript_files', implode("\n", $javascripts));
 
 		/*
 		 * Second, css includes.
@@ -206,7 +206,7 @@ class StateDecoded2013__Page extends Page
 			$stylesheets[] = '<link rel="stylesheet" href="'.$asset.'" />';
 		}
 
-		$content->set('css', join("\n", $stylesheets));
+		$content->set('css', implode("\n", $stylesheets));
 	}
 
 }

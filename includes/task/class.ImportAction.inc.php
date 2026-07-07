@@ -62,7 +62,7 @@ class ImportAction extends CliAction
 
 					if (count($edition_errors) > 0)
 					{
-						throw new Exception(join("\n", $edition_errors), E_ERROR);
+						throw new Exception(implode("\n", $edition_errors), E_ERROR);
 					}
 
 					else

@@ -442,7 +442,7 @@ function join_paths(...$args)
 		$paths[$key] = rtrim($value, DIRECTORY_SEPARATOR);
 	}
 
-	$return_path = join(DIRECTORY_SEPARATOR, array_filter($paths));
+	$return_path = implode(DIRECTORY_SEPARATOR, array_filter($paths));
 
 	return $return_path;
 }
@@ -834,5 +834,5 @@ function str_splice($input, $start, $length, $replace)
 
 	// array_splice, unlike most functions, edits the element in-place.
 	array_splice($input, $start, $length, $replace);
-	return join( $input );
+	return implode( $input );
 }
