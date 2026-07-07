@@ -435,9 +435,9 @@ class Law
 		 */
 		if (method_exists($state, 'translate_history'))
 		{
-			if (isset($this->metadata->history))
+			if (isset($this->history))
 			{
-				$state->history = $this->metadata->history;
+				$state->history = $this->history;
 				$this->history_text = $state->translate_history();
 			}
 		}
