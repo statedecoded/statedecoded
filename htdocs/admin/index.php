@@ -33,8 +33,8 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
     !hash_equals(ADMIN_USERNAME, $_SERVER['PHP_AUTH_USER']) || !hash_equals(ADMIN_PASSWORD, $_SERVER['PHP_AUTH_PW']))
 {
 
-    Header('WWW-Authenticate: Basic realm="The State Decoded Admin"');
-    Header('HTTP/1.0 401 Unauthorized');
+    header('WWW-Authenticate: Basic realm="The State Decoded Admin"');
+    header('HTTP/1.0 401 Unauthorized');
 
     echo '<html><body>
         <h1>Rejected</h1>
