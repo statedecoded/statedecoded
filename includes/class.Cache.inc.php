@@ -25,7 +25,7 @@ class Cache
 		 */
 		if (!defined('CACHE_HOST') || !defined('CACHE_PORT'))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -50,7 +50,7 @@ class Cache
 	{
 		if ( empty($key) || empty($data) )
 		{
-			return FALSE;
+			return false;
 		}
 		
 		/*
@@ -58,7 +58,7 @@ class Cache
 	 	 */
 		$this->cache->set($this->prefix . $key, $data, $expiration);
 	
-		return TRUE;
+		return true;
 
 	}
 	
@@ -69,16 +69,16 @@ class Cache
 	{
 		if (empty($key))
 		{
-			return FALSE;
+			return false;
 		}
 		
 		$result = $this->cache->delete($this->prefix . $key);
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -91,13 +91,13 @@ class Cache
 	{
 		if (empty($key))
 		{
-			return FALSE;
+			return false;
 		}
 		
 		$result = $this->cache->get($this->prefix . $key);
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			return FALSE;
+			return false;
 		}
 		
 		return $result;
@@ -117,12 +117,12 @@ class Cache
 		 */
 		$keys = $this->cache->getAllKeys();
 		
-		if ($keys != FALSE)
+		if ($keys != false)
 		{
 		
 			foreach ($keys as $index => $key)
 			{
-				if (strpos($key, $this->prefix) !== FALSE)
+				if (strpos($key, $this->prefix) !== false)
 				{
 					$this->cache->delete($key);
 				}
@@ -130,7 +130,7 @@ class Cache
 		
 		}
 		
-		return TRUE;
+		return true;
 
 	}
 

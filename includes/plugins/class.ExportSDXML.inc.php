@@ -81,7 +81,7 @@ class ExportSDXML extends Export
 
 			if(!isset($ancestor->metadata) ||
 				!isset($ancestor->metadata->admin_division) ||
-				$ancestor->metadata->admin_division !== TRUE)
+				$ancestor->metadata->admin_division !== true)
 			{
 				$args['identifier'] = $ancestor->identifier;
 			}

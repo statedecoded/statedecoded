@@ -147,14 +147,14 @@ class SolrSearchEngine extends SearchEngineInterface
 			{
 				unset($this->transaction);
 				$this->documents = array();
-				return TRUE;
+				return true;
 			}
 
 			throw new Exception('Solr query failed.');
-			return FALSE;
+			return false;
 		}
 		else {
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -281,10 +281,10 @@ class SolrSearchEngine extends SearchEngineInterface
 			 */
 			$spellcheck = $select->getSpellcheck();
 			$spellcheck->setQuery($query['q']);
-			$spellcheck->setBuild(TRUE);
-			$spellcheck->setCollate(TRUE);
-			$spellcheck->setExtendedResults(TRUE);
-			$spellcheck->setCollateExtendedResults(TRUE);
+			$spellcheck->setBuild(true);
+			$spellcheck->setCollate(true);
+			$spellcheck->setExtendedResults(true);
+			$spellcheck->setCollateExtendedResults(true);
 
 			/*
 			 * Specify which page we want, and how many results.
@@ -341,7 +341,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -365,8 +365,8 @@ class SolrSearchEngine extends SearchEngineInterface
 
 		// A result of 0 is good for some reason.
 		if(!$result->getStatus()) {
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 }

@@ -57,7 +57,7 @@ class Autolinker
 
 		if (!isset($term))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -154,7 +154,7 @@ class Autolinker
 		 * If this isn't a valid section number, then just return the match verbatim -- there's no
 		 * link to be provided.
 		 */
-		if ($laws === FALSE)
+		if ($laws === false)
 		{
 			return $matches[0];
 		}

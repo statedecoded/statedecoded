@@ -20,7 +20,7 @@ class DOMWrapper
 	protected $nodeMap;
 	public $_type;
 	public $_tag;
-	public $strip_whitespace = TRUE;
+	public $strip_whitespace = true;
 
 	public function __construct($xml, $strip_whitespace = null)
 	{
@@ -128,10 +128,10 @@ class DOMWrapper
 		}
 	}
 
-	public function rawValue($html = FALSE) {
+	public function rawValue($html = false) {
 		$newdoc = new DOMDocument();
-		$cloned = $this->dom->cloneNode(TRUE);
-		$node = $newdoc->importNode($cloned,TRUE);
+		$cloned = $this->dom->cloneNode(true);
+		$node = $newdoc->importNode($cloned,true);
 
 		if($node)
 		{
@@ -148,7 +148,7 @@ class DOMWrapper
 		 }
 		 else
 		 {
-				return FALSE;
+				return false;
 		 }
 	}
 
@@ -163,7 +163,7 @@ class DOMListWrapper implements Iterator, Countable
 {
 	protected $nodes = array();
 	private $position = 0;
-	public $strip_whitespace = TRUE;
+	public $strip_whitespace = true;
 
 	public function __construct($nodes, $strip_whitespace = null)
 	{

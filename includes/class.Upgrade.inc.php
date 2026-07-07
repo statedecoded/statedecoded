@@ -33,7 +33,7 @@ class Upgrade
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 		
 	}

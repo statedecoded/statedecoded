@@ -143,7 +143,7 @@ class EventManager
 	{
 		if(!isset($this->events[$name]))
 		{
-			return FALSE;
+			return false;
 		}
 		return count($this->events[$name]);
 	}

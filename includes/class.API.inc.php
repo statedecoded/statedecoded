@@ -33,10 +33,10 @@ class API
 		{
 			
 			$api_keys = $cache->retrieve('api_keys');
-			if ($api_keys !== FALSE)
+			if ($api_keys !== false)
 			{
 				$this->all_keys = $api_keys;
-				return TRUE;
+				return true;
 			}
 			
 		}
@@ -61,10 +61,10 @@ class API
 		$result = $statement->execute($sql_args);
 
 		/* If the database has returned an error. */
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			throw new Exception('API keys could not be retrieved.');
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -77,7 +77,7 @@ class API
 		 */
 		if ($statement->rowCount() == 0)
 		{
-			return TRUE;
+			return true;
 		}
 
 		/*
@@ -86,7 +86,7 @@ class API
 		$this->all_keys = new stdClass();
 		while ($key = $statement->fetch(PDO::FETCH_OBJ))
 		{
-			$this->all_keys->{$key->api_key} = TRUE;
+			$this->all_keys->{$key->api_key} = true;
 		}
 
 		/*
@@ -97,7 +97,7 @@ class API
 			$cache->store('api_keys', $this->all_keys);
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -127,7 +127,7 @@ class API
 		/*
 		 * If the query succeeds then retrieve the result.
 		 */
-		if ($result != FALSE && $statement->rowCount() > 0)
+		if ($result != false && $statement->rowCount() > 0)
 		{
 
 			$api_key = $statement->fetch(PDO::FETCH_OBJ);
@@ -143,7 +143,7 @@ class API
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -163,7 +163,7 @@ class API
 		if (!isset($this->key))
 		{
 			throw new Exception('No API key provided.');
-			return FALSE;
+			return false;
 		}
 		
 		/*
@@ -172,7 +172,7 @@ class API
 		if ( strlen($this->key) != 16 )
 		{
 			throw new Exception('Invalid API key.');
-			return FALSE;
+			return false;
 		}
 		
 		/*
@@ -192,7 +192,7 @@ class API
 		if ( empty($this->key) || empty(get_object_vars($this->all_keys ?? new stdClass())) )
 		{
 			throw new Exception('API key not provided. Please register for an API key.');
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -201,10 +201,10 @@ class API
 		elseif (!isset($this->all_keys->{$this->key}))
 		{
 			throw new Exception('Invalid API key.');
-			return FALSE;
+			return false;
 		}
 		
-		return TRUE;
+		return true;
 		
 	}
 
@@ -245,26 +245,26 @@ class API
 
 		if (!isset($this->form))
 		{
-			return FALSE;
+			return false;
 		}
 		if (empty($this->form->email))
 		{
 			$this->form_errors = 'Please provide your e-mail address.';
-			return FALSE;
+			return false;
 		}
-		elseif (filter_var($this->form->email, FILTER_VALIDATE_EMAIL) === FALSE)
+		elseif (filter_var($this->form->email, FILTER_VALIDATE_EMAIL) === false)
 		{
 			$this->form_errors = 'Please enter a valid e-mail address.';
-			return FALSE;
+			return false;
 		}
 
-		if ( !empty($this->form_url) && (filter_var($this->form->url, FILTER_VALIDATE_URL) === FALSE) )
+		if ( !empty($this->form_url) && (filter_var($this->form->url, FILTER_VALIDATE_URL) === false) )
 		{
 			$this->form_errors = 'Please enter a valid URL.';
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -328,7 +328,7 @@ class API
 		 * Insert this record.
 		 */
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			throw new Exception('API key could not be created.');
 		}
@@ -336,7 +336,7 @@ class API
 		/*
 		 * Send an activation e-mail, unless instructed otherwise.
 		 */
-		if ( !isset($this->suppress_activation_email) || ($this->suppress_activation_email !== TRUE) )
+		if ( !isset($this->suppress_activation_email) || ($this->suppress_activation_email !== true) )
 		{
 			API::send_activation_email();
 		}
@@ -368,7 +368,7 @@ class API
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			throw new Exception('API key could not be activated.');
 		}
@@ -383,7 +383,7 @@ class API
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result !== FALSE)
+		if ($result !== false)
 		{
 			$api_key = $statement->fetch(PDO::FETCH_OBJ);
 			$this->key = $api_key->api_key;
@@ -401,7 +401,7 @@ class API
 			
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -416,7 +416,7 @@ class API
 
 		if (!isset($this->email) || !isset($this->secret))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$url = 'http://';
@@ -449,7 +449,7 @@ class API
 		 */
 		mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
 
-		return TRUE;
+		return true;
 	}
 
 

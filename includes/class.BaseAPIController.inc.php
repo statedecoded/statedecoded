@@ -64,7 +64,7 @@ class BaseAPIController extends BaseController
 			return valid_jsonp_callback($_REQUEST['callback']);
 		}
 		
-		return TRUE;
+		return true;
 		
 	}
 

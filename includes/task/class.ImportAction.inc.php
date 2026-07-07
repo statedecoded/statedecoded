@@ -51,11 +51,11 @@ class ImportAction extends CliAction
 			/*
 			 * Step through each parser method.
 			 */
-			if ($parser->test_environment() !== FALSE)
+			if ($parser->test_environment() !== false)
 			{
 				$this->logger->message('Environment test succeeded', 10);
 
-				if ($parser->populate_db() !== FALSE)
+				if ($parser->populate_db() !== false)
 				{
 
 					$edition_errors = $parser->handle_editions($edition_args);
@@ -137,7 +137,7 @@ class ImportAction extends CliAction
 		{
 			$edition = $parser->get_current_edition();
 
-			if($edition !== FALSE)
+			if($edition !== false)
 			{
 				$edition_args['edition_option'] = 'existing';
 				$edition_args['edition'] = $edition->id;
@@ -165,7 +165,7 @@ class ImportAction extends CliAction
 	{
 		$level = 10;
 		if(isset($this->options['v'])) {
-			if($this->options['v'] === TRUE) {
+			if($this->options['v'] === true) {
 				$level = 1;
 			}
 			else

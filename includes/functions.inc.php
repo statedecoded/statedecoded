@@ -28,7 +28,7 @@ function statedecoded_autoload_libraries($class_name)
 			$path .= DIRECTORY_SEPARATOR;
 		}
 
-		if (file_exists($path . $filename) === TRUE)
+		if (file_exists($path . $filename) === true)
 		{
 			$result = include_once $path . $filename;
 			return;
@@ -53,7 +53,7 @@ function fetch_url($url)
 
 	if (!isset($url))
 	{
-		return FALSE;
+		return false;
 	}
 
 	$ch = curl_init();
@@ -96,7 +96,7 @@ function json_error($text)
 
 	if (!isset($text))
 	{
-		return FALSE;
+		return false;
 	}
 
 	$error = array('error',
@@ -459,7 +459,7 @@ function get_files($path, $files = array())
 
 	$directory = dir($path);
 
-	while (FALSE !== ($filename = $directory->read()))
+	while (false !== ($filename = $directory->read()))
 	{
 
 		$file_path = $path . $filename;
@@ -486,7 +486,7 @@ function remove_dir($dir)
 {
 	if (!is_dir($dir))
 	{
-		return FALSE;
+		return false;
 	}
 	$it = new RecursiveIteratorIterator(
 		new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),

@@ -100,7 +100,7 @@ class APIPermalinkController extends BaseAPIController
 			/*
 			 * If we found a route.
 			 */
-			if ( $result !== FALSE )
+			if ( $result !== false )
 			{
 			
 				if ( $statement->rowCount() > 0 )
@@ -115,7 +115,7 @@ class APIPermalinkController extends BaseAPIController
 						str_replace(' ', '', ucwords($route['object_type'])) .
 						'Controller';
 
-					if ( class_exists($object_name) == TRUE)
+					if ( class_exists($object_name) == true)
 					{
 						$controller = new $object_name($this->local);
 						return $controller->handle($route);

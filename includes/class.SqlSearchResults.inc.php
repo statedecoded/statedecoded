@@ -39,7 +39,7 @@ class SqlSearchResults implements SearchResultsInterface
 	 */
 	public function get_fixed_spelling()
 	{
-		return FALSE;
+		return false;
 	}
 
 	public function get_count()

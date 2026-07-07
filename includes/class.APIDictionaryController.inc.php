@@ -65,10 +65,10 @@ class APIDictionaryController extends BaseAPIController
 		$dict_args = array();
 		if(!empty($_GET['generic'])) {
 			if($_GET['generic'] === '1' || strtolower($_GET['generic']) === 'true') {
-				$dict_args['generic_terms'] = TRUE;
+				$dict_args['generic_terms'] = true;
 			}
 			elseif($_GET['generic'] === '0' || strtolower($_GET['generic']) === 'false') {
-				$dict_args['generic_terms'] = FALSE;
+				$dict_args['generic_terms'] = false;
 			}
 		}
 
@@ -101,7 +101,7 @@ class APIDictionaryController extends BaseAPIController
 			/*
 			 * If, for whatever reason, this term is not found, return an error.
 			 */
-			if ($dictionary === FALSE)
+			if ($dictionary === false)
 			{
 				$response = array('definition' => 'Definition not available.');
 			}
@@ -145,7 +145,7 @@ class APIDictionaryController extends BaseAPIController
 						foreach($term as $field => &$value)
 						{
 
-							if (in_array($field, $returned_fields) === FALSE)
+							if (in_array($field, $returned_fields) === false)
 							{
 								unset($term->$field);
 							}
@@ -200,9 +200,9 @@ class APIDictionaryController extends BaseAPIController
 			 */
 			$law = new Law;
 			$law->section_number = $section;
-			$law->config = FALSE;
+			$law->config = false;
 			$result = $law->get_law();
-			if ($result == FALSE)
+			if ($result == false)
 			{
 				$response = array('terms' => 'Term list not available.');
 			}
@@ -215,7 +215,7 @@ class APIDictionaryController extends BaseAPIController
 				$dict->section_id = $law->section_id;
 				$dict->structure_id = $law->structure_id;
 				$response = $dict->term_list();
-				if ($response == FALSE)
+				if ($response == false)
 				{
 					$response = array('terms' => 'Term list not available.');
 				}

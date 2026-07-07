@@ -90,7 +90,7 @@ class Page
 		{
 
 			$html = $cache->retrieve($storage_name);
-			if ($html === FALSE)
+			if ($html === false)
 			{
 
 				if (check_file_available($template_file))
@@ -177,11 +177,11 @@ class Page
 
 		if (!isset($content))
 		{
-			return FALSE;
+			return false;
 		}
 
 		echo $content;
-		return TRUE;
+		return true;
 
 	}
 

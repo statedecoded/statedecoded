@@ -67,7 +67,7 @@ class APISuggestController extends BaseAPIController
 		if (count($all_suggestions) == 0)
 		{
 
-			$response->terms = FALSE;
+			$response->terms = false;
 
 		}
 

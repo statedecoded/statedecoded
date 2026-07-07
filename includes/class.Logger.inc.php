@@ -22,7 +22,7 @@ class Logger
     *
     * @var boolean
     */
-	public $html = FALSE;
+	public $html = false;
 
    /**
     * This setting determines how "loud" the logger will be.
@@ -37,7 +37,7 @@ class Logger
 	/**
 	 * Should we flush the buffer automatically?
 	 */
-	public $flush_buffer = TRUE;
+	public $flush_buffer = true;
 
 
 	/**
@@ -77,7 +77,7 @@ class Logger
 	{
 		if ($level >= $this->level)
 		{
-			if ($this->html === TRUE)
+			if ($this->html === true)
 			{
 				echo '<div class="logmessage" data-time="' . microtime(true) .'">';
 			}
@@ -85,7 +85,7 @@ class Logger
 			echo $msg;
 
 
-			if ($this->html === TRUE)
+			if ($this->html === true)
 			{
 				echo '</div>';
 			}
@@ -123,7 +123,7 @@ class Logger
 	public function error($msg, $level = 1)
 	{
 
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			$msg = '<span class="error">' . $msg . '</span>';
 		}
@@ -151,7 +151,7 @@ class Logger
 	 * Render a progressbar.
 	 */
 	public function progress($name) {
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			echo '<div class="progress" data-time="' . microtime(true) .'">
 			  <div class="progress-bar progress-bar-striped active"
@@ -178,7 +178,7 @@ class Logger
 
 	public function updateProgress($name, $amount, $text = '')
 	{
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			if($text === '') {
 				$text = $amount . '%';
@@ -202,7 +202,7 @@ class Logger
 
 	public function finishProgress($name)
 	{
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			echo '<script data-time="' . microtime(true).'">
 				$("#progress_' . $name .'")

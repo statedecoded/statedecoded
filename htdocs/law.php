@@ -126,7 +126,7 @@ else
 if (is_object($laws[0]->dublin_core))
 {
 	$content->set('meta_tags', '');
-	foreach ($laws[0]->dublin_core AS $name => $value)
+	foreach ($laws[0]->dublin_core as $name => $value)
 	{
 		$content->append('meta_tags', '<meta name="DC.' . $name . '" content="' . $value . '" />');
 	}
@@ -138,7 +138,7 @@ if (is_object($laws[0]->dublin_core))
 $content->set('breadcrumbs', '');
 foreach (array_reverse((array) $laws[0]->ancestry) as $ancestor)
 {
-	if(isset($ancestor->metadata->admin_division) && $ancestor->metadata->admin_division === TRUE)
+	if(isset($ancestor->metadata->admin_division) && $ancestor->metadata->admin_division === true)
 	{
 		$identifier = '<span>';
 	}
@@ -306,7 +306,7 @@ $sidebar = '';
 /*
  * Commenting functionality.
  */
-if (defined('DISQUS_SHORTNAME') === TRUE)
+if (defined('DISQUS_SHORTNAME') === true)
 {
 	$body .= "<section id=\"comments\">
 		<h2>Comments</h2>
@@ -353,7 +353,7 @@ $sidebar .= '<section class="info-box" id="explanation">
 /*
  * Display links to share this law via social services.
  */
-if (defined('SOCIAL_LINKS') == TRUE)
+if (defined('SOCIAL_LINKS') == true)
 {
 	$sidebar .= '<section class="info-box" id="social">
 				<h1>Share</h1>
@@ -392,7 +392,7 @@ $sidebar .= '<p class="keyboard"><a class="helpbutton" data-help="keyboard" id="
 /*
  * If this section has been cited in any court decisions, list them.
  */
-if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
+if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != false) )
 {
 
 	$sidebar .= '<section class="info-box" id="court-decisions">
@@ -427,7 +427,7 @@ if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
 /*
  * If any legislation has attempted to amend this law, list it.
  */
-if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != FALSE) )
+if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != false) )
 {
 
 	$sidebar .= '<section class="info-box" id="amendment-attempts">
@@ -455,7 +455,7 @@ if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != FAL
 /*
  * If we have a list of cross-references, list them.
  */
-if ($laws[0]->references !== FALSE)
+if ($laws[0]->references !== false)
 {
 
 	$sidebar .= '
@@ -483,7 +483,7 @@ try
 {
 	$search_client = new SearchIndex(
 		array(
-			'config' => json_decode(SEARCH_CONFIG, TRUE)
+			'config' => json_decode(SEARCH_CONFIG, true)
 		)
 	);
 

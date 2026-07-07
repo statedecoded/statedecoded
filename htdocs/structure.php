@@ -124,7 +124,7 @@ if (count((array) $structure) > 1)
 			$active = 'active';
 		}
 
-		if(isset($level->metadata->admin_division) && $level->metadata->admin_division === TRUE)
+		if(isset($level->metadata->admin_division) && $level->metadata->admin_division === true)
 		{
 			$identifier = '<span>';
 		}
@@ -197,14 +197,14 @@ if (isset($struct->siblings))
 	foreach ($struct->siblings as $sibling)
 	{
 
-		if (isset($current_structure) && $current_structure !== FALSE && $sibling->id === $current_structure->id)
+		if (isset($current_structure) && $current_structure !== false && $sibling->id === $current_structure->id)
 		{
 
 			if ($i >= 1)
 			{
 				prev($struct->siblings);
 				$tmp = prev($struct->siblings);
-				if ($tmp !== FALSE)
+				if ($tmp !== false)
 				{
 					$content->append('link_rel', '<link rel="prev" title="Previous" href="' . $tmp->url . '" />');
 				}
@@ -214,7 +214,7 @@ if (isset($struct->siblings))
 			{
 				next($struct->siblings);
 				$tmp = next($struct->siblings);
-				if ($tmp !== FALSE)
+				if ($tmp !== false)
 				{
 					$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
 				}
@@ -312,7 +312,7 @@ if (isset($struct->metadata))
 /*
  * If we have successfully gotten a list of child structural units, display them.
  */
-if ($children !== FALSE)
+if ($children !== false)
 {
 
 	/*
@@ -324,7 +324,7 @@ if ($children !== FALSE)
 
 		$api_url = '/api/1.0/structure/' . $child->permalink->token
 			 . '/?key=' . API_KEY;
-		if(isset($child->metadata->admin_division) && $child->metadata->admin_division === TRUE)
+		if(isset($child->metadata->admin_division) && $child->metadata->admin_division === true)
 		{
 			$identifier = '';
 		}
@@ -354,7 +354,7 @@ $laws = $struct->list_laws();
 /*
  * If we have successfully gotten a list of laws, display them.
  */
-if ($laws !== FALSE)
+if ($laws !== false)
 {
 
 	$body .= '<p>It’s comprised of the following ' . count($laws) . ' sections.</p>';

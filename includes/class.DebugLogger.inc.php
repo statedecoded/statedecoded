@@ -70,7 +70,7 @@ class DebugLogger extends Logger
 	 */
 	public function get_time()
 	{
-		return microtime(TRUE);
+		return microtime(true);
 	}
 
 	// }}}

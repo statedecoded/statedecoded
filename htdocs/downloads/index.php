@@ -80,7 +80,7 @@ if (isset($_POST['form_data']))
 	/*
 	 * If this form hasn't been completed properly, display the errors and re-display the form.
 	 */
-	if ($api->validate_form() === FALSE)
+	if ($api->validate_form() === false)
 	{
 		$body = '<p class="error">Error: ' . $api->form_errors . '</p>';
 		$body .= $api->display_form();

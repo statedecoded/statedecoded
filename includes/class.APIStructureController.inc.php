@@ -57,7 +57,7 @@ class APIStructureController extends BaseAPIController
 		/*
 		 * If this structural element does not exist.
 		 */
-		if ($response === FALSE)
+		if ($response === false)
 		{
 			$this->handleNotFound();
 			return;

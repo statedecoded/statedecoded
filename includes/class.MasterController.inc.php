@@ -88,7 +88,7 @@ class MasterController
 			$url = $_SERVER['REQUEST_URI'];
 		}
 
-		if(strpos($url, '?') !== FALSE) {
+		if(strpos($url, '?') !== false) {
 			list($url, $query_string) = explode('?', $url);
 		}
 

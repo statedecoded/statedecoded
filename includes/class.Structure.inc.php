@@ -57,9 +57,9 @@ class Structure
 		 * Make sure that this URL is kosher.
 		 */
 		$this->url = filter_var($this->url, FILTER_SANITIZE_URL);
-		if ($this->url === FALSE)
+		if ($this->url === false)
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -78,9 +78,9 @@ class Structure
 
 		$result = $permalink_statement->execute($permalink_args);
 
-		if ( ($result === FALSE) || ($permalink_statement->rowCount() == 0) )
+		if ( ($result === false) || ($permalink_statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -98,7 +98,7 @@ class Structure
 		 */
 		$this->get_current();
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -113,9 +113,9 @@ class Structure
 
 		$result = $permalink_statement->execute($permalink_args);
 
-		if ( ($result === FALSE) || ($permalink_statement->rowCount() == 0) )
+		if ( ($result === false) || ($permalink_statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -133,7 +133,7 @@ class Structure
 		 */
 		$this->get_current();
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -247,9 +247,9 @@ class Structure
 		/*
 		 * If the query fails, or if no results are found, return false -- we can't make a match.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -257,7 +257,7 @@ class Structure
 		 */
 		$this->siblings = $statement->fetchAll(PDO::FETCH_OBJ);
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -333,7 +333,7 @@ class Structure
 			 * If this legal code continues to print repealed laws, then make sure that we're not
 			 * displaying any structural units that consist entirely of repealed laws.
 			 */
-			if (INCLUDES_REPEALED === TRUE)
+			if (INCLUDES_REPEALED === true)
 			{
 				$sql .= ' AND
 						((SELECT COUNT(*)
@@ -387,9 +387,9 @@ class Structure
 		/*
 		 * If the query fails, or if no results are found, return false -- we can't make a match.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -404,7 +404,7 @@ class Structure
 		while ($child = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			$result = $this->get_by_id($child->s1_id);
-			if ($result !== FALSE && $result->permalink !== FALSE)
+			if ($result !== false && $result->permalink !== false)
 			{
 				$children[] = $result;
 			}
@@ -440,9 +440,9 @@ class Structure
 
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure_row = $statement->fetch(PDO::FETCH_OBJ);
@@ -519,7 +519,7 @@ class Structure
 		 */
 		if (!isset($this->id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -536,9 +536,9 @@ class Structure
 		$result = $statement->execute($sql_args);
 
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure = $statement->fetch(PDO::FETCH_OBJ);
@@ -559,7 +559,7 @@ class Structure
 		 */
 		if (!isset($this->identifier))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -578,9 +578,9 @@ class Structure
 		$result = $statement->execute($sql_args);
 
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure = $statement->fetch(PDO::FETCH_OBJ);
@@ -601,7 +601,7 @@ class Structure
 		 */
 		if (!isset($this->id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -610,7 +610,7 @@ class Structure
 		 * should fail with the order_by field. The section column is not wholly reliable for
 		 * sorting (hence the order_by field), but it's a great deal better than an unsorted list.
 		 */
-		if (INCLUDES_REPEALED !== TRUE)
+		if (INCLUDES_REPEALED !== true)
 		{
 
 			$sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line,
@@ -654,9 +654,9 @@ class Structure
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -754,7 +754,7 @@ class Structure
 			return $structure;
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 

@@ -272,7 +272,7 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
 
         $statement->expects($this->once())
             ->method('recoverError')
-            ->will($this->returnValue(TRUE));
+            ->will($this->returnValue(true));
 
         $this->pdo_statement_mock->expects($this->exactly(2))
             ->method('execute')
@@ -292,7 +292,7 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
 
         $statement->expects($this->once())
             ->method('recoverError')
-            ->will($this->returnValue(FALSE));
+            ->will($this->returnValue(false));
 
         $this->pdo_statement_mock->expects($this->exactly(1))
             ->method('execute')
@@ -305,9 +305,9 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
     public function executeCallback(): bool
     {
         if (!isset($this->counters['execute'])) {
-            $this->counters['execute'] = FALSE;
+            $this->counters['execute'] = false;
         } else {
-            $this->counters['execute'] = TRUE;
+            $this->counters['execute'] = true;
         }
         return $this->counters['execute'];
     }
@@ -321,7 +321,7 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
 
         $statement->expects($this->once())
             ->method('errorInfo')
-            ->will($this->returnValue([TRUE, TRUE, 'Database server has gone away']));
+            ->will($this->returnValue([true, true, 'Database server has gone away']));
 
         // prepare() is typed DatabaseStatement|false, so we need a real DatabaseStatement
         $statement_mock = new DatabaseStatement($this->db, $this->pdo_statement_mock, $this->query);
@@ -354,11 +354,11 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
 
         $statement->expects($this->once())
             ->method('errorInfo')
-            ->will($this->returnValue([FALSE, FALSE, '']));
+            ->will($this->returnValue([false, false, '']));
 
         $this->database_mock->expects($this->once())
             ->method('errorInfo')
-            ->will($this->returnValue([TRUE, TRUE, 'Database server has gone away']));
+            ->will($this->returnValue([true, true, 'Database server has gone away']));
 
         $statement_mock = new DatabaseStatement($this->db, $this->pdo_statement_mock, $this->query);
 
@@ -390,11 +390,11 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
 
         $statement->expects($this->once())
             ->method('errorInfo')
-            ->will($this->returnValue([FALSE, FALSE, '']));
+            ->will($this->returnValue([false, false, '']));
 
         $this->database_mock->expects($this->once())
             ->method('errorInfo')
-            ->will($this->returnValue([TRUE, TRUE, 'Derp!']));
+            ->will($this->returnValue([true, true, 'Derp!']));
 
         $this->database_mock->expects($this->never())->method('reconnect');
         $this->database_mock->expects($this->never())->method('prepare');
@@ -405,7 +405,7 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
     public function testFormatErrors(): void
     {
         $errors = ['key_one' => 'value_one', 'key_two' => 'value_two'];
-        $this->assertEquals(print_r($errors, TRUE), $this->statement->formatErrors($errors));
+        $this->assertEquals(print_r($errors, true), $this->statement->formatErrors($errors));
     }
 
     public function testFetchErrors(): void
@@ -464,8 +464,8 @@ class DatabaseTest extends PHPUnit\Framework\TestCase
         $db = new Database(PDO_DSN, PDO_USERNAME, PDO_PASSWORD,
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT]);
 
-        if ($db->exec('SET GLOBAL connect_timeout=1') === FALSE ||
-            $db->exec('SET GLOBAL wait_timeout=1') === FALSE) {
+        if ($db->exec('SET GLOBAL connect_timeout=1') === false ||
+            $db->exec('SET GLOBAL wait_timeout=1') === false) {
             $this->markTestSkipped('Test DB user lacks SYSTEM_VARIABLES_ADMIN; skipping timeout test.');
         }
 

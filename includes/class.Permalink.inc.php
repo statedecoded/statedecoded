@@ -78,9 +78,9 @@ class Permalink
 
 		$preferred_result = $preferred_statement->execute($preferred_args);
 
-		if ($preferred_result === FALSE || $preferred_statement->rowCount() == 0)
+		if ($preferred_result === false || $preferred_statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -109,9 +109,9 @@ class Permalink
 
 		$preferred_result = $preferred_statement->execute($preferred_args);
 
-		if ($preferred_result === FALSE || $preferred_statement->rowCount() == 0)
+		if ($preferred_result === false || $preferred_statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -151,9 +151,9 @@ class Permalink
 		$result = $statement->execute($sql_args);
 
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -167,7 +167,7 @@ class Permalink
 				$law_args = array(':law_id' => $permalink->relational_id);
 
 				$law_result = $law_statement->execute($law_args);
-				if ($law_result !== FALSE && $law_statement->rowCount() > 0)
+				if ($law_result !== false && $law_statement->rowCount() > 0)
 				{
 					$permalink->law = $law_statement->fetch(PDO::FETCH_OBJ);
 					$permalink->title = SECTION_SYMBOL . '&nbsp;' .
@@ -182,7 +182,7 @@ class Permalink
 				$structure_args = array(':structure_id' => $permalink->relational_id);
 
 				$structure_result = $structure_statement->execute($structure_args);
-				if ($structure_result !== FALSE &&
+				if ($structure_result !== false &&
 					$structure_statement->rowCount() > 0)
 				{
 					$permalink->structure = $structure_statement->fetch(PDO::FETCH_OBJ);

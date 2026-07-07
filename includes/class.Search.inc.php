@@ -147,7 +147,7 @@ class Search
 		 */
 		if ( empty($this->total_results) || empty($this->per_page)  || empty($this->query) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*

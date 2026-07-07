@@ -74,7 +74,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 					/*
 					 * To pick a file more or less at random, we look for class.Law.inc.php.
 					 */
-					if (in_array('class.Law.inc.php', $child_files) === TRUE)
+					if (in_array('class.Law.inc.php', $child_files) === true)
 					{
 						$include_path = realpath(dirname(__FILE__) . '/' . $parent_directory . '/' . $file . '/');
 						break(2);
@@ -102,7 +102,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 		 * with every page view. This is really quite undesirable, because it will slow down the
 		 * site non-trivially, but it's better than not working at all.
 		 */
-		if (is_writable('.htaccess') == TRUE)
+		if (is_writable('.htaccess') == true)
 		{
 			
 			$htaccess = PHP_EOL . PHP_EOL . 'SetEnv INCLUDE_PATH ' . $include_path . PHP_EOL;
@@ -135,7 +135,7 @@ if (isset($_SERVER['EDITION_ID']))
 /*
  * Include the site's config file.
  */
-if ( (include INCLUDE_PATH . '/config.inc.php') === FALSE )
+if ( (include INCLUDE_PATH . '/config.inc.php') === false )
 {
 	die('Cannot run without a config.inc.php file. See the installation documentation.');
 }
@@ -163,9 +163,9 @@ catch (PDOException $e)
 	 * If we get error 1049, that means that no database of this name could be found. This means
 	 * that The State Decoded has not yet been installed. Redirect to the admin section.
 	 */
-	if (strpos($e->getMessage(), '[1049]') !== FALSE)
+	if (strpos($e->getMessage(), '[1049]') !== false)
 	{
-		if (strpos($_SERVER['REQUEST_URI'], '/admin') === FALSE)
+		if (strpos($_SERVER['REQUEST_URI'], '/admin') === false)
 		{
 			header('Location: /admin/');
 			exit;

@@ -152,9 +152,9 @@ class ParserController
 			$result = $statement->execute();
 		} catch (Exception $except)
 		{
-			return FALSE;
+			return false;
 		}
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -175,11 +175,11 @@ class ParserController
 			/*
 			 * The database tables do not exist, so see if the MySQL import file can be found.
 			 */
-			if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === FALSE)
+			if (file_exists(WEB_ROOT . '/admin/statedecoded.sql') === false)
 			{
 				$this->logger->message('Could not read find ' . WEB_ROOT . '/admin/statedecoded.sql to '
 					. 'populate the database. Database tables could not be created.', 10);
-				return FALSE;
+				return false;
 			}
 
 			/*
@@ -188,13 +188,13 @@ class ParserController
 			 */
 			$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
 			$result = $this->db->exec($sql);
-			if ($result === FALSE)
+			if ($result === false)
 			{
-				return FALSE;
+				return false;
 			}
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -244,9 +244,9 @@ class ParserController
 				LIMIT 1';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		if ($result !== false && $statement->rowCount() > 0)
 		{
-			return TRUE;
+			return true;
 		}
 
 		$this->logger->message('Adding an inaugural “editions” record to the database', 5);
@@ -266,13 +266,13 @@ class ParserController
 		/*
 		 * If we could not add the record to the database.
 		 */
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			$this->logger->message('Could not add an “editions” record to the database', 5);
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -288,9 +288,9 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -311,9 +311,9 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -422,7 +422,7 @@ class ParserController
 			$edition = new Edition();
 			$edition_result = $edition->find_by_id($this->edition_id);
 
-			if ($edition_result !== FALSE)
+			if ($edition_result !== false)
 			{
 				$this->set_edition($edition_result);
 
@@ -467,12 +467,12 @@ class ParserController
 		if($edition_obj->find_by_name($edition['name']))
 		{
 			$this->logger->message('The name for that edition is already in use.  Please choose a different name.', 10);
-			return FALSE;
+			return false;
 		}
 		if($edition_obj->find_by_slug($edition['slug']))
 		{
 			$this->logger->message('The slug for that edition is already in use.  Please choose a different slug.', 10);
-			return FALSE;
+			return false;
 		}
 
 		return $edition_obj->create($edition);
@@ -526,7 +526,7 @@ class ParserController
 		/*
 		 * If possible, modify the .htaccess file, to store permanently the edition ID.
 		 */
-		if (is_writable(WEB_ROOT . '/.htaccess') == TRUE)
+		if (is_writable(WEB_ROOT . '/.htaccess') == true)
 		{
 
 			$htaccess = file_get_contents(WEB_ROOT . '/.htaccess');
@@ -535,7 +535,7 @@ class ParserController
 			 * If there isn't already an edition ID in .htaccess, then write a new record.
 			 * Otherwise, update the existing record.
 			 */
-			if (strpos($htaccess, ' EDITION_ID ') === FALSE)
+			if (strpos($htaccess, ' EDITION_ID ') === false)
 			{
 				$htaccess .= PHP_EOL . PHP_EOL . 'SetEnv EDITION_ID ' . $edition_id . PHP_EOL;
 			}
@@ -591,7 +591,7 @@ class ParserController
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute();
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
 				$this->logger->message('Error in SQL: ' . $sql, 10);
 				die();
@@ -614,7 +614,7 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -647,7 +647,7 @@ class ParserController
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
 				$this->logger->message('Error in SQL: ' . $sql, 10);
 				die();
@@ -656,7 +656,7 @@ class ParserController
 			$this->logger->message('Deleted ' . $table, 5);
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -676,7 +676,7 @@ class ParserController
 
 		$this->logger->message('Pruned view records greater than one year old', 5);
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -742,7 +742,7 @@ class ParserController
 			while ($section = $parser->iterate())
 			{
 				$parser->section = $section;
-				if ($parser->parse() === TRUE)
+				if ($parser->parse() === true)
 				{
 					$this->db->beginTransaction();
 					try
@@ -787,7 +787,7 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		if ($result !== false && $statement->rowCount() > 0)
 		{
 
 			/*
@@ -812,7 +812,7 @@ class ParserController
 				$parser->history = $law->history;
 				$history = $parser->extract_history();
 
-				if ($history !== FALSE)
+				if ($history !== false)
 				{
 
 					/*
@@ -922,12 +922,12 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result == FALSE)
+		if ($result == false)
 		{
 			$this->logger->message('Could not map the structure of the laws', 10);
 		}
 
-		if ($result == FALSE)
+		if ($result == false)
 		{
 			$this->logger->message('Could not map the structure of the laws', 10);
 		}
@@ -935,7 +935,7 @@ class ParserController
 			$this->logger->message('Mapped the structure of the laws', 5);
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -958,7 +958,7 @@ class ParserController
 			$this->clear_court_decisions();
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	public function clear_court_decisions() {
@@ -1036,7 +1036,7 @@ class ParserController
 			$api->form = new stdClass();
 			$api->form->email = EMAIL_ADDRESS;
 			$api->form->url = 'http://' . ($_SERVER['SERVER_NAME'] ?? 'localhost') . '/';
-			$api->suppress_activation_email = TRUE;
+			$api->suppress_activation_email = true;
 			$api->register_key();
 			$api->activate_key();
 
@@ -1065,7 +1065,7 @@ class ParserController
 
 			}
 
-			return TRUE;
+			return true;
 
 		}
 
@@ -1088,12 +1088,12 @@ class ParserController
 			 * overwrite the key already listed in config.inc.php, so the safe thing to do is to
 			 * report the new key to the user, and let her sort it out.
 			 */
-			if ($registered === FALSE)
+			if ($registered === false)
 			{
 
 				$api->form->email = EMAIL_ADDRESS;
 				$api->form->url = 'http://' . $_SERVER['SERVER_NAME'] . '/';
-				$api->suppress_activation_email = TRUE;
+				$api->suppress_activation_email = true;
 				$api->register_key();
 				$api->activate_key();
 
@@ -1101,7 +1101,7 @@ class ParserController
 					. 'in the database; a new key (' . $api->key . ') has been registered, but you '
 					. 'must add it to config.inc.php manually.', 5);
 
-				return TRUE;
+				return true;
 
 			}
 
@@ -1140,7 +1140,7 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		if ($result !== false && $statement->rowCount() > 0)
 		{
 			$this->export_count = (int) $statement->fetchColumn();
 		}
@@ -1170,7 +1170,7 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		if ($result !== false && $statement->rowCount() > 0)
 		{
 
 			/*
@@ -1178,7 +1178,7 @@ class ParserController
 			 */
 			$dictionary = $statement->fetchAll(PDO::FETCH_OBJ);
 
-			if($dictionary !== FALSE)
+			if($dictionary !== false)
 			{
 				$this->events->trigger('exportDictionary', $dictionary, $this->downloads_dir);
 				$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
@@ -1234,7 +1234,7 @@ class ParserController
 		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 		$structure_result = $structure_statement->execute($structure_args);
 
-		if ($structure_result === FALSE)
+		if ($structure_result === false)
 		{
 			echo '<p>' . $structure_sql . '</p>';
 			echo '<p>' . $structure_result->getMessage() . '</p>';
@@ -1254,7 +1254,7 @@ class ParserController
 			/*
 			 * Now we can use our data to build the child law identifiers
 			 */
-			if (INCLUDES_REPEALED !== TRUE)
+			if (INCLUDES_REPEALED !== true)
 			{
 				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
 								FROM laws
@@ -1284,7 +1284,7 @@ class ParserController
 
 			$laws = array();
 
-			if ($laws_result !== FALSE && $laws_statement->rowCount() > 0)
+			if ($laws_result !== false && $laws_statement->rowCount() > 0)
 			{
 				/*
 				 * Iterate through every section number, to pass to the Laws class.
@@ -1300,14 +1300,14 @@ class ParserController
 					 * Instruct the Law class on what, specifically, it should retrieve.
 					 */
 					$law_object->config = new stdClass();
-					$law_object->config->get_text = TRUE;
-					$law_object->config->get_structure = TRUE;
-					$law_object->config->get_amendment_attempts = FALSE;
-					$law_object->config->get_court_decisions = TRUE;
-					$law_object->config->get_metadata = TRUE;
-					$law_object->config->get_references = TRUE;
-					$law_object->config->get_related_laws = TRUE;
-					$law_object->config->render_html = TRUE;
+					$law_object->config->get_text = true;
+					$law_object->config->get_structure = true;
+					$law_object->config->get_amendment_attempts = false;
+					$law_object->config->get_court_decisions = false;
+					$law_object->config->get_metadata = true;
+					$law_object->config->get_references = true;
+					$law_object->config->get_related_laws = true;
+					$law_object->config->render_html = true;
 
 					/*
 					 * Pass the requested section number to Law.
@@ -1322,7 +1322,7 @@ class ParserController
 					 */
 					$law = $law_object->get_law();
 
-					if ($law !== FALSE && is_object($law))
+					if ($law !== false && is_object($law))
 					{
 						$law->edition = $this->edition;
 					} // end the $law exists condition
@@ -1432,7 +1432,7 @@ class ParserController
 		if (!is_writable($sitemap_file))
 		{
 			$this->logger->message('Do not have permissions to write to sitemap.xml', 3);
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -1451,10 +1451,10 @@ class ParserController
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
 			$this->logger->message('No laws could be found to export to sitemap.xml', 3);
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -1480,15 +1480,15 @@ class ParserController
 			{
 				$laws->config = new stdClass();
 			}
-			$laws->config->get_all = FALSE;
-			$laws->config->get_text = FALSE;
-			$laws->config->get_structure = FALSE;
-			$laws->config->get_amendment_attempts = FALSE;
-			$laws->config->get_court_decisions = FALSE;
-			$laws->config->get_metadata = FALSE;
-			$laws->config->get_references = FALSE;
-			$laws->config->get_related_laws = FALSE;
-			$laws->config->render_html = FALSE;
+			$laws->config->get_all = false;
+			$laws->config->get_text = false;
+			$laws->config->get_structure = false;
+			$laws->config->get_amendment_attempts = false;
+			$laws->config->get_court_decisions = false;
+			$laws->config->get_metadata = false;
+			$laws->config->get_references = false;
+			$laws->config->get_related_laws = false;
+			$laws->config->render_html = false;
 
 			/*
 			 * Get the law in question.
@@ -1512,7 +1512,7 @@ class ParserController
 
 		$this->logger->message('Created sitemap.xml', 3);
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -1677,11 +1677,11 @@ class ParserController
 		 * Store the tallies.
 		 */
 		$this->stats[$this->structure_id] = new stdClass();
-		if ($child_structures !== FALSE)
+		if ($child_structures !== false)
 		{
 			$this->stats[$this->structure_id]->child_structures = count((array) $child_structures);
 		}
-		if ($child_laws !== FALSE)
+		if ($child_laws !== false)
 		{
 			$this->stats[$this->structure_id]->child_laws = count((array) $child_laws);
 		}
@@ -1730,7 +1730,7 @@ class ParserController
 		if (!defined('PDO::ATTR_DRIVER_NAME'))
 		{
 			$this->logger->message('PHP Data Objects (PDO) must be enabled', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		/*
@@ -1739,7 +1739,7 @@ class ParserController
 		if (!in_array('mysql', PDO::getAvailableDrivers()))
 		{
 			$this->logger->message('PHP Data Objects (PDO) must have a MySQL driver enabled', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		/*
@@ -1749,20 +1749,20 @@ class ParserController
 		$err = $this->db->errorInfo();
 		if ($err[0] !== '00000' && $err[0] !== '01000') {
 				$this->logger->message('MySQL user does not have permission to create views.', 10);
-				$error = TRUE;
+				$error = true;
 		}
 
 		$this->db->exec('DROP VIEW sd_test_view');
 		$err = $this->db->errorInfo();
 		if ($err[0] !== '00000' && $err[0] !== '01000') {
 				$this->logger->message('MySQL user does not have permission to drop views.', 10);
-				$error = TRUE;
+				$error = true;
 		}
 
 		/*
 		 * Make sure that HTML Tidy is available within PHP or, failing that, at the command line.
 		 */
-		if (class_exists('tidy', FALSE) == FALSE)
+		if (class_exists('tidy', false) == false)
 		{
 
 			/*
@@ -1772,7 +1772,7 @@ class ParserController
 			if ($status != 0)
 			{
 				$this->logger->message('HTML Tidy must be installed', 10);
-				$error = TRUE;
+				$error = true;
 			}
 
 		}
@@ -1780,10 +1780,10 @@ class ParserController
 		/*
 		 * Make sure that php-xml is installed.
 		 */
-		if (extension_loaded('xml') == FALSE)
+		if (extension_loaded('xml') == false)
 		{
 			$this->logger->message('PHP’s XML extension must be installed and enabled', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		/*
@@ -1793,44 +1793,44 @@ class ParserController
 		if ($status != 0)
 		{
 			$this->logger->message('zip must be installed', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		/*
 		 * Make sure that the configuration file is writable.
 		 */
-		if (is_writable(INCLUDE_PATH . '/config.inc.php') !== TRUE)
+		if (is_writable(INCLUDE_PATH . '/config.inc.php') !== true)
 		{
 			$this->logger->message('config.inc.php must be writable by the server', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		/*
 		 * Make sure that sitemap.xml is writable.
 		 */
-		if (is_writable(WEB_ROOT . '/sitemap.xml') !== TRUE)
+		if (is_writable(WEB_ROOT . '/sitemap.xml') !== true)
 		{
 			$this->logger->message('sitemap.xml must be writable by the server', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		/*
 		 * Make sure that .htaccess is writable.
 		 */
-		if (is_writable(WEB_ROOT . '/.htaccess') !== TRUE)
+		if (is_writable(WEB_ROOT . '/.htaccess') !== true)
 		{
 			$this->logger->message('.htaccess must be writable by the server', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		/*
 		 * If the Downloads directory exists, make sure that it's writable.
 		 */
-		if (is_writable(WEB_ROOT . '/downloads') !== TRUE)
+		if (is_writable(WEB_ROOT . '/downloads') !== true)
 		{
 			$this->logger->message('The downloads directory (' . WEB_ROOT . '/downloads/'
 				. ') must be writable by the server', 10);
-			$error = TRUE;
+			$error = true;
 		}
 
 		if(defined('SOLR_URL'))
@@ -1848,16 +1848,16 @@ class ParserController
 			catch(\Exception $e)
 			{
 				$this->logger->message('Solr must be installed, configured in config.inc.php, and running', 10);
-				$error = TRUE;
+				$error = true;
 			}
 		}
 
 		if (isset($error))
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -1901,7 +1901,7 @@ class ParserController
 
 			$search_index = new SearchIndex(
 				array(
-					'config' => json_decode(SEARCH_CONFIG, TRUE)
+					'config' => json_decode(SEARCH_CONFIG, true)
 				)
 			);
 
@@ -1919,7 +1919,7 @@ class ParserController
 				{
 					$document->config = new stdClass();
 				}
-				$document->config->get_all = TRUE;
+				$document->config->get_all = true;
 				$document->get_law();
 				// Bring over our edition info.
 				$document->edition = $this->edition;
@@ -1931,7 +1931,7 @@ class ParserController
 				catch (Exception $error)
 				{
 					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
-					return FALSE;
+					return false;
 				}
 			}
 
@@ -1956,7 +1956,7 @@ class ParserController
 				catch (Exception $error)
 				{
 					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
-					return FALSE;
+					return false;
 				}
 			}
 
@@ -1966,7 +1966,7 @@ class ParserController
 
 			$this->logger->message('Laws were indexed', 5);
 
-			return TRUE;
+			return true;
 
 		}
 
@@ -1978,7 +1978,7 @@ class ParserController
 		{
 			$search_index = new SearchIndex(
 				array(
-					'config' => json_decode(SEARCH_CONFIG, TRUE)
+					'config' => json_decode(SEARCH_CONFIG, true)
 				)
 			);
 			if($search_index->delete($edition_id)) {
@@ -1995,7 +1995,7 @@ class ParserController
 			}
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -2017,8 +2017,8 @@ class ParserController
 		$url = $solr_update_url . '?' . http_build_query($solr_parameters);
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		if($multipart)
 		{
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form; charset=US-ASCII') );
@@ -2028,7 +2028,7 @@ class ParserController
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml; charset=US-ASCII') );
 		}
 
-		curl_setopt($ch, CURLOPT_POST, TRUE);
+		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 
 		/*
@@ -2043,31 +2043,31 @@ class ParserController
 		{
 			$this->logger->message('The attempt to post files to Solr via cURL returned an '
 				. 'error code, ' . curl_errno($ch) . ', from cURL—could not index laws', 10);
-			return FALSE;
+			return false;
 		}
 
-		if ( (FALSE === $response_json) || !is_string($response_json) )
+		if ( (false === $response_json) || !is_string($response_json) )
 		{
 			$this->logger->message('Could not connect to Solr', 10);
-			return FALSE;
+			return false;
 		}
 
 		$response = json_decode($response_json);
 
-		if ( ($response === FALSE) || empty($response) )
+		if ( ($response === false) || empty($response) )
 		{
 			$this->logger->message('Solr returned invalid JSON', 8);
-			return FALSE;
+			return false;
 		}
 
 		if (isset($response->error))
 		{
 			$this->logger->message('Solr returned the following unexpected error: '
 				. print_r($response, true),  8);
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	public function update_laws_references()

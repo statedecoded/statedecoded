@@ -42,7 +42,7 @@ class SolrSearchResults implements SearchResultsInterface
 		/*
 		 * If we know something is misspelled.
 		 */
-		if ($this->spelling && $this->spelling->getCorrectlySpelled() === FALSE)
+		if ($this->spelling && $this->spelling->getCorrectlySpelled() === false)
 		{
 			/*
 			 * Step through each term that appears to be misspelled, and create a modified query string.
@@ -64,7 +64,7 @@ class SolrSearchResults implements SearchResultsInterface
 
 			if($clean_spelling === $this->query['q'])
 			{
-				return FALSE;
+				return false;
 			}
 			else
 			{
@@ -73,7 +73,7 @@ class SolrSearchResults implements SearchResultsInterface
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 

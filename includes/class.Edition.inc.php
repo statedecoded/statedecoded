@@ -45,9 +45,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -66,9 +66,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -87,9 +87,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -107,9 +107,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -126,9 +126,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -147,7 +147,7 @@ class Edition
 		$result = $statement->execute();
 
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
 			$count = 0;
 		}
@@ -158,7 +158,7 @@ class Edition
 		return $count;
 	}
 
-	public function update_last_import($edition_id, $datetime = FALSE)
+	public function update_last_import($edition_id, $datetime = false)
 	{
 		$sql = 'UPDATE editions
 				SET last_import = :last_import
@@ -207,13 +207,13 @@ class Edition
 		);
 		$result = $statement->execute($sql_args);
 
-		if ($result !== FALSE)
+		if ($result !== false)
 		{
 			return $this->db->lastInsertId();
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -228,7 +228,7 @@ class Edition
 		return $result;
 	}
 
-	public function unset_current($exception = FALSE)
+	public function unset_current($exception = false)
 	{
 		$sql = 'UPDATE editions
 				SET current = :current';
@@ -271,7 +271,7 @@ class Edition
 				ORDER BY order_by';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		if ($result !== false && $statement->rowCount() > 0)
 		{
 			$edition_row = $statement->fetch(PDO::FETCH_ASSOC);
 			return (int) $edition_row['order_by'];

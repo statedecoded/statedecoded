@@ -155,9 +155,9 @@ class ExportUSLM extends Export
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $law->structure_id;
 		$dictionary->section_id = $law->section_id;
-		$terms = FALSE;
+		$terms = false;
 		$tmp = $dictionary->term_list();
-		if ($tmp !== FALSE)
+		if ($tmp !== false)
 		{
 			$terms = (array) $tmp;
 			unset($tmp);
@@ -166,7 +166,7 @@ class ExportUSLM extends Export
 		/*
 		 * If we've gotten a list of dictionary terms.
 		 */
-		if ( ($terms !== FALSE) && is_array($terms) )
+		if ( ($terms !== false) && is_array($terms) )
 		{
 			/*
 			 * Arrange our terms from longest to shortest. This is to ensure that the most specific
@@ -195,7 +195,7 @@ class ExportUSLM extends Export
 					if ( ctype_upper($term[$i]) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
-						$caps = TRUE;
+						$caps = true;
 						break;
 					}
 				}
@@ -225,7 +225,7 @@ class ExportUSLM extends Export
 		 * autoload a file fitting our class-name schema, since this class, if it exists, would be
 		 * found within class.[State].inc.php.
 		 */
-		if (class_exists('State_Autolinker', FALSE) === TRUE)
+		if (class_exists('State_Autolinker', false) === true)
 		{
 			$autolinker = new State_Autolinker;
 		}

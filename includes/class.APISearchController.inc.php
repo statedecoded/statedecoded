@@ -36,7 +36,7 @@ class APISearchController extends BaseAPIController
 		 */
 		if (!isset($_GET['detailed']) || empty($_GET['detailed']))
 		{
-			$detailed = FALSE;
+			$detailed = false;
 		}
 		else
 		{
@@ -44,15 +44,15 @@ class APISearchController extends BaseAPIController
 			$detailed = filter_var($_GET['detailed'], FILTER_DEFAULT);
 			if ($detailed == "true")
 			{
-				$detailed = TRUE;
+				$detailed = true;
 			}
 			elseif ($detailed != "false")
 			{
-				$detailed = FALSE;
+				$detailed = false;
 			}
 			else
 			{
-				$detailed = FALSE;
+				$detailed = false;
 			}
 
 		}
@@ -127,7 +127,7 @@ class APISearchController extends BaseAPIController
 			 * Attempt to display a snippet of the indexed law.
 			 */
 			$snippet = $highlighted->getResult($document->id);
-			if ($snippet != FALSE)
+			if ($snippet != false)
 			{
 
 				if (!isset($response->results->{$i}))
@@ -161,7 +161,7 @@ class APISearchController extends BaseAPIController
 			/*
 			 * At the default level of verbosity, just give the data indexed by Solr, plus the URL.
 			 */
-			if ($detailed === FALSE)
+			if ($detailed === false)
 			{
 
 				/*

@@ -303,10 +303,10 @@ abstract class AmericanLegalParser
 			/*
 			 * If we can't convert to XML, try cleaning the data first.
 			 */
-			if (class_exists('tidy', FALSE))
+			if (class_exists('tidy', false))
 			{
 
-				$tidy_config = array('input-xml' => TRUE);
+				$tidy_config = array('input-xml' => true);
 				$tidy = new tidy();
 				$tidy->parseString($xml, $tidy_config, 'utf8');
 				$tidy->cleanRepair();
@@ -340,7 +340,7 @@ abstract class AmericanLegalParser
 		 */
 		if (!isset($this->chapter))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -427,7 +427,7 @@ abstract class AmericanLegalParser
 				 */
 				else
 				{
-					$structure = FALSE;
+					$structure = false;
 					$title = (string) $level->RECORD->HEADING;
 
 					$this->logger->message('STRUCTURE "' . $title . '"', 2);
@@ -572,7 +572,7 @@ abstract class AmericanLegalParser
 
 		}
 
-		$this->logger->message('Structure Data: ' . print_r($structure, TRUE), 1);
+		$this->logger->message('Structure Data: ' . print_r($structure, true), 1);
 
 		$structure = $this->post_parse_structure($level, $structure);
 
@@ -597,7 +597,7 @@ abstract class AmericanLegalParser
 		 */
 
 		$structure_name = $this->clean_title((string) $level->RECORD->HEADING);
-		$structure = FALSE;
+		$structure = false;
 
 		if(preg_match($this->structure_regex, $structure_name, $chapter_parts))
 		{
@@ -666,16 +666,16 @@ abstract class AmericanLegalParser
 		}
 		else
 		{
-			$this->logger->error('ERROR Section without structure found: '. print_r($section, TRUE), 10);
-			return FALSE;
+			$this->logger->error('ERROR Section without structure found: '. print_r($section, true), 10);
+			return false;
 		}
 
 		$section_parts = $this->get_section_parts($section);
 
 		if($section_parts === false)
 		{
-			$this->logger->message('Invalid section: ' . print_r($code, TRUE), 2);
-			return FALSE;
+			$this->logger->message('Invalid section: ' . print_r($code, true), 2);
+			return false;
 		}
 
 		if(!isset($section_parts['number']) || !isset($section_parts['catch_line']))
@@ -787,14 +787,14 @@ abstract class AmericanLegalParser
 		{
 			$this->section_count++;
 
-			$this->logger->message('Section Data: ' . print_r($code, TRUE), 1);
+			$this->logger->message('Section Data: ' . print_r($code, true), 1);
 
 			return $code;
 		}
 		else
 		{
-			$this->logger->message('Invalid section: ' . print_r($code, TRUE), 2);
-			return FALSE;
+			$this->logger->message('Invalid section: ' . print_r($code, true), 2);
+			return false;
 		}
 	}
 
@@ -1016,13 +1016,13 @@ abstract class AmericanLegalParser
 	{
 		foreach($this->image_blacklist as $blacklisted)
 		{
-			if(strpos($image['name'], $blacklisted) !== FALSE)
+			if(strpos($image['name'], $blacklisted) !== false)
 			{
-				return FALSE;
+				return false;
 			}
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -1255,7 +1255,7 @@ abstract class AmericanLegalParser
 			/*
 			 * Now we can use our data to build the child law identifiers
 			 */
-			if (INCLUDES_REPEALED !== TRUE)
+			if (INCLUDES_REPEALED !== true)
 			{
 				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
 								FROM laws
@@ -1291,7 +1291,7 @@ abstract class AmericanLegalParser
 				 */
 				$preferred = 1;
 
-				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === FALSE)
+				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === false)
 				{
 					/*
 					 * Current-and-short is the most-preferred (shortest) url.
@@ -1420,7 +1420,7 @@ abstract class AmericanLegalParser
 		}
 		else
 		{
-			$this->logger->error('ERROR Section without structure found: '. print_r($this->code, TRUE), 10);
+			$this->logger->error('ERROR Section without structure found: '. print_r($this->code, true), 10);
 		}
 
 		/*
@@ -1483,12 +1483,12 @@ abstract class AmericanLegalParser
 		);
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
-		if ( ($sections !== FALSE) && (count($sections) > 0) )
+		if ( ($sections !== false) && (count($sections) > 0) )
 		{
 			$references->section_id = $law_id;
 			$references->sections = $sections;
 			$success = $references->store_references();
-			if ($success === FALSE)
+			if ($success === false)
 			{
 				echo '<p>References for section ID '.$law_id.' were found, but could not be
 					stored.</p>';
@@ -1521,7 +1521,7 @@ abstract class AmericanLegalParser
 				);
 				$result = $statement->execute($sql_args);
 
-				if ($result === FALSE)
+				if ($result === false)
 				{
 					echo '<p>Failure: '.$sql.'</p>';
 				}
@@ -1551,9 +1551,9 @@ abstract class AmericanLegalParser
 				);
 				$result = $statement->execute($sql_args);
 
-				if ($result === FALSE)
+				if ($result === false)
 				{
-					$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
+					$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, true), 10);
 				}
 			}
 		}
@@ -1597,7 +1597,7 @@ abstract class AmericanLegalParser
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
 				echo '<p>Failure: '.$sql.'</p>';
 			}
@@ -1637,7 +1637,7 @@ abstract class AmericanLegalParser
 					$statement = $this->db->prepare($sql);
 					$result = $statement->execute($sql_args);
 
-					if ($result === FALSE)
+					if ($result === false)
 					{
 						echo '<p>Failure: ' . $sql . '</p>';
 					}
@@ -1704,7 +1704,7 @@ abstract class AmericanLegalParser
 		/*
 		 * If any definitions were found in this text, store them.
 		 */
-		if ($definitions !== FALSE)
+		if ($definitions !== false)
 		{
 
 			/*
@@ -1738,7 +1738,7 @@ abstract class AmericanLegalParser
 				if($dictionary->structure_id)
 				{
 					$dictionary->structure_id = $find_scope->find_structure_parent();
-					if ($dictionary->structure_id == FALSE)
+					if ($dictionary->structure_id == false)
 					{
 						unset($dictionary->structure_id);
 					}
@@ -1797,7 +1797,7 @@ abstract class AmericanLegalParser
 
 		if (!isset($structure->identifier))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -1833,9 +1833,9 @@ abstract class AmericanLegalParser
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() === 0) )
+		if ( ($result === false) || ($statement->rowCount() === 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure = $statement->fetch(PDO::FETCH_OBJ);
@@ -1876,14 +1876,14 @@ abstract class AmericanLegalParser
 				( empty($structure->label) )
 			)
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
 		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
 		 */
 		$structure_id = $this->structure_exists($structure);
-		if ($structure_id !== FALSE)
+		if ($structure_id !== false)
 		{
 			$structure->id = $structure_id;
 			return $structure_id;
@@ -1926,10 +1926,10 @@ abstract class AmericanLegalParser
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
-			return FALSE;
+			$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, true), 10);
+			return false;
 		}
 
 		$structure->id = $this->db->lastInsertID();
@@ -1953,7 +1953,7 @@ abstract class AmericanLegalParser
 		 */
 		if ( !isset($this->structure_id) || !isset($this->label) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -1983,10 +1983,10 @@ abstract class AmericanLegalParser
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
-			if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+			if ( ($result === false) || ($statement->rowCount() == 0) )
 			{
-				$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, TRUE), 10);
-				return FALSE;
+				$this->logger->error('SQL ERROR: ' . $sql . ' ' . print_r($sql_args, true), 10);
+				return false;
 			}
 
 			/*
@@ -2008,7 +2008,7 @@ abstract class AmericanLegalParser
 			 */
 			elseif (empty($structure->parent_id))
 			{
-				return FALSE;
+				return false;
 			}
 
 			/*
@@ -2032,7 +2032,7 @@ abstract class AmericanLegalParser
 
 		if (!isset($text))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/* Measure whether there are more straight quotes or directional quotes in this passage
@@ -2054,7 +2054,7 @@ abstract class AmericanLegalParser
 		 * Break up this section into paragraphs. If HTML paragraph tags are present, break it up
 		 * with those. If they're not, break it up with carriage returns.
 		 */
-		if (strpos($text, '<p>') !== FALSE)
+		if (strpos($text, '<p>') !== false)
 		{
 			$paragraphs = explode('<p>', $text);
 		}
@@ -2120,7 +2120,7 @@ abstract class AmericanLegalParser
 					/*
 					 * The term was found.
 					 */
-					if ($pos !== FALSE)
+					if ($pos !== false)
 					{
 
 						/*
@@ -2137,7 +2137,7 @@ abstract class AmericanLegalParser
 						foreach ($structure_labels as $structure_label)
 						{
 
-							if (stripos($phrase, $structure_label) !== FALSE)
+							if (stripos($phrase, $structure_label) !== false)
 							{
 
 								/*
@@ -2178,7 +2178,7 @@ abstract class AmericanLegalParser
 			 * All defined terms are surrounded by quotation marks, so let's use that as a criteria
 			 * to round down our candidate paragraphs.
 			 */
-			if (strpos($paragraph, $quote_sample) !== FALSE)
+			if (strpos($paragraph, $quote_sample) !== false)
 			{
 
 				/*
@@ -2189,7 +2189,7 @@ abstract class AmericanLegalParser
 				foreach ($this->linking_phrases as $linking_phrase)
 				{
 
-					if (strpos($paragraph, $linking_phrase) !== FALSE)
+					if (strpos($paragraph, $linking_phrase) !== false)
 					{
 
 						/*
@@ -2202,7 +2202,7 @@ abstract class AmericanLegalParser
 						/*
 						 * If we've made any matches.
 						 */
-						if ( ($terms !== FALSE) && (count($terms) > 0) )
+						if ( ($terms !== false) && (count($terms) > 0) )
 						{
 
 							/*
@@ -2353,7 +2353,7 @@ abstract class AmericanLegalParser
 
 		if (count($definitions) == 0)
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2383,7 +2383,7 @@ abstract class AmericanLegalParser
 
 		if ( !isset($this->terms) || !isset($this->law_id) || !isset($this->scope) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2408,7 +2408,7 @@ abstract class AmericanLegalParser
 				:structure_id, now(), :edition_id)';
 		$statement = $this->db->prepare($sql);
 
-		$result = FALSE;
+		$result = false;
 		foreach ($this->terms as $term => $definition)
 		{
 
@@ -2434,13 +2434,13 @@ abstract class AmericanLegalParser
 	public function query($sql)
 	{
 		$result = $this->db->exec($sql);
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			return $this->db->errorInfo();
 		}
 		else
 		{
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -2455,7 +2455,7 @@ abstract class AmericanLegalParser
 		 */
 		if (!isset($this->text))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2514,7 +2514,7 @@ abstract class AmericanLegalParser
 		 */
 		if ( (!isset($this->sections)) || (!isset($this->section_id)) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2538,14 +2538,14 @@ abstract class AmericanLegalParser
 
 			$result = $statement->execute($sql_args);
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
 				echo '<p>Failed: '.$sql.'</p>';
-				return FALSE;
+				return false;
 			}
 		}
 
-		return TRUE;
+		return true;
 
 	} // end store_references()
 
@@ -2561,7 +2561,7 @@ abstract class AmericanLegalParser
 		 */
 		if (!isset($this->history))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2583,7 +2583,7 @@ abstract class AmericanLegalParser
 			 * First check for single matches.
 			 */
 			$result = preg_match($pcre, $update, $matches);
-			if ( ($result !== FALSE) && ($result !== 0) )
+			if ( ($result !== false) && ($result !== 0) )
 			{
 
 				if (!empty($matches[1]))
@@ -2597,7 +2597,7 @@ abstract class AmericanLegalParser
 				if (!empty($matches[3]))
 				{
 					$result = preg_match(SECTION_REGEX, $update, $matches[3]);
-					if ( ($result !== FALSE) && ($result !== 0) )
+					if ( ($result !== false) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}
@@ -2617,7 +2617,7 @@ abstract class AmericanLegalParser
 				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
 				$result = preg_match_all($pcre, $update, $matches);
 
-				if ( ($result !== FALSE) && ($result !== 0) )
+				if ( ($result !== false) && ($result !== 0) )
 				{
 
 					/*
@@ -2659,7 +2659,7 @@ abstract class AmericanLegalParser
 					 * Locate any section identifier.
 					 */
 					$result = preg_match(SECTION_REGEX, $update, $matches);
-					if ( ($result !== FALSE) && ($result !== 0) )
+					if ( ($result !== false) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}
@@ -2692,10 +2692,10 @@ abstract class AmericanLegalParser
 
 		$structure_labels = array();
 
-		if ( ($result === FALSE) )
+		if ( ($result === false) )
 		{
 			$this->logger->error('SQL ERROR: ' . $sql, 10);
-			return FALSE;
+			return false;
 		}
 		else
 		{

@@ -41,9 +41,9 @@ class MigrateAction extends CliAction
 	public function checkSetup()
 	{
 		$statement = $this->db->query('SHOW TABLES LIKE "migrations"');
-		if($statement !== FALSE && $statement->rowCount() > 0)
+		if($statement !== false && $statement->rowCount() > 0)
 		{
-			return TRUE;
+			return true;
 		}
 		else
 		{
@@ -68,7 +68,7 @@ class MigrateAction extends CliAction
 
 		$this->db->exec($query);
 
-		return TRUE;
+		return true;
 	}
 
 	public function doMigrations($args = array())
@@ -174,7 +174,7 @@ class MigrateAction extends CliAction
 		 */
 		if(isset($this->options['verbose']))
 		{
-			$migration->verbose = TRUE;
+			$migration->verbose = true;
 		}
 
 		try

@@ -39,7 +39,7 @@ class SearchIndex
 
 		if(!isset($this->config) && defined('SEARCH_CONFIG'))
 		{
-			$this->config = json_decode(SEARCH_CONFIG, TRUE);
+			$this->config = json_decode(SEARCH_CONFIG, true);
 			$args['config'] = $this->config;
 		}
 

@@ -19,7 +19,7 @@
 /*
  * Log parser output.
  */
-$logger_args = array('html' => TRUE);
+$logger_args = array('html' => true);
 if(defined('DEBUG_LEVEL'))
 {
 	$logger_args['level'] = DEBUG_LEVEL;
@@ -90,7 +90,7 @@ if (count($_POST) === 0)
 	}
 	elseif ($_GET['page'] == 'parse' )
 	{
-		$parser->logger->flush_buffer = FALSE;
+		$parser->logger->flush_buffer = false;
 
 		if(!$parser->check_db_populated())
 		{
@@ -163,11 +163,11 @@ elseif ($action == 'setup')
 		/*
 	 * Step through each parser method.
 	 */
-	if ($parser->test_environment() !== FALSE)
+	if ($parser->test_environment() !== false)
 	{
 		$body = '<p>Environment test succeeded</p>';
 
-		if ($parser->populate_db() !== FALSE)
+		if ($parser->populate_db() !== false)
 		{
 			$body .= '<p>Database successfully setup.</p>';
 
@@ -251,12 +251,12 @@ elseif ($action == 'parse')
 	/*
 	 * Step through each parser method.
 	 */
-	if ($parser->test_environment() !== FALSE)
+	if ($parser->test_environment() !== false)
 	{
 
 		echo 'Environment test succeeded<br />';
 
-		if ($parser->populate_db() !== FALSE)
+		if ($parser->populate_db() !== false)
 		{
 
 			$edition_errors = $parser->handle_editions($_POST);
@@ -385,7 +385,7 @@ elseif ($action == 'test_environment')
 
 	echo 'Done. ';
 
-	if ($result === TRUE)
+	if ($result === true)
 	{
 		echo 'No errors detected.<br/>';
 	}
@@ -457,7 +457,7 @@ function show_admin_forms($args = array())
 		$editions = $edition->all();
 	}
 	catch(Exception $exception) {
-		$editions = FALSE;
+		$editions = false;
 	}
 
 	$server_port = $_SERVER['SERVER_PORT'] ?? 80;
@@ -532,7 +532,7 @@ function show_admin_forms($args = array())
 				<input type="radio" class="radio" name="edition_option"
 					id="edition_option_existing" value="existing"';
 
-	if ( !isset($editions) || ($editions === FALSE) )
+	if ( !isset($editions) || ($editions === false) )
 	{
 		$body .= 'disabled="disabled"';
 	}
@@ -543,7 +543,7 @@ function show_admin_forms($args = array())
 
 	$body .= '/><label for="edition_option_existing">I want to update an existing edition of the laws.</label>';
 
-	if ($editions !== FALSE)
+	if ($editions !== false)
 	{
 
 		$body .= '<div class="suboption">
@@ -598,7 +598,7 @@ function show_admin_forms($args = array())
 		</p>';
 
 
-	if ($editions !== FALSE)
+	if ($editions !== false)
 	{
 
 		$body .= '<div class="suboption">

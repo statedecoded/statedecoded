@@ -126,7 +126,7 @@ define('CURRENT_API_VERSION', '1.0');
  * Does this state's code include laws that have been repealed formally, and that are marked as
  * such?
  */
-define('INCLUDES_REPEALED', TRUE);
+define('INCLUDES_REPEALED', true);
 
 /*
  * Should we use short URLs or long URLs for laws? Short URLs are the default (e.g.,
@@ -134,7 +134,7 @@ define('INCLUDES_REPEALED', TRUE);
  * use long URLs (e.g. <http://example.com/56/21/12.3-45:67/>), which are URLs that incorporate
  * the structures that contain each law.
  */
-define('LAW_LONG_URLS', FALSE);
+define('LAW_LONG_URLS', false);
 
 /*
  * The DSN to connect to MySQL.
@@ -195,14 +195,14 @@ define('EMAIL_NAME', SITE_TITLE);
  * slow down page rendering time, but it does require a certain amount of system resources and
  * storage.
  */
-define('RECORD_VIEWS', TRUE);
+define('RECORD_VIEWS', true);
 
 /*
  * When embedding definitions for legal terms, should the terms in The State Decoded's built-in
  * legal dictionary be included? If this is set to FALSE, only the terms defined within this legal
  * code will appear as defined terms.
  */
-define('USE_GENERIC_TERMS', TRUE);
+define('USE_GENERIC_TERMS', true);
 
 /*
  * Solr configuration.

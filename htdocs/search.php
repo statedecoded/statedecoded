@@ -19,7 +19,7 @@ global $db;
  */
 $client = new SearchIndex(
 	array(
-		'config' => json_decode(SEARCH_CONFIG, TRUE)
+		'config' => json_decode(SEARCH_CONFIG, true)
 	)
 );
 
@@ -131,7 +131,7 @@ if (!empty($_GET['q']))
 	 * If any portion of this search term appears to be misspelled, propose a properly spelled
 	 * version.
 	 */
-	if (isset($results) && $results->get_fixed_spelling() !== FALSE)
+	if (isset($results) && $results->get_fixed_spelling() !== false)
 	{
 
 		$body .= '<h1>Suggestions</h1>';
@@ -195,7 +195,7 @@ if (!empty($_GET['q']))
 
 				$url_string = $url->url;
 
-				if(strpos($url_string, '?') !== FALSE)
+				if(strpos($url_string, '?') !== false)
 				{
 					$url_string .= '&';
 				}
@@ -298,7 +298,7 @@ if (!empty($_GET['q']))
 
 				$url_string = $struct->permalink->url;
 
-				if(strpos($url_string, '?') !== FALSE)
+				if(strpos($url_string, '?') !== false)
 				{
 					$url_string .= '&';
 				}

@@ -16,7 +16,7 @@ abstract class DatabaseMigration
 	protected $db;
 
 	public $queries = array();
-	public $verbose = FALSE;
+	public $verbose = false;
 
 	public function __construct(&$db)
 	{
@@ -109,11 +109,11 @@ abstract class DatabaseMigration
 	 * structures!
 	 * http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html
 	 */
-	public function execute($use_transactions = TRUE)
+	public function execute($use_transactions = true)
 	{
 		if(empty($this->queries))
 		{
-			return TRUE;
+			return true;
 		}
 
 		if($use_transactions)
@@ -134,7 +134,7 @@ abstract class DatabaseMigration
 		try {
 			foreach($this->queries as $query)
 			{
-				if($this->db->exec($query) === FALSE)
+				if($this->db->exec($query) === false)
 				{
 					throw new Exception('Query failed: ' . $query);
 				}
@@ -160,7 +160,7 @@ abstract class DatabaseMigration
 				 */
 				throw $except;
 
-				return FALSE;
+				return false;
 			}
 
 		}
@@ -182,6 +182,6 @@ abstract class DatabaseMigration
 			}
 		}
 
-		return TRUE;
+		return true;
 	}
 }

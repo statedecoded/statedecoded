@@ -39,7 +39,7 @@ class Law
 		if (!isset($this->config) || !is_object($this->config) )
 		{
 			$this->config = new StdClass();
-			$this->config->get_all = TRUE;
+			$this->config->get_all = true;
 		}
 
 		$this->events = new EventManager();
@@ -56,7 +56,7 @@ class Law
 		 */
 		if (!isset($this->section_number) && !isset($this->law_id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -65,23 +65,23 @@ class Law
 		if (!isset($this->config) || !is_object($this->config) )
 		{
 			$this->config = new StdClass();
-			$this->config->get_all = TRUE;
+			$this->config->get_all = true;
 		}
 
 		/*
 		 * Define the level of detail that we want from this method. By default, we return
 		 * everything that we have for this law.
 		 */
-		if ( !isset($this->config) || ( (isset($this->config->get_all)) && ($this->config->get_all == TRUE) ) )
+		if ( !isset($this->config) || ( (isset($this->config->get_all)) && ($this->config->get_all == true) ) )
 		{
-			$this->config->get_text = TRUE;
-			$this->config->get_structure = TRUE;
-			$this->config->get_amendment_attempts = TRUE;
-			$this->config->get_court_decisions = TRUE;
-			$this->config->get_metadata = TRUE;
-			$this->config->get_references = TRUE;
-			$this->config->get_tags = TRUE;
-			$this->config->render_html = TRUE;
+			$this->config->get_text = true;
+			$this->config->get_structure = true;
+			$this->config->get_amendment_attempts = true;
+			$this->config->get_court_decisions = true;
+			$this->config->get_metadata = true;
+			$this->config->get_references = true;
+			$this->config->get_tags = true;
+			$this->config->render_html = true;
 		}
 
 		/*
@@ -155,9 +155,9 @@ class Law
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -181,7 +181,7 @@ class Law
 		/*
 		 * Now get the text for this law, subsection by subsection.
 		 */
-		if (($this->config->get_text ?? null) === TRUE)
+		if (($this->config->get_text ?? null) === true)
 		{
 
 			/*
@@ -215,9 +215,9 @@ class Law
 			 * If the query fails, return false -- we can't make a
 			 * match.
 			 */
-			if ( ($result === FALSE) )
+			if ( ($result === false) )
 			{
-				return FALSE;
+				return false;
 			}
 
 			/*
@@ -258,7 +258,7 @@ class Law
 		/*
 		 * Determine this law's structural position.
 		 */
-		if ($this->config->get_structure = TRUE)
+		if ($this->config->get_structure = true)
 		{
 
 			/*
@@ -277,7 +277,7 @@ class Law
 			 * Short of a parser error, there’s no reason why a law should not have an ancestry. In
 			 * case of this unlikely possibility, just erase the false element.
 			 */
-			if ($this->ancestry === FALSE)
+			if ($this->ancestry === false)
 			{
 				unset($this->ancestry);
 			}
@@ -293,7 +293,7 @@ class Law
 			 * through all of the contents of the chapter. (It's possible that there are no next or
 			 * prior sections, such as in a single-item structural unit.)
 			 */
-			if ($this->structure_contents !== FALSE)
+			if ($this->structure_contents !== false)
 			{
 				$tmp = count($this->structure_contents);
 				for ($i=0; $i<$tmp; $i++)
@@ -331,7 +331,7 @@ class Law
 		/*
 		 * Gather any tags applied to this law.
 		 */
-		if ( isset($this->config->get_tags) && ($this->config->get_tags == TRUE) )
+		if ( isset($this->config->get_tags) && ($this->config->get_tags == true) )
 		{
 			$sql = 'SELECT text
 					FROM tags
@@ -339,7 +339,7 @@ class Law
 
 			$result = $this->db->query($sql);
 
-			if ( $result !== FALSE && $result->rowCount() > 0 )
+			if ( $result !== false && $result->rowCount() > 0 )
 			{
 
 				$this->tags = new stdClass();
@@ -372,7 +372,7 @@ class Law
 
 			if (method_exists($state, 'get_amendment_attempts'))
 			{
-				if ($state->get_amendment_attempts() !== FALSE)
+				if ($state->get_amendment_attempts() !== false)
 				{
 					$this->amendment_attempts = $state->bills;
 				}
@@ -405,7 +405,7 @@ class Law
 			{
 				if (method_exists($state, 'get_court_decisions'))
 				{
-					if ($state->get_court_decisions() !== FALSE)
+					if ($state->get_court_decisions() !== false)
 					{
 						$this->court_decisions = $state->decisions;
 					}
@@ -415,7 +415,7 @@ class Law
 			/*
 			 * If we've cached the fact that there are no court decisions.
 			 */
-			if ( isset($this->court_decisions->{0}) && $this->court_decisions->{0} == FALSE )
+			if ( isset($this->court_decisions->{0}) && $this->court_decisions->{0} == false )
 			{
 				unset($this->court_decisions);
 			}
@@ -491,7 +491,7 @@ class Law
 		/*
 		 * If the request specifies that rendered HTML should be returned, then generate that.
 		 */
-		if ( isset($this->config->render_html) && ($this->config->render_html === TRUE) )
+		if ( isset($this->config->render_html) && ($this->config->render_html === true) )
 		{
 			$this->html = Law::render();
 		}
@@ -507,11 +507,11 @@ class Law
 		$this->plain_text =  str_repeat(' ', (round(((81 - strlen(LAWS_NAME)) / 2))))
 			. strtoupper(LAWS_NAME) . "\n\n"
 			. wordwrap(strtoupper($this->catch_line) . ' (' . SECTION_SYMBOL . ' '
-			. $this->section_number . ')', 80, "\n", TRUE)
+			. $this->section_number . ')', 80, "\n", true)
 			. "\n\n" . $this->plain_text;
 		if (!empty($this->history))
 		{
-			$this->plain_text .=  "\n" . wordwrap('HISTORY: ' . $this->history, 80, "\n", TRUE);
+			$this->plain_text .=  "\n" . wordwrap('HISTORY: ' . $this->history, 80, "\n", true);
 		}
 
 		/*
@@ -546,7 +546,7 @@ class Law
 		 */
 		if (!isset($this->section_id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -582,9 +582,9 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to
 		 * this one.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$permalink_obj = new Permalink(array('db' => $this->db));
@@ -632,9 +632,9 @@ class Law
 		/*
 		 * If configured not to record views, then quietly exit.
 		 */
-		if ( defined('RECORD_VIEWS') && (RECORD_VIEWS === FALSE) )
+		if ( defined('RECORD_VIEWS') && (RECORD_VIEWS === false) )
 		{
-			return TRUE;
+			return true;
 		}
 
 		/*
@@ -642,7 +642,7 @@ class Law
 		 */
 		if (!isset($this->section_number))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -668,12 +668,12 @@ class Law
 		/*
 		 * If the query fails, return false.
 		 */
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -688,7 +688,7 @@ class Law
 		 */
 		if (!isset($this->section_id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -707,9 +707,9 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -732,7 +732,7 @@ class Law
 			/*
 			 * If unserializing this value works, then we've got serialized data here.
 			 */
-			if (@unserialize($field->meta_value) !== FALSE)
+			if (@unserialize($field->meta_value) !== false)
 			{
 				$field->meta_value = unserialize($field->meta_value);
 			}
@@ -740,7 +740,7 @@ class Law
 			/*
 			 * If JSON decoding this value works, then we've got JSON data here.
 			 */
-			if (@json_decode($field->meta_value) !== FALSE)
+			if (@json_decode($field->meta_value) !== false)
 			{
 				$field->meta_value = json_decode($field->meta_value);
 			}
@@ -750,11 +750,11 @@ class Law
 			 */
 			if ($field->meta_value == 'y')
 			{
-				$field->meta_value = TRUE;
+				$field->meta_value = true;
 			}
 			elseif ($field->meta_value == 'n')
 			{
-				$field->meta_value = FALSE;
+				$field->meta_value = false;
 			}
 
 			$rotated->{$field->meta_key} = $field->meta_value;
@@ -786,7 +786,7 @@ class Law
 
 		if ( !isset($this->section_id) || !is_object($this->metadata) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		if(!isset($this->edition_id)) {
@@ -818,14 +818,14 @@ class Law
 			);
 			$result = $statement->execute($sql_args);
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
-				return FALSE;
+				return false;
 			}
 
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -873,9 +873,9 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -902,7 +902,7 @@ class Law
 		 */
 		if (!isset($this->section_number))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -934,12 +934,12 @@ class Law
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() < 1) )
+		if ( ($result === false) || ($statement->rowCount() < 1) )
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -964,7 +964,7 @@ class Law
 		/*
 		 * If we've gotten a list of dictionary terms.
 		 */
-		if ( ($terms !== FALSE) && is_array($terms) )
+		if ( ($terms !== false) && is_array($terms) )
 		{
 			/*
 			 * Arrange our terms from longest to shortest. This is to ensure that the most specific
@@ -993,7 +993,7 @@ class Law
 					if ( ctype_upper($term[$i]) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
-						$caps = TRUE;
+						$caps = true;
 						break;
 					}
 				}
@@ -1023,7 +1023,7 @@ class Law
 		 * autoload a file fitting our class-name schema, since this class, if it exists, would be
 		 * found within class.[State].inc.php.
 		 */
-		if (class_exists('State_Autolinker', FALSE) === TRUE)
+		if (class_exists('State_Autolinker', false) === true)
 		{
 			$autolinker = new State_Autolinker;
 		}
@@ -1211,10 +1211,10 @@ class Law
 
 
 	public function has_p_tag($text) {
-		if(strpos($text, '<p>') !== FALSE || strpos($text, '<p ') !== FALSE) {
-			return TRUE;
+		if(strpos($text, '<p>') !== false || strpos($text, '<p ') !== false) {
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -1225,7 +1225,7 @@ class Law
 
 		if (!isset($this->text))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -1296,7 +1296,7 @@ class Law
 			 * Wrap this text at 80 characters minus two spaces for every nested subsection,
 			 * breaking up words that exceed the line length.
 			 */
-			$subsection = wordwrap($subsection, (80 - (($paragraph->level - 1) * 2)), "\n", TRUE);
+			$subsection = wordwrap($subsection, (80 - (($paragraph->level - 1) * 2)), "\n", true);
 
 			/*
 			 * Indent applicable subsections by adding blank space to the beginning of each line.
@@ -1405,9 +1405,9 @@ class Law
 
 		$select_result = $select_statement->execute($sql_args);
 
-		if ($select_result === FALSE || $select_statement->rowCount() == 0)
+		if ($select_result === false || $select_statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{

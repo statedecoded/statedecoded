@@ -119,13 +119,13 @@ class TaskRunner
 				 * Split our key=value pairs.
 				 */
 				$value = preg_replace('/^-+/', '', $value);
-				if(strpos($value, '=') !== FALSE)
+				if(strpos($value, '=') !== false)
 				{
 					list($name, $val) = explode('=', $value, 2);
 				}
 				else {
 					$name = $value;
-					$val = TRUE;
+					$val = true;
 				}
 
 				/*

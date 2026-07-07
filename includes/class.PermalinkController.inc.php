@@ -24,7 +24,7 @@ class PermalinkController extends BaseController
 		{
 			$route = $this->find_route($args['route']);
 
-			if ($route !== FALSE)
+			if ($route !== false)
 			{
 				/*
 				 * Try to intelligently determine if there's a matching controller
@@ -33,7 +33,7 @@ class PermalinkController extends BaseController
 					'Controller';
 
 				try {
-					if (class_exists($object_name) !== FALSE)
+					if (class_exists($object_name) !== false)
 					{
 						$controller = new $object_name($this->local);
 
@@ -55,7 +55,7 @@ class PermalinkController extends BaseController
 
 	public function find_route($url)
 	{
-		$route = FALSE;
+		$route = false;
 
 		global $db;
 
@@ -74,7 +74,7 @@ class PermalinkController extends BaseController
 		/*
 		 * If we found a route
 		 */
-		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+		if ( ($result !== false) && ($statement->rowCount() > 0) )
 		{
 			if($statement->rowCount() > 1)
 			{

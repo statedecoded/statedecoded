@@ -90,9 +90,9 @@ class DatabaseStatement
 		}
 		catch(Exception $e)
 		{
-			if(strpos($e->getMessage(), 'Error while sending QUERY packet.') !== FALSE)
+			if(strpos($e->getMessage(), 'Error while sending QUERY packet.') !== false)
 			{
-				$result = FALSE;
+				$result = false;
 				$error = 'Database server has gone away';
 			}
 			else
@@ -102,7 +102,7 @@ class DatabaseStatement
 		}
 
 
-		if($result === FALSE)
+		if($result === false)
 		{
 			if($this->recoverError())
 			{
@@ -122,7 +122,7 @@ class DatabaseStatement
 		$disconnect_error = 'Database server has gone away';
 
 		$error_info = $this->errorInfo();
-		if ( !isset($error_info[0]) || (boolean) $error_info[0] === FALSE )
+		if ( !isset($error_info[0]) || (boolean) $error_info[0] === false )
 		{
 			$error_info = $this->database->errorInfo();
 		}
@@ -138,10 +138,10 @@ class DatabaseStatement
 			// Replace our old statement with a new one.
 			$this->pdo_statement = $statement->pdo_statement;
 
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	/*
@@ -190,7 +190,7 @@ class DatabaseStatement
 
 	public function formatErrors ( $errors = array() )
 	{
-		return print_r($errors, TRUE);
+		return print_r($errors, true);
 	}
 
 	public function fetch ( $fetch_style = PDO::FETCH_DEFAULT, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0 )

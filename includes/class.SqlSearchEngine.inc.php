@@ -75,17 +75,17 @@ class SqlSearchEngine extends SearchEngineInterface
 	 */
 	public function start_update()
 	{
-		return TRUE;
+		return true;
 	}
 
 	public function add_document($record)
 	{
-		return TRUE;
+		return true;
 	}
 
 	public function commit()
 	{
-		return TRUE;
+		return true;
 	}
 
 	public function debug()
@@ -190,7 +190,7 @@ class SqlSearchEngine extends SearchEngineInterface
 			 * This is weighted lower, but still first in the title, then in the
 			 * text.
 			 */
-			if($this->use_token_match && strpos($query['q'], ' ') !== FALSE)
+			if($this->use_token_match && strpos($query['q'], ' ') !== false)
 			{
 				// The function below handles quoted items.
 				$keywords = SqlSearchEngine::tokenize($query['q']);
@@ -360,7 +360,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	{
 		$buffer = '';
 		$keywords = array();
-		$quote_string = FALSE;
+		$quote_string = false;
 
 		for($i = 0; $i< strlen($string); $i++)
 		{
@@ -451,7 +451,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	// We don't have a real index, so we don't do anything on delete, successfully.
 	public function delete($edition_id)
 	{
-		return TRUE;
+		return true;
 	}
 
 }

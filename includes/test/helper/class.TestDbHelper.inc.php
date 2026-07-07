@@ -32,12 +32,12 @@ class TestDbHelper
 	 */
 	public function setupDb()
 	{
-		if ($this->parser->test_environment() === FALSE)
+		if ($this->parser->test_environment() === false)
 		{
 			return $this->assertTrue(false, 'There was an error testing the environment.');
 		}
 
-		if ($this->parser->populate_db() === FALSE)
+		if ($this->parser->populate_db() === false)
 		{
 			return $this->assertTrue(false, 'There was an error populating the database.');
 		}

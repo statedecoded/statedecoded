@@ -48,7 +48,7 @@ class ImportActionTest extends PHPUnit\Framework\TestCase
 
 	public function testCurrentOptionSetsMakeCurrent(): void
 	{
-		$this->action->options['current'] = TRUE;
+		$this->action->options['current'] = true;
 		$parser = $this->stubParser((object) array('id' => 42, 'name' => 'Test Edition'));
 
 		$edition_args = $this->action->buildEditionArgs($parser);
@@ -62,7 +62,7 @@ class ImportActionTest extends PHPUnit\Framework\TestCase
 
 	public function testFirstEditionIsCreatedCurrent(): void
 	{
-		$parser = $this->stubParser(FALSE);
+		$parser = $this->stubParser(false);
 
 		$edition_args = $this->action->buildEditionArgs($parser);
 
@@ -83,8 +83,8 @@ class ImportActionTest extends PHPUnit\Framework\TestCase
 		}
 
 		$this->action->options['edition'] = $edition->slug;
-		$this->action->options['current'] = TRUE;
-		$parser = $this->stubParser(FALSE);
+		$this->action->options['current'] = true;
+		$parser = $this->stubParser(false);
 
 		$edition_args = $this->action->buildEditionArgs($parser);
 

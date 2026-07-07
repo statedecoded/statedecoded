@@ -261,7 +261,7 @@ abstract class Export extends Plugin
 		/*
 		 * If we cannot create a new ZIP file, bail.
 		 */
-		if ($zip->open($zip_filename, ZIPARCHIVE::CREATE) !== TRUE)
+		if ($zip->open($zip_filename, ZIPARCHIVE::CREATE) !== true)
 		{
 			return false;
 		}
@@ -335,7 +335,7 @@ abstract class Export extends Plugin
 			<p>' . $this->description . '</p>
 			';
 		// If we have an exported dictionary, show that here too.
-		if(in_array('exportDictionary', $this->listeners) !== FALSE)
+		if(in_array('exportDictionary', $this->listeners) !== false)
 		{
 			$dictionary_filename = $this->getDictionaryDownloadName();
 			$dictionary_url = '/downloads/' . $slug . '/' . $dictionary_filename;

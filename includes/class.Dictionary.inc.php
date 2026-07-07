@@ -23,7 +23,7 @@ class Dictionary
 	public $law_id;
 	public $section_number;
 	public $edition_id;
-	public $generic_terms = FALSE;
+	public $generic_terms = false;
 
 
 	public function __construct($args = array()) {
@@ -53,8 +53,8 @@ class Dictionary
 		/*
 		 * Initialize our dictionary results.
 		 */
-		$dictionary = FALSE;
-		$lowercase = FALSE;
+		$dictionary = false;
+		$lowercase = false;
 		$plural = (isset($this->term) && substr($this->term, -1) === 's');
 
 		/*
@@ -62,7 +62,7 @@ class Dictionary
 		 */
 		if (!isset($this->term))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -90,7 +90,7 @@ class Dictionary
 			$sql_args = array(
 				':term' => $this->term
 			);
-			if ($plural === TRUE)
+			if ($plural === true)
 			{
 				$sql .= ' OR term = :term_single';
 				$sql_args[':term_single'] = substr($this->term, 0, -1);
@@ -104,9 +104,9 @@ class Dictionary
 			 * If the query fails, or if no results are found, return false -- we have no terms for
 			 * this structural unit.
 			 */
-			if ( ($result === FALSE) || ($statement->rowCount() < 1) )
+			if ( ($result === false) || ($statement->rowCount() < 1) )
 			{
-				return FALSE;
+				return false;
 			}
 
 			/*
@@ -132,10 +132,10 @@ class Dictionary
 
 		global $db;
 
-		$plural = FALSE;
+		$plural = false;
 		$heritage = new Law;
 		$heritage->config = new stdClass();
-		$heritage->config->get_structure = TRUE;
+		$heritage->config->get_structure = true;
 
 		if ($section_number)
 		{
@@ -168,7 +168,7 @@ class Dictionary
 
 		if (substr($this->term, -1) == 's')
 		{
-			$plural = TRUE;
+			$plural = true;
 		}
 
 		/*
@@ -191,7 +191,7 @@ class Dictionary
 			':term' => $term,
 			':object_type' => 'law'
 		);
-		if ($plural === TRUE)
+		if ($plural === true)
 		{
 			$sql .= ' OR dictionary.term = :term_single';
 			$sql_args[':term_single'] =  substr($term, 0, -1);
@@ -240,7 +240,7 @@ class Dictionary
 		/*
 		 * If the query succeeds, great, retrieve it.
 		 */
-		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+		if ( ($result !== false) && ($statement->rowCount() > 0) )
 		{
 
 			/*
@@ -390,7 +390,7 @@ class Dictionary
 		 * Assemble a second query, this one against our generic legal dictionary, but only if we
 		 * have opted to include generic terms.
 		 */
-		if ($this->generic_terms === TRUE)
+		if ($this->generic_terms === true)
 		{
 
 			$sql = 'SELECT term
@@ -400,7 +400,7 @@ class Dictionary
 			$statement = $db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
-			if ($result !== FALSE && $statement->rowCount() > 0)
+			if ($result !== false && $statement->rowCount() > 0)
 			{
 
 				/*
