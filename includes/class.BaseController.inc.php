@@ -50,9 +50,16 @@ abstract class BaseController
 	public function render($content)
 	{
 		/*
-		 * Put our local variables into the local scope.
+		 * Make local controller variables available to the template.
+		 * NOTE: Using extract() is a security risk, so we use array access instead.
+		 * Template partials should access variables via $this->local or pass them explicitly.
 		 */
-		extract($this->local);
+		foreach ($this->local as $__key => $__value)
+		{
+			$$__key = $__value;
+		}
+		unset($__key, $__value);
+		
 		/*
 		 * Parse the template, which is a shortcut for a few steps that culminate in sending the content
 		 * to the browser.
