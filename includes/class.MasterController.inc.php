@@ -67,7 +67,15 @@ class MasterController
 		{
 			if(file_exists(WEB_ROOT.'/'.$handler))
 			{
-				extract($local_data);
+				/*
+				 * Make local variables available to included file.
+				 * NOTE: Using extract() is a security risk, so we assign variables explicitly instead.
+				 */
+				foreach ($local_data as $__key => $__value)
+				{
+					$$__key = $__value;
+				}
+				unset($__key, $__value);
 				require(WEB_ROOT.'/'.$handler);
 			}
 		}
