@@ -399,10 +399,18 @@ class Structure
 		/*
 		 * Return the result as an object, built up as we loop through the results.
 		 */
-		$i=0;
-		while ($child = $statement->fetch(PDO::FETCH_OBJ))
+		$children = array();
+
+		/* Build lightweight child objects directly from the result set to avoid N+1 queries. */
+		while ($child = $statement->fetch(PDO::FETCH_ASSOC))
 		{
-			$children[] = $this->get_by_id($child->s1_id);
+			$c = new stdClass();
+			$c->id = isset($child['s1_id']) ? $child['s1_id'] : null;
+			$c->name = isset($child['s1_name']) ? stripslashes($child['s1_name']) : null;
+			$c->identifier = isset($child['s1_identifier']) ? $child['s1_identifier'] : null;
+			$c->order_by = isset($child['order_by']) ? $child['order_by'] : null;
+			$c->permalink = isset($child['permalink_url']) ? $child['permalink_url'] : null;
+			$children[] = $c;
 		}
 
 		return $children;
