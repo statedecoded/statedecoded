@@ -171,7 +171,7 @@ class Autolinker
 			{
 				$law = $laws[0];
 
-				return '<a class="law" title="'.$law->catch_line.'" href="' .
+				return '<a class="law" title="'.htmlspecialchars($law->catch_line, ENT_QUOTES).'" href="' .
 					$law->url . '">' . $matches[0] . '</a>';
 			}
 
