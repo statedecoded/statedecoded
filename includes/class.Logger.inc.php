@@ -169,10 +169,10 @@ class Logger
 		}
 	}
 
-	public function updateProgressFiles($name, $current, $total)
+	public function updateProgressFiles($name, $current, $total, $label = 'Importing')
 	{
 		$amount = (int) ($current / $total * 100);
-		$text = 'Importing ' . number_format($current) . ' of ' . number_format($total);
+		$text = $label . ' ' . number_format($current) . ' of ' . number_format($total);
 		$this->updateProgress($name, $amount, $text);
 	}
 

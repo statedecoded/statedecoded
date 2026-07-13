@@ -1343,7 +1343,7 @@ class ParserController
 				$this->events->trigger('exportLaw', $law, $this->downloads_dir);
 
 				$this->export_progress++;
-				$this->logger->updateProgressFiles('exportfiles', $this->export_progress, $this->export_count);
+				$this->logger->updateProgressFiles('exportfiles', $this->export_progress, $this->export_count, 'Exporting');
 			}
 
 			$this->export_structure($item['s1_id']);
