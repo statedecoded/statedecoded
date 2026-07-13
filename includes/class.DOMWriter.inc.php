@@ -55,13 +55,11 @@ class DOMWriter {
       }
     }
     /*
-     * If we've got tags, create an XML fragment.
+     * If we've got tags, embed the markup as child nodes.
      */
     elseif(is_string($value) && strip_tags($value) !== $value)
     {
-      $fragment = $this->dom->createDocumentFragment();
-      $fragment->appendXML($value);
-      $elm->appendChild($fragment);
+      $elm->appendChild($this->markupToNode($value));
     }
     /*
      * Otherwise, just append the content.
@@ -84,6 +82,72 @@ class DOMWriter {
     $this->root->appendChild($elm);
 
     return new DOMWriter($elm, $this->dom);
+  }
+
+  /*
+   * Embed a string of markup as DOM child nodes.
+   *
+   * The markup is meant to become XML child nodes, but law text is HTML and is
+   * not guaranteed to be well-formed XML (unescaped attribute quotes, unclosed
+   * tags, and so on). DOMDocumentFragment::appendXML() requires strict XML and,
+   * on any error, emits a PHP warning and silently drops the *entire* node --
+   * which is how laws were being exported with empty <text> elements. So:
+   *
+   *   1. Try a strict parse (the fast path for well-formed content).
+   *   2. Fall back to libxml's lenient HTML parser.
+   *   3. As a last resort, preserve the raw markup verbatim in a CDATA section
+   *      so content is never lost.
+   *
+   * libxml errors are captured rather than emitted as warnings throughout.
+   */
+  protected function markupToNode($markup)
+  {
+    $previous = libxml_use_internal_errors(true);
+
+    /*
+     * 1. Strict XML fast path -- preserves the existing output for the
+     *    well-formed majority of laws.
+     */
+    $fragment = $this->dom->createDocumentFragment();
+    if(@$fragment->appendXML($markup) && $fragment->hasChildNodes())
+    {
+      libxml_clear_errors();
+      libxml_use_internal_errors($previous);
+      return $fragment;
+    }
+
+    /*
+     * 2. Lenient HTML parse. Wrap in a container so we can pull the children
+     *    back out without the implied <html>/<body> scaffolding.
+     */
+    $html_doc = new DOMDocument();
+    $wrapped = '<?xml encoding="UTF-8"?><div>' . $markup . '</div>';
+    if(@$html_doc->loadHTML($wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD))
+    {
+      $container = $html_doc->getElementsByTagName('div')->item(0);
+      if($container)
+      {
+        $fragment = $this->dom->createDocumentFragment();
+        foreach(iterator_to_array($container->childNodes) as $child)
+        {
+          $fragment->appendChild($this->dom->importNode($child, true));
+        }
+
+        if($fragment->hasChildNodes())
+        {
+          libxml_clear_errors();
+          libxml_use_internal_errors($previous);
+          return $fragment;
+        }
+      }
+    }
+
+    /*
+     * 3. Last resort: keep the raw markup as CDATA rather than lose it.
+     */
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    return $this->dom->createCDATASection($markup);
   }
 
   public function append(&$elm)
