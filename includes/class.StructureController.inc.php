@@ -20,11 +20,16 @@ class StructureController extends BaseController
 	public function handle($args)
 	{
 		/*
-		 * Put our local variables into the local scope.
+		 * Make controller local variables available to structure.php.
+		 * NOTE: Using extract() is a security risk, so we assign variables explicitly instead.
 		 */
-		extract($this->local);
+		foreach ($this->local as $__key => $__value)
+		{
+			$$__key = $__value;
+		}
+		unset($__key, $__value);
 
-		require(WEB_ROOT . '/structure.php');
+		require(WEB_ROOT.'/structure.php');
 
 		$this->render($content);
 	}

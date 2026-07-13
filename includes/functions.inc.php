@@ -84,7 +84,46 @@ function fetch_url($url)
  */
 function valid_jsonp_callback($callback)
 {
-    return !preg_match( '/[^0-9a-zA-Z\$_]|^(abstract|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|enum|export|extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|volatile|void|while|with|NaN|Infinity|undefined)$/', $callback);
+	/*
+	 * JSONP callback names must be valid JavaScript identifiers and not reserved words.
+	 * This uses an allowlist approach rather than denylist to be more secure.
+	 * Valid: alphanumeric, underscore, dollar sign. Cannot start with digit.
+	 * Cannot be JavaScript reserved words.
+	 */
+	if (empty($callback) || strlen($callback) > 255)
+	{
+		return false;
+	}
+	
+	/*
+	 * Must be a valid JavaScript identifier.
+	 */
+	if (!preg_match('/^[a-zA-Z_$][a-zA-Z0-9_$]*$/', $callback))
+	{
+		return false;
+	}
+	
+	/*
+	 * Reject JavaScript reserved words and built-in global objects.
+	 */
+	$reserved = [
+		'abstract', 'arguments', 'await', 'boolean', 'break', 'byte', 'case', 'catch',
+		'char', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+		'double', 'else', 'enum', 'eval', 'export', 'extends', 'false', 'final',
+		'finally', 'float', 'for', 'function', 'goto', 'if', 'implements', 'import',
+		'in', 'instanceof', 'int', 'interface', 'let', 'long', 'native', 'new', 'null',
+		'package', 'private', 'protected', 'public', 'return', 'short', 'static',
+		'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient',
+		'true', 'try', 'typeof', 'var', 'void', 'volatile', 'while', 'with', 'yield',
+		'NaN', 'Infinity', 'undefined', 'window', 'document', 'console', 'alert'
+	];
+	
+	if (in_array(strtolower($callback), $reserved, true))
+	{
+		return false;
+	}
+	
+	return true;
 }
 
 
@@ -108,10 +147,9 @@ function json_error($text)
 	$error = json_encode($error);
 
 	/*
-	 * Return a 400 "Bad Request" error. This indicates that the request was invalid. Whether this
-	 * is the best HTTP header is subject to debate.
+	 * Return a 400 "Bad Request" error. This indicates that the request was invalid.
 	 */
-	header("HTTP/1.0 400 OK");
+	header("HTTP/1.0 400 Bad Request");
 
 	/*
 	 * Send an HTTP header defining the content as JSON.
