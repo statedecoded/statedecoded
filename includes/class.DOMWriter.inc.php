@@ -26,7 +26,22 @@ class DOMWriter {
   }
 
   public function create($name, $value = null, $attributes = []) {
-    $elm = $this->dom->createElement($name);
+    /*
+     * XML element names cannot start with a digit or contain arbitrary
+     * characters, but the names passed here can be arbitrary metadata keys --
+     * or integer indexes, when a metadata value is a list. Rather than let
+     * createElement() throw an "Invalid Character Error" (which aborts the
+     * entire export), fall back to a generic <item> element and preserve the
+     * original key as an attribute.
+     */
+    $element_name = (string) $name;
+    if (!preg_match('/^[A-Za-z_][A-Za-z0-9._-]*$/', $element_name))
+    {
+      $attributes = ['key' => $element_name] + $attributes;
+      $element_name = 'item';
+    }
+
+    $elm = $this->dom->createElement($element_name);
 
     /*
      * If we have an object or array, iterate over the properties and add them.
