@@ -1120,9 +1120,12 @@ class ParserController
 
 	public $export_count;
 	public $export_progress;
+	public $export_errors = 0;
 
 	public function export()
 	{
+
+		$this->export_errors = 0;
 
 		$this->logger->message('Exporting bulk download files', 5);
 
@@ -1202,7 +1205,16 @@ class ParserController
 
 		}
 
-		$this->logger->message('All bulk download files were exported', 5);
+		if ($this->export_errors > 0)
+		{
+			$this->logger->error('All bulk download files were exported, but '
+				. number_format($this->export_errors) . ' record(s) could not be exported '
+				. '(see the errors above)', 10);
+		}
+		else
+		{
+			$this->logger->message('All bulk download files were exported', 5);
+		}
 
 	}
 
@@ -1336,11 +1348,36 @@ class ParserController
 			 * However, we still need the list of laws for the structure export, so
 			 * this must be a separate loop.
 			 */
-			$this->events->trigger('exportStructure', $structure, $laws, $this->downloads_dir);
+			/*
+			 * A failure exporting a single structure or law must not abort the
+			 * entire run, so each export is wrapped individually. Failures are
+			 * logged (loudly) and tallied, and the export continues.
+			 */
+			try
+			{
+				$this->events->trigger('exportStructure', $structure, $laws, $this->downloads_dir);
+			}
+			catch (Throwable $e)
+			{
+				$this->export_errors++;
+				$identifier = $structure->identifier ?? $structure->id ?? 'unknown';
+				$this->logger->error('Could not export structure ' . $identifier . ': '
+					. $e->getMessage(), 10);
+			}
 
 			foreach($laws as $law)
 			{
-				$this->events->trigger('exportLaw', $law, $this->downloads_dir);
+				try
+				{
+					$this->events->trigger('exportLaw', $law, $this->downloads_dir);
+				}
+				catch (Throwable $e)
+				{
+					$this->export_errors++;
+					$identifier = $law->section_number ?? $law->law_id ?? 'unknown';
+					$this->logger->error('Could not export law ' . $identifier . ': '
+						. $e->getMessage(), 10);
+				}
 
 				$this->export_progress++;
 				$this->logger->updateProgressFiles('exportfiles', $this->export_progress, $this->export_count, 'Exporting');
