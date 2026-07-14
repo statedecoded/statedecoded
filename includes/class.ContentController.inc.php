@@ -9,7 +9,7 @@
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  */
 
@@ -48,7 +48,7 @@ class ContentController extends BaseController
 		 */
 		$sidebar = '
 			<section>
-			<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
+			<p>Powered by <a href="https://www.statedecoded.com/">The State Decoded</a>.</p>
 			</section>';
 		/*
 		 * Put the shorthand $sidebar variable into its proper place.

@@ -7,7 +7,7 @@
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL 3
  * @version   1.0
- * @link    http://www.statedecoded.com/
+ * @link    https://www.statedecoded.com/
  * @since   0.9
  *
  * Since HTML is the base for most of our advanced conversions (EPUB, PDF, etc),

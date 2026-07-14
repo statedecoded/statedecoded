@@ -7,7 +7,7 @@
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @link		https://www.statedecoded.com/
  * @since		0.1
  *
  * Since all rendering occurs in-class, you can override the rendering method

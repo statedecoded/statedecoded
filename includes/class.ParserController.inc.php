@@ -7,7 +7,7 @@
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
  * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @link		https://www.statedecoded.com/
  * @since		0.7
 */
 
@@ -1192,16 +1192,35 @@ class ParserController
 		if ($this->edition->current == '1')
 		{
 
-			$result = exec('cd ' . WEB_ROOT . '/downloads/; rm current; ln -s ' .
-				$this->edition->slug . ' current');
+			/*
+			 * Point the "current" symlink at this edition. Done in PHP rather
+			 * than via exec() so it's portable and silent: shelling out to
+			 * "rm current" errored noisily when no symlink existed yet, and the
+			 * old success check was wrong (exec() returns the last line of
+			 * output, not the exit code, so a successful run looked like a
+			 * failure).
+			 */
+			$symlink = WEB_ROOT . '/downloads/current';
 
-			if ($result != 0)
+			/*
+			 * Remove any existing symlink (including a broken one) or leftover
+			 * file so we can recreate it. is_link() catches broken symlinks that
+			 * file_exists() misses.
+			 */
+			if (is_link($symlink) || file_exists($symlink))
+			{
+				unlink($symlink);
+			}
+
+			if (symlink($this->edition->slug, $symlink))
+			{
+				$this->logger->message('Created downloads “current” symlink', 4);
+			}
+			else
 			{
 				$this->logger->message('Could not create “current” symlink in /downloads/—it must '
 					. 'be created manually', 10);
 			}
-
-			$this->logger->message('Created downloads “current” symlink', 4);
 
 		}
 
