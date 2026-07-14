@@ -110,23 +110,9 @@ lexis-nexis.xsl sample.xsl   XSLTs for transforming source XML → State Decoded
 - **Configuration is a wall of `define()` calls**, including JSON-encoded blobs for `SEARCH_CONFIG` and `PLUGINS`. There is no runtime config object.
 - **Globals are pervasive.** `$db` and `$cache` are referenced via `global` in most domain classes. This is the intended pattern. All `global $cache` call sites guard against an uninitialized cache with `isset($cache)`.
 
-## Known rough edges (remaining as of modernize branch)
-
-Phase 1 (PHP 8 hard blockers) and phase 2 (bugs) are complete — see `TODO.md` for the full checklist. What remains:
-
-- **Admin auth is still plaintext** — `ADMIN_PASSWORD` is a plaintext `define()` compared with `!=`. TODO phase 3: replace with session-based login and `password_hash`/`password_verify`.
-- **WordPress-derived helpers** (`wptexturize`, `_wptexturize_pushpop_element`, `convert_entity` in `functions.inc.php`) are diverged from their upstream source. TODO phase 3: vendor or replace.
-- **Frontend is partially modernized** — jQuery upgraded to 3.7.1 and CDN dependencies eliminated; SCSS now compiles via Dart Sass (no Compass). Bootstrap modal and Modernizr remain; not a blocker for backend work.
-- **`htdocs/index.php` still checks `HTTP_MOD_ENV`** — Docker satisfies this via `SetEnv`, but a bare nginx/FPM install would need the constant faked. TODO phase 3: remove the Apache-specific assumption.
-- **Secrets in `config.inc.php`** — Docker config templates read from `getenv()`, but bare installs still use a `define()`-per-secret file. TODO phase 3: adopt `vlucas/phpdotenv` or similar.
-- **`APITest` is skipped** — it requires a full parser/import run with XML data. See `includes/test/README.md`.
-- **`testTimeout` is skipped** — requires `SYSTEM_VARIABLES_ADMIN` on the test DB user.
-- **`includes/test/phpunit.xml` targets PHPUnit 10.5** — `@version` docblocks throughout the codebase still say "PHP version 5". Update once each file is audited.
-
 ## If you're modernizing
 
 1. **Use Docker.** Run `./deploy/docker-run.sh`, then verify and run tests with `./docker-test.sh` before and after any change.
-2. **Read `TODO.md`** — phases 1 and 2 are done; phase 3 items are the remaining work.
-3. **Don't touch `vendor/`** — it's Composer-managed and gitignored. `solarium/solarium ^6` replaced the old bundled `includes/Solarium/` directory.
-4. **The parser is the largest risk** — `ParserController` + `AmericanLegal` + `Municode` is 6k+ LOC and the least exercised path. Modernize it last.
-5. **PHPStan at level 1 is the bar** — `./docker-test.sh phpstan` must stay clean on every commit.
+2. **Don't touch `vendor/`** — it's Composer-managed and gitignored. `solarium/solarium ^6` replaced the old bundled `includes/Solarium/` directory.
+3. **The parser is the largest risk** — `ParserController` + `AmericanLegal` + `Municode` is 6k+ LOC and the least exercised path. Modernize it last.
+4. **PHPStan at level 1 is the bar** — `./docker-test.sh phpstan` must stay clean on every commit.
