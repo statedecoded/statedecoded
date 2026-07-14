@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="2" level="3">Burglary and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-92</section_number>
+	<catch_line>Breaking and entering dwelling house with intent to commit other misdemeanor</catch_line>
+	<text>
+		If any person break and enter a dwelling house while said dwelling is occupied, either in the day or nighttime, with the intent to commit any misdemeanor except assault and battery or trespass, he shall be guilty of a Class 6 felony. However, if the person was armed with a deadly weapon at the time of such entry, he shall be guilty of a Class 2 felony.
+	</text>
+	<history>Code 1950, § 18.1-88.1; 1968, c. 530; 1970, c. 381; 1975, cc. 14, 15; 1992, c. 486.</history>
+</law>

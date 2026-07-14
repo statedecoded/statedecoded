@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="2" level="2">State Policy as to Waters</unit>
+	</structure>
+	<section_number>62.1-13</section_number>
+	<catch_line>Construction with reference to rights, etc., of counties, cities and towns</catch_line>
+	<text>
+		Nothing in this chapter contained shall be construed as a declaration of policy of the Commonwealth to divest any county, city or town of its title or right to any water or of its powers conferred by law with respect to the disposition thereof; nor shall anything in this chapter be construed to authorize the impairment of any contract to which such county, city or town is a party, or to obligate any county, city or town to appropriate or expend any funds. The purpose of this chapter is to recognize the public use to which such water is devoted.
+	</text>
+	<history>Code 1950, § 62-9.4; 1954, c. 330; 1968, c. 659.</history>
+</law>

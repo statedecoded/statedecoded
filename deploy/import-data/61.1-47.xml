@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="5" level="2">Prevention of Frauds in Sale of Leaf Tobacco</unit>
+	</structure>
+	<section_number>61.1-47</section_number>
+	<catch_line>Person making delivery must impart true name of owner; record of purchase or delivery</catch_line>
+	<text>
+		Every person who shall deliver any leaf tobacco to a warehouseman or to a cooperative marketing association for sale, offer for sale or display for sale thereof, shall impart to such warehouseman or cooperative marketing association, the true name of the owner of such leaf tobacco; and it shall be the duty of such warehouseman or cooperative marketing association to keep a record of such purchase or delivery showing the quantity of leaf tobacco so delivered, and the name of the owner thereof, given as provided herein.
+	</text>
+	<history>Code 1950, § 61-146; 1968, c. 69.</history>
+</law>

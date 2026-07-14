@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="2" level="2">State Policy as to Waters</unit>
+	</structure>
+	<section_number>62.1-11</section_number>
+	<catch_line>Waters declared natural resource; state regulation and conservation; limitations upon right to use</catch_line>
+	<text>
+		<section prefix="A">Such waters are a natural resource which should be regulated by the Commonwealth.
+		</section>
+		<section prefix="B">The regulation, control, development and use of waters for all purposes beneficial to the public are within the jurisdiction of the Commonwealth which in the exercise of its police powers may establish measures to effectuate the proper and comprehensive utilization and protection of such waters.
+		</section>
+		<section prefix="C">The changing wants and needs of the people of the Commonwealth may require the water resources of the Commonwealth to be put to uses beneficial to the public to the extent of which they are reasonably capable; the waste or unreasonable use or unreasonable method of use of water should be prevented; and the conservation of such water is to be exercised with a view to the welfare of the people of the Commonwealth and their interest in the reasonable and beneficial use thereof.
+		</section>
+		<section prefix="D">The public welfare and interest of the people of the Commonwealth require the proper development, wise use, conservation and protection of water resources together with protection of land resources, as affected thereby.
+		</section>
+		<section prefix="E">The right to the use of water or to the flow of water in or from any natural stream, lake or other watercourse in this Commonwealth is and shall be limited to such water as may reasonably be required for the beneficial use of the public to be served; such right shall not extend to the waste or unreasonable use or unreasonable method of use of such water.
+		</section>
+		<section prefix="F">The quality of state waters is affected by the quantity of water and it is the intent of the Commonwealth, to the extent practicable, to maintain flow conditions to protect instream beneficial uses and public water supplies for human consumption.
+		</section>
+	</text>
+	<history>Code 1950, § 62-9.2; 1954, c. 330; 1968, c. 659; 1989, c. 410.</history>
+</law>

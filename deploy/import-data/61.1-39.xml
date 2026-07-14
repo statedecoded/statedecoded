@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="4" level="2">Tobacco Warehouses and Regulations in General</unit>
+	</structure>
+	<section_number>61.1-39</section_number>
+	<catch_line>Weighing leaf tobacco; itemized statements furnished seller</catch_line>
+	<text>
+		The proprietor of each and every warehouse shall render to each seller of tobacco at his warehouse a bill plainly stating the amount charged for weighing and handling, the amount charged for auction fees, and the commission charged on such sale, or any other charges made for selling and handling such tobacco.
+		Any person violating the provisions of this section shall be guilty of a misdemeanor and shall be punished as provided in § 18.2-12.
+	</text>
+	<history>Code 1950, § 61-108; 1968, c. 69.</history>
+</law>

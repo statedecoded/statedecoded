@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="12" level="3">Virginia Spill Response Council</unit>
+	</structure>
+	<section_number>62.1-44.34:24</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this article, unless the context requires otherwise:
+		"Council" means the Virginia Spill Response Council.
+		"Discharge" means spillage, leakage, pumping, pouring, seepage, emitting, dumping, emptying, injecting, escaping, leaching, fire, explosion, or other releases.
+		"Hazardous materials" means substances or materials which may pose unreasonable risks to health, safety, property, or the environment when used, transported, stored, or disposed of, which may include materials which are solid, liquid, or gas. Hazardous materials may include toxic substances, flammable and ignitable materials, explosives, corrosive materials, and radioactive materials and include (i) those substances or materials in a form or quantity which may pose an unreasonable risk to health, safety, or property when transported, and which the Secretary of Transportation of the United States has so designated by regulation or order; (ii) hazardous substances as defined or designated by law or regulation of the Commonwealth or law or regulation of the United States government; and (iii) hazardous waste as defined or designated by law or regulation of the Commonwealth.
+		"Oil" means oil of any kind and in any form including, but not limited to, petroleum, fuel oil, sludge, oil refuse, oil mixed with waste, crude oils, and other liquid hydrocarbons regardless of specific gravity.
+	</text>
+	<history>1990, c. 598.</history>
+</law>

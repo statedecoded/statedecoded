@@ -4,7 +4,7 @@
  * Default comes first
  */
 // Anything else gets passed to the Permalink Controller to determine the correct handler.
-$router->addRoute('default', '^(?P<route>.*)$', array('PermalinkController', 'handle'));
+$router->addRoute('default', '^(?P<route>.*)$', ['PermalinkController', 'handle']);
 
 /**
  * Specific routes next
@@ -22,17 +22,17 @@ $router->addRoute('admin', '^/admin(/.*)?$', 'admin/index.php');
 $router->addRoute('downloads', '^/downloads/?(.*)', 'downloads/index.php');
 
 // Editions list
-$router->addRoute('editions', '^/editions/?(.*)', array('EditionController', 'handle'));
+$router->addRoute('editions', '^/editions/?(.*)', ['EditionController', 'handle']);
 
 // Search
 $router->addRoute('search', '^/search/?(.*)', 'search.php');
 
 // New activation
-$router->addRoute('api-activate', '^/api-key/activate/(?P<secret>.*)', array('ApiKeyController', 'activateKey'));
+$router->addRoute('api-activate', '^/api-key/activate/(?P<secret>.*)', ['ApiKeyController', 'activateKey']);
 // Old activation
-$router->addRoute('api-activate-legacy', '^/api-key/\?secret=(?P<secret>.*)', array('ApiKeyController', 'activateKey'));
+$router->addRoute('api-activate-legacy', '^/api-key/\?secret=(?P<secret>.*)', ['ApiKeyController', 'activateKey']);
 // Create an API Key
-$router->addRoute('api-create', '^/api-key/$', array('ApiKeyController', 'requestKey'));
+$router->addRoute('api-create', '^/api-key/$', ['ApiKeyController', 'requestKey']);
 
 
 /**
@@ -43,16 +43,16 @@ $router->addRoute('api-create', '^/api-key/$', array('ApiKeyController', 'reques
 
 $router->addRoute('api-list',
 	'^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?(?P<operation>structure|law|)(?P<route>/.*)',
-	array('APIPermalinkController', 'handle'));
+	['APIPermalinkController', 'handle']);
 
 $router->addRoute('api-dictionary',
 	'^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?dictionary/((?P<term>.*)/)?',
-	array('APIDictionaryController', 'handle'));
+	['APIDictionaryController', 'handle']);
 
 $router->addRoute('api-search',
 	'^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?search/(?P<term>.*)/',
-	array('APISearchController', 'handle'));
+	['APISearchController', 'handle']);
 
 $router->addRoute('api-suggest',
 	'^/api/((?P<api_version>([0-9]+)\.([0-9]+))/)?suggest/(?P<term>.*)/',
-	array('APISuggestController', 'handle'));
+	['APISuggestController', 'handle']);

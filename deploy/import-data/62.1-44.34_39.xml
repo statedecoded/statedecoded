@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="14" level="3">Hazardous Substance Facility Response Plans</unit>
+	</structure>
+	<section_number>62.1-44.34:39</section_number>
+	<catch_line>Enforcement; civil penalties</catch_line>
+	<text>
+		<section prefix="A">In the event of a (i) violation of any provision of this article or a related regulation or administrative or judicial order or term or condition of approval issued under this article or (ii) failure to comply with a special order issued by the Department pursuant to this section, the Department is authorized to proceed by civil action to obtain an injunction of such violation, to obtain any affirmative equitable relief that is appropriate, and to recover all costs, damages, and civil penalties resulting from such violation or failure to comply. The Department shall be entitled to an award of reasonable attorney fees and costs in any action in which it is a prevailing party.
+		</section>
+		<section prefix="B">Any person that negligently, willfully, or knowingly (i) discharges or causes to discharge a hazardous substance from a facility or (ii) fails to implement or comply with an EPA-approved facility response plan is subject to a civil penalty of not less than $1,000 nor more than $10,000 for the initial violation and $1,000 per day for each day of such violation thereafter. Any person that fails to report a discharge or willfully or knowingly makes any false statement or representation regarding such discharge as described is subject to a civil penalty of not less than $1,000 nor more than $50,000 for the initial violation and $10,000 for each day of such violation thereafter. Such civil penalties shall be paid into the state treasury and deposited by the State Treasurer into the Virginia Environmental Emergency Response Fund established pursuant to § 10.1-2500.
+		</section>
+	</text>
+	<history>2025, c. 279.</history>
+</law>

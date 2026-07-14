@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-80</section_number>
+	<catch_line>Burning or destroying any other building or structure</catch_line>
+	<text>
+		If any person maliciously, or with intent to defraud an insurance company or other person, burn, or by the use of any explosive device or substance, maliciously destroy, in whole or in part, or cause to be burned or destroyed, or aid, counsel or procure the burning or destruction of any building, bridge, lock, dam or other structure, whether the property of himself or of another, at a time when any person is therein or thereon, the burning or destruction whereof is not punishable under any other section of this chapter, he shall be guilty of a Class 3 felony. If he commits such offense at a time when no person is in such building, or other structure, and such building, or other structure, with the property therein, be of the value of $1,000 or more, he shall be guilty of a Class 4 felony, and if it and the property therein be of less value, he shall be guilty of a Class 1 misdemeanor.
+	</text>
+	<history>Code 1950, §§ 18.1-80, 18.1-81, 18.1-85; 1960, c. 358; 1975, cc. 14, 15; 1981, c. 197; 2018, cc. 764, 765; 2020, cc. 89, 401.</history>
+</law>

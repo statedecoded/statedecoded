@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:25</section_number>
+	<catch_line>Further powers and duties of the State Water Control Board</catch_line>
+	<text>
+		In addition to other powers and duties conferred upon the Board by this chapter, it shall permit, regulate, and control soil erosion and stormwater runoff in the Commonwealth and may otherwise act to protect the quality and quantity of state waters from the potential harm of unmanaged stormwater and soil erosion. It shall be the duty of the Board and it shall have the authority to:
+		<section prefix="1">Issue special orders pursuant to subdivision (8a) or (8b) of § 62.1-44.15 to any owner subject to requirements under this article, except that for any land-disturbing activity that disturbs an area measuring not less than 10,000 square feet but less than one acre in an area of a locality that is not designated as a Chesapeake Bay Preservation Area pursuant to the Chesapeake Bay Preservation Act (§ 62.1-44.15:67 et seq.) and that is not part of a larger common plan of development or sale that disturbs one acre or more of land, such special orders may include civil penalties of up to $5,000 per violation, not to exceed $50,000 per order. Such civil penalties shall be paid into the state treasury and deposited by the State Treasurer into the Stormwater Local Assistance Fund established pursuant to § 62.1-44.15:29.1.
+			The provisions of this section notwithstanding, the Board may proceed directly under § 62.1-44.15:48 or Article 5 (§ 62.1-44.20 et seq.) for any past violation or violations of any provision of this article or any regulation duly adopted hereunder.
+		</section>
+		<section prefix="2">With the consent of any owner subject to requirements under this article, the Board may provide, in an order issued by the Board pursuant to subdivision (8d) of § 62.1-44.15 against such owner, for the payment of civil charges for violations in specific sums. Such sums shall not exceed the limit specified in subdivision A 1 or B 1, as applicable, of § 62.1-44.15:48. Such civil charges shall be collected in lieu of any appropriate civil penalty that could be imposed pursuant to § 62.1-44.15:48 and shall not be subject to the provisions of § 2.2-514. Such civil charges shall be paid into the state treasury and deposited by the State Treasurer into the Stormwater Local Assistance Fund established pursuant to § 62.1-44.15:29.1.
+		</section>
+	</text>
+	<history>2004, c. 372§ 10.1-603.2;; 2006, c. 171; 2012, cc. 785, 819; 2013, cc. 756, 793; 2016, cc. 68, 758.</history>
+</law>

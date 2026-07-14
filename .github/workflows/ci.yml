@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [master, modernize]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: statedecoded_test
+          MYSQL_USER: statedecoded
+          MYSQL_PASSWORD: statedecoded
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -prootpassword --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, intl, xsl, zip, gd, tidy, mbstring
+          tools: composer
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Cache npm packages
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-${{ hashFiles('package.json') }}
+          restore-keys: npm-
+
+      - name: Install and build front-end assets
+        run: npm ci && npm run build
+
+      - name: Load test schema
+        env:
+          MYSQL_PWD: rootpassword
+        run: |
+          mysql -h 127.0.0.1 -u root statedecoded_test \
+            < htdocs/admin/statedecoded.sql
+
+      - name: Run migrations on test database
+        env:
+          PDO_DSN_TEST: "mysql:dbname=statedecoded_test;host=127.0.0.1;charset=utf8"
+          MYSQL_USER: statedecoded
+          MYSQL_PASSWORD: statedecoded
+        run: |
+          php statedecoded \
+            -c deploy/docker/config/config-test.inc.docker.php \
+            migrate
+
+      - name: Import sample data
+        env:
+          PDO_DSN_TEST: "mysql:dbname=statedecoded_test;host=127.0.0.1;charset=utf8"
+          MYSQL_USER: statedecoded
+          MYSQL_PASSWORD: statedecoded
+        run: |
+          php statedecoded \
+            -c deploy/docker/config/config-test.inc.docker.php \
+            import \
+            -d=deploy/import-data/
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse
+
+      - name: PHPUnit
+        env:
+          STATEDECODED_CONFIG: deploy/docker/config/config-test.inc.docker.php
+          PDO_DSN_TEST: "mysql:dbname=statedecoded_test;host=127.0.0.1;charset=utf8"
+        run: vendor/bin/phpunit -c includes/test/phpunit.xml

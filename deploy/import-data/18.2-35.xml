@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-35</section_number>
+	<catch_line>How voluntary manslaughter punished</catch_line>
+	<text>
+		Voluntary manslaughter is punishable as a Class 5 felony.
+	</text>
+	<history>Code 1950, § 18.1-24; 1960, c. 358; 1972, cc. 14, 15.</history>
+</law>

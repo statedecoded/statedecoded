@@ -3,11 +3,11 @@
 /**
  * The "Home" page, displaying the front page of the site.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -53,7 +53,7 @@ $content->set('body',
 				is under development. Things are funny looking, broken, and generally unreliable
 				right now.</p>
 
-				<p>This site is powered by <a href="http://www.statedecoded.com/">The State
+				<p>This site is powered by <a href="https://www.statedecoded.com/">The State
 				Decoded</a>.</p>
 
 			</section> <!-- // .feature -->

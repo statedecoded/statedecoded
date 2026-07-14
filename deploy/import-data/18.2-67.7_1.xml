@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="7" level="3">Criminal Sexual Assault</unit>
+	</structure>
+	<section_number>18.2-67.7:1</section_number>
+	<catch_line>Evidence of similar crimes in child sexual offense cases (Supreme Court Rule 2:413 derived from this section)</catch_line>
+	<text>
+		<section prefix="A">In a criminal case in which the defendant is accused of a felony sexual offense involving a child victim, evidence of the defendant's conviction of another sexual offense or offenses is admissible and may be considered for its bearing on any matter to which it is relevant.
+		</section>
+		<section prefix="B">The Commonwealth shall provide to the defendant 14 days prior to trial notice of its intention to introduce copies of final orders evidencing the defendant's qualifying prior criminal convictions. Such notice shall include (i) the date of each prior conviction, (ii) the name and jurisdiction of the court where each prior conviction was obtained, and (iii) each offense of which the defendant was convicted. Prior to commencement of the trial, the Commonwealth shall provide to the defendant photocopies of certified copies of the final orders that it intends to introduce.
+		</section>
+		<section prefix="C">This section shall not be construed to limit the admission or consideration of evidence under any other section or rule of court.
+		</section>
+		<section prefix="D">For purposes of this section, "sexual offense" means any offense or any attempt or conspiracy to engage in any offense described in Article 7 (§ 18.2-61 et seq.) of Chapter 4 or § 18.2-370, 18.2-370.01, or 18.2-370.1 or any substantially similar offense under the laws of another state or territory of the United States, the District of Columbia, or the United States.
+		</section>
+		<section prefix="E">Evidence offered in a criminal case pursuant to the provisions of this section shall be subject to exclusion in accordance with the Virginia Rules of Evidence, including but not limited to Rule 2:403.
+		</section>
+	</text>
+	<history>2014, c. 782.</history>
+</law>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="9" level="3">Storage Tanks</unit>
+	</structure>
+	<section_number>62.1-44.34:9</section_number>
+	<catch_line>Powers and duties of Board</catch_line>
+	<text>
+		The Board is responsible for carrying out the provisions of this article and compatible provisions of federal acts and is authorized to:
+		<section prefix="1">Enforce the interim prohibition provisions in § 9003 (g) of United States Public Law 98-616. Until state underground storage tank standards promulgated by regulation become effective, the Board shall enforce the federal interim standard which prohibits installation of an underground storage tank for the purpose of storing regulated substances unless such tank:
+			a. Will prevent releases due to corrosion or structural failure for the operational life of the tank;
+			b. Is cathodically protected against corrosion, constructed of noncorrosive material, or designed in a manner to prevent the release or threatened release of any stored substance; and
+			c. The material used in the construction or lining of the tank is compatible with the substance to be stored.
+		</section>
+		<section prefix="2">Exercise general supervision and control over underground storage tank activities in this Commonwealth.
+		</section>
+		<section prefix="3">Provide technical assistance and advice concerning all aspects of underground storage tank management.
+		</section>
+		<section prefix="4">Collect such data and information as may be necessary to conduct the state underground storage tank program.
+		</section>
+		<section prefix="5">Apply for such federal funds as may become available under federal acts and transmit such funds to appropriate persons.
+		</section>
+		<section prefix="6">Require notification by owners of underground storage tanks in accordance with the provisions of § 9002 of United States Public Law 98-616.
+		</section>
+		<section prefix="7">Require notification by owners of property who have actual knowledge of underground storage tanks on such property that were taken out of service before January 1, 1974; however, the civil penalties specified in § 9006 (d) of United States Public Law 98-616 shall not apply to the foregoing notification requirement.
+		</section>
+		<section prefix="8">Promulgate such regulations as may be necessary to carry out its powers and duties with regard to underground storage tanks in accordance with applicable federal laws and regulations.
+		</section>
+		<section prefix="9">Require the owner or operator of an underground storage tank who is the responsible person for the release to undertake corrective action for any release of petroleum or any other regulated substance when the Board determines that such corrective action will be done properly and promptly by the owner or operator of the underground storage tank from which the release occurs, regardless of when the release occurred; or undertake corrective action for any release of petroleum or any other regulated substance into the environment from an underground storage tank if such action is necessary, in the judgment of the Board, to protect human health and the environment.
+		</section>
+		<section prefix="10">Seek recovery of costs incurred, excluding moneys expended from the Virginia Petroleum Storage Tank Fund which are governed by § 62.1-44.34:11, for undertaking corrective action or enforcement action with respect to the release of a regulated substance from an underground storage tank or oil from a facility.
+		</section>
+	</text>
+	<history>1987, c. 528; 1989, c. 430; 1992, c. 819; 1993, c. 231; 1996, c. 737.</history>
+</law>

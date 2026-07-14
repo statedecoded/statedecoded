@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:27.4</section_number>
+	<catch_line>Department acceptance of plans in lieu of plan review</catch_line>
+	<text>
+		<section prefix="A">Notwithstanding any other provision of this article, the Board, when administering a VSMP or VESMP pursuant to Article 2.3 (§ 62.1-44.15:24 et seq.), may choose to accept a set of plans and supporting calculations for any land-disturbing activity determined to be de minimis using a risk-based approach established by the Board.
+		</section>
+		<section prefix="B">The Board is authorized to accept such plans and supporting calculations in satisfaction of the requirement of this article that it retain a certified plan reviewer or conduct a plan review. This section shall not excuse any applicable performance bond requirement pursuant to § 62.1-44.15:34 or § 62.1-44.15:57.
+		</section>
+	</text>
+	<history>2020, c. 812.</history>
+</law>

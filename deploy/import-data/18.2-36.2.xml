@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-36.2</section_number>
+	<catch_line>Involuntary manslaughter; operating a watercraft while under the influence; penalties</catch_line>
+	<text>
+		<section prefix="A">Any person who, as a result of operating a watercraft or motorboat in violation of clause (ii), (iii), or (iv) of subsection B of § 29.1-738 or a similar local ordinance, unintentionally causes the death of another person, is guilty of involuntary manslaughter.
+		</section>
+		<section prefix="B">If, in addition, the conduct of the defendant was so gross, wanton, and culpable as to show a reckless disregard for human life, he shall be guilty of aggravated involuntary manslaughter, a felony punishable by a term of imprisonment of not less than one nor more than 20 years, one year of which shall be a mandatory minimum term of imprisonment.
+		</section>
+		<section prefix="C">The provisions of this section shall not preclude prosecution under any other homicide statute. The court shall order any person convicted under this section not to operate a watercraft or motorboat that is underway upon the waters of the Commonwealth. After five years have passed from the date of the conviction, the convicted person may petition the court that entered the conviction for the right to operate a watercraft or motorboat upon the waters of the Commonwealth. Upon consideration of such petition, the court may restore the right to operate a watercraft or motorboat subject to such terms and conditions as the court deems appropriate, including the successful completion of a water safety alcohol rehabilitation program described in § 29.1-738.5.
+		</section>
+	</text>
+	<history>2005, c. 376.</history>
+</law>

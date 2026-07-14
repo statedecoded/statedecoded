@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="1" level="4">Department and Commissioner of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-100</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this title, unless the context requires a different meaning:
+		"Board" means the Board of Agriculture and Consumer Services.
+		"Commissioner" means the Commissioner of Agriculture and Consumer Services.
+		"Department" means the Department of Agriculture and Consumer Services.
+	</text>
+	<history>2008, c. 860.</history>
+</law>

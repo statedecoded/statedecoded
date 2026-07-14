@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.2" level="3">Terrorism Offenses</unit>
+	</structure>
+	<section_number>18.2-46.6</section_number>
+	<catch_line>Possession, manufacture, distribution, etc., of weapon of terrorism or hoax device prohibited; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who, with the intent to commit an act of terrorism, possesses, uses, sells, gives, distributes or manufactures (i) a weapon of terrorism or (ii) a "fire bomb," "explosive material," or "device," as those terms are defined in § 18.2-85, is guilty of a Class 2 felony.
+		</section>
+		<section prefix="B">Any person who, with the intent to commit an act of terrorism, possesses, uses, sells, gives, distributes or manufactures any device or material that by its design, construction, content or characteristics appears to be or appears to contain a (i) weapon of terrorism or (ii) a "fire bomb," "explosive material," or "device," as those terms are defined in § 18.2-85, but that is an imitation of any such weapon of terrorism, "fire bomb," "explosive material," or "device" is guilty of a Class 3 felony.
+		</section>
+		<section prefix="C">Any person who, with the intent to (i) intimidate the civilian population, (ii) influence the conduct or activities of the government of the United States, a state or locality through intimidation, (iii) compel the emergency evacuation of any place of assembly, building or other structure or any means of mass transportation, or (iv) place any person in reasonable apprehension of bodily harm, uses, sells, gives, distributes or manufactures any device or material that by its design, construction, content or characteristics appears to be or appears to contain a weapon of terrorism, but that is an imitation of any such weapon of terrorism is guilty of a Class 6 felony.
+		</section>
+		<section prefix="D">Any person who knowingly and intentionally manufactures or knowingly and intentionally distributes a weapon of terrorism when such person knows that such weapon of terrorism is, or contains, any mixture or substance containing a detectable amount of fentanyl, including its isomers, esters, ethers, salts, and salts of isomers, as described in Schedule II of the Drug Control Act (§ 54.1-3400 et seq.) is guilty of a Class 4 felony.
+		</section>
+	</text>
+	<history>2002, cc. 588, 623; 2023, cc. 383, 384.</history>
+</law>

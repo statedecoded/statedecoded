@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.2" level="3">Terrorism Offenses</unit>
+	</structure>
+	<section_number>18.2-46.4</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this article, unless the context requires otherwise or it is otherwise provided:
+		"Act of terrorism" means an act of violence as defined in clause (i) of subdivision A of § 19.2-297.1 or an act that would be an act of violence if committed within the Commonwealth committed within or outside the Commonwealth with the intent to (i) intimidate a civilian population at large or (ii) influence the conduct or activities of a government, including the government of the United States, a state, or a locality, through intimidation.
+		"Base offense" means an act of violence as defined in clause (i) of subdivision A of § 19.2-297.1 committed with the intent required to commit an act of terrorism.
+		"Weapon of terrorism" means any device or material that is designed, intended or used to cause death, bodily injury or serious bodily harm, through the release, dissemination, or impact of (i) poisonous chemicals; (ii) an infectious biological substance; or (iii) release of radiation or radioactivity. "Weapon of terrorism" also means any mixture or substance containing a detectable amount of fentanyl, including its isomers, esters, ethers, salts, and salts of isomers, as described in Schedule II of the Drug Control Act (§ 54.1-3400 et seq.), except as authorized in the Drug Control Act.
+	</text>
+	<history>2002, cc. 588, 623; 2017, cc. 624, 668; 2023, cc. 383, 384.</history>
+</law>

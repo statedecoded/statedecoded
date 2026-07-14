@@ -3,11 +3,11 @@
 /**
  * The configuration file that drives The State Decoded.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
  *
  */
@@ -126,7 +126,7 @@ define('CURRENT_API_VERSION', '1.0');
  * Does this state's code include laws that have been repealed formally, and that are marked as
  * such?
  */
-define('INCLUDES_REPEALED', TRUE);
+define('INCLUDES_REPEALED', true);
 
 /*
  * Should we use short URLs or long URLs for laws? Short URLs are the default (e.g.,
@@ -134,7 +134,7 @@ define('INCLUDES_REPEALED', TRUE);
  * use long URLs (e.g. <http://example.com/56/21/12.3-45:67/>), which are URLs that incorporate
  * the structures that contain each law.
  */
-define('LAW_LONG_URLS', FALSE);
+define('LAW_LONG_URLS', false);
 
 /*
  * The DSN to connect to MySQL.
@@ -195,20 +195,20 @@ define('EMAIL_NAME', SITE_TITLE);
  * slow down page rendering time, but it does require a certain amount of system resources and
  * storage.
  */
-define('RECORD_VIEWS', TRUE);
+define('RECORD_VIEWS', true);
 
 /*
  * When embedding definitions for legal terms, should the terms in The State Decoded's built-in
  * legal dictionary be included? If this is set to FALSE, only the terms defined within this legal
  * code will appear as defined terms.
  */
-define('USE_GENERIC_TERMS', TRUE);
+define('USE_GENERIC_TERMS', true);
 
 /*
  * Solr configuration.
  */
 define('SEARCH_CONFIG', json_encode(
-	array(
+	[
 		// By default, we use Solr.  You can also use 'SqlSearchEngine'
 		// to just use the database search with no external search engine.
 		'engine' => 'SolrSearchEngine',
@@ -225,15 +225,15 @@ define('SEARCH_CONFIG', json_encode(
 		// We want to include the headers from Solr for error catching.
 		'omitheader' => false,
 		// Setup our local data to pass to the seach index.
-		'site' => array(
+		'site' => [
 			// On sites where multiple codes are stored in one Solr core, set
 			// a unique identifier for each site here.  You may also want to
 			// customize the default site name and url here.
 			'identifier' => 'statedecoded',
 			'name' => SITE_TITLE,
 			'url' => SITE_URL
-		)
-	)
+		]
+	]
 ));
 
 /*
@@ -256,13 +256,13 @@ define('API_KEY', '');
  * The version of The State Decoded that is installed. (This is populated automatically by the
  * upgrade script, and should not be modified manually.)
  */
-define('VERSION', '0.81');
+define('VERSION', '1.0');
 
 /*
  * Enabled plugins.
  */
 
-define('PLUGINS', json_encode(array(
+define('PLUGINS', json_encode([
 	'ExportJSON',
 	'ExportText',
 	'ExportSDXML',
@@ -278,7 +278,7 @@ define('PLUGINS', json_encode(array(
 	// pdflatex and pandoc are both needed to export PDFs!
 	// PDF generation is *VERY* slow, so you might not want this.
 	// 'ExportPDF'
-)));
+]));
 
 /*
  * If you want to enable Disqus <http://www.disqus.com/> commenting for every law, register for

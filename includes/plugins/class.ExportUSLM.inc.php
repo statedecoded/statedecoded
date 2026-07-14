@@ -3,11 +3,11 @@
 /**
  * USLM XML export.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  *
  */
@@ -18,7 +18,7 @@ class ExportUSLM extends Export
 	public $format = 'uslm';
 	public $extension = '.uslm.xml';
 
-	public function exportLaw($law, $dir, $url)
+	public function exportLaw($law, $dir, $url = null)
 	{
 		$path = $this->createExportDir($dir, $url);
 
@@ -140,8 +140,6 @@ class ExportUSLM extends Export
  		$content = $doc->createElement('content');
  		$section->appendChild($content);
 
- 		// TODO: Be smarter about handling this.  Just using raw HTML is not great,
- 		// we should be handling paragraphs properly.
 		$section_content = $doc->createCDATASection($law->html);
 		$content->appendChild($section_content);
 
@@ -157,8 +155,9 @@ class ExportUSLM extends Export
 		$dictionary = new Dictionary();
 		$dictionary->structure_id = $law->structure_id;
 		$dictionary->section_id = $law->section_id;
+		$terms = false;
 		$tmp = $dictionary->term_list();
-		if ($tmp !== FALSE)
+		if ($tmp !== false)
 		{
 			$terms = (array) $tmp;
 			unset($tmp);
@@ -167,7 +166,7 @@ class ExportUSLM extends Export
 		/*
 		 * If we've gotten a list of dictionary terms.
 		 */
-		if ( ($terms !== FALSE) && is_array($terms) )
+		if ( ($terms !== false) && is_array($terms) )
 		{
 			/*
 			 * Arrange our terms from longest to shortest. This is to ensure that the most specific
@@ -180,7 +179,7 @@ class ExportUSLM extends Export
 			 * Store a list of the dictionary terms as an array, which is required for
 			 * preg_replace_callback, the function that we use to insert the definitions.
 			 */
-			$term_pcres = array();
+			$term_pcres = [];
 			foreach ($terms as $term)
 			{
 
@@ -193,10 +192,10 @@ class ExportUSLM extends Export
 					 * If there are any uppercase characters, then make this PCRE string case
 					 * sensitive.
 					 */
-					if ( (ord($term{$i}) >= 65) && (ord($term{$i}) <= 90) )
+					if ( ctype_upper($term[$i]) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
-						$caps = TRUE;
+						$caps = true;
 						break;
 					}
 				}
@@ -226,7 +225,7 @@ class ExportUSLM extends Export
 		 * autoload a file fitting our class-name schema, since this class, if it exists, would be
 		 * found within class.[State].inc.php.
 		 */
-		if (class_exists('State_Autolinker', FALSE) === TRUE)
+		if (class_exists('State_Autolinker', false) === true)
 		{
 			$autolinker = new State_Autolinker;
 		}
@@ -246,14 +245,14 @@ class ExportUSLM extends Export
 			/*
 			 * Turn every code reference in every paragraph into a link.
 			 */
-			$section->text = preg_replace_callback(SECTION_REGEX, array($autolinker, 'replace_sections'), $section->text);
+			$section->text = preg_replace_callback(SECTION_REGEX, [$autolinker, 'replace_sections'], $section->text);
 
 			/*
 			 * Use our dictionary to embed dictionary terms in the form of span titles.
 			 */
-			if (isset($term_pcres))
+			if (!empty($term_pcres))
 			{
-				$section->text = preg_replace_callback($term_pcres, array($autolinker, 'replace_terms'), $section->text);
+				$section->text = preg_replace_callback($term_pcres, [$autolinker, 'replace_terms'], $section->text);
 			}
 		}
 

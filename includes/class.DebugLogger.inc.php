@@ -5,11 +5,11 @@
  *
  * Class to output debug messages in a given format.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.7
 */
 
@@ -51,7 +51,7 @@ class DebugLogger extends Logger
 	/**
 	 * Prints the message, adds the time elapsed and memory usage.
 	 */
-	public function message($msg, $level)
+	public function message($msg, $level = 1)
 	{
 	
 		echo $this->get_time_elapsed() . "ms ";
@@ -70,7 +70,7 @@ class DebugLogger extends Logger
 	 */
 	public function get_time()
 	{
-		return microtime(TRUE);
+		return microtime(true);
 	}
 
 	// }}}
@@ -84,7 +84,7 @@ class DebugLogger extends Logger
 	 *                      This log level must be greater than the log level
 	 *                      set on the class to actually be printed.
 	 */
-	public function get_time_elapsed($time)
+	public function get_time_elapsed($time = null)
 	{
 	
 		if(!$time)

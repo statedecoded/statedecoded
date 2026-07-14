@@ -3,20 +3,21 @@
 /**
  * The Structure class, for retrieving data about structural units (e.g., titles, chapters, etc.)
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
  *
  */
 
+#[\AllowDynamicProperties]
 class Structure
 {
 	protected $db;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key=>$value)
 		{
@@ -56,9 +57,9 @@ class Structure
 		 * Make sure that this URL is kosher.
 		 */
 		$this->url = filter_var($this->url, FILTER_SANITIZE_URL);
-		if ($this->url === FALSE)
+		if ($this->url === false)
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -72,14 +73,14 @@ class Structure
 		 * Get the url from the permalinks table
 		 */
 		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE url = :url';
-		$permalink_args = array('url' => $this->path);
+		$permalink_args = ['url' => $this->path];
 		$permalink_statement = $this->db->prepare($permalink_sql);
 
 		$result = $permalink_statement->execute($permalink_args);
 
-		if ( ($result === FALSE) || ($permalink_statement->rowCount() == 0) )
+		if ( ($result === false) || ($permalink_statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -97,7 +98,7 @@ class Structure
 		 */
 		$this->get_current();
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -107,14 +108,14 @@ class Structure
 	function token_to_structure($token)
 	{
 		$permalink_sql = 'SELECT relational_id FROM permalinks WHERE token = :token';
-		$permalink_args = array(':token' => $token);
+		$permalink_args = [':token' => $token];
 		$permalink_statement = $this->db->prepare($permalink_sql);
 
 		$result = $permalink_statement->execute($permalink_args);
 
-		if ( ($result === FALSE) || ($permalink_statement->rowCount() == 0) )
+		if ( ($result === false) || ($permalink_statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -132,7 +133,7 @@ class Structure
 		 */
 		$this->get_current();
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -183,7 +184,7 @@ class Structure
 		 * stored in structure_unified (the most specific structural units are in s1), the parent
 		 * is always found in s2.
 		 */
-		$sql_args = array();
+		$sql_args = [];
 		if (!empty($this->parent_id))
 		{
 
@@ -226,7 +227,9 @@ class Structure
 
 			/*
 			 * In case the order_by column is not populated, we go on to sort by the structure
-			 * identifer, by either Roman numerals or Arabic (traditional) numerals.
+			 * identifier. If a whole level uses Roman numerals, the caller may force that with
+			 * $this->sort; otherwise we detect Roman numerals per-row and convert them, falling
+			 * back to Arabic (traditional) numeral handling for everything else.
 			 */
 			if (isset($this->sort) && $this->sort == 'roman')
 			{
@@ -234,7 +237,10 @@ class Structure
 			}
 			else
 			{
-				$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
+				$sql .= 'CASE WHEN structure.identifier REGEXP "^[IVXLCDMivxlcdm]+$"
+						THEN fromRoman(structure.identifier)
+						ELSE structure.identifier+0 END ASC,
+					ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 					ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 			}
 
@@ -246,9 +252,9 @@ class Structure
 		/*
 		 * If the query fails, or if no results are found, return false -- we can't make a match.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -256,7 +262,7 @@ class Structure
 		 */
 		$this->siblings = $statement->fetchAll(PDO::FETCH_OBJ);
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -299,7 +305,7 @@ class Structure
 							ON laws.section = laws_views.section';
 		}
 
-		$sql_args = array();
+		$sql_args = [];
 
 		/*
 		 * Check edition.
@@ -332,7 +338,7 @@ class Structure
 			 * If this legal code continues to print repealed laws, then make sure that we're not
 			 * displaying any structural units that consist entirely of repealed laws.
 			 */
-			if (INCLUDES_REPEALED === TRUE)
+			if (INCLUDES_REPEALED === true)
 			{
 				$sql .= ' AND
 						((SELECT COUNT(*)
@@ -368,7 +374,9 @@ class Structure
 
 		/*
 		 * In case the order_by column is not populated, we go on to sort by the structure
-		 * identifer, by either Roman numerals or Arabic (traditional) numerals.
+		 * identifier. If a whole level uses Roman numerals, the caller may force that with
+		 * $this->sort; otherwise we detect Roman numerals per-row and convert them, falling
+		 * back to Arabic (traditional) numeral handling for everything else.
 		 */
 		if (isset($this->sort) && $this->sort == 'roman')
 		{
@@ -376,7 +384,10 @@ class Structure
 		}
 		else
 		{
-			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
+			$sql .= 'CASE WHEN structure.identifier REGEXP "^[IVXLCDMivxlcdm]+$"
+					THEN fromRoman(structure.identifier)
+					ELSE structure.identifier+0 END ASC,
+				ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
 
@@ -386,15 +397,15 @@ class Structure
 		/*
 		 * If the query fails, or if no results are found, return false -- we can't make a match.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
 		 * Instantiate the array we'll use to store and return the list of child structures.
 		 */
-		$children = array();
+		$children = [];
 
 		/*
 		 * Return the result as an object, built up as we loop through the results.
@@ -402,7 +413,11 @@ class Structure
 		$i=0;
 		while ($child = $statement->fetch(PDO::FETCH_OBJ))
 		{
-			$children[] = $this->get_by_id($child->s1_id);
+			$result = $this->get_by_id($child->s1_id);
+			if ($result !== false && $result->permalink !== false)
+			{
+				$children[] = $result;
+			}
 		}
 
 		return $children;
@@ -427,17 +442,17 @@ class Structure
 		$sql = 'SELECT structure_unified.*
 				FROM structure_unified
 				WHERE s1_id = :id';
-		$sql_args = array(
+		$sql_args = [
 			':id' => $id
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure_row = $statement->fetch(PDO::FETCH_OBJ);
@@ -445,7 +460,7 @@ class Structure
 		/*
 		 * Create a new, blank object.
 		 */
-		$structure = array();
+		$structure = [];
 
 		/*
 		 * Iterate through $structure, cell by cell.
@@ -514,7 +529,7 @@ class Structure
 		 */
 		if (!isset($this->id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -523,17 +538,17 @@ class Structure
 		$sql = 'SELECT identifier
 				FROM structure
 				WHERE id = :id';
-		$sql_args = array(
+		$sql_args = [
 			':id' => $this->id
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure = $statement->fetch(PDO::FETCH_OBJ);
@@ -554,7 +569,7 @@ class Structure
 		 */
 		if (!isset($this->identifier))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -564,18 +579,18 @@ class Structure
 				FROM structure
 				WHERE identifier = :identifier
 				AND structure.edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $this->identifier,
 			':edition_id' => $this->edition_id
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure = $statement->fetch(PDO::FETCH_OBJ);
@@ -596,7 +611,7 @@ class Structure
 		 */
 		if (!isset($this->id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -605,7 +620,7 @@ class Structure
 		 * should fail with the order_by field. The section column is not wholly reliable for
 		 * sorting (hence the order_by field), but it's a great deal better than an unsorted list.
 		 */
-		if (INCLUDES_REPEALED !== TRUE)
+		if (INCLUDES_REPEALED !== true)
 		{
 
 			$sql = 'SELECT laws.id, laws.structure_id, laws.section AS section_number, laws.catch_line,
@@ -617,11 +632,11 @@ class Structure
 					AND laws.edition_id = :edition_id
 					AND permalinks.preferred = 1
 					ORDER BY order_by, section';
-			$sql_args = array(
+			$sql_args = [
 				':object_type' => 'law',
 				':edition_id' => $this->edition_id,
 				':id' => $this->id
-			);
+			];
 		}
 
 		else
@@ -639,30 +654,30 @@ class Structure
 					AND laws.edition_id = :edition_id
 					AND permalinks.preferred = 1
 					ORDER BY order_by, section';
-			$sql_args = array(
+			$sql_args = [
 				':object_type' => 'law',
 				':edition_id' => $this->edition_id,
 				':id' => $this->id
-			);
+			];
 		}
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
 		 * Create a new, empty array.
 		 */
-		$laws = array();
+		$laws = [];
 
 		/*
 		 * Instantiate our laws class.
 		 */
-		$law = new Law(array('db' => $this->db));
+		$law = new Law(['db' => $this->db]);
 
 		/*
 		 * Return the result as an object, built up as we loop through the results.
@@ -698,9 +713,9 @@ class Structure
 	 */
 	public function get_all($edition_id, $result_handle_only = false)
 	{
-		$query_args = array(
+		$query_args = [
 			':edition_id' => $edition_id
-		);
+		];
 		$query = 'SELECT structure.id
 			FROM structure
 			WHERE edition_id = :edition_id';
@@ -729,9 +744,9 @@ class Structure
 			$statement = $this->db->prepare($query);
 		}
 
-		$query_args = array(
+		$query_args = [
 			':id' => $id
-		);
+		];
 		$result = $statement->execute($query_args);
 
 		if($result)
@@ -743,13 +758,13 @@ class Structure
 				$structure->metadata = unserialize($structure->metadata);
 			}
 
-			$permalink_obj = new Permalink(array('db' => $this->	db));
+			$permalink_obj = new Permalink(['db' => $this->	db]);
 			$structure->permalink = $permalink_obj->get_preferred($structure->id, 'structure', $structure->edition_id);
 
 			return $structure;
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -761,7 +776,7 @@ class Structure
 	 */
 	public function count($edition_id, $result_handle_only = false)
 	{
-		$query_args = array();
+		$query_args = [];
 		$query = 'SELECT count(*) AS count FROM structure ';
 		if($edition_id)
 		{

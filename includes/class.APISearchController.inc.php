@@ -3,11 +3,11 @@
 /**
  * The API's search method
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -29,38 +29,38 @@ class APISearchController extends BaseAPIController
 		/*
 		 * Clean up the search term.
 		 */
-		$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
+		$term = filter_var($args['term'], FILTER_DEFAULT);
 
 		/*
 		 * Determine if the search results should display detailed information about each law.
 		 */
 		if (!isset($_GET['detailed']) || empty($_GET['detailed']))
 		{
-			$detailed = FALSE;
+			$detailed = false;
 		}
 		else
 		{
 
-			$detailed = filter_var($_GET['detailed'], FILTER_SANITIZE_STRING);
+			$detailed = filter_var($_GET['detailed'], FILTER_DEFAULT);
 			if ($detailed == "true")
 			{
-				$detailed = TRUE;
+				$detailed = true;
 			}
 			elseif ($detailed != "false")
 			{
-				$detailed = FALSE;
+				$detailed = false;
 			}
 			else
 			{
-				$detailed = FALSE;
+				$detailed = false;
 			}
 
 		}
 
 		/*
-		 * Intialize Solarium.
+		 * Initialize Solarium.
 		 */
-		$client = new Solarium_Client($GLOBALS['solr_config']);
+		$client = SolrSearchEngine::make_client(json_decode(SEARCH_CONFIG, true));
 
 		/*
 		 * Set up our query.
@@ -89,6 +89,9 @@ class APISearchController extends BaseAPIController
 		 */
 		$highlighted = $search_results->getHighlighting();
 
+		$response = new stdClass();
+		$response->results = new stdClass();
+
 		/*
 		 * If there are no results.
 		 */
@@ -116,7 +119,7 @@ class APISearchController extends BaseAPIController
 		 */
 		$code_structures = array_slice(explode(',', STRUCTURE), 0, -1);
 
-		$i=0;
+		$i = 0;
 		foreach ($search_results as $document)
 		{
 
@@ -124,8 +127,14 @@ class APISearchController extends BaseAPIController
 			 * Attempt to display a snippet of the indexed law.
 			 */
 			$snippet = $highlighted->getResult($document->id);
-			if ($snippet != FALSE)
+			if ($snippet != false)
 			{
+
+				if (!isset($response->results->{$i}))
+				{
+					$response->results->{$i} = new stdClass();
+					$response->results->{$i}->excerpt = '';
+				}
 
 				/*
 				 * Build the snippet up from the snippet object.
@@ -152,7 +161,7 @@ class APISearchController extends BaseAPIController
 			/*
 			 * At the default level of verbosity, just give the data indexed by Solr, plus the URL.
 			 */
-			if ($detailed === FALSE)
+			if ($detailed === false)
 			{
 
 				/*
@@ -199,7 +208,7 @@ class APISearchController extends BaseAPIController
 			/*
 			 * Turn that list into an array.
 			 */
-			$returned_fields = explode(',', urldecode(filter_var($args['fields'], FILTER_SANITIZE_STRING)));
+			$returned_fields = explode(',', urldecode(filter_var($args['fields'], FILTER_DEFAULT)));
 			foreach ($returned_fields as &$field)
 			{
 				$field = trim($field);

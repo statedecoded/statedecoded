@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-37</section_number>
+	<catch_line>How and where homicide prosecuted and punished if death occur without the Commonwealth</catch_line>
+	<text>
+		If any person be stricken or poisoned in this Commonwealth, and die by reason thereof out of this Commonwealth, the offender shall be as guilty, and shall be prosecuted and punished, as if the death had occurred in the county or corporation in which the stroke or poison was given or administered.
+	</text>
+	<history>Code 1950, § 18.1-26; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

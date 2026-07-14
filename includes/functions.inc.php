@@ -3,18 +3,18 @@
 /**
  * The core function library for The State Decoded.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
 */
 
 /**
  * Autoload any class file when it is called.
  */
-function __autoload_libraries($class_name)
+function statedecoded_autoload_libraries($class_name)
 {
 
 	$filename = 'class.' . $class_name . '.inc.php';
@@ -28,7 +28,7 @@ function __autoload_libraries($class_name)
 			$path .= DIRECTORY_SEPARATOR;
 		}
 
-		if (file_exists($path . $filename) === TRUE)
+		if (file_exists($path . $filename) === true)
 		{
 			$result = include_once $path . $filename;
 			return;
@@ -37,7 +37,12 @@ function __autoload_libraries($class_name)
 
 }
 
-spl_autoload_register('__autoload_libraries');
+spl_autoload_register('statedecoded_autoload_libraries');
+
+if (file_exists(INCLUDE_PATH . '../vendor/autoload.php'))
+{
+	require_once INCLUDE_PATH . '../vendor/autoload.php';
+}
 
 
 /**
@@ -48,7 +53,7 @@ function fetch_url($url)
 
 	if (!isset($url))
 	{
-		return FALSE;
+		return false;
 	}
 
 	$ch = curl_init();
@@ -68,7 +73,6 @@ function fetch_url($url)
 	curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, $allowed_protocols & ~(CURLPROTO_FILE | CURLPROTO_SCP));
 
 	$html = curl_exec($ch);
-	curl_close($ch);
 	return $html;
 
 }
@@ -80,7 +84,46 @@ function fetch_url($url)
  */
 function valid_jsonp_callback($callback)
 {
-    return !preg_match( '/[^0-9a-zA-Z\$_]|^(abstract|boolean|break|byte|case|catch|char|class|const|continue|debugger|default|delete|do|double|else|enum|export|extends|false|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|true|try|typeof|var|volatile|void|while|with|NaN|Infinity|undefined)$/', $callback);
+	/*
+	 * JSONP callback names must be valid JavaScript identifiers and not reserved words.
+	 * This uses an allowlist approach rather than denylist to be more secure.
+	 * Valid: alphanumeric, underscore, dollar sign. Cannot start with digit.
+	 * Cannot be JavaScript reserved words.
+	 */
+	if (empty($callback) || strlen($callback) > 255)
+	{
+		return false;
+	}
+	
+	/*
+	 * Must be a valid JavaScript identifier.
+	 */
+	if (!preg_match('/^[a-zA-Z_$][a-zA-Z0-9_$]*$/', $callback))
+	{
+		return false;
+	}
+	
+	/*
+	 * Reject JavaScript reserved words and built-in global objects.
+	 */
+	$reserved = [
+		'abstract', 'arguments', 'await', 'boolean', 'break', 'byte', 'case', 'catch',
+		'char', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+		'double', 'else', 'enum', 'eval', 'export', 'extends', 'false', 'final',
+		'finally', 'float', 'for', 'function', 'goto', 'if', 'implements', 'import',
+		'in', 'instanceof', 'int', 'interface', 'let', 'long', 'native', 'new', 'null',
+		'package', 'private', 'protected', 'public', 'return', 'short', 'static',
+		'super', 'switch', 'synchronized', 'this', 'throw', 'throws', 'transient',
+		'true', 'try', 'typeof', 'var', 'void', 'volatile', 'while', 'with', 'yield',
+		'NaN', 'Infinity', 'undefined', 'window', 'document', 'console', 'alert'
+	];
+	
+	if (in_array(strtolower($callback), $reserved, true))
+	{
+		return false;
+	}
+	
+	return true;
 }
 
 
@@ -92,22 +135,21 @@ function json_error($text)
 
 	if (!isset($text))
 	{
-		return FALSE;
+		return false;
 	}
 
-	$error = array('error',
-		array(
+	$error = ['error',
+		[
 			'message' => 'An Error Occurred',
 			'details' => $text
-		)
-	);
+		]
+	];
 	$error = json_encode($error);
 
 	/*
-	 * Return a 400 "Bad Request" error. This indicates that the request was invalid. Whether this
-	 * is the best HTTP header is subject to debate.
+	 * Return a 400 "Bad Request" error. This indicates that the request was invalid.
 	 */
-	header("HTTP/1.0 400 OK");
+	header("HTTP/1.0 400 Bad Request");
 
 	/*
 	 * Send an HTTP header defining the content as JSON.
@@ -164,6 +206,9 @@ function sort_by_length($a, $b)
  */
 function wptexturize($text)
 {
+	if ($text === null) {
+		return '';
+	}
 
 	global $wp_cockneyreplace;
 	static $static_characters, $static_replacements, $dynamic_characters, $dynamic_replacements,
@@ -195,8 +240,8 @@ function wptexturize($text)
 		/* translators: em dash */
 		$em_dash = '&#8212;'; // em dash
 
-		$default_no_texturize_tags = array('pre', 'code', 'kbd', 'style', 'script', 'tt');
-		$default_no_texturize_shortcodes = array('code');
+		$default_no_texturize_tags = ['pre', 'code', 'kbd', 'style', 'script', 'tt'];
+		$default_no_texturize_shortcodes = ['code'];
 
 		// if a plugin has provided an autocorrect array, use it
 		if ( isset($wp_cockneyreplace) )
@@ -207,19 +252,19 @@ function wptexturize($text)
 
 		elseif ( "'" != $apos ) // Only bother if we're doing a replacement.
 		{
-			$cockney = array( "'tain't", "'twere", "'twas", "'tis", "'twill", "'til", "'bout", "'nuff", "'round", "'cause" );
-			$cockneyreplace = array( $apos . "tain" . $apos . "t", $apos . "twere", $apos . "twas", $apos . "tis", $apos . "twill", $apos . "til", $apos . "bout", $apos . "nuff", $apos . "round", $apos . "cause" );
+			$cockney = [ "'tain't", "'twere", "'twas", "'tis", "'twill", "'til", "'bout", "'nuff", "'round", "'cause" ];
+			$cockneyreplace = [ $apos . "tain" . $apos . "t", $apos . "twere", $apos . "twas", $apos . "tis", $apos . "twill", $apos . "til", $apos . "bout", $apos . "nuff", $apos . "round", $apos . "cause" ];
 		}
 
 		else
 		{
-			$cockney = $cockneyreplace = array();
+			$cockney = $cockneyreplace = [];
 		}
 
-		$static_characters = array_merge( array( '---', ' -- ', '--', ' - ', 'xn&#8211;', '...', '``', '\'\'', ' (tm)' ), $cockney );
-		$static_replacements = array_merge( array( $em_dash, ' ' . $em_dash . ' ', $en_dash, ' ' . $en_dash . ' ', 'xn--', '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ), $cockneyreplace );
+		$static_characters = array_merge( [ '---', ' -- ', '--', ' - ', 'xn&#8211;', '...', '``', '\'\'', ' (tm)' ], $cockney );
+		$static_replacements = array_merge( [ $em_dash, ' ' . $em_dash . ' ', $en_dash, ' ' . $en_dash . ' ', 'xn--', '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ], $cockneyreplace );
 
-		$dynamic = array();
+		$dynamic = [];
 		if ( "'" != $apos )
 		{
 			$dynamic[ '/\'(\d\d(?:&#8217;|\')?s)/' ] = $apos . '$1'; // '99's
@@ -251,8 +296,8 @@ function wptexturize($text)
 	$no_texturize_tags = '(' . implode('|', $default_no_texturize_tags ) . ')';
 	$no_texturize_shortcodes = '(' . implode('|', $default_no_texturize_shortcodes ) . ')';
 
-	$no_texturize_tags_stack = array();
-	$no_texturize_shortcodes_stack = array();
+	$no_texturize_tags_stack = [];
+	$no_texturize_shortcodes_stack = [];
 
 	$textarr = preg_split('/(<.*>|\[.*\])/Us', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -417,10 +462,9 @@ function check_dir_available($dirname, $writable=false)
  * By default, adds a trailing slash.
  */
 
-function join_paths()
+function join_paths(...$args)
 {
-	$args = func_get_args();
-	$paths = array();
+	$paths = [];
 
 	foreach($args as $arg) {
 		if(is_array($arg)) {
@@ -436,7 +480,7 @@ function join_paths()
 		$paths[$key] = rtrim($value, DIRECTORY_SEPARATOR);
 	}
 
-	$return_path = join(DIRECTORY_SEPARATOR, array_filter($paths));
+	$return_path = implode(DIRECTORY_SEPARATOR, array_filter($paths));
 
 	return $return_path;
 }
@@ -444,7 +488,7 @@ function join_paths()
 /*
  * Recursively get all files
  */
-function get_files($path, $files = array())
+function get_files($path, $files = [])
 {
 	if(substr($path, -1, 1) != '/')
 	{
@@ -453,7 +497,7 @@ function get_files($path, $files = array())
 
 	$directory = dir($path);
 
-	while (FALSE !== ($filename = $directory->read()))
+	while (false !== ($filename = $directory->read()))
 	{
 
 		$file_path = $path . $filename;
@@ -478,14 +522,26 @@ function get_files($path, $files = array())
  */
 function remove_dir($dir)
 {
-	if(defined('PHP_WINDOWS_VERSION_MAJOR'))
+	if (!is_dir($dir))
 	{
-		return system('rd /Q /S "' . $dir . '"');
+		return false;
 	}
-	else
+	$it = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+		RecursiveIteratorIterator::CHILD_FIRST
+	);
+	foreach ($it as $file)
 	{
-		return system('/bin/rm -rf ' . escapeshellarg($dir));
+		if ($file->isDir())
+		{
+			rmdir($file->getRealPath());
+		}
+		else
+		{
+			unlink($file->getRealPath());
+		}
 	}
+	return rmdir($dir);
 }
 
 /*
@@ -527,10 +583,7 @@ function html_entity_decode_object($obj)
  * From php.net: http://us2.php.net/manual/en/function.html-entity-decode.php#47371
  */
 function decode_entities($text) {
-    $text = html_entity_decode($text, ENT_QUOTES | ENT_XML1, "ISO-8859-1"); #NOTE: UTF-8 does not work!
-    // $text = preg_replace('/&#(\d+);/me',"chr(\\1)",$text); #decimal notation
-    // $text = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)",$text);  #hex notation
-    // $text = preg_replace('/&(?!#)/', '&amp;', $text);
+    $text = html_entity_decode($text, ENT_QUOTES | ENT_XML1, 'UTF-8');
     return $text;
 }
 
@@ -551,7 +604,7 @@ function html_convert_entities($string) {
  * destroys the character in the output - this is probably the
  * desired behaviour when producing XML. */
 function convert_entity($matches) {
-  static $table = array('quot'    => '&#34;',
+  static $table = ['quot'    => '&#34;',
                         'amp'      => '&#38;',
                         'lt'       => '&#60;',
                         'gt'       => '&#62;',
@@ -804,7 +857,7 @@ function convert_entity($matches) {
                         'thorn'    => '&#254;',
                         'yuml'     => '&#255;'
 
-                        );
+                        ];
   // Entity not found? Destroy it.
   return isset($table[$matches[1]]) ? $table[$matches[1]] : '';
 }
@@ -819,5 +872,5 @@ function str_splice($input, $start, $length, $replace)
 
 	// array_splice, unlike most functions, edits the element in-place.
 	array_splice($input, $start, $length, $replace);
-	return join( $input );
+	return implode( $input );
 }

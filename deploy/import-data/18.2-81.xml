@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-81</section_number>
+	<catch_line>Burning or destroying personal property, standing grain, etc</catch_line>
+	<text>
+		If any person maliciously, or with intent to defraud an insurance company or other person, set fire to or burn or destroy by any explosive device or substance, or cause to be burned, or destroyed by any explosive device or substance, or aid, counsel, or procure the burning or destroying by any explosive device or substance, of any personal property, standing grain or other crop, he shall, if the thing burnt or destroyed be of the value of $1,000 or more, be guilty of a Class 4 felony; and if the thing burnt or destroyed be of less value, he shall be guilty of a Class 1 misdemeanor.
+	</text>
+	<history>Code 1950, §§ 18.1-79, 18.1-85; 1960, c. 358; 1972, c. 53; 1975, cc. 14, 15; 1981, c. 197; 2018, cc. 764, 765; 2020, cc. 89, 401.</history>
+</law>

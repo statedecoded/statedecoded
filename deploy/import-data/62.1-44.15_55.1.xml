@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.4" level="3">Erosion and Sediment Control Law for Localities Not Administering a Virginia Erosion and Stormwater Management Program</unit>
+	</structure>
+	<section_number>62.1-44.15:55.1</section_number>
+	<catch_line>Department review of erosion and sediment control plans for solar projects</catch_line>
+	<text>
+		<section prefix="A">Any locality that does not operate a regulated MS4 and for which the Department did not administer a VSMP as of July 1, 2020, shall notify the Department if it decides to have the Department provide the locality with (i) review of the erosion and sediment control plan required by subsection A of § 62.1-44.15:55 and (ii) a recommendation on the plan's compliance with the requirements of this article and the Board's regulations, for any solar project and its associated infrastructure with a rated electrical generation capacity exceeding five megawatts.
+		</section>
+		<section prefix="B">The VESCP authority for a locality that notifies the Department pursuant to subsection A shall, within five days of receiving an erosion and sediment control plan, forward such plan to the Department for review. If a plan forwarded to the Department is incomplete, the Department shall return the plan to the VESCP authority immediately and the application process shall start over. If a plan forwarded to the Department is complete, the Department shall review it for compliance with the requirements of this article and the Board's regulations and provide a recommendation to the VESCP authority. The VESCP authority shall then (i) grant written approval of the plan or (ii) provide written notice of disapproval of the plan in accordance with subsection B of § 62.1-44.15:55.
+		</section>
+		<section prefix="C">The VESCP authority for a locality that notifies the Department pursuant to subsection A shall, within five days of receiving any resubmittal of a previously disapproved erosion and sediment control plan, forward such resubmitted plan to the Department. The Department shall review a resubmittal of a previously disapproved erosion and sediment control plan for compliance with the requirements of this article and the Board's regulations and provide a recommendation to the VESCP authority. The VESCP authority shall then (i) grant written approval of the plan or (ii) provide written notice of disapproval of the plan in accordance with subsection B of § 62.1-44.15:55.
+		</section>
+		<section prefix="D">The Department shall adopt a fee schedule and charge fees for conducting reviews pursuant to this section. The fees shall be charged to applicants and not to any VESCP authority. Such fees shall be remitted to the State Treasurer for deposit in the Fund established by subsection E. The amount of the fees shall be set at an amount representing no less than 60 percent, but not to exceed 62 percent, of the administrative and other costs to the Department of conducting such reviews.
+		</section>
+		<section prefix="E">There is hereby created in the state treasury a special nonreverting fund to be known as the Virginia Erosion and Sediment Control Fund, referred to in this section as "the Fund." The Fund shall be established on the books of the Comptroller. All moneys collected by the Department pursuant to this section and all other funds appropriated for such purpose and any gifts, donations, grants, bequests, and other funds received on its behalf shall be paid into the state treasury and credited to the Fund. Interest earned on moneys in the Fund shall remain in the Fund and be credited to it. Any moneys remaining in the Fund, including interest thereon, at the end of each fiscal year shall not revert to the general fund but shall remain in the Fund. Moneys in the Fund shall be used solely for the purposes of carrying out the Department's responsibilities pursuant to this section. Expenditures and disbursements from the Fund shall be made by the State Treasurer on warrants issued by the Comptroller upon written request signed by the Director.
+			An accounting of moneys received by and distributed from the Fund shall be kept by the State Comptroller.
+		</section>
+	</text>
+	<history>2021, Sp. Sess. I, c. 497.</history>
+</law>

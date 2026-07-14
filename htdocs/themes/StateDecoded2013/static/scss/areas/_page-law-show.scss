@@ -131,20 +131,24 @@
         &.indent-#{$num} {
           margin-left: $num * $indent;
         } // &-#{num}
-        $num: $num +1;
+        $num: $num + 1;
       } // @while
     }
 
     p {
       margin: 0 0 1.25em 0;
+
+      &:has(.prefix-number) {
+        padding-left: 2.5em;
+      }
     }
 
-
-
   .prefix-number {
+    display: inline-block;
     font-weight: bold;
-    float: left;
-    margin-right: 1em;
+    margin-left: -2.5em;
+    min-width: 2.5em;
+    vertical-align: top;
   }
 
 	.tabular {
@@ -165,7 +169,7 @@
 		top: 0;
 		height: 100%;
 		width: 30px;
-		@include background-image(linear-gradient(right, rgba(255,255,255,1), rgba(255,255,255,0.7) 50%, rgba(255,255,255,0)));
+		background-image: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0.7) 50%, rgba(255,255,255,0));
 	}
 
     span.dictionary {
@@ -195,9 +199,7 @@
       list-style: none;
     }
 
-    .identifier,
-    .title {
-      display: block;
+    li {
       margin: 1em 0 0;
     }
 
@@ -240,12 +242,11 @@
     .related-group,
     .info-box {
 
-  //    @include opacity(.5); // layer alpha
       border: 1px solid #e4e9e7; // stroke
       background-color: #fcfdfa; // layer fill content + color overlay
       box-shadow:inset 0 2px 20px rgba(111,114,117,.15); // inner shadow
       margin: 0 0 1em 0;
-      padding: 0;
+      padding: 0 0.75em 0 0;
       position: relative;
       text-align: left;
       width: 100%;
@@ -444,7 +445,7 @@
   margin-bottom: 0;
   padding-left: 0; // Override default ul/ol
   list-style: none;
-  @include clearfix();
+  @extend %clearfix;
 
   > li {
     position: relative;
@@ -590,10 +591,34 @@ $border-radius-base: 6px;
   background-image: url('../images/icon_pdf_32.png');
 }
 
+.file-xml a {
+  background-image: url('../images/icon_xml_32.png');
+}
+
+.file-html a {
+  background-image: url('../images/icon_html_32.png');
+}
+
 .section-permalink {
   text-decoration: none;
   opacity: 0;
   transition: opacity 0.25s;
+}
+// Briefly pulse green when the link has been copied to the clipboard,
+// staying visible even after the mouse leaves.
+.section-permalink.copied {
+  opacity: 1;
+}
+.section-permalink.copied i {
+  animation: section-permalink-copied 1.5s ease;
+}
+@keyframes section-permalink-copied {
+  0%, 100% {
+    color: inherit;
+  }
+  15% {
+    color: $success-text;
+  }
 }
 // If the permalink is inside of a section, we need to adjust it's position.
 // This only happens when the <p> tags are already in the content before it

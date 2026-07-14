@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="10" level="3">Petroleum Storage Tank Fund</unit>
+	</structure>
+	<section_number>62.1-44.34:10</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		The following terms as used in this article shall have the meanings ascribed to them:
+		"Aboveground storage tanks" means any one or combination of tanks, including pipes used to contain an accumulation of oil at atmospheric pressure, and the volume of which, including the volume of the pipes, is more than ninety percent above the surface of the ground. This term does not include (i) line pipe and breakout tanks of an interstate pipeline regulated under the Hazardous Liquid Pipeline Safety Act of 1979 or the Natural Gas Pipeline Safety Act of 1968, as amended, and (ii) flow through process equipment used in processing or treating oil by physical, biological, or chemical means.
+		"Facility" means any development or installation within the Commonwealth that deals in, stores or handles oil, and includes aboveground storage tanks. This term does not include underground storage tanks or pipelines.
+		"Fund" means the Virginia Petroleum Storage Tank Fund.
+		"Oil" means oil of any kind and in any form, including, but not limited to, petroleum and petroleum by-products, fuel oil, lubricating oils, sludge, oil refuse, oil mixed with other wastes, crude oils and all other liquid hydrocarbons regardless of specific gravity.
+		"Operator of a facility" means any person who owns, operates, rents or otherwise exercises control over or responsibility for a facility.
+		"Operator of an underground storage tank" means any person in control of, or having responsibility for, the daily operation of the underground storage tank.
+		"Owner of an underground storage tank" means:
+		<section prefix="1">In the case of an underground storage tank in use or brought into use on or after November 8, 1984, any person who owns an underground storage tank used for the storage, use or dispensing of regulated substances; and
+		</section>
+		<section prefix="2">In the case of an underground storage tank in use before November 8, 1984, but no longer in use after that date, any person who owned such tank immediately before the discontinuation of its use.
+			The term "owner" shall not include any person who, without participating in the management of an underground storage tank or being otherwise engaged in petroleum production, refining, and marketing, holds indicia of ownership primarily to protect the holder's security interest in the tank.
+			"Person" means an individual, trust, firm, joint stock company, corporation, including a government corporation, partnership, association, any state or agency thereof, municipality, county, town, commission, political subdivision of a state, any interstate body, consortium, joint venture, commercial entity, the government of the United States or any unit or agency thereof.
+			"Regulated substance" means an element, compound, mixture, solution, or substance that, when released into the environment, may present substantial danger to the public health or welfare, or the environment. The term "regulated substance" includes:
+		</section>
+		<section prefix="1">Any substance defined in § 101 (14) of the Comprehensive Environmental Response, Compensation, and Liability Act of 1980, but not any substance regulated as a hazardous waste under Subtitle C of the Resource Conservation and Recovery Act of 1976; or
+		</section>
+		<section prefix="2">Petroleum, including crude oil or any fraction thereof, which is liquid at standard conditions of temperature and pressure (sixty degrees F and 14.7 pounds per square inch absolute).
+			"Release" means any spilling, leaking, emitting, discharging, escaping, leaching, or disposing from an underground storage tank or facility into ground water, surface water, or upon lands, subsurface soils or storm drain systems.
+			"Responsible person" means any person who is an owner or operator of an underground storage tank or an aboveground storage tank at the time the release is reported to the Board.
+			"Underground storage tank" means any one or combination of tanks, including connecting pipes, used to contain an accumulation of regulated substances, and the volume of which, including the volume of the underground connecting pipes, is ten percent or more beneath the surface of the ground. Exemptions from this definition include:
+		</section>
+		<section prefix="1">Farm or residential tanks having a capacity of 1,100 gallons or less and used for storing motor fuel for noncommercial purposes;
+		</section>
+		<section prefix="2">Tanks used for storing heating oil for consumption on the premises where stored;
+		</section>
+		<section prefix="3">Septic tanks;
+		</section>
+		<section prefix="4">Pipeline facilities, including gathering lines, regulated under: (i) the Natural Gas Pipeline Safety Act of 1968, (ii) the Hazardous Liquid Pipeline Safety Act of 1979, or (iii) any intrastate pipeline facility regulated under state laws comparable to the provisions of law in (i) or (ii) of this definition;
+		</section>
+		<section prefix="5">Surface impoundments, pits, ponds, or lagoons;
+		</section>
+		<section prefix="6">Storm water or waste water collection systems;
+		</section>
+		<section prefix="7">Flow-through process tanks;
+		</section>
+		<section prefix="8">Liquid traps or associated gathering lines directly related to oil or gas production and gathering operations; and
+		</section>
+		<section prefix="9">Storage tanks situated in an underground area, such as a basement, cellar, mineworking, drift, shaft, or tunnel if the storage tank is situated upon or above the surface of the floor.
+		</section>
+	</text>
+	<history>1987, c. 677; 1989, cc. 430, 627; 1992, c. 819; 1996, cc. 737, 979.</history>
+</law>

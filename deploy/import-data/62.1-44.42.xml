@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.2" level="2">Conservation of Water Resources; State Water Control Board</unit>
+	</structure>
+	<section_number>62.1-44.42</section_number>
+	<catch_line>Cooperation with other agencies</catch_line>
+	<text>
+		<section prefix="1">In order to assist the Board in carrying out its functions as provided by law, the Board may:
+			<section prefix="a">Call upon the other agencies and political subdivisions of this Commonwealth to furnish or make available to the Board information concerning the water resources of this Commonwealth which such state agencies or political subdivisions have acquired or may acquire in the performance of their functions.
+			</section>
+			<section prefix="b">Cooperate with the other agencies or political subdivisions of the Commonwealth in utilizing the services, records and other facilities of such agencies or political subdivisions to the maximum extent practicable.
+			</section>
+		</section>
+		<section prefix="2">All officers and employees of the Commonwealth or the political subdivisions of the Commonwealth shall cooperate with the Board in the discharge of its duties and in effectuating the water resources policy of the Commonwealth.
+		</section>
+		<section prefix="3">Upon receipt and approval by the Board of a claim therefor, any special or extraordinary expense incurred by any other agency or political subdivision of this Commonwealth in cooperating with the Board under subsections (1) and (2) of this section shall be paid to such other agency or political subdivision of the Commonwealth.
+		</section>
+	</text>
+	<history>Code 1950, § 10-17.7; 1966, c. 561; 1972, c. 728.</history>
+</law>

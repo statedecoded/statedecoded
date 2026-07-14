@@ -3,11 +3,11 @@
 /**
  * The page that displays an individual structural unit.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
 */
 
@@ -16,7 +16,7 @@
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 
-$edition = new Edition(array('db' => $db));
+$edition = new Edition(['db' => $db]);
 
 /*
  * If no identifier has been specified, explicitly make it a null variable. This is when the request
@@ -36,13 +36,13 @@ else
 	/*
 	 * Localize the identifier, filtering out unsafe characters.
 	 */
-	$structure_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+	$structure_id = filter_var($args['relational_id'], FILTER_DEFAULT);
 }
 
 /*
  * Create a new instance of the class that handles information about individual laws.
  */
-$struct = new Structure(array('db' => $db));
+$struct = new Structure(['db' => $db]);
 
 if ( isset($args['edition_id']) )
 {
@@ -72,7 +72,7 @@ if ( !isset($args['id']) )
  * Set aside the ancestry for this structural unit, to be accessed separately.
  */
 // Again, if we at the top level, this will return null
-$structure = (isset($struct->structure) ? $struct->structure : '' );
+$structure = (isset($struct->structure) && is_array($struct->structure)) ? $struct->structure : [];
 
 /*
  * Get a listing of all the structural children of this portion of the structure.
@@ -124,7 +124,7 @@ if (count((array) $structure) > 1)
 			$active = 'active';
 		}
 
-		if(isset($level->metadata->admin_division) && $level->metadata->admin_division === TRUE)
+		if(isset($level->metadata->admin_division) && $level->metadata->admin_division === true)
 		{
 			$identifier = '<span>';
 		}
@@ -197,21 +197,27 @@ if (isset($struct->siblings))
 	foreach ($struct->siblings as $sibling)
 	{
 
-		if (isset($current_structure) && $sibling->id === $current_structure->id)
+		if (isset($current_structure) && $current_structure !== false && $sibling->id === $current_structure->id)
 		{
 
 			if ($i >= 1)
 			{
 				prev($struct->siblings);
 				$tmp = prev($struct->siblings);
-				$content->append('link_rel', '<link rel="prev" title="Previous" href="' . $tmp->url . '" />');
+				if ($tmp !== false)
+				{
+					$content->append('link_rel', '<link rel="prev" title="Previous" href="' . $tmp->url . '" />');
+				}
 			}
 
 			if ( $i < (count($struct->siblings)-1) )
 			{
 				next($struct->siblings);
 				$tmp = next($struct->siblings);
-				$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
+				if ($tmp !== false)
+				{
+					$content->append('link_rel', '<link rel="next" title="Next" href="' . $tmp->url . '" />');
+				}
 			}
 
 			break;
@@ -306,7 +312,7 @@ if (isset($struct->metadata))
 /*
  * If we have successfully gotten a list of child structural units, display them.
  */
-if ($children !== FALSE)
+if ($children !== false)
 {
 
 	/*
@@ -318,7 +324,7 @@ if ($children !== FALSE)
 
 		$api_url = '/api/1.0/structure/' . $child->permalink->token
 			 . '/?key=' . API_KEY;
-		if(isset($child->metadata->admin_division) && $child->metadata->admin_division === TRUE)
+		if(isset($child->metadata->admin_division) && $child->metadata->admin_division === true)
 		{
 			$identifier = '';
 		}
@@ -348,7 +354,7 @@ $laws = $struct->list_laws();
 /*
  * If we have successfully gotten a list of laws, display them.
  */
-if ($laws !== FALSE)
+if ($laws !== false)
 {
 
 	$body .= '<p>It’s comprised of the following ' . count($laws) . ' sections.</p>';
@@ -375,7 +381,7 @@ if ($laws !== FALSE)
  */
 if(strlen($structure_id) > 0)
 {
-	$permalink_obj = new Permalink(array('db' => $db));
+	$permalink_obj = new Permalink(['db' => $db]);
 	$permalink = $permalink_obj->get_permalink($struct->structure_id, 'structure', $struct->edition_id);
 	if($args['url'] !== $permalink->url)
 	{

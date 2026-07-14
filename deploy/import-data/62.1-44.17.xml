@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="3" level="3">Regulation of Industrial Establishments</unit>
+	</structure>
+	<section_number>62.1-44.17</section_number>
+	<catch_line>Other wastes</catch_line>
+	<text>
+		<section prefix="1">Any owner who handles, stores, distributes or produces other wastes as defined in § 62.1-44.3, any owner who causes or permits same to be handled, stored, distributed or produced or any owner upon or in whose establishment other wastes are handled, stored, distributed or produced shall upon request of the Board install facilities approved by the Board or adopt such measures approved by the Board as are necessary to prevent the escape, flow or discharge into any state waters when the escape, flow or discharge of such other wastes into any state waters would cause pollution of such state waters.
+		</section>
+		<section prefix="2">Any owner under this section requested by the Board to provide facilities or adopt such measures shall make application therefor to the Board. Such application shall be accompanied by a copy of pertinent plans, specifications, maps, and such other relevant information as may be required, in scope and details satisfactory to the Board.
+		</section>
+		<section prefix="3">The Board shall review the application and the information that accompanies it as soon as practicable and make a ruling within a period of four months from the date the application is filed with the Board approving or disapproving the application and stating the grounds for conditional approval or disapproval. If the application is approved, the Board shall grant a certificate for the handling, storing, distribution or production of such other wastes. If the application is disapproved, the Board shall notify the owner as to what measures the owner may take to secure approval.
+		</section>
+	</text>
+	<history>Code 1950, § 62.1-30; 1968, c. 659; 1970, c. 638.</history>
+</law>

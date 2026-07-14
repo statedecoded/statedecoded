@@ -7,30 +7,44 @@ class Migration_201402141654480001 extends DatabaseMigration
 	// Roll forward
 	public function up() {
 
-		$this->queue('ALTER TABLE `dictionary` ADD CONSTRAINT `dictionary_law` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
+		$this->queueConstraint('dictionary_law',
+			'ALTER TABLE `dictionary` ADD CONSTRAINT `dictionary_law` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
 
-		$this->queue('ALTER TABLE `laws` ADD CONSTRAINT `laws_structure` FOREIGN KEY `structure_id` (`structure_id`) REFERENCES `structure` (`id`) ON DELETE CASCADE');
-		$this->queue('ALTER TABLE `laws` ADD CONSTRAINT `laws_editions` FOREIGN KEY `edition_id` (`edition_id`) REFERENCES `editions` (`id`) ON DELETE CASCADE;');
+		$this->queueConstraint('laws_structure',
+			'ALTER TABLE `laws` ADD CONSTRAINT `laws_structure` FOREIGN KEY `structure_id` (`structure_id`) REFERENCES `structure` (`id`) ON DELETE CASCADE');
+		$this->queueConstraint('laws_editions',
+			'ALTER TABLE `laws` ADD CONSTRAINT `laws_editions` FOREIGN KEY `edition_id` (`edition_id`) REFERENCES `editions` (`id`) ON DELETE CASCADE');
 
-		$this->queue('ALTER TABLE `laws_meta` CHANGE `law_id` `law_id` INT UNSIGNED');
-		$this->queue('ALTER TABLE `laws_meta` ADD CONSTRAINT `laws_meta_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE;');
+		$this->queueColumnType('laws_meta', 'law_id', 'int unsigned',
+			'ALTER TABLE `laws_meta` CHANGE `law_id` `law_id` INT UNSIGNED');
+		$this->queueConstraint('laws_meta_laws',
+			'ALTER TABLE `laws_meta` ADD CONSTRAINT `laws_meta_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
 
-		$this->queue('ALTER TABLE `laws_references` ADD CONSTRAINT `laws_references_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
+		$this->queueConstraint('laws_references_laws',
+			'ALTER TABLE `laws_references` ADD CONSTRAINT `laws_references_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
 
 		// Skip `laws_views` for now.
 
-		$this->queue('ALTER TABLE `permalinks` ADD `edition_id` INT UNSIGNED');
-		$this->queue('ALTER TABLE `permalinks` ADD INDEX `edition_id` (`edition_id`)');
-		$this->queue('ALTER TABLE `permalinks` ADD CONSTRAINT `permalinks_editions` FOREIGN KEY `edition_id` (`edition_id`) REFERENCES `editions` (`id`) ON DELETE CASCADE');
+		$this->queueColumn('permalinks', 'edition_id',
+			'ALTER TABLE `permalinks` ADD `edition_id` INT UNSIGNED');
+		$this->queueIndex('permalinks', 'edition_id',
+			'ALTER TABLE `permalinks` ADD INDEX `edition_id` (`edition_id`)');
+		$this->queueConstraint('permalinks_editions',
+			'ALTER TABLE `permalinks` ADD CONSTRAINT `permalinks_editions` FOREIGN KEY `edition_id` (`edition_id`) REFERENCES `editions` (`id`) ON DELETE CASCADE');
 
-		$this->queue('ALTER TABLE `structure` ADD CONSTRAINT `structure_editions` FOREIGN KEY `edition_id` (`edition_id`) REFERENCES `editions` (`id`) ON DELETE CASCADE');
+		$this->queueConstraint('structure_editions',
+			'ALTER TABLE `structure` ADD CONSTRAINT `structure_editions` FOREIGN KEY `edition_id` (`edition_id`) REFERENCES `editions` (`id`) ON DELETE CASCADE');
 
-		$this->queue('ALTER TABLE `tags` CHANGE `law_id` `law_id` INT UNSIGNED');
-		$this->queue('ALTER TABLE `tags` ADD CONSTRAINT `tags_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
+		$this->queueColumnType('tags', 'law_id', 'int unsigned',
+			'ALTER TABLE `tags` CHANGE `law_id` `law_id` INT UNSIGNED');
+		$this->queueConstraint('tags_laws',
+			'ALTER TABLE `tags` ADD CONSTRAINT `tags_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
 
-		$this->queue('ALTER TABLE `text` ADD CONSTRAINT `text_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
+		$this->queueConstraint('text_laws',
+			'ALTER TABLE `text` ADD CONSTRAINT `text_laws` FOREIGN KEY `law_id` (`law_id`) REFERENCES `laws` (`id`) ON DELETE CASCADE');
 
-		$this->queue('ALTER TABLE `text_sections` ADD CONSTRAINT `text_sections_text` FOREIGN KEY `text_id` (`text_id`) REFERENCES `text` (`id`) ON DELETE CASCADE');
+		$this->queueConstraint('text_sections_text',
+			'ALTER TABLE `text_sections` ADD CONSTRAINT `text_sections_text` FOREIGN KEY `text_id` (`text_id`) REFERENCES `text` (`id`) ON DELETE CASCADE');
 
 		$this->execute();
 	}

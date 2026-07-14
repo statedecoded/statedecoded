@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:26.1</section_number>
+	<catch_line>Termination of Construction General Permit coverage</catch_line>
+	<text>
+		<section prefix="A">A VSMP authority shall recommend that the Department of Environmental Quality terminate coverage under a General Permit for Discharges of Stormwater from Construction Activities (Construction General Permit) within 60 days of receiving a complete notice of termination from the operator of the construction activity.
+		</section>
+		<section prefix="B">Coverage under a Construction General Permit shall be deemed to be terminated 90 days after the receipt by the VSMP authority of a complete notice of termination from the operator of the construction activity.
+		</section>
+		<section prefix="C">If a VSMP authority receives a notice of termination of a Construction General Permit that it determines to be incomplete, the VSMP authority shall, within a reasonable time, inform the operator of the construction activity of such incompleteness and provide the operator with a detailed list itemizing the elements of information that are missing from the notice.
+		</section>
+	</text>
+	<history>2018, c. 630.</history>
+</law>

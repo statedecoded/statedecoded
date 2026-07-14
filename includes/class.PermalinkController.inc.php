@@ -5,11 +5,11 @@
  *
  * This controller will catch any routes in the permalinks table.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -24,22 +24,25 @@ class PermalinkController extends BaseController
 		{
 			$route = $this->find_route($args['route']);
 
-			/*
-			 * Try to intelligently determine if there's a matching controller
-			 */
-			$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
-				'Controller';
+			if ($route !== false)
+			{
+				/*
+				 * Try to intelligently determine if there's a matching controller
+				 */
+				$object_name = str_replace(' ', '', ucwords($route['object_type'])) .
+					'Controller';
 
-			try {
-				if (class_exists($object_name) !== FALSE)
-				{
-					$controller = new $object_name($this->local);
+				try {
+					if (class_exists($object_name) !== false)
+					{
+						$controller = new $object_name($this->local);
 
-					return $controller->handle($route);
+						return $controller->handle($route);
+					}
 				}
-			}
-			catch (Exception $error) {
-				return $this->handleNotFound($args);
+				catch (Exception $error) {
+					return $this->handleNotFound($args);
+				}
 			}
 		}
 
@@ -52,7 +55,7 @@ class PermalinkController extends BaseController
 
 	public function find_route($url)
 	{
-		$route = FALSE;
+		$route = false;
 
 		global $db;
 
@@ -62,16 +65,16 @@ class PermalinkController extends BaseController
 		$sql = 'SELECT *
 				FROM permalinks
 				WHERE url = :url';
-		$sql_args = array(
+		$sql_args = [
 			':url' => $url
-		);
+		];
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 		/*
 		 * If we found a route
 		 */
-		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+		if ( ($result !== false) && ($statement->rowCount() > 0) )
 		{
 			if($statement->rowCount() > 1)
 			{
@@ -86,7 +89,7 @@ class PermalinkController extends BaseController
 					if(!$route)
 					{
 						$route = $permalink;
-						$route['relational_id'] = array($route['relational_id']);
+						$route['relational_id'] = [$route['relational_id']];
 					}
 					else
 					{

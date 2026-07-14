@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.7" level="2">Chesapeake Bay and Virginia Waters Clean-Up and Oversight Act</unit>
+	</structure>
+	<section_number>62.1-44.117</section_number>
+	<catch_line>Development of an impaired waters clean-up plan; strategies; objectives</catch_line>
+	<text>
+		<section prefix="A">The Secretary of Natural and Historic Resources shall develop a plan for the cleanup of the Chesapeake Bay and Virginia's waters designated as impaired by the U.S. Environmental Protection Agency. The plan shall be revised and amended as needed to reflect changes in strategies, timetables, and milestones. Upon the request of the Secretary of Natural and Historic Resources, state agencies shall participate in the development of the plan.
+		</section>
+		<section prefix="B">The plan shall address both point and nonpoint sources of pollution and shall include, but not be limited to the following:
+			<section prefix="1">Measurable and attainable objectives for cleaning up the Chesapeake Bay and other impaired Virginia waters;
+			</section>
+			<section prefix="2">A description of the strategies to be implemented to meet specific and attainable objectives outlined in the plan;
+			</section>
+			<section prefix="3">Time frames or phasing to accomplish plan objectives and the expected dates of completion;
+			</section>
+			<section prefix="4">A clearly defined, prioritized, and sufficiently funded program of work within the plan both for point and nonpoint source clean-up projects;
+			</section>
+			<section prefix="5">A disbursement projection plan detailing the expenditures for point and nonpoint projects and whenever possible, a listing of the specific projects to which the funds are to be allocated;
+			</section>
+			<section prefix="6">Potential problem areas where delays in the implementation of the plan may occur;
+			</section>
+			<section prefix="7">A risk mitigation strategy designed to reduce the potential problems that might delay plan implementation;
+			</section>
+			<section prefix="8">A description of the extent of coordination between state and local governments in developing and achieving the plan's objectives;
+			</section>
+			<section prefix="9">Assessments of alternative funding mechanisms, that shall include but not be limited to the feasibility of utilizing the Virginia Resources Authority, that would address the needs of the Commonwealth to handle and appropriate state funds prudently and efficiently and address the needs of localities to achieve their goals in a timely and affordable manner; and
+			</section>
+			<section prefix="10">Recommendations to the oversight committees, as defined in § 62.1-44.118, for legislative action.
+			</section>
+		</section>
+		<section prefix="C">In reporting and documenting progress being made in clean-up efforts to the oversight committees, the plan shall include measures to assess the progress in accomplishing the program of work outlined in the plan. Special emphasis shall be given to the identification of trends that are either positively or negatively impacting plan accomplishment. These shall include, but are not limited to:
+			<section prefix="1">Stream miles added and removed from the 303(d) list under the federal Clean Water Act; waters meeting water quality standards; and total reductions of nitrogen, phosphorus, and sediment by tributary basin from point and nonpoint sources of pollution;
+			</section>
+			<section prefix="2">Scope of water quality monitoring of rivers, streams, estuaries, and lakes and the cumulative number of miles or acres assessed to evaluate the effectiveness of the efforts to restore impaired waters;
+			</section>
+			<section prefix="3">Number of best management practices (BMP) implemented; participation level in BMP cost-share programs; number of Total Maximum Daily Loads developed and implemented; local compliance levels with nonpoint programs, such as erosion and sediment control, stormwater management, and the Chesapeake Bay Preservation Act; number of wastewater treatment upgrades underway and number completed; and levels of compliance with nutrient-based permit limits; and
+			</section>
+			<section prefix="4">Updated or new strategies that would permit the optimal use of resources to meet plan objectives as the plan is revised over time.
+				For the purposes of this chapter "impaired waters" means those waters as defined in § 62.1-44.19:4.
+			</section>
+		</section>
+	</text>
+	<history>2006, c. 204; 2021, Sp. Sess. I, c. 401.</history>
+</law>

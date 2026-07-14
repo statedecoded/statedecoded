@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="5" level="2">Prevention of Frauds in Sale of Leaf Tobacco</unit>
+	</structure>
+	<section_number>61.1-53</section_number>
+	<catch_line>"Warehouseman" defined</catch_line>
+	<text>
+		The term "warehouseman" as used in this chapter means any person, firm or corporation engaged in the business of selling leaf tobacco at auction, for a commission or for any other consideration.
+	</text>
+	<history>Code 1950, § 61-152; 1968, c. 69.</history>
+</law>

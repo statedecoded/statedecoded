@@ -4,7 +4,7 @@ require_once(INCLUDE_PATH . '/class.DatabaseMigration.inc.php');
 
 class Migration_201607201956460001 extends DatabaseMigration
 {
-	public $tables = array(
+	public $tables = [
 		'dictionary',
 		'dictionary_general',
 		'editions',
@@ -13,7 +13,7 @@ class Migration_201607201956460001 extends DatabaseMigration
 		'tags',
 		'text',
 		'text_sections',
-	);
+	];
 
 	// Roll forward
 	public function up() {

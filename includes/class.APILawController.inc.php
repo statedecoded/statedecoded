@@ -3,11 +3,11 @@
 /**
  * The API's law class
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.6
  *
  */
@@ -24,13 +24,13 @@ class APILawController extends BaseAPIController
 		/*
 		 * Instruct the Law class on what, specifically, it should retrieve.
 		 */
-		$laws->config->get_text = TRUE;
-		$laws->config->get_structure = TRUE;
-		$laws->config->get_amendment_attempts = FALSE;
-		$laws->config->get_court_decisions = TRUE;
-		$laws->config->get_metadata = TRUE;
-		$laws->config->get_references = TRUE;
-		$laws->config->get_related_laws = TRUE;
+		$laws->config->get_text = true;
+		$laws->config->get_structure = true;
+		$laws->config->get_amendment_attempts = false;
+		$laws->config->get_court_decisions = true;
+		$laws->config->get_metadata = true;
+		$laws->config->get_references = true;
+		$laws->config->get_related_laws = true;
 
 		/*
 		 * Pass the requested section number to Law.

@@ -3,11 +3,11 @@
 /**
  * The page that displays an individual law.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
 */
 
@@ -16,13 +16,13 @@
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 
-$edition = new Edition(array('db' => $db));
+$edition = new Edition(['db' => $db]);
 
 /*
  * Allow multiple laws.
  */
-$laws = array();
-$titles = array();
+$laws = [];
+$titles = [];
 
 /*
  * Use the ID passed to look up the law.
@@ -38,7 +38,7 @@ if ( isset($args['relational_id']) )
 			{
 				$law_object->edition_id = $args['edition_id'];
 			}
-			$law_object->law_id = filter_var($relational_id, FILTER_SANITIZE_STRING);
+			$law_object->law_id = filter_var($relational_id, FILTER_DEFAULT);
 
 			$law = $law_object->get_law();
 			$laws[] = clone($law);
@@ -49,7 +49,7 @@ if ( isset($args['relational_id']) )
 	else
 	{
 		$law_object = new Law();
-		$law_object->law_id = filter_var($args['relational_id'], FILTER_SANITIZE_STRING);
+		$law_object->law_id = filter_var($args['relational_id'], FILTER_DEFAULT);
 		$laws[] = $law_object->get_law();
 		$titles[] = $laws[0]->catch_line;
 	}
@@ -126,7 +126,7 @@ else
 if (is_object($laws[0]->dublin_core))
 {
 	$content->set('meta_tags', '');
-	foreach ($laws[0]->dublin_core AS $name => $value)
+	foreach ($laws[0]->dublin_core as $name => $value)
 	{
 		$content->append('meta_tags', '<meta name="DC.' . $name . '" content="' . $value . '" />');
 	}
@@ -138,7 +138,7 @@ if (is_object($laws[0]->dublin_core))
 $content->set('breadcrumbs', '');
 foreach (array_reverse((array) $laws[0]->ancestry) as $ancestor)
 {
-	if(isset($ancestor->metadata->admin_division) && $ancestor->metadata->admin_division === TRUE)
+	if(isset($ancestor->metadata->admin_division) && $ancestor->metadata->admin_division === true)
 	{
 		$identifier = '<span>';
 	}
@@ -306,7 +306,7 @@ $sidebar = '';
 /*
  * Commenting functionality.
  */
-if (defined('DISQUS_SHORTNAME') === TRUE)
+if (defined('DISQUS_SHORTNAME') === true)
 {
 	$body .= "<section id=\"comments\">
 		<h2>Comments</h2>
@@ -353,7 +353,7 @@ $sidebar .= '<section class="info-box" id="explanation">
 /*
  * Display links to share this law via social services.
  */
-if (defined('SOCIAL_LINKS') == TRUE)
+if (defined('SOCIAL_LINKS') == true)
 {
 	$sidebar .= '<section class="info-box" id="social">
 				<h1>Share</h1>
@@ -392,7 +392,7 @@ $sidebar .= '<p class="keyboard"><a class="helpbutton" data-help="keyboard" id="
 /*
  * If this section has been cited in any court decisions, list them.
  */
-if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
+if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != false) )
 {
 
 	$sidebar .= '<section class="info-box" id="court-decisions">
@@ -415,8 +415,8 @@ if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
 	$sidebar .= '</ul>
 
 				<p><small>Court opinions are provided by <a
-				href="http://www.courtlistener.com/">CourtListener</a>, which is
-				developed by the <a href="http://freelawproject.org/">Free Law
+				href="https://www.courtlistener.com/">CourtListener</a>, which is
+				developed by the <a href="https://freelawproject.org/">Free Law
 				Project</a>.</small></p>
 
 			</section>';
@@ -427,10 +427,10 @@ if ( isset($laws[0]->court_decisions) && ($laws[0]->court_decisions != FALSE) )
 /*
  * If any legislation has attempted to amend this law, list it.
  */
-if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != FALSE) )
+if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != false) )
 {
 
-	$sidebar .= '<section class="grid-box grid-sizer" id="amendment-attempts">
+	$sidebar .= '<section class="info-box" id="amendment-attempts">
 				<h1>Amendment Attempts</h1>
 				<ul>';
 
@@ -455,7 +455,7 @@ if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != FAL
 /*
  * If we have a list of cross-references, list them.
  */
-if ($laws[0]->references !== FALSE)
+if ($laws[0]->references !== false)
 {
 
 	$sidebar .= '
@@ -466,8 +466,8 @@ if ($laws[0]->references !== FALSE)
 	{
 		$sidebar .= '<li><span class="identifier">'
 			. SECTION_SYMBOL . '&nbsp;<a href="' . $reference->url . '" class="law">'
-			. $reference->section_number . '</a></span>
-			<span class="title">' . $reference->catch_line . '</li>';
+			. $reference->section_number . '</a></span>: '
+			. '<span class="title">' . $reference->catch_line . '</span></li>';
 	}
 	$sidebar .= '</ul>
 			</section>';
@@ -482,9 +482,9 @@ if ($laws[0]->references !== FALSE)
 try
 {
 	$search_client = new SearchIndex(
-		array(
-			'config' => json_decode(SEARCH_CONFIG, TRUE)
-		)
+		[
+			'config' => json_decode(SEARCH_CONFIG, true)
+		]
 	);
 
 	$related_laws = $search_client->find_related($laws[0], 3);

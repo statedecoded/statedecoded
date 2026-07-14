@@ -8,7 +8,7 @@ class HelpAction extends CliAction
 	static public $name = 'help';
 	static public $summary = 'Gives info about available commands.';
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 
 		if(isset($args[0]))
@@ -25,6 +25,7 @@ class HelpAction extends CliAction
 
 	public function showDefaultHelp()
 	{
+		$actions = [];
 		$name_length = 0;
 
 		$local_dir = dirname(__FILE__);
@@ -85,8 +86,10 @@ EOS;
 		return $return_value;
 	}
 
-	public function showHelp($args = array())
+	public function showHelp($args = [])
 	{
+		$obj = null;
+		$file = null;
 		if($action_info = TaskRunner::parseActionInfo($args[0]))
 		{
 			list($obj, $file) = $action_info;

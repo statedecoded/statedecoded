@@ -3,21 +3,22 @@
 /**
  * The Edition class, for retrieving data about available editions.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  *
  */
 
+#[\AllowDynamicProperties]
 class Edition
 {
 	protected $db;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		/*
 		 * Set our defaults
@@ -44,9 +45,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -65,9 +66,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -86,9 +87,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -106,9 +107,9 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -125,13 +126,13 @@ class Edition
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
-			$editions = array();
+			$editions = [];
 			$editions = $statement->fetchAll(PDO::FETCH_OBJ);
 		}
 		return $editions;
@@ -146,7 +147,7 @@ class Edition
 		$result = $statement->execute();
 
 
-		if ($result === FALSE || $statement->rowCount() == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
 			$count = 0;
 		}
@@ -157,7 +158,7 @@ class Edition
 		return $count;
 	}
 
-	public function update_last_import($edition_id, $datetime = FALSE)
+	public function update_last_import($edition_id, $datetime = false)
 	{
 		$sql = 'UPDATE editions
 				SET last_import = :last_import
@@ -198,28 +199,28 @@ class Edition
 			$edition['order_by'] = $this->get_max_order() + 1;
 		}
 
-		$sql_args = array(
+		$sql_args = [
 			':name' => $edition['name'],
 			':slug' => $edition['slug'],
 			':current' => $edition['current'],
 			':order_by' => $edition['order_by']
-		);
+		];
 		$result = $statement->execute($sql_args);
 
-		if ($result !== FALSE)
+		if ($result !== false)
 		{
 			return $this->db->lastInsertId();
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
 	public function delete($slug)
 	{
 		$sql = 'DELETE FROM editions WHERE slug = :slug';
-		$sql_args = array(':slug' => $slug);
+		$sql_args = [':slug' => $slug];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -227,13 +228,13 @@ class Edition
 		return $result;
 	}
 
-	public function unset_current($exception = FALSE)
+	public function unset_current($exception = false)
 	{
 		$sql = 'UPDATE editions
 				SET current = :current';
-		$sql_args = array(
+		$sql_args = [
 			':current' => 0
-		);
+		];
 
 		if($exception)
 		{
@@ -252,10 +253,10 @@ class Edition
 		$sql = 'UPDATE editions
 				SET current = :current
 				WHERE slug = :slug ';
-		$sql_args = array(
+		$sql_args = [
 			':current' => 1,
 			':slug' => $slug
-		);
+		];
 
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -270,7 +271,7 @@ class Edition
 				ORDER BY order_by';
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute();
-		if ($result !== FALSE && $statement->rowCount() > 0)
+		if ($result !== false && $statement->rowCount() > 0)
 		{
 			$edition_row = $statement->fetch(PDO::FETCH_ASSOC);
 			return (int) $edition_row['order_by'];

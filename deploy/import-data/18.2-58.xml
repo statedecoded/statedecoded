@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="5" level="3">Robbery</unit>
+	</structure>
+	<section_number>18.2-58</section_number>
+	<catch_line>Robbery; penalties</catch_line>
+	<text>
+		<section prefix="A">For the purposes of this section, "serious bodily injury" means the same as that term is defined in § 18.2-51.4.
+		</section>
+		<section prefix="B">Any person who commits robbery is guilty of a felony and shall be punished as follows:
+			<section prefix="1">Any person who commits robbery and causes serious bodily injury to or the death of any other person is guilty of a Class 2 felony.
+			</section>
+			<section prefix="2">Any person who commits robbery by using or displaying a firearm, as defined in § 18.2-308.2:2, in a threatening manner is guilty of a Class 3 felony.
+			</section>
+			<section prefix="3">Any person who commits robbery by using physical force not resulting in serious bodily injury or by using or displaying a deadly weapon other than a firearm in a threatening manner is guilty of a Class 5 felony.
+			</section>
+			<section prefix="4">Any person who commits robbery by using threat or intimidation or any other means not involving a deadly weapon is guilty of a Class 6 felony.
+			</section>
+		</section>
+	</text>
+	<history>Code 1950, § 18.1-91; 1960, c. 358; 1966, c. 361; 1975, cc. 14, 15, 605; 1978, c. 608; 2021, Sp. Sess. I, c. 534.</history>
+</law>

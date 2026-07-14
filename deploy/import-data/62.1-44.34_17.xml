@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="11" level="3">Discharge of Oil Into Waters</unit>
+	</structure>
+	<section_number>62.1-44.34:17</section_number>
+	<catch_line>Exemptions</catch_line>
+	<text>
+		<section prefix="A">Sections 62.1-44.34:15 and 62.1-44.34:16 do not apply to a facility having a maximum storage or handling capacity of less than 25,000 gallons of oil or to a tank vessel having a maximum storage, handling or transporting capacity of less than 15,000 gallons of oil or to a tank used to contain oil for less than 120 days and only in connection with activities related to the containment and cleanup of oil or to any vessel engaged only in activities within state waters related to the containment and cleanup of oil, including response-related training or drills.
+		</section>
+		<section prefix="B">Facilities having a maximum storage or handling capacity of between 25,000 gallons and one million gallons of oil shall be exempt until July 1, 1993, from any requirement under § 62.1-44.34:15 to install ground water monitoring wells or other ground water protection devices.
+		</section>
+		<section prefix="C">For purposes of §§ 62.1-44.34:15 and 62.1-44.34:16, the definition of oil does not include nonpetroleum hydrocarbon-based animal and vegetable oils, or petroleum, including crude oil or any fraction thereof, which is specifically listed or designated as a hazardous substance under subparagraphs (A) through (F) of section 101 (14) of the Comprehensive Environmental Response, Compensation, and Liability Act (42 U.S.C. § 9601) and which is subject to the provisions of that Act.
+		</section>
+		<section prefix="D">Facilities not engaged in the resale of oil from aboveground storage tanks shall not be subject to regulations promulgated pursuant to § 62.1-44.34:15.1 until July 1, 1995, or any date later specified by the Board.
+		</section>
+		<section prefix="E">Aboveground storage tanks with a capacity of 5,000 gallons or less containing heating oil for consumption on the premises where stored shall be exempt from the provisions of § 62.1-44.34:15.1.
+		</section>
+		<section prefix="F">For purposes of §§ 62.1-44.34:15.1 and 62.1-44.34:16, and for the purposes of any requirement under § 62.1-44.34:15 to install ground water monitoring wells, ground water protection devices, or to conduct ground water characterization studies, the definition of oil does not include asphalt and asphalt compounds which are not liquid at standard conditions of temperature and pressure (sixty degrees Fahrenheit and 14.7 pounds per square inch absolute).
+		</section>
+	</text>
+	<history>1990, c. 917; 1992, c. 456; 1994, cc. 277, 460.</history>
+</law>

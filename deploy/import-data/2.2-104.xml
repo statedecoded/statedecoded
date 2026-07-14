@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-104</section_number>
+	<catch_line>Delegation of powers</catch_line>
+	<text>
+		The Governor may designate and empower any secretary or other officer in the executive branch of state government who is required to be confirmed by the General Assembly or either house thereof, to perform without approval, ratification, or other action by the Governor any function that is vested in the Governor by law, or which such officer is required or authorized by law to perform only with or subject to the approval, ratification of the Governor; however nothing contained in this section shall relieve the Governor of his responsibility in office for the acts of any secretary or officer designated by him to perform such functions. Any designation or authorization under this section shall be (i) in the form of a written executive order, (ii) subject to the terms, conditions, and limitations the Governor deems advisable, and (iii) revocable in whole or in part at any time by the Governor.
+	</text>
+	<history>1976, c. 731, § 2.1-39.1; 2001, c. 844.</history>
+</law>

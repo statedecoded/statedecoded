@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:4.1</section_number>
+	<catch_line>Listing and notice of confirmed oil releases and discharges</catch_line>
+	<text>
+		The Department of Environmental Quality shall notify the Department of Health of any confirmed release or discharge of oil, as defined in §§ 62.1-44.34:8 and 62.1-44.34:14, respectively, which requires that a site characterization investigation be conducted. Monthly notification to the Department of Health shall occur within one week from the last day of the previous month and shall include information on the location of the site of each confirmed release or discharge during the monthly reporting period. The reporting of such information shall begin for releases or discharges of oil that have been confirmed on and after January 1, 1999.
+	</text>
+	<history>1998, c. 795.</history>
+</law>

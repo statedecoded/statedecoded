@@ -5,4 +5,26 @@
     padding: 5px;
     text-decoration: none;
   }
+
+  /*
+   * Size the first column (the section/structure identifier) to its content so
+   * identifiers like "§ 2-1900" sit on a single line instead of wrapping in an
+   * over-narrow column, while letting the second column (the name) take the
+   * remaining space.
+   *
+   * "max-width" caps how wide that column can grow, so a pathologically long
+   * identifier on a narrow (mobile) viewport can't push the table wider than
+   * the page; past the cap "word-break: break-word" wraps the identifier onto
+   * additional lines rather than clipping it.
+   *
+   * Note: we deliberately do NOT set "width: 1%" here. Combining "width: 1%"
+   * with a word-break rule collapses the column to its single-character
+   * minimum width (every identifier wraps one letter per line). Relying on
+   * "max-width" alone keeps ordinary identifiers on one line and only wraps an
+   * over-cap value.
+   */
+  td:first-child {
+    max-width: 12em;
+    word-break: break-word;
+  }
 }

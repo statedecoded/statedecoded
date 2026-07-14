@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="3" level="3">Larceny and Receiving Stolen Goods</unit>
+	</structure>
+	<section_number>18.2-98.1</section_number>
+	<catch_line>Repealed</catch_line>
+	<text>
+		Repealed by Acts 1984, c. 751.
+	</text>
+	<history></history>
+</law>

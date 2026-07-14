@@ -4,13 +4,13 @@ require_once(INCLUDE_PATH . '/class.DatabaseMigration.inc.php');
 
 class Migration_201410201839150001 extends DatabaseMigration
 {
-	public $tables = array(
+	public $tables = [
 		'laws_references',
 		'text',
 		'text_sections',
 		'tags',
 		'laws_meta'
-	);
+	];
 
 	// Roll forward
 	public function up() {
@@ -18,11 +18,12 @@ class Migration_201410201839150001 extends DatabaseMigration
 		// Add edition_id to tables.
 		foreach($this->tables as $table)
 		{
-			$this->queue('ALTER TABLE `'. $table . '` ' .
-				'ADD `edition_id` INT UNSIGNED');
-			$this->queue('ALTER TABLE `'. $table . '` ' .
-				'ADD INDEX `edition_id` (`edition_id`)');
-			$this->queue('ALTER TABLE `'. $table . '` ' .
+			$this->queueColumn($table, 'edition_id',
+				'ALTER TABLE `'. $table . '` ADD `edition_id` INT UNSIGNED');
+			$this->queueIndex($table, 'edition_id',
+				'ALTER TABLE `'. $table . '` ADD INDEX `edition_id` (`edition_id`)');
+			$this->queueConstraint($table . '_editions',
+				'ALTER TABLE `'. $table . '` ' .
 				'ADD CONSTRAINT `'. $table . '_editions` ' .
 				'FOREIGN KEY `edition_id` (`edition_id`) ' .
 				'REFERENCES `editions` (`id`) ON DELETE CASCADE');

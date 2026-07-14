@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:5.3</section_number>
+	<catch_line>Requirements to test for PFAS chemicals; publicly owned treatment works</catch_line>
+	<text>
+		<section prefix="A">As used in this section, "PFAS chemical" means (i) Perfluorooctanoic Acid (PFOA), (ii) Perfluorooctane Sulfonate (PFOS), (iii) hexafluoropropylene oxide dimer acid (HFPO-DA), (iv) perfluorobutane sulfonate (PFBS), or (v) any substance in a class of fluorinated organic chemicals containing at least two adjacent fluorinated carbon atoms, where one carbon atom is fully fluorinated and the other atom is at least partially fluorinated, excluding gases and volatile liquids, also referred to as perfluoroalkyl and polyfluoroalkyl substances, identified by a publicly owned treatment works in its pretreatment program for which there is an EPA approved testing method.
+		</section>
+		<section prefix="B">The pretreatment standards adopted by the Board shall require any industrial user of a publicly owned treatment works that receives and cleans, repairs, refurbishes, or processes any equipment, parts, or media used to treat any water or wastewater from any off-site manufacturing process that the industrial user knows or reasonably should know uses PFAS chemicals to test its wastestream for PFAS chemicals prior to and after cleaning, repairing, refurbishing, or processing such items. The results of such tests shall be transmitted to the receiving publicly owned treatment works within three days of receipt of the test results by the industrial user of the publicly owned treatment works.
+		</section>
+	</text>
+	<history>2023, c. 276.</history>
+</law>

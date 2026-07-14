@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="5" level="3">Enforcement and Appeal Procedure</unit>
+	</structure>
+	<section_number>62.1-44.23:1</section_number>
+	<catch_line>Intervention of Commonwealth in actions involving surface water withdrawals</catch_line>
+	<text>
+		The Board, in representing the public's interest, shall have the authority and standing to intervene as an interested party in any civil action, including actions both within and without the Commonwealth, pertaining to the withdrawal of any of the surface waters of the Commonwealth.
+	</text>
+	<history>1989, c. 218.</history>
+</law>

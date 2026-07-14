@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="5" level="3">Enforcement and Appeal Procedure</unit>
+	</structure>
+	<section_number>62.1-44.27</section_number>
+	<catch_line>Rules of evidence in hearings</catch_line>
+	<text>
+		In all hearings under this chapter:
+		<section prefix="1">All relevant and material evidence shall be received, except that (a) the rules relating to privileged communications and privileged topics shall be observed; (b) hearsay evidence shall be received only if the declarant is not readily available as a witness; and (c) secondary evidence of the contents of a document shall be received only if the original is not readily available. In deciding whether a witness or document is readily available, the Board or hearing officer shall balance the importance of the evidence against the difficulty of obtaining it, and the more important the evidence is the more effort should be made to produce the eyewitness or the original document.
+		</section>
+		<section prefix="2">All reports of inspectors and subordinates of the Board and other records and documents in the possession of the Board bearing on the case shall be introduced by the Board at the hearing.
+		</section>
+		<section prefix="3">Subject to the provisions of subdivision (1) of this section every party shall have the right to cross-examine adverse witnesses and any inspector or subordinate of the Board whose report is in evidence and to submit rebuttal evidence.
+		</section>
+		<section prefix="4">The decision of the Board shall be based only on evidence received at the hearing and matters of which a court of record could take judicial notice.
+		</section>
+	</text>
+	<history>1970, c. 638.</history>
+</law>

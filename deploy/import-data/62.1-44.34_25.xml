@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="12" level="3">Virginia Spill Response Council</unit>
+	</structure>
+	<section_number>62.1-44.34:25</section_number>
+	<catch_line>Virginia Spill Response Council created; purpose; membership</catch_line>
+	<text>
+		<section prefix="A">There is hereby created the Virginia Spill Response Council. The purpose of the Council is to (i) improve the Commonwealth's capability to respond in a timely and coordinated fashion to incidents involving the discharge of oil or hazardous materials which pose a threat to the environment, its living resources, and the health, safety, and welfare of the people of the Commonwealth and (ii) provide an ongoing forum for discussions between agencies which are charged with the prevention of, and response to, oil spills and hazardous materials incidents, and those agencies responsible for the remediation of such incidents.
+		</section>
+		<section prefix="B">The Secretary of Natural and Historic Resources and the Secretary of Public Safety and Homeland Security, upon the advice of the director of the agency, shall select one representative from each of the following agencies to serve as a member of the Council: Department of Emergency Management, State Water Control Board, Department of Environmental Quality, Virginia Marine Resources Commission, Department of Wildlife Resources, Department of Health, Department of Fire Programs, and the Council on the Environment.
+		</section>
+		<section prefix="C">The Secretary of Natural and Historic Resources or his designee shall serve as chairman of the Council.
+		</section>
+	</text>
+	<history>1990, c. 598; 1991, c. 66; 2014, cc. 115, 490; 2020, c. 958; 2021, Sp. Sess. I, c. 401.</history>
+</law>

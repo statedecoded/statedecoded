@@ -31,7 +31,7 @@ $bar-color: $base;
   margin-bottom: 20px;
   background-color: $gray;
   border-radius: 5px;
-  @include box-shadow(inset 0 1px 2px rgba(0,0,0,.1));
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
 }
 
 
@@ -45,8 +45,8 @@ $bar-color: $base;
   color: $white;
   text-align: center;
   background-color: $bar-color;
-  @include box-shadow(inset 0 -1px 0 rgba(0,0,0,.15));
-  @include transition(width .6s ease);
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+  transition: width .6s ease;
 
   span {
     position: absolute;
@@ -73,7 +73,7 @@ $bar-color: $base;
 // `.progress-bar.active` approach.
 .progress.active .progress-bar,
 .progress-bar.active {
-  @include animation(progress-bar-stripes 2s linear infinite);
+  animation: progress-bar-stripes 2s linear infinite;
 }
 
 .progress-bar-done {

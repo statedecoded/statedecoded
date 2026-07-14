@@ -3,11 +3,11 @@
 /**
  * The administrative interface
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
  *
  */
@@ -19,7 +19,7 @@
 /*
  * Log parser output.
  */
-$logger_args = array('html' => TRUE);
+$logger_args = ['html' => true];
 if(defined('DEBUG_LEVEL'))
 {
 	$logger_args['level'] = DEBUG_LEVEL;
@@ -30,11 +30,11 @@ $logger = new Logger($logger_args);
  * Require that the user log in.
  */
 if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
-    $_SERVER['PHP_AUTH_USER'] != ADMIN_USERNAME || $_SERVER['PHP_AUTH_PW'] != ADMIN_PASSWORD)
+    !hash_equals(ADMIN_USERNAME, $_SERVER['PHP_AUTH_USER']) || !hash_equals(ADMIN_PASSWORD, $_SERVER['PHP_AUTH_PW']))
 {
 
-    Header('WWW-Authenticate: Basic realm="The State Decoded Admin"');
-    Header('HTTP/1.0 401 Unauthorized');
+    header('WWW-Authenticate: Basic realm="The State Decoded Admin"');
+    header('HTTP/1.0 401 Unauthorized');
 
     echo '<html><body>
         <h1>Rejected</h1>
@@ -49,11 +49,11 @@ if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']) ||
  */
 
 $parser = new ParserController(
-	array(
+	[
 		'logger' => $logger,
 		'db' => &$db,
 		'import_data_dir' => IMPORT_DATA_DIR
-	)
+	]
 );
 
 if (isset($_GET['noframe']))
@@ -75,6 +75,9 @@ if (isset($_GET['noframe']))
 
 }
 
+$body = '';
+$action = $_POST['action'] ?? '';
+
 /*
  * When first loading the page, show options.
  */
@@ -87,7 +90,7 @@ if (count($_POST) === 0)
 	}
 	elseif ($_GET['page'] == 'parse' )
 	{
-		$parser->logger->flush_buffer = FALSE;
+		$parser->logger->flush_buffer = false;
 
 		if(!$parser->check_db_populated())
 		{
@@ -155,16 +158,16 @@ if (count($_POST) === 0)
 /*
  * If we're doing the initial setup.
  */
-elseif ($_POST['action'] == 'setup')
+elseif ($action == 'setup')
 {
 		/*
 	 * Step through each parser method.
 	 */
-	if ($parser->test_environment() !== FALSE)
+	if ($parser->test_environment() !== false)
 	{
 		$body = '<p>Environment test succeeded</p>';
 
-		if ($parser->populate_db() !== FALSE)
+		if ($parser->populate_db() !== false)
 		{
 			$body .= '<p>Database successfully setup.</p>';
 
@@ -197,7 +200,7 @@ elseif ($_POST['action'] == 'setup')
 	}
 }
 
-elseif ($_POST['action'] == 'update_db')
+elseif ($action == 'update_db')
 {
 	$body .= $parser->run_migrations();
 	$body .= '<p>Migration complete.</p>';
@@ -207,7 +210,7 @@ elseif ($_POST['action'] == 'update_db')
 /*
  * If the request is to empty the database.
  */
-elseif ($_POST['action'] == 'empty')
+elseif ($action == 'empty')
 {
 
 	echo 'Emptying the database<br />';
@@ -237,23 +240,23 @@ elseif ($_POST['action'] == 'empty')
 /*
  * Else if we're actually running the parser.
  */
-elseif ($_POST['action'] == 'parse')
+elseif ($action == 'parse')
 {
 	define('EXPORT_IN_PROGRESS', true);
 
 	echo 'Beginning import<br />';
 	flush();
-	ob_flush();
+	if (ob_get_level() > 0) { ob_flush(); }
 
 	/*
 	 * Step through each parser method.
 	 */
-	if ($parser->test_environment() !== FALSE)
+	if ($parser->test_environment() !== false)
 	{
 
 		echo 'Environment test succeeded<br />';
 
-		if ($parser->populate_db() !== FALSE)
+		if ($parser->populate_db() !== false)
 		{
 
 			$edition_errors = $parser->handle_editions($_POST);
@@ -272,7 +275,7 @@ elseif ($_POST['action'] == 'parse')
 
 
 				$parser->clear_cache();
-				$parser->clear_edition($_POST['edition']);
+				$parser->clear_edition($_POST['edition'] ?? null);
 
 				/*
 				 * We should only continue if parsing was successful.
@@ -302,7 +305,7 @@ elseif ($_POST['action'] == 'parse')
 
 		else
 		{
-			$this->logger->message('The database isn\'t populated.  Please run the setup function.', 10);
+			$logger->message('The database isn\'t populated.  Please run the setup function.', 10);
 		}
 	}
 
@@ -317,7 +320,7 @@ elseif ($_POST['action'] == 'parse')
 
 }
 
-elseif ($_POST['action'] == 'permalinks')
+elseif ($action == 'permalinks')
 {
 
 	ob_start();
@@ -335,7 +338,25 @@ elseif ($_POST['action'] == 'permalinks')
 
 }
 
-elseif ($_POST['action'] == 'cache')
+elseif ($action == 'export')
+{
+
+	ob_start();
+
+	echo 'Beginning export<br />';
+
+	$parser->export();
+
+	echo 'Done<br />';
+
+	echo '<br /><a href="/admin/?page=parse&amp;noframe=1">Back</a>';
+
+	$body = ob_get_contents();
+	ob_end_clean();
+
+}
+
+elseif ($action == 'cache')
 {
 
 	ob_start();
@@ -353,7 +374,7 @@ elseif ($_POST['action'] == 'cache')
 
 }
 
-elseif ($_POST['action'] == 'test_environment')
+elseif ($action == 'test_environment')
 {
 
 	ob_start();
@@ -364,7 +385,7 @@ elseif ($_POST['action'] == 'test_environment')
 
 	echo 'Done. ';
 
-	if ($result === TRUE)
+	if ($result === true)
 	{
 		echo 'No errors detected.<br/>';
 	}
@@ -426,31 +447,32 @@ else
 
 }
 
-function show_admin_forms($args = array())
+function show_admin_forms($args = [])
 {
 
 	global $db;
-	$edition = new Edition(array('db' => $db));
+	$edition = new Edition(['db' => $db]);
 
 	try {
 		$editions = $edition->all();
 	}
 	catch(Exception $exception) {
-		$editions = FALSE;
+		$editions = false;
 	}
 
-	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
+	$server_port = $_SERVER['SERVER_PORT'] ?? 80;
+	if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($server_port == 443) )
 	{
-		$base_url = 'https://';
+		$edition_url_base = 'https://';
 	}
 	else
 	{
 		$edition_url_base = 'http://';
 	}
-	$edition_url_base .= $_SERVER['SERVER_NAME'];
-	if ($_SERVER['SERVER_PORT'] != 80)
+	$edition_url_base .= $_SERVER['SERVER_NAME'] ?? 'localhost';
+	if ($server_port != 80)
 	{
-		$edition_url_base .= ':' . $_SERVER['SERVER_PORT'];
+		$edition_url_base .= ':' . $server_port;
 	}
 	$edition_url_base .= '/';
 
@@ -510,7 +532,7 @@ function show_admin_forms($args = array())
 				<input type="radio" class="radio" name="edition_option"
 					id="edition_option_existing" value="existing"';
 
-	if ( !isset($editions) || ($editions === FALSE) )
+	if ( !isset($editions) || ($editions === false) )
 	{
 		$body .= 'disabled="disabled"';
 	}
@@ -521,7 +543,7 @@ function show_admin_forms($args = array())
 
 	$body .= '/><label for="edition_option_existing">I want to update an existing edition of the laws.</label>';
 
-	if ($editions !== FALSE)
+	if ($editions !== false)
 	{
 
 		$body .= '<div class="suboption">
@@ -576,7 +598,7 @@ function show_admin_forms($args = array())
 		</p>';
 
 
-	if ($editions !== FALSE)
+	if ($editions !== false)
 	{
 
 		$body .= '<div class="suboption">

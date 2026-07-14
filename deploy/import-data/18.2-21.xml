@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="2" level="2">Principals and Accessories</unit>
+	</structure>
+	<section_number>18.2-21</section_number>
+	<catch_line>When and where accessories tried; how indicted</catch_line>
+	<text>
+		An accessory, either before or after the fact, may, whether the principal felon be convicted or not, or be amenable to justice or not, be indicted, tried, convicted and punished in the county or corporation in which he became accessory, or in which the principal felon might be indicted. Any such accessory before the fact may be indicted either with such principal or separately.
+	</text>
+	<history>Code 1950, § 18.1-13; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

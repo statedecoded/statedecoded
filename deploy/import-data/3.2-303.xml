@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="3.1" level="3">Governor's Agriculture and Forestry Industries Development Fund</unit>
+	</structure>
+	<section_number>3.2-303</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this chapter, unless the context requires a different meaning:
+		"Agricultural products" means crops, livestock, and livestock products, including field crops, fruits, vegetables, horticultural specialties, cattle, sheep, hogs, goats, horses, poultry, fur-bearing animals, milk, eggs, aquaculture, commercially harvested wild fish, commercially harvested wild shellfish, and furs.
+		"Agriculture and forestry processing/value-added facilities" means any for-profit or nonprofit business that creates value-added agricultural or forestal products.
+		"Food hub" means a business or organization that actively manages the aggregation, distribution, and marketing of food products primarily from local and regional producers to strengthen such producers' ability to satisfy wholesale, retail, and institutional demand.
+		"Forestal products" means saw timber, pulpwood, posts, firewood, Christmas trees, and other tree and wood products for sale or for farm use.
+		"Fund" means the Governor's Agriculture and Forestry Industries Development Fund established pursuant to § 3.2-304.
+		"Local Grant Program" means the Local Food and Farming Infrastructure Grant Program established pursuant to § 3.2-311.
+		"New job" means employment of an indefinite duration, created as the direct result of the private investment, for which the firm pays the wages and standard fringe benefits for its employee, requiring a minimum of either (i) 35 hours of the employee's time a week for the entire normal year of the firm's operations, which "normal year" shall consist of at least 48 weeks, or (ii) 1,680 hours per year. Seasonal or temporary positions, positions created when a job function is shifted from an existing location in the Commonwealth to the location of the economic development project, positions with suppliers, and multiplier or spin-off jobs shall not qualify as new jobs. The term "new job" shall include positions with contractors provided that all requirements included within the definition of the term are met.
+		"Planning Grant Program" means the Agriculture and Forestry Industries Development Planning Grant Program established pursuant to § 3.2-310.
+		"Prevailing average wage" means that amount determined by the Virginia Employment Commission to be the average wage paid workers in the city or county of the Commonwealth where the economic development project is located. The prevailing average wage shall be determined without regard to any fringe benefits.
+		"Private investment" means the private investment required under this chapter.
+		"Value-added agricultural or forestal products" means any agricultural or forestal product that (i) has undergone a change in physical state; (ii) was produced in a manner that enhances the value of the agricultural commodity or product; (iii) is physically segregated in a manner that results in the enhancement of the value of the agricultural or forestal product; (iv) is a source of renewable energy; or (v) is aggregated and marketed as a locally produced agricultural or forestal product.
+	</text>
+	<history>2012, cc. 466, 622; 2016, c. 169; 2020, c. 1220; 2021, Sp. Sess. I, c. 185.</history>
+</law>

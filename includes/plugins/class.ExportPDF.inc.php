@@ -3,11 +3,11 @@
 /**
  * EPUB export.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL 3
  * @version   1.0
- * @link    http://www.statedecoded.com/
+ * @link    https://www.statedecoded.com/
  * @since   0.9
  */
 
@@ -18,11 +18,11 @@ class ExportPDF extends PandocExport
 	public $extension = '.pdf';
   public $description = 'All of the laws in one large PDF.';
 
-	public $listeners = array(
+	public $listeners = [
 		'HTMLExportLaw',
 		'HTMLExportStructure',
 		'HTMLFinishExport',
     'postGetLaw',
     'showBulkDownload'
-	);
+	];
 }

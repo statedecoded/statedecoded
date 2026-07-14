@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:01</section_number>
+	<catch_line>Further duties of Board; localities particularly affected</catch_line>
+	<text>
+		<section prefix="A">After June 30, 1994, before promulgating any regulation under consideration or granting any variance to an existing regulation, or issuing any permit, if the Board finds that there are localities particularly affected by the regulation, variance or permit, the Board shall:
+			<section prefix="1">Publish, or require the applicant to publish, a notice in a local paper of general circulation in the localities affected at least 30 days prior to the close of any public comment period. Such notice shall contain a statement of the estimated local impact of the proposed action, which at a minimum shall include information on the specific pollutants involved and the total quantity of each that may be discharged.
+			</section>
+			<section prefix="2">Mail the notice to the chief elected official and chief administrative officer and planning district commission for those localities.
+				Written comments shall be accepted by the Board for at least 15 days after any hearing on the regulation, variance or permit, unless the Board votes to shorten the period.
+				For the purposes of this section, the term "locality particularly affected" means any locality that bears any identified disproportionate material water quality impact that would not be experienced by other localities.
+			</section>
+		</section>
+		<section prefix="B">On or after January 1, 2007, the Board shall ensure that all wetland inventory maps that identify the location of wetlands in the Commonwealth and that are maintained by the Board be made readily available to the public. The Board shall notify the circuit court clerk's office and other appropriate officials in each locality of the availability of the wetland inventory maps and request that the locality provide information in the location where the land records of the locality are maintained on the availability of the wetland inventory maps as well as the potential Virginia Water Protection Permit requirements.
+		</section>
+	</text>
+	<history>1993, c. 944; 2005, c. 478.</history>
+</law>

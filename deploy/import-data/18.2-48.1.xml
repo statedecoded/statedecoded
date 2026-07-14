@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="3" level="3">Kidnapping and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-48.1</section_number>
+	<catch_line>Abduction by prisoners or committed persons; penalty</catch_line>
+	<text>
+		Any person confined in a state, local, or community correctional facility or committed to the Department of Juvenile Justice in any juvenile correctional center, or in the custody of an employee thereof, or who has escaped from any such facility or from any person in charge of such prisoner or committed person, who abducts or takes any person hostage is guilty of a Class 3 felony.
+	</text>
+	<history>1985, c. 526; 1986, c. 414; 2013, cc. 707, 782.</history>
+</law>

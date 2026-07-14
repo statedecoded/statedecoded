@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division of Engineering and Buildings</unit>
+	</structure>
+	<section_number>2.2-1161</section_number>
+	<catch_line>Buildings not in conformance with standards for persons with physical disabilities</catch_line>
+	<text>
+		The Division, upon a determination that a building or facility is not in conformance with the applicable standards for persons with physical disabilities, shall immediately take all necessary steps to ensure such building or facility is in conformance within three months of the date of its determination. The three-month period may be extended for an additional minimum period of time required to obtain funding and complete construction, where the Division determines an extension is necessary. This section shall apply only to those state buildings or facilities designed, constructed or substantially modified after July 1, 1977.
+	</text>
+	<history>1977, c. 588, § 2.1-521.1; 1979, c. 243; 2001, c. 844.</history>
+</law>

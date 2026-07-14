@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="11" level="3">Discharge of Oil Into Waters</unit>
+	</structure>
+	<section_number>62.1-44.34:19</section_number>
+	<catch_line>Reporting of discharge</catch_line>
+	<text>
+		<section prefix="A">Any person discharging or causing or permitting a discharge of oil into or upon state waters, lands, or storm drain systems within the Commonwealth or discharging or causing or permitting a discharge of oil which may reasonably be expected to enter state waters, lands, or storm drain systems within the Commonwealth, and any operator of any facility, vehicle or vessel from which there is a discharge of oil into state waters, lands, or storm drain systems, or from which there is a discharge of oil which may reasonably be expected to enter state waters, lands, or storm drain systems, shall, immediately upon learning of the discharge, notify the Board, the director or coordinator of emergency services appointed pursuant to § 44-146.19 for the political subdivision in which the discharge occurs and any other political subdivision reasonably expected to be affected by the discharge, and appropriate federal authorities of such discharge. Notice will be deemed to have been given under this section for any discharge of oil to state lands in amounts less than twenty-five gallons if the recordkeeping requirements of subsection C of § 62.1-44.34:19.2 have been met and the oil has been cleaned up in accordance with the requirements of this article.
+		</section>
+		<section prefix="B">Observations and data gathered as a result of the monthly and quarterly inspection activities required by § 62.1-44.34:15.1 (1) (d) shall be maintained on site pursuant to § 62.1-44.34:19. 2, and compiled into a summary, on a form developed by the Board, such summary to be submitted to the Board annually on a schedule established by the Board. Should any such observations or data indicate the presence of petroleum hydrocarbons in ground water, the results shall be reported immediately to the Board and to the local director or coordinator of emergency services appointed pursuant to § 44-146.19.
+		</section>
+	</text>
+	<history>1978, c. 816; 1990, cc. 917, 962; 1992, c. 456.</history>
+</law>

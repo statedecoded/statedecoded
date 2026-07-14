@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="14" level="3">Hazardous Substance Facility Response Plans</unit>
+	</structure>
+	<section_number>62.1-44.34:35</section_number>
+	<catch_line>Definitions. </catch_line>
+	<text>
+		As used in this article, unless the context requires a different meaning:
+		"Discharge" means any spilling, leaking, pumping, pouring, emitting, emptying, or dumping, except discharges in compliance with a permit issued by the Board or Department.
+		"EPA" means the U.S. Environmental Protection Agency.
+		"Facility" means any development, building, structure, or installation within the Commonwealth that is required to submit a facility response plan pursuant to the EPA's Clean Water Act Hazardous Substances Facility Response Plans pursuant to 40 C.F.R. Part 118.
+		"Hazardous substance" means any federal Clean Water Act hazardous substance designated in 40 C.F.R. Part 116. "Hazardous substance" does not include oil.
+		"Oil" means oil of any kind and in any form, including animal fat, vegetable oil, cooking oil, petroleum and any petroleum by-product, fuel oil, lubricating oil, sludge, oil refuse, oil mixed with other wastes that are not a hazardous substance, crude oil, and any other liquid hydrocarbon regardless of specific gravity.
+		"Operator" means any person that owns, operates, charters, rents, or otherwise exercises control or responsibility for a facility.
+	</text>
+	<history>2025, c. 279.</history>
+</law>

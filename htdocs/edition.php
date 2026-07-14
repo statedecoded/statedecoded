@@ -3,11 +3,11 @@
 /**
  * The page that displays a list of editions.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
 */
 
@@ -17,8 +17,8 @@
  */
 require_once(INCLUDE_PATH . 'class.Edition.inc.php');
 global $db;
-$edition_obj = new Edition(array('db' => $db));
-$permalink_obj = new Permalink(array('db' => $db));
+$edition_obj = new Edition(['db' => $db]);
+$permalink_obj = new Permalink(['db' => $db]);
 
 /*
  * Create a container for our content.
@@ -68,11 +68,11 @@ foreach($editions as $edition)
 		$body .= ' (Current Edition)';
 	}
 
-	if(isset($from_permalink) && $from_permalink !== FALSE && $from_permalink->url !== $browse_permalink->url)
+	if(isset($from_permalink) && $from_permalink !== false && $from_permalink->url !== $browse_permalink->url)
 	{
 		$body .= '<br/><a href="' . $from_permalink->url . '">View ' . $from_permalink->title .'</a>';
 	}
-	if(isset($browse_permalink) && $browse_permalink !== FALSE)
+	if(isset($browse_permalink) && $browse_permalink !== false)
 	{
 		$body .= '<br/><a href="' . $browse_permalink->url . '">Browse Edition</a>';
 	}

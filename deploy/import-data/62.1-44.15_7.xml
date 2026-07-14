@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.1" level="3">Permit Fees</unit>
+	</structure>
+	<section_number>62.1-44.15:7</section_number>
+	<catch_line>Permit Program Fund established; use of moneys</catch_line>
+	<text>
+		<section prefix="A">There is hereby established a special, nonreverting fund in the state treasury to be known as the State Water Control Board Permit Program Fund, hereafter referred to as the Fund. Notwithstanding the provisions of § 2.2-1802, all moneys collected pursuant to § 62.1-44.15:6 shall be paid into the state treasury to the credit of the Fund.
+		</section>
+		<section prefix="B">Any moneys remaining in the Fund shall not revert to the general fund but shall remain in the Fund. Interest earned on such moneys shall remain in the Fund and be credited to it.
+		</section>
+		<section prefix="C">The Board is authorized and empowered to release moneys from the Fund, on warrants issued by the State Comptroller, for the purposes of recovering portions of the costs of processing applications under this chapter and Chapters 24 (§ 62.1-242 et seq.) and 25 (§ 62.1-254 et seq.) of this title under the direction of the Executive Director.
+		</section>
+		<section prefix="D">An accounting of moneys received by and distributed from the Fund shall be kept by the State Comptroller and furnished upon request to the Governor or the General Assembly.
+		</section>
+	</text>
+	<history>1992, cc. 621, 657.</history>
+</law>

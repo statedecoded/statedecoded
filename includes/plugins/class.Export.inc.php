@@ -6,25 +6,25 @@
  * Note: I've tried to give a concrete implementation
  * example below for extension.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  *
  */
 
 abstract class Export extends Plugin
 {
-	public $listeners = array(
+	public $listeners = [
 		'exportLaw',
 		// 'exportStructure', // Not enabled by default
 		// 'exportDictionary', // Not enabled by default
 		'finishExport',
 		'postGetLaw',
 		'showBulkDownload'
-	);
+	];
 
 	/*
 	 * The name to display on pages.
@@ -56,11 +56,17 @@ abstract class Export extends Plugin
 			(section, chapter, title, global) of that definition.';
 
 
-	public function createExportDir($path)
+	public function createExportDir($path, $url = null)
 	{
 		mkdir_safe($path);
 
 		return $path;
+	}
+
+	public function getLawFilename($law, $dir = '')
+	{
+		list(, $filename) = $this->getLawPaths($law, $dir);
+		return $filename;
 	}
 
 	public function clearExportDir($path)
@@ -88,7 +94,7 @@ abstract class Export extends Plugin
 
 		$this->writeLawFile($filename, $content);
 
-		return array($filename, $content);
+		return [$filename, $content];
 	}
 
 	public function formatLawForExport($law)
@@ -113,7 +119,7 @@ abstract class Export extends Plugin
 
 		$filename .= $this->extension;
 
-		return array($path, $filename);
+		return [$path, $filename];
 	}
 
 	/*
@@ -136,10 +142,10 @@ abstract class Export extends Plugin
 
 		$this->writeStructureFile($filename, $content);
 
-		return array($filename, $content);
+		return [$filename, $content];
 	}
 
-	public function formatStructureForExport($structure, $laws = array())
+	public function formatStructureForExport($structure, $laws = [])
 	{
 		return var_export($structure, true);
 	}
@@ -170,7 +176,7 @@ abstract class Export extends Plugin
 			$filename = $token . $this->extension;
 		}
 
-		return array($path, $filename);
+		return [$path, $filename];
 	}
 
 	/*
@@ -191,7 +197,7 @@ abstract class Export extends Plugin
 			$zip->close();
 		}
 		else {
-			$this->logger('Unable to create zip archive.', 10);
+			$this->logger->message('Unable to create zip archive.', 10);
 		}
 	}
 
@@ -212,23 +218,28 @@ abstract class Export extends Plugin
 		$filename = $this->getDictionaryDownloadName();
 		$content = $this->formatDictionaryForExport($dictionary);
 
-		$zip_filename = join_paths($downloads_dir, $filename . '.zip');
+		$zip_filename = join_paths($downloads_dir, $filename);
 
 		$zip = $this->generateZip($zip_filename);
 
 		if($zip)
 		{
-			$zip->addFromString($filename, $content);
+			$zip->addFromString('dictionary' . $this->extension, $content);
 
 			$zip->close();
 		}
 		else {
-			$this->logger('Unable to create zip archive.', 10);
+			$this->logger->message('Unable to create zip archive.', 10);
 		}
 
 		$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
 
-		return array($filename, $content);
+		return [$filename, $content];
+	}
+
+	public function formatDictionaryForExport($dictionary)
+	{
+		return var_export($dictionary, true);
 	}
 
 	public function getDictionaryDownloadName() {
@@ -250,7 +261,7 @@ abstract class Export extends Plugin
 		/*
 		 * If we cannot create a new ZIP file, bail.
 		 */
-		if ($zip->open($zip_filename, ZIPARCHIVE::CREATE) !== TRUE)
+		if ($zip->open($zip_filename, ZIPARCHIVE::CREATE) !== true)
 		{
 			return false;
 		}
@@ -302,11 +313,11 @@ abstract class Export extends Plugin
 			}
 			$url .= $this->extension;
 
-			$law->formats[] = array(
+			$law->formats[] = [
 				'name' => $this->public_name,
 				'format' => $this->format,
 				'url' => $url
-			);
+			];
 		}
 	}
 
@@ -324,7 +335,7 @@ abstract class Export extends Plugin
 			<p>' . $this->description . '</p>
 			';
 		// If we have an exported dictionary, show that here too.
-		if(in_array('exportDictionary', $this->listeners) !== FALSE)
+		if(in_array('exportDictionary', $this->listeners) !== false)
 		{
 			$dictionary_filename = $this->getDictionaryDownloadName();
 			$dictionary_url = '/downloads/' . $slug . '/' . $dictionary_filename;

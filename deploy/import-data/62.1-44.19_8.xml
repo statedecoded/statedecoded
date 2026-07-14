@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4.01" level="3">Water Quality Monitoring, Information and Restoration Act</unit>
+	</structure>
+	<section_number>62.1-44.19:8</section_number>
+	<catch_line>Control of discharges to toxic-impaired water</catch_line>
+	<text>
+		Owners of establishments that discharge toxics to toxic-impaired waters shall evaluate the options described in §§ 10.1-1425.10 and 10.1-1425.11 in determining the appropriate means to control such discharges. Prior to issuing or reissuing any permit for the discharge of toxics to toxic-impaired waters, the Board shall review and consider the owner's evaluation of the options in determining the conditions and limitations of the permit.
+	</text>
+	<history>1997, c. 519.</history>
+</law>

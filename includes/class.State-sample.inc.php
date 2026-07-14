@@ -3,11 +3,11 @@
 /**
  * The state-specific function library for The State Decoded.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.3
 */
 
@@ -18,6 +18,7 @@ require_once(INCLUDE_PATH . 'class.Permalink.inc.php');
  * This class may be populated with custom functions.
  */
 
+#[\AllowDynamicProperties]
 class State
 {
 
@@ -214,7 +215,7 @@ class State
 				// Port the fields that we need from $opinion to $this->decisions.
 				if (html_entity_decode(strlen(strip_tags($opinion->caseName))) > 60)
 				{
-					$this->decisions->{$i}->name = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))) . ' . . . ';
+					$this->decisions->{$i}->name = ' . . . ' . explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->caseName)), 60))[0] . ' . . . ';
 				}
 				else
 				{
@@ -224,7 +225,7 @@ class State
 				$this->decisions->{$i}->citation = $opinion->citation[0];
 				$this->decisions->{$i}->date = date('Y-m-d', strtotime($opinion->dateFiled));
 				$this->decisions->{$i}->url = 'https://www.courtlistener.com' . $opinion->absolute_url;
-				$this->decisions->{$i}->abstract = ' . . . ' . array_shift(explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))) . ' . . . ';
+				$this->decisions->{$i}->abstract = ' . . . ' . explode("\n", wordwrap(html_entity_decode(strip_tags($opinion->snippet)), 100))[0] . ' . . . ';
 
 				if ($opinion->court == 'Court of Appeals of Virginia')
 				{
@@ -268,12 +269,13 @@ class State
  * prescribed XML format <https://github.com/statedecoded/statedecoded/wiki/XML-Format-for-Parser>,
  * and serves as a guide for those who want to parse an alternate format.
  */
+#[\AllowDynamicProperties]
 class Parser
 {
 
 	public $file = 0;
 	public $directory;
-	public $files = array();
+	public $files = [];
 
 	public $db;
 	public $permalink_obj;
@@ -290,7 +292,7 @@ class Parser
 	 * to be provided. Some phrases are left-padded with a space if they would never occur
 	 * without being preceded by a space; this is to prevent over-broad matches.
 	 */
-	public $scope_indicators = array(
+	public $scope_indicators = [
 		' are used in this ',
 		'when used in this ',
 		'as used in this ',
@@ -298,14 +300,14 @@ class Parser
 		'for the purposes of this ',
 		'for the purpose of this ',
 		'in this ',
-	);
+	];
 
 	/*
 	 * Create a list of every phrase that can be used to link a term to its defintion, e.g.,
 	 * "'People' has the same meaning as 'persons.'" When appropriate, pad these terms with
 	 * spaces, to avoid erroneously matching fragments of other terms.
 	 */
-	public $linking_phrases = array(
+	public $linking_phrases = [
 		' mean ',
 		' means ',
 		' shall include ',
@@ -315,7 +317,7 @@ class Parser
 		' shall also be construed to mean ',
 		' shall mean and include ',
 		' shall mean '
-	);
+	];
 
 	public function __construct($options)
 	{
@@ -380,9 +382,9 @@ class Parser
 		if(!isset($this->permalink_obj))
 		{
 			$this->permalink_obj = new Permalink(
-				array(
+				[
 					'db' => $this->db
-				)
+				]
 			);
 		}
 
@@ -413,8 +415,8 @@ class Parser
 			/*
 			 * Determine data type and import
 			 */
-			// TODO : Make this smarter.  We can use the PECL Fileinfo package
-			// instead, but I'd rather not have to require that at this point. -BH
+			
+			
 
 			$extension = substr($filename, strrpos($filename, '.')+1);
 
@@ -428,7 +430,7 @@ class Parser
 					$this->import_json($filename);
 					break;
 
-				// TODO: Fix this.
+				
 				default:
 					$this->logger->message('Skipping unknown file type "' . $filename .'"', 5);
 					// Anything else, we can't handle.
@@ -458,7 +460,7 @@ class Parser
 
 		try
 		{
-			$this->doc = new DOMWrapper($xml, TRUE);
+			$this->doc = new DOMWrapper($xml, true);
 			$this->section = $this->doc->law;
 		}
 		catch(Exception $e)
@@ -466,10 +468,10 @@ class Parser
 			/*
 			 * If we can't convert to XML, try cleaning the data first.
 			 */
-			if (class_exists('tidy', FALSE))
+			if (class_exists('tidy', false))
 			{
 
-				$tidy_config = array('input-xml' => TRUE);
+				$tidy_config = ['input-xml' => true];
 				$tidy = new tidy();
 				$tidy->parseString($xml, $tidy_config, 'utf8');
 				$tidy->cleanRepair();
@@ -479,10 +481,10 @@ class Parser
 			elseif (exec('which tidy'))
 			{
 				exec('tidy -xml '.$filename, $output);
-				$xml = join('', $output);
+				$xml = implode('', $output);
 			}
 
-			$this->doc = new DOMWrapper($xml, TRUE);
+			$this->doc = new DOMWrapper($xml, true);
 			$this->section = $this->doc->law;
 		}
 
@@ -517,7 +519,7 @@ class Parser
 		 */
 		if (!isset($this->section))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -580,7 +582,7 @@ class Parser
 
 			if(!isset($this->code->structure))
 			{
-				$this->code->structure = array();
+				$this->code->structure = [];
 			}
 			if(!isset($this->code->structure[$level]))
 			{
@@ -603,14 +605,14 @@ class Parser
 
 		if(!isset($this->code->section))
 		{
-			$this->code->section = array();
+			$this->code->section = [];
 		}
 
 		if(!isset($this->code->text))
 		{
 			$this->code->text = '';
 		}
-		$this->prefix_hierarchy = array();
+		$this->prefix_hierarchy = [];
 
 		$this->i=0;
 
@@ -637,7 +639,7 @@ class Parser
 
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -662,7 +664,7 @@ class Parser
 		/*
 		 * Get the current edition.
 		 */
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 		$current_edition = $edition_obj->current();
 
 		/*
@@ -671,7 +673,7 @@ class Parser
 		 */
 		$sql = 'DELETE FROM permalinks
 			WHERE permalink = 0 AND edition_id <> :edition_id';
-		$sql_args = array(':edition_id' => $current_edition->id);
+		$sql_args = [':edition_id' => $current_edition->id];
 		$statement = $this->db->prepare($sql);
 		$statement->execute($sql_args);
 
@@ -683,7 +685,7 @@ class Parser
 			SET preferred = 1
 			WHERE permalink = 1 AND preferred = 0 AND
 			edition_id <> :edition_id';
-		$sql_args = array(':edition_id' => $edition_id);
+		$sql_args = [':edition_id' => $edition_id];
 		$statement = $this->db->prepare($sql);
 
 		$statement->execute($sql_args);
@@ -693,13 +695,11 @@ class Parser
 	/**
 	 * Remove all old permalinks
 	 */
-	// TODO: eventually, we'll want to keep these and have multiple versions.
-	// See issues #314 #362 #363
 	public function delete_permalinks($edition_id)
 	{
 
 		$sql = 'DELETE FROM permalinks WHERE edition_id = :edition_id';
-		$sql_args = array(':edition_id' => $edition_id);
+		$sql_args = [':edition_id' => $edition_id];
 		$statement = $this->db->prepare($sql);
 
 		$statement->execute($sql_args);
@@ -711,7 +711,7 @@ class Parser
 	public function build_permalink_subsections($edition_id, $parent_id = null)
 	{
 
-		$edition_obj = new Edition(array('db' => $this->db));
+		$edition_obj = new Edition(['db' => $this->db]);
 		$edition = $edition_obj->find_by_id($edition_id);
 
 		/*
@@ -732,7 +732,7 @@ class Parser
 			 */
 			if ($edition->current)
 			{
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'structure',
 					// ':relational_id' => null,
 					':identifier' => null,
@@ -741,13 +741,13 @@ class Parser
 					':edition_id' => $edition_id,
 					':preferred' => $preferred,
 					':permalink' => 0
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 
 				$preferred = 0;
 			}
 
-			$insert_data = array(
+			$insert_data = [
 				':object_type' => 'structure',
 				// ':relational_id' => null,
 				':identifier' => null,
@@ -756,7 +756,7 @@ class Parser
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
 				':permalink' => 1
-			);
+			];
 			$this->permalink_obj->create($insert_data);
 
 		}
@@ -773,9 +773,9 @@ class Parser
 		 * we need to keep an array of our arguments rather than
 		 * hardcoding them in the SQL.
 		 */
-		$structure_args = array(
+		$structure_args = [
 			':edition_id' => $edition_id
-		);
+		];
 
 		if (isset($parent_id))
 		{
@@ -787,7 +787,7 @@ class Parser
 			$structure_sql .= ' AND parent_id IS NULL';
 		}
 
-		$structure_statement = $this->db->prepare($structure_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+		$structure_statement = $this->db->prepare($structure_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
 		$structure_statement->execute($structure_args);
 
 		/*
@@ -799,7 +799,7 @@ class Parser
 			 * Figure out the URL for this structural unit by iterating through the "identifier"
 			 * columns in this row.
 			 */
-			$identifier_parts = array();
+			$identifier_parts = [];
 
 			foreach ($item as $key => $value)
 			{
@@ -836,7 +836,7 @@ class Parser
 			 */
 			if ($edition->current)
 			{
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'structure',
 					':relational_id' => $item['s1_id'],
 					':identifier' => $item['s1_identifier'],
@@ -845,7 +845,7 @@ class Parser
 					':edition_id' => $edition_id,
 					':preferred' => 1,
 					':permalink' => 0
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 
 				$preferred = 0;
@@ -854,7 +854,7 @@ class Parser
 			/*
 			 * Insert actual permalinks.
 			 */
-			$insert_data = array(
+			$insert_data = [
 				':object_type' => 'structure',
 				':relational_id' => $item['s1_id'],
 				':identifier' => $item['s1_identifier'],
@@ -863,13 +863,13 @@ class Parser
 				':edition_id' => $edition_id,
 				':preferred' => $preferred,
 				':permalink' => 1
-			);
+			];
 			$this->permalink_obj->create($insert_data);
 
 			/*
 			 * Now we can use our data to build the child law identifiers
 			 */
-			if (INCLUDES_REPEALED !== TRUE)
+			if (INCLUDES_REPEALED !== true)
 			{
 				$laws_sql = '	SELECT id, structure_id, section AS section_number, catch_line
 								FROM laws
@@ -889,11 +889,11 @@ class Parser
 								AND laws.edition_id = :edition_id
 								ORDER BY order_by, section';
 			}
-			$laws_statement = $this->db->prepare($laws_sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-			$laws_sql_args = array(
+			$laws_statement = $this->db->prepare($laws_sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+			$laws_sql_args = [
 				':s_id' => $item['s1_id'],
 				':edition_id' => $edition_id
-			);
+			];
 			$laws_statement->execute( $laws_sql_args );
 
 			while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
@@ -905,11 +905,11 @@ class Parser
 				 */
 				$preferred = 1;
 
-				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === FALSE)
+				if(!defined('LAW_LONG_URLS') || LAW_LONG_URLS === false)
 				{
 					$token = str_replace(
-						array(':', '/', '\\'),
-						array('_', '_', '_'),
+						[':', '/', '\\'],
+						['_', '_', '_'],
 						$law['section_number']
 					);
 
@@ -919,7 +919,7 @@ class Parser
 
 					if ($edition->current)
 					{
-						$insert_data = array(
+						$insert_data = [
 							':object_type' => 'law',
 							':relational_id' => $law['id'],
 							':identifier' => $law['section_number'],
@@ -928,7 +928,7 @@ class Parser
 							':edition_id' => $edition_id,
 							':permalink' => 0,
 							':preferred' => 1
-						);
+						];
 						$this->permalink_obj->create($insert_data);
 
 						$preferred = 0;
@@ -937,7 +937,7 @@ class Parser
 					/*
 					 * If this is not-current, then short is the most-preferred.
 					 */
-					$insert_data = array(
+					$insert_data = [
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
@@ -946,7 +946,7 @@ class Parser
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
-					);
+					];
 					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
@@ -957,7 +957,7 @@ class Parser
 				 */
 				if ($edition->current)
 				{
-					$insert_data = array(
+					$insert_data = [
 						':object_type' => 'law',
 						':relational_id' => $law['id'],
 						':identifier' => $law['section_number'],
@@ -966,7 +966,7 @@ class Parser
 						':edition_id' => $edition_id,
 						':permalink' => 0,
 						':preferred' => $preferred
-					);
+					];
 					$this->permalink_obj->create($insert_data);
 
 					$preferred = 0;
@@ -975,7 +975,7 @@ class Parser
 				/*
 				 * Failing everything else, use the super-long url.
 				 */
-				$insert_data = array(
+				$insert_data = [
 					':object_type' => 'law',
 					':relational_id' => $law['id'],
 					':identifier' => $law['section_number'],
@@ -984,7 +984,7 @@ class Parser
 					':edition_id' => $edition_id,
 					':permalink' => 1,
 					':preferred' => $preferred
-				);
+				];
 				$this->permalink_obj->create($insert_data);
 			}
 			$this->build_permalink_subsections($edition_id, $item['s1_id']);
@@ -1013,7 +1013,7 @@ class Parser
 	{
 		if ( !isset($sections) || !isset($this->code) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		foreach($sections as $key=>$section) {
@@ -1075,7 +1075,7 @@ class Parser
 					 */
 					if(!isset($this->code->section[$this->i]->prefix_hierarchy))
 					{
-						$this->code->section[$this->i]->prefix_hierarchy = array();
+						$this->code->section[$this->i]->prefix_hierarchy = [];
 					}
 
 					if($section->attribute('prefix'))
@@ -1106,7 +1106,7 @@ class Parser
 						$content = '';
 
 						foreach($children as $child) {
-							$content .= trim($child->rawValue(TRUE));
+							$content .= trim($child->rawValue(true));
 						}
 
 						$this->code->text .= $content;
@@ -1117,6 +1117,34 @@ class Parser
 						 */
 						$children = null;
 					}
+					elseif($children)
+					{
+						/*
+						 * This section has child sections and possibly leading text. Collect
+						 * any text-node content as this section's own text, then build an
+						 * element-only list so the text nodes are not re-processed during
+						 * recursion.
+						 */
+						$intro = '';
+						$element_children = [];
+						foreach($children as $child)
+						{
+							if($child->_type === 'text')
+							{
+								$intro .= trim((string) $child);
+							}
+							else
+							{
+								$element_children[] = $child;
+							}
+						}
+						if($intro !== '')
+						{
+							$this->code->section[$this->i]->text = $intro;
+							$this->code->text .= $intro;
+						}
+						$children = $element_children;
+					}
 
 					$this->i++;
 
@@ -1125,7 +1153,7 @@ class Parser
 					 */
 					if($children)
 					{
-						$this->recurse($section->children());
+						$this->recurse($children);
 					}
 
 					array_pop($this->prefix_hierarchy);
@@ -1133,7 +1161,7 @@ class Parser
 			}
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -1158,14 +1186,14 @@ class Parser
 		 * create_structure() will handle that silently. Either way a structural ID gets returned.
 		 */
 		$structure = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id
-			)
+			]
 		);
 
-		$structure_labels = array();
+		$structure_labels = [];
 
 		if(isset($this->code->structure))
 		{
@@ -1184,7 +1212,7 @@ class Parser
 				if(!isset($struct->identifier) || $struct->identifier === '')
 				{
 					$structure->identifier = $struct->name;
-					$structure->metadata->admin_division = TRUE;
+					$structure->metadata->admin_division = true;
 					/* We almost always want administrative divisions before regular divisions.*/
 					$structure->order_by = 0;
 				}
@@ -1222,7 +1250,7 @@ class Parser
 		}
 		else
 		{
-			$this->logger->error('ERROR Section without structure found: '. print_r($this->code, TRUE), 10);
+			$this->logger->error('ERROR Section without structure found: '. print_r($this->code, true), 10);
 		}
 
 		/*
@@ -1247,7 +1275,7 @@ class Parser
 		 */
 
 		$dupe_query = 'SELECT COUNT(*) AS count FROM laws WHERE section = :section AND edition_id = :edition_id';
-		$dupe_args = array(':section' => $query['section'], ':edition_id' => $query['edition_id']);
+		$dupe_args = [':section' => $query['section'], ':edition_id' => $query['edition_id']];
 
 		$dupe_statement = $this->db->prepare($dupe_query);
 		$dupe_result = $dupe_statement->execute($dupe_args);
@@ -1270,7 +1298,7 @@ class Parser
 		 */
 		$sql = 'INSERT INTO laws
 				SET date_created=now()';
-		$sql_args = array();
+		$sql_args = [];
 
 		/*
 		 * Iterate through the array and turn it into SQL.
@@ -1284,7 +1312,7 @@ class Parser
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			echo '<p>Failure: ' . $sql . '</p>';
 			var_dump($sql_args);
@@ -1304,20 +1332,20 @@ class Parser
 		 * save a record of those, for crossreferencing purposes.
 		 */
 		$references = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id
-			)
+			]
 		);
 		$references->text = $this->code->text;
 		$sections = $references->extract_references();
-		if ( ($sections !== FALSE) && (count($sections) > 0) )
+		if ( ($sections !== false) && (count($sections) > 0) )
 		{
 			$references->section_id = $law_id;
 			$references->sections = $sections;
 			$success = $references->store_references();
-			if ($success === FALSE)
+			if ($success === false)
 			{
 				echo '<p>References for section ID '.$law_id.' were found, but could not be
 					stored.</p>';
@@ -1343,15 +1371,15 @@ class Parser
 
 			foreach ($this->code->metadata as $key => $value)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':meta_key' => $key,
 					':meta_value' => $value,
 					':edition_id' => $this->edition_id
-				);
+				];
 				$result = $statement->execute($sql_args);
 
-				if ($result === FALSE)
+				if ($result === false)
 				{
 					echo '<p>Failure: '.$sql.'</p>';
 				}
@@ -1373,15 +1401,15 @@ class Parser
 
 			foreach ($this->code->tags as $tag)
 			{
-				$sql_args = array(
+				$sql_args = [
 					':law_id' => $law_id,
 					':section_number' => $this->code->section_number,
 					':tag' => $tag,
 					':edition_id' => $this->edition_id
-				);
+				];
 				$result = $statement->execute($sql_args);
 
-				if ($result === FALSE)
+				if ($result === false)
 				{
 					echo '<p>Failure: '.$sql.'</p>';
 					var_dump($sql_args);
@@ -1413,12 +1441,12 @@ class Parser
 					type = :type,
 					date_created=now(),
 					edition_id = :edition_id';
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $law_id,
 				':sequence' => $i,
 				':type' => $section->type,
 				':edition_id' => $this->edition_id
-			);
+			];
 			if (!empty($section->text))
 			{
 				$sql .= ', text = :text';
@@ -1428,7 +1456,7 @@ class Parser
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
 				echo '<p>Failure: '.$sql.'</p>';
 			}
@@ -1458,17 +1486,17 @@ class Parser
 							sequence = :sequence,
 							date_created=now(),
 							edition_id = :edition_id';
-					$sql_args = array(
+					$sql_args = [
 						':text_id' => $text_id,
 						':identifier' => $prefix,
 						':sequence' => $j,
 						':edition_id' => $this->edition_id
-					);
+					];
 
 					$statement = $this->db->prepare($sql);
 					$result = $statement->execute($sql_args);
 
-					if ($result === FALSE)
+					if ($result === false)
 					{
 						echo '<p>Failure: ' . $sql . '</p>';
 					}
@@ -1486,11 +1514,11 @@ class Parser
 		 * Trawl through the text for definitions.
 		 */
 		$dictionary = new Parser(
-			array(
+			[
 				'db' => $this->db,
 				'edition_id' => $this->edition_id,
 				'previous_edition_id' => $this->previous_edition_id
-			)
+			]
 		);
 
 		/*
@@ -1508,7 +1536,7 @@ class Parser
 		 * config file as a container for global definitions. If it was, then we override the
 		 * presumed scope and provide a global scope.
 		 */
-		$ancestry = array();
+		$ancestry = [];
 		if (isset($this->code->structure))
 		{
 			foreach ($this->code->structure as $struct)
@@ -1532,7 +1560,7 @@ class Parser
 		/*
 		 * If any definitions were found in this text, store them.
 		 */
-		if ($definitions !== FALSE)
+		if ($definitions !== false)
 		{
 
 			/*
@@ -1566,7 +1594,6 @@ class Parser
 		unset($references);
 		unset($dictionary);
 		unset($definitions);
-		unset($chapter);
 		unset($sections);
 		unset($query);
 	}
@@ -1581,7 +1608,7 @@ class Parser
 
 		if (!isset($this->identifier))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -1591,10 +1618,10 @@ class Parser
 				FROM structure
 				WHERE identifier = :identifier
 				AND edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $this->identifier,
 			':edition_id' => $this->edition_id
-		);
+		];
 
 		/*
 		 * If a parent ID is present (that is, if this structural unit isn't a top-level unit), then
@@ -1613,9 +1640,9 @@ class Parser
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() === 0) )
+		if ( ($result === false) || ($statement->rowCount() === 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		$structure = $statement->fetch(PDO::FETCH_OBJ);
@@ -1651,14 +1678,14 @@ class Parser
 				( empty($this->label) )
 			)
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
 		 * Begin by seeing if this structural unit already exists. If it does, return its ID.
 		 */
 		$structure_id = $this->structure_exists();
-		if ($structure_id !== FALSE)
+		if ($structure_id !== false)
 		{
 			return $structure_id;
 		}
@@ -1672,9 +1699,9 @@ class Parser
 		 */
 		$sql = 'INSERT INTO structure
 				SET identifier = :identifier';
-		$sql_args = array(
+		$sql_args = [
 			':identifier' => $this->identifier
-		);
+		];
 		if (!empty($this->name))
 		{
 			$sql .= ', name = :name';
@@ -1705,11 +1732,11 @@ class Parser
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			echo '<p>Failure: '.$sql.'</p>';
 			var_dump($sql_args);
-			return FALSE;
+			return false;
 		}
 
 		return $this->db->lastInsertID();
@@ -1747,7 +1774,7 @@ class Parser
 
 		if (!isset($text))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/* Measure whether there are more straight quotes or directional quotes in this passage
@@ -1769,7 +1796,7 @@ class Parser
 		 * Break up this section into paragraphs. If HTML paragraph tags are present, break it up
 		 * with those. If they're not, break it up with carriage returns.
 		 */
-		if (strpos($text, '<p>') !== FALSE)
+		if (strpos($text, '<p>') !== false)
 		{
 			$paragraphs = explode('<p>', $text);
 		}
@@ -1787,7 +1814,7 @@ class Parser
 		/*
 		 * Create the empty array that we'll build up with the definitions found in this section.
 		 */
-		$definitions = array();
+		$definitions = [];
 
 		/*
 		 * Step through each paragraph and determine which contain definitions.
@@ -1826,7 +1853,7 @@ class Parser
 					/*
 					 * The term was found.
 					 */
-					if ($pos !== FALSE)
+					if ($pos !== false)
 					{
 
 						/*
@@ -1843,7 +1870,7 @@ class Parser
 						foreach ($length_sorted_labels as $structure)
 						{
 
-							if (stripos($phrase, $structure->label) !== FALSE)
+							if (stripos($phrase, $structure->label) !== false)
 							{
 
 								/*
@@ -1876,7 +1903,7 @@ class Parser
 			 * All defined terms are surrounded by quotation marks, so let's use that as a criteria
 			 * to round down our candidate paragraphs.
 			 */
-			if (strpos($paragraph, $quote_sample) !== FALSE)
+			if (strpos($paragraph, $quote_sample) !== false)
 			{
 
 				/*
@@ -1887,7 +1914,7 @@ class Parser
 				foreach ($this->linking_phrases as $linking_phrase)
 				{
 
-					if (strpos($paragraph, $linking_phrase) !== FALSE)
+					if (strpos($paragraph, $linking_phrase) !== false)
 					{
 
 						/*
@@ -1900,7 +1927,7 @@ class Parser
 						/*
 						 * If we've made any matches.
 						 */
-						if ( ($terms !== FALSE) && (count($terms) > 0) )
+						if ( ($terms !== false) && (count($terms) > 0) )
 						{
 
 							/*
@@ -1952,7 +1979,7 @@ class Parser
 									 * If there are any lowercase characters, then make the whole
 									 * thing lowercase.
 									 */
-									if ( (ord($term{$i}) >= 97) && (ord($term{$i}) <= 122) )
+									if ( ctype_lower($term[$i]) )
 									{
 										$term = strtolower($term);
 										break;
@@ -2051,7 +2078,7 @@ class Parser
 
 		if (count($definitions) == 0)
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2079,7 +2106,7 @@ class Parser
 
 		if ( !isset($this->terms) || !isset($this->law_id) || !isset($this->scope) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2104,10 +2131,11 @@ class Parser
 				:structure_id, now(), :edition_id)';
 		$statement = $this->db->prepare($sql);
 
+		$result = false;
 		foreach ($this->terms as $term => $definition)
 		{
 
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->law_id,
 				':term' => $term,
 				':definition' => $definition,
@@ -2115,7 +2143,7 @@ class Parser
 				':scope_specificity' => $this->scope_specificity,
 				':structure_id' => $this->structure_id,
 				':edition_id' => $this->edition_id
-			);
+			];
 
 			foreach($sql_args as $key => $value)
 			{
@@ -2131,11 +2159,6 @@ class Parser
 		}
 
 
-		/*
-		 * Memory management.
-		 */
-		unset($this);
-
 		return $result;
 
 	} // end store_definitions()
@@ -2144,13 +2167,13 @@ class Parser
 	function query($sql)
 	{
 		$result = $this->db->exec($sql);
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			return $this->db->errorInfo();
 		}
 		else
 		{
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -2165,7 +2188,7 @@ class Parser
 		 */
 		if (!isset($this->text))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2224,7 +2247,7 @@ class Parser
 		 */
 		if ( (!isset($this->sections)) || (!isset($this->section_id)) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2238,24 +2261,24 @@ class Parser
 		$i=0;
 		foreach ($this->sections as $section => $mentions)
 		{
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id,
 				':section_number' => $section,
 				':target_law_id' => '0',
 				':mentions' => $mentions,
 				':edition_id' => $this->edition_id
-			);
+			];
 
 			$result = $statement->execute($sql_args);
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
 				echo '<p>Failed: '.$sql.'</p>';
-				return FALSE;
+				return false;
 			}
 		}
 
-		return TRUE;
+		return true;
 
 	} // end store_references()
 
@@ -2271,7 +2294,7 @@ class Parser
 		 */
 		if (!isset($this->history))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -2279,7 +2302,8 @@ class Parser
 		 */
 		$updates = explode('; ', $this->history);
 
-		$i=0;
+		$i = 0;
+		$final = new stdClass();
 		foreach ($updates as &$update)
 		{
 
@@ -2292,7 +2316,7 @@ class Parser
 			 * First check for single matches.
 			 */
 			$result = preg_match($pcre, $update, $matches);
-			if ( ($result !== FALSE) && ($result !== 0) )
+			if ( ($result !== false) && ($result !== 0) )
 			{
 
 				if (!empty($matches[1]))
@@ -2306,7 +2330,7 @@ class Parser
 				if (!empty($matches[3]))
 				{
 					$result = preg_match(SECTION_REGEX, $update, $matches[3]);
-					if ( ($result !== FALSE) && ($result !== 0) )
+					if ( ($result !== false) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}
@@ -2326,7 +2350,7 @@ class Parser
 				$pcre = '/([0-9]{2,4}), cc\. ([0-9,\s]+)/';
 				$result = preg_match_all($pcre, $update, $matches);
 
-				if ( ($result !== FALSE) && ($result !== 0) )
+				if ( ($result !== false) && ($result !== 0) )
 				{
 
 					/*
@@ -2368,7 +2392,7 @@ class Parser
 					 * Locate any section identifier.
 					 */
 					$result = preg_match(SECTION_REGEX, $update, $matches);
-					if ( ($result !== FALSE) && ($result !== 0) )
+					if ( ($result !== false) && ($result !== 0) )
 					{
 						$final->{$i}->section = $matches[0];
 					}
@@ -2381,7 +2405,7 @@ class Parser
 
 		}
 
-		if ( isset($final) && is_object($final) )
+		if ( is_object($final) )
 		{
 			return $final;
 		}

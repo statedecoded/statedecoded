@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="7" level="2">Handling and Sale of Burley Tobacco</unit>
+	</structure>
+	<section_number>61.1-60</section_number>
+	<catch_line>Information to be accurate and substantiated</catch_line>
+	<text>
+		Any information pertaining to weights of tobacco sold, prices paid or amounts of tobacco handled, disseminated by any warehouseman, his employees or agents shall be accurate and substantiated by records kept at the warehouse or loosefloor.
+	</text>
+	<history>Code 1950, § 61-159; 1950, p. 67; 1968, c. 69.</history>
+</law>

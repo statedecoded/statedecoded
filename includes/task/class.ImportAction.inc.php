@@ -3,14 +3,12 @@
 require_once 'class.CliAction.inc.php';
 require_once CUSTOM_FUNCTIONS;
 
-global $db;
-
 class ImportAction extends CliAction
 {
 	static public $name = 'import';
 	static public $summary = 'Imports new data.';
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		/*
 		 * Note: PHP can't use constants as class defaults,
@@ -32,72 +30,45 @@ class ImportAction extends CliAction
 		$this->handleVerbosity();
 	}
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 
 		$this->logger->message('Starting import.', 10);
 
 		try {
-			$edition_args = array();
-
 			$parser = new ParserController(
-				array(
+				[
 					'logger' => $this->logger,
 					'db' => &$this->db,
 					'import_data_dir' => $this->options['d']
-				)
+				]
 			);
 
-			/*
-			 * We only use existing editions, for simplicity.
-			 */
-			$edition_args['edition_option'] = 'existing';
+			$edition_args = $this->buildEditionArgs($parser);
 
-			if(isset($this->options['edition']))
-			{
-				$edition_obj = new Edition($this->db);
-				$edition = $edition_obj->find_by_slug($this->options['edition']);
-
-				if(!$edition) {
-					$this->logger->message('Unable to find edition "'. $this->options['edition'].'".', 10);
-					die();
-				}
-
-				$edition_args['edition'] = $edition->id;
-			}
-			else
-			{
-				$edition = $parser->get_current_edition();
-				$edition_args['edition'] = $edition->id;
-			}
-
-			if(isset($this->options['current'])) {
-				$edition_args['current'] = 1;
-			}
-
-			$this->logger->message('Using edition ' . $edition->name, 10);
+			$this->logger->message('Using edition ' . $edition_args['edition_name'], 10);
 
 			/*
 			 * Step through each parser method.
 			 */
-			if ($parser->test_environment() !== FALSE)
+			if ($parser->test_environment() !== false)
 			{
 				$this->logger->message('Environment test succeeded', 10);
 
-				if ($parser->populate_db() !== FALSE)
+				if ($parser->populate_db() !== false)
 				{
 
 					$edition_errors = $parser->handle_editions($edition_args);
 
 					if (count($edition_errors) > 0)
 					{
-						throw new Exception(join("\n", $edition_errors), E_ERROR);
+						throw new Exception(implode("\n", $edition_errors), E_ERROR);
 					}
 
 					else
 					{
 						$parser->clear_cache();
-						$parser->clear_edition($edition->id);
+						$parser->clear_edition($parser->edition_id);
 
 						/*
 						 * We should only continue if parsing was successful.
@@ -135,11 +106,66 @@ class ImportAction extends CliAction
 
 	}
 
+	/*
+	 * Assemble the edition arguments for ParserController::handle_editions().
+	 *
+	 * Note that handle_editions() honors the "make_current" key, so that is
+	 * what the --current option must set. (It once set a "current" key, which
+	 * handle_editions() ignored, quietly breaking --current for existing
+	 * editions.)
+	 */
+	public function buildEditionArgs($parser)
+	{
+
+		$edition_args = [];
+
+		if(isset($this->options['edition']))
+		{
+			$edition_obj = new Edition(['db' => $this->db]);
+			$edition = $edition_obj->find_by_slug($this->options['edition']);
+
+			if(!$edition) {
+				$this->logger->message('Unable to find edition "'. $this->options['edition'].'".', 10);
+				die();
+			}
+
+			$edition_args['edition_option'] = 'existing';
+			$edition_args['edition'] = $edition->id;
+			$edition_args['edition_name'] = $edition->name;
+		}
+		else
+		{
+			$edition = $parser->get_current_edition();
+
+			if($edition !== false)
+			{
+				$edition_args['edition_option'] = 'existing';
+				$edition_args['edition'] = $edition->id;
+				$edition_args['edition_name'] = $edition->name;
+			}
+			else
+			{
+				// No editions exist yet — create a default one.
+				$edition_args['edition_option'] = 'new';
+				$edition_args['new_edition_name'] = defined('SITE_TITLE') ? SITE_TITLE : 'Default';
+				$edition_args['new_edition_slug'] = 'default';
+				$edition_args['edition_name'] = $edition_args['new_edition_name'];
+				$edition_args['make_current'] = 1;
+			}
+		}
+
+		if(isset($this->options['current'])) {
+			$edition_args['make_current'] = 1;
+		}
+
+		return $edition_args;
+	}
+
 	public function handleVerbosity()
 	{
 		$level = 10;
 		if(isset($this->options['v'])) {
-			if($this->options['v'] === TRUE) {
+			if($this->options['v'] === true) {
 				$level = 1;
 			}
 			else
@@ -151,7 +177,7 @@ class ImportAction extends CliAction
 		$this->logger->level = $level;
 	}
 
-	public static function getHelp($args = array()) {
+	public static function getHelp($args = []) {
 		return <<<EOS
 statedecoded : import
 

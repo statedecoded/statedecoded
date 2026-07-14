@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="14" level="3">Hazardous Substance Facility Response Plans</unit>
+	</structure>
+	<section_number>62.1-44.34:37</section_number>
+	<catch_line>Reporting of hazardous substance discharge</catch_line>
+	<text>
+		Any person discharging or causing or permitting a discharge of a hazardous substance from a facility required to submit evidence of an EPA-approved facility response plan pursuant to § 62.1-44.34:35 where such discharge (i) enters into or upon any land, storm drain system, or state waters within the Commonwealth or (ii) is not contained and may reasonably be expected to enter such land, drain system, or waters, and any operator of a facility from which there is such a discharge, shall immediately upon learning of the discharge notify the following of such discharge: (a) the Director, (b) the local director or coordinator of emergency services appointed pursuant to § 44-146.19 for the political subdivision in which the discharge occurs, (c) the local director or coordinator of emergency services appointed pursuant to § 44-146.19 for any other political subdivision reasonably expected to be affected by the discharge, and (d) the appropriate federal or state authorities. Notice shall be deemed to have been given under this section for any discharge of a hazardous substance to state lands in amounts less than the reportable quantity in 40 C.F.R. Part 117 if the recordkeeping requirements of § 62.1-44.34:37 have been met and the hazardous substance has been addressed in accordance with the EPA-approved facility response plan.
+	</text>
+	<history>2025, c. 279.</history>
+</law>

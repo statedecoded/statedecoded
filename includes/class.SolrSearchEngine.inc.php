@@ -3,18 +3,18 @@
 /**
  * Wrapper class for Solarium.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  */
 
-require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');
+use Solarium\Client as SolariumClient;
+use Solarium\Core\Client\Adapter\Curl as SolariumCurl;
 
-require_once(INCLUDE_PATH . 'Solarium/Autoloader.php');
-Solarium_Autoloader::register();
+require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');
 
 class SolrSearchEngine extends SearchEngineInterface
 {
@@ -41,7 +41,7 @@ class SolrSearchEngine extends SearchEngineInterface
 	/*
 	 * The documents to put into our current transaction.
 	 */
-	public $documents = array();
+	public $documents = [];
 
 	/*
 	 * Number of documents to store before automatically flushing.
@@ -53,7 +53,32 @@ class SolrSearchEngine extends SearchEngineInterface
 	 */
 	protected $last_result;
 
-	public function __construct($args = array())
+	/*
+	 * Build a Solarium v6 client from a flat config array (host/port/path/core/timeout).
+	 * Accepts the same structure as the SEARCH_CONFIG constant.
+	 */
+	public static function make_client($config)
+	{
+		$adapter = new SolariumCurl();
+
+		$dispatcher = new class implements \Psr\EventDispatcher\EventDispatcherInterface {
+			public function dispatch(object $event): object { return $event; }
+		};
+
+		$endpoint = [
+			'host'    => $config['host']    ?? 'localhost',
+			'port'    => (int) ($config['port']    ?? 8983),
+			'path'    => $config['path']    ?? '/solr/',
+			'core'    => $config['core']    ?? 'statedecoded',
+			'timeout' => (int) ($config['timeout'] ?? 30),
+		];
+
+		return new SolariumClient($adapter, $dispatcher, [
+			'endpoint' => ['default' => $endpoint]
+		]);
+	}
+
+	public function __construct($args = [])
 	{
 		parent::__construct($args);
 
@@ -62,11 +87,7 @@ class SolrSearchEngine extends SearchEngineInterface
 			$this->config['batch_size'] = $this->batch_size;
 		}
 
-		$this->client = new Solarium_Client(
-			array(
-				'adapteroptions' => $this->config
-			)
-		);
+		$this->client = self::make_client($this->config);
 	}
 
 	public function start_update()
@@ -125,23 +146,23 @@ class SolrSearchEngine extends SearchEngineInterface
 			if($this->last_result->getStatus() === 0)
 			{
 				unset($this->transaction);
-				$this->documents = array();
-				return TRUE;
+				$this->documents = [];
+				return true;
 			}
 
 			throw new Exception('Solr query failed.');
-			return FALSE;
+			return false;
 		}
 		else {
-			return TRUE;
+			return true;
 		}
 	}
 
 	public function debug()
 	{
 		echo 'Query type: ' . $this->transaction_type . "\n";
-		echo 'Query status: ' . $result->getStatus(). "\n";
-		echo 'Query time: ' . $result->getQueryTime() . "\n";
+		echo 'Query status: ' . $this->last_result->getStatus() . "\n";
+		echo 'Query time: ' . $this->last_result->getQueryTime() . "\n";
 	}
 
 	public function law_to_document($law)
@@ -172,20 +193,20 @@ class SolrSearchEngine extends SearchEngineInterface
 
 		$document->repealed = $law->metadata->repealed;
 
-		$structure = array();
+		$structure = [];
 		foreach($law->ancestry as $key=>$value)
 		{
 			$structure[] = $value->identifier . ' ' . $value->name;
 		}
-		$document->structure = join('/', $structure);
+		$document->structure = implode('/', $structure);
 
-		$document->refers_to = array();
+		$document->refers_to = [];
 		foreach($document->refers_to as $law)
 		{
 			$document->refers_to[] = $law->section;
 		}
 
-		$document->referred_to_by = array();
+		$document->referred_to_by = [];
 		foreach($document->referred_to_by as $law)
 		{
 			$document->referred_to_by[] = $law->section;
@@ -219,17 +240,17 @@ class SolrSearchEngine extends SearchEngineInterface
 			$document->text = $structure->metadata->text;
 		}
 
-		$ancestry = array();
+		$ancestry = [];
 		foreach($structure->structure as $key=>$value)
 		{
 			$ancestry[] = $value->identifier . ' ' . $value->name;
 		}
-		$document->structure = join('/', $ancestry);
+		$document->structure = implode('/', $ancestry);
 
 		return $document;
 	}
 
-	public function search($query = array())
+	public function search($query = [])
 	{
 		// We try our query here so we can wrap the exception into a standard one.
 		try
@@ -260,10 +281,10 @@ class SolrSearchEngine extends SearchEngineInterface
 			 */
 			$spellcheck = $select->getSpellcheck();
 			$spellcheck->setQuery($query['q']);
-			$spellcheck->setBuild(TRUE);
-			$spellcheck->setCollate(TRUE);
-			$spellcheck->setExtendedResults(TRUE);
-			$spellcheck->setCollateExtendedResults(TRUE);
+			$spellcheck->setBuild(true);
+			$spellcheck->setCollate(true);
+			$spellcheck->setExtendedResults(true);
+			$spellcheck->setCollateExtendedResults(true);
 
 			/*
 			 * Specify which page we want, and how many results.
@@ -280,7 +301,7 @@ class SolrSearchEngine extends SearchEngineInterface
 		}
 		catch (Exception $error)
 		{
-			throw new Exception( $error->getStatusMessage() );
+			throw new Exception($error->getMessage());
 		}
 	}
 
@@ -295,35 +316,32 @@ class SolrSearchEngine extends SearchEngineInterface
 			$id = 's_' . $object->edition_id . '_' . $object->permalink->token;
 		}
 		else {
-			throw new Exception('Record has a bad type in SolrSearchEngine->add_document');
+			throw new Exception('Record has a bad type in SolrSearchEngine->find_related');
 		}
 
-		if(isset($id))
+		$query = $this->client->createMoreLikeThis();
+
+		$query->setQuery('id:' . $id);
+		$query->setMltFields('catch_line,text,definition');
+		$query->setRows($count);
+		$query->setMinimumDocumentFrequency(1);
+		$query->setMinimumTermFrequency(1);
+		$query->createFilterQuery('edition_id')->setQuery('edition_id:'.$object->edition_id);
+		$query->setInterestingTerms('details');
+		$query->setMatchInclude(true);
+
+		$results = $this->client->moreLikeThis($query);
+
+		$this->last_result = $results;
+
+		if($results)
 		{
-			$query = $this->client->createMoreLikeThis();
-
-			$query->setQuery('id:' . $id);
-			$query->setMltFields('catch_line,text,definition');
-			$query->setRows($count);
-			$query->setMinimumDocumentFrequency(1);
-			$query->setMinimumTermFrequency(1);
-			$query->createFilterQuery('edition_id')->setQuery('edition_id:'.$object->edition_id);
-			$query->setInterestingTerms('details');
-			$query->setMatchInclude(true);
-
-			$results = $this->client->select($query);
-
-			$this->last_result = $results;
-
-			if($results)
-			{
-				// Wrap the results and return them.
-				return new SolrSearchResults($query, $results);
-			}
-			else
-			{
-				return FALSE;
-			}
+			// Wrap the results and return them.
+			return new SolrSearchResults($query, $results);
+		}
+		else
+		{
+			return false;
 		}
 	}
 
@@ -347,8 +365,8 @@ class SolrSearchEngine extends SearchEngineInterface
 
 		// A result of 0 is good for some reason.
 		if(!$result->getStatus()) {
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 }

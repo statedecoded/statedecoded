@@ -6,11 +6,11 @@
  * A barebones search client using the existing database.
  * Feel free to use this as a base to create new search adapters!
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  */
 
@@ -41,7 +41,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	/*
 	 * The documents to put into our current transaction.
 	 */
-	public $documents = array();
+	public $documents = [];
 
 	/*
 	 * Number of documents to store before automatically flushing.
@@ -58,7 +58,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	 */
 	public $use_token_match = true;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		parent::__construct($args);
 
@@ -75,17 +75,17 @@ class SqlSearchEngine extends SearchEngineInterface
 	 */
 	public function start_update()
 	{
-		return TRUE;
+		return true;
 	}
 
 	public function add_document($record)
 	{
-		return TRUE;
+		return true;
 	}
 
 	public function commit()
 	{
-		return TRUE;
+		return true;
 	}
 
 	public function debug()
@@ -93,7 +93,7 @@ class SqlSearchEngine extends SearchEngineInterface
 
 	}
 
-	public function search($query = array())
+	public function search($query = [])
 	{
 		/*
 		 * Do our count first
@@ -125,25 +125,25 @@ class SqlSearchEngine extends SearchEngineInterface
 		/*
 		 * Set up our query.
 		 */
-		$select_fields = array('*');
+		$select_fields = ['*'];
 
-		$law_fields = array();
+		$law_fields = [];
 		$law_fields[] = 'laws.id';
 		$law_fields[] = 'laws.catch_line AS name';
 		$law_fields[] = 'laws.edition_id';
 		$law_fields[] = '"law" AS object_type';
-		$law_where = array();
+		$law_where = [];
 
-		$structure_fields = array();
+		$structure_fields = [];
 		$structure_fields[] = 'structure.id';
 		$structure_fields[] = 'structure.name';
 		$structure_fields[] = 'structure.edition_id';
 		$structure_fields[] = '"structure" AS object_type';
-		$structure_where = array();
+		$structure_where = [];
 
-		$order = array();
+		$order = [];
 
-		$query_args = array();
+		$query_args = [];
 
 		if(isset($query['q']))
 		{
@@ -154,11 +154,10 @@ class SqlSearchEngine extends SearchEngineInterface
 			 * then in the text.
 			 */
 
-			# TODO: Search structure->metadata->text for matches. Since we're using
-			# PHP's serializer, we can't do this natively in SQL at the moment.
+			# Note: structure->metadata->text is serialized and not directly searchable in SQL.
 
-			$law_where_or = array();
-			$structure_where_or = array();
+			$law_where_or = [];
+			$structure_where_or = [];
 
 			$law_where_or[] = 'section = :term';
 			$structure_where_or[] = 'name = :term';
@@ -191,7 +190,7 @@ class SqlSearchEngine extends SearchEngineInterface
 			 * This is weighted lower, but still first in the title, then in the
 			 * text.
 			 */
-			if($this->use_token_match && strpos($query['q'], ' ') !== FALSE)
+			if($this->use_token_match && strpos($query['q'], ' ') !== false)
 			{
 				// The function below handles quoted items.
 				$keywords = SqlSearchEngine::tokenize($query['q']);
@@ -206,9 +205,9 @@ class SqlSearchEngine extends SearchEngineInterface
 						'catch_line', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$law_where_or[] = join(' OR ', $title_search);
+					$law_where_or[] = implode(' OR ', $title_search);
 					$law_fields[] = '( ' .
-						join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
+						implode(' + ', array_map('SqlSearchEngine::ifify', $title_search))
 						. ' ) AS title_match';
 
 
@@ -217,9 +216,9 @@ class SqlSearchEngine extends SearchEngineInterface
 						'text', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$law_where_or[] = join(' OR ', $text_search);
+					$law_where_or[] = implode(' OR ', $text_search);
 					$law_fields[] = '( ' .
-						join(' + ', array_map('SqlSearchEngine::ifify', $text_search))
+						implode(' + ', array_map('SqlSearchEngine::ifify', $text_search))
 						. ' ) AS text_match';
 
 					list($title_search, $new_args) =
@@ -227,9 +226,9 @@ class SqlSearchEngine extends SearchEngineInterface
 						'name', $keywords);
 					$query_args = array_merge($query_args, $new_args);
 
-					$structure_where_or[] = join(' OR ', $title_search);
+					$structure_where_or[] = implode(' OR ', $title_search);
 					$structure_fields[] = '( ' .
-						join(' + ', array_map('SqlSearchEngine::ifify', $title_search))
+						implode(' + ', array_map('SqlSearchEngine::ifify', $title_search))
 						. ' ) AS title_match';
 
 					$structure_fields[] = '"" AS text_match';
@@ -241,11 +240,11 @@ class SqlSearchEngine extends SearchEngineInterface
 
 			if(count($law_where_or))
 			{
-				$law_where[] = '(' . join(' OR ', $law_where_or) . ')';
+				$law_where[] = '(' . implode(' OR ', $law_where_or) . ')';
 			}
 			if(count($structure_where_or))
 			{
-				$structure_where[] = '(' . join(' OR ', $structure_where_or) . ')';
+				$structure_where[] = '(' . implode(' OR ', $structure_where_or) . ')';
 			}
 		}
 
@@ -286,26 +285,26 @@ class SqlSearchEngine extends SearchEngineInterface
 		/*
 		 * Assemble our final query.
 		 */
-		$sql_query = 'SELECT ' . join(',', $select_fields) . ' FROM ';
+		$sql_query = 'SELECT ' . implode(',', $select_fields) . ' FROM ';
 
-			$sql_query .= '(SELECT ' . join(', ', $law_fields) . ' FROM laws ';
+			$sql_query .= '(SELECT ' . implode(', ', $law_fields) . ' FROM laws ';
 			if(count($law_where))
 			{
-				$sql_query .= 'WHERE ' . join(' AND ', $law_where) . ' ';
+				$sql_query .= 'WHERE ' . implode(' AND ', $law_where) . ' ';
 			}
 			$sql_query .= 'UNION ';
 
-			$sql_query .= 'SELECT ' . join(', ', $structure_fields) . ' FROM structure ';
+			$sql_query .= 'SELECT ' . implode(', ', $structure_fields) . ' FROM structure ';
 			if(count($structure_where))
 			{
-				$sql_query .= 'WHERE ' . join(' AND ', $structure_where) . ' ';
+				$sql_query .= 'WHERE ' . implode(' AND ', $structure_where) . ' ';
 			}
 
 		$sql_query .= ') AS records ';
 
-		if(is_array($order) && count($order))
+		if(isset($order) && is_array($order) && count($order))
 		{
-			$sql_query .= 'ORDER BY ' . join(', ', array_filter($order)) . ' ';
+			$sql_query .= 'ORDER BY ' . implode(', ', array_filter($order)) . ' ';
 		}
 		if(isset($limit))
 		{
@@ -317,11 +316,12 @@ class SqlSearchEngine extends SearchEngineInterface
 			$sql_query .= $limit . ' ';
 		}
 
-		return array($sql_query, $query_args);
+		return [$sql_query, $query_args];
 	}
 
 	public static function build_keyword_search($search_field, $keywords) {
-		$fields = array();
+		$fields = [];
+		$sql_args = [];
 
 		if($keywords) {
 			$i = 0;
@@ -347,7 +347,7 @@ class SqlSearchEngine extends SearchEngineInterface
 			}
 		}
 
-		return array($fields, $sql_args);
+		return [$fields, $sql_args];
 
 	}
 
@@ -359,8 +359,8 @@ class SqlSearchEngine extends SearchEngineInterface
 	public static function tokenize($string)
 	{
 		$buffer = '';
-		$keywords = array();
-		$quote_string = FALSE;
+		$keywords = [];
+		$quote_string = false;
 
 		for($i = 0; $i< strlen($string); $i++)
 		{
@@ -451,7 +451,7 @@ class SqlSearchEngine extends SearchEngineInterface
 	// We don't have a real index, so we don't do anything on delete, successfully.
 	public function delete($edition_id)
 	{
-		return TRUE;
+		return true;
 	}
 
 }

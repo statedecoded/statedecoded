@@ -1,75 +1,57 @@
 <?php
 
-/*
- * Help Action test suite
- */
+require_once __DIR__ . '/../../task/class.HelpAction.inc.php';
 
-require_once '../task/class.HelpAction.inc.php';
-
-class HelpActionTest extends PHPUnit_Framework_TestCase
+class HelpActionTest extends PHPUnit\Framework\TestCase
 {
-    protected function setUp()
+    private array $args;
+    private HelpAction $help_action;
+
+    protected function setUp(): void
     {
-    	$this->args = array(
-    			'asdf',
-    			'jkl;'
-    		);
+        $this->args = ['asdf', 'jkl;'];
         $this->help_action = new HelpAction();
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
-		$help_action_mock = $this->getMock('HelpAction', array('showDefaultHelp', 'showHelp'));
+        $mock = $this->getMockBuilder(HelpAction::class)
+            ->onlyMethods(['showDefaultHelp', 'showHelp'])
+            ->getMock();
 
-		$help_action_mock->expects($this->once())
-                 ->method('showDefaultHelp')
-                 ->will($this->returnValue($this->args[0]));
+        $mock->expects($this->once())
+            ->method('showDefaultHelp')
+            ->will($this->returnValue($this->args[0]));
 
-        $this->assertEquals($help_action_mock->execute(array()),
-            $this->args[0]);
+        $this->assertEquals($this->args[0], $mock->execute([]));
 
-        $args = array(1);
-		$help_action_mock->expects($this->once())
-                 ->method('showHelp')
-                 ->with($args)
-                 ->will($this->returnValue($this->args[1]));
+        $args = [1];
+        $mock->expects($this->once())
+            ->method('showHelp')
+            ->with($args)
+            ->will($this->returnValue($this->args[1]));
 
-        $this->assertEquals($help_action_mock->execute($args),
-            $this->args[1]);
+        $this->assertEquals($this->args[1], $mock->execute($args));
     }
 
-    public function testShowDefaultHelp()
+    public function testShowDefaultHelp(): void
     {
-        /*
-         * We only care that it returns /something/, but let's look
-         * specifically for the definition of /this/ action.
-         */
-
         $this->assertNotEmpty($this->help_action->showDefaultHelp());
-
-        $this->assertContains(HelpAction::$summary,
+        $this->assertStringContainsString(
+            HelpAction::$summary,
             $this->help_action->showDefaultHelp());
     }
 
-    public function testShowHelp()
+    public function testShowHelp(): void
     {
-        /*
-         * We only care that it returns /something/, but let's look
-         * specifically for the definition of /this/ action.
-         */
-        $this->assertNotEmpty($this->help_action->showHelp(array('help')));
-
-        $this->assertEquals(HelpAction::getHelp(),
-            $this->help_action->showHelp(array('help')));
-
+        $this->assertNotEmpty($this->help_action->showHelp(['help']));
+        $this->assertEquals(
+            HelpAction::getHelp(),
+            $this->help_action->showHelp(['help']));
     }
 
-    public function testGetHelp()
+    public function testGetHelp(): void
     {
-        /*
-         * We only care that it returns /something/.
-         */
-
-     $this->assertNotEmpty(HelpAction::getHelp());
+        $this->assertNotEmpty(HelpAction::getHelp());
     }
 }

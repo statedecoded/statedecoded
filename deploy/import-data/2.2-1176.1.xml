@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1176.1</section_number>
+	<catch_line> Alternative Fuel Vehicle Conversion Fund established</catch_line>
+	<text>
+		There is hereby created in the state treasury a special nonreverting fund to be known as the Alternative Fuel Vehicle Conversion Fund, hereinafter referred to as "the Fund." The Fund shall be established on the books of the Comptroller. The Fund shall consist of such moneys appropriated by the General Assembly and any other funds available from donations, grants, in-kind contributions, and other funds as may be received for the purposes stated herein. Interest earned on moneys in the Fund shall remain in the Fund and be credited to it. Any moneys remaining in the Fund, including interest thereon, at the end of each fiscal year shall not revert to the general fund but shall remain in the Fund. Moneys in the Fund shall be used solely for the purposes of assisting agencies of the Commonwealth with the incremental cost of state-owned alternative fuel vehicles and local government and agencies thereof and local school divisions with the incremental cost of such local government-owned alternative fuel vehicles. Moneys in the Fund may be used in conjunction with or as matching funds for any eligible federal grants for the same purpose. Expenditures and disbursements from the Fund shall be made by the State Treasurer on warrants issued by the Comptroller upon written request signed by the Director.
+		As used in this section, "incremental cost" means the entire cost of a certified conversion of an existing vehicle to use at least one alternative fuel or the additional cost of purchasing a new vehicle equipped to operate on at least one alternative fuel over the normal cost of a similar vehicle equipped to operate on a conventional fuel such as gasoline or diesel fuel.
+		The Director, in consultation with the Director of the Department of Energy, shall establish guidelines for contributions and reimbursements from the Fund for the purchase or conversion of state-owned or local government-owned vehicles.
+	</text>
+	<history>2012, cc. 199, 531; 2014, c. 199; 2021, Sp. Sess. I, c. 532.</history>
+</law>

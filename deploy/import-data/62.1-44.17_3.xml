@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="3.1" level="3">Toxics Discharge Reduction</unit>
+	</structure>
+	<section_number>62.1-44.17:3</section_number>
+	<catch_line>Toxic substances reduction in state waters; report required</catch_line>
+	<text>
+		<section prefix="A">The Board shall (i) conduct ongoing assessments of the amounts of toxics in Virginia's waters and (ii) develop and implement a plan for the reduction of toxics in Virginia's waters.
+		</section>
+		<section prefix="B">The status of the Board's efforts to reduce the level of toxic substances in state waters shall be reported biennially, no later than January 1 in each odd-numbered year, to the House Committee on Agriculture, Chesapeake and Natural Resources and the Senate Committee on Agriculture, Conservation and Natural Resources. The report shall include the following information:
+			<section prefix="1">Compliance data on permits that have limits for toxics;
+			</section>
+			<section prefix="2">The number of new permits or reissued permits that have toxic limits and the location of each permitted facility;
+			</section>
+			<section prefix="3">The location and number of monitoring stations and the period of time that monitoring has occurred at each location;
+			</section>
+			<section prefix="4">A summary of pollution prevention and pollution control activities for the reduction of toxics in state waters;
+			</section>
+			<section prefix="5">The sampling results from the monitoring stations for the previous two years;
+			</section>
+			<section prefix="6">The Board's plan for continued reduction of the discharge of toxics, which shall include, but not be limited to, additional monitoring activities, a work plan for the pollution prevention program, and any pilot projects established for the use of innovative technologies to reduce the discharge of toxics;
+			</section>
+			<section prefix="7">The identification of any segments for which the Board or the Director of the Department of Environmental Quality has made a decision to conduct additional evaluation or monitoring. Information regarding these segments shall include, at a minimum, the geographic location of the stream segment within a named county or city; and
+			</section>
+			<section prefix="8">The identification of any segments that are designated as toxic impaired waters as defined in § 62.1-44.19:4 and any plans to address the impairment.
+			</section>
+		</section>
+	</text>
+	<history>1997, c. 155; 2000, cc. 17, 1043; 2015, c. 173.</history>
+</law>

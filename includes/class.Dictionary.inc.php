@@ -3,11 +3,11 @@
 /**
  * The Dictionary class, for retrieving terms and definitions
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
  *
  */
@@ -15,6 +15,7 @@
 /**
  *
  */
+#[\AllowDynamicProperties]
 class Dictionary
 {
 
@@ -22,10 +23,10 @@ class Dictionary
 	public $law_id;
 	public $section_number;
 	public $edition_id;
-	public $generic_terms = FALSE;
+	public $generic_terms = false;
 
 
-	public function __construct($args = array()) {
+	public function __construct($args = []) {
 		foreach($args as $key => $value) {
 			$this->$key = $value;
 		}
@@ -52,15 +53,16 @@ class Dictionary
 		/*
 		 * Initialize our dictionary results.
 		 */
-		$dictionary = FALSE;
-		$lowercase = FALSE;
+		$dictionary = false;
+		$lowercase = false;
+		$plural = (isset($this->term) && substr($this->term, -1) === 's');
 
 		/*
 		 * If no term has been defined, there is nothing to be done.
 		 */
 		if (!isset($this->term))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -85,10 +87,10 @@ class Dictionary
 			$sql = 'SELECT term, definition, source, source_url AS url
 					FROM dictionary_general
 					WHERE term = :term';
-			$sql_args = array(
+			$sql_args = [
 				':term' => $this->term
-			);
-			if ($plural === TRUE)
+			];
+			if ($plural === true)
 			{
 				$sql .= ' OR term = :term_single';
 				$sql_args[':term_single'] = substr($this->term, 0, -1);
@@ -102,9 +104,9 @@ class Dictionary
 			 * If the query fails, or if no results are found, return false -- we have no terms for
 			 * this structural unit.
 			 */
-			if ( ($result === FALSE) || ($statement->rowCount() < 1) )
+			if ( ($result === false) || ($statement->rowCount() < 1) )
 			{
-				return FALSE;
+				return false;
 			}
 
 			/*
@@ -112,6 +114,7 @@ class Dictionary
 			 * We assign this to the first element of an object because that is the format that the
 			 * API expects to receive a list of terms in. In this case, we have just one term.
 			 */
+			$dictionary = new stdClass();
 			$dictionary->{0} = $statement->fetch(PDO::FETCH_OBJ);
 			$dictionary->{0}->formatted = wptexturize($dictionary->{0}->definition) .
 				' (<a href="' . $dictionary->{0}->url . '">' . $dictionary->{0}->source . '</a>)';
@@ -129,9 +132,10 @@ class Dictionary
 
 		global $db;
 
+		$plural = false;
 		$heritage = new Law;
 		$heritage->config = new stdClass();
-		$heritage->config->get_structure = TRUE;
+		$heritage->config->get_structure = true;
 
 		if ($section_number)
 		{
@@ -148,10 +152,13 @@ class Dictionary
 		}
 
 		$law = $heritage->get_law();
-		$ancestry = array();
-		foreach ($law->ancestry as $tmp)
+		$ancestry = [];
+		if ($law !== false && !empty($law->ancestry))
 		{
-			$ancestry[] = $tmp->id;
+			foreach ($law->ancestry as $tmp)
+			{
+				$ancestry[] = $tmp->id;
+			}
 		}
 
 		/*
@@ -161,7 +168,7 @@ class Dictionary
 
 		if (substr($this->term, -1) == 's')
 		{
-			$plural = TRUE;
+			$plural = true;
 		}
 
 		/*
@@ -180,11 +187,11 @@ class Dictionary
 					AND permalinks.object_type = :object_type
 					AND permalinks.preferred=1
 				WHERE (dictionary.term = :term';
-		$sql_args = array(
+		$sql_args = [
 			':term' => $term,
 			':object_type' => 'law'
-		);
-		if ($plural === TRUE)
+		];
+		if ($plural === true)
 		{
 			$sql .= ' OR dictionary.term = :term_single';
 			$sql_args[':term_single'] =  substr($term, 0, -1);
@@ -233,7 +240,7 @@ class Dictionary
 		/*
 		 * If the query succeeds, great, retrieve it.
 		 */
-		if ( ($result !== FALSE) && ($statement->rowCount() > 0) )
+		if ( ($result !== false) && ($statement->rowCount() > 0) )
 		{
 
 			/*
@@ -278,18 +285,19 @@ class Dictionary
 		/*
 		 * Create an array in which we'll store terms that are identified.
 		 */
-		$terms = array();
+		$terms = [];
 
 		/*
 		 * Get a listing of all structural units that contain the current structural unit -- that is,
 		 * if this is a chapter, get the ID of both the chapter and the title. And so on.
 		 */
+		$ancestry = [];
 		if (isset($this->structure_id))
 		{
 
 			$heritage = new Structure;
 			$ancestry = $heritage->id_ancestry($this->structure_id);
-			$tmp = array();
+			$tmp = [];
 			foreach ($ancestry as $level)
 			{
 				$tmp[] = $level->id;
@@ -302,9 +310,9 @@ class Dictionary
 		/*
 		 * Get a list of all globally scoped terms.
 		 */
-		$sql_args = array(
+		$sql_args = [
 			':global_scope' => 'global'
-		);
+		];
 		if ( isset($this->scope) && ($this->scope == 'global') )
 		{
 		
@@ -382,7 +390,7 @@ class Dictionary
 		 * Assemble a second query, this one against our generic legal dictionary, but only if we
 		 * have opted to include generic terms.
 		 */
-		if ($this->generic_terms === TRUE)
+		if ($this->generic_terms === true)
 		{
 
 			$sql = 'SELECT term
@@ -392,7 +400,7 @@ class Dictionary
 			$statement = $db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
-			if ($result !== FALSE && $statement->rowCount() > 0)
+			if ($result !== false && $statement->rowCount() > 0)
 			{
 
 				/*

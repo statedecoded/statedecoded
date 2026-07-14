@@ -3,15 +3,16 @@
 /**
  * The Search class, for all search-related functionality
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
 
+#[\AllowDynamicProperties]
 class Search
 {
 	public function __construct($args = null)
@@ -35,10 +36,10 @@ class Search
 	 */
 	public function display_form($current_edition = null)
 	{
-		$law = new Law(array('db' => $this->db));
+		$law = new Law(['db' => $this->db]);
 		$lawCount = $law->count($current_edition);
 
-		$structure = new Structure(array('db' => $this->db));
+		$structure = new Structure(['db' => $this->db]);
 		$structureCount = $structure->count($current_edition);
 
 		$this->form = '
@@ -80,7 +81,7 @@ class Search
 	public function build_edition($current_edition)
 	{
 		$output = '';
-		$editions = array();
+		$editions = [];
 
 		// Since we don't have any conditions in our template, we have to build
 		// html here.
@@ -97,7 +98,7 @@ class Search
 		catch(Exception $error)
 		{
 			// It's ok if we get an error here, as this happens before we have a database setup.
-			$editions = array();
+			$editions = [];
 		}
 
 		if($editions && count($editions) > 1)
@@ -124,7 +125,7 @@ class Search
 			$output .= '</select>';
 		}
 		// If we only have one edition, just use it.
-		elseif(count($editions) == 1)
+		elseif($editions && count($editions) == 1)
 		{
 			$output .= '<input type="hidden" name="edition_id" value="' .
 				$editions[0]->id .'">';
@@ -146,7 +147,7 @@ class Search
 		 */
 		if ( empty($this->total_results) || empty($this->per_page)  || empty($this->query) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*

@@ -53,7 +53,7 @@ function displayHelp(section, help_section) {
 	$("<div></div>")
 		.attr({
 			'id': section,
-			'title': help_section['title']
+			'title': section
 		})
 		.append(help_section['content'])
 		.dialog({
@@ -61,6 +61,9 @@ function displayHelp(section, help_section) {
 			draggable: false,
 			width: '',
 			open: function(e, ui) {
+				$(this).closest('.ui-dialog')
+					.find('.ui-dialog-title')
+					.html(help_section['title']);
 				$('#content').addClass('behind');
 			},
 			beforeClose: function(e, ui) {
@@ -124,30 +127,23 @@ $(document).ready(function () {
 	originating traffic, the second is for when clicking on an anchor link within a page. */
 	if (document.location.hash) {
 		var id = escapeSelector(document.location.hash);
-		$(id).slideto({
-			slide_duration: 500
-		});
-
+		var target = document.querySelector(id);
+		if (target) { target.scrollIntoView({behavior: 'smooth'}); }
 		$(id).show('highlight', {color: '#ffff00'}, 'fast');
 	}
 
-	$('a[href*=#]').click(function(){
-
+	$('a[href*="#"]').on('click', function(){
 		var elemId = '#' + escapeSelector($(this).attr('href').split('#')[1]);
-
-		$(elemId).slideto({
-			slide_duration: 500
-		});
-
+		var target = document.querySelector(elemId);
+		if (target) { target.scrollIntoView({behavior: 'smooth'}); }
 		var id = escapeSelector(document.location.hash);
 		$(id).show('highlight', {color: '#ffff00'}, 'fast');
-
 	});
 
 
 	/* Display a tooltip for permalinks. */
 	$('a.section-permalink').qtip({
-		content: "Copy permanent link to this subsection",
+		content: "Copy a link to this subsection",
 		show: {
 			event: "mouseover"
 		},
@@ -158,28 +154,27 @@ $(document).ready(function () {
 		},
 		position: {
 			at: "top center",
-			my: "bottom center",
-			viewport: $(window)
+			my: "bottom center"
 		}
 	})
 
-	/* Get each permalink and add a copy function on it when visible */
-	$('a.section-permalink').bind('inview', function(event, visible, topOrBottomOrBoth) {
-		if(!visible) return false;
-
-		var elm = $(this);
-		var id = escapeSelector(elm.attr('id'));
-
-		if(!elm.data('copyable')){
-			/* Permit copying URLs to the clipboard. */
-			elm.zclip({
-				path: zclip_swf_file,
-				copy: function() { return $(this).attr('href'); }
-			});
-
-			/* Ensure zclip only run once per element */
-			elm.data('copyable', true);
+	/* Copy permalink URL to clipboard when clicked. */
+	$('a.section-permalink').on('click', function(e) {
+		e.preventDefault();
+		var link = $(this).addClass('copied');
+		var icon = link.find('i').removeClass('fa-link').addClass('fa-copy');
+		var url = link.attr('href');
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(url);
 		}
+		setTimeout(function() {
+			link.removeClass('copied');
+			/* Wait for the opacity transition to finish before swapping the
+			 * icon back, so the link icon never flashes into view mid-fade. */
+			setTimeout(function() {
+				icon.removeClass('fa-copy').addClass('fa-link');
+			}, 250);
+		}, 1500);
 	});
 
 	/* Mentions of other sections of the code. */
@@ -319,7 +314,7 @@ $(document).ready(function () {
 							content = content + ' (Source: <a href="' + data.url + '">' + data.source + '</a>)';
 						}
 						this.set('content.text', content);
-					}
+					},
 				}
 			}
 		})

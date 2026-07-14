@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-56.2</section_number>
+	<catch_line>Allowing access to firearms by children; penalty</catch_line>
+	<text>
+		<section prefix="A">It shall be unlawful for any person to recklessly leave a loaded, unsecured firearm in such a manner as to endanger the life or limb of any child under the age of fourteen. Any person violating the provisions of this subsection shall be guilty of a Class 1 misdemeanor.
+		</section>
+		<section prefix="B">It shall be unlawful for any person knowingly to authorize a child under the age of twelve to use a firearm except when the child is under the supervision of an adult. Any person violating this subsection shall be guilty of a Class 1 misdemeanor. For purposes of this subsection, "adult" shall mean a parent, guardian, person standing in loco parentis to the child or a person twenty-one years or over who has the permission of the parent, guardian, or person standing in loco parentis to supervise the child in the use of a firearm.
+		</section>
+	</text>
+	<history>1991, c. 537; 1994, c. 832; 2020, c. 742.</history>
+</law>

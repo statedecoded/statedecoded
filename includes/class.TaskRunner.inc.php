@@ -5,11 +5,11 @@
  *
  * You can create your own tasks by adding them to includes/tasks/
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  *
  * Usage:
@@ -22,7 +22,7 @@ class TaskRunner
 	/*
 	 * Our main options.
 	 */
-	public $options = array();
+	public $options = [];
 
 	/*
 	 * The currently executing action.
@@ -36,7 +36,7 @@ class TaskRunner
 
 		if(file_exists($file))
 		{
-			return array($obj, $file);
+			return [$obj, $file];
 		}
 		return false;
 	}
@@ -59,6 +59,11 @@ class TaskRunner
 		array_shift($exec_args);
 
 		$this->parseExecArgs($exec_args);
+
+		$action = '';
+		$args = [];
+		$obj = null;
+		$file = null;
 
 		// This will do for now, but really this should be wrapped in a class
 		// and all actions should register themselves with that class.
@@ -83,7 +88,7 @@ class TaskRunner
 				list($obj, $file) = $action_info;
 			}
 
-			$args = array();
+			$args = [];
 		}
 
 		$this->action = $action;
@@ -93,7 +98,7 @@ class TaskRunner
 		print $this->preFormat();
 
 		$action_object = new $obj(
-			array('options' => &$this->options)
+			['options' => &$this->options]
 		);
 
 		print $this->postFormat( $action_object->execute($args) );
@@ -114,13 +119,13 @@ class TaskRunner
 				 * Split our key=value pairs.
 				 */
 				$value = preg_replace('/^-+/', '', $value);
-				if(strpos($value, '=') !== FALSE)
+				if(strpos($value, '=') !== false)
 				{
 					list($name, $val) = explode('=', $value, 2);
 				}
 				else {
 					$name = $value;
-					$val = TRUE;
+					$val = true;
 				}
 
 				/*
@@ -150,7 +155,7 @@ class TaskRunner
 		switch($format)
 		{
 			case 'html' :
-				return $this->preFormatHtml($text);
+				return $this->preFormatHtml();
 
 			default :
 				return;
@@ -188,7 +193,7 @@ class TaskRunner
 	 */
 	protected function formatText($text)
 	{
-		return "\n" . wordwrap($text) . "\n\n";
+		return "\n" . wordwrap($text ?? '') . "\n\n";
 	}
 
 	protected function formatCow($text)
@@ -197,7 +202,7 @@ class TaskRunner
 		{
 			 exec('cowsay -W 75 "' . $text . '"', $output);
 
-			 return join("\n", $output) . "\n\n";
+			 return implode("\n", $output) . "\n\n";
 		}
 		else
 		{

@@ -58,7 +58,7 @@ nav.prevnext {
   margin: 0;
   overflow: hidden;
   font: 18px Helvetica, Arial, Sans-Serif;
-  @include clearfix;
+  @extend %clearfix;
 
   @include respond-to(print) {
     margin: 0;
@@ -76,8 +76,8 @@ nav.prevnext {
 
     a {
       font-size: 12px;
-      height: $base-line-height;
-      line-height: $base-line-height;
+      height: $top-bottom-width * 2;
+      line-height: $top-bottom-width * 2;
       color: $white;
       text-decoration: none;
       padding: 0px 0 0px (5+$side-width);
@@ -148,6 +148,24 @@ nav.prevnext {
 
       }
     }
+  }
+}
+
+.breadcrumbs {
+  li {
+    white-space: nowrap;
+  }
+
+  span {
+    display: inline-block;
+    overflow: hidden;
+    transition: max-width 0.3s;
+    max-width: 1000px;
+    vertical-align: top;
+  }
+
+  .hide {
+    max-width: 0;
   }
 }
 

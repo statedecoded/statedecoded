@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="5" level="2">Prevention of Frauds in Sale of Leaf Tobacco</unit>
+	</structure>
+	<section_number>61.1-54</section_number>
+	<catch_line>Purpose of chapter</catch_line>
+	<text>
+		The purpose of this chapter is to prevent frauds in the handling and sale of leaf tobacco.
+	</text>
+	<history>Code 1950, § 61-153; 1968, c. 69.</history>
+</law>

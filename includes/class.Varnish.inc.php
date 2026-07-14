@@ -5,11 +5,11 @@
  *
  * Interact with the Varnish server, should there be one.
  * 
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.7
  *
  */
@@ -29,18 +29,18 @@ class Varnish
 		 */
 		if (!defined('VARNISH_HOST'))
 		{
-			return FALSE;
+			return false;
 		}
 		
 		/*
 		 * Set our Varnish options.
 		 */
-		$options = array(
+		$options = [
 			CURLOPT_URL				=>	'http://' . $_SERVER['SERVER_NAME'] . '/',
 			CURLOPT_CUSTOMREQUEST	=>	'BAN',
-			CURLOPT_RETURNTRANSFER	=>	TRUE,
-			CURLOPT_HTTPHEADER		=> 	array ('Host: ' . VARNISH_HOST ),
-		);
+			CURLOPT_RETURNTRANSFER	=>	true,
+			CURLOPT_HTTPHEADER		=> 	 ['Host: ' . VARNISH_HOST ],
+		];
 		
 		/*
 		 * If a URL has been specified, then replace the default URL (for the entire site)
@@ -57,7 +57,7 @@ class Varnish
 		curl_setopt_array($request, $options);
 		curl_exec($request);
 		
-		return TRUE;
+		return true;
 		
 	}
 	

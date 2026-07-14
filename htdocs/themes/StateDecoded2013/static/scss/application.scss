@@ -9,8 +9,7 @@
    the standard CSS, any changes made there will not be saved if you edit and
    later reprocess this file.
 
-   The easiest setup is to use 'sass --watch' or an application like CodeKit to
-   automatically process this file.
+   Compiled by Dart Sass via `npm run build`. See package.json and scripts/build-assets.js.
 
    Typically, you would not write styles in this file, but include files here
    in order to make for an easier to manage development environment.
@@ -22,11 +21,6 @@
      jmpa@meticulous.com
 */
 
-
-/* Import the Compass Library */
-@import "compass";
-@import "compass/css3/opacity";
-@import "compass/css3/box-shadow";
 
 // Vendor
 @import "vendor/_normalize.scss"; // Standardize between browsers/reset built in stylesheets

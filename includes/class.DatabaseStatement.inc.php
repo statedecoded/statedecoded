@@ -6,30 +6,30 @@
  * This mostly is just a passthrough for PDO Statement methods.
  * We've also added some error checking.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  */
 
-class DatabaseStatement extends PDOStatement
+class DatabaseStatement
 {
 	protected $pdo_statement;
 	protected $database;
 
 	protected $query;
-	protected $query_args = array();
+	protected $query_args = [];
 
-	public function __construct ( &$database, &$pdo_statement, $query )
+	public function __construct ( $database, $pdo_statement, $query )
 	{
-		$this->database =& $database;
-		$this->pdo_statement =& $pdo_statement;
+		$this->database = $database;
+		$this->pdo_statement = $pdo_statement;
 		$this->query = $query;
 	}
 
-	public function bindColumn ( $column, &$param, $type = null, $maxlen = null,
+	public function bindColumn ( $column, &$param, $type = PDO::PARAM_STR, $maxlen = 0,
 		$driverdata = null )
 
 	{
@@ -37,19 +37,19 @@ class DatabaseStatement extends PDOStatement
 			$driverdata);
 	}
 
-	public function bindParam ( $parameter, &$variable, $data_type = null, $length = null,
+	public function bindParam ( $parameter, &$variable, $data_type = PDO::PARAM_STR, $length = 0,
 		$driver_options = null )
 	{
 		return $this->pdo_statement->bindParam($parameter, $variable, $data_type,
 			$length, $driver_options);
 	}
 
-	public function bindValue ( $parameter, $value, $data_type = null )
+	public function bindValue ( $parameter, $value, $data_type = PDO::PARAM_STR )
 	{
-		$this->query_args[] = array(
+		$this->query_args[$parameter] = [
 			'parameter' => $parameter,
 			'value' => $value,
-			'data_type' => $data_type);
+			'data_type' => $data_type];
 		return $this->pdo_statement->bindValue($parameter, $value, $data_type);
 	}
 
@@ -90,9 +90,9 @@ class DatabaseStatement extends PDOStatement
 		}
 		catch(Exception $e)
 		{
-			if(strpos($e->getMessage(), 'Error while sending QUERY packet.') !== FALSE)
+			if(strpos($e->getMessage(), 'Error while sending QUERY packet.') !== false)
 			{
-				$result = FALSE;
+				$result = false;
 				$error = 'Database server has gone away';
 			}
 			else
@@ -102,7 +102,7 @@ class DatabaseStatement extends PDOStatement
 		}
 
 
-		if($result === FALSE)
+		if($result === false)
 		{
 			if($this->recoverError())
 			{
@@ -116,13 +116,13 @@ class DatabaseStatement extends PDOStatement
 		return $result;
 	}
 
-	protected function recoverError ()
+	public function recoverError ()
 	{
 		// If the server has gone away, simply try to reconnect.
 		$disconnect_error = 'Database server has gone away';
 
 		$error_info = $this->errorInfo();
-		if ( !isset($error_info[0]) || (boolean) $error_info[0] === FALSE )
+		if ( !isset($error_info[0]) || (boolean) $error_info[0] === false )
 		{
 			$error_info = $this->database->errorInfo();
 		}
@@ -136,12 +136,12 @@ class DatabaseStatement extends PDOStatement
 			$statement = $this->database->prepare($this->query);
 
 			// Replace our old statement with a new one.
-			$this->pdo_statement =& $statement->pdo_statement;
+			$this->pdo_statement = $statement->pdo_statement;
 
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	/*
@@ -149,9 +149,9 @@ class DatabaseStatement extends PDOStatement
 	 * return the error we need, or it may be the statement itself.  Either way,
 	 * we try to get what useful data we can from it.
 	 */
-	protected function fetchErrors ( $input_parameters = array() )
+	public function fetchErrors ( $input_parameters = [] )
 	{
-		$error = array();
+		$error = [];
 		if ( strlen($this->query) )
 		{
 			$error['Query'] = $this->query;
@@ -188,34 +188,27 @@ class DatabaseStatement extends PDOStatement
 		return $error;
 	}
 
-	protected function formatErrors ( $errors = array() )
+	public function formatErrors ( $errors = [] )
 	{
-		return print_r($errors, TRUE);
+		return print_r($errors, true);
 	}
 
-	public function fetch ( $fetch_style = null, $cursor_orientation = null, $cursor_offset = null )
+	public function fetch ( $fetch_style = PDO::FETCH_DEFAULT, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0 )
 	{
 		return $this->pdo_statement->fetch($fetch_style, $cursor_orientation, $cursor_offset);
 	}
 
-	public function fetchAll ( $fetch_style = null, $fetch_argument = null, $actor_args = null )
+	public function fetchAll ( $fetch_style = PDO::FETCH_DEFAULT, ...$args )
 	{
-		if(isset($fetch_argument))
-		{
-			return $this->pdo_statement->fetchAll($fetch_style, $fetch_argument, $actor_args);
-		}
-		else
-		{
-			return $this->pdo_statement->fetchAll($fetch_style);
-		}
+		return $this->pdo_statement->fetchAll($fetch_style, ...$args);
 	}
 
-	public function fetchColumn ( $column_number = null )
+	public function fetchColumn ( $column_number = 0 )
 	{
 		return $this->pdo_statement->fetchColumn($column_number);
 	}
 
-	public function fetchObject ( $class_name = null, $actor_args = null )
+	public function fetchObject ( $class_name = 'stdClass', $actor_args = [] )
 	{
 		return $this->pdo_statement->fetchObject($class_name, $actor_args);
 	}
@@ -245,9 +238,9 @@ class DatabaseStatement extends PDOStatement
 		return $this->pdo_statement->setAttribute($attribute, $value);
 	}
 
-	public function setFetchMode ( $mode, $params = null, $ctorargs = null )
+	public function setFetchMode ( $mode, ...$args )
 	{
-		return $this->pdo_statement->setFetchMode($mode, $params, $ctorargs);
+		return $this->pdo_statement->setFetchMode($mode, ...$args);
 	}
 
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="1" level="4">Department and Commissioner of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-104</section_number>
+	<catch_line>Commissioner may serve on board of national tobacco trust entity</catch_line>
+	<text>
+		The Commissioner may serve in his official capacity on the board of directors of any entity established to ensure the implementation in the Commonwealth of a national tobacco trust established to provide payments to tobacco growers and tobacco quota owners to ameliorate adverse economic consequences resulting from a national settlement of states' claims against tobacco manufacturers.
+	</text>
+	<history>2000, c. 1048, § 3.1-14.1; 2008, c. 860.</history>
+</law>

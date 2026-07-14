@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4.01" level="3">Water Quality Monitoring, Information and Restoration Act</unit>
+	</structure>
+	<section_number>62.1-44.19:9</section_number>
+	<catch_line>Transmission of toxics information</catch_line>
+	<text>
+		The Virginia Department of Health and the Department of Environmental Quality shall cooperate, in accordance with a memorandum of agreement to be signed by the Commissioner of Health and the Director of the Department of Environmental Quality, to ensure the timely transmission and evaluation of reliable water quality and fish advisory information. The memorandum of agreement, at a minimum, shall include specific time frames for the (i) transfer of information from the Department of Environmental Quality to the Virginia Department of Health; (ii) assessments and recommendations to be made by the Virginia Department of Health, when the toxicity of the substance is known; and (iii) transmission of the Virginia Department of Health's assessments and recommendations to the Department of Environmental Quality and the dissemination of the assessments and recommendations to the public. Copies of the proposed memorandum of agreement shall be provided to the Chairman of the House Committee on Agriculture, Chesapeake and Natural Resources and the Senate Committee on Agriculture, Conservation and Natural Resources at least one month prior to final signature by the heads of the two agencies but no later than December 1, 2000. Any revision of the agreement shall be submitted to the chairmen of these committees no later than one month prior to adoption by the Virginia Department of Health and the Department of Environmental Quality.
+	</text>
+	<history>2000, cc. 17, 1043.</history>
+</law>

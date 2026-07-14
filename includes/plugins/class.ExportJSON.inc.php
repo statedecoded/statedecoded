@@ -3,24 +3,24 @@
 /**
  * JSON export.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  *
  */
 
 class ExportJSON extends Export
 {
-	public $listeners = array(
+	public $listeners = [
 		'exportLaw',
 		'finishExport',
 		'exportDictionary',
 		'postGetLaw',
 		'showBulkDownload'
-	);
+	];
 
 	public $public_name = 'JSON';
 	public $format = 'json';

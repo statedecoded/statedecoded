@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="6" level="3">Offenses and Penalties</unit>
+	</structure>
+	<section_number>62.1-44.31</section_number>
+	<catch_line>Violation of order or certificate or failure to cooperate with Board</catch_line>
+	<text>
+		It shall be unlawful for any owner to fail to comply with any order adopted by the Board, which has become final under the provisions of this chapter, or to fail to comply with a pretreatment condition incorporated into the permit issued to it by the owner of a publicly owned treatment works or to fail to comply with any pretreatment standard or pretreatment requirement, or to discharge sewage, industrial waste or other waste in violation of any condition contained in a certificate or land-disturbance approval issued by the Board or in excess of the waste covered by such certificate or land-disturbance approval, or to fail or refuse to furnish information, plans, specifications or other data reasonably necessary and pertinent required by the Board under this chapter.
+		For the purpose of this section, the term "owner" shall mean, in addition to the definition contained in §§ 62.1-44.3 and 62.1-44.15:24, any responsible corporate officer so designated in the applicable discharge permit.
+	</text>
+	<history>Code 1950, § 62.1-43; 1952, c. 478; 1968, c. 659; 1970, c. 638; 1977, c. 263; 1988, c. 167; 2016, cc. 68, 758.</history>
+</law>

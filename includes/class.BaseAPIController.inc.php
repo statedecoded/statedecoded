@@ -3,11 +3,11 @@
 /**
  * Base API Controller Class
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -64,7 +64,7 @@ class BaseAPIController extends BaseController
 			return valid_jsonp_callback($_REQUEST['callback']);
 		}
 		
-		return TRUE;
+		return true;
 		
 	}
 
@@ -83,15 +83,15 @@ class BaseAPIController extends BaseController
 	/**
 	 * Render the content.
 	 */
-	public function render($response, $status)
+	public function render($response, $status = 'OK', $callback = null)
 	{
 		$this->sendHeaders($status);
 
 		$this->setApiVersion($response);
 
-		if (isset($_REQUEST['callback']))
+		if ($callback === null && isset($_REQUEST['callback']))
 		{
-			$callback = filter_var($_REQUEST['callback'], FILTER_SANITIZE_STRING);
+			$callback = filter_var($_REQUEST['callback'], FILTER_DEFAULT);
 		}
 
 		/*
@@ -143,18 +143,17 @@ class BaseAPIController extends BaseController
 	 */
 	public function setApiVersion(&$response)
 	{
-	
-		/*
-		 * Include the API version in this response.
-		 */
-		if (isset($args['api_version']) && strlen($_REQUEST['api_version']))
+		$version = (isset($_REQUEST['api_version']) && strlen($_REQUEST['api_version']))
+			? filter_var($_REQUEST['api_version'], FILTER_DEFAULT)
+			: CURRENT_API_VERSION;
+
+		if (is_array($response))
 		{
-			$response->api_version = filter_var($_REQUEST['api_version'], FILTER_SANITIZE_STRING);
+			$response['api_version'] = $version;
 		}
 		else
 		{
-			$response->api_version = CURRENT_API_VERSION;
+			$response->api_version = $version;
 		}
-		
 	}
 }

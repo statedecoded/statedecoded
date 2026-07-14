@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.4" level="3">Erosion and Sediment Control Law for Localities Not Administering a Virginia Erosion and Stormwater Management Program</unit>
+	</structure>
+	<section_number>62.1-44.15:53</section_number>
+	<catch_line>Certification of program personnel</catch_line>
+	<text>
+		<section prefix="A">The minimum standards of VESCP effectiveness established by the Board pursuant to subsection C of § 62.1-44.15:52 shall provide that (i) an erosion and sediment control plan shall not be approved until it is reviewed by a certified plan reviewer; (ii) inspections of land-disturbing activities shall be conducted by a certified inspector; and (iii) a VESCP shall contain a certified program administrator, a certified plan reviewer, and a certified project inspector, who may be the same person.
+		</section>
+		<section prefix="B">Any person who holds a certificate of competence from the Board in the area of plan review, project inspection, or program administration that was attained prior to the adoption of the mandatory certification provisions of subsection A shall be deemed to satisfy the requirements of that area of certification.
+		</section>
+		<section prefix="C">Professionals registered in the Commonwealth pursuant to Article 1 (§ 54.1-400 et seq.) of Chapter 4 of Title 54.1 or a professional soil scientist as defined in § 54.1-2200 shall be deemed to have met the provisions of this section for the purposes of renewals of certifications.
+		</section>
+	</text>
+	<history>1993, c. 925, § 10.1-561.1; 2012, cc. 785, 819; 2013, cc. 756, 793; 2016, cc. 68, 758.</history>
+</law>

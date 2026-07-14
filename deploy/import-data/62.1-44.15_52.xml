@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.4" level="3">Erosion and Sediment Control Law for Localities Not Administering a Virginia Erosion and Stormwater Management Program</unit>
+	</structure>
+	<section_number>62.1-44.15:52</section_number>
+	<catch_line>Virginia Erosion and Sediment Control Program</catch_line>
+	<text>
+		<section prefix="A">The Board shall develop a program and adopt regulations in accordance with the Administrative Process Act (§ 2.2-4000 et seq.) for the effective control of soil erosion, sediment deposition, and nonagricultural runoff that shall be met in any control program to prevent the unreasonable degradation of properties, stream channels, waters, and other natural resources. Stream restoration and relocation projects that incorporate natural channel design concepts are not man-made channels and shall be exempt from any flow rate capacity and velocity requirements for natural or man-made channels as defined in any regulations promulgated pursuant to this section or § 62.1-44.15:54 or 62.1-44.15:65. Any plan approved prior to July 1, 2014, that provides for stormwater management that addresses any flow rate capacity and velocity requirements for natural or man-made channels shall satisfy the flow rate capacity and velocity requirements for natural or man-made channels if the practices are designed to (i) detain the water volume equal to the first one-half inch of runoff multiplied by the impervious surface of the land development project and to release it over 48 hours; (ii) detain and release over a 24-hour period the expected rainfall resulting from the one-year, 24-hour storm; and (iii) reduce the allowable peak flow rate resulting from the 1.5-year, two-year, and 10-year, 24-hour storms to a level that is less than or equal to the peak flow rate from the site assuming it was in a good forested condition, achieved through multiplication of the forested peak flow rate by a reduction factor that is equal to the runoff volume from the site when it was in a good forested condition divided by the runoff volume from the site in its proposed condition, and shall be exempt from any flow rate capacity and velocity requirement for natural or man-made channels as defined in regulations promulgated pursuant to § 62.1-44.15:54 or 62.1-44.15:65. For plans approved on and after July 1, 2014, the flow rate capacity and velocity requirements of this subsection shall be satisfied by compliance with water quantity requirements in the Virginia Erosion and Stormwater Management Act (§ 62.1-44.15:24 et seq.) and attendant regulations unless such land-disturbing activities (a) are in accordance with the grandfathering or time limits on applicability of approved design criteria provisions of the Virginia Erosion and Stormwater Management Program (VESMP) Regulations, in which case the flow rate capacity and velocity requirements of this subsection shall apply, or (b) are exempt pursuant to subdivision G 2 of § 62.1-44.15:34.
+			The regulations shall:
+			<section prefix="1">Be based upon relevant physical and developmental information concerning the watersheds and drainage basins of the Commonwealth, including, but not limited to, data relating to land use, soils, hydrology, geology, size of land area being disturbed, proximate water bodies and their characteristics, transportation, and public facilities and services;
+			</section>
+			<section prefix="2">Include such survey of lands and waters as may be deemed appropriate by the Board or required by any applicable law to identify areas, including multijurisdictional and watershed areas, with critical erosion and sediment problems; and
+			</section>
+			<section prefix="3">Contain conservation standards for various types of soils and land uses, which shall include criteria, techniques, and methods for the control of erosion and sediment resulting from land-disturbing activities.
+			</section>
+		</section>
+		<section prefix="B">The Board shall provide technical assistance and advice to, and conduct and supervise educational programs for VESCP authorities.
+		</section>
+		<section prefix="C">The Board shall adopt regulations establishing minimum standards of effectiveness of erosion and sediment control programs, and criteria and procedures for reviewing and evaluating the effectiveness of VESCPs. In developing minimum standards for program effectiveness, the Board shall consider information and standards on which the regulations promulgated pursuant to subsection A are based.
+		</section>
+		<section prefix="D">The Board shall approve VESCP authorities and shall periodically conduct a comprehensive program compliance review and evaluation pursuant to subdivision (19) of § 62.1-44.15.
+		</section>
+		<section prefix="E">The Board shall issue certifications concerning the content, application, and intent of specified subject areas of this article and accompanying regulations, including program administration, plan review, and project inspection, to personnel of program authorities and to any other persons who have completed training programs or in other ways demonstrated adequate knowledge. The Department shall administer education and training programs for specified subject areas of this article and accompanying regulations, and is authorized to charge persons attending such programs reasonable fees to cover the costs of administering the programs. Such education and training programs shall also contain expanded components to address plan review and project inspection elements of the Virginia Erosion and Stormwater Management Act (§ 62.1-44.15:24 et seq.) in accordance with § 62.1-44.15:30.
+		</section>
+		<section prefix="F">Department personnel conducting inspections pursuant to this article shall hold a certification as provided in subsection E.
+		</section>
+	</text>
+	<history>1973, c. 486, § 21-89.4; 1988, cc. 732, 891, § 10.1-561; 1993, c. 925; 2004, c. 431; 2005, c. 107; 2006, c. 21; 2012, cc. 785, 819; 2013, cc. 756, 793; 2015, c. 497; 2016, cc. 66, 68, 758.</history>
+</law>

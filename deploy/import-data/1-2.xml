@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="1" level="1">General Provisions</unit>
+		<unit label="chapter" identifier="1" level="2">Code of Virginia</unit>
+	</structure>
+	<section_number>1-2</section_number>
+	<catch_line>Effective date of Code</catch_line>
+	<text>
+		All the provisions of this Code shall be in force on and after February 1, 1950, except as provided in § 1-2.1.
+	</text>
+	<history>Code 1919, § 6567; R. P. 1948, § 1-2.</history>
+</law>

@@ -3,11 +3,11 @@
 /**
  * The Autolinker class, for identifying linkable text and turn it into links
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.2
  *
  */
@@ -15,11 +15,12 @@
 /**
  * Finds linkable strings of text within laws and turns them into links.
  */
+#[\AllowDynamicProperties]
 class Autolinker
 {
 
 	public $terms;
-	public $term_blacklist = array();
+	public $term_blacklist = [];
 	public $edition_id;
 	public $db;
 
@@ -30,7 +31,7 @@ class Autolinker
 	 *
 	 * This is completely unnecessary for the replace_sections() method, but it doesn't do any harm.
 	 */
-	function __construct($args = array())
+	function __construct($args = [])
 	{
 		/*
 		 * Set our defaults
@@ -56,7 +57,7 @@ class Autolinker
 
 		if (!isset($term))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -142,7 +143,7 @@ class Autolinker
 		/*
 		 * Create an instance of the Law class.
 		 */
-		$law = new Law(array('db' => $this->db));
+		$law = new Law(['db' => $this->db]);
 
 		/*
 		 * Get the law, so we can get the proper url.
@@ -153,7 +154,7 @@ class Autolinker
 		 * If this isn't a valid section number, then just return the match verbatim -- there's no
 		 * link to be provided.
 		 */
-		if ($laws === FALSE)
+		if ($laws === false)
 		{
 			return $matches[0];
 		}
@@ -161,7 +162,7 @@ class Autolinker
 		else
 		{
 
-			$permalink_obj = new Permalink(array('db' => $this->db));
+			$permalink_obj = new Permalink(['db' => $this->db]);
 
 			/*
 			 * If we have a single law, we just link to it.
@@ -170,7 +171,7 @@ class Autolinker
 			{
 				$law = $laws[0];
 
-				return '<a class="law" title="'.$law->catch_line.'" href="' .
+				return '<a class="law" title="'.htmlspecialchars($law->catch_line, ENT_QUOTES).'" href="' .
 					$law->url . '">' . $matches[0] . '</a>';
 			}
 

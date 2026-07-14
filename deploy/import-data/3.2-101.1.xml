@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="1" level="4">Department and Commissioner of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-101.1</section_number>
+	<catch_line>Certified mail; subsequent mail or notices may be sent by regular mail</catch_line>
+	<text>
+		Whenever in this title the Board, the Commissioner, or the Department is required to send any mail or notice by certified mail and such mail or notice is sent certified mail, return receipt requested, then any subsequent, identical mail or notice that is sent by the Board, the Commissioner, or the Department may be sent by regular mail.
+	</text>
+	<history>2011, c. 566.</history>
+</law>

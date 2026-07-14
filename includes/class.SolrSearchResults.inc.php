@@ -3,11 +3,11 @@
 /**
  * Wrapper class for Solarium results.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  */
 
@@ -24,7 +24,7 @@ class SolrSearchResults implements SearchResultsInterface
 
 		$this->fixed_results = $this->fix_results($results);
 
-		$this->spelling = $results->getSpellcheck();
+		$this->spelling = method_exists($results, 'getSpellcheck') ? $results->getSpellcheck() : null;
 	}
 
 	public function get_results()
@@ -42,7 +42,7 @@ class SolrSearchResults implements SearchResultsInterface
 		/*
 		 * If we know something is misspelled.
 		 */
-		if ($this->spelling->getCorrectlySpelled() === FALSE)
+		if ($this->spelling && $this->spelling->getCorrectlySpelled() === false)
 		{
 			/*
 			 * Step through each term that appears to be misspelled, and create a modified query string.
@@ -64,7 +64,7 @@ class SolrSearchResults implements SearchResultsInterface
 
 			if($clean_spelling === $this->query['q'])
 			{
-				return FALSE;
+				return false;
 			}
 			else
 			{
@@ -73,7 +73,7 @@ class SolrSearchResults implements SearchResultsInterface
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -97,7 +97,7 @@ class SolrSearchResults implements SearchResultsInterface
 	protected function fix_results($results)
 	{
 		$highlighted = $results->getHighlighting();
-		$fixed_results = array();
+		$fixed_results = [];
 
 		foreach($results as $result)
 		{

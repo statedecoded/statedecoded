@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-87</section_number>
+	<catch_line>Setting woods, etc., on fire intentionally whereby another is damaged or jeopardized</catch_line>
+	<text>
+		Any person who intentionally sets or procures another to set fire to any woods, brush, leaves, grass, straw, or any other inflammable substance capable of spreading fire, and who intentionally allows the fire to escape to lands not his own, whereby the property of another is damaged or jeopardized, shall be guilty of a Class 1 misdemeanor, and shall be liable for the full amount of all expenses incurred in fighting the fire.
+	</text>
+	<history>Code 1950, § 18.1-83; 1960, c. 358; 1975, cc. 14, 15; 1988, c. 403.</history>
+</law>

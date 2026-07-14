@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="3" level="3">Classification of Criminal Offenses and Punishment Therefor</unit>
+	</structure>
+	<section_number>18.2-14</section_number>
+	<catch_line>How unclassified offenses punished</catch_line>
+	<text>
+		Offenses defined in Title 18.2 and in other titles in the Code, for which punishment is prescribed without specification as to the class of the offense, shall be punished according to the punishment prescribed in the section or sections thus defining the offense.
+	</text>
+	<history>1975, cc. 14, 15.</history>
+</law>

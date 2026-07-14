@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.4" level="3">Erosion and Sediment Control Law for Localities Not Administering a Virginia Erosion and Stormwater Management Program</unit>
+	</structure>
+	<section_number>62.1-44.15:66</section_number>
+	<catch_line>No limitation on authority of Department of Energy</catch_line>
+	<text>
+		The provisions of this article shall not limit the powers or duties of the Department of Energy as they relate to mine reclamation under Chapters 10 (§ 45.2-1000 et seq.) and 12 (§ 45.2-1200 et seq.) of Title 45.2 or oil or gas exploration under the Virginia Gas and Oil Act (§ 45.2-1600 et seq.).
+	</text>
+	<history>1973, c. 486, § 21-89.13; 1988, c. 891, § 10.1-571; 1996, c. 688; 2012, cc. 785, 819; 2013, cc. 47, 129, 756, 793; 2021, Sp. Sess. I, c. 532.</history>
+</law>

@@ -1,44 +1,71 @@
-#State Decoded Test Suite
+# State Decoded Test Suite
 
-Currently, The State Decoded has a *very* incomplete test suite.  There's some coverage
-for the Database wrapper, and not much else.  Feel free to contribute your own tests!
+## Overview
 
-Running the test suite _will delete data from the database_. For this reason, it is
-recommended a test database be configured. Copy `config.inc.php` to `config-test.inc.php`
-and adjust the configuration for the test database.
+Tests live in `includes/test/` and run under PHPUnit 10 (installed via Composer). The suite
+currently covers `Database` / `DatabaseStatement` and the `HelpAction` CLI task. `APITest`
+is skipped pending a full parser/import setup.
 
-You must also include the following in `config-test.inc.php` for the tests to run:
+**The test suite uses a separate database (`statedecoded_test`) and will truncate its
+tables on each run. Never point it at a production database.**
 
-    define('STATEDECODED_ENV', 'test');
+## Running in Docker (recommended)
 
-The Database wrapper contains a few functional tests, just to be safe.  One of those is
-for the timeout-reconnect error handler, so the test will take several seconds to run.
-It will also require a valid MySQL connection in `config-test.inc.php`.
+From the repo root:
 
+```bash
+./docker-test.sh phpunit                        # run all tests
+./docker-test.sh phpunit --filter testConstruct # run one test by name
+./docker-test.sh phpunit DatabaseTest.php       # run one file
+```
 
-##Installation
+The Docker environment provides a pre-configured `statedecoded_test` database and drops
+`includes/config-test.inc.php` in place automatically via `deploy/docker/config/config-test.inc.docker.php`.
 
-We're using PHPUnit for testing.  To get up and running quickly, install PHPUnit via PEAR.
-You will need to run the following commands via `sudo`:
+## Running outside Docker
 
-    pear config-set auto_discover 1
-    pear install pear.phpunit.de/PHPUnit
+1. **Install dependencies** (one-time):
+   ```bash
+   composer install
+   ```
 
-This should work under most circumstances, but you may find that you're missing
-dependencies.  If this is the case, you can force install them:
+2. **Create `includes/config-test.inc.php`** by copying `includes/config-sample.inc.php`
+   and adjusting the DSN to point at a dedicated test database. Add:
+   ```php
+   define('STATEDECODED_ENV', 'test');
+   ```
 
-    pear install --force --alldeps pear.phpunit.de/PHPUnit
+3. **Run the suite** from the repo root:
+   ```bash
+   vendor/bin/phpunit -c includes/test/phpunit.xml
+   ```
 
-For full installation instructions,
-[read the PHPUnit documentation](http://phpunit.de/manual/3.7/en/installation.html).
+   Or supply an alternate config path via environment variable:
+   ```bash
+   STATEDECODED_CONFIG=/path/to/config-test.inc.php vendor/bin/phpunit -c includes/test/phpunit.xml
+   ```
 
+## Configuration
 
-##Running the Test Runner
+| File | Purpose |
+| --- | --- |
+| `phpunit.xml` | PHPUnit 10 configuration; sets bootstrap, test discovery |
+| `bootstrap.php` | Loads config and `functions.inc.php`; enforces `STATEDECODED_ENV=test` |
+| `helper/class.TestDbHelper.inc.php` | DB setup/teardown helper used by `APITest` |
 
-To run the test runner after installing PHPUnit, simply run `phpunit` from the test
-directory.  Note: We're using a *very* simple relative path to resolve dependencies here,
-so you *must* run the test runner from within the test directory.
+## Adding tests
 
-    cd includes/test/
-    phpunit                     # run all tests
-    phpunit DatabaseTest.php    # run specific test
+- Place new test classes in `includes/test/` (or a subdirectory). PHPUnit discovers
+  any file matching `*Test.php`.
+- Extend `PHPUnit\Framework\TestCase`.
+- Keep fixture data local to the test method or in a `@dataProvider`; avoid shared
+  state in `setUp()` beyond mocks and DB connections.
+- Run `./docker-test.sh phpstan` after adding tests — PHPStan analyses `includes/` and will
+  catch type errors before the tests run.
+
+## Known skipped tests
+
+| Test | Reason |
+| --- | --- |
+| `APITest::testRegisterKey` | Requires a full parser/import run with XML data |
+| `DatabaseTest::testTimeout` | Requires `SYSTEM_VARIABLES_ADMIN` on the test DB user |

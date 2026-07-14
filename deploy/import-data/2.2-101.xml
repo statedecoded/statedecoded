@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-101</section_number>
+	<catch_line>Clerical forces and office expenses of Governor</catch_line>
+	<text>
+		The Governor may appoint the clerical force necessary to the efficient operation of his office, but the aggregate amount paid such clerks shall not exceed the sum provided by law. The Governor may expend for the contingent expenses of his office such sums as are provided by law.
+	</text>
+	<history>Code 1950, §§ 14-11, 14-25; 1964, c. 386, § 14.1-13; 1970, c. 260; 1998, c. 872, § 2.1-38.3; 2001, c. 844.</history>
+</law>

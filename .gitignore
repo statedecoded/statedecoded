@@ -1,13 +1,23 @@
 .DS_Store
-.vagrant/
-Vagrantfile
+node_modules/
+
+# Front-end assets managed by npm — built via `npm run build`
+htdocs/themes/StateDecoded2013/static/css/application.css
+htdocs/themes/StateDecoded2013/static/css/jquery-ui.css
+htdocs/themes/StateDecoded2013/static/css/jquery.qip.min.css
+htdocs/themes/StateDecoded2013/static/css/jquery.qip.min.map
+htdocs/themes/StateDecoded2013/static/css/images/
+htdocs/themes/StateDecoded2013/static/fonts/font-awesome/
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
 htdocs/admin/import-data/
-includes/class.Virginia.inc.php
 includes/config.inc.php
 htdocs/.sass-cache/
-package.box
 .settings
 .project
 .buildpath
+.env
+includes/test/.phpunit.result.cache
+htdocs/downloads/*
+htdocs/sitemap.xml
+vendor/

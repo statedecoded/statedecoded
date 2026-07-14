@@ -5,11 +5,11 @@
  *
  * Routes all the main requests. The site's home page can be found at home.php.
  * 
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -52,7 +52,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 		 * These are the directories that we want to peer into the child directories of -- the
 		 * current directory and its parent directory.
 		 */
-		$parent_directories = array('.', '..');
+		$parent_directories = ['.', '..'];
 		foreach ($parent_directories as $parent_directory)
 		{
 			
@@ -74,7 +74,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 					/*
 					 * To pick a file more or less at random, we look for class.Law.inc.php.
 					 */
-					if (in_array('class.Law.inc.php', $child_files) === TRUE)
+					if (in_array('class.Law.inc.php', $child_files) === true)
 					{
 						$include_path = realpath(dirname(__FILE__) . '/' . $parent_directory . '/' . $file . '/');
 						break(2);
@@ -102,7 +102,7 @@ if ( !isset($_SERVER['INCLUDE_PATH']) )
 		 * with every page view. This is really quite undesirable, because it will slow down the
 		 * site non-trivially, but it's better than not working at all.
 		 */
-		if (is_writable('.htaccess') == TRUE)
+		if (is_writable('.htaccess') == true)
 		{
 			
 			$htaccess = PHP_EOL . PHP_EOL . 'SetEnv INCLUDE_PATH ' . $include_path . PHP_EOL;
@@ -135,7 +135,7 @@ if (isset($_SERVER['EDITION_ID']))
 /*
  * Include the site's config file.
  */
-if ( (include INCLUDE_PATH . '/config.inc.php') === FALSE )
+if ( (include INCLUDE_PATH . '/config.inc.php') === false )
 {
 	die('Cannot run without a config.inc.php file. See the installation documentation.');
 }
@@ -150,7 +150,7 @@ require('functions.inc.php');
  */
 try
 {
-	$db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT) );
+	$db = new Database( PDO_DSN, PDO_USERNAME, PDO_PASSWORD, [PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT] );
 }
 
 /*
@@ -163,9 +163,9 @@ catch (PDOException $e)
 	 * If we get error 1049, that means that no database of this name could be found. This means
 	 * that The State Decoded has not yet been installed. Redirect to the admin section.
 	 */
-	if (strpos($e->getMessage(), '[1049]') !== FALSE)
+	if (strpos($e->getMessage(), '[1049]') !== false)
 	{
-		if (strpos($_SERVER['REQUEST_URI'], '/admin') === FALSE)
+		if (strpos($_SERVER['REQUEST_URI'], '/admin') === false)
 		{
 			header('Location: /admin/');
 			exit;
@@ -214,20 +214,13 @@ if (version_compare(PHP_VERSION, '5.3.6', '<'))
 global $db;
 
 /*
- * Include Solarium's autoloader, for queries to Solr.
- */
-require('Solarium/Autoloader.php');
-Solarium_Autoloader::register();
-
-
-/*
- * Include the custom functions file.
+ * Include the custom functions file (also loads vendor/autoload.php).
  */
 require(CUSTOM_FUNCTIONS);
 
-$mc_args = array(
+$mc_args = [
 	'db' => $db,
-);
+];
 
 /*
  * If Memcached or Redis is installed, instantiate a connection to it.

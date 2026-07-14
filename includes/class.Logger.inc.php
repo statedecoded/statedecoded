@@ -5,14 +5,15 @@
  *
  * Class to output messages in a given format. Can be HTML or plain text.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.7
 */
 
+#[\AllowDynamicProperties]
 class Logger
 {
 
@@ -21,7 +22,7 @@ class Logger
     *
     * @var boolean
     */
-	public $html = FALSE;
+	public $html = false;
 
    /**
     * This setting determines how "loud" the logger will be.
@@ -36,7 +37,7 @@ class Logger
 	/**
 	 * Should we flush the buffer automatically?
 	 */
-	public $flush_buffer = TRUE;
+	public $flush_buffer = true;
 
 
 	/**
@@ -52,7 +53,7 @@ class Logger
 	 * @param array    Hash of all values to override in the class
 	 */
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 
 		foreach($args as $key=>$value)
@@ -76,7 +77,7 @@ class Logger
 	{
 		if ($level >= $this->level)
 		{
-			if ($this->html === TRUE)
+			if ($this->html === true)
 			{
 				echo '<div class="logmessage" data-time="' . microtime(true) .'">';
 			}
@@ -84,7 +85,7 @@ class Logger
 			echo $msg;
 
 
-			if ($this->html === TRUE)
+			if ($this->html === true)
 			{
 				echo '</div>';
 			}
@@ -122,7 +123,7 @@ class Logger
 	public function error($msg, $level = 1)
 	{
 
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			$msg = '<span class="error">' . $msg . '</span>';
 		}
@@ -150,7 +151,7 @@ class Logger
 	 * Render a progressbar.
 	 */
 	public function progress($name) {
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			echo '<div class="progress" data-time="' . microtime(true) .'">
 			  <div class="progress-bar progress-bar-striped active"
@@ -168,16 +169,16 @@ class Logger
 		}
 	}
 
-	public function updateProgressFiles($name, $current, $total)
+	public function updateProgressFiles($name, $current, $total, $label = 'Importing')
 	{
 		$amount = (int) ($current / $total * 100);
-		$text = 'File ' . $current . ' of ' . $total;
+		$text = $label . ' ' . number_format($current) . ' of ' . number_format($total);
 		$this->updateProgress($name, $amount, $text);
 	}
 
 	public function updateProgress($name, $amount, $text = '')
 	{
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			if($text === '') {
 				$text = $amount . '%';
@@ -193,11 +194,15 @@ class Logger
 				ob_flush();
 			}
 		}
+		else
+		{
+			echo $text . "\n";
+		}
 	}
 
 	public function finishProgress($name)
 	{
-		if($this->html === TRUE)
+		if($this->html === true)
 		{
 			echo '<script data-time="' . microtime(true).'">
 				$("#progress_' . $name .'")

@@ -64,7 +64,7 @@ var favlaws = function () {
       section_number: section_number,
       catch_line: $('.catch_line').first().text(),
       edition_id: edition_id,
-      token: disqus_identifier,
+      token: (typeof disqus_identifier !== 'undefined' ? disqus_identifier : ''),
       url: window.location.href
     };
     return law;

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-30</section_number>
+	<catch_line>Murder and manslaughter declared felonies</catch_line>
+	<text>
+		Any person who commits aggravated murder, murder of the first degree, murder of the second degree, voluntary manslaughter, or involuntary manslaughter, is guilty of a felony.
+	</text>
+	<history>1975, cc. 14, 15; 2021, Sp. Sess. I, cc. 344, 345.</history>
+</law>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="2" level="2">State Policy as to Waters</unit>
+	</structure>
+	<section_number>62.1-10</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this chapter, the following terms shall have the meanings respectively ascribed to them:
+		<section prefix="a">"Water" includes all waters, on the surface and under the ground, wholly or partially within or bordering the Commonwealth or within its jurisdiction and which affect the public welfare.
+		</section>
+		<section prefix="b">"Beneficial use" means both instream and offstream uses. Instream beneficial uses include, but are not limited to, the protection of fish and wildlife habitat, maintenance of waste assimilation, recreation, navigation, and cultural and aesthetic values. Offstream beneficial uses include, but are not limited to, domestic (including public water supply), agricultural, electric power generation, commercial and industrial uses. Public water supply uses for human consumption shall be considered the highest priority.
+		</section>
+	</text>
+	<history>Code 1950, § 62-9.1; 1954, c. 330; 1958, c. 413; 1968, c. 659; 1989, c. 410.</history>
+</law>

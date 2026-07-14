@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="3" level="2">Inchoate Offenses</unit>
+		<unit label="article" identifier="2" level="3">Attempts</unit>
+	</structure>
+	<section_number>18.2-28</section_number>
+	<catch_line>Maximum punishment for attempts</catch_line>
+	<text>
+		Any provision in this article notwithstanding, in no event shall the punishment for an attempt to commit an offense exceed the maximum punishment had the offense been committed.
+	</text>
+	<history>Code 1950, § 18.1-20; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

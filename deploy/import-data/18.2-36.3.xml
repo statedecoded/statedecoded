@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="1" level="3">Homicide</unit>
+	</structure>
+	<section_number>18.2-36.3</section_number>
+	<catch_line>Involuntary manslaughter; certain drug offenses</catch_line>
+	<text>
+		<section prefix="A">Any person who knowingly, intentionally, and feloniously manufactures, sells, or distributes a controlled substance knowing that such controlled substance contains a detectable amount of fentanyl, including its derivatives, isomers, esters, ethers, salts, and salts of isomers, in violation of Article 1 (§ 18.2-247 et seq.) of Chapter 7 and unintentionally causes the death of another person is guilty of involuntary manslaughter if (i) such death results from the use of the controlled substance and (ii) such controlled substance is the proximate cause of the death regardless of the time or place death occurred in relation to the commission of the underlying manufacturing, sale, or distribution of a controlled substance that contains a detectable amount of fentanyl, including its derivatives, isomers, esters, ethers, salts, and salts of isomers.
+		</section>
+		<section prefix="B">It is not a defense to a prosecution under this section that the decedent contributed to his own death by his knowing or voluntary use of the controlled substance. Venue for a prosecution under this section shall lie in the locality where the manufacturing, sale, or distribution of a controlled substance that contains a detectable amount of fentanyl, including its derivatives, isomers, esters, ethers, salts, and salts of isomers, occurred, where the use of the controlled substance occurred, or where death occurred.
+		</section>
+		<section prefix="C">However, if any person proves that he gave or distributed a controlled substance that contains a detectable amount of fentanyl, including its derivatives, isomers, esters, ethers, salts, and salts of isomers, in violation of Article 1 (§ 18.2-247 et seq.) of Chapter 7 only as an accommodation to another individual who is not an inmate in a community correctional facility, local correctional facility, or state correctional facility as defined in § 53.1-1 or in the custody of an employee thereof, and not with intent to profit thereby from any consideration received or expected nor to induce the recipient or intended recipient of the controlled substance to use or become addicted to or dependent upon such controlled substance, he shall not be guilty of involuntary manslaughter but is guilty of an accommodation sale punishable as a Class 6 felony.
+		</section>
+		<section prefix="D">No person convicted pursuant to this section for conduct described in subsection A shall be subject to a prosecution for a violation of subsection D of § 18.2-46.6 or § 18.2-248.01, 18.2-250, or 18.2-256 for the same transaction or occurrence.
+		</section>
+	</text>
+	<history>2025, cc. 719, 721.</history>
+</law>

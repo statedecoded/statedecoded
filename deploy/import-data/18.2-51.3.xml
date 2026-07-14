@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-51.3</section_number>
+	<catch_line>Prohibition against reckless endangerment of others by throwing objects from places higher than one story; penalty</catch_line>
+	<text>
+		<section prefix="A">It shall be unlawful for any person, with the intent to cause injury to another, to intentionally throw from a balcony, roof top, or other place more than one story above ground level any object capable of causing any such injury.
+		</section>
+		<section prefix="B">A violation of this section shall be punishable as a Class 6 felony.
+		</section>
+	</text>
+	<history>1990, c. 761.</history>
+</law>

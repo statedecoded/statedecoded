@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="1" level="1">General Provisions</unit>
+		<unit label="chapter" identifier="3" level="2">Citizenship [Repealed]</unit>
+	</structure>
+	<section_number>1-18</section_number>
+	<catch_line>Repealed</catch_line>
+	<text>
+		Repealed by Acts 2005, c. 839, cl. 10, effective October 1, 2005.
+	</text>
+	<history></history>
+</law>

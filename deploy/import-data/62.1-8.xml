@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="1" level="2">Watercourses Generally</unit>
+	</structure>
+	<section_number>62.1-8</section_number>
+	<catch_line>Limitation on power of courts to grant leave to erect dams</catch_line>
+	<text>
+		Where a watercourse is navigable, or by law declared a public highway, no court shall grant leave to any person to erect in that part of it any dam which will obstruct ordinary navigation or the passage of fish; and where any law has been or shall be enacted for opening, improving or extending the navigation of a watercourse no court shall, while such law is in force, grant leave to any person to erect any dam or other obstruction across or in such watercourse which will in any way interfere with the navigation thereof without express authority of law or the consent of the company incorporated to open, improve or extend such navigation. Any such dam shall, notwithstanding it may be built under such leave, be deemed a nuisance, and may be abated as such, or such company or the Commonwealth may make a lock or locks in such dam for the passage of vessels and boats without being required to make any compensation therefor.
+	</text>
+	<history>Code 1950, § 62-6; 1968, c. 659.</history>
+</law>

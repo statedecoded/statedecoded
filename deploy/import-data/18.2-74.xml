@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="9" level="3">Abortion</unit>
+	</structure>
+	<section_number>18.2-74</section_number>
+	<catch_line>When abortion or termination of pregnancy lawful after second trimester of pregnancy</catch_line>
+	<text>
+		Notwithstanding any of the provisions of § 18.2-71 and in addition to the provisions of §§ 18.2-72 and 18.2-73, it shall be lawful for any physician licensed by the Board of Medicine to practice medicine and surgery to terminate or attempt to terminate a human pregnancy or aid or assist in the termination of a human pregnancy by performing an abortion or causing a miscarriage on any woman in a stage of pregnancy subsequent to the second trimester provided the following conditions are met:
+		<section prefix="a">Said operation is performed in a hospital licensed by the Virginia State Department of Health or operated by the Department of Behavioral Health and Developmental Services.
+		</section>
+		<section prefix="b">The physician and two consulting physicians certify and so enter in the hospital record of the woman, that in their medical opinion, based upon their best clinical judgment, the continuation of the pregnancy is likely to result in the death of the woman or substantially and irremediably impair the mental or physical health of the woman.
+		</section>
+		<section prefix="c">Measures for life support for the product of such abortion or miscarriage must be available and utilized if there is any clearly visible evidence of viability.
+		</section>
+	</text>
+	<history>1975, cc. 14, 15; 2009, cc. 813, 840.</history>
+</law>

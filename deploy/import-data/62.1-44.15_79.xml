@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.5" level="3">Chesapeake Bay Preservation Act</unit>
+	</structure>
+	<section_number>62.1-44.15:79</section_number>
+	<catch_line>Vested rights protected</catch_line>
+	<text>
+		The provisions of this article shall not affect vested rights of any landowner under existing law.
+	</text>
+	<history>1988, cc. 608, 891, § 10.1-2115; 2013, cc. 756, 793.</history>
+</law>

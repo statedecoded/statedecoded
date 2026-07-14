@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.2" level="3">Virginia Water Resources and Wetlands Protection Program</unit>
+	</structure>
+	<section_number>62.1-44.15:22</section_number>
+	<catch_line>(For contingent effective date, see Acts 2021, Sp. Sess. I, c. 100) Water withdrawals and preservation of instream flow</catch_line>
+	<text>
+		<section prefix="A">1. Conditions contained in a Virginia Water Protection Permit may include the volume of water that may be withdrawn as a part of the permitted activity and conditions necessary to protect beneficial uses. Domestic and other existing beneficial uses shall be considered the highest priority uses. The Board is authorized to utilize and incorporate comprehensive groundwater, surface water, and aquifer data in its permit decision. Such data may include information relating to water levels, flow rates, and water quality.
+			<section prefix="2">Every application for a Virginia Water Protection Permit for a surface water withdrawal shall include a (i) water auditing plan and (ii) leak detection and repair plan. Both such plans shall comply with requirements established by the Board in regulations. The Board shall approve every water auditing plan and leak detection and repair plan that complies with such regulatory requirements. Once approved by the Board, such water auditing plan and leak detection and repair plan shall be incorporated by reference as a condition in the Virginia Water Protection Permit. The Board shall not issue a Virginia Water Protection Permit for a surface water withdrawal without an approved water auditing plan and an approved leak detection and repair plan.
+			</section>
+		</section>
+		<section prefix="B">Notwithstanding any other provision of law, no Virginia Water Protection Permit shall be required for any water withdrawal in existence on July 1, 1989; however, a permit shall be required if a new § 401 certification is required to increase a withdrawal. No Virginia Water Protection Permit shall be required for any water withdrawal not in existence on July 1, 1989, if the person proposing to make the withdrawal received a § 401 certification before January 1, 1989, with respect to installation of any necessary withdrawal structures to make such withdrawal; however, a permit shall be required before any such withdrawal is increased beyond the amount authorized by the certification.
+		</section>
+		<section prefix="C">The Board may issue an Emergency Virginia Water Protection Permit for a new or increased withdrawal when it finds that because of drought there is an insufficient public drinking water supply that may result in a substantial threat to human health or public safety. Such a permit may be issued to authorize the proposed activity only after conservation measures mandated by local or state authorities have failed to protect public health and safety and notification of the agencies designated in subsection C of § 62.1-44.15:20 and only for the amount of water necessary to protect public health and safety. Such agencies shall have five days to provide comments or written recommendations on the issuance of the permit. Notwithstanding the provisions of subsection B of § 62.1-44.15:20, no public comment shall be required prior to issuance of the emergency permit. Not later than 14 days after the issuance of the emergency permit, the permit holder shall apply for a Virginia Water Protection Permit authorized under other provisions of this section. The application for such Virginia Water Protection Permit shall be subject to public comment for a period established by the Board. Any Emergency Virginia Water Protection Permit issued under this section shall be valid until the Board approves or denies the subsequent request for a Virginia Water Protection Permit or for a period of one year, whichever occurs sooner. The fee for the emergency permit shall be 50 percent of the fee charged for a comparable Virginia Water Protection Permit.
+		</section>
+	</text>
+	<history>2007, c. 659; 2021, Sp. Sess. I, c. 100; 2024, c. 251.</history>
+</law>

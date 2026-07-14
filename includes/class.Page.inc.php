@@ -3,11 +3,11 @@
 /**
  * The Page class, for rendering HTML and delivering it to the browser
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
  *
  * Since all rendering occurs in-class, you can override the rendering method
@@ -30,13 +30,13 @@ class Page
 	public $theme_web_path = '';
 	public $static_path = '';
 
-	public $assets = array(
+	public $assets = [
 		/* 'asset_name' => array(
 				'path' => '/relative/path/to/file.css',
 				'resolved_path' => '/absolute/path/to/file.css', // This is generated.
 				'type' => 'stylesheet', // or javascript or whatever.
 				'requires' => array('first_asset_name', 'second_asset_name')) */
-	);
+	];
 
 	public function __construct($page=null)
 	{
@@ -90,7 +90,7 @@ class Page
 		{
 
 			$html = $cache->retrieve($storage_name);
-			if ($html === FALSE)
+			if ($html === false)
 			{
 
 				if (check_file_available($template_file))
@@ -177,11 +177,11 @@ class Page
 
 		if (!isset($content))
 		{
-			return FALSE;
+			return false;
 		}
 
 		echo $content;
-		return TRUE;
+		return true;
 
 	}
 
@@ -189,7 +189,7 @@ class Page
 	/**
 	 * Add a new asset.
 	 */
-	public function add_asset($name, $asset = array())
+	public function add_asset($name, $asset = [])
 	{
 	
 		/*
@@ -207,10 +207,6 @@ class Page
 			$asset['resolved_path'] = $asset['path'];
 		}
 
-		if(isset($requires))
-		{
-			$asset['requires'] = $requires;
-		}
 		$this->assets[$name] = $asset;
 		
 	}
@@ -236,7 +232,7 @@ class Page
 	public function parse_assets()
 	{
 	
-		$collated_assets = array();
+		$collated_assets = [];
 
 		foreach ($this->assets as $name => $asset)
 		{
@@ -258,7 +254,7 @@ class Page
 		$type = $asset['type'];
 		if(!isset($collated_assets[$type]))
 		{
-			$collated_assets[$type] = array();
+			$collated_assets[$type] = [];
 		}
 
 		/*
@@ -269,7 +265,7 @@ class Page
 
 			if(!is_array($asset['requires']))
 			{
-				$asset['requires'] = array($asset['requires']);
+				$asset['requires'] = [$asset['requires']];
 			}
 
 			foreach ($asset['requires'] as $required)

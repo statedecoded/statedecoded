@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="2" level="3">Preservation of Farm and Forest Lands [Repealed]</unit>
+		<unit label="article" identifier="2" level="4">Protection of Farm and Forest Lands</unit>
+	</structure>
+	<section_number>3.2-206</section_number>
+	<catch_line>Repealed</catch_line>
+	<text>
+		Repealed by Acts 2017, c. 5, cl. 2.
+	</text>
+	<history></history>
+</law>

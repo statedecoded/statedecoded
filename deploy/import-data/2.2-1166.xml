@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="5" level="5">Abatement of Risk of Asbestos in State-Owned and Public School Buildings</unit>
+	</structure>
+	<section_number>2.2-1166</section_number>
+	<catch_line>Marking locations where asbestos found in public school buildings; estimate of cost of risk abatement; list of priorities based on risk</catch_line>
+	<text>
+		Each public school division shall ensure that every location at which asbestos is identified following inspections conducted pursuant to subsection A or C of § 2.2-1165 is clearly marked with suitably designed signs or labels. Each division shall prepare an accurate estimate of the cost of abating the risk of asbestos at each location so identified. Each division shall also establish a list of priorities, based upon its determination of the risk to public health and safety posed by asbestos at each such location, which shall include the estimated cost of abating the risk at each location on the list.
+	</text>
+	<history>1986, cc. 288, 560, § 2.1-526.16; 2001, c. 844.</history>
+</law>

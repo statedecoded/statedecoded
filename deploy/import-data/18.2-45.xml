@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2" level="3">Crimes by Mobs</unit>
+	</structure>
+	<section_number>18.2-45</section_number>
+	<catch_line>Persons suffering death from mob attempting to lynch another person</catch_line>
+	<text>
+		Every person suffering death from a mob attempting to lynch another person shall come within the provisions of this article, and his personal representative shall be entitled to relief in the same manner and to the same extent as if he were the originally intended victim of such mob.
+	</text>
+	<history>Code 1950, § 18.1-34; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

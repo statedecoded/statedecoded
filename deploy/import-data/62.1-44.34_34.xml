@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="13" level="3">Per- and Polyfluoroalkyl Substances</unit>
+	</structure>
+	<section_number>62.1-44.34:34</section_number>
+	<catch_line>Occoquan Reservoir PFAS Reduction Program</catch_line>
+	<text>
+		<section prefix="A">For purposes of this section, "PFAS" has the same meaning as in § 62.1-44.34:29.
+		</section>
+		<section prefix="B">The owner or operator of any facility, including facilities described in § 62.1-44.34:32, that (i) discharges industrial wastewater pursuant to an industrial pretreatment program permit into the sewer collection system of a major publicly owned treatment works that discharges into the Occoquan Reservoir, the Occoquan River, Bull Run, or any of their tributaries above the Occoquan Reservoir or (ii) discharges industrial wastewater or industrial stormwater directly into the Occoquan Reservoir, the Occoquan River, Bull Run, or any of their tributaries above the Occoquan Reservoir pursuant to an individual VPDES permit issued by the Department shall monitor for PFAS using EPA Method 1633 or an alternative method approved by the EPA beginning on or before October 1, 2025.
+			The owner or operator of any such facility shall perform representative monitoring of its wastewater or stormwater discharges, as applicable, for PFAS at least once every three months unless the Department authorizes the owner or operator of a facility with proper monitoring results that are below the method detection level for four consecutive quarters to reduce or discontinue monitoring. The owner or operator of a facility shall make a good faith effort to obtain the results of such monitoring from the laboratory within 45 days of the sampling date or within the shortest practicable time thereafter. The owner or operator of a facility shall report all results to the Department no later than the tenth day of the next month after the month in which the result is reported by the laboratory. This report shall include all such PFAS analytes measured by the test method.
+		</section>
+		<section prefix="C">By July 1, 2027, for any facility that measures PFAS in its discharge that exceeds the maximum contaminant level (MCL) for such PFAS in drinking water promulgated on or before January 1, 2025, identified through the monitoring required in subsection B, the Department, for an individual VPDES permit if the facility discharges directly to surface waters, or a major publicly owned treatment works, for an indirect discharger, shall modify the applicable discharge permit to require that the facility's discharge not exceed that MCL. The permit shall provide a compliance schedule that requires compliance with such level as soon as possible but no later than July 1, 2029; however, the compliance schedule shall be extended beyond July 1, 2029, if the deadline to comply with the MCL for PFAS in finished water for any public water system that withdraws surface water from the Occoquan Reservoir is extended beyond July 1, 2029. If the MCL for such PFAS for drinking water is revised to a different, higher allowed level, the revised higher level shall control for purposes of this section.
+		</section>
+		<section prefix="D">Where the owner or operator of a facility subject to industrial wastewater discharge PFAS limitations pursuant to subsection C demonstrates to the Department's satisfaction that the presence of PFAS in its water supply may contribute to an exceedance, the Department shall establish an alternative manner of calculating compliance with the limitation required by subsection C to account for the presence of PFAS in its water supply not caused by the same facility. The consideration or establishment of an alternative manner of calculating compliance shall not delay the deadline for compliance specified in subsection C.
+		</section>
+		<section prefix="E">The provisions of this section shall not apply to (i) any industrial discharger except as specifically listed in subsection B, (ii) any publicly owned treatment works or drinking water treatment plant, or (iii) a municipal solid waste facility. Any public water system that withdraws surface water from the Occoquan Reservoir to produce and distribute potable water to the general public may rely on the level of control required by this section for the purpose of its planning for compliance with the MCL for PFAS in finished water.
+		</section>
+		<section prefix="F">Nothing in this section shall be construed to limit the authority of the Department or the owner or operator of any publicly owned treatment works to which any user discharges wastewater to require monitoring or reporting or otherwise regulate the discharge of any PFAS chemicals or other pollutants under other applicable legal authority.
+		</section>
+	</text>
+	<history>2025, c. 650.</history>
+</law>

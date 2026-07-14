@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="3" level="3">Classification of Criminal Offenses and Punishment Therefor</unit>
+	</structure>
+	<section_number>18.2-9</section_number>
+	<catch_line>Classification of criminal offenses</catch_line>
+	<text>
+		<section prefix="1">Felonies are classified, for the purposes of punishment and sentencing, into six classes:
+			<section prefix="a">Class 1 felony
+			</section>
+			<section prefix="b">Class 2 felony
+			</section>
+			<section prefix="c">Class 3 felony
+			</section>
+			<section prefix="d">Class 4 felony
+			</section>
+			<section prefix="e">Class 5 felony
+			</section>
+			<section prefix="f">Class 6 felony.
+			</section>
+		</section>
+		<section prefix="2">Misdemeanors are classified, for the purposes of punishment and sentencing, into four classes:
+			<section prefix="a">Class 1 misdemeanor
+			</section>
+			<section prefix="b">Class 2 misdemeanor
+			</section>
+			<section prefix="c">Class 3 misdemeanor
+			</section>
+			<section prefix="d">Class 4 misdemeanor.
+			</section>
+		</section>
+	</text>
+	<history>1975, cc. 14, 15.</history>
+</law>

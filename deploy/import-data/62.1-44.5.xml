@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="1" level="3">General Provisions</unit>
+	</structure>
+	<section_number>62.1-44.5</section_number>
+	<catch_line>Prohibition of waste discharges or other quality alterations of state waters except as authorized by permit; notification required</catch_line>
+	<text>
+		<section prefix="A">Except in compliance with a certificate, land-disturbance approval, or permit issued by the Board or other entity authorized by the Board to issue a certificate, land-disturbance approval, or permit pursuant to this chapter, it shall be unlawful for any person to:
+			<section prefix="1">Discharge into state waters sewage, industrial wastes, other wastes, or any noxious or deleterious substances;
+			</section>
+			<section prefix="2">Excavate in a wetland;
+			</section>
+			<section prefix="3">Otherwise alter the physical, chemical, or biological properties of state waters and make them detrimental to the public health, or to animal or aquatic life, or to the uses of such waters for domestic or industrial consumption, or for recreation, or for other uses;
+			</section>
+			<section prefix="4">On and after October 1, 2001, conduct the following activities in a wetland:
+				a. New activities to cause draining that significantly alters or degrades existing wetland acreage or functions;
+				b. Filling or dumping;
+				c. Permanent flooding or impounding; or
+				d. New activities that cause significant alteration or degradation of existing wetland acreage or functions; or
+			</section>
+			<section prefix="5">Discharge stormwater into state waters from Municipal Separate Storm Sewer Systems or land disturbing activities.
+			</section>
+		</section>
+		<section prefix="B">Any person in violation of the provisions of subsection A who discharges or causes or allows (i) a discharge of sewage, industrial waste, other wastes, or any noxious or deleterious substance into or upon state waters or (ii) a discharge that may reasonably be expected to enter state waters shall, upon learning of the discharge, promptly notify, but in no case later than 24 hours the Board, the Director of the Department of Environmental Quality, or the coordinator of emergency services appointed pursuant to § 44-146.19 for the political subdivision reasonably expected to be affected by the discharge. Written notice to the Director of the Department of Environmental Quality shall follow initial notice within the time frame specified by the federal Clean Water Act.
+		</section>
+	</text>
+	<history>Code 1950, § 62.1-17; 1968, c. 659; 1970, c. 638; 1990, c. 717; 1996, c. 119; 2000, cc. 1032, 1054; 2001, cc. 354, 383; 2004, c. 372; 2013, cc. 756, 793; 2016, cc. 68, 758.</history>
+</law>

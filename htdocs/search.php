@@ -3,11 +3,11 @@
 /**
  * The Search page, handling search requests.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -18,9 +18,9 @@ global $db;
  * Intialize Solarium and instruct it to use the correct request handler.
  */
 $client = new SearchIndex(
-	array(
-		'config' => json_decode(SEARCH_CONFIG, TRUE)
-	)
+	[
+		'config' => json_decode(SEARCH_CONFIG, true)
+	]
 );
 
 /*
@@ -49,7 +49,7 @@ $content->set('javascript', "var api_key = '" . API_KEY . "';");
  * Create a new instance of our search class. We use this to display the search form and the result
  * page numbers.
  */
-$search = new Search(array('db' => $db));
+$search = new Search(['db' => $db]);
 
 /*
  * If a search is being submitted.
@@ -60,14 +60,14 @@ if (!empty($_GET['q']))
 	/*
 	 * Localize the search string, filtering out unsafe characters.
 	 */
-	$q = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
+	$q = filter_input(INPUT_GET, 'q', FILTER_DEFAULT);
 
 	/*
 	 * If a page number has been specified, include that. Otherwise, it's page 1.
 	 */
 	if (!empty($_GET['p']))
 	{
-		$page = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_STRING);
+		$page = filter_input(INPUT_GET, 'p', FILTER_DEFAULT);
 	}
 	else
 	{
@@ -80,7 +80,7 @@ if (!empty($_GET['q']))
 	 */
 	if (!empty($_GET['num']))
 	{
-		$per_page = filter_input(INPUT_GET, 'num', FILTER_SANITIZE_STRING);
+		$per_page = filter_input(INPUT_GET, 'num', FILTER_DEFAULT);
 	}
 	else
 	{
@@ -95,7 +95,7 @@ if (!empty($_GET['q']))
 
 	if(!empty($_GET['edition_id']))
 	{
-		$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
+		$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_DEFAULT);
 	}
 	$content->set('current_edition', $edition_id);
 
@@ -111,12 +111,12 @@ if (!empty($_GET['q']))
 	try
 	{
 		$results = $client->search(
-			array(
+			[
 				'q' => decode_entities($q),
 				'edition_id' => $edition_id,
 				'page' => $page,
 				'per_page' => $per_page
-			)
+			]
 		);
 	}
 	catch (Exception $error)
@@ -131,7 +131,7 @@ if (!empty($_GET['q']))
 	 * If any portion of this search term appears to be misspelled, propose a properly spelled
 	 * version.
 	 */
-	if (isset($results) && $results->get_fixed_spelling() !== FALSE)
+	if (isset($results) && $results->get_fixed_spelling() !== false)
 	{
 
 		$body .= '<h1>Suggestions</h1>';
@@ -174,12 +174,12 @@ if (!empty($_GET['q']))
 		/*
 		 * Iterate through the results.
 		 */
-		$law = new Law(array('db' => $db));
-		$struct = new Structure(array('db' => $db));
-		$edition = new Edition(array('db' => $db));
-		$permalink_obj = new Permalink(array('db' => $db));
+		$law = new Law(['db' => $db]);
+		$struct = new Structure(['db' => $db]);
+		$edition = new Edition(['db' => $db]);
+		$permalink_obj = new Permalink(['db' => $db]);
 
-		$edition_cache = array();
+		$edition_cache = [];
 
 		foreach ($results->get_results() as $result)
 		{
@@ -195,7 +195,7 @@ if (!empty($_GET['q']))
 
 				$url_string = $url->url;
 
-				if(strpos($url_string, '?') !== FALSE)
+				if(strpos($url_string, '?') !== false)
 				{
 					$url_string .= '&';
 				}
@@ -298,7 +298,7 @@ if (!empty($_GET['q']))
 
 				$url_string = $struct->permalink->url;
 
-				if(strpos($url_string, '?') !== FALSE)
+				if(strpos($url_string, '?') !== false)
 				{
 					$url_string .= '&';
 				}

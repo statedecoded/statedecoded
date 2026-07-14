@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="3" level="2">Inchoate Offenses</unit>
+		<unit label="article" identifier="1" level="3">Conspiracies</unit>
+	</structure>
+	<section_number>18.2-23</section_number>
+	<catch_line>Conspiring to trespass or commit larceny</catch_line>
+	<text>
+		<section prefix="A">If any person shall conspire, confederate or combine with another or others in the Commonwealth to go upon or remain upon the lands, buildings or premises of another, or any part, portion or area thereof, having knowledge that any of them have been forbidden, either orally or in writing, to do so by the owner, lessee, custodian or other person lawfully in charge thereof, or having knowledge that any of them have been forbidden to do so by a sign or signs posted on such lands, buildings, premises or part, portion or area thereof at a place or places where it or they may reasonably be seen, he shall be deemed guilty of a Class 3 misdemeanor.
+		</section>
+		<section prefix="B">If any person shall conspire, confederate or combine with another or others in the Commonwealth to commit larceny or counsel, assist, aid or abet another in the performance of a larceny, where the aggregate value of the goods or merchandise involved is $1,000 or more, he is guilty of a felony punishable by confinement in a state correctional facility for not less than one year nor more than 20 years. The willful concealment of goods or merchandise of any store or other mercantile establishment, while still on the premises thereof, shall be prima facie evidence of an intent to convert and defraud the owner thereof out of the value of the goods or merchandise. A violation of this subsection constitutes a separate and distinct felony.
+		</section>
+		<section prefix="C">Jurisdiction for the trial of any person charged under this section shall be in the county or city wherein any part of such conspiracy is planned, or in the county or city wherein any act is done toward the consummation of such plan or conspiracy.
+		</section>
+	</text>
+	<history>Code 1950, § 18.1-15.1; 1960, cc. 99, 358; 1975, cc. 14, 15; 2003, c. 831; 2018, cc. 764, 765; 2020, cc. 89, 401.</history>
+</law>

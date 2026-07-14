@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-55</section_number>
+	<catch_line>Bodily injuries caused by prisoners, state juvenile probationers and state and local adult probationers or adult parolees</catch_line>
+	<text>
+		<section prefix="A">It shall be unlawful for a person confined in a state, local or regional correctional facility as defined in § 53.1-1; in a secure facility or detention home as defined in § 16.1-228 or in any facility designed for the secure detention of juveniles; or while in the custody of an employee thereof to knowingly and willfully inflict bodily injury on:
+			<section prefix="1">An employee thereof, or
+			</section>
+			<section prefix="2">Any other person lawfully admitted to such facility, except another prisoner or person held in legal custody, or
+			</section>
+			<section prefix="3">Any person who is supervising or working with prisoners or persons held in legal custody, or
+			</section>
+			<section prefix="4">Any such employee or other person while such prisoner or person held in legal custody is committing any act in violation of § 53.1-203.
+			</section>
+		</section>
+		<section prefix="B">It shall be unlawful for an accused, probationer or parolee under the supervision of, or being investigated by, (i) a probation or parole officer whose powers and duties are defined in § 16.1-237 or § 53.1-145, (ii) a local pretrial services officer associated with an agency established pursuant to Article 5 (§ 19.2-152.2) of Chapter 9 of Title 19.2, or (iii) a local community-based probation officer associated with an agency established pursuant to Article 9 (§ 9.1-173 et seq.) of Chapter 1 of Title 9.1, to knowingly and willfully inflict bodily injury on such officer while he is in the performance of his duty, knowing or having reason to know that the officer is engaged in the performance of his duty.
+			Any person violating any provision of this section is guilty of a Class 5 felony.
+		</section>
+	</text>
+	<history>1975, cc. 14, 15; 1977, c. 553; 1982, c. 636; 1985, c. 508; 1996, c. 527; 1999, cc. 618, 658; 2001, cc. 818, 848; 2007, c. 133.</history>
+</law>

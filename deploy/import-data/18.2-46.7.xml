@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.2" level="3">Terrorism Offenses</unit>
+	</structure>
+	<section_number>18.2-46.7</section_number>
+	<catch_line>Act of bioterrorism against agricultural crops or animals; penalty</catch_line>
+	<text>
+		Any person who maliciously destroys or devastates agricultural crops or agricultural animals having a value of $2,500 or more through the use of an infectious biological substance with the intent to (i) intimidate the civilian population or (ii) influence the conduct or activities of the government of the United States, a state or locality through intimidation, is guilty of a Class 3 felony.
+		For the purposes of this section "agricultural animal" means all livestock and poultry as defined in § 3.2-5900 and "agricultural crop" means cultivated plants or produce, including grain, silage, forages, oilseeds, vegetables, fruits, nursery stock or turf grass.
+	</text>
+	<history>2002, cc. 588, 623.</history>
+</law>

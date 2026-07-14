@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="5" level="5">Abatement of Risk of Asbestos in State-Owned and Public School Buildings</unit>
+	</structure>
+	<section_number>2.2-1162</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this article.
+		"Asbestos" means any material containing more than one percent of the asbestiform varieties of:
+		<section prefix="1">chrysotile (serpentine),
+		</section>
+		<section prefix="2">crocidolite (riebeckite),
+		</section>
+		<section prefix="3">amosite (cummingtonite-grunerite),
+		</section>
+		<section prefix="4">anthophyllite,
+		</section>
+		<section prefix="5">tremolite, or
+		</section>
+		<section prefix="6">actinolite.
+			"Director" means the Director of the Department of General Services.
+			"Friable" means material that is capable of being crumbled, pulverized or reduced to powder by hand pressure or which under normal use or maintenance emits or can be expected to emit asbestos fibers into the air.
+			"Local education agency" or "LEA" means the same as that term is defined in the United States Environmental Protection Agency Asbestos Hazard and Emergency Response Act regulations set forth in 40 CFR 763.
+			"Operations and maintenance program" means work practices to maintain asbestos-containing material in good condition and to minimize and control disturbance or damage to such materials.
+			"Response actions" means any action, including removal, encapsulation, enclosure, repair, method of operation, maintenance, record keeping or notification that protects human health from building materials containing asbestos.
+			"Secretary" means the Secretary of Administration.
+		</section>
+	</text>
+	<history>1986, cc. 288, 560, § 2.1-526.12; 1988, c. 723; 1989, c. 398; 1990, c. 50; 2001, c. 844.</history>
+</law>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-52.1</section_number>
+	<catch_line>Possession of infectious biological substances or radiological agents; penalties</catch_line>
+	<text>
+		<section prefix="A">Any person who possesses, with the intent thereby to injure another, an infectious biological substance or radiological agent is guilty of a Class 5 felony.
+		</section>
+		<section prefix="B">Any person who (i) destroys or damages, or attempts to destroy or damage, any facility, equipment or material involved in the sale, manufacturing, storage or distribution of an infectious biological substance or radiological agent, with the intent to injure another by releasing the substance, or (ii) manufactures, sells, gives, distributes or uses an infectious biological substance or radiological agent with the intent to injure another is guilty of a Class 4 felony.
+		</section>
+		<section prefix="C">Any person who maliciously and intentionally causes any other person bodily injury by means of an infectious biological substance or radiological agent is guilty of a felony and shall be punished by confinement in a state correctional facility for a period of not less than five years nor more than 30 years.
+		</section>
+		<section prefix="D">For purposes of this section:
+			An "infectious biological substance" includes any bacteria, viruses, fungi, protozoa, or rickettsiae capable of causing death or serious bodily injury. "Infectious biological substance" does not include the human immunodeficiency virus (HIV) or any other related virus that causes acquired immunodeficiency syndrome (AIDS), syphilis, or hepatitis B.
+			A "radiological agent" includes any substance able to release radiation at levels that are capable of causing death or serious bodily injury.
+		</section>
+	</text>
+	<history>1996, c. 769; 2002, cc. 588, 623, 816; 2004, c. 833; 2021, Sp. Sess. I, c. 465.</history>
+</law>

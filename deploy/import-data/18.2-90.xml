@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="2" level="3">Burglary and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-90</section_number>
+	<catch_line>Entering dwelling house, etc., with intent to commit murder, rape, robbery or arson; penalty</catch_line>
+	<text>
+		If any person in the nighttime enters without breaking or in the daytime breaks and enters or enters and conceals himself in a dwelling house or an adjoining, occupied outhouse or in the nighttime enters without breaking or at any time breaks and enters or enters and conceals himself in any building permanently affixed to realty, or any ship, vessel or river craft or any railroad car, or any automobile, truck or trailer, if such automobile, truck or trailer is used as a dwelling or place of human habitation, with intent to commit murder, rape, robbery or arson in violation of §§ 18.2-77, 18.2-79 or § 18.2-80, he shall be deemed guilty of statutory burglary, which offense shall be a Class 3 felony. However, if such person was armed with a deadly weapon at the time of such entry, he shall be guilty of a Class 2 felony.
+	</text>
+	<history>Code 1950, § 18.1-88; 1960, c. 358; 1970, c. 381; 1975, cc. 14, 15; 1985, c. 110; 1992, c. 546; 1997, c. 832; 2004, c. 842.</history>
+</law>

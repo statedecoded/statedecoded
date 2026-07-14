@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="3" level="3">Classification of Criminal Offenses and Punishment Therefor</unit>
+	</structure>
+	<section_number>18.2-12.1</section_number>
+	<catch_line>Mandatory minimum punishment; definition</catch_line>
+	<text>
+		"Mandatory minimum" wherever it appears in this Code means, for purposes of imposing punishment upon a person convicted of a crime, that the court shall impose the entire term of confinement, the full amount of the fine and the complete requirement of community service prescribed by law. The court shall not suspend in full or in part any punishment described as mandatory minimum punishment.
+	</text>
+	<history>2004, c. 461.</history>
+</law>

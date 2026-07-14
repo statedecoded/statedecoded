@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="61.1" level="1">Warehouses, Cold Storage and Refrigerated Locker Plants</unit>
+		<unit label="chapter" identifier="4" level="2">Tobacco Warehouses and Regulations in General</unit>
+	</structure>
+	<section_number>61.1-43</section_number>
+	<catch_line>Penalty for failure to report sales</catch_line>
+	<text>
+		Any warehouse failing to make the report as required by § 61.1-40 shall be subject to a penalty of twenty-five dollars and the costs in the case, to be recovered by any person suing for same.
+	</text>
+	<history>Code 1950, § 61-112; 1968, c. 69.</history>
+</law>

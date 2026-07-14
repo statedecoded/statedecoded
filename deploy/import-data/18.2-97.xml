@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="3" level="3">Larceny and Receiving Stolen Goods</unit>
+	</structure>
+	<section_number>18.2-97</section_number>
+	<catch_line>Larceny of certain animals and poultry</catch_line>
+	<text>
+		Any person who shall be guilty of the larceny of a dog, horse, pony, mule, cow, steer, bull, or calf shall be guilty of a Class 5 felony, and any person who shall be guilty of the larceny of any poultry of the value of $5 or more, but of the value of less than $1,000, or of a sheep, lamb, swine, or goat, of the value of less than $1,000, shall be guilty of a Class 6 felony.
+	</text>
+	<history>Code 1950, § 18.1-102; 1960, c. 358; 1962, c. 15; 1966, c. 247; 1975, cc. 14, 15; 1981, c. 197; 2018, cc. 764, 765; 2020, cc. 89, 401.</history>
+</law>

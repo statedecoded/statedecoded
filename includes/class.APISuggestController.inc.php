@@ -3,11 +3,11 @@
 /**
  * The API's method for suggesting autocompletion of terms
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -29,7 +29,7 @@ class APISuggestController extends BaseAPIController
 		/*
 		 * Clean up the search term.
 		 */
-		$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
+		$term = filter_var($args['term'], FILTER_DEFAULT);
 
 		/*
 		 * Append an asterix to the search term, so that Solr can suggest autocomplete terms.
@@ -37,9 +37,9 @@ class APISuggestController extends BaseAPIController
 		$term .= '*';
 
 		/*
-		 * Intialize Solarium.
+		 * Initialize Solarium.
 		 */
-		$client = new Solarium_Client($GLOBALS['solr_config']);
+		$client = SolrSearchEngine::make_client(json_decode(SEARCH_CONFIG, true));
 
 		/*
 		 * Set up our query.
@@ -47,9 +47,7 @@ class APISuggestController extends BaseAPIController
 		$query = $client->createSuggester();
 		$query->setHandler('suggest');
 		$query->setQuery($term);
-		$query->setOnlyMorePopular(TRUE);
 		$query->setCount(5);
-		$query->setCollate(TRUE);
 
 		/*
 		 * Execute the query.
@@ -57,12 +55,19 @@ class APISuggestController extends BaseAPIController
 		$search_results = $client->suggester($query);
 
 		/*
+		 * getAll() returns a flat array of all suggestion strings across all dictionaries.
+		 */
+		$all_suggestions = $search_results->getAll();
+
+		$response = new stdClass();
+
+		/*
 		 * If there are no results.
 		 */
-		if (count($search_results) == 0)
+		if (count($all_suggestions) == 0)
 		{
 
-			$response->terms = FALSE;
+			$response->terms = false;
 
 		}
 
@@ -72,19 +77,15 @@ class APISuggestController extends BaseAPIController
 		else
 		{
 
-			$response->terms = array();
-			foreach ($search_results as $term => $term_result)
+			$response->terms = [];
+			$i = 0;
+			foreach ($all_suggestions as $suggestion)
 			{
-				$i=0;
-				foreach ($term_result as $suggestion)
-				{
-					$response->terms[] = array(
-						'id' => $i,
-						'term' => $suggestion
-					);
-					$i++;
-				}
-
+				$response->terms[] = [
+					'id' => $i,
+					'term' => $suggestion
+				];
+				$i++;
 			}
 		}
 

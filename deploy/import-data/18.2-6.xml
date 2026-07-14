@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="1" level="2">In General</unit>
+		<unit label="article" identifier="2" level="3">Construction and Definitions</unit>
+	</structure>
+	<section_number>18.2-6</section_number>
+	<catch_line>Meaning of certain terms</catch_line>
+	<text>
+		As used in this title:
+		The word "court," unless otherwise clearly indicated by the context in which it appears, shall mean and include any court vested with appropriate jurisdiction under the Constitution and laws of the Commonwealth.
+		The words "driver's license" and "license to operate a motor vehicle" shall mean any document issued under Chapter 3 (§ 46.2-300 et seq.) of Title 46.2, or the comparable law of another jurisdiction, authorizing the operation of a motor vehicle upon the highways.
+		The word "judge," unless otherwise clearly indicated by the context in which it appears, shall mean and include any judge, associate judge or substitute judge, or police justice, of any court.
+		The words "motor vehicle," "semitrailer," "trailer" and "vehicle" shall have the respective meanings assigned to them by § 46.2-100.
+	</text>
+	<history>Code 1950, § 18.1-5; 1960, c. 358; 1975, cc. 14, 15; 2020, cc. 1227, 1246.</history>
+</law>

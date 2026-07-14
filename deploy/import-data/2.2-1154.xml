@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division of Engineering and Buildings</unit>
+	</structure>
+	<section_number>2.2-1154</section_number>
+	<catch_line>State departments, agencies, and institutions to inquire of Department before acquiring land for capital improvements</catch_line>
+	<text>
+		<section prefix="A">Any state department, agency or institution shall, before purchasing or otherwise acquiring land for any capital improvement, inquire of the Department whether there is available any suitable land under the control of the Department or any other state department, agency or institution that may be authorized for the purpose for which the additional land is needed.
+		</section>
+		<section prefix="B">The Department shall require every state department, agency or institution responsible for the construction, operation or maintenance of public facilities within the Commonwealth, when siting state facilities and programs, to evaluate the feasibility of siting such facilities and programs in the Commonwealth's urban centers. In making such evaluation, the agency shall consider (i) the fiscal advantages of utilizing the existing infrastructure available in urban centers as compared to the construction of new infrastructure in less developed areas, (ii) the potential savings associated with leasing facilities from the private sector in urban centers as compared to purchasing or constructing new facilities in other areas, (iii) the convenience to employees and citizen users of state facilities and programs of placing such facilities and programs in close proximity to the road and transportation systems and other amenities found in the Commonwealth's urban centers, and (iv) whether the local governing body is supportive of the location as a desirable use of available land resources.
+			This subsection shall not be construed to limit the ability of a state department, agency or institution to locate facilities based on other factors such as a rural locality's desire to stimulate economic development or the need to have regionally dispersed services.
+		</section>
+		<section prefix="C">The provisions of subsection B shall not apply to any facility or program to be located on the campus of any public institution of higher education in the Commonwealth.
+		</section>
+	</text>
+	<history>1968, c. 717, § 2.1-106.4; 1977, c. 672, § 2.1-508; 2000, c. 704; 2001, c. 844; 2009, c. 612.</history>
+</law>

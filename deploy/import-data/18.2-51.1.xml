@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-51.1</section_number>
+	<catch_line>Malicious bodily injury to law-enforcement officers, firefighters, search and rescue personnel, or emergency medical services personnel; penalty; lesser-included offense</catch_line>
+	<text>
+		If any person maliciously causes bodily injury to another by any means including the means set out in § 18.2-52, with intent to maim, disfigure, disable or kill, and knowing or having reason to know that such other person is a law-enforcement officer, as defined hereinafter, firefighter, as defined in § 65.2-102, search and rescue personnel as defined hereinafter, or emergency medical services personnel, as defined in § 32.1-111.1 engaged in the performance of his public duties as a law-enforcement officer, firefighter, search and rescue personnel, or emergency medical services personnel, such person is guilty of a felony punishable by imprisonment for a period of not less than five years nor more than 30 years and, subject to subdivision (g) of § 18.2-10, a fine of not more than $100,000. Upon conviction, the sentence of such person shall include a mandatory minimum term of imprisonment of two years.
+		If any person unlawfully, but not maliciously, with the intent aforesaid, causes bodily injury to another by any means, knowing or having reason to know such other person is a law-enforcement officer, firefighter, as defined in § 65.2-102, search and rescue personnel, or emergency medical services personnel, engaged in the performance of his public duties as a law-enforcement officer, firefighter, search and rescue personnel, or emergency medical services personnel as defined in § 32.1-111.1, he is guilty of a Class 6 felony, and upon conviction, the sentence of such person shall include a mandatory minimum term of imprisonment of one year.
+		Nothing in this section shall be construed to affect the right of any person charged with a violation of this section from asserting and presenting evidence in support of any defenses to the charge that may be available under common law.
+		As used in this section, "law-enforcement officer" means any full-time or part-time employee of a police department or sheriff's office that is part of or administered by the Commonwealth or any political subdivision thereof, who is responsible for the prevention or detection of crime and the enforcement of the penal, traffic, or highway laws of the Commonwealth; any conservation officer of the Department of Conservation and Recreation commissioned pursuant to § 10.1-115; any conservation police officer appointed pursuant to § 29.1-200; and auxiliary police officers appointed or provided for pursuant to §§ 15.2-1731 and 15.2-1733 and auxiliary deputy sheriffs appointed pursuant to § 15.2-1603.
+		As used in this section, "search and rescue personnel" means any employee or member of a search and rescue organization that is authorized by a resolution or ordinance duly adopted by the governing body of any county, city, or town of the Commonwealth or any member of a search and rescue organization operating under a memorandum of understanding with the Virginia Department of Emergency Management.
+		The provisions of § 18.2-51 shall be deemed to provide a lesser-included offense hereof.
+	</text>
+	<history>1983, c. 578; 1985, c. 444; 1994, cc. 205, 427; 1997, cc. 8, 120; 2002, cc. 588, 623; 2004, cc. 461, 841; 2007, c. 87; 2010, c. 344; 2015, cc. 502, 503.</history>
+</law>

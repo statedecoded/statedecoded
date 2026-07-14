@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2" level="3">Crimes by Mobs</unit>
+	</structure>
+	<section_number>18.2-38</section_number>
+	<catch_line>"Mob" defined</catch_line>
+	<text>
+		Any collection of people, assembled for the purpose and with the intention of committing an assault or a battery upon any person or an act of violence as defined in § 19.2-297.1, without authority of law, shall be deemed a "mob."
+	</text>
+	<history>Code 1950, § 18.1-27; 1960, c. 358; 1975, cc. 14, 15; 1999, c. 623.</history>
+</law>

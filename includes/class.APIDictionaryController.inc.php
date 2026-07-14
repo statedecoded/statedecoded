@@ -3,11 +3,11 @@
 /**
  * The API's dictionary controller
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.6
  *
  */
@@ -27,27 +27,30 @@ class APIDictionaryController extends BaseAPIController
 			die();
 		}
 
+		$section = null;
+		$response = [];
+
 		/*
 		 * Clean up the term.
 		 */
-		$term = filter_var($args['term'], FILTER_SANITIZE_STRING);
+		$term = filter_var($args['term'], FILTER_DEFAULT);
 
 		/*
 		 * If a section has been specified, then clean that up.
 		 */
 		if (isset($_GET['section']))
 		{
-			$section = filter_input(INPUT_GET, 'section', FILTER_SANITIZE_STRING);
+			$section = filter_input(INPUT_GET, 'section', FILTER_DEFAULT);
 		}
 
 		if (isset($_GET['law_id']))
 		{
-			$law_id = filter_input(INPUT_GET, 'law_id', FILTER_SANITIZE_STRING);
+			$law_id = filter_input(INPUT_GET, 'law_id', FILTER_DEFAULT);
 		}
 
 		if (isset($_GET['edition_id']))
 		{
-			$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_SANITIZE_STRING);
+			$edition_id = filter_input(INPUT_GET, 'edition_id', FILTER_DEFAULT);
 		}
 		else
 		{
@@ -59,13 +62,13 @@ class APIDictionaryController extends BaseAPIController
 		/*
 		 * If we're told to use generic definitions, pass that through to the Dictionary class.
 		 */
-		$dict_args = array();
-		if($_GET['generic']) {
+		$dict_args = [];
+		if(!empty($_GET['generic'])) {
 			if($_GET['generic'] === '1' || strtolower($_GET['generic']) === 'true') {
-				$dict_args['generic_terms'] = TRUE;
+				$dict_args['generic_terms'] = true;
 			}
 			elseif($_GET['generic'] === '0' || strtolower($_GET['generic']) === 'false') {
-				$dict_args['generic_terms'] = FALSE;
+				$dict_args['generic_terms'] = false;
 			}
 		}
 
@@ -98,9 +101,9 @@ class APIDictionaryController extends BaseAPIController
 			/*
 			 * If, for whatever reason, this term is not found, return an error.
 			 */
-			if ($dictionary === FALSE)
+			if ($dictionary === false)
 			{
-				$response = array('definition' => 'Definition not available.');
+				$response = ['definition' => 'Definition not available.'];
 			}
 
 			else
@@ -112,15 +115,6 @@ class APIDictionaryController extends BaseAPIController
 				 * some write '"Whale" is a large sea-going mammal' and some write 'Whale is a large
 				 * sea-going mammal.")
 				 */
-				if (preg_match('/[A-Za-z]/', $dictionary->definition[0]) === 1)
-				{
-					$dictionary->definition[0] = strtoupper($dictionary->definition[0]);
-				}
-				elseif (preg_match('/[A-Za-z]/', $dictionary->definition[1]) === 1)
-				{
-					$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
-				}
-
 				/*
 				 * If the request contains a specific list of fields to be returned.
 				 */
@@ -151,7 +145,7 @@ class APIDictionaryController extends BaseAPIController
 						foreach($term as $field => &$value)
 						{
 
-							if (in_array($field, $returned_fields) === FALSE)
+							if (in_array($field, $returned_fields) === false)
 							{
 								unset($term->$field);
 							}
@@ -169,6 +163,21 @@ class APIDictionaryController extends BaseAPIController
 				if (isset($section) || isset($law_id))
 				{
 					$dictionary = $dictionary->{0};
+				}
+
+				/*
+				 * Uppercase the first letter of the definition.
+				 */
+				if (isset($dictionary->definition) && strlen($dictionary->definition) > 0)
+				{
+					if (preg_match('/[A-Za-z]/', $dictionary->definition[0]) === 1)
+					{
+						$dictionary->definition[0] = strtoupper($dictionary->definition[0]);
+					}
+					elseif (strlen($dictionary->definition) > 1 && preg_match('/[A-Za-z]/', $dictionary->definition[1]) === 1)
+					{
+						$dictionary->definition[1] = strtoupper($dictionary->definition[1]);
+					}
 				}
 
 				/*
@@ -191,11 +200,11 @@ class APIDictionaryController extends BaseAPIController
 			 */
 			$law = new Law;
 			$law->section_number = $section;
-			$law->config = FALSE;
+			$law->config = false;
 			$result = $law->get_law();
-			if ($result == FALSE)
+			if ($result == false)
 			{
-				$response = array('terms' => 'Term list not available.');
+				$response = ['terms' => 'Term list not available.'];
 			}
 			else
 			{
@@ -206,9 +215,9 @@ class APIDictionaryController extends BaseAPIController
 				$dict->section_id = $law->section_id;
 				$dict->structure_id = $law->structure_id;
 				$response = $dict->term_list();
-				if ($response == FALSE)
+				if ($response == false)
 				{
-					$response = array('terms' => 'Term list not available.');
+					$response = ['terms' => 'Term list not available.'];
 				}
 
 			}
@@ -216,7 +225,7 @@ class APIDictionaryController extends BaseAPIController
 		} // end elseif (!empty($args['section']))
 
 
-		$this->render($response, 'OK', $_REQUEST['callback']);
+		$this->render($response, 'OK', $_REQUEST['callback'] ?? null);
 
 	} /* handle() */
 

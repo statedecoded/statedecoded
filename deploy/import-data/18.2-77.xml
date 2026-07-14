@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-77</section_number>
+	<catch_line>Burning or destroying dwelling house, etc</catch_line>
+	<text>
+		<section prefix="A">If any person maliciously (i) burns, or by use of any explosive device or substance destroys, in whole or in part, or causes to be burned or destroyed, or (ii) aids, counsels or procures the burning or destruction of any dwelling house or manufactured home whether belonging to himself or another, or any occupied hotel, hospital, mental health facility, or other house in which persons usually dwell or lodge, any occupied railroad car, boat, vessel, or river craft in which persons usually dwell or lodge, or any occupied jail or prison, or any occupied church or occupied building owned or leased by a church that is immediately adjacent to a church, he shall be guilty of a felony, punishable by imprisonment for life or for any period not less than five years and, subject to subdivision g of § 18.2-10, a fine of not more than $100,000. Any person who maliciously sets fire to anything, or aids, counsels or procures the setting fire to anything, by the burning whereof such occupied dwelling house, manufactured home, hotel, hospital, mental health facility or other house, or railroad car, boat, vessel, or river craft, jail or prison, church or building owned or leased by a church that is immediately adjacent to a church, is burned shall be guilty of a violation of this subsection.
+		</section>
+		<section prefix="B">Any such burning or destruction when the building or other place mentioned in subsection A is unoccupied, shall be punishable as a Class 4 felony.
+		</section>
+		<section prefix="C">For purposes of this section, "church" shall be defined as in § 18.2-127.
+		</section>
+	</text>
+	<history>Code 1950, § 18.1-75; 1960, c. 358; 1975, cc. 14, 15; 1977, c. 63; 1978, c. 443; 1993, c. 406; 1997, c. 832.</history>
+</law>

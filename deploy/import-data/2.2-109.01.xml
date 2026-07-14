@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-109.01</section_number>
+	<catch_line>Signed statements required from appointees</catch_line>
+	<text>
+		For purposes of this section:
+		"Appointed position" means a position appointed by the Governor or other appointing authority in accordance with law.
+		"Covered appointee" means any person serving in an appointed position who is eligible for severance benefits under the Workforce Transition Act of 1995 (§ 2.2-3200 et seq.), including but not limited to, any (i) officer, (ii) agency head, or (iii) member of a board, commission, council, or other collegial body.
+		Upon initial appointment or reappointment, the Governor or other appointing authority, or their designee, shall obtain a signed statement from each covered appointee providing that such person has read and understands the severance benefits for which he is eligible under the Workforce Transition Act of 1995. The Governor or other appointing authority, or their designee shall provide all such statements to the Secretary of the Commonwealth. The Secretary shall provide for such statements to be retained in the records of the Commonwealth.
+	</text>
+	<history>2006, cc. 813, 902.</history>
+</law>

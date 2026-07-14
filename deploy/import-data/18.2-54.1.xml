@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-54.1</section_number>
+	<catch_line>Attempts to poison</catch_line>
+	<text>
+		If any person administers or attempts to administer any poison or destructive substance in food, drink, prescription or over-the-counter medicine, or otherwise, or poisons any spring, well, waterworks as defined in § 32.1-167, or reservoir of water with intent to kill or injure another person, he shall be guilty of a Class 3 felony.
+	</text>
+	<history>Code 1950, § 18.1-64; 1960, c. 358; 1975, cc. 14, 15; 1983, c. 129; 2006, c. 300.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:29.2</section_number>
+	<catch_line>Stormwater Local Assistance Fund, estimate of requests</catch_line>
+	<text>
+		The Department, in consultation with stakeholders, including representatives of the Virginia Municipal Stormwater Association, local governments, and conservation organizations, shall annually determine an estimate of the amount of stormwater local assistance matching grants expected to be requested by local governments for projects that are related to planning, designing, and implementing stormwater best management practices and are eligible for funding. The Department shall include such estimate in (i) the biennial funding report that is submitted to the Governor pursuant to the provisions of § 2.2-1504 and (ii) the annual progress report on the impaired waters clean-up plan that is submitted to legislative committees pursuant to the provisions of § 62.1-44.118.
+	</text>
+	<history>2019, c. 533.</history>
+</law>

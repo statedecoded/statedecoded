@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="3" level="2">Inchoate Offenses</unit>
+		<unit label="article" identifier="2" level="3">Attempts</unit>
+	</structure>
+	<section_number>18.2-29</section_number>
+	<catch_line>Criminal solicitation; penalty</catch_line>
+	<text>
+		Any person who commands, entreats, or otherwise attempts to persuade another person to commit a felony other than murder, shall be guilty of a Class 6 felony. Any person age eighteen or older who commands, entreats, or otherwise attempts to persuade another person under age eighteen to commit a felony other than murder, shall be guilty of a Class 5 felony. Any person who commands, entreats, or otherwise attempts to persuade another person to commit a murder is guilty of a felony punishable by confinement in a state correctional facility for a term not less than five years or more than forty years.
+	</text>
+	<history>1975, cc. 14, 15; 1994, cc. 364, 440; 2002, cc. 615, 635.</history>
+</law>

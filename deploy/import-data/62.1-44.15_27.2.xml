@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:27.2</section_number>
+	<catch_line>Rural Tidewater localities; water quantity technical criteria; tiered approach</catch_line>
+	<text>
+		<section prefix="A">For determining the water quantity technical criteria applicable to a land disturbance equal to or greater than 2,500 square feet but less than one acre, any rural Tidewater locality may elect to use certain tiered water quantity control standards based on the percentage of impervious cover in the watershed as provided in this section. The establishment and conduct of the tiered approach by the locality pursuant to this section shall be subject to review by the Department. The Board shall adopt regulations to carry out provisions of this section.
+		</section>
+		<section prefix="B">1. The local governing body shall make, or cause to be made, a watershed map showing the boundaries of the locality. The governing body shall use the most recent version of Virginia's 6th order National Watershed Boundary Dataset to show the boundaries of each watershed located partially or wholly within the locality. The map shall indicate the percentage of impervious cover within each watershed. Data provided by the Virginia Geographic Information Network (VGIN) shall be sufficient for the initial determination of impervious cover percentage at the time of the initial adoption of the map.
+			<section prefix="2">The watershed map also shall show locations at which the governing body expects or proposes that development should occur and may indicate the projected future percentage of impervious cover based on proposed development. The governing body may designate certain areas within a watershed in which it proposes that denser-than-average development shall occur and may designate environmentally sensitive areas in which the energy balance method for water quantity management, as set forth in the regulations adopted by the Board pursuant to this article, shall apply.
+			</section>
+			<section prefix="3">After the watershed map has been made, the governing body may then approve and adopt the map by a majority vote of its membership and publish it as the official watershed map of the locality. No official watershed map shall be adopted by the governing body or have any effect until it is approved by an ordinance duly passed by the governing body of the locality after a public hearing, preceded by public notice as required by § 15.2-2204. Within 30 days after adoption of the official watershed map, the governing body shall cause the map to be filed in the office of the clerk of the circuit court.
+			</section>
+			<section prefix="4">At least once each year, the local governing body shall by majority vote make additions to or modifications of the official watershed map to reflect actual development projects. The governing body shall change the indication on the map of the impervious cover percentage within a watershed where the percentage has changed and shall update the map and supporting datasets with actual development project information, including single-family housing projects and any projects covered by the General Permit for Discharges of Stormwater from Construction Activities and administered by the Department for opt-out localities pursuant to § 62.1-44.15:27. The governing body may incorporate into the official watershed map the most recent VGIN data, including data on state and federal projects that are not reviewed or approved by the locality. The governing body shall keep current its impervious cover percentage for each watershed located within the locality, as reflected in the official watershed map, and shall make the map and such percentages available to the public.
+			</section>
+			<section prefix="5">The locality shall notify the Department and update the official map within 12 months of the approval of the development plan for any project that exceeds the impervious cover percentage of the watershed in which it is located and causes the percentage for that watershed to rise such that the watershed steps up to the next higher tier pursuant to subsection C.
+			</section>
+			<section prefix="6">No official watershed map or its adopting or amending ordinances shall take precedence over any duly adopted zoning ordinance, comprehensive plan, or other local land-use ordinance, and in the case of a conflict, the official watershed map or ordinance shall yield to such land-use ordinance.
+			</section>
+		</section>
+		<section prefix="C">When the locality evaluates any development project in a watershed that is depicted on the official watershed map as having an impervious cover percentage of:
+			<section prefix="1">Less than five percent, the locality shall apply the regulatory minimum standards and criteria adopted by the Board pursuant to Article 2.4 (§ 62.1-44.15:51 et seq.) and in effect prior to July 1, 2014, for the protection of downstream properties and waterways from sediment deposition, erosion, and damage due to increases in volume, velocity, and peak flow rate of stormwater runoff for the stated frequency storm of 24-hour duration.
+			</section>
+			<section prefix="2">Five percent or more but less than 7.5 percent, the locality shall require practices designed to detain and release over a 24-hour period the expected rainfall resulting from the one year, 24-hour storm, which practices shall be exempt from any flow rate capacity and velocity requirements for natural or man-made channels.
+			</section>
+			<section prefix="3">Seven and one-half percent or more, the locality shall apply the energy balance method as set forth in regulations adopted by the Board.
+			</section>
+		</section>
+		<section prefix="D">The locality shall require that any project whose construction would cause the impervious cover percentage of the watershed in which it is located to rise, such that the watershed steps up to the next higher tier, shall meet the current water quantity technical criteria using the energy balance method or a more stringent alternative.
+		</section>
+	</text>
+	<history>2018, c. 154.</history>
+</law>

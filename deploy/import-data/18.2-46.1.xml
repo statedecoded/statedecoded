@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.1" level="3">Crimes by Gangs</unit>
+	</structure>
+	<section_number>18.2-46.1</section_number>
+	<catch_line>Definitions</catch_line>
+	<text>
+		As used in this article, unless the context requires a different meaning:
+		"Act of violence" means those felony offenses described in subsection C of § 17.1-805 or subsection A of § 19.2-297.1.
+		"Criminal street gang" means any ongoing organization, association, or group of three or more persons, whether formal or informal, (i) which has as one of its primary objectives or activities the commission of one or more criminal activities; (ii) which has an identifiable name or identifying sign or symbol; and (iii) whose members individually or collectively have engaged in the commission of, attempt to commit, conspiracy to commit, or solicitation of two or more predicate criminal acts, at least one of which is an act of violence, provided such acts were not part of a common act or transaction.
+		"Predicate criminal act" means (i) an act of violence; (ii) any violation of § 18.2-42, 18.2-46.3, 18.2-56.1, 18.2-57, 18.2-57.2, 18.2-59, 18.2-83, 18.2-95, 18.2-103.1, 18.2-108.1, 18.2-121, 18.2-127, 18.2-128, 18.2-137, 18.2-138, 18.2-146, 18.2-147, 18.2-248.01, 18.2-248.03, 18.2-255, 18.2-255.2, 18.2-287.4, 18.2-300, 18.2-308.1, 18.2-308.2, 18.2-308.2:01, 18.2-308.4, or 18.2-357.1; (iii) a felony violation of § 18.2-60.3, 18.2-346.01, 18.2-348, or 18.2-349; (iv) a felony violation of § 4.1-1101, 18.2-248, or 18.2-248.1 or a conspiracy to commit a felony violation of § 4.1-1101, 18.2-248, or 18.2-248.1; (v) any violation of a local ordinance adopted pursuant to § 15.2-1812.2; or (vi) any substantially similar offense under the laws of another state or territory of the United States, the District of Columbia, or the United States.
+	</text>
+	<history>2000, c. 332; 2004, cc. 396, 435, 462, 867; 2005, cc. 764, 813; 2006, cc. 262, 319, 844, 895; 2007, c. 499; 2012, c. 364; 2013, cc. 573, 645; 2014, cc. 674, 719; 2015, cc. 690, 691; 2019, c. 617; 2021, Sp. Sess. I, cc. 188, 550, 551; 2023, cc. 357, 358, 396, 397.</history>
+</law>

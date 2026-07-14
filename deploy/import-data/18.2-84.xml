@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="5" level="2">Crimes Against Property</unit>
+		<unit label="article" identifier="1" level="3">Arson and Related Crimes</unit>
+	</structure>
+	<section_number>18.2-84</section_number>
+	<catch_line>Causing, inciting, etc., commission of act proscribed by § 18.2-83</catch_line>
+	<text>
+		Any person fifteen years of age or over, including the parent of any child, who shall cause, encourage, incite, entice or solicit any person, including a child, to commit any act proscribed by the provisions of § 18.2-83, shall be guilty of a Class 5 felony.
+	</text>
+	<history>Code 1950, § 18.1-78.5; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

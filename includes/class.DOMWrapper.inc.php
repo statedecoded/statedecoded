@@ -6,11 +6,11 @@
  *
  * Provides a SimpleXML-like interface for DOMDocument.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL 3
  * @version   1.0
- * @link    http://www.statedecoded.com/
+ * @link    https://www.statedecoded.com/
  * @since   0.9
 */
 
@@ -20,7 +20,7 @@ class DOMWrapper
 	protected $nodeMap;
 	public $_type;
 	public $_tag;
-	public $strip_whitespace = TRUE;
+	public $strip_whitespace = true;
 
 	public function __construct($xml, $strip_whitespace = null)
 	{
@@ -28,9 +28,9 @@ class DOMWrapper
 			$this->strip_whitespace = $strip_whitespace;
 		}
 
-		if(is_object($xml) && get_class($xml) === 'DOMElement')
+		if($xml instanceof DOMNode)
 		{
-			$this->dom =& $xml;
+			$this->dom = $xml;
 		}
 		else
 		{
@@ -59,7 +59,7 @@ class DOMWrapper
 				{
 					if(!is_array($this->nodeMap[$node->nodeName]))
 					{
-						$this->nodeMap[$node->nodeName] = array($this->nodeMap[$node->nodeName]);
+						$this->nodeMap[$node->nodeName] = [$this->nodeMap[$node->nodeName]];
 					}
 
 					$this->nodeMap[$node->nodeName][] = $node;
@@ -112,7 +112,15 @@ class DOMWrapper
 		return new DOMListWrapper($this->dom->childNodes, $this->strip_whitespace );
 	}
 
+	public function hasElementChildren(): bool {
+		return !empty($this->nodeMap);
+	}
+
 	public function value() {
+		if($this->dom->nodeType === XML_TEXT_NODE)
+		{
+			return $this->dom->textContent;
+		}
 		if($this->dom->childNodes->length === 1 &&
 			$this->dom->childNodes->item(0)->nodeType === XML_TEXT_NODE)
 		{
@@ -120,10 +128,10 @@ class DOMWrapper
 		}
 	}
 
-	public function rawValue($html = FALSE) {
+	public function rawValue($html = false) {
 		$newdoc = new DOMDocument();
-		$cloned = $this->dom->cloneNode(TRUE);
-		$node = $newdoc->importNode($cloned,TRUE);
+		$cloned = $this->dom->cloneNode(true);
+		$node = $newdoc->importNode($cloned,true);
 
 		if($node)
 		{
@@ -140,7 +148,7 @@ class DOMWrapper
 		 }
 		 else
 		 {
-				return FALSE;
+				return false;
 		 }
 	}
 
@@ -151,11 +159,11 @@ class DOMWrapper
 	}
 }
 
-class DOMListWrapper implements Iterator
+class DOMListWrapper implements Iterator, Countable
 {
-	protected $nodes = array();
+	protected $nodes = [];
 	private $position = 0;
-	public $strip_whitespace = TRUE;
+	public $strip_whitespace = true;
 
 	public function __construct($nodes, $strip_whitespace = null)
 	{
@@ -164,7 +172,7 @@ class DOMListWrapper implements Iterator
 			$this->strip_whitespace = $strip_whitespace;
 		}
 
-		$tmp_nodes = array();
+		$tmp_nodes = [];
 
 		if(is_array($nodes))
 		{
@@ -198,6 +206,10 @@ class DOMListWrapper implements Iterator
 		}
 	}
 
+	public function count(): int {
+		return count($this->nodes);
+	}
+
 	public function length() {
 		return count($this->nodes);
 	}
@@ -209,22 +221,27 @@ class DOMListWrapper implements Iterator
 		}
 	}
 
+	#[\ReturnTypeWillChange]
 	public function rewind() {
 		$this->position = 0;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function current() {
 		return new DOMWrapper($this->nodes[$this->position], $this->strip_whitespace );
 	}
 
+	#[\ReturnTypeWillChange]
 	public function key() {
 		return $this->position;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function next() {
 		++$this->position;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function valid() {
 		if(isset($this->nodes) && is_array($this->nodes) && isset($this->nodes[$this->position]))
 		{

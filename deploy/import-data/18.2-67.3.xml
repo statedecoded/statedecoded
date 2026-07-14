@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="7" level="3">Criminal Sexual Assault</unit>
+	</structure>
+	<section_number>18.2-67.3</section_number>
+	<catch_line>Aggravated sexual battery; penalty</catch_line>
+	<text>
+		<section prefix="A">An accused is guilty of aggravated sexual battery if he or she sexually abuses the complaining witness, and
+			<section prefix="1">The complaining witness is less than 13 years of age; or
+			</section>
+			<section prefix="2">The act is accomplished through the use of the complaining witness's mental incapacity or physical helplessness; or
+			</section>
+			<section prefix="3">The offense is committed by a parent, step-parent, grandparent, or step-grandparent and the complaining witness is at least 13 but less than 18 years of age; or
+			</section>
+			<section prefix="4">The act is accomplished against the will of the complaining witness by force, threat or intimidation, and
+				a. The complaining witness is at least 13 but less than 15 years of age; or
+				b. The accused causes serious bodily or mental injury to the complaining witness; or
+				c. The accused uses or threatens to use a dangerous weapon; or
+			</section>
+			<section prefix="5">The offense is not a recognized form of treatment in the profession, and is committed, without the express consent of the patient, by (i) a massage therapist, or a person purporting to be a massage therapist, during an actual or purported practice of massage therapy, as those terms are defined in § 54.1-3000; (ii) a person practicing or purporting to practice the healing arts, during an actual or purported practice of the healing arts, as those terms are defined in §§ 54.1-2900 and 54.1-2903; or (iii) a physical therapist, or a person purporting to be a physical therapist, during an actual or purported practice of physical therapy, as those terms are defined in § 54.1-3473.
+			</section>
+		</section>
+		<section prefix="B">Aggravated sexual battery is a felony punishable by confinement in a state correctional facility for a term of not less than one nor more than 20 years and by a fine of not more than $100,000.
+		</section>
+	</text>
+	<history>1981, c. 397; 1993, c. 590; 2004, c. 843; 2005, cc. 185, 406; 2020, c. 1003.</history>
+</law>

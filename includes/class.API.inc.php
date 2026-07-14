@@ -3,11 +3,11 @@
 /**
  * The API class, for all interactions with APIs
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.6
  *
  */
@@ -15,6 +15,7 @@
 /**
  * Functions for the API.
  */
+#[\AllowDynamicProperties]
 class API
 {
 
@@ -32,10 +33,10 @@ class API
 		{
 			
 			$api_keys = $cache->retrieve('api_keys');
-			if ($api_keys !== FALSE)
+			if ($api_keys !== false)
 			{
 				$this->all_keys = $api_keys;
-				return TRUE;
+				return true;
 			}
 			
 		}
@@ -52,18 +53,18 @@ class API
 		$sql = 'SELECT api_key
 				FROM api_keys
 				WHERE verified=:verified';
-		$sql_args = array(
+		$sql_args = [
 			':verified' => 'y'
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
 		/* If the database has returned an error. */
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			throw new Exception('API keys could not be retrieved.');
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -76,17 +77,16 @@ class API
 		 */
 		if ($statement->rowCount() == 0)
 		{
-			return TRUE;
+			return true;
 		}
 
 		/*
 		 * If API keys have been registered, iterate through them and store them.
 		 */
-		$i=0;
+		$this->all_keys = new stdClass();
 		while ($key = $statement->fetch(PDO::FETCH_OBJ))
 		{
-			$this->all_keys->{$key->api_key} = TRUE;
-			$i++;
+			$this->all_keys->{$key->api_key} = true;
 		}
 
 		/*
@@ -97,7 +97,7 @@ class API
 			$cache->store('api_keys', $this->all_keys);
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -117,9 +117,9 @@ class API
 		$sql = 'SELECT id, api_key, email, name, url, verified, secret, date_created
 				FROM api_keys
 				WHERE api_key = :key';
-		$sql_args = array(
+		$sql_args = [
 			':key' => $this->key
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
@@ -127,7 +127,7 @@ class API
 		/*
 		 * If the query succeeds then retrieve the result.
 		 */
-		if ($result != FALSE && $statement->rowCount() > 0)
+		if ($result != false && $statement->rowCount() > 0)
 		{
 
 			$api_key = $statement->fetch(PDO::FETCH_OBJ);
@@ -143,7 +143,7 @@ class API
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -163,7 +163,7 @@ class API
 		if (!isset($this->key))
 		{
 			throw new Exception('No API key provided.');
-			return FALSE;
+			return false;
 		}
 		
 		/*
@@ -172,13 +172,13 @@ class API
 		if ( strlen($this->key) != 16 )
 		{
 			throw new Exception('Invalid API key.');
-			return FALSE;
+			return false;
 		}
 		
 		/*
 		 * Clean up the API key, filtering out unsafe characters.
 		 */
-		$this->key = filter_var($this->key, FILTER_SANITIZE_STRING);
+		$this->key = filter_var($this->key, FILTER_DEFAULT);
 		
 		/*
 		 * Retrieve a list of every valid key.
@@ -189,22 +189,22 @@ class API
 		 * If the provided API key has no content, post-filtering, or if there are no registered API
 		 * keys.
 		 */
-		if ( empty($this->key) || (count($this->all_keys) == 0) )
+		if ( empty($this->key) || empty(get_object_vars($this->all_keys ?? new stdClass())) )
 		{
 			throw new Exception('API key not provided. Please register for an API key.');
-			return FALSE;
+			return false;
 		}
-		
+
 		/*
 		 * But if there are API keys, and our key is valid-looking, check whether the key is registered.
 		 */
 		elseif (!isset($this->all_keys->{$this->key}))
 		{
 			throw new Exception('Invalid API key.');
-			return FALSE;
+			return false;
 		}
 		
-		return TRUE;
+		return true;
 		
 	}
 
@@ -245,26 +245,26 @@ class API
 
 		if (!isset($this->form))
 		{
-			return FALSE;
+			return false;
 		}
 		if (empty($this->form->email))
 		{
 			$this->form_errors = 'Please provide your e-mail address.';
-			return FALSE;
+			return false;
 		}
-		elseif (filter_var($this->form->email, FILTER_VALIDATE_EMAIL) === FALSE)
+		elseif (filter_var($this->form->email, FILTER_VALIDATE_EMAIL) === false)
 		{
 			$this->form_errors = 'Please enter a valid e-mail address.';
-			return FALSE;
+			return false;
 		}
 
-		if ( !empty($this->form_url) && (filter_var($this->form->url, FILTER_VALIDATE_URL) === FALSE) )
+		if ( !empty($this->form_url) && (filter_var($this->form->url, FILTER_VALIDATE_URL) === false) )
 		{
 			$this->form_errors = 'Please enter a valid URL.';
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -304,11 +304,11 @@ class API
 				email = :email,
 				secret = :secret,
 				date_created = now()';
-		$sql_args = array(
+		$sql_args = [
 			':key' => $this->key,
 			':email' => $this->email,
 			':secret' => $this->secret
-		);
+		];
 
 		if (!empty($this->name))
 		{
@@ -328,7 +328,7 @@ class API
 		 * Insert this record.
 		 */
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			throw new Exception('API key could not be created.');
 		}
@@ -336,7 +336,7 @@ class API
 		/*
 		 * Send an activation e-mail, unless instructed otherwise.
 		 */
-		if ( !isset($this->suppress_activation_email) || ($this->suppress_activation_email !== TRUE) )
+		if ( !isset($this->suppress_activation_email) || ($this->suppress_activation_email !== true) )
 		{
 			API::send_activation_email();
 		}
@@ -361,14 +361,14 @@ class API
 		$sql = 'UPDATE api_keys
 				SET verified = "y"
 				WHERE secret = :secret';
-		$sql_args = array(
+		$sql_args = [
 			':secret' => $this->secret
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
 			throw new Exception('API key could not be activated.');
 		}
@@ -376,14 +376,14 @@ class API
 		$sql = 'SELECT api_key
 				FROM api_keys
 				WHERE secret = :secret';
-		$sql_args = array(
+		$sql_args = [
 			':secret' => $this->secret
-		);
+		];
 
 		$statement = $db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ($result !== FALSE)
+		if ($result !== false)
 		{
 			$api_key = $statement->fetch(PDO::FETCH_OBJ);
 			$this->key = $api_key->api_key;
@@ -401,24 +401,22 @@ class API
 			
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
 	/**
 	 * E-mail an API activation URL to the provided e-mail address.
 	 *
-	 * TODO
-	 * This is an awfully crude way to send an e-mail. At present (v0.5), there is no other e-mail
-	 * functionality, so there's no more advanced functionality to hook into, nor is it worth
-	 * establishing a system just for this functionality.
+	 * Uses PHP's mail() directly — no templating or queuing — as there is no
+	 * other e-mail infrastructure in the project to hook into.
 	 */
 	function send_activation_email()
 	{
 
 		if (!isset($this->email) || !isset($this->secret))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$url = 'http://';
@@ -435,6 +433,7 @@ class API
 
 		$url .= '/downloads/?secret=' . $this->secret;
 
+		$email = new stdClass();
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
 			. "\r\r"
 			. $url;
@@ -450,7 +449,7 @@ class API
 		 */
 		mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
 
-		return TRUE;
+		return true;
 	}
 
 

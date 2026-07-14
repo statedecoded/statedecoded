@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="3.1" level="3">Governor's Agriculture and Forestry Industries Development Fund</unit>
+	</structure>
+	<section_number>3.2-309</section_number>
+	<catch_line>Report submitted to chairmen of legislative committees</catch_line>
+	<text>
+		Within the 30 days immediately following June 30 and December 30 of each year, the Governor shall provide a report to the Chairmen of the House Committees on Appropriations and Finance and the Senate Committee on Finance and Appropriations which shall include the following information regarding each grant or loan awarded from the Fund during the immediately preceding six-month period for economic development projects: the name of the company that is the business beneficiary of the grant and the type of business in which it engages; the location (county, city, or town) of the project; the amount of the grant committed from the Fund and the amount of all other funds committed by the Commonwealth from other sources and the purpose for which such grants or other funds will be used; the amount of all moneys or funds agreed to be provided by political subdivisions and the purposes for which they will be used; the number of new jobs projected to be created by the business beneficiary; the amount of investment in the project agreed to be made by the business beneficiary; the minimum purchase agreed to be made of Virginia-grown agricultural and forestal products; projected impact on agricultural and forestal producers; the timetable for the completion of the project and new jobs created; the prevailing average wage; and the average wage (excluding fringe benefits) projected to be paid in the new jobs.
+	</text>
+	<history>2012, cc. 466, 622.</history>
+</law>

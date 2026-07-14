@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-51.6</section_number>
+	<catch_line>Strangulation or suffocation of another; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who, without consent, impedes the blood circulation or respiration of another person by knowingly, intentionally, and unlawfully applying pressure to the neck of such person resulting in the wounding or bodily injury of such person is guilty of strangulation, a Class 6 felony.
+		</section>
+		<section prefix="B">Any person who, without consent, impedes the blood circulation or respiration of another person by knowingly, intentionally, and unlawfully blocking or obstructing the airway of such person resulting in the wounding or bodily injury of such person is guilty of suffocation, a Class 6 felony.
+		</section>
+	</text>
+	<history>2012, cc. 577, 602; 2023, cc. 709, 710.</history>
+</law>

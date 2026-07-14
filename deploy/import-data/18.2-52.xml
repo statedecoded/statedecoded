@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="4" level="3">Assaults and Bodily Woundings</unit>
+	</structure>
+	<section_number>18.2-52</section_number>
+	<catch_line>Malicious bodily injury by means of any caustic substance or agent or use of any explosive or fire</catch_line>
+	<text>
+		If any person maliciously causes any other person bodily injury by means of any acid, lye or other caustic substance or agent or use of any explosive or fire, he shall be guilty of a felony and shall be punished by confinement in a state correctional facility for a period of not less than five years nor more than thirty years. If such act is done unlawfully but not maliciously, the offender shall be guilty of a Class 6 felony.
+	</text>
+	<history>Code 1950, § 18.1-67; 1960, c. 358; 1975, cc. 14, 15, 604; 1995, c. 439.</history>
+</law>

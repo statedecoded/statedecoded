@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:30</section_number>
+	<catch_line>Training and certification</catch_line>
+	<text>
+		<section prefix="A">The Board shall issue separate or combined certifications concerning specified subject areas of this article, including program administration, plan review, and project inspection, to persons who have demonstrated adequate knowledge to the satisfaction of the Board. The Board also shall issue a Responsible Land Disturber certificate to personnel and contractors who have demonstrated adequate knowledge to the satisfaction of the Board.
+		</section>
+		<section prefix="B">The Department shall administer education and training programs for specified subject areas of this article and is authorized to charge persons attending such programs reasonable fees to cover the costs of administering the programs.
+		</section>
+		<section prefix="C">Personnel of VSMP or VESMP authorities who are administering programs, reviewing plans, or conducting inspections pursuant to this article shall hold a certification in the appropriate subject area as provided in subsection A. This requirement shall not apply to third-party individuals who prepare and submit plans to a VESMP or VSMP authority.
+		</section>
+		<section prefix="D">The Department shall establish procedures and requirements for issuance and periodic renewal of certifications.
+		</section>
+		<section prefix="E">Professionals registered in the Commonwealth pursuant to Article 1 (§ 54.1-400 et seq.) of Chapter 4 of Title 54.1 shall be deemed to have met the provisions of this section for the purposes of renewals of such certifications.
+		</section>
+	</text>
+	<history>2012, cc. 785, 819, § 10.1-603.4:2; 2013, cc. 756, 793; 2016, cc. 68, 758.</history>
+</law>

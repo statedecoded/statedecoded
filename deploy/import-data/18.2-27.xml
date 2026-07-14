@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="3" level="2">Inchoate Offenses</unit>
+		<unit label="article" identifier="2" level="3">Attempts</unit>
+	</structure>
+	<section_number>18.2-27</section_number>
+	<catch_line>Attempts to commit misdemeanors; how punished</catch_line>
+	<text>
+		Every person who attempts to commit an offense which is a misdemeanor shall be punishable by the same punishment prescribed for the offense the commission of which was the object of the attempt.
+	</text>
+	<history>Code 1950, § 18.1-19; 1960, c. 358; 1972, c. 52; 1975, cc. 14, 15.</history>
+</law>

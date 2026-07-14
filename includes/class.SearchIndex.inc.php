@@ -6,11 +6,11 @@
  * Implements a search engine (e.g. Solr, Elasticsearch)
  * Basically a thin wrapper for the search engine.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  *
  * Usage (update):
@@ -22,6 +22,7 @@
  * $searchIndex->commit();
  */
 
+#[\AllowDynamicProperties]
 class SearchIndex
 {
 	/*
@@ -29,7 +30,7 @@ class SearchIndex
 	 */
 	public $engine;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key=>$value)
 		{
@@ -38,7 +39,7 @@ class SearchIndex
 
 		if(!isset($this->config) && defined('SEARCH_CONFIG'))
 		{
-			$this->config = json_decode(SEARCH_CONFIG, TRUE);
+			$this->config = json_decode(SEARCH_CONFIG, true);
 			$args['config'] = $this->config;
 		}
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.2" level="2">Conservation of Water Resources; State Water Control Board</unit>
+	</structure>
+	<section_number>62.1-44.36</section_number>
+	<catch_line>Responsibility of State Water Control Board; formulation of policy</catch_line>
+	<text>
+		Being cognizant of the crucial importance of the Commonwealth's water resources to the health and welfare of the people of Virginia and of the need of a water supply to assure further industrial growth and economic prosperity for the Commonwealth, and recognizing the necessity for continuous cooperative planning and effective state-level guidance in the use of water resources, the State Water Control Board is assigned the responsibility for planning the development, conservation and utilization of Virginia's water resources.
+		The Board shall continue the study of existing water resources of the Commonwealth, means and methods of conserving and augmenting such water resources, and existing and contemplated uses and needs of water for all purposes. Based upon these studies and policies that have been initiated by the Division of Water Resources, and after an opportunity has been given to all concerned state agencies and political subdivisions to be heard, the Board shall formulate a coordinated policy for the use and control of all the water resources of the Commonwealth and issue a statement thereof. In formulating the Commonwealth's water resources policy, the Board shall, among other things, take into consideration the following principles and policies:
+		<section prefix="1">Existing water rights are to be protected and preserved subject to the principle that all of the state waters belong to the public for use by the people for beneficial purposes without waste.
+		</section>
+		<section prefix="2">Adequate and safe supplies shall be preserved and protected for human consumption, while conserving maximum supplies for other beneficial uses. When proposed uses of water are in mutually exclusive conflict or when available supplies of water are insufficient for all who desire to use them, preference shall be given to human consumption purposes over all other uses.
+		</section>
+		<section prefix="3">It is in the public interest that integration and coordination of uses of water, especially by localities with shared water supplies, and augmentation of existing supplies for all beneficial purposes be achieved for the maximum economic development thereof for the benefit of the Commonwealth as a whole.
+		</section>
+		<section prefix="4">In considering the benefits to be derived from drainage, consideration shall also be given to possible harmful effects upon ground water supplies and protection of wildlife.
+		</section>
+		<section prefix="5">The maintenance of stream flows sufficient to support aquatic life and to minimize pollution shall be fostered and encouraged.
+		</section>
+		<section prefix="6">Watershed development policies shall be favored, whenever possible, for the preservation of balanced multiple uses, and project construction and planning with those ends in view shall be encouraged.
+		</section>
+		<section prefix="7">Due regard shall be given in the planning and development of water recreation facilities to safeguard against pollution.
+			The statement of water resource policy shall be revised from time to time whenever the Board determines it to be in the public interest.
+			The initial statement of state water resource policy and any subsequent revisions thereof shall be furnished by the Board to all state agencies and to all political subdivisions of the Commonwealth.
+		</section>
+	</text>
+	<history>Code 1950, § 10-17.1; 1966, c. 561; 1972, c. 728; 2020, c. 1105.</history>
+</law>

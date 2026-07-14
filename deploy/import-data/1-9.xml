@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="1" level="1">General Provisions</unit>
+		<unit label="chapter" identifier="1" level="2">Code of Virginia</unit>
+	</structure>
+	<section_number>1-9</section_number>
+	<catch_line>Pending cases; parties; where books, records and papers to remain</catch_line>
+	<text>
+		Nothing in this Code shall operate to discontinue any cause or matter, civil or criminal, which shall be pending and undetermined in any court on the day before this Code, or any provision of this Code, takes effect; but every such cause and matter shall be proceeded in, tried and determined in such court, or in the court which succeeds to or has its jurisdiction, and in the names of the same parties, or in the names of any officers, boards, commission, or other persons or bodies who may have succeeded under the provisions of this Code to the rights or obligations of such parties, or any of them. The papers and records of such causes and matters, and all books, records and papers whatever which on such day may be in the custody of any clerk of a court shall remain in custody of the clerk of the same, or of such court as succeeds to or has its jurisdiction.
+	</text>
+	<history>Code 1919, § 6570; R. P. 1948, § 1-9.</history>
+</law>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="9" level="3">Abortion</unit>
+	</structure>
+	<section_number>18.2-71</section_number>
+	<catch_line>Producing abortion or miscarriage, etc.; penalty</catch_line>
+	<text>
+		Except as provided in other sections of this article, if any person administer to, or cause to be taken by a woman, any drug or other thing, or use means, with intent to destroy her unborn child, or to produce abortion or miscarriage, and thereby destroy such child, or produce such abortion or miscarriage, he shall be guilty of a Class 4 felony.
+	</text>
+	<history>Code 1950, § 18.1-62; 1960, c. 358; 1970, c. 508; 1975, cc. 14, 15.</history>
+</law>

@@ -1,14 +1,15 @@
 <?php
 
+#[\AllowDynamicProperties]
 abstract class CliAction
 {
 	static public $name;
 	static public $summary;
 	public $options;
-	public $default_options = array();
+	public $default_options = [];
 	public $result = 0;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		/*
 		 * Set our defaults
@@ -26,7 +27,7 @@ abstract class CliAction
 		}
 	}
 
-	abstract public function execute($args = array());
+	abstract public function execute($args = []);
 
 	/*
 	 * Technically, a static abstract function doesn't make sense,

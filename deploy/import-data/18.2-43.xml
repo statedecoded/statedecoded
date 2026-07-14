@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2" level="3">Crimes by Mobs</unit>
+	</structure>
+	<section_number>18.2-43</section_number>
+	<catch_line>Apprehension and prosecution of participants in lynching</catch_line>
+	<text>
+		The attorney for the Commonwealth of any county or city in which a lynching may occur shall promptly and diligently endeavor to ascertain the identity of the persons who in any way participated therein, or who composed the mob which perpetrated the same, and have them apprehended, and shall promptly proceed with the prosecution of any and all persons so found; and to the end that such offenders may not escape proper punishment, such attorney for the Commonwealth may be assisted in all such endeavors and prosecutions by the Attorney General, or other prosecutors designated by the Governor for the purpose; and the Governor may have full authority to spend such sums as he may deem necessary for the purpose of seeking out the identity, and apprehending the members of such mob.
+	</text>
+	<history>Code 1950, § 18.1-32; 1960, c. 358; 1975, cc. 14, 15.</history>
+</law>

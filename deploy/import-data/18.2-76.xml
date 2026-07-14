@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="9" level="3">Abortion</unit>
+	</structure>
+	<section_number>18.2-76</section_number>
+	<catch_line>Informed written consent required</catch_line>
+	<text>
+		Before performing any abortion or inducing any miscarriage or terminating a pregnancy as provided in § 18.2-72, 18.2-73, or 18.2-74, the physician or, if such abortion, induction, or termination is to be performed pursuant to § 18.2-72, either the physician or the advanced practice registered nurse authorized pursuant to clause (ii) of § 18.2-72 to perform such abortion, induction, or termination shall obtain the informed written consent of the pregnant woman. However, if the woman has been adjudicated incapacitated by any court of competent jurisdiction or if the physician or, if the abortion, induction, or termination is to be performed pursuant to § 18.2-72, either the physician or the advanced practice registered nurse authorized pursuant to clause (ii) of § 18.2-72 to perform such abortion, induction, or termination knows or has good reason to believe that such woman is incapacitated as adjudicated by a court of competent jurisdiction, then only after permission is given in writing by a parent, guardian, committee, or other person standing in loco parentis to the woman, may the physician or, if the abortion, induction, or termination is to be performed pursuant to § 18.2-72, either the physician or the advanced practice registered nurse authorized pursuant to clause (ii) of § 18.2-72 to perform such abortion, induction, or termination perform the abortion or otherwise terminate the pregnancy.
+	</text>
+	<history>Code 1950, § 18.1-62.1; 1970, c. 508; 1972, c. 823; 1975, cc. 14, 15; 1979, c. 250; 1997, c. 801; 2001, cc. 473, 477; 2003, c. 784; 2012, c. 131; 2020, cc. 898, 899; 2023, c. 183.</history>
+</law>

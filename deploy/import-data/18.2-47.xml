@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="3" level="3">Kidnapping and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-47</section_number>
+	<catch_line>Abduction and kidnapping defined; forced labor; punishment</catch_line>
+	<text>
+		<section prefix="A">Any person who, by force, intimidation or deception, and without legal justification or excuse, seizes, takes, transports, detains or secretes another person with the intent to deprive such other person of his personal liberty or to withhold or conceal him from any person, authority or institution lawfully entitled to his charge, shall be deemed guilty of "abduction."
+		</section>
+		<section prefix="B">Any person who, by force, intimidation or deception, and without legal justification or excuse, obtains the labor or services of another person, or seizes, takes, transports, detains or secretes another person or threatens to do so, with the intent to subject him to forced labor or services, shall be deemed guilty of "abduction." For purposes of this subsection, the term "intimidation" shall include destroying, concealing, confiscating, withholding, or threatening to withhold a passport, immigration document, or other governmental identification, threatening to report another as being illegally present in the United States, or threatening to separate another from or to harm a family member.
+		</section>
+		<section prefix="C">The provisions of this section shall not apply to any law-enforcement officer in the performance of his duty. The terms "abduction" and "kidnapping" shall be synonymous in this Code. Except as provided in subsection D, abduction of a minor shall be punished as a Class 2 felony. Abduction for which no punishment is otherwise prescribed shall be punished as a Class 5 felony.
+		</section>
+		<section prefix="D">If an offense under subsection A is committed by the parent or a family or household member, as defined in § 16.1-228, who has been ordered custody or visitation of the person abducted and punishable as contempt of court in any proceeding then pending, the offense shall be a Class 1 misdemeanor in addition to being punishable as contempt of court. However, such offense, if committed by the parent or a family or household member, as defined in § 16.1-228, who has been ordered custody or visitation of the person abducted and punishable as contempt of court in any proceeding then pending and the person abducted is removed from the Commonwealth by the abducting parent or a family or household member, as defined in § 16.1-228, who has been ordered custody or visitation, shall be a Class 6 felony in addition to being punishable as contempt of court.
+		</section>
+	</text>
+	<history>Code 1950, §§ 18.1-36, 18.1-37; 1960, c. 358; 1975, cc. 14, 15; 1979, c. 663; 1980, c. 506; 1997, c. 747; 2009, c. 662; 2023, c. 400; 2024, c. 368.</history>
+</law>

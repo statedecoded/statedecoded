@@ -5,11 +5,11 @@
  *
  * This controller will catch any routes in the permalinks table.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  *
  */
@@ -59,6 +59,24 @@ class APIPermalinkController extends BaseAPIController
 
 	}
 
+	public function handleDictionary($args)
+	{
+		$controller = new APIDictionaryController($this->local);
+		return $controller->handle($args);
+	}
+
+	public function handleSearch($args)
+	{
+		$controller = new APISearchController($this->local);
+		return $controller->handle($args);
+	}
+
+	public function handleSuggest($args)
+	{
+		$controller = new APISuggestController($this->local);
+		return $controller->handle($args);
+	}
+
 	public function handlePermalinks($args)
 	{
 
@@ -73,16 +91,16 @@ class APIPermalinkController extends BaseAPIController
 			$sql = 'SELECT *
 					FROM permalinks
 					WHERE url = :url LIMIT 1';
-			$sql_args = array(
+			$sql_args = [
 				':url' => $args['route']
-			);
+			];
 			$statement = $db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
 			/*
 			 * If we found a route.
 			 */
-			if ( $result !== FALSE )
+			if ( $result !== false )
 			{
 			
 				if ( $statement->rowCount() > 0 )
@@ -97,9 +115,9 @@ class APIPermalinkController extends BaseAPIController
 						str_replace(' ', '', ucwords($route['object_type'])) .
 						'Controller';
 
-					if ( class_exists($object_name) == TRUE)
+					if ( class_exists($object_name) == true)
 					{
-						$controller = new $object_name();
+						$controller = new $object_name($this->local);
 						return $controller->handle($route);
 					}
 					else
@@ -118,8 +136,8 @@ class APIPermalinkController extends BaseAPIController
 		 */
 		else
 		{
-			$controller = new APIStructureController();
-			return $controller->handle($route);
+			$controller = new APIStructureController($this->local);
+			return $controller->handle($args);
 		}
 
 		/*

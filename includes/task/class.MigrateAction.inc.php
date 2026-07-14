@@ -6,10 +6,7 @@
  * Updates the database to the latest version.
  *
  * NOTE: Currently only supports upgrading to the latest version.
- *
- * TODO:
- *   + Support rolling to a specific version.
- *   + Support rolling back.
+ *       Targeting a specific version and rollback are not implemented.
  */
 
 require_once 'class.CliAction.inc.php';
@@ -19,7 +16,7 @@ class MigrateAction extends CliAction
 	static public $name = 'migrate';
 	static public $summary = 'Updates the database schema.';
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		parent::__construct($args);
 
@@ -29,7 +26,7 @@ class MigrateAction extends CliAction
 		}
 	}
 
-	public function execute($args = array())
+	public function execute($args = [])
 	{
 		if($this->checkSetup())
 		{
@@ -44,9 +41,9 @@ class MigrateAction extends CliAction
 	public function checkSetup()
 	{
 		$statement = $this->db->query('SHOW TABLES LIKE "migrations"');
-		if($statement !== FALSE && $statement->rowCount() > 0)
+		if($statement !== false && $statement->rowCount() > 0)
 		{
-			return TRUE;
+			return true;
 		}
 		else
 		{
@@ -71,10 +68,10 @@ class MigrateAction extends CliAction
 
 		$this->db->exec($query);
 
-		return TRUE;
+		return true;
 	}
 
-	public function doMigrations($args = array())
+	public function doMigrations($args = [])
 	{
 		/*
 		 * If we're rolling back.
@@ -110,7 +107,7 @@ class MigrateAction extends CliAction
 
 	public function getDoneMigrations()
 	{
-		$done_migrations = array();
+		$done_migrations = [];
 
 		$query = 'SELECT name FROM `migrations` ORDER BY id DESC';
 		$statement = $this->db->query($query);
@@ -128,7 +125,7 @@ class MigrateAction extends CliAction
 
 	public function getAllMigrations()
 	{
-		$all_migrations = array();
+		$all_migrations = [];
 		$migrations = glob(INCLUDE_PATH . '/migrations/class.Migration_*.inc.php');
 
 		/*
@@ -159,7 +156,7 @@ class MigrateAction extends CliAction
 		return $migrations;
 	}
 
-	public function doMigration($migration_name, $args = array())
+	public function doMigration($migration_name, $args = [])
 	{
 		print "Running migration $migration_name";
 		if(isset($this->options['down']))
@@ -177,7 +174,7 @@ class MigrateAction extends CliAction
 		 */
 		if(isset($this->options['verbose']))
 		{
-			$migration->verbose = TRUE;
+			$migration->verbose = true;
 		}
 
 		try
@@ -202,7 +199,7 @@ class MigrateAction extends CliAction
 		$this->recordMigration($migration_name, $args);
 	}
 
-	public function recordMigration($migration_name, $args = array())
+	public function recordMigration($migration_name, $args = [])
 	{
 		// We are assuming there is never a mix of down and up in the same
 		// action.  Just be careful, ok?
@@ -220,7 +217,7 @@ class MigrateAction extends CliAction
 			}
 		}
 
-		return $statement->execute(array($migration_name));
+		return $statement->execute([$migration_name]);
 	}
 
 	static public function getHelp()

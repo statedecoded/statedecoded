@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4" level="3">Regulation of Sewage Discharges</unit>
+	</structure>
+	<section_number>62.1-44.19:3.4</section_number>
+	<catch_line>Notification of local governing bodies</catch_line>
+	<text>
+		<section prefix="A">Whenever the Department receives an application for land disposal of treated sewage, stabilized sewage sludge, or stabilized septage, the Department shall notify the local governing bodies where disposal is to take place of pertinent details of the proposal and establish a date for a public meeting to discuss technical issues relating to the proposal. The Department shall give notice of the date, time, and place of the public meeting and a description of the proposal by publication in a newspaper of general circulation in the city or county where land disposal is to take place. Public notice of the scheduled meeting shall occur no fewer than seven or more than 14 days prior to the meeting. The Board shall not issue the permit for land disposal until the public meeting has been held and comment has been received from the local governing body, or until 30 days have lapsed from the date of the public meeting. This section shall not apply to applications for septic tank permits.
+		</section>
+		<section prefix="B">When a farm is to be added to an existing permit authorizing land application of sewage sludge, the Department shall notify persons residing on property bordering such farm, and shall receive written comments from those persons for a period not to exceed 30 days. Based upon the written comments, the Department shall determine whether additional site-specific requirements should be included in the authorization for land application at the farm.
+		</section>
+	</text>
+	<history>2007, cc. 881, 929; 2009, c. 42.</history>
+</law>

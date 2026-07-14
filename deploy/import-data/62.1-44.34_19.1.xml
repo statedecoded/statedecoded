@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="11" level="3">Discharge of Oil Into Waters</unit>
+	</structure>
+	<section_number>62.1-44.34:19.1</section_number>
+	<catch_line>Registration of aboveground storage tanks</catch_line>
+	<text>
+		<section prefix="A">The Board shall compile an inventory of facilities with an aboveground storage capacity of more than 1320 gallons of oil or individual aboveground storage tanks having a storage capacity of more than 660 gallons of oil within the Commonwealth. To develop such an inventory, the Board is hereby authorized to develop regulations regarding registration requirements for facilities and aboveground storage tanks. In adopting such regulations, the Board shall consider whether any registration program required under federal law or regulations is sufficient for purposes of this section.
+		</section>
+		<section prefix="B">Within ninety days of the effective date of the regulations referred to in subsection A, the operators of a facility shall register the facility with the Board and the local director or coordinator of emergency services appointed pursuant to § 44-146.19, and provide an inventory of aboveground storage tanks at the facility. If the Board determines that registration under federal law or regulations is inadequate for the purpose of compiling its inventory and that additional registration requirements are necessary, the Board is authorized to assess a fee, according to a schedule based on the size and type of the facility or tank, not to exceed $100 per facility or $50 per tank, whichever is less. Such fee shall be paid at the time of registration or registration renewal. Registration shall be renewed every five years or whenever title to a facility or tank is transferred, whichever first occurs.
+		</section>
+		<section prefix="C">The operator shall, within thirty days after the upgrade, repair, replacement, or closure of an existing tank or installation of a new tank, notify the Board in writing of such upgrade, repair, replacement, closure or installation.
+		</section>
+	</text>
+	<history>1992, c. 456.</history>
+</law>

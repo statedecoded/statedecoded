@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.1" level="3">Crimes by Gangs</unit>
+	</structure>
+	<section_number>18.2-46.3</section_number>
+	<catch_line>Recruitment of persons for criminal street gang; penalty</catch_line>
+	<text>
+		<section prefix="A">Any person who solicits, invites, recruits, encourages or otherwise causes or attempts to cause another to actively participate in or become a member of what he knows to be a criminal street gang is guilty of a Class 1 misdemeanor. Any person age 18 years or older who solicits, invites, recruits, encourages or otherwise causes or attempts to cause a juvenile to actively participate in or become a member of what he knows to be a criminal street gang is guilty of a Class 6 felony.
+		</section>
+		<section prefix="B">Any person who, in order to encourage an individual (a) to join a criminal street gang, (b) to remain as a participant in or a member of a criminal street gang, or (c) to submit to a demand made by a criminal street gang to commit a felony violation of this title, (i) uses force against the individual or a member of his family or household or (ii) threatens force against the individual or a member of his family or household, which threat would place any person in reasonable apprehension of death or bodily injury, is guilty of a Class 6 felony. The definition of "family or household member" set forth in § 16.1-228 applies to this section.
+		</section>
+	</text>
+	<history>2000, c. 332; 2004, cc. 396, 435.</history>
+</law>

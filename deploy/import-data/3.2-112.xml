@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="3.2" level="1">Agriculture, Animal Care, and Food</unit>
+		<unit label="subtitle" identifier="I" level="2">General Provisions; Protection and Promotion of Agriculture</unit>
+		<unit label="chapter" identifier="1" level="3">General Provisions</unit>
+		<unit label="article" identifier="2" level="4">Board of Agriculture and Consumer Services</unit>
+	</structure>
+	<section_number>3.2-112</section_number>
+	<catch_line>Regulations governing the conduct of referenda</catch_line>
+	<text>
+		The Board shall adopt regulations governing the ballots to be used in any referendum, the conduct of any referendum, canvassing the results thereof, and declaring the results of any referendum provided for in this title. The Board shall fix the date, hours, and voting places with respect to the holding of any referendum and may provide for voting by mail. No requirement of this section shall be governed by Article 2 (§ 2.2-4006 et seq.) of the Administrative Process Act.
+	</text>
+	<history>1970, cc. 310, 431, §§ 3.1-796.17, 3.1-684.6; 1980, cc. 316, 395, §§ 3.1-796.06, 3.1-1036; 1982, c. 126, § 3.1-684.25; 1983, c. 375; 1991, c. 587, § 3.1-684.45; 1995, c. 691, § 3.1-1068; 1997, c. 873, § 3.1-1084; 2005, cc. 497, 588, 864, 875, §§ 3.1-22.59, 3.1-636.2; 2008, c. 860.</history>
+</law>

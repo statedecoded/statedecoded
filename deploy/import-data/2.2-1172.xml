@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="6" level="5">Division of Support Services</unit>
+	</structure>
+	<section_number>2.2-1172</section_number>
+	<catch_line>Parking of vehicles in Capitol Square; parking facilities for state officers and employees; violations</catch_line>
+	<text>
+		<section prefix="A">Except as provided in this section, all parking in the Capitol Square of motor vehicles and animal-drawn vehicles is prohibited. However, during the recess of the General Assembly, the Division may cause to be marked off certain portions of the driveways in the Capitol Square and permit vehicles to be parked there under such regulations as may be prescribed. Parking areas on the west of the Capitol shall be reserved at all times for parking by members of the General Assembly.
+		</section>
+		<section prefix="B">During sessions of the General Assembly, parking in the Capitol Square shall be subject to rules and regulations adopted jointly by the Speaker of the House of Delegates and the chairman of the Senate Committee on Rules.
+		</section>
+		<section prefix="C">The Division may, with the approval of the Governor, utilize any property owned by the Commonwealth and located in the Richmond area for the purpose of providing parking facilities for officers and employees of the Commonwealth, and to allocate spaces therein. The Division may fix and collect fees for the use of the parking facilities. The Division may adopt regulations for the parking facilities, which regulations shall include the enforcement provisions required by §§ 46.2-1225 through 46.2-1229.
+		</section>
+		<section prefix="D">Any person parking any vehicle contrary to the rules and regulations referred to in subsection B or contrary to the other provisions of this section, or contrary to any parking sign or "No Parking" sign erected by the Division pursuant to regulations adopted by it, shall be subject to a fine of not less than one dollar nor more than twenty-five dollars for each offense.
+		</section>
+	</text>
+	<history>Code 1950, § 2-75.1; 1958, c. 2; 1966, c. 677, § 2.1-94; 1970, c. 202; 1977, c. 672, § 2.1-531; 2001, c. 844.</history>
+</law>

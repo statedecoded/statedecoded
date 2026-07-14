@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="4.02" level="3">Chesapeake Bay Watershed Nutrient Credit Exchange Program</unit>
+	</structure>
+	<section_number>62.1-44.19:16</section_number>
+	<catch_line>Technology-based standards and effluent limitations</catch_line>
+	<text>
+		<section prefix="A">The Board may establish a technology-based standard less stringent than the applicable standard specified in § 62.1-44.19:15 based on a demonstration by an owner or operator that the specified standard is not technically or economically feasible for the affected facility or that the technology-based standard would require the owner or operator to construct treatment facilities not otherwise necessary to comply with his waste load allocation without reliance on nutrient credit exchanges pursuant to § 62.1-44.19:18.
+		</section>
+		<section prefix="B">The Board may include technology-based effluent concentration limitations in the individual permit for any facility that has installed technology for the control of nitrogen and phosphorus whether by new construction, expansion, or upgrade. Such limitations shall be based upon the technology installed by the facility and shall be expressed as annual average limitations. Such limitations shall not affect the generation, acquisition, or exchange of allocations or credits pursuant to this article.
+		</section>
+	</text>
+	<history>2005, cc. 708, 710.</history>
+</law>

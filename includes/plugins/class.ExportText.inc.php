@@ -3,24 +3,24 @@
 /**
  * Text export.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  *
  */
 
 class ExportText extends Export
 {
-  public $listeners = array(
+  public $listeners = [
     'exportLaw',
     'exportStructure',
     'finishExport',
     'postGetLaw',
     'showBulkDownload'
-  );
+  ];
 
   public $public_name = 'Plain Text';
   public $format = 'text';
@@ -35,7 +35,7 @@ class ExportText extends Export
     return $law->plain_text;
   }
 
-  public function formatStructureForExport($structure, $laws = array())
+  public function formatStructureForExport($structure, $laws = [])
   {
     $content = ucwords($structure->label) . ' ' . $structure->identifier . ': ' .
       $structure->name;

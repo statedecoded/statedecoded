@@ -1,0 +1,86 @@
+name: statedecoded
+
+services:
+
+  # -----------------------------------------------------------------------
+  # app — PHP 8.3 + Apache, with the repo bind-mounted for live editing
+  # -----------------------------------------------------------------------
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/docker/app/Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER:-statedecoded}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-statedecoded}
+      PDO_DSN: mysql:dbname=statedecoded;host=db;charset=utf8
+      PDO_DSN_TEST: mysql:dbname=statedecoded_test;host=db;charset=utf8
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
+      SITE_TITLE: ${SITE_TITLE:-The State Decoded}
+      PLACE_NAME: ${PLACE_NAME:-State}
+      LAWS_NAME: ${LAWS_NAME:-Code of State}
+      SEARCH_ENGINE: ${SEARCH_ENGINE:-SqlSearchEngine}
+      DEBUG_LEVEL: ${DEBUG_LEVEL:-5}
+    volumes:
+      # Bind-mount the repo root so edits are reflected immediately
+      - ..:/var/www/html
+      # Shadow vendor/ with a container-owned anonymous volume so the host's
+      # Composer artifacts (compiled against host PHP) don't leak in
+      - vendor_data:/var/www/html/vendor
+      # Persist generated downloads and content across restarts
+      - ../htdocs/downloads:/var/www/html/htdocs/downloads
+      - ../htdocs/content:/var/www/html/htdocs/content
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - statedecoded
+
+  # -----------------------------------------------------------------------
+  # db — MySQL 8.0
+  # -----------------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: statedecoded
+      MYSQL_USER: ${MYSQL_USER:-statedecoded}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-statedecoded}
+    volumes:
+      # Preload the application schema on first init
+      - ../htdocs/admin/statedecoded.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      # Create test DB and mirror schema on first init
+      - ./docker/db/init/02-test-db.sql:/docker-entrypoint-initdb.d/02-test-db.sql:ro
+      # Persist data across restarts; `docker compose down -v` to reset
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - statedecoded
+
+  # -----------------------------------------------------------------------
+  # memcached — optional cache backend
+  # Enabled with: docker compose -f deploy/docker-compose.yml --profile cache up
+  # Set CACHE_HOST=memcached and CACHE_PORT=11211 in .env
+  # -----------------------------------------------------------------------
+  memcached:
+    image: memcached:1.6-alpine
+    profiles:
+      - cache
+    networks:
+      - statedecoded
+
+volumes:
+  db_data:
+  vendor_data:
+
+networks:
+  statedecoded:
+    driver: bridge

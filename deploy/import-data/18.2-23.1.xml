@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="3" level="2">Inchoate Offenses</unit>
+		<unit label="article" identifier="1" level="3">Conspiracies</unit>
+	</structure>
+	<section_number>18.2-23.1</section_number>
+	<catch_line>Completed substantive offense bars conviction for conspiracy</catch_line>
+	<text>
+		Notwithstanding any other provision of this article or of § 18.2-256, in any case where a defendant has been tried and convicted of an act he has also conspired to commit, such defendant shall be subject to conviction only for the completed substantive offense and not thereafter be convicted for the underlying conspiracy.
+	</text>
+	<history>1985, c. 376.</history>
+</law>

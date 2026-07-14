@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="6" level="5">Division of Support Services</unit>
+	</structure>
+	<section_number>2.2-1169</section_number>
+	<catch_line>Mail handling, messenger and parcel service</catch_line>
+	<text>
+		The Division shall operate a central service unit to provide all state departments, divisions, institutions and agencies in the Richmond area with mail handling, messenger and parcel service. These services may, if deemed appropriate, be extended to state departments, divisions, institutions and agencies in other areas of the Commonwealth.
+	</text>
+	<history>1972, c. 503, § 2.1-243.1; 1976, c. 759; 1977, c. 672, § 2.1-528; 2001, c. 844.</history>
+</law>

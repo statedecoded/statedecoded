@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.15:5.02</section_number>
+	<catch_line>Low-flow protections in Potomac River</catch_line>
+	<text>
+		<section prefix="A">Virginia Water Protection Permits issued after July 1, 2007, authorizing withdrawal of water from the Potomac River or its tributaries between the West Virginia border and Little Falls for any purpose other than municipal water supply, shall incorporate low-flow protection requirements if the maximum consumptive use allowed by the permit exceeds 500,000 gallons per day. Such permits shall require that the permittee provide or secure sufficient offstream storage to augment instream flow during low-flow periods in an amount equal to the amount that the permittee's consumptive use exceeds 500,000 gallons per day. The permit shall specify the instream flow volume at which low-flow protection is to be implemented.
+		</section>
+		<section prefix="B">Permittees may comply with the requirements of this section by: (i) constructing or acquiring facilities for offstream storage of water that may be used to replace their consumptive use withdrawals exceeding 500,000 gallons per day during low-flow periods; (ii) purchasing storage capacity in facilities owned by another entity, sufficient to replace their consumptive use withdrawals exceeding 500,000 gallons per day during low-flow periods; or (iii) agreeing to a permit condition limiting consumptive use to not more than 500,000 gallons per day during low-flow periods as designated in the permit.
+		</section>
+		<section prefix="C">No owner who holds a Virginia Water Protection Permit as described in this section shall withdraw water for consumptive use in excess of 500,000 gallons per day, except in compliance with permit requirements for low-flow augmentation.
+		</section>
+		<section prefix="D">Should the implementation of emergency measures pursuant to applicable law, regulation, or interjurisdictional agreement require more stringent temporary restrictions on consumptive use, those requirements shall override the provisions of permits issued pursuant to this section during the period that such requirements are in effect.
+		</section>
+		<section prefix="E">The requirements of this section shall not apply to the reissuance or amendment of any Virginia Water Protection Permit issued prior to July 1, 2007, unless such reissuance or amendment: (i) authorizes an increase in the permitted withdrawal in excess of 500,000 gallons per day for consumptive use; or (ii) authorizes a change from nonconsumptive to consumptive use, in excess of 500,000 gallons per day.
+		</section>
+	</text>
+	<history>2007, c. 656.</history>
+</law>

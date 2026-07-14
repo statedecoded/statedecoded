@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.9</section_number>
+	<catch_line>Qualifications of members</catch_line>
+	<text>
+		<section prefix="A">Members of the Board shall be citizens of the Commonwealth; shall be selected from the Commonwealth at large for merit without regard to political affiliation; and shall, by character and reputation, reasonably be expected to inspire the highest degree of cooperation and confidence in the work of the Board. Members shall, by their education, training, or experience, be knowledgeable of water quality control and regulation and shall be fairly representative of conservation, public health, business, land development, and agriculture. In making appointments, the Governor shall endeavor to ensure balanced geographical representation. No person shall become a member of the Board who receives, or during the previous two years has received, a significant portion of his income directly or indirectly from certificate or permit holders or applicants for a certificate or permit.
+			For the purposes of this section, "significant portion of income" means 10 percent or more of gross personal income for a calendar year, except that it means 50 percent or more of gross personal income for a calendar year if the recipient is over 60 years of age and is receiving that portion under retirement, pension, or similar arrangement. Income includes retirement benefits, consultant fees, and stock dividends. Income is not received directly or indirectly from certificate or permit holders or applicants for certificates or permits when it is derived from mutual fund payments, or from other diversified investments for which the recipient does not know the identity of the primary sources of income.
+		</section>
+		<section prefix="B">Notwithstanding any other provision of this section relating to Board membership, the qualifications for Board membership shall not be more strict than those that are required by federal statute or regulations of the United States Environmental Protection Agency.
+		</section>
+	</text>
+	<history>Code 1950, § 62.1-21; 1968, c. 659; 1970, c. 638; 1994, c. 461; 2008, cc. 276, 557; 2013, cc. 756, 793; 2014, c. 150.</history>
+</law>

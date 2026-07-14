@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="3" level="2">Inchoate Offenses</unit>
+		<unit label="article" identifier="2" level="3">Attempts</unit>
+	</structure>
+	<section_number>18.2-25</section_number>
+	<catch_line>Attempts to commit Class 1 felony offenses; how punished</catch_line>
+	<text>
+		If any person attempts to commit an offense that is punishable as a Class 1 felony, he is guilty of a Class 2 felony.
+	</text>
+	<history>Code 1950, § 18.1-16; 1960, c. 358; 1975, cc. 14, 15; 1985, c. 280; 2021, Sp. Sess. I, cc. 344, 345.</history>
+</law>

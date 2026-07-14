@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2.1" level="3">Crimes by Gangs</unit>
+	</structure>
+	<section_number>18.2-46.3:1</section_number>
+	<catch_line>Third or subsequent conviction of criminal street gang crimes</catch_line>
+	<text>
+		Upon a felony conviction of § 18.2-46.2 or 18.2-46.3, where it is alleged in the warrant, information or indictment on which a person is convicted that (i) such person has been previously convicted twice under any combination of § 18.2-46.2 or 18.2-46.3, within 10 years of the third or subsequent offense, and (ii) each such offense occurred on different dates, such person is guilty of a Class 2 felony.
+	</text>
+	<history>2004, cc. 396, 435, 847; 2023, cc. 396, 397.</history>
+</law>

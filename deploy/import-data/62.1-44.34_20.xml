@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="11" level="3">Discharge of Oil Into Waters</unit>
+	</structure>
+	<section_number>62.1-44.34:20</section_number>
+	<catch_line>Enforcement and penalties</catch_line>
+	<text>
+		<section prefix="A">Upon a finding of a violation of this article or a regulation or term or condition of approval issued pursuant to this article, the Board is authorized to issue a special order requiring any person to cease and desist from causing or permitting such violation or requiring any person to comply with any such provision, regulation or term or condition of approval. Such special orders shall be issued only after notice and an opportunity for hearing except that, if the Board finds that any discharge in violation of this article poses a serious threat to (i) the public health, safety or welfare or the health of animals, fish, botanic or aquatic life; (ii) a public water supply; or (iii) recreational, commercial, industrial, agricultural or other reasonable uses, the Board may issue, without advance notice or hearing, an emergency special order requiring the operator of any facility, vehicle or vessel to cease such discharge immediately, to implement any applicable contingency plan and to effect containment and cleanup. Such emergency special order may also require the operator of a facility to modify or cease regular operation of the facility, or any portion thereof, until the Board determines that continuing regular operation of the facility, or such portion thereof, will not pose a substantial threat of additional or continued discharges. The Board shall affirm, modify, amend or cancel any such emergency order after providing notice and opportunity for hearing to the operator charged with the violation. The notice of the hearing and the emergency order shall be issued at the same time. If an operator who has been issued such a special order or an emergency special order is not complying with the terms thereof, the Board may proceed in accordance with subsection B of this section, and where the order is based on a finding of an imminent and substantial danger, the court shall issue an injunction compelling compliance with the emergency special order pending a hearing by the Board. If an emergency special order requires modification or cessation of operations, the Board shall provide an opportunity for a hearing within 48 hours of the issuance of the injunction.
+		</section>
+		<section prefix="B">In the event of a violation of this article or a regulation, administrative or judicial order, or term or condition of approval issued under this article, or in the event of failure to comply with a special order issued by the Board pursuant to this section, the Board is authorized to proceed by civil action to obtain an injunction of such violation, to obtain such affirmative equitable relief as is appropriate and to recover all costs, damages and civil penalties resulting from such violation or failure to comply. The Board shall be entitled to an award of reasonable attorneys' fees and costs in any action in which it is a prevailing party.
+		</section>
+		<section prefix="C">Any person who violates or causes or permits to be violated a provision of this article, or a regulation, administrative or judicial order, or term or condition of approval issued under this article, shall be subject to a civil penalty for each such violation as follows:
+			<section prefix="1">For failing to obtain approval of an oil discharge contingency plan as required by § 62.1-44.34:15, not less than $1,000 nor more than $50,000 for the initial violation, and $5,000 per day for each day of violation thereafter;
+			</section>
+			<section prefix="2">For failing to maintain evidence of financial responsibility as required by § 62.1-44.34:16, not less than $1,000 nor more than $100,000 for the initial violation, and $5,000 per day for each day of violation thereafter;
+			</section>
+			<section prefix="3">For discharging or causing or permitting a discharge of oil into or upon state waters, or owning or operating any facility, vessel or vehicle from which such discharge originates in violation of § 62.1-44.34:18, up to $100 per gallon of oil discharged;
+			</section>
+			<section prefix="4">For failing to cooperate in containment and cleanup of a discharge as required by § 62.1-44.34:18 or for failing to report a discharge as required by § 62.1-44.34:19, not less than $1,000 nor more than $50,000 for the initial violation, and $10,000 for each day of violation thereafter; and
+			</section>
+			<section prefix="5">For violating or causing or permitting to be violated any other provision of this article, or a regulation, administrative or judicial order, or term or condition of approval issued under this article, up to $32,500 for each violation. Each day of violation of each requirement shall constitute a separate offense.
+			</section>
+		</section>
+		<section prefix="D">Civil penalties may be assessed under this article either by a court in an action brought by the Board pursuant to this section, as specified in § 62.1-44.15, or with the consent of the person charged, in a special order issued by the Board. All penalties shall be paid into the state treasury and deposited by the State Treasurer into the Virginia Underground Petroleum Storage Tank Fund as established in § 62.1-44.34:11. In determining the amount of any penalty, consideration shall be given to the willfulness of the violation, any history of noncompliance, the actions of the person in reporting, containing and cleaning up any discharge or threat of discharge, the damage or injury to state waters or the impairment of their beneficial use, the cost of containment and cleanup, the nature and degree of injury to or interference with general health, welfare and property, and the available technology for preventing, containing, reducing or eliminating the discharge.
+		</section>
+		<section prefix="E">Any person who knowingly violates, or causes or permits to be violated, a provision of this article, or a regulation, administrative or judicial order, or term or condition of approval issued under this article shall be guilty of a misdemeanor punishable by confinement in jail for not more than 12 months and a fine of not more than $100,000, either or both. Any person who knowingly or willfully makes any false statement, representation or certification in any application, record, report, plan or other document filed or required to be maintained by this article or by administrative or judicial order issued under this article shall be guilty of a felony punishable by a term of imprisonment of not less than one nor more than three years and a fine of not more than $100,000, either or both. In the case of a discharge of oil into or upon state waters:
+			<section prefix="1">Any person who negligently discharges or negligently causes or permits such discharge shall be guilty of a misdemeanor punishable by confinement in jail for not more than 12 months and a fine of not more than $50,000, either or both.
+			</section>
+			<section prefix="2">Any person who knowingly and willfully discharges or knowingly and willfully causes or permits such discharge shall be guilty of a felony punishable by a term of imprisonment of not less than one year nor more than 10 years and a fine of not more than $100,000, either or both.
+			</section>
+		</section>
+		<section prefix="F">Each day of violation of each requirement shall constitute a separate offense. In the event the violation of this article follows a prior felony conviction under subdivision E 2 of this section, such violation shall constitute a felony and shall be punishable by a term of imprisonment of not less than two years nor more than 10 years and a fine of not more than $200,000, either or both.
+		</section>
+		<section prefix="G">Upon conviction for a violation of any provision of this article, or a regulation, administrative or judicial order, or term or condition of approval issued under this article, a defendant who is not an individual shall be sentenced to pay a fine not exceeding the greater of:
+			<section prefix="1">$1 million; or
+			</section>
+			<section prefix="2">An amount that is three times the economic benefit, if any, realized by the defendant as a result of the offense.
+			</section>
+		</section>
+		<section prefix="H">Any tank vessel entering upon state waters which fails to provide evidence of financial responsibility required by § 62.1-44.34:16, and any vessel from which oil is discharged into or upon state waters, may be detained and held as security for payment to the Commonwealth of any damages or penalties assessed under this section. Such damages and penalties shall constitute a lien on the vessel and the lien shall secure all costs of containment and cleanup, damages, fines and penalties, as the case may be, for which the operator may be liable. The vessel shall be released upon posting of a bond with surety in the maximum amount of such damages or penalties.
+		</section>
+	</text>
+	<history>1990, c. 917; 1992, c. 456; 2005, c. 706.</history>
+</law>

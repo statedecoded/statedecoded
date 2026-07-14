@@ -5,14 +5,15 @@
  *
  * Routes all requests to the proper controllers.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  */
 
+#[\AllowDynamicProperties]
 class MasterController
 {
 
@@ -20,7 +21,7 @@ class MasterController
 	protected $db;
 	protected $cache;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key => $value)
 		{
@@ -38,10 +39,10 @@ class MasterController
 		/*
 		 * Setup the data we'll pass to any instances.
 		 */
-		$local_data = array(
+		$local_data = [
 			'db' => $this->db,
 			'cache' => $this->cache
-		);
+		];
 
 		/*
 		 * Explode the request into a method and some args.
@@ -66,7 +67,15 @@ class MasterController
 		{
 			if(file_exists(WEB_ROOT.'/'.$handler))
 			{
-				extract($local_data);
+				/*
+				 * Make local variables available to included file.
+				 * NOTE: Using extract() is a security risk, so we assign variables explicitly instead.
+				 */
+				foreach ($local_data as $__key => $__value)
+				{
+					$$__key = $__value;
+				}
+				unset($__key, $__value);
 				require(WEB_ROOT.'/'.$handler);
 			}
 		}
@@ -87,13 +96,13 @@ class MasterController
 			$url = $_SERVER['REQUEST_URI'];
 		}
 
-		if(strpos($url, '?') !== FALSE) {
+		if(strpos($url, '?') !== false) {
 			list($url, $query_string) = explode('?', $url);
 		}
 
 		list($handler, $args) = $router->getRoute($url);
 
-		return array($handler, $args);
+		return [$handler, $args];
 
 	}
 

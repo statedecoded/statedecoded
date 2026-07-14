@@ -3,15 +3,16 @@
 /**
  * The Law class, for retrieving data about individual laws.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.1
  *
  */
 
+#[\AllowDynamicProperties]
 class Law
 {
 	protected $db;
@@ -19,7 +20,7 @@ class Law
 
 	public $formats;
 
-	public function __construct($args = array())
+	public function __construct($args = [])
 	{
 		foreach($args as $key=>$value)
 		{
@@ -38,7 +39,7 @@ class Law
 		if (!isset($this->config) || !is_object($this->config) )
 		{
 			$this->config = new StdClass();
-			$this->config->get_all = TRUE;
+			$this->config->get_all = true;
 		}
 
 		$this->events = new EventManager();
@@ -55,7 +56,7 @@ class Law
 		 */
 		if (!isset($this->section_number) && !isset($this->law_id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -64,23 +65,23 @@ class Law
 		if (!isset($this->config) || !is_object($this->config) )
 		{
 			$this->config = new StdClass();
-			$this->config->get_all = TRUE;
+			$this->config->get_all = true;
 		}
 
 		/*
 		 * Define the level of detail that we want from this method. By default, we return
 		 * everything that we have for this law.
 		 */
-		if ( !isset($this->config) || ( (isset($this->config->get_all)) && ($this->config->get_all == TRUE) ) )
+		if ( !isset($this->config) || ( (isset($this->config->get_all)) && ($this->config->get_all == true) ) )
 		{
-			$this->config->get_text = TRUE;
-			$this->config->get_structure = TRUE;
-			$this->config->get_amendment_attempts = TRUE;
-			$this->config->get_court_decisions = TRUE;
-			$this->config->get_metadata = TRUE;
-			$this->config->get_references = TRUE;
-			$this->config->get_tags = TRUE;
-			$this->config->render_html = TRUE;
+			$this->config->get_text = true;
+			$this->config->get_structure = true;
+			$this->config->get_amendment_attempts = true;
+			$this->config->get_court_decisions = true;
+			$this->config->get_metadata = true;
+			$this->config->get_references = true;
+			$this->config->get_tags = true;
+			$this->config->render_html = true;
 		}
 
 		/*
@@ -90,7 +91,7 @@ class Law
 				section AS section_number, catch_line,
 				history, text AS full_text, order_by
 				FROM laws';
-		$sql_args = array();
+		$sql_args = [];
 
 		/*
 		 * If we're requesting a specific law by ID.
@@ -154,9 +155,9 @@ class Law
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -180,7 +181,7 @@ class Law
 		/*
 		 * Now get the text for this law, subsection by subsection.
 		 */
-		if ($this->config->get_text === TRUE)
+		if (($this->config->get_text ?? null) === true)
 		{
 
 			/*
@@ -203,9 +204,9 @@ class Law
 					FROM text
 					WHERE law_id = :law_id
 					ORDER BY text.sequence ASC';
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id
-			);
+			];
 
 			$statement = $this->db->prepare($sql);
 			$result = $statement->execute($sql_args);
@@ -214,9 +215,9 @@ class Law
 			 * If the query fails, return false -- we can't make a
 			 * match.
 			 */
-			if ( ($result === FALSE) )
+			if ( ($result === false) )
 			{
-				return FALSE;
+				return false;
 			}
 
 			/*
@@ -226,7 +227,7 @@ class Law
 			while ($tmp = $statement->fetch(PDO::FETCH_OBJ))
 			{
 
-				$tmp->prefixes = explode('|', $tmp->prefixes);
+				$tmp->prefixes = explode('|', $tmp->prefixes ?? '');
 				$tmp->prefix = end($tmp->prefixes);
 				$tmp->entire_prefix = implode('', $tmp->prefixes);
 				$tmp->prefix_anchor = str_replace(' ', '_', $tmp->entire_prefix);
@@ -257,7 +258,7 @@ class Law
 		/*
 		 * Determine this law's structural position.
 		 */
-		if ($this->config->get_structure = TRUE)
+		if ($this->config->get_structure = true)
 		{
 
 			/*
@@ -276,7 +277,7 @@ class Law
 			 * Short of a parser error, there’s no reason why a law should not have an ancestry. In
 			 * case of this unlikely possibility, just erase the false element.
 			 */
-			if ($this->ancestry === FALSE)
+			if ($this->ancestry === false)
 			{
 				unset($this->ancestry);
 			}
@@ -292,7 +293,7 @@ class Law
 			 * through all of the contents of the chapter. (It's possible that there are no next or
 			 * prior sections, such as in a single-item structural unit.)
 			 */
-			if ($this->structure_contents !== FALSE)
+			if ($this->structure_contents !== false)
 			{
 				$tmp = count($this->structure_contents);
 				for ($i=0; $i<$tmp; $i++)
@@ -322,7 +323,7 @@ class Law
 		/*
 		 * Gather all metadata stored about this law.
 		 */
-		if ($this->config->get_metadata == TRUE)
+		if (!empty($this->config->get_metadata))
 		{
 			$this->metadata = Law::get_metadata();
 		}
@@ -330,7 +331,7 @@ class Law
 		/*
 		 * Gather any tags applied to this law.
 		 */
-		if ( isset($this->config->get_tags) && ($this->config->get_tags == TRUE) )
+		if ( isset($this->config->get_tags) && ($this->config->get_tags == true) )
 		{
 			$sql = 'SELECT text
 					FROM tags
@@ -338,7 +339,7 @@ class Law
 
 			$result = $this->db->query($sql);
 
-			if ( ($result !== TRUE) && ($result->rowCount() > 0) )
+			if ( $result !== false && $result->rowCount() > 0 )
 			{
 
 				$this->tags = new stdClass();
@@ -366,12 +367,12 @@ class Law
 		 * this will be making a call to a third-party service (e.g., Open States), and such a call
 		 * is expensive.
 		 */
-		if ($this->config->get_amendment_attempts == TRUE)
+		if (!empty($this->config->get_amendment_attempts))
 		{
 
 			if (method_exists($state, 'get_amendment_attempts'))
 			{
-				if ($state->get_amendment_attempts() !== FALSE)
+				if ($state->get_amendment_attempts() !== false)
 				{
 					$this->amendment_attempts = $state->bills;
 				}
@@ -384,7 +385,7 @@ class Law
 		 * only if we have specifically requested this data. That's because, on most installations,
 		 * this will be making a call to a third-party service and such a call is expensive.
 		 */
-		if ($this->config->get_court_decisions == TRUE)
+		if (!empty($this->config->get_court_decisions))
 		{
 
 			/*
@@ -404,7 +405,7 @@ class Law
 			{
 				if (method_exists($state, 'get_court_decisions'))
 				{
-					if ($state->get_court_decisions() !== FALSE)
+					if ($state->get_court_decisions() !== false)
 					{
 						$this->court_decisions = $state->decisions;
 					}
@@ -414,7 +415,7 @@ class Law
 			/*
 			 * If we've cached the fact that there are no court decisions.
 			 */
-			if ( isset($this->court_decisions->{0}) && $this->court_decisions->{0} == FALSE )
+			if ( isset($this->court_decisions->{0}) && $this->court_decisions->{0} == false )
 			{
 				unset($this->court_decisions);
 			}
@@ -434,9 +435,9 @@ class Law
 		 */
 		if (method_exists($state, 'translate_history'))
 		{
-			if (isset($this->metadata->history))
+			if (isset($this->history))
 			{
-				$state->history = $this->metadata->history;
+				$state->history = $this->history;
 				$this->history_text = $state->translate_history();
 			}
 		}
@@ -454,7 +455,7 @@ class Law
 		/*
 		 * Get the references to this law among other laws and include those (if there are any).
 		 */
-		if ($this->config->get_references == TRUE)
+		if (!empty($this->config->get_references))
 		{
 			$this->references = Law::get_references();
 			$this->refers_to = Law::get_references(true);
@@ -469,7 +470,7 @@ class Law
 		 * Provide the URL for this section.
 		 */
 
-		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink_obj = new Permalink(['db' => $this->db]);
 		$this->permalink = $permalink_obj->get_preferred($this->section_id, 'law', $this->edition_id);
 
 		if($this->permalink) {
@@ -490,7 +491,7 @@ class Law
 		/*
 		 * If the request specifies that rendered HTML should be returned, then generate that.
 		 */
-		if ( isset($this->config->render_html) && ($this->config->render_html === TRUE) )
+		if ( isset($this->config->render_html) && ($this->config->render_html === true) )
 		{
 			$this->html = Law::render();
 		}
@@ -506,11 +507,11 @@ class Law
 		$this->plain_text =  str_repeat(' ', (round(((81 - strlen(LAWS_NAME)) / 2))))
 			. strtoupper(LAWS_NAME) . "\n\n"
 			. wordwrap(strtoupper($this->catch_line) . ' (' . SECTION_SYMBOL . ' '
-			. $this->section_number . ')', 80, "\n", TRUE)
+			. $this->section_number . ')', 80, "\n", true)
 			. "\n\n" . $this->plain_text;
 		if (!empty($this->history))
 		{
-			$this->plain_text .=  "\n" . wordwrap('HISTORY: ' . $this->history, 80, "\n", TRUE);
+			$this->plain_text .=  "\n" . wordwrap('HISTORY: ' . $this->history, 80, "\n", true);
 		}
 
 		/*
@@ -545,7 +546,7 @@ class Law
 		 */
 		if (!isset($this->section_id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -567,10 +568,10 @@ class Law
 		}
 		$sql .= 'AND laws.edition_id = :edition_id
 			ORDER BY laws.order_by, laws.section ASC';
-		$sql_args = array(
+		$sql_args = [
 			':law_id' => $this->section_id,
 			':edition_id' => $this->edition_id
-		);
+		];
 		/*
 		 * Execute the query.
 		 */
@@ -581,14 +582,14 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to
 		 * this one.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
-		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink_obj = new Permalink(['db' => $this->db]);
 
-		$references = array();
+		$references = [];
 		while ($reference = $statement->fetch(PDO::FETCH_OBJ))
 		{
 			$reference->catch_line = stripslashes($reference->catch_line);
@@ -613,11 +614,9 @@ class Law
 	 * By default, this will get the preferred link.
 	 *
 	 */
-	### TODO fix references to this.
-	### TODO replace the body of this with a call to Permalink.
 	public function get_url($law_id, $edition_id = null)
 	{
-		$permalink_obj = new Permalink(array('db' => $this->db));
+		$permalink_obj = new Permalink(['db' => $this->db]);
 		$permalink = $permalink_obj->get_permalink($law_id, 'law', $edition_id);
 
 		return $permalink;
@@ -633,9 +632,9 @@ class Law
 		/*
 		 * If configured not to record views, then quietly exit.
 		 */
-		if ( defined('RECORD_VIEWS') && (RECORD_VIEWS === FALSE) )
+		if ( defined('RECORD_VIEWS') && (RECORD_VIEWS === false) )
 		{
-			return TRUE;
+			return true;
 		}
 
 		/*
@@ -643,17 +642,17 @@ class Law
 		 */
 		if (!isset($this->section_number))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
 		 * Record the view.
 		 */
-		$sql = 'INSERT DELAYED INTO laws_views
+		$sql = 'INSERT INTO laws_views
 				SET section = :section';
-		$sql_args = array(
+		$sql_args = [
 			':section' => $this->section_number
-		);
+		];
 		if (!empty($_SERVER['REMOTE_ADDR']))
 		{
 			$sql .= ', ip_address=INET_ATON(:ip)';
@@ -669,12 +668,12 @@ class Law
 		/*
 		 * If the query fails, return false.
 		 */
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 
@@ -689,7 +688,7 @@ class Law
 		 */
 		if (!isset($this->section_id))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -698,9 +697,9 @@ class Law
 		$sql = 'SELECT id, meta_key, meta_value
 				FROM laws_meta
 				WHERE law_id = :law_id';
-		$sql_args = array(
+		$sql_args = [
 			':law_id' => $this->section_id
-		);
+		];
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
@@ -708,9 +707,9 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -733,7 +732,7 @@ class Law
 			/*
 			 * If unserializing this value works, then we've got serialized data here.
 			 */
-			if (@unserialize($row->meta_value) !== FALSE)
+			if (@unserialize($field->meta_value) !== false)
 			{
 				$field->meta_value = unserialize($field->meta_value);
 			}
@@ -741,7 +740,7 @@ class Law
 			/*
 			 * If JSON decoding this value works, then we've got JSON data here.
 			 */
-			if (@json_decode($row->meta_value) !== FALSE)
+			if (@json_decode($field->meta_value) !== false)
 			{
 				$field->meta_value = json_decode($field->meta_value);
 			}
@@ -751,11 +750,11 @@ class Law
 			 */
 			if ($field->meta_value == 'y')
 			{
-				$field->meta_value = TRUE;
+				$field->meta_value = true;
 			}
 			elseif ($field->meta_value == 'n')
 			{
-				$field->meta_value = FALSE;
+				$field->meta_value = false;
 			}
 
 			$rotated->{$field->meta_key} = $field->meta_value;
@@ -787,12 +786,12 @@ class Law
 
 		if ( !isset($this->section_id) || !is_object($this->metadata) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		if(!isset($this->edition_id)) {
 			$edition_sql = 'SELECT edition_id FROM laws WHERE id = :id';
-			$edition_args = array(':id' => $this->section_id);
+			$edition_args = [':id' => $this->section_id];
 
 			$edition_statement = $this->db->prepare($edition_sql);
 			$result = $edition_statement->execute($edition_args);
@@ -811,22 +810,22 @@ class Law
 
 		foreach ($this->metadata as $field)
 		{
-			$sql_args = array(
+			$sql_args = [
 				':law_id' => $this->section_id,
 				':edition_id' => $this->edition_id,
 				':meta_key' => $field->key,
 				':meta_value' => $field->value
-			);
+			];
 			$result = $statement->execute($sql_args);
 
-			if ($result === FALSE)
+			if ($result === false)
 			{
-				return FALSE;
+				return false;
 			}
 
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -843,9 +842,9 @@ class Law
 				FROM laws_meta
 				LEFT JOIN laws ON laws_meta.law_id = laws.id
 				WHERE meta_key = :meta_key ';
-		$sql_args = array(
+		$sql_args = [
 			':meta_key' => $field
-		);
+		];
 
 		if(isset($this->edition_id)) {
 			$sql .= 'AND laws.edition_id = :edition_id ';
@@ -874,9 +873,9 @@ class Law
 		 * If the query fails, or if no results are found, return false -- no sections refer to this
 		 * one.
 		 */
-		if ( ($result === FALSE) || ($statement->rowCount() == 0) )
+		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -903,7 +902,7 @@ class Law
 		 */
 		if (!isset($this->section_number))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -919,9 +918,9 @@ class Law
 				FROM laws
 				WHERE section = :section
 				AND edition_id = :edition_id';
-		$sql_args = array(
+		$sql_args = [
 			':section' => $this->section_number,
-		);
+		];
 
 		if(isset($this->edition_id))
 		{
@@ -935,12 +934,12 @@ class Law
 		$statement = $this->db->prepare($sql);
 		$result = $statement->execute($sql_args);
 
-		if ( ($result === FALSE) || ($statement->rowCount() < 1) )
+		if ( ($result === false) || ($statement->rowCount() < 1) )
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 
 	}
 
@@ -965,7 +964,7 @@ class Law
 		/*
 		 * If we've gotten a list of dictionary terms.
 		 */
-		if ( ($terms !== FALSE) && is_array($terms) )
+		if ( ($terms !== false) && is_array($terms) )
 		{
 			/*
 			 * Arrange our terms from longest to shortest. This is to ensure that the most specific
@@ -978,7 +977,7 @@ class Law
 			 * Store a list of the dictionary terms as an array, which is required for
 			 * preg_replace_callback, the function that we use to insert the definitions.
 			 */
-			$term_pcres = array();
+			$term_pcres = [];
 			foreach ($terms as $term)
 			{
 
@@ -991,10 +990,10 @@ class Law
 					 * If there are any uppercase characters, then make this PCRE string case
 					 * sensitive.
 					 */
-					if ( (ord($term{$i}) >= 65) && (ord($term{$i}) <= 90) )
+					if ( ctype_upper($term[$i]) )
 					{
 						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
-						$caps = TRUE;
+						$caps = true;
 						break;
 					}
 				}
@@ -1024,15 +1023,15 @@ class Law
 		 * autoload a file fitting our class-name schema, since this class, if it exists, would be
 		 * found within class.[State].inc.php.
 		 */
-		if (class_exists('State_Autolinker', FALSE) === TRUE)
+		if (class_exists('State_Autolinker', false) === true)
 		{
 			$autolinker = new State_Autolinker;
 		}
 		$autolinker = new Autolinker(
-			array(
+			[
 				'edition_id' => $this->edition_id,
 				'db' => $this->db
-			)
+			]
 		);
 
 		if(isset($this->text) && $this->text)
@@ -1065,7 +1064,7 @@ class Law
 				/*
 				 * Turn every code reference in every paragraph into a link.
 				 */
-				$section->text = preg_replace_callback(SECTION_REGEX, array($autolinker, 'replace_sections'), $section->text);
+				$section->text = preg_replace_callback(SECTION_REGEX, [$autolinker, 'replace_sections'], $section->text);
 
 				/*
 				 * Turn every pair of newlines into carriage returns.
@@ -1077,7 +1076,7 @@ class Law
 				 */
 				if (isset($term_pcres))
 				{
-					$section->text = preg_replace_callback($term_pcres, array($autolinker, 'replace_terms'), $section->text);
+					$section->text = preg_replace_callback($term_pcres, [$autolinker, 'replace_terms'], $section->text);
 				}
 			}
 
@@ -1180,7 +1179,7 @@ class Law
 						. $paragraph->prefix_anchor;
 
 					$html .= ' <a id="paragraph-' . $paragraph->id . '" class="section-permalink" '
-						.'href="' . $permalink . '"><i class="icon-link"></i></a>';
+						.'href="' . $permalink . '"><i class="fa fa-link"></i></a>';
 				}
 				if ($paragraph->type == 'section' && !$this->has_p_tag($paragraph->text))
 				{
@@ -1212,10 +1211,10 @@ class Law
 
 
 	public function has_p_tag($text) {
-		if(strpos($text, '<p>') !== FALSE || strpos($text, '<p ') !== FALSE) {
-			return TRUE;
+		if(strpos($text, '<p>') !== false || strpos($text, '<p ') !== false) {
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -1226,7 +1225,7 @@ class Law
 
 		if (!isset($this->text))
 		{
-			return FALSE;
+			return false;
 		}
 
 		/*
@@ -1297,7 +1296,7 @@ class Law
 			 * Wrap this text at 80 characters minus two spaces for every nested subsection,
 			 * breaking up words that exceed the line length.
 			 */
-			$subsection = wordwrap($subsection, (80 - (($paragraph->level - 1) * 2)), "\n", TRUE);
+			$subsection = wordwrap($subsection, (80 - (($paragraph->level - 1) * 2)), "\n", true);
 
 			/*
 			 * Indent applicable subsections by adding blank space to the beginning of each line.
@@ -1344,9 +1343,9 @@ class Law
 	 */
 	public function get_all_laws($edition_id, $result_handle_only = false)
 	{
-		$query_args = array(
+		$query_args = [
 			':edition_id' => $edition_id
-		);
+		];
 		$query = 'SELECT laws.id
 			FROM laws
 			WHERE edition_id = :edition_id';
@@ -1372,7 +1371,7 @@ class Law
 
 	public function count($edition_id = null)
 	{
-		$query_args = array();
+		$query_args = [];
 		$query = 'SELECT count(*) AS count FROM laws ';
 		if($edition_id)
 		{
@@ -1389,7 +1388,7 @@ class Law
 	/**
 	 * A stripped down version of the get_law() function.  Used by the Autolinker.
 	 */
-	public function get_matching_sections($section, $edition_id, $fields = array())
+	public function get_matching_sections($section, $edition_id, $fields = [])
 	{
 		static $select_statement;
 		if(!isset($select_statement))
@@ -1399,20 +1398,20 @@ class Law
 			$select_statement = $this->db->prepare($sql);
 		}
 
-		$sql_args = array(
+		$sql_args = [
 			':section' => $section,
 			':edition_id' => $edition_id
-		);
+		];
 
 		$select_result = $select_statement->execute($sql_args);
 
-		if ($select_result === FALSE || $select_statement->rowCount() == 0)
+		if ($select_result === false || $select_statement->rowCount() == 0)
 		{
-			return FALSE;
+			return false;
 		}
 		else
 		{
-			$permalink_obj = new Permalink(array('db' => $this->db));
+			$permalink_obj = new Permalink(['db' => $this->db]);
 
 			$laws = $select_statement->fetchAll(PDO::FETCH_OBJ);
 			foreach($laws as $key=>$law)

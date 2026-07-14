@@ -3,11 +3,11 @@
 /**
  * The API's structure class
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.6
  *
  */
@@ -16,6 +16,8 @@ class APIStructureController extends BaseAPIController
 {
 	function handle($args)
 	{
+		$order_by = '';
+
 		/*
 		 * If the request is for the structural units sorted by a specific criteria.
 		 */
@@ -27,7 +29,7 @@ class APIStructureController extends BaseAPIController
 			 */
 			if ($_GET['sort'] == 'views')
 			{
-				$order_by = filter_var($_GET['sort'], FILTER_SANITIZE_STRING);
+				$order_by = filter_var($_GET['sort'], FILTER_DEFAULT);
 			}
 
 		}
@@ -41,7 +43,7 @@ class APIStructureController extends BaseAPIController
 		/*
 		 * Get the structure based on our identifier.
 		 */
-		if ($args['relational_id'])
+		if (!empty($args['relational_id']))
 		{
 			$struct->structure_id = $args['relational_id'];
 		}
@@ -55,9 +57,10 @@ class APIStructureController extends BaseAPIController
 		/*
 		 * If this structural element does not exist.
 		 */
-		if ($response === FALSE)
+		if ($response === false)
 		{
 			$this->handleNotFound();
+			return;
 		}
 
 		/*

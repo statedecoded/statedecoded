@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.2" level="3">Virginia Water Resources and Wetlands Protection Program</unit>
+	</structure>
+	<section_number>62.1-44.15:20</section_number>
+	<catch_line>Virginia Water Protection Permit</catch_line>
+	<text>
+		<section prefix="A">Except in compliance with an individual or general Virginia Water Protection Permit issued in accordance with this article, it shall be unlawful to:
+			<section prefix="1">Excavate in a wetland;
+			</section>
+			<section prefix="2">On or after October 1, 2001, conduct the following in a wetland:
+				a. New activities to cause draining that significantly alters or degrades existing wetland acreage or functions;
+				b. Filling or dumping;
+				c. Permanent flooding or impounding; or
+				d. New activities that cause significant alteration or degradation of existing wetland acreage or functions; or
+			</section>
+			<section prefix="3">Alter the physical, chemical, or biological properties of state waters and make them detrimental to the public health, animal or aquatic life, or to the uses of such waters for domestic or industrial consumption, or for recreation, or for other uses unless authorized by a certificate issued by the Board.
+			</section>
+		</section>
+		<section prefix="B">The Board shall, after providing an opportunity for public comment, issue a Virginia Water Protection Permit if it has determined that the proposed activity is consistent with the provisions of the Clean Water Act and the State Water Control Law and will protect instream beneficial uses.
+		</section>
+		<section prefix="C">Prior to the issuance of a Virginia Water Protection Permit, the Board shall consult with and give full consideration to any relevant information contained in the state water supply plan described in subsection A of § 62.1-44.38:1 as well as to the written recommendations of the following agencies: the Department of Wildlife Resources, the Department of Conservation and Recreation, the Virginia Marine Resources Commission, the Department of Health, the Department of Agriculture and Consumer Services, and any other interested and affected agencies. When considering the state water supply plan, nothing shall be construed to limit the operation or expansion of an electric generation facility located on a man-made lake or impoundment built for the purpose of providing cooling water to such facility. Such consultation shall include the need for balancing instream uses with offstream uses. Agencies may submit written comments on proposed permits within 45 days after notification by the Board. If written comments are not submitted by an agency within this time period, the Board shall assume that the agency has no comments on the proposed permit and deem that the agency has waived its right to comment. After the expiration of the 45-day period, any such agency shall have no further opportunity to comment.
+		</section>
+		<section prefix="D">Issuance of a Virginia Water Protection Permit shall constitute the certification required under § 401 of the Clean Water Act, except for any applicant to the Federal Energy Regulatory Commission for a certificate of public convenience and necessity pursuant to § 7c of the federal Natural Gas Act (15 U.S.C. § 717f(c)) to construct any natural gas transmission pipeline greater than 36 inches inside diameter, in which case issuance of a Virginia Water Protection Permit pursuant to this article and a certification issued pursuant to Article 2.6 (§ 62.1-44.15:80 et seq.) shall together constitute the certification required under § 401 of the federal Clean Water Act.
+		</section>
+		<section prefix="E">No locality may impose wetlands permit requirements duplicating state or federal wetlands permit requirements. In addition, no locality shall impose or establish by ordinance, policy, plan, or any other means provisions related to the location of wetlands or stream mitigation in satisfaction of aquatic resource impacts regulated under a Virginia Water Protection Permit or under a permit issued by the U.S. Army Corps of Engineers pursuant to § 404 of the Clean Water Act. However, a locality's determination of allowed uses within zoning classifications or its approval of the siting or construction of wetlands or stream mitigation banks or other mitigation projects shall not be affected by the provisions of this subsection.
+		</section>
+		<section prefix="F">The Board shall assess compensation implementation, inventory permitted wetland impacts, and work to prevent unpermitted impacts to wetlands.
+		</section>
+	</text>
+	<history>2007, c. 659; 2010, c. 233; 2011, cc. 829, 842; 2012, c. 628; 2018, c. 636; 2020, c. 958.</history>
+</law>

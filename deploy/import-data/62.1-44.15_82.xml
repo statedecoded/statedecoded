@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.6" level="3">Additional Upland Conditions for Water Quality Certification</unit>
+	</structure>
+	<section_number>62.1-44.15:82</section_number>
+	<catch_line>Public notice of draft certification conditions</catch_line>
+	<text>
+		<section prefix="A">The Department shall prepare a public notice of draft certification conditions developed pursuant to § 62.1-44.15:81 that the applicant shall cause to be published once in one or more newspapers of general circulation selected by the Department in the areas in which the proposed activity is to take place.
+		</section>
+		<section prefix="B">The public notice shall include:
+			<section prefix="1">The name, address, telephone number, and government email address of the Department office at which persons may obtain information pertinent to the application;
+			</section>
+			<section prefix="2">A brief description of the activity that may result in a discharge to state waters or how to obtain detailed information on the activity;
+			</section>
+			<section prefix="3">The location of such activity and the state waters that may be affected. The location shall include a listing of all counties and cities in which the activity will occur and include either maps of the project area or directions on how to access such maps. Where possible, location information shall reference route numbers, road intersections, map coordinates, or similar information or how to obtain detailed information on the activity;
+			</section>
+			<section prefix="4">A summary of the draft certification conditions;
+			</section>
+			<section prefix="5">A brief description of the procedures for formulation of a final determination of any conditions, including the appropriate comment period required by subsection C and the means by which interested persons may comment on the application; and
+			</section>
+			<section prefix="6">Instructions for requesting a public hearing if a public hearing is not already scheduled.
+			</section>
+		</section>
+		<section prefix="C">If no public hearing has already been scheduled, a period of 30 days following the date of the publication of public notice shall be provided during which interested persons may submit written comments and requests for a hearing. If a public hearing has already been scheduled, public notice shall be provided at least 30 days before the public hearing date.
+		</section>
+	</text>
+	<history>2018, c. 636.</history>
+</law>

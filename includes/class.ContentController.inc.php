@@ -5,11 +5,11 @@
  *
  * Handles mostly static content
  * 
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.8
  */
 
@@ -48,7 +48,7 @@ class ContentController extends BaseController
 		 */
 		$sidebar = '
 			<section>
-			<p>Powered by <a href="http://www.statedecoded.com/">The State Decoded</a>.</p>
+			<p>Powered by <a href="https://www.statedecoded.com/">The State Decoded</a>.</p>
 			</section>';
 		/*
 		 * Put the shorthand $sidebar variable into its proper place.
@@ -65,7 +65,7 @@ class ContentController extends BaseController
 		/*
 		 * Initialize the body variable.
 		 */
-		$body .= '
+		$body = '
 			<article>
 			<h1>'.ucwords($structures[0]->label).'s of the '.LAWS_NAME.'</h1>
 			<p>These are the fundamental units of the '.LAWS_NAME.'.</p>';

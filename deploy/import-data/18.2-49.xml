@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="3" level="3">Kidnapping and Related Offenses</unit>
+	</structure>
+	<section_number>18.2-49</section_number>
+	<catch_line>Threatening, attempting, or assisting in such abduction; penalty</catch_line>
+	<text>
+		Any person who (1) threatens, or attempts, to abduct any other person with intent to extort money, or pecuniary benefit; (2) assists or aids in the abduction of, or threatens to abduct, any person with the intent to defile such person; or (3) assists or aids in the abduction of, or threatens to abduct, any child under 16 years of age for the purpose of concubinage or prostitution is guilty of a Class 5 felony.
+	</text>
+	<history>Code 1950, § 18.1-39; 1960, c. 358; 1966, c. 214; 1975, cc. 14, 15; 2020, c. 900.</history>
+</law>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2.3" level="3">Virginia Erosion and Stormwater Management Act (VESMA)</unit>
+	</structure>
+	<section_number>62.1-44.15:49.1</section_number>
+	<catch_line>MS4 industrial and high-risk programs</catch_line>
+	<text>
+		<section prefix="A">Any locality that owns or operates a municipal separate storm sewer system that is subject to a discharge permit issued pursuant to this chapter shall have the authority to adopt and administer an industrial and high-risk runoff program for industrial and commercial facilities as part of its municipal separate storm sewer system management program.
+		</section>
+		<section prefix="B">The Board shall not delegate to the locality the Board's authority or responsibilities under the federal Clean Water Act (33 U.S.C. § 1251 et seq.) as to such industrial and commercial facilities.
+		</section>
+		<section prefix="C">Unless it is required to do so by the adoption on or after January 1, 2018, of a federal regulation or an amendment to the federal Clean Water Act (33 U.S.C. § 1251 et seq.), the Board shall not impose upon the locality, by permit issuance or reissuance, any municipal separate storm sewer system permit condition requiring that (i) an industrial or commercial facility also subject to a permit issued by the Board under this chapter be included in the locality's industrial and high-risk runoff program, (ii) any state discharge monitoring reports or other required reports submitted by such a facility to the Department also be reviewed or enforced by the locality, or (iii) the locality impose additional monitoring requirements on a facility that exceed or conflict with the requirements of any permit issued by the Board under this chapter. The limitation contained in this subsection shall not be cause for the Board or the locality to initiate a major or minor modification of any municipal separate storm sewer system permit that is in effect as of January 1, 2018, during the term of that permit.
+		</section>
+		<section prefix="D">Notwithstanding the provisions of this section, the Board may, through a municipal separate storm sewer system permit that is issued to the locality, require a locality to refer any industrial or commercial facility to the Board or the Department if the locality becomes aware of a violation of any industrial stormwater management requirement contained in an individual or general Virginia Pollutant Discharge Elimination System permit issued to the facility pursuant to this chapter.
+		</section>
+	</text>
+	<history>2018, c. 152.</history>
+</law>

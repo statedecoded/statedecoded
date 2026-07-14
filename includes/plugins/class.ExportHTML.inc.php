@@ -3,11 +3,11 @@
 /**
  * HTML export.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL 3
  * @version   1.0
- * @link    http://www.statedecoded.com/
+ * @link    https://www.statedecoded.com/
  * @since   0.9
  *
  * Since HTML is the base for most of our advanced conversions (EPUB, PDF, etc),
@@ -16,13 +16,13 @@
 
 class ExportHTML extends Export
 {
-	public $listeners = array(
+	public $listeners = [
 		'exportLaw',
 		'exportStructure',
 		'finishExport',
 		'postGetLaw',
 		'showBulkDownload'
-	);
+	];
 
 	public $public_name = 'HTML';
 	public $format = 'html';
@@ -35,11 +35,12 @@ class ExportHTML extends Export
 	/*
 	 * Keep a list of what we've exported, in order.
 	 */
-	public static $exported = array();
+	public static $exported = [];
 
 	public $htmlTemplate = '<!doctype html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>{{title}}</title>
 </head>
 <body>
@@ -67,14 +68,14 @@ class ExportHTML extends Export
 		$content = $this->formatLawBody($law);
 
 		return str_replace(
-			array(
+			[
 				'{{title}}',
 				'{{content}}'
-			),
-			array(
+			],
+			[
 				$title,
 				$content
-			),
+			],
 			$this->htmlTemplate
 		);
 	}
@@ -89,19 +90,19 @@ class ExportHTML extends Export
 			"</section>\n";
 
 		return str_replace(
-			array(
+			[
 				'{{title}}',
 				'{{content}}'
-			),
-			array(
+			],
+			[
 				$title,
 				$content
-			),
+			],
 			$this->bodyTemplate
 		);
 	}
 
-	public function formatStructureForExport($structure, $laws)
+	public function formatStructureForExport($structure, $laws = [])
 	{
 		$title = ucwords($structure->label) . ' ' . $structure->identifier . ' ' .
 			$structure->name;
@@ -109,14 +110,14 @@ class ExportHTML extends Export
 		$content = $this->formatStructureBody($structure, $laws);
 
 		return str_replace(
-			array(
+			[
 				'{{title}}',
 				'{{content}}'
-			),
-			array(
+			],
+			[
 				$title,
 				$content
-			),
+			],
 			$this->htmlTemplate
 		);
 	}
@@ -169,17 +170,15 @@ class ExportHTML extends Export
 			$content .= "</ul>\n</section>\n";
 		}
 
-		# TODO: Handle History, Ed. Note, etc.
-
 		return str_replace(
-			array(
+			[
 				'{{title}}',
 				'{{content}}'
-			),
-			array(
+			],
+			[
 				$title,
 				$content
-			),
+			],
 			$this->bodyTemplate
 		);
 	}
@@ -190,7 +189,6 @@ class ExportHTML extends Export
 		 * We must strip out most html, including links, since we don't the
 		 * context the file will be used in.
 		 */
-		# TODO: fix images.
 		return strip_tags($content,
 					'<p><br><section><div><pre><ul><li><table><tr><td><i><b><em><strong>');
 	}
@@ -206,17 +204,17 @@ class ExportHTML extends Export
 		/*
 		 * Keep track of our exports.
 		 */
-		self::$exported[] = array(
+		self::$exported[] = [
 			'type' => 'law',
 			'identifier' => $law->section_number,
 			'name' => $law->catch_line,
 			'filename' => $filename,
 			'content' => $this->formatLawBody($law)
-		);
+		];
 
 		$this->events->trigger('HTMLExportLaw', $law, $dir, $filename, $content);
 
-		return array($filename, $content);
+		return [$filename, $content];
 	}
 
 	public function exportStructure($structure, $laws, $dir)
@@ -226,18 +224,18 @@ class ExportHTML extends Export
 		/*
 		 * Keep track of our exports.
 		 */
-		self::$exported[] = array(
+		self::$exported[] = [
 			'type' => 'structure',
 			'identifier' => $structure->identifier,
 			'name' => $structure->name,
 			'label' => $structure->label,
 			'filename' => $filename,
 			'content' => $this->formatStructureBody($structure, $laws)
-		);
+		];
 
 		$this->events->trigger('HTMLExportStructure', $structure, $laws, $dir, $filename, $content);
 
-		return array($filename, $content);
+		return [$filename, $content];
 	}
 
 	public function finishExport($downloads_dir)

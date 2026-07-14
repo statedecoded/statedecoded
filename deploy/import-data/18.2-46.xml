@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="18.2" level="1">Crimes and Offenses Generally</unit>
+		<unit label="chapter" identifier="4" level="2">Crimes Against the Person</unit>
+		<unit label="article" identifier="2" level="3">Crimes by Mobs</unit>
+	</structure>
+	<section_number>18.2-46</section_number>
+	<catch_line>Venue</catch_line>
+	<text>
+		Venue for all actions and prosecutions under any of the provisions of this article shall be in the county or city wherein a lynching or other violation of any of the provisions of this article may have occurred, or of the county or city from which the person lynched or assaulted may have been taken as aforesaid.
+	</text>
+	<history>Code 1950, § 18.1-35; 1960, c. 358; 1975, cc. 14, 15; 2004, c. 144.</history>
+</law>

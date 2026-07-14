@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division Of Engineering And Buildings</unit>
+	</structure>
+	<section_number>2.2-1151</section_number>
+	<catch_line>Conveyance of easements and appurtenances thereto to cable television companies, utility companies, public service companies, political subdivisions by state departments, agencies or institutions; communication towers; telecommunications companies</catch_line>
+	<text>
+		<section prefix="A">When it is deemed to be in the public interest and subject to guidelines adopted by the Department:
+			<section prefix="1">Any state department, agency or institution, through its executive head or governing board may convey to public utility companies, public service corporations or companies, political subdivisions, cable television companies, or telecommunications companies right-of-way easements over property owned by the Commonwealth and held in its possession and any wires, pipes, conduits, fittings, supports and appurtenances thereto for the transmission of electricity, telephone, cable television, telecommunications, water, gas, steam, or sewage placed on, over or under the property.
+			</section>
+			<section prefix="2">Any state department, agency or institution having responsibility for a state-owned office building, through its executive head or governing board, may lease space to a credit union in the building for the purpose of providing credit union services that are readily accessible to state employees. The lease shall be for a term of not more than five years, with annual renewals or new leases permitted thereafter. Such lease may be granted for no consideration or for less than the fair market value.
+			</section>
+			<section prefix="3">Property owned by the Commonwealth may be sold or leased or other interests or rights therein granted or conveyed to political subdivisions or persons providing communication or information services for the purpose of erecting, operating, using or maintaining communication towers, antennas, or other radio distribution devices. If any tower proposed to be erected on property owned by the Commonwealth is to be used solely by private persons providing communication or information services, and there is no immediate use planned or anticipated by any department, agency or institution of the Commonwealth or political subdivision, the guidelines shall provide a means to obtain comments from the local governing body where the property is located. The conveyances shall be for such consideration as the Director of the Department deems appropriate, and may include shared use of the facilities by other political subdivisions or persons providing the same or similar services, and by departments, agencies, or institutions of the Commonwealth.
+			</section>
+		</section>
+		<section prefix="B">No transaction authorized by this section shall be made without the prior written recommendation by the Department to the Governor, the written approval by the Governor of the transaction itself, and the approval by the Attorney General as to the form of the instruments prior to execution.
+		</section>
+		<section prefix="C">This section shall not (i) apply to any lease or conveyance of a license or other interest in a communication tower for use in the deployment of wireless broadband service within an unserved area of the Commonwealth made pursuant to § 2.2-1150.2 or (ii) be construed to alter the control or ownership of towers currently maintained by other agencies of the Commonwealth.
+		</section>
+	</text>
+	<history>1984, c. 641, § 2.1-504.4; 1986, c. 536; 1989, c. 710; 1996, c. 442; 2001, c. 844; 2008, cc. 356, 676, 690; 2022, cc. 67, 68.</history>
+</law>

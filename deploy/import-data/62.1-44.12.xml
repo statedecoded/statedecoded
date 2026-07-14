@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="3.1" level="2">State Water Control Law</unit>
+		<unit label="article" identifier="2" level="3">Control Board Generally</unit>
+	</structure>
+	<section_number>62.1-44.12</section_number>
+	<catch_line>Records of proceedings; special orders, standards, policies, rules and regulations</catch_line>
+	<text>
+		The Board shall keep a complete and accurate record of the proceedings at all its meetings, a copy of which shall be kept on file in the office of the Executive Director and open to public inspection. Any standards, policies, rules or regulations adopted by the Board to have general effect in part or all of the Commonwealth shall be filed in accordance with the Virginia Register Act (§ 2.2-4100 et seq.). The owner to whom any special order is issued under the provisions of § 62.1-44.15 shall be notified by certified mail sent to the last known address of such owner and the time limits specified shall be counted from the date of mailing.
+	</text>
+	<history>Code 1950, § 62.1-24; 1968, c. 659; 1970, c. 638; 1977, c. 32; 1981, c. 620.</history>
+</law>

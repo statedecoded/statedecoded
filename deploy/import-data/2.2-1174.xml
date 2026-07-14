@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="7" level="5">Centralized Fleet Management</unit>
+	</structure>
+	<section_number>2.2-1174</section_number>
+	<catch_line>Vehicles assigned to the centralized fleet</catch_line>
+	<text>
+		Passenger-type vehicles purchased with public funds by any department, agency, institution, or commission of the Commonwealth, or any officer or employee on behalf of the Commonwealth, shall be assigned to the centralized fleet with the following exceptions:
+		<section prefix="1">Vehicles that have special equipment or performance requirements related to use by law-enforcement officers;
+		</section>
+		<section prefix="2">Vehicles for use by any elected official of the people of the Commonwealth; and
+		</section>
+		<section prefix="3">Such other special category of vehicles as may be excepted by the Director.
+		</section>
+	</text>
+	<history>1989, c. 479, § 33.1-401; 2001, cc. 815, 842, § 2.1-548.02.</history>
+</law>

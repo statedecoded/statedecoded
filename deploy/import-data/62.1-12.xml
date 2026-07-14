@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="62.1" level="1">Waters of the State, Ports and Harbors</unit>
+		<unit label="chapter" identifier="2" level="2">State Policy as to Waters</unit>
+	</structure>
+	<section_number>62.1-12</section_number>
+	<catch_line>Valid uses not affected; chapter not applicable to proceedings determining rights</catch_line>
+	<text>
+		Nothing in this chapter shall operate to affect any existing valid use of such waters or interfere with such uses hereafter acquired, nor shall it be construed as applying to the determination of rights in any proceeding now pending or hereafter instituted.
+	</text>
+	<history>Code 1950, § 62-9.3; 1954, c. 330; 1968, c. 659.</history>
+</law>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="A" level="3">Office of the Governor</unit>
+		<unit label="chapter" identifier="1" level="4">Governor</unit>
+		<unit label="article" identifier="1" level="5">General Provisions</unit>
+	</structure>
+	<section_number>2.2-109</section_number>
+	<catch_line>Requiring appearances by officers, etc., and production of records, etc.; issuance of subpoenas and other writs; employment of accountants</catch_line>
+	<text>
+		Whenever the Governor deems it necessary and proper, he may require any state officer, superintendent, board, or employee to appear before him, and he may also require the production of any official books, accounts, vouchers, and other papers relating to their offices and duties. The Governor may issue subpoenas or other writs for the purpose of enforcing the provisions of this section. The Governor may employ accountants to properly inspect such records, vouchers, or other papers.
+	</text>
+	<history>Code 1950, § 2-40; 1956, c. 424; 1966, c. 677, § 2.1-44; 2001, c. 844.</history>
+</law>

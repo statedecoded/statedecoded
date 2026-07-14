@@ -3,11 +3,11 @@
 /**
  * StateDecoded XML export.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  *
  */
@@ -19,12 +19,12 @@ class ExportSDXML extends Export
 	public $extension = '.xml';
 	public $description = 'This is the basic data about every law, one XML file per law. These are formatted using the <a href="http://docs.statedecoded.com/xml-format.html">State Decoded XML format</a>';
 
-	public $listeners = array(
+	public $listeners = [
 		'exportLaw',
 		'finishExport',
 		'postGetLaw',
 		'showBulkDownload'
-	);
+	];
 
 	public function formatLawForExport($law)
 	{
@@ -54,34 +54,34 @@ class ExportSDXML extends Export
 			$dom->create('order_by', $law->order_by);
 		}
 
-		$dom->create('edition', $law->edition->name, array(
+		$dom->create('edition', $law->edition->name, [
 			'url' => $base_url . '/' . $law->edition->slug . '/',
 			'slug' => $law->edition->slug,
 			'current' => $law->edition->current ? 'TRUE' : 'FALSE',
-			'last_updated' => date('Y-m-d', strtotime($law->edition->last_import))
-		));
+			'last_updated' => ($law->edition->last_import ? date('Y-m-d', strtotime($law->edition->last_import)) : '')
+		]);
 
 		if(isset($law->references) && is_array($law->references) && count($law->references))
 		{
-			$references =& $dom->create('referred_to_by');
+			$references = $dom->create('referred_to_by');
 
 			foreach($law->references as $reference) {
 				$references->create('reference', $reference->section_number);
 			}
 		}
 
-		$structure =& $dom->create('structure');
+		$structure = $dom->create('structure');
 		foreach(array_reverse($law->ancestry) as $ancestor)
 		{
-			$args = array(
+			$args = [
 				'label' => $ancestor->label,
 				'level' => $ancestor->depth,
 				'order_by' => $ancestor->order_by
-			);
+			];
 
 			if(!isset($ancestor->metadata) ||
 				!isset($ancestor->metadata->admin_division) ||
-				$ancestor->metadata->admin_division !== TRUE)
+				$ancestor->metadata->admin_division !== true)
 			{
 				$args['identifier'] = $ancestor->identifier;
 			}

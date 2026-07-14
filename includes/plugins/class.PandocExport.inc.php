@@ -5,11 +5,11 @@
  *
  * Used to create the various exports that use Pandoc.
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license   http://www.gnu.org/licenses/gpl.html GPL 3
  * @version   1.0
- * @link    http://www.statedecoded.com/
+ * @link    https://www.statedecoded.com/
  * @since   0.9
  *
  */
@@ -21,11 +21,11 @@
 	 * This class uses the already generated HTML files, translating them into
 	 * the destination formats.
 	 */
-	public $listeners = array(
+	public $listeners = [
 		'HTMLExportLaw',
 		'HTMLExportStructure',
 		'HTMLFinishExport'
-	);
+	];
 
 	public function HTMLExportLaw($law, $dir, $html_filename, $content)
 	{
@@ -56,7 +56,7 @@
 		 */
 		$title_page = $this->createTitlePage($downloads_dir);
 
-		$input_files = array($title_page);
+		$input_files = [$title_page];
 
 		foreach($exported as $file) {
 			$input_files[] = $file['filename'];
@@ -68,7 +68,7 @@
 		$end_page = $this->createEndPage($downloads_dir);
 		$input_files[] = $end_page;
 
-		$cmd = 'pandoc -S ' . join(' ', $input_files) . ' -o ' . $filename;
+		$cmd = 'pandoc -S ' . implode(' ', $input_files) . ' -o ' . $filename;
 		exec($cmd);
 
 		/*

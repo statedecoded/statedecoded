@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<law>
+	<structure>
+		<unit label="title" identifier="2.2" level="1">Administration of Government</unit>
+		<unit label="subtitle" identifier="I" level="2">Organization of State Government</unit>
+		<unit label="part" identifier="C" level="3">State Agencies Related to the General Operation of Government</unit>
+		<unit label="chapter" identifier="11" level="4">Department of General Services</unit>
+		<unit label="article" identifier="4" level="5">Division of Engineering and Buildings</unit>
+	</structure>
+	<section_number>2.2-1150</section_number>
+	<catch_line>Conveyance and transfers of real property by state agencies; approval of Governor and Attorney General; notice to members of General Assembly</catch_line>
+	<text>
+		<section prefix="A">When it is deemed to be in the public interest.
+			<section prefix="1">Property owned by the Commonwealth may be sold, leased, or other interests therein conveyed to political subdivisions, public authorities, or the federal government, for such consideration as is deemed proper; and
+			</section>
+			<section prefix="2">Property owned by the Commonwealth and held in the possession of a department, agency or institution of the Commonwealth may be transferred to the possession of another department, agency or institution of the Commonwealth by the execution of an agreement between the heads of such departments, agencies or institutions.
+			</section>
+		</section>
+		<section prefix="B">No transaction authorized by this section shall be made without the prior written recommendation of the Department to the Governor, the written approval of the Governor of the transaction itself, and the approval of the Attorney General as to the form of the instruments prior to execution.
+			Prior to entering into any negotiations for the conveyance or transfer of any portion of Camp Pendleton or any military property that has been or may be conveyed to the Commonwealth pursuant to a recommendation by the Defense Base Closure Realignment Commission, the Department shall give written notice to all members of the General Assembly within the planning district in which such property is located. If, within 30 days of receipt of the Department's notice, 25 percent of such members of the General Assembly give notice to the Department that they object to such conveyance or that they require additional information, the Department shall conduct a meeting, with written notice thereof to all members of the General Assembly within that planning district, at which the Department and such members shall discuss the proposed transaction. Members of the General Assembly objecting to the proposed transaction after the meeting shall convey their objections in detail to the Governor, who shall consider the objections. Certification of compliance with the foregoing requirements by the Governor in a deed or other instrument conveying or transferring any portion of Camp Pendleton or any such military property, absent knowledge by the purchaser or transferee to the contrary, shall serve as prima facie evidence of compliance with this subsection.
+		</section>
+		<section prefix="C">Notwithstanding the provisions of subsection B, a public institution of higher education may convey an easement pertaining to any property such institution owns or controls provided that the institution meets the conditions prescribed in subsection A of § 23.1-1002 and § 23.1-1019 (regardless of whether or not the institution has been granted any authority under Article 4 (§ 23.1-1004 et seq.) of Chapter 10 of Title 23.1).
+		</section>
+	</text>
+	<history>1984, c. 641, §§ 2.1-504.3, 2.1-504.4; 1986, c. 536; 1989, c. 710; 1996, c. 442; 2001, c. 844; 2005, cc. 933, 945; 2007, c. 624.</history>
+</law>

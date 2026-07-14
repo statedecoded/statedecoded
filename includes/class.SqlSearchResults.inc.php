@@ -6,11 +6,11 @@
  * A barebones search client using the existing database.
  * Feel free to use this as a base to create new search adapters!
  *
- * PHP version 5
+ * PHP version 8
  *
  * @license		http://www.gnu.org/licenses/gpl.html GPL 3
- * @version		1.0
- * @link		http://www.statedecoded.com/
+ * @version		1.1
+ * @link		https://www.statedecoded.com/
  * @since		0.9
  */
 
@@ -39,7 +39,7 @@ class SqlSearchResults implements SearchResultsInterface
 	 */
 	public function get_fixed_spelling()
 	{
-		return FALSE;
+		return false;
 	}
 
 	public function get_count()
