@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 1.1 (July 13, 2026)
+* Modernized the entire codebase from PHP 5 to PHP 8, fixing hundreds of incompatibilities so that the software runs on currently supported versions of PHP and MySQL 8.
+* Added a Docker-based development environment, so that the whole stack—PHP 8/Apache, MySQL 8, and optional Memcached—can be built and run with a single command, without installing anything else.
+* Switched to Composer for PHP dependencies, replacing the bundled copy of Solarium with the maintained `solarium/solarium` package.
+* Switched to npm for front-end dependencies (jQuery, jQuery UI, qtip2, Mousetrap, and Font Awesome), which are now installed and localized rather than loaded from third-party CDNs. The SASS is compiled with Dart Sass.
+* Replaced the old test scripts with a PHPUnit 10 test suite, added sample import data and many new tests (imports, exports, editions, and API), and wired everything into a GitHub Actions CI/CD pipeline that also enforces static analysis with PHPStan.
+* Conducted a security audit, eliminating variable-hijacking `extract()` calls in the controllers, tightening JSONP callback validation to a strict allowlist, and correcting HTTP status codes.
+* Added a command-line `export` task, so that bulk downloads can be regenerated on demand instead of only as a side effect of importing a new edition of the code.
+* Improved the command-line importer to report its progress, support setting the current edition, and wrap its storage work in a database transaction.
+* Made XML export far more resilient—escaping quotation marks, ensuring valid element names, and catching export errors.
+* Fixed a wide range of display issues, including cross-reference formatting, hanging indents and copy affordances for subsection identifiers, tooltips, breadcrumbs, sidebar and font styling, and on-hover links. Added support for sorting Roman numerals and for laws that have no subsections.
+
 ## Version 1.0 (April 24, 2017)
 * Created plugin system.
 * Refactored file exports, added downloads for EPUB, PDF, Word, and others.
