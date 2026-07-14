@@ -227,7 +227,9 @@ class Structure
 
 			/*
 			 * In case the order_by column is not populated, we go on to sort by the structure
-			 * identifer, by either Roman numerals or Arabic (traditional) numerals.
+			 * identifier. If a whole level uses Roman numerals, the caller may force that with
+			 * $this->sort; otherwise we detect Roman numerals per-row and convert them, falling
+			 * back to Arabic (traditional) numeral handling for everything else.
 			 */
 			if (isset($this->sort) && $this->sort == 'roman')
 			{
@@ -235,7 +237,10 @@ class Structure
 			}
 			else
 			{
-				$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
+				$sql .= 'CASE WHEN structure.identifier REGEXP "^[IVXLCDMivxlcdm]+$"
+						THEN fromRoman(structure.identifier)
+						ELSE structure.identifier+0 END ASC,
+					ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 					ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 			}
 
@@ -369,7 +374,9 @@ class Structure
 
 		/*
 		 * In case the order_by column is not populated, we go on to sort by the structure
-		 * identifer, by either Roman numerals or Arabic (traditional) numerals.
+		 * identifier. If a whole level uses Roman numerals, the caller may force that with
+		 * $this->sort; otherwise we detect Roman numerals per-row and convert them, falling
+		 * back to Arabic (traditional) numeral handling for everything else.
 		 */
 		if (isset($this->sort) && $this->sort == 'roman')
 		{
@@ -377,7 +384,10 @@ class Structure
 		}
 		else
 		{
-			$sql .= 'structure.identifier+0, ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
+			$sql .= 'CASE WHEN structure.identifier REGEXP "^[IVXLCDMivxlcdm]+$"
+					THEN fromRoman(structure.identifier)
+					ELSE structure.identifier+0 END ASC,
+				ABS(SUBSTRING_INDEX(structure.identifier, ".", 1)) ASC,
 				ABS(SUBSTRING_INDEX(structure.identifier, ".", -1)) ASC';
 		}
 
