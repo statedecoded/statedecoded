@@ -6,13 +6,9 @@ The State Decoded is a free, open source, web-based application to display laws 
 ![Before and After](https://s3.amazonaws.com/statedecoded.com/comparison.jpg)
 
 ## Can I try it out?
-Sure! This project can be seen in action on sites for [Virginia](http://vacode.org/), [Chicago](http://chicagocode.org/), [San Francisco](http://sanfranciscocode.org/), and [a growing list of others](http://americadecoded.org/). If you want to install it, you can also [download a Vagrant image from GitMachines](https://github.com/GitMachines/statedecoded-gm-centos6), or just [download and install it from scratch](https://github.com/statedecoded/statedecoded/releases).
+Sure! This project can be seen in action on the site for [Virginia](https://vacode.org/). If you want to install it, you can [download and run it in Docker](https://github.com/statedecoded/statedecoded/releases).
 
 ### Running locally with Docker
-
-You can run The State Decoded on your own machine with Docker.
-
-**Requirements:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or any Docker Engine + Compose v2 install).
 
 **Start:**
 
@@ -23,7 +19,7 @@ cp .env.example .env   # first time only; defaults work out of the box
 
 This builds the PHP 8 / Apache image, starts a MySQL 8 database, and serves the site at `http://localhost:8080/`. The admin panel is at `http://localhost:8080/admin/` (username `admin`, password `admin` — both configurable in `.env`).
 
-The site will be empty until you import a legal code. See the [import documentation](http://docs.statedecoded.com/parser.html) for instructions, then use the admin panel or run `docker compose -f deploy/docker-compose.yml exec app php statedecoded parse` to kick off the parser.
+The site will be empty until you import a legal code. See the [import documentation](https://docs.statedecoded.com/parser.html) for instructions, then use the admin panel or run `docker compose -f deploy/docker-compose.yml exec app php statedecoded parse` to kick off the parser.
 
 **Stop:**
 
@@ -45,18 +41,16 @@ docker compose -f deploy/docker-compose.yml --profile cache up -d
 ```
 
 ## Is this ready for prime time?
-Quite nearly! The current release is being used in production on a half-dozen different sites, with [no serious bugs](https://github.com/statedecoded/statedecoded/issues?direction=desc&labels=Bug&milestone=2&state=open), and is certainly in good enough shape to be used on websites that aren't official, government-run repositories of the law.
-
-This is a v1.0 release, which is to say that it's functionally complete but may have minor issues. A capable developer who is comfortable with legal terminology should be able to wrangle her laws into this release with a couple of hours of work. There is, however, no built-in upgrade path to new releases. That said, it's easy enough to install a new version and just re-import your site's legal code.
+The 1.0 release was used in production on a half-dozen different sites, with [no serious bugs](https://github.com/statedecoded/statedecoded/issues?direction=desc&labels=Bug&milestone=2&state=open), and is certainly in good enough shape to be used on websites that aren't official, government-run repositories of the law.
 
 ## How do get my legal code into The State Decoded?
 There are two ways.
 
 1. Natively, The State Decoded imports XML in [The State Decoded XML format](http://docs.statedecoded.com/xml-format.html). If you have your legal code as XML, you can adapt [the provided XSLT](https://github.com/statedecoded/statedecoded/blob/master/sample.xsl) to transform it into the proper format. Or if you don't have your legal code as XML, you can convert it into XML.
-1. Skip XML entirely and [modify the included parser](http://docs.statedecoded.com/parser.html) to import it in the format in which you have it.
+2. Skip XML entirely and [modify the included parser](https://docs.statedecoded.com/parser.html) to import it in the format in which you have it.
 
 ## Project documentation
-Project documentation can be found at [docs.statedecoded.com](http://docs.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](http://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](http://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
+Project documentation can be found at [docs.statedecoded.com](https//docs.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](https://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](https://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
 
 ## How to help
 * Use State Decoded sites and share your feedback in the form of [filing issues](https://github.com/statedecoded/statedecoded/issues/new)—suggestions for new features, notifications of bugs, etc.
@@ -65,8 +59,5 @@ Project documentation can be found at [docs.statedecoded.com](http://docs.stated
 * Contribute code to [fix bugs or add features](https://github.com/statedecoded/statedecoded/issues).
 * Comb through [existing code](https://github.com/statedecoded/statedecoded) to clean it up—standardizing code formatting, adding docblocks, or editing/adding comments.
 
-## Keep up to date
-Follow along on Twitter [@StateDecoded](http://twitter.com/statedecoded), or on the project website at [StateDecoded.com](http://www.statedecoded.com/).
-
 ## Supported by
-Development of The State Decoded was funded by [the John S. and James L. Knight Foundation’s News Challenge](http://www.knightfoundation.org/grants/20110158/).
+Development of The State Decoded was funded by [the John S. and James L. Knight Foundation’s News Challenge](https://www.knightfoundation.org/grants/20110158/).
