@@ -364,9 +364,21 @@ if (defined('SOCIAL_LINKS') == true)
 /*
  * Reminder to check source materials.
  */
+$edition_data = $edition->find_by_id($laws[0]->edition_id);
+
 $sidebar .= '<section class="info-box" id="elsewhere">
 				<h1>Trust, But Verify</h1>
-				<p>If you’re reading this for anything important, you should double-check its
+				<p>';
+if ($edition_data && $edition_data->last_import)
+{
+	$sidebar .= 'The text of this law was last verified on '
+		. date('M d, Y', strtotime($edition_data->last_import)) . '. But if';
+}
+else
+{
+	$sidebar .= 'If';
+}
+$sidebar .= ' you’re reading this for anything important, you should double-check its
 				accuracy';
 if (isset($laws[0]->official_url))
 {
@@ -540,7 +552,6 @@ if ( isset($laws[0]->citation) && is_object($laws[0]->citation) )
  * Show edition info.
  */
 
-$edition_data = $edition->find_by_id($laws[0]->edition_id);
 $edition_list = $edition->all();
 if($edition_data && count($edition_list) > 1)
 {
