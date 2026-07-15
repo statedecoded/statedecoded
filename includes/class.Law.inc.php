@@ -717,6 +717,18 @@ class Law
 		 */
 		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
 
+		return $this->rotate_metadata($metadata);
+
+	}
+
+	/**
+	 * Convert a list of metadata records, as stored in laws_meta, into an object with each
+	 * meta_key as a property name. Used by get_metadata(), and also by Structure::list_laws(),
+	 * which gathers the metadata records for many laws with a single query.
+	 */
+	public function rotate_metadata($metadata)
+	{
+
 		/*
 		 * Create a new object, to which we will port a rotated version of this object.
 		 */
