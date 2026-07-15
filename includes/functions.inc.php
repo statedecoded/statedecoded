@@ -180,6 +180,87 @@ function sort_by_length($a, $b)
 
 
 /**
+ * Build the PCRE patterns used to wrap dictionary terms in law text (in concert with
+ * Autolinker::replace_terms()).
+ *
+ * Rather than one pattern per term -- which requires a pass over the full text for every
+ * single term -- terms are combined into a small number of alternation patterns, each
+ * matching many terms in a single pass. Terms are ordered from longest to shortest, to
+ * ensure that the most specific terms are matched (e.g., "person of interest" rather than
+ * "person"). Terms that contain capital letters must be matched case sensitively, and
+ * alternatives are tried in order, so a new pattern is started whenever the case
+ * sensitivity changes, preserving the longest-to-shortest ordering. Patterns are also
+ * capped at 500 terms apiece, to remain well within PCRE's pattern-size limits.
+ *
+ * The most recently built set of patterns is cached, because every law within a given
+ * structural unit has a nearly identical term list, and this is called for every law.
+ */
+function build_term_pcres($terms)
+{
+
+	static $cache_key;
+	static $cache_pcres;
+
+	$my_key = md5(implode('|', $terms));
+
+	if ($cache_key === $my_key)
+	{
+		return $cache_pcres;
+	}
+
+	/*
+	 * Arrange our terms from longest to shortest.
+	 */
+	usort($terms, 'sort_by_length');
+
+	$term_pcres = [];
+	$chunk = [];
+	$chunk_caps = false;
+
+	foreach ($terms as $term)
+	{
+
+		if (strlen($term) === 0)
+		{
+			continue;
+		}
+
+		/*
+		 * If there are any uppercase characters, then this term must be matched case
+		 * sensitively.
+		 */
+		$caps = (strtolower($term) !== $term);
+
+		/*
+		 * If this term's case sensitivity differs from that of the pattern that we are
+		 * building, or if that pattern is full, then finish it and start a new one.
+		 */
+		if ( (count($chunk) > 0) && ( ($caps !== $chunk_caps) || (count($chunk) >= 500) ) )
+		{
+			$term_pcres[] = '/\b(?:' . implode('|', $chunk) . ')(s?)\b(?![^<]*>)/'
+				. ($chunk_caps === true ? '' : 'i');
+			$chunk = [];
+		}
+
+		$chunk[] = preg_quote($term, '/');
+		$chunk_caps = $caps;
+
+	}
+
+	if (count($chunk) > 0)
+	{
+		$term_pcres[] = '/\b(?:' . implode('|', $chunk) . ')(s?)\b(?![^<]*>)/'
+			. ($chunk_caps === true ? '' : 'i');
+	}
+
+	$cache_key = $my_key;
+	$cache_pcres = $term_pcres;
+
+	return $term_pcres;
+}
+
+
+/**
  * The following two functions were pulled out of WordPress 3.7.1. They've been modified somewhat, in
  * order to remove the use of a pair of internal WordPress functions (_x and apply_filters(), and
  * also to replace WordPress’ use of entities with the use of actual Unicode characters.
