@@ -10,6 +10,7 @@
 	<title>{{browser_title}}</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
+	{{generator}}
 	{{meta_tags}}
 	<link rel="home" title="Home" href="/" />
 	{{link_rel}}

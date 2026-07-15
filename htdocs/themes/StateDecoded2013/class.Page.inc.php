@@ -99,6 +99,16 @@ class StateDecoded2013__Page extends Page
 		$content->set('place_name', PLACE_NAME);
 
 		/*
+		 * Identify the software that generated this page.
+		 */
+		if (defined('VERSION'))
+		{
+			$content->set('generator',
+				'<meta name="generator" content="State Decoded v'
+				. htmlspecialchars(VERSION, ENT_QUOTES) . '" />');
+		}
+
+		/*
 		 * Get the edition data
 		 */
 		$search = new Search();
