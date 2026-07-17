@@ -101,6 +101,7 @@ class ImportAction extends CliAction
 
 		}
 		catch(Exception $e) {
+			fwrite(STDERR, 'Import failed: ' . $e->getMessage() . "\n");
 			exit(1);
 		}
 
