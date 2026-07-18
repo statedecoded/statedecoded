@@ -1473,6 +1473,23 @@ class ParserController
 	}
 
 	/**
+	 * Whether a file can be written: either it exists and is writable, or it
+	 * does not exist yet but the directory it would go in is writable.
+	 * (is_writable() alone returns false for a file that does not exist.)
+	 */
+	public function can_write_file($filename)
+	{
+
+		if (file_exists($filename))
+		{
+			return is_writable($filename);
+		}
+
+		return is_writable(dirname($filename));
+
+	}
+
+	/**
 	 * Create and save a sitemap.xml
 	 *
 	 * List every law in this legal code and create an XML file with an entry for every one of them.
@@ -1485,7 +1502,7 @@ class ParserController
 		 */
 		$sitemap_file = WEB_ROOT . '/sitemap.xml';
 
-		if (!is_writable($sitemap_file))
+		if (!$this->can_write_file($sitemap_file))
 		{
 			$this->logger->message('Do not have permissions to write to sitemap.xml', 3);
 			return false;
@@ -1862,11 +1879,12 @@ class ParserController
 		}
 
 		/*
-		 * Make sure that sitemap.xml is writable.
+		 * Make sure that sitemap.xml can be written, whether or not it exists yet.
 		 */
-		if (is_writable(WEB_ROOT . '/sitemap.xml') !== true)
+		if ($this->can_write_file(WEB_ROOT . '/sitemap.xml') !== true)
 		{
-			$this->logger->message('sitemap.xml must be writable by the server', 10);
+			$this->logger->message('sitemap.xml (or, if it does not exist yet, the directory '
+				. 'containing it) must be writable by the server', 10);
 			$error = true;
 		}
 
