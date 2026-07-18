@@ -164,7 +164,11 @@ class ImportAction extends CliAction
 
 	public function handleVerbosity()
 	{
-		$level = 10;
+		/*
+		 * By default, show phase-level messages (level 5 and up), so that a
+		 * long-running import narrates what it is doing. -v shows everything.
+		 */
+		$level = 5;
 		if(isset($this->options['v'])) {
 			if($this->options['v'] === true) {
 				$level = 1;
@@ -191,8 +195,9 @@ Usage:
 Available options:
 
   -v, -v=##
-      Show verbose output.  ## is an optional value of 1 (default,
-      all messages) to 10 (only important messages).
+      Show verbose output.  ## is an optional value of 1 (default
+      when -v is given: all messages) to 10 (only the most important
+      messages).  Without -v, messages of level 5 and up are shown.
 
   -d=directory
       Directory to import data from.  Defaults to IMPORT_DATA_DIR

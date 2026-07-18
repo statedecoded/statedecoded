@@ -782,6 +782,8 @@ class ParserController
 		/*
 		 * Break up law histories into their components and save those.
 		 */
+		$this->logger->message('Analyzing law histories', 5);
+
 		$sql = 'SELECT id, history
 				FROM laws';
 		$statement = $this->db->prepare($sql);
@@ -2151,7 +2153,7 @@ class ParserController
 		 * the creation of these references, because many of the references are
 		 * at that time to not-yet-inserted sections.
 		 */
-		$this->logger->message('Updating laws_references', 3);
+		$this->logger->message('Crosslinking laws_references', 5);
 
 		/*
 		 * Since section numbers may be duplicated, make this a many-to-one
@@ -2265,7 +2267,7 @@ class ParserController
 		 * Any unresolved target section numbers are spurious (strings that
 		 * happen to match our section PCRE), and can be deleted.
 		 */
-		$this->logger->message('Deleting unresolved laws_references', 3);
+		$this->logger->message('Deleting unresolved laws_references', 5);
 
 		$sql = 'DELETE FROM laws_references WHERE target_law_id = :target_law_id
 			AND edition_id = :edition_id';
