@@ -487,8 +487,7 @@ if ($laws[0]->references !== false)
 
 /*
  * If we have a list of related laws, list them.
- * Note that Solr < 4.6 will probably die horribly trying this.
- * We catch any exceptions as a result and go about our business.
+ * We catch any exceptions and go about our business.
  */
 
 try

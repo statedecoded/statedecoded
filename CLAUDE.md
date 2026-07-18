@@ -11,9 +11,9 @@ The State Decoded is a PHP web application that ingests a structured legal code 
 - **PHP ≥8.0** — `composer.json` enforces this. The Docker dev environment runs PHP 8.3 Apache. Phase 1 and 2 compat work is complete.
 - **MySQL 8.0** (via PDO) — DSN in `config.inc.php`, DDL in `htdocs/admin/statedecoded.sql`.
 - **Apache** with `mod_env`, `mod_rewrite`, and writable `.htaccess`. `htdocs/index.php` still hard-requires `HTTP_MOD_ENV`; in Docker this is satisfied by `SetEnv` in the vhost config, bypassing the `.htaccess`-rewriting bootstrap.
-- **Composer** — manages `solarium/solarium ^6`, `phpstan/phpstan ^2`, `phpunit/phpunit ^10`. Run `composer install` before working outside Docker.
+- **Composer** — manages `phpstan/phpstan ^2` and `phpunit/phpunit ^10`. Run `composer install` before working outside Docker.
 - **npm** — manages front-end dependencies (jQuery, jQuery UI, qtip2, Mousetrap, Font Awesome) and the Dart Sass compiler. Run `npm install && npm run build` once after cloning; `docker-run.sh` does this automatically if the assets are missing. The build step copies JS/CSS/font files from `node_modules/` and compiles `scss/application.scss` → `css/application.css` (Dart Sass). All built files are git-ignored.
-- **Optional**: Apache Solr (see `--profile search` in Docker), Memcached (see `--profile cache`), Varnish, Pandoc + pdflatex (for EPUB/Word/PDF exports), Tidy.
+- **Optional**: Memcached (see `--profile cache`), Varnish, Pandoc + pdflatex (for EPUB/Word/PDF exports), Tidy.
 
 ## Local development (Docker)
 
@@ -71,9 +71,8 @@ deploy/                      DevOps assets
     app/                     Dockerfile, apache-vhost.conf, php.ini, entrypoint.sh
     config/                  config.inc.docker.php and config-test.inc.docker.php templates
     db/init/                 02-test-db.sql (creates statedecoded_test)
-  solr_home/                 Solr schema / config for the statedecoded core
 docker-test.sh               Run PHPStan + PHPUnit inside the container
-composer.json / composer.lock  Manages solarium, phpstan, phpunit
+composer.json / composer.lock  Manages phpstan, phpunit
 vendor/                      Composer-managed (gitignored; built inside Docker image)
 lexis-nexis.xsl sample.xsl   XSLTs for transforming source XML → State Decoded XML
 ```
@@ -97,7 +96,7 @@ lexis-nexis.xsl sample.xsl   XSLTs for transforming source XML → State Decoded
 | `Law` (1.4k LOC), `Structure`, `Dictionary`, `Edition`, `Permalink` | Domain models, each does its own SQL |
 | `ParserController` (2.2k LOC) | The importer — environment tests, DB population, parsing, sitemap generation, indexing |
 | `AmericanLegal` / `Municode` / `State-sample` | Vendor- or jurisdiction-specific XML parsers (multi-thousand LOC each) |
-| `Autolinker`, `Search*`, `Solr*Search*`, `SqlSearchEngine` | Rewrites section/term references into hyperlinks; abstracts Solr vs. MySQL search. Solr support uses `solarium/solarium ^6` via Composer. |
+| `Autolinker`, `Search*`, `SqlSearchEngine` | Rewrites section/term references into hyperlinks; search runs against MySQL via `SqlSearchEngine` behind the `SearchIndex` abstraction. |
 | `Plugin` + `EventManager` | Hook/event system used by the export plugins |
 | `TaskRunner` + `task/*Action` | CLI dispatcher for the `statedecoded` script |
 
@@ -105,7 +104,7 @@ lexis-nexis.xsl sample.xsl   XSLTs for transforming source XML → State Decoded
 
 - **Filenames drive autoloading.** `class.Foo.inc.php` ⇒ class `Foo`. New classes must follow this pattern or they will silently fail to load.
 - **Tabs for indentation**, Allman-style braces, PEAR-ish docblocks. Keep this style when editing existing files.
-- **No namespaces in application code.** Everything is in the global namespace. Composer-installed packages (Solarium, PHPUnit, PHPStan) use their own namespaces and are loaded via `vendor/autoload.php`.
+- **No namespaces in application code.** Everything is in the global namespace. Composer-installed packages (PHPUnit, PHPStan) use their own namespaces and are loaded via `vendor/autoload.php`.
 - **Per-install customization happens in two files**: `config.inc.php` (constants) and `class.State.inc.php` (subclasses/overrides). Neither is committed — only `-sample` templates. Docker uses `deploy/docker/config/config.inc.docker.php` which reads from environment variables.
 - **Configuration is a wall of `define()` calls**, including JSON-encoded blobs for `SEARCH_CONFIG` and `PLUGINS`. There is no runtime config object.
 - **Globals are pervasive.** `$db` and `$cache` are referenced via `global` in most domain classes. This is the intended pattern. All `global $cache` call sites guard against an uninitialized cache with `isset($cache)`.
@@ -113,6 +112,6 @@ lexis-nexis.xsl sample.xsl   XSLTs for transforming source XML → State Decoded
 ## If you're modernizing
 
 1. **Use Docker.** Run `./deploy/docker-run.sh`, then verify and run tests with `./docker-test.sh` before and after any change.
-2. **Don't touch `vendor/`** — it's Composer-managed and gitignored. `solarium/solarium ^6` replaced the old bundled `includes/Solarium/` directory.
+2. **Don't touch `vendor/`** — it's Composer-managed and gitignored.
 3. **The parser is the largest risk** — `ParserController` + `AmericanLegal` + `Municode` is 6k+ LOC and the least exercised path. Modernize it last.
 4. **PHPStan at level 1 is the bar** — `./docker-test.sh phpstan` must stay clean on every commit.

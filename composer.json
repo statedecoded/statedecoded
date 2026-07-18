@@ -1,7 +1,6 @@
 {
     "require": {
-        "php": ">=8.0",
-        "solarium/solarium": "^6"
+        "php": ">=8.0"
     },
     "autoload": {
         "psr-4": {

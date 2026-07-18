@@ -19,7 +19,7 @@ require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');
 class SqlSearchEngine extends SearchEngineInterface
 {
 	/*
-	 * Solr Config.
+	 * Search config.
 	 */
 	protected $config;
 
@@ -413,6 +413,8 @@ class SqlSearchEngine extends SearchEngineInterface
 
 	/*
 	 * Add regexp word boundaries.  Handles wildcards.
+	 * Note that MySQL 8 uses ICU regular expressions, where the word boundary
+	 * is \b; the old [[:<:]] and [[:>:]] syntax throws error 3685.
 	 */
 	public static function word_boundary($keyword)
 	{
@@ -424,7 +426,7 @@ class SqlSearchEngine extends SearchEngineInterface
 		else
 		{
 			// Add front word boundary
-			$keyword = '[[:<:]]'.$keyword;
+			$keyword = '\\b'.$keyword;
 		}
 
 		if(substr($keyword, -2, 2) == '\*')
@@ -434,7 +436,7 @@ class SqlSearchEngine extends SearchEngineInterface
 		else
 		{
 			// Add back word boundary
-			$keyword .= '[[:>:]]';
+			$keyword .= '\\b';
 		}
 
 		return $keyword;

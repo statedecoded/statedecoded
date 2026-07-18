@@ -3,7 +3,7 @@
 /**
  * SearchIndex class.
  *
- * Implements a search engine (e.g. Solr, Elasticsearch)
+ * Wraps the configured search engine
  * Basically a thin wrapper for the search engine.
  *
  * PHP version 8
@@ -15,7 +15,7 @@
  *
  * Usage (update):
  *
- * $searchIndex = new SearchIndex(array('engine' => 'Solr'));
+ * $searchIndex = new SearchIndex(array('engine' => 'SqlSearchEngine'));
  * $searchIndex->startUpdate();
  * $searchIndex->addData($law);
  * $searchIndex->addData($law2);

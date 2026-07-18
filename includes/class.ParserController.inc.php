@@ -1909,25 +1909,6 @@ class ParserController
 			$error = true;
 		}
 
-		if(defined('SOLR_URL'))
-		{
-			/*
-			 * Make sure that Solr is responsive.
-			 */
-			$solr_config = json_decode(SEARCH_CONFIG, true);
-			$client = SolrSearchEngine::make_client($solr_config);
-			$ping = $client->createPing();
-			try
-			{
-				$result = $client->ping($ping);
-			}
-			catch(\Exception $e)
-			{
-				$this->logger->message('Solr must be installed, configured in config.inc.php, and running', 10);
-				$error = true;
-			}
-		}
-
 		if (isset($error))
 		{
 			return false;
@@ -1938,14 +1919,7 @@ class ParserController
 	}
 
 	/*
-	 * Pass each of the laws to Solr to be indexed.
-	 *
-	 * This code indexes each XML file, one at a time, by POSTing them to Solr.
-	 *
-	 * Although all other Solr-based functionality on the site is built on the Solarium library,
-	 * we do not use Solarium to index laws. That's because Solarium has no ability to post XML
-	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
-	 * instead, we do this via cURL.
+	 * Pass each of the laws to the configured search engine to be indexed.
 	 */
 	public function index_laws($args = [])
 	{
@@ -1962,7 +1936,7 @@ class ParserController
 
 		if(!defined('SEARCH_CONFIG'))
 		{
-			$this->logger->message('Solr is not in use, skipping index', 9);
+			$this->logger->message('Search is not configured, skipping index', 9);
 			return;
 		}
 
@@ -2006,7 +1980,7 @@ class ParserController
 				}
 				catch (Exception $error)
 				{
-					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
+					$this->logger->message('Search index error "' . $error->getMessage() .'"', 10);
 					return false;
 				}
 			}
@@ -2031,7 +2005,7 @@ class ParserController
 				}
 				catch (Exception $error)
 				{
-					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
+					$this->logger->message('Search index error "' . $error->getMessage() .'"', 10);
 					return false;
 				}
 			}
@@ -2073,77 +2047,6 @@ class ParserController
 
 		return true;
 
-	}
-
-	protected function handle_solr_request($fields = [], $multipart = false, $parameters = [])
-	{
-
-		$solr_update_url = SOLR_URL . 'update';
-
-		/*
-		 * Instruct Solr to return its response as JSON, and commit the change.
-		 */
-
-		$solr_parameters = array_merge($parameters, [
-				'wt' => 'json',
-				'commit' => 'true'
-				]
-			);
-
-		$url = $solr_update_url . '?' . http_build_query($solr_parameters);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		if($multipart)
-		{
-			curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form; charset=US-ASCII'] );
-		}
-		else
-		{
-			curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: text/xml; charset=US-ASCII'] );
-		}
-
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-
-		/*
-		 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
-		 */
-		$response_json = curl_exec($ch);
-
-		/*
-		 * If cURL returned an error.
-		 */
-		if (curl_errno($ch) > 0)
-		{
-			$this->logger->message('The attempt to post files to Solr via cURL returned an '
-				. 'error code, ' . curl_errno($ch) . ', from cURL—could not index laws', 10);
-			return false;
-		}
-
-		if ( (false === $response_json) || !is_string($response_json) )
-		{
-			$this->logger->message('Could not connect to Solr', 10);
-			return false;
-		}
-
-		$response = json_decode($response_json);
-
-		if ( ($response === false) || empty($response) )
-		{
-			$this->logger->message('Solr returned invalid JSON', 8);
-			return false;
-		}
-
-		if (isset($response->error))
-		{
-			$this->logger->message('Solr returned the following unexpected error: '
-				. print_r($response, true),  8);
-			return false;
-		}
-
-		return true;
 	}
 
 	public function update_laws_references()
