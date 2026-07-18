@@ -198,7 +198,7 @@ class SqlSearchEngine extends SearchEngineInterface
 				// Only do this search if we have more than one keyword.
 				// Otherwise, we still only care about an exact match.
 
-				if(count($keywords > 1))
+				if(count($keywords) > 1)
 				{
 					list($title_search, $new_args) =
 						SqlSearchEngine::build_keyword_search(
