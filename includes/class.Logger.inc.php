@@ -39,6 +39,12 @@ class Logger
 	 */
 	public $flush_buffer = true;
 
+	/**
+	 * Should we prefix each message with a timestamp? (Plain-text mode
+	 * only — HTML messages already carry a data-time attribute.)
+	 */
+	public $timestamps = true;
+
 
 	/**
 	 * Error color (for terminal only)
@@ -82,7 +88,7 @@ class Logger
 				echo '<div class="logmessage" data-time="' . microtime(true) .'">';
 			}
 
-			echo $msg;
+			echo $this->timestamp() . $msg;
 
 
 			if ($this->html === true)
@@ -196,8 +202,21 @@ class Logger
 		}
 		else
 		{
-			echo $text . "\n";
+			echo $this->timestamp() . $text . "\n";
 		}
+	}
+
+	/**
+	 * The prefix for a plain-text log message, e.g. "[2026-07-17 14:03:22] ".
+	 * Empty in HTML mode or when timestamps are turned off.
+	 */
+	public function timestamp()
+	{
+		if ( ($this->html === false) && ($this->timestamps === true) )
+		{
+			return '[' . date('Y-m-d H:i:s') . '] ';
+		}
+		return '';
 	}
 
 	public function finishProgress($name)
