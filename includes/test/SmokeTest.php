@@ -209,5 +209,37 @@ class SmokeTest extends TestCase
 		[$status, $body] = $this->get('/search/?q=criminal&edition_id=1');
 		$this->assertSame(200, $status, 'Search page did not return 200.');
 		$this->assertStringNotContainsStringIgnoringCase('Fatal error', $body);
+
+		/*
+		 * A 200 is not enough: a broken engine renders a 200 page with an
+		 * error message where the results belong. Demand actual results.
+		 */
+		$this->assertStringNotContainsString('Search failed', $body,
+			'The search page reported a search engine error.');
+		$this->assertMatchesRegularExpression('/[1-9][\d,]* results found/', $body,
+			'A search for "criminal" must display a nonzero result count.');
+	}
+
+	public function testApiSearch(): void
+	{
+		[$status, $data] = $this->getJson($this->apiPath('/api/1.0/search/water/'));
+		$this->assertSame(200, $status, 'API search did not return 200.');
+		$this->assertIsArray($data, 'API search must return valid JSON.');
+		$this->assertArrayHasKey('total_records', $data,
+			'API search response must include total_records.');
+		$this->assertGreaterThan(0, $data['total_records'],
+			'API search for "water" must match records in the sample data.');
+		$this->assertNotEmpty($data['results'], 'API search must return results.');
+	}
+
+	public function testApiSuggest(): void
+	{
+		[$status, $data] = $this->getJson($this->apiPath('/api/1.0/suggest/wat/'));
+		$this->assertSame(200, $status, 'API suggest did not return 200.');
+		$this->assertIsArray($data, 'API suggest must return valid JSON.');
+		$this->assertArrayHasKey('terms', $data,
+			'API suggest response must include terms.');
+		$this->assertNotEmpty($data['terms'],
+			'API suggest for "wat" must offer suggestions (e.g. "Water...").');
 	}
 }
