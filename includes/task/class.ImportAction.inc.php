@@ -58,6 +58,15 @@ class ImportAction extends CliAction
 				if ($parser->populate_db() !== false)
 				{
 
+					$pending_migrations = $parser->check_migrations();
+					if (count($pending_migrations) > 0)
+					{
+						$this->logger->message('Running ' . count($pending_migrations)
+							. ' pending database migration(s): '
+							. implode(', ', $pending_migrations), 5);
+						$parser->run_migrations();
+					}
+
 					$edition_errors = $parser->handle_editions($edition_args);
 
 					if (count($edition_errors) > 0)
