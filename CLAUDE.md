@@ -9,7 +9,7 @@ The State Decoded is a PHP web application that ingests a structured legal code 
 ## Target environment (current)
 
 - **PHP ≥8.0** — `composer.json` enforces this. The Docker dev environment runs PHP 8.3 Apache. Phase 1 and 2 compat work is complete.
-- **MySQL 8.0** (via PDO) — DSN in `config.inc.php`, DDL in `htdocs/admin/statedecoded.sql`.
+- **MySQL 8.0** (via PDO) — DSN in `config.inc.php`, DDL in `htdocs/admin/statedecoded.sql`. On a server with binary logging enabled, `log_bin_trust_function_creators=1` must be set (Docker's `db` service sets this already) or the app's DB user cannot create the stored functions the schema/migrations define (e.g. `fromRoman`, used to sort Roman-numeral structural identifiers) — MySQL otherwise demands the `SUPER` privilege, which the app's DB user should not have. Symptom if this is missed: `FUNCTION <db>.fromRoman does not exist` errors during import, once `Structure::list_children()` runs.
 - **Apache** with `mod_env`, `mod_rewrite`, and writable `.htaccess`. `htdocs/index.php` still hard-requires `HTTP_MOD_ENV`; in Docker this is satisfied by `SetEnv` in the vhost config, bypassing the `.htaccess`-rewriting bootstrap.
 - **Composer** — manages `phpstan/phpstan ^2` and `phpunit/phpunit ^10`. Run `composer install` before working outside Docker.
 - **npm** — manages front-end dependencies (jQuery, jQuery UI, qtip2, Mousetrap, Font Awesome) and the Dart Sass compiler. Run `npm install && npm run build` once after cloning; `docker-run.sh` does this automatically if the assets are missing. The build step copies JS/CSS/font files from `node_modules/` and compiles `scss/application.scss` → `css/application.css` (Dart Sass). All built files are git-ignored.

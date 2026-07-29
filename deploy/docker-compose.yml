@@ -49,6 +49,13 @@ services:
       MYSQL_DATABASE: statedecoded
       MYSQL_USER: ${MYSQL_USER:-statedecoded}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-statedecoded}
+    # log_bin_trust_function_creators lets the app's unprivileged DB user create stored
+    # functions (e.g. fromRoman, see includes/migrations/class.Migration_20260723143705.inc.php)
+    # while binary logging is on. MySQL normally requires the SUPER privilege for this, as a
+    # guard against non-deterministic functions corrupting statement-based replication; every
+    # function this app creates is a pure, deterministic computation over its arguments, so
+    # that risk does not apply here.
+    command: --log_bin_trust_function_creators=1
     volumes:
       # Preload the application schema on first init
       - ../htdocs/admin/statedecoded.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
