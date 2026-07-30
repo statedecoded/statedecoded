@@ -2059,112 +2059,116 @@ class ParserController
 		$this->logger->message('Crosslinking laws_references', 5);
 
 		/*
-		 * Since section numbers may be duplicated, make this a many-to-one
-		 * relationship.
+		 * Since section numbers may be duplicated, this is a many-to-one
+		 * relationship: a reference to a section number that matches N laws
+		 * must yield N rows, one per matching law.
+		 *
+		 * This is done with two set-based statements rather than by iterating
+		 * over every reference in PHP. Because the unique "overlap" key spans
+		 * (law_id, target_section_number, target_law_id, edition_id), a single
+		 * INSERT ... SELECT produces exactly one row per referencing law per
+		 * matching law, and the rows whose target_law_id is still 0 are cleaned
+		 * up below. Iterating instead re-ran an identical lookup and an
+		 * identical UPDATE once for every row sharing a section number, which
+		 * on a full-sized legal code meant tens of thousands of redundant
+		 * queries and holding the whole table in memory.
 		 */
 
 		/*
-		 * First, get our existing references.
+		 * Collect the section numbers that identify exactly one law into a
+		 * temporary table.
+		 *
+		 * The temporary table is not merely a convenience. laws.section is
+		 * collated utf8mb3_general_ci while laws_references.target_section_number
+		 * is utf8mb3_bin, so joining the two tables directly is not indexable and
+		 * MySQL falls back to scanning -- tens of seconds on a full legal code.
+		 * Declaring the key column in the same collation as the column it is
+		 * joined against, as a primary key, restores an indexed join.
 		 */
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS unique_sections');
+		$this->db->exec('CREATE TEMPORARY TABLE unique_sections (
+				section VARCHAR(255) COLLATE utf8mb3_bin NOT NULL PRIMARY KEY,
+				law_id INT UNSIGNED NOT NULL
+			) ENGINE=InnoDB');
 
-		$existing_sql = 'SELECT * FROM laws_references
-			WHERE edition_id = :edition_id';
-		$existing_args = [':edition_id' => $this->edition_id];
-		$existing_statement =  $this->db->prepare($existing_sql);
-		$existing_result = $existing_statement->execute($existing_args);
+		$collect_sql = 'INSERT INTO unique_sections (section, law_id)
+			SELECT section COLLATE utf8mb3_bin, MIN(id)
+			FROM laws
+			WHERE edition_id = :edition_id
+			GROUP BY section
+			HAVING COUNT(*) = 1';
+
+		$collect_statement = $this->db->prepare($collect_sql);
+		$collect_statement->execute([':edition_id' => $this->edition_id]);
 
 		/*
-		 * Let's build a few queries we'll be using later. Do this outside the
-		 * loop for better memory handling.
+		 * Resolve every reference whose section number matches exactly one law.
+		 * These are the overwhelming majority, and can be updated in place.
 		 */
-		$law_sql = 'SELECT laws.id FROM laws WHERE section = :section_number
-			AND edition_id = :edition_id';
-		$laws_statement = $this->db->prepare($law_sql);
+		$update_sql = 'UPDATE laws_references
+			INNER JOIN unique_sections
+				ON unique_sections.section = laws_references.target_section_number
+			SET laws_references.target_law_id = unique_sections.law_id
+			WHERE laws_references.edition_id = :edition_id';
 
-		$update_sql = 'UPDATE laws_references SET target_law_id = :target_law_id
-			WHERE target_section_number = :target_section_number AND
-			edition_id = :edition_id';
 		$update_statement = $this->db->prepare($update_sql);
+		$update_statement->execute([':edition_id' => $this->edition_id]);
 
-		$insert_sql = 'INSERT INTO laws_references (law_id, target_section_number,
-			target_law_id, mentions, date_created, edition_id) VALUES (:law_id,
-			:target_section_number, :target_law_id, :mentions, :date_created,
-			:edition_id) ON DUPLICATE KEY UPDATE mentions=mentions';
-		$insert_statement = $this->db->prepare($insert_sql);
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS unique_sections');
 
 		/*
-		 * We don't want anything weird to happen since we're messing with this
-		 * table while iterating over it. So let's fetchAll for safety's sake,
-		 * even if it's inefficient to keep all of this in memory.
+		 * Where a section number matches more than one law, add a row for each
+		 * match. The original, still-unresolved row (target_law_id = 0) is
+		 * deleted by the cleanup step below.
+		 *
+		 * As above, the section numbers are collected into a temporary table
+		 * whose key is in the collation of the column it will be joined
+		 * against, so that the join can use an index.
 		 */
-		$laws_references = $existing_statement->fetchAll(PDO::FETCH_ASSOC);
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS duplicate_sections');
+		$this->db->exec('CREATE TEMPORARY TABLE duplicate_sections (
+				section VARCHAR(255) COLLATE utf8mb3_bin NOT NULL,
+				law_id INT UNSIGNED NOT NULL,
+				PRIMARY KEY (section, law_id)
+			) ENGINE=InnoDB');
 
-		foreach($laws_references as $laws_reference)
-		{
-			$this->logger->message('Matching ' .
-				$laws_reference['target_section_number'], 1);
-			/*
-			 * We may have many-to-one, so handle that.
-			 */
-			$laws_args = [
-				':section_number' => $laws_reference['target_section_number'],
+		$collect_sql = 'INSERT INTO duplicate_sections (section, law_id)
+			SELECT laws.section COLLATE utf8mb3_bin, laws.id
+			FROM laws
+			INNER JOIN
+				(SELECT section
+					FROM laws
+					WHERE edition_id = :grouped_edition_id
+					GROUP BY section
+					HAVING COUNT(*) > 1) AS duplicated
+				ON duplicated.section = laws.section
+			WHERE laws.edition_id = :edition_id';
+
+		$collect_statement = $this->db->prepare($collect_sql);
+		$collect_statement->execute(
+			[
+				':grouped_edition_id' => $this->edition_id,
 				':edition_id' => $this->edition_id
-			];
-			$laws_result = $laws_statement->execute($laws_args);
+			]
+		);
 
-			/*
-			 * If we have precisely one record, we can just update in place.
-			 */
-			if($laws_statement->rowCount() == 1)
-			{
-				$law = $laws_statement->fetch(PDO::FETCH_ASSOC);
+		$insert_sql = 'INSERT INTO laws_references
+				(law_id, target_section_number, target_law_id, mentions,
+					date_created, edition_id)
+			SELECT unresolved.law_id, unresolved.target_section_number,
+				duplicate_sections.law_id, unresolved.mentions,
+				unresolved.date_created, unresolved.edition_id
+			FROM laws_references AS unresolved
+			INNER JOIN duplicate_sections
+				ON duplicate_sections.section = unresolved.target_section_number
+			WHERE unresolved.edition_id = :edition_id
+			AND unresolved.target_law_id = 0
+			ON DUPLICATE KEY UPDATE mentions = laws_references.mentions';
 
-				$this->logger->message('Updating  ' .
-					$laws_reference['target_section_number'] . ' with ' .
-					$law['id'], 1);
+		$insert_statement = $this->db->prepare($insert_sql);
+		$insert_statement->execute([':edition_id' => $this->edition_id]);
 
-				$update_args = [
-					':target_law_id' => $law['id'],
-					':target_section_number' =>
-						$laws_reference['target_section_number'],
-					':edition_id' => $this->edition_id
-				];
-				$update_statement->execute($update_args);
-			}
-
-			/*
-			 * If we have more than one, we must create new records.
-			 */
-			elseif($laws_statement->rowCount() > 1)
-			{
-				while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
-				{
-					$this->logger->message('Adding new records for ' .
-						$laws_reference['target_section_number'] . ' with ' .
-						$law['id'], 1);
-
-					$insert_args = [
-						':law_id' => $laws_reference['law_id'],
-						':target_section_number' =>
-							$laws_reference['target_section_number'],
-						':target_law_id' => $law['id'],
-						':mentions' => $laws_reference['mentions'],
-						':date_created' => $laws_reference['date_created'],
-						':edition_id' => $this->edition_id
-					];
-					$insert_statement->execute($insert_args);
-				}
-			}
-
-			/*
-			 * Otherwise, we have no match - do nothing.
-			 */
-			else
-			{
-				$this->logger->message('No match for  ' .
-					$laws_reference['target_section_number'], 1);
-			}
-		}
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS duplicate_sections');
 
 		/*
 		 * Any unresolved target section numbers are spurious (strings that
