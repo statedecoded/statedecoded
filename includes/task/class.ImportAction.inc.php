@@ -44,10 +44,6 @@ class ImportAction extends CliAction
 				]
 			);
 
-			$edition_args = $this->buildEditionArgs($parser);
-
-			$this->logger->message('Using edition ' . $edition_args['edition_name'], 10);
-
 			/*
 			 * Step through each parser method.
 			 */
@@ -55,6 +51,10 @@ class ImportAction extends CliAction
 			{
 				$this->logger->message('Environment test succeeded', 10);
 
+				/*
+				 * Create the tables and bring the schema up to date before anything reads from
+				 * the database. On a new installation there is nothing to read from yet.
+				 */
 				if ($parser->populate_db() !== false)
 				{
 
@@ -66,6 +66,10 @@ class ImportAction extends CliAction
 							. implode(', ', $pending_migrations), 5);
 						$parser->run_migrations();
 					}
+
+					$edition_args = $this->buildEditionArgs($parser);
+
+					$this->logger->message('Using edition ' . $edition_args['edition_name'], 10);
 
 					$edition_errors = $parser->handle_editions($edition_args);
 
