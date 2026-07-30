@@ -226,6 +226,51 @@ class LawsReferencesTest extends PHPUnit\Framework\TestCase
 	}
 
 	// -----------------------------------------------------------------------
+	// Importing into a non-current edition
+	// -----------------------------------------------------------------------
+
+	/*
+	 * generate_sitemap() and structural_stats_generate() once relied on the
+	 * EDITION_ID constant, which is only defined when importing into the
+	 * current edition. Importing into any other edition fataled partway
+	 * through, after hours of work. These stand in for that whole class of
+	 * bug: the parser must never depend on EDITION_ID being defined.
+	 */
+	public function testSitemapDoesNotRequireTheEditionIdConstant(): void
+	{
+		$this->addLaw('7-1', 'A law');
+
+		/*
+		 * The scratch edition is deliberately not current, so EDITION_ID is
+		 * not defined for it. Guard against a future change that defines the
+		 * constant globally and would rob this test of its meaning.
+		 */
+		$this->assertFalse(defined('EDITION_ID'),
+			'This test is only meaningful while EDITION_ID is undefined.');
+
+		$result = $this->parser->generate_sitemap();
+
+		$this->assertNotFalse($result,
+			'generate_sitemap() must succeed for a non-current edition.');
+	}
+
+	public function testStructuralStatsDoNotRequireTheEditionIdConstant(): void
+	{
+		$this->addLaw('8-1', 'A law');
+
+		$this->parser->structural_stats_generate();
+
+		/*
+		 * This scratch edition has no structure_unified rows, so list_children()
+		 * legitimately finds nothing to tally; what matters here is that the
+		 * method completed rather than fataling on an undefined EDITION_ID.
+		 * The assertion is therefore about reaching this line at all.
+		 */
+		$this->assertIsArray($this->parser->stats,
+			'structural_stats_generate() must complete for a non-current edition.');
+	}
+
+	// -----------------------------------------------------------------------
 	// Editions must not bleed into one another
 	// -----------------------------------------------------------------------
 
