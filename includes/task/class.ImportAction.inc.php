@@ -109,8 +109,14 @@ class ImportAction extends CliAction
 			$this->logger->message('Done.', 10);
 
 		}
-		catch(Exception $e) {
+		/*
+		 * Catch Throwable, not just Exception: a PHP Error (an undefined constant, a call to a
+		 * method that does not exist) is not an Exception, and would otherwise escape this
+		 * handler and end the import with a success exit code.
+		 */
+		catch(Throwable $e) {
 			fwrite(STDERR, 'Import failed: ' . $e->getMessage() . "\n");
+			fwrite(STDERR, $e->getFile() . ':' . $e->getLine() . "\n");
 			exit(1);
 		}
 
