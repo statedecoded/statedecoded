@@ -1511,7 +1511,26 @@ class ParserController
 		}
 
 		/*
-		 * List the ID of every law in the current edition. We cut it off at 50,000 laws because
+		 * The sitemap describes the edition being imported. Prefer the edition this parser is
+		 * working on: EDITION_ID is only defined when importing into the current edition, so
+		 * relying on it fatals when importing into any other one.
+		 */
+		if (isset($this->edition_id))
+		{
+			$edition_id = $this->edition_id;
+		}
+		elseif (defined('EDITION_ID'))
+		{
+			$edition_id = EDITION_ID;
+		}
+		else
+		{
+			$this->logger->message('No edition to write to sitemap.xml', 3);
+			return false;
+		}
+
+		/*
+		 * List the ID of every law in this edition. We cut it off at 50,000 laws because
 		 * that is the sitemap.xml limit.
 		 */
 		$sql = 'SELECT id
@@ -1520,7 +1539,7 @@ class ParserController
 				LIMIT 50000';
 
 		$sql_args = [
-			':edition_id' => EDITION_ID
+			':edition_id' => $edition_id
 		];
 
 		$statement = $this->db->prepare($sql);
@@ -1623,9 +1642,12 @@ class ParserController
 	{
 
 		/*
-		 * List all of the top-level structural units.
+		 * List all of the top-level structural units. The edition must be set explicitly:
+		 * Structure falls back to the EDITION_ID constant, which is only defined when
+		 * importing into the current edition.
 		 */
 		$struct = new Structure();
+		$struct->edition_id = $this->edition_id;
 		$structures = $struct->list_children();
 
 		/*
@@ -1703,6 +1725,7 @@ class ParserController
 			}
 
 			$structure_temp = new Structure();
+			$structure_temp->edition_id = $this->edition_id;
 			$structure_temp->structure_id = $structure_id;
 			$structure_temp->get_current();
 
