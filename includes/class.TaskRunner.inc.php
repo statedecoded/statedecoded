@@ -105,10 +105,31 @@ class TaskRunner
 		exit($action_object->result);
 	}
 
+	/*
+	 * Options that take a value, and so may be written either as "-c=value" or,
+	 * as getopt() also accepts, "-c value". Without this list, the value of a
+	 * space-separated option would be left behind and mistaken for the action.
+	 */
+	protected $value_options = ['c'];
+
 	protected function parseExecArgs(&$exec_args)
 	{
+		$expecting_value_for = null;
+
 		foreach($exec_args as $index => $value)
 		{
+			/*
+			 * If the previous argument was an option that takes a separate
+			 * value, this argument is that value.
+			 */
+			if($expecting_value_for !== null)
+			{
+				$this->options[$expecting_value_for] = $value;
+				$expecting_value_for = null;
+				unset($exec_args[$index]);
+				continue;
+			}
+
 			/*
 			 * Eat any params that begin with a dash.
 			 */
@@ -126,6 +147,15 @@ class TaskRunner
 				else {
 					$name = $value;
 					$val = true;
+
+					/*
+					 * An option that takes a value, given without "=", takes
+					 * the next argument as its value.
+					 */
+					if(in_array($name, $this->value_options))
+					{
+						$expecting_value_for = $name;
+					}
 				}
 
 				/*
