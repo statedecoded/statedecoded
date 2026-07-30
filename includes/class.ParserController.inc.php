@@ -187,14 +187,83 @@ class ParserController
 			 * didn't support multiple queries until PHP 5.3.
 			 */
 			$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
+
+			/*
+			 * DELIMITER is an instruction to the mysql command-line client, not SQL that the
+			 * server understands, so PDO chokes on it. It exists only to stop that client from
+			 * splitting a stored routine on the semicolons inside its body. Remove the
+			 * directives, and separate the routines from the rest of the file so that each can
+			 * be sent to the server on its own.
+			 */
+			list($sql, $routines) = $this->extract_routines($sql);
+
 			$result = $this->db->exec($sql);
 			if ($result === false)
 			{
 				return false;
 			}
+
+			foreach ($routines as $routine)
+			{
+				if ($this->db->exec($routine) === false)
+				{
+					$this->logger->message('Could not create a stored routine. If binary logging '
+						. 'is enabled, the database user may need log_bin_trust_function_creators '
+						. 'to be set.', 10);
+					return false;
+				}
+			}
 		}
 
 		return true;
+
+	}
+
+	/**
+	 * Separate stored routines from the rest of a SQL file.
+	 *
+	 * The mysql command-line client uses DELIMITER to change what it treats as the end of a
+	 * statement, so that a stored routine's internal semicolons do not split it. PDO has no
+	 * such concept: it passes the text straight to the server, which rejects DELIMITER as a
+	 * syntax error. So we strip the directives and hand back the routines separately, to be
+	 * executed one at a time.
+	 *
+	 * @param string $sql The contents of a SQL file.
+	 * @return array [the SQL with routines removed, an array of routine definitions]
+	 */
+	public function extract_routines($sql)
+	{
+
+		$routines = [];
+
+		/*
+		 * Match each DELIMITER <token> ... <token> DELIMITER ; block, capturing the statement
+		 * between the custom delimiters.
+		 */
+		$pattern = '/^[ \t]*DELIMITER[ \t]+(\S+)[ \t]*$(.*?)^[ \t]*\1[ \t]*$'
+			. '(?:\s*^[ \t]*DELIMITER[ \t]+;[ \t]*$)?/ms';
+
+		$sql = preg_replace_callback(
+			$pattern,
+			function ($matches) use (&$routines)
+			{
+				$routine = trim($matches[2]);
+
+				/*
+				 * A routine body ends with "END;" -- the semicolon belonging to the routine's
+				 * final statement, not a statement terminator we need to keep.
+				 */
+				if ($routine !== '')
+				{
+					$routines[] = $routine;
+				}
+
+				return '';
+			},
+			$sql
+		);
+
+		return [$sql, $routines];
 
 	}
 
