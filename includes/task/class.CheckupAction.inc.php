@@ -338,7 +338,12 @@ class CheckupAction extends CliAction
 		{
 
 			$format = basename($format_dir);
-			$file_count = count(glob($format_dir . '/*'));
+
+			/*
+			 * Some export plugins nest the individual law files in a
+			 * subdirectory named for the edition, so count recursively.
+			 */
+			$file_count = $this->countFiles($format_dir);
 
 			/*
 			 * Some formats (HTML, text) also export one file per
@@ -441,6 +446,29 @@ class CheckupAction extends CliAction
 			$this->report('OK', 'API key',
 				$count . ' key' . ($count == 1 ? '' : 's') . ' registered');
 		}
+
+	}
+
+	/*
+	 * Count every file within a directory, at any depth.
+	 */
+	public function countFiles($directory)
+	{
+
+		$count = 0;
+
+		$iterator = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS));
+
+		foreach ($iterator as $file)
+		{
+			if ($file->isFile())
+			{
+				$count++;
+			}
+		}
+
+		return $count;
 
 	}
 
