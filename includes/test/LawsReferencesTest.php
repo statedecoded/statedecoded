@@ -29,6 +29,17 @@ class LawsReferencesTest extends PHPUnit\Framework\TestCase
 		$this->db = new Database(PDO_DSN, PDO_USERNAME, PDO_PASSWORD);
 		$db = $this->db;
 
+		/*
+		 * These tests write directly to laws_references, whose edition_id
+		 * column is added by a migration rather than by statedecoded.sql. Skip
+		 * rather than error if the migrations have not been run.
+		 */
+		$columns = $this->db->query('SHOW COLUMNS FROM laws_references LIKE "edition_id"');
+		if ($columns === false || $columns->rowCount() === 0) {
+			$this->markTestSkipped(
+				'laws_references.edition_id is missing — run `statedecoded migrate` first.');
+		}
+
 		$logger = new Logger();
 		$logger->level = 10;
 
