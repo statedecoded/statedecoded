@@ -162,6 +162,10 @@ class EditionAction extends CliAction
      */
     $parser = $this->getParserController();
 
+    $started = microtime(true);
+
+    $this->logger->message('Making edition "' . $edition->name . '" current.', 5);
+
     $edition_errors = $parser->handle_editions(
       [
         'edition_option' => 'existing',
@@ -178,15 +182,21 @@ class EditionAction extends CliAction
 
     /*
      * The site's URLs are derived from the current edition, so they must be
-     * rebuilt, and any cached copies of the old URLs invalidated.
+     * rebuilt, and any cached copies of the old URLs invalidated. Rebuilding
+     * the permalinks is by far the slowest part of this, so each step says so
+     * before it starts.
      */
+    $this->logger->message('Clearing the cache.', 5);
     $parser->clear_cache();
+
     $parser->build_permalinks();
 
+    $this->logger->message('Purging the Varnish cache, if there is one.', 5);
     $varnish = new Varnish;
     $varnish->purge();
 
-    return 'Edition "' . $edition->name . '" is now current.';
+    return 'Edition "' . $edition->name . '" is now current. ('
+      . $parser->format_duration(microtime(true) - $started) . ')';
   }
 
   /*

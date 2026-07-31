@@ -82,7 +82,8 @@ class ParserController
 		/*
 		 * Set our objects
 		 */
-		$this->permalink_obj = new Permalink(['db' => $this->db]);
+		$this->permalink_obj = new Permalink(
+			['db' => $this->db, 'logger' => $this->logger]);
 
 		/*
 		 * Setup downloads directory.
@@ -1048,6 +1049,11 @@ class ParserController
 	public function build_permalinks()
 	{
 
+		$this->logger->message('Rebuilding permalinks. This can take several minutes on a large '
+			. 'legal code.', 5);
+
+		$started = microtime(true);
+
 		/*
 		 * Create a new instance of Parser.
 		 */
@@ -1057,6 +1063,12 @@ class ParserController
 				 * Set the database
 				 */
 				'db' => $this->db,
+
+				/*
+				 * Share our Permalink object, so that the permalinks it creates are counted and
+				 * reported as progress. (Parser only creates its own if it is not given one.)
+				 */
+				'permalink_obj' => $this->permalink_obj,
 
 				/*
 				 * Set the edition
@@ -1083,7 +1095,41 @@ class ParserController
 
 		$parser->build_permalinks();
 
-		$this->logger->message('Constructed and stored the URLs for all laws', 5);
+		$this->logger->message('Constructed and stored the URLs for all laws: '
+			. number_format($this->permalink_obj->created_count) . ' permalinks in '
+			. $this->format_duration(microtime(true) - $started), 5);
+
+	}
+
+	/*
+	 * Express a number of seconds in units a person can read at a glance. Several of the import's
+	 * phases run for minutes or hours.
+	 */
+	public function format_duration($seconds)
+	{
+
+		$seconds = (int) round($seconds);
+
+		$hours = (int) floor($seconds / 3600);
+		$minutes = (int) floor(($seconds % 3600) / 60);
+		$seconds = $seconds % 60;
+
+		$parts = [];
+
+		if ($hours > 0)
+		{
+			$parts[] = $hours . ' hour' . ($hours == 1 ? '' : 's');
+		}
+		if ($minutes > 0)
+		{
+			$parts[] = $minutes . ' minute' . ($minutes == 1 ? '' : 's');
+		}
+		if ( ($seconds > 0) || (count($parts) === 0) )
+		{
+			$parts[] = $seconds . ' second' . ($seconds == 1 ? '' : 's');
+		}
+
+		return implode(', ', $parts);
 
 	}
 
