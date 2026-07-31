@@ -35,6 +35,9 @@ class ImportAction extends CliAction
 
 		$this->logger->message('Starting import.', 10);
 
+		$started = microtime(true);
+		$completed = false;
+
 		try {
 			$parser = new ParserController(
 				[
@@ -96,6 +99,12 @@ class ImportAction extends CliAction
 							$parser->structural_stats_generate();
 							$parser->prune_views();
 							$parser->finish_import();
+
+							$completed = true;
+						}
+						else
+						{
+							$this->logger->message('Parsing failed; no data was imported.', 10);
 						}
 
 					}
@@ -110,7 +119,25 @@ class ImportAction extends CliAction
 			$varnish = new Varnish;
 			$varnish->purge();
 
-			$this->logger->message('Done.', 10);
+			/*
+			 * Say plainly whether the import finished, and how long it took. An import runs for
+			 * hours, so a log needs an unambiguous record of completion at the end of it -- and
+			 * this point is reached whether or not the import actually did anything, so the
+			 * message must distinguish the two.
+			 */
+			if ($completed === true)
+			{
+				$this->logger->message('Import complete. Imported ' .
+					number_format($this->countLaws()) . ' laws into edition “' .
+					$edition_args['edition_name'] . '” in ' .
+					$parser->format_duration(microtime(true) - $started) . '.', 10);
+			}
+			else
+			{
+				$this->result = 1;
+				$this->logger->message('Import did not complete.', 10);
+				fwrite(STDERR, "Import did not complete.\n");
+			}
 
 		}
 		/*
@@ -122,6 +149,26 @@ class ImportAction extends CliAction
 			fwrite(STDERR, 'Import failed: ' . $e->getMessage() . "\n");
 			fwrite(STDERR, $e->getFile() . ':' . $e->getLine() . "\n");
 			exit(1);
+		}
+
+	}
+
+	/*
+	 * How many laws are in the database now. Reported at the end of an import, as a rough
+	 * confirmation that it did what it set out to do.
+	 */
+	public function countLaws()
+	{
+
+		try
+		{
+			$statement = $this->db->prepare('SELECT COUNT(*) FROM laws');
+			$statement->execute();
+			return (int) $statement->fetchColumn();
+		}
+		catch (Throwable $e)
+		{
+			return 0;
 		}
 
 	}
