@@ -198,6 +198,14 @@ class EditionAction extends CliAction
      */
     $parser->update_downloads_symlink();
 
+    /*
+     * sitemap.xml describes whichever edition was last imported, so promoting
+     * a different edition leaves it advertising the wrong URLs to search
+     * engines. Rebuild it for the edition that is now current.
+     */
+    $this->logger->message('Regenerating sitemap.xml.', 5);
+    $parser->generate_sitemap();
+
     $this->logger->message('Purging the Varnish cache, if there is one.', 5);
     $varnish = new Varnish;
     $varnish->purge();
