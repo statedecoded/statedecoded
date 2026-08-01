@@ -41,6 +41,29 @@ class CheckupAction extends CliAction
 	public function execute($args = [])
 	{
 
+		/*
+		 * This action takes no positional arguments: the edition is named with --edition=slug.
+		 * Rejecting anything else keeps "checkup 2026" from silently checking the current
+		 * edition instead of the one that was asked for.
+		 */
+		$stray = array_values(array_filter((array) $args, 'strlen'));
+
+		if (count($stray) > 0)
+		{
+			$this->result = 1;
+
+			$message = 'checkup: unrecognized argument “' . $stray[0] . '”.';
+
+			/*
+			 * The likeliest mistake by far is omitting "--edition=", so say so outright.
+			 */
+			$message .= ' Did you mean --edition=' . $stray[0] . '?';
+
+			fwrite(STDERR, $message . "\n");
+
+			return '';
+		}
+
 		if ($this->findEdition() === false)
 		{
 			$this->result = 1;
@@ -601,6 +624,9 @@ Available options:
 
   --edition=slug
       Which edition to check.  Defaults to the current edition.
+      Note that the slug must be given with "--edition=": a bare
+      "statedecoded checkup 2026" is an error, not a request to
+      check the 2026 edition.
 
 EOS;
 
