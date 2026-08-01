@@ -1101,6 +1101,64 @@ class ParserController
 
 	}
 
+	/**
+	 * Point /downloads/current at the current edition's exports.
+	 *
+	 * This must happen whenever the current edition changes, not only when an edition is
+	 * exported: promoting an existing edition with "statedecoded edition current" does not
+	 * re-export anything, and without this the bulk downloads would go on serving the previous
+	 * edition's files indefinitely.
+	 *
+	 * Done in PHP rather than via exec() so it's portable and silent: shelling out to
+	 * "rm current" errored noisily when no symlink existed yet, and the old success check was
+	 * wrong (exec() returns the last line of output, not the exit code, so a successful run
+	 * looked like a failure).
+	 */
+	public function update_downloads_symlink()
+	{
+
+		if (!isset($this->edition))
+		{
+			return false;
+		}
+
+		$symlink = WEB_ROOT . '/downloads/current';
+
+		/*
+		 * There is nothing to point at until the edition has been exported. Saying so is more
+		 * use than a dangling symlink.
+		 */
+		if (!is_dir(WEB_ROOT . '/downloads/' . $this->edition->slug))
+		{
+			$this->logger->message('No exports for edition “' . $this->edition->slug
+				. '”, so the downloads “current” symlink was left alone. Run an import to '
+				. 'generate them.', 5);
+			return false;
+		}
+
+		/*
+		 * Remove any existing symlink (including a broken one) or leftover file so we can
+		 * recreate it. is_link() catches broken symlinks that file_exists() misses.
+		 */
+		if (is_link($symlink) || file_exists($symlink))
+		{
+			unlink($symlink);
+		}
+
+		if (symlink($this->edition->slug, $symlink))
+		{
+			$this->logger->message('Pointed the downloads “current” symlink at “'
+				. $this->edition->slug . '”', 5);
+			return true;
+		}
+
+		$this->logger->message('Could not create “current” symlink in /downloads/—it must '
+			. 'be created manually', 10);
+
+		return false;
+
+	}
+
 	/*
 	 * Express a number of seconds in units a person can read at a glance. Several of the import's
 	 * phases run for minutes or hours.
@@ -1308,37 +1366,7 @@ class ParserController
 
 		if ($this->edition->current == '1')
 		{
-
-			/*
-			 * Point the "current" symlink at this edition. Done in PHP rather
-			 * than via exec() so it's portable and silent: shelling out to
-			 * "rm current" errored noisily when no symlink existed yet, and the
-			 * old success check was wrong (exec() returns the last line of
-			 * output, not the exit code, so a successful run looked like a
-			 * failure).
-			 */
-			$symlink = WEB_ROOT . '/downloads/current';
-
-			/*
-			 * Remove any existing symlink (including a broken one) or leftover
-			 * file so we can recreate it. is_link() catches broken symlinks that
-			 * file_exists() misses.
-			 */
-			if (is_link($symlink) || file_exists($symlink))
-			{
-				unlink($symlink);
-			}
-
-			if (symlink($this->edition->slug, $symlink))
-			{
-				$this->logger->message('Created downloads “current” symlink', 4);
-			}
-			else
-			{
-				$this->logger->message('Could not create “current” symlink in /downloads/—it must '
-					. 'be created manually', 10);
-			}
-
+			$this->update_downloads_symlink();
 		}
 
 		if ($this->export_errors > 0)

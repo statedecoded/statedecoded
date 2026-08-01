@@ -191,6 +191,13 @@ class EditionAction extends CliAction
 
     $parser->build_permalinks();
 
+    /*
+     * The bulk downloads are served through a "current" symlink, which points
+     * at whichever edition was last exported. Promoting an edition does not
+     * re-export it, so the symlink has to be repointed here.
+     */
+    $parser->update_downloads_symlink();
+
     $this->logger->message('Purging the Varnish cache, if there is one.', 5);
     $varnish = new Varnish;
     $varnish->purge();
