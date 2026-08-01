@@ -19,6 +19,12 @@ class CheckupAction extends CliAction
 	static public $name = 'checkup';
 	static public $summary = 'Verifies that an edition was imported correctly.';
 
+	/*
+	 * The proportion of a code's laws that may have no text before this stops looking like
+	 * reserved and repealed sections and starts looking like a broken import.
+	 */
+	const TEXTLESS_FAILURE_THRESHOLD = 0.01;
+
 	public $edition;
 	public $failures = [];
 	public $warnings = [];
@@ -196,20 +202,63 @@ class CheckupAction extends CliAction
 			WHERE laws.edition_id = :edition_id
 			AND text.id IS NULL');
 
-		if ($textless > 0)
-		{
-			$this->report('FAIL', 'Law text',
-				number_format($textless) . ' of ' . number_format($law_count)
-				. ' laws have no text');
-		}
-		else
+		if ($textless == 0)
 		{
 			$text_count = $this->countQuery(
 				'SELECT COUNT(*) FROM text WHERE edition_id = :edition_id');
 			$this->report('OK', 'Law text',
 				'all ' . number_format($law_count) . ' laws have text ('
 				. number_format($text_count) . ' records)');
+			return;
 		}
+
+		/*
+		 * A law with no text is normal: legal codes contain sections that are reserved or
+		 * repealed, which have a catch line but no body. So a handful of them is worth
+		 * mentioning but is not a failure. A large proportion, on the other hand, means the
+		 * parser is dropping text that ought to be there.
+		 */
+		$proportion = $textless / $law_count;
+
+		$detail = number_format($textless) . ' of ' . number_format($law_count)
+			. ' laws have no text';
+
+		$examples = $this->textlessExamples();
+		if (count($examples) > 0)
+		{
+			$detail .= ' (e.g. ' . implode(', ', $examples) . ')';
+		}
+
+		if ($proportion > self::TEXTLESS_FAILURE_THRESHOLD)
+		{
+			$this->report('FAIL', 'Law text', $detail
+				. ' — too many to be reserved or repealed sections');
+		}
+		else
+		{
+			$this->report('WARN', 'Law text', $detail
+				. ' — expected if these are reserved or repealed sections');
+		}
+
+	}
+
+	/*
+	 * A few section numbers of laws that have no text, so that they can be eyeballed.
+	 */
+	public function textlessExamples($limit = 3)
+	{
+
+		$statement = $this->db->prepare(
+			'SELECT laws.section FROM laws
+			LEFT JOIN text
+				ON text.law_id = laws.id
+			WHERE laws.edition_id = :edition_id
+			AND text.id IS NULL
+			ORDER BY laws.section
+			LIMIT ' . (int) $limit);
+		$statement->execute([':edition_id' => $this->edition->id]);
+
+		return $statement->fetchAll(PDO::FETCH_COLUMN);
 
 	}
 
