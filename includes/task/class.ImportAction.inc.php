@@ -38,6 +38,14 @@ class ImportAction extends CliAction
 		$started = microtime(true);
 		$completed = false;
 
+		/*
+		 * The edition is not resolved until the database has been set up, several blocks down,
+		 * but the completion message at the end of this method needs its name. Keep it in a
+		 * variable that exists from the outset, so that the message does not depend on how far
+		 * the import got.
+		 */
+		$edition_name = 'unknown';
+
 		try {
 			$parser = new ParserController(
 				[
@@ -71,8 +79,9 @@ class ImportAction extends CliAction
 					}
 
 					$edition_args = $this->buildEditionArgs($parser);
+					$edition_name = $edition_args['edition_name'];
 
-					$this->logger->message('Using edition ' . $edition_args['edition_name'], 10);
+					$this->logger->message('Using edition ' . $edition_name, 10);
 
 					$edition_errors = $parser->handle_editions($edition_args);
 
@@ -137,7 +146,7 @@ class ImportAction extends CliAction
 			{
 				$this->logger->message('Import complete. Imported ' .
 					number_format($this->countLaws()) . ' laws into edition “' .
-					$edition_args['edition_name'] . '” in ' .
+					$edition_name . '” in ' .
 					$parser->format_duration(microtime(true) - $started) . '.', 10);
 			}
 			elseif (isset($export_ok) && $export_ok === false)
