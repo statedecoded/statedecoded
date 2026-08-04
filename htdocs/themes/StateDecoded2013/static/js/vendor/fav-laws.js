@@ -163,7 +163,19 @@ var favlaws = function () {
       .dialog({
         modal: true,
         draggable: false,
-        width: '',
+        /*
+         * "auto" leaves the width to the stylesheet, where it belongs. Passing
+         * an empty string here (as this once did) is not a valid dimension:
+         * jQuery UI writes it into the element's inline style, the browser
+         * discards it, and the dialog collapses to fit its content.
+         *
+         * jQuery UI generates the wrapper element around this dialog, so the
+         * "classes" option is how we get a hook to style it by.
+         */
+        width: 'auto',
+        classes: {
+          'ui-dialog': 'pinned-laws-dialog'
+        },
         open: function(e, ui) {
           $('#content').addClass('behind');
         },

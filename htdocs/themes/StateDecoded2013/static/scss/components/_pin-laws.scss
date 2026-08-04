@@ -65,6 +65,20 @@
   margin-left: 0;
 }
 
+/*
+ * The dialog's width lives here rather than in the JavaScript, which passes
+ * width: 'auto' and leaves the sizing to us.
+ *
+ * jQuery UI wraps the dialog in a generated .ui-dialog element and sets its
+ * width as an inline style, so the width must be set on that wrapper and must
+ * be !important to take effect. Capping with max-width keeps the dialog on
+ * screen at narrow viewports.
+ */
+.pinned-laws-dialog {
+  width: 400px !important;
+  max-width: 90vw;
+}
+
 #pinnedModal {
   .pin-law {
     float: left;
