@@ -93,14 +93,22 @@ class ImportAction extends CliAction
 						{
 							$parser->build_permalinks();
 							$parser->write_api_key();
-							$parser->export();
+
+							/*
+							 * The laws are in the database at this point, so the remaining steps
+							 * still run and the import is allowed to finish. But a failed export
+							 * leaves the bulk downloads incomplete, so the import must not
+							 * report success.
+							 */
+							$export_ok = $parser->export();
+
 							$parser->generate_sitemap();
 							$parser->index_laws();
 							$parser->structural_stats_generate();
 							$parser->prune_views();
 							$parser->finish_import();
 
-							$completed = true;
+							$completed = ($export_ok !== false);
 						}
 						else
 						{
@@ -131,6 +139,20 @@ class ImportAction extends CliAction
 					number_format($this->countLaws()) . ' laws into edition “' .
 					$edition_args['edition_name'] . '” in ' .
 					$parser->format_duration(microtime(true) - $started) . '.', 10);
+			}
+			elseif (isset($export_ok) && $export_ok === false)
+			{
+				/*
+				 * The laws are in the database, but the bulk downloads are not. Say which,
+				 * rather than implying that nothing was imported.
+				 */
+				$this->result = 1;
+
+				$message = 'Import finished, but the export failed: the bulk downloads for this '
+					. 'edition are incomplete. The laws themselves were imported.';
+
+				$this->logger->message($message, 10);
+				fwrite(STDERR, $message . "\n");
 			}
 			else
 			{

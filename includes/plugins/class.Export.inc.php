@@ -17,6 +17,12 @@
 
 abstract class Export extends Plugin
 {
+	/*
+	 * Appended to every write failure. By far the likeliest cause is that the downloads
+	 * directory is owned by the web server user rather than the user running the import.
+	 */
+	const UNWRITABLE_HINT = ' (check that the downloads directory is writable by this user)';
+
 	public $listeners = [
 		'exportLaw',
 		// 'exportStructure', // Not enabled by default
@@ -80,7 +86,21 @@ abstract class Export extends Plugin
 	public function writeLawFile($filename, $data)
 	{
 		$this->logger->message("Writing $filename<br>", 1);
-		file_put_contents($filename, $data);
+
+		/*
+		 * file_put_contents() does not throw on failure -- it emits a warning and returns false.
+		 * Left unchecked, an unwritable downloads directory produces a hundred thousand PHP
+		 * warnings while the import reports success and exits 0. Throwing puts the failure in
+		 * front of ParserController::export_structure(), which tallies it and reports it.
+		 */
+		$result = file_put_contents($filename, $data);
+
+		if ($result === false)
+		{
+			throw new Exception('Could not write ' . $filename . self::UNWRITABLE_HINT);
+		}
+
+		return $result;
 	}
 
 	public function exportLaw($law, $dir)
@@ -128,7 +148,18 @@ abstract class Export extends Plugin
 	public function writeStructureFile($filename, $data)
 	{
 		$this->logger->message("Writing $filename<br>", 1);
-		file_put_contents($filename, $data);
+
+		/*
+		 * As with writeLawFile(), a failed write must be raised rather than silently ignored.
+		 */
+		$result = file_put_contents($filename, $data);
+
+		if ($result === false)
+		{
+			throw new Exception('Could not write ' . $filename . self::UNWRITABLE_HINT);
+		}
+
+		return $result;
 	}
 
 	public function exportStructure($structure, $laws, $dir)
@@ -194,10 +225,20 @@ abstract class Export extends Plugin
 		{
 			$export_directory = join_paths($downloads_dir, 'code-' . $this->format);
 			$this->addDirectoryToZip($zip, $export_directory);
-			$zip->close();
+
+			/*
+			 * ZipArchive writes the archive at close(), not at open(), so this is where an
+			 * unwritable directory finally surfaces. Ignoring the return value here meant a zip
+			 * that was never written still counted as a successful export.
+			 */
+			if ($zip->close() === false)
+			{
+				throw new Exception('Could not write ' . $zip_filename . self::UNWRITABLE_HINT);
+			}
 		}
 		else {
 			$this->logger->message('Unable to create zip archive.', 10);
+			throw new Exception('Could not create ' . $zip_filename);
 		}
 	}
 
@@ -226,12 +267,20 @@ abstract class Export extends Plugin
 		{
 			$zip->addFromString('dictionary' . $this->extension, $content);
 
-			$zip->close();
+			if ($zip->close() === false)
+			{
+				throw new Exception('Could not write ' . $zip_filename . self::UNWRITABLE_HINT);
+			}
 		}
 		else {
 			$this->logger->message('Unable to create zip archive.', 10);
+			throw new Exception('Could not create ' . $zip_filename);
 		}
 
+		/*
+		 * Only claim success once the archive has actually been written. This message used to be
+		 * printed unconditionally, so a failed dictionary export still reported success.
+		 */
 		$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
 
 		return [$filename, $content];
@@ -250,7 +299,16 @@ abstract class Export extends Plugin
 	{
 		if (file_exists($zip_filename))
 		{
-			unlink($zip_filename);
+			/*
+			 * A stale archive that cannot be removed means the directory is not writable, so
+			 * nothing that follows will work either. Say so now, rather than letting
+			 * ZipArchive::open() succeed and fail later at close().
+			 */
+			if (unlink($zip_filename) === false)
+			{
+				$this->logger->error('Could not remove the existing archive ' . $zip_filename . self::UNWRITABLE_HINT, 10);
+				return false;
+			}
 		}
 
 		/*

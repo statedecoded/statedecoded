@@ -1334,7 +1334,20 @@ class ParserController
 		 */
 
 
-		$this->events->trigger('finishExport', $this->downloads_dir);
+		/*
+		 * As with the individual records above, a failure to build the ZIP archives is tallied
+		 * and reported rather than aborting the run -- but it must not pass silently, which is
+		 * what happened while ZipArchive::close()'s return value was ignored.
+		 */
+		try
+		{
+			$this->events->trigger('finishExport', $this->downloads_dir);
+		}
+		catch (Throwable $e)
+		{
+			$this->export_errors++;
+			$this->logger->error('Could not finish the export: ' . $e->getMessage(), 10);
+		}
 
 
 		/*
@@ -1358,8 +1371,17 @@ class ParserController
 
 			if($dictionary !== false)
 			{
-				$this->events->trigger('exportDictionary', $dictionary, $this->downloads_dir);
-				$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
+				try
+				{
+					$this->events->trigger('exportDictionary', $dictionary,
+						$this->downloads_dir);
+				}
+				catch (Throwable $e)
+				{
+					$this->export_errors++;
+					$this->logger->error('Could not export the dictionary: '
+						. $e->getMessage(), 10);
+				}
 			}
 
 		}
@@ -1371,14 +1393,16 @@ class ParserController
 
 		if ($this->export_errors > 0)
 		{
-			$this->logger->error('All bulk download files were exported, but '
-				. number_format($this->export_errors) . ' record(s) could not be exported '
-				. '(see the errors above)', 10);
+			$this->logger->error('The export failed: ' . number_format($this->export_errors)
+				. ' record(s) or archive(s) could not be written (see the errors above). The '
+				. 'bulk downloads for this edition are incomplete.', 10);
+
+			return false;
 		}
-		else
-		{
-			$this->logger->message('All bulk download files were exported', 5);
-		}
+
+		$this->logger->message('All bulk download files were exported', 5);
+
+		return true;
 
 	}
 
