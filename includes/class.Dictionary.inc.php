@@ -288,125 +288,183 @@ class Dictionary
 		$terms = [];
 
 		/*
-		 * Get a listing of all structural units that contain the current structural unit -- that is,
-		 * if this is a chapter, get the ID of both the chapter and the title. And so on.
+		 * Whether we are listing globally scoped terms only, rather than every term that
+		 * applies to a specific section.
 		 */
-		$ancestry = [];
-		if (isset($this->structure_id))
-		{
-
-			$heritage = new Structure;
-			$ancestry = $heritage->id_ancestry($this->structure_id);
-			$tmp = [];
-			foreach ($ancestry as $level)
-			{
-				$tmp[] = $level->id;
-			}
-			$ancestry = $tmp;
-			unset($tmp);
-			
-		}
+		$global_only = ( isset($this->scope) && ($this->scope == 'global') );
 
 		/*
-		 * Get a list of all globally scoped terms.
+		 * Every law within a given structural unit shares the same list of structurally
+		 * scoped, global, and generic terms, and Law::render() calls this method once per
+		 * law, so remember the most recent result. Only the terms whose definitions are
+		 * scoped to the specific section vary from law to law, and those are gathered
+		 * separately, below. A single-slot cache suffices, because callers proceed through
+		 * laws one structural unit at a time.
 		 */
-		$sql_args = [
-			':global_scope' => 'global'
-		];
-		if ( isset($this->scope) && ($this->scope == 'global') )
+		static $cache_key;
+		static $cache_terms;
+
+		$my_key = ($this->structure_id ?? '') . ':' . ($this->scope ?? '') . ':'
+			. ($this->edition_id ?? '') . ':' . ($this->generic_terms === true ? 'generic' : '');
+
+		if ($cache_key === $my_key)
 		{
-		
-			$sql = 'SELECT dictionary.term
-					FROM dictionary
-					LEFT JOIN laws
-						ON dictionary.law_id=laws.id
-					 WHERE scope = :global_scope';
-					 
+			$terms = $cache_terms;
 		}
 
-		/*
-		 * Otherwise, we're getting a list of all more narrowly scoped terms. We always make sure
-		 * that global definitions are included, in addition to the definitions for the current
-		 * structural heritage.
-		 */
 		else
-		{
-		
-			$sql = 'SELECT DISTINCT dictionary.term
-					FROM dictionary
-					LEFT JOIN laws
-						ON dictionary.law_id=laws.id
-					LEFT JOIN structure
-						ON laws.structure_id=structure.id
-					WHERE
-					(
-						(dictionary.law_id=:section_id
-						AND
-						dictionary.scope=:section_scope)
-					';
-			$sql_args[':section_id'] = $this->section_id;
-			$sql_args[':section_scope'] = 'section';
-			$ancestry_count = count($ancestry);
-			for($i = 0; $i < $ancestry_count; $i++)
-			{
-				$sql .= " OR (dictionary.structure_id=:structure$i)";
-				$sql_args[":structure$i"] = $ancestry[$i];
-			}
-			$sql .= ' OR (scope=:global_scope))';
-
-		}
-
-		if(isset($this->edition_id)) {
-			$sql .= ' AND dictionary.edition_id=:edition_id';
-			$sql_args[':edition_id'] = $this->edition_id;
-		}
-
-		$statement = $db->prepare($sql);
-		$result = $statement->execute($sql_args);
-
-		/*
-		 * Establish the counter we'll use as our object numbering scheme throughout both of our
-		 * queries.
-		 */
-		$i=0;
-
-		/*
-		 * If any terms are found, then add them to our $terms object.
-		 */
-		if ( ($statement->rowCount() > 0) )
 		{
 
 			/*
-			 * Build up the result as an object as we loop through the results.
+			 * Get a listing of all structural units that contain the current structural unit -- that
+			 * is, if this is a chapter, get the ID of both the chapter and the title. And so on.
 			 */
-			while ($term = $statement->fetch(PDO::FETCH_OBJ))
+			$ancestry = [];
+			if (isset($this->structure_id))
 			{
-				$terms[] = $term->term;
+
+				$heritage = new Structure;
+				$ancestry = $heritage->id_ancestry($this->structure_id);
+				$tmp = [];
+				foreach ($ancestry as $level)
+				{
+					$tmp[] = $level->id;
+				}
+				$ancestry = $tmp;
+				unset($tmp);
+
 			}
 
-		}
+			/*
+			 * Get a list of all globally scoped terms.
+			 */
+			$sql_args = [
+				':global_scope' => 'global'
+			];
+			if ($global_only)
+			{
 
-		/*
-		 * Assemble a second query, this one against our generic legal dictionary, but only if we
-		 * have opted to include generic terms.
-		 */
-		if ($this->generic_terms === true)
-		{
+				$sql = 'SELECT dictionary.term
+						FROM dictionary
+						LEFT JOIN laws
+							ON dictionary.law_id=laws.id
+						 WHERE scope = :global_scope';
 
-			$sql = 'SELECT term
-					FROM dictionary_general';
-			$sql_args = null;
+			}
+
+			/*
+			 * Otherwise, we're getting a list of all more narrowly scoped terms. We always make sure
+			 * that global definitions are included, in addition to the definitions for the current
+			 * structural heritage.
+			 */
+			else
+			{
+
+				$sql = 'SELECT DISTINCT dictionary.term
+						FROM dictionary
+						LEFT JOIN laws
+							ON dictionary.law_id=laws.id
+						LEFT JOIN structure
+							ON laws.structure_id=structure.id
+						WHERE
+						(
+							(scope=:global_scope)
+						';
+				$ancestry_count = count($ancestry);
+				for($i = 0; $i < $ancestry_count; $i++)
+				{
+					$sql .= " OR (dictionary.structure_id=:structure$i)";
+					$sql_args[":structure$i"] = $ancestry[$i];
+				}
+				$sql .= ')';
+
+			}
+
+			if(isset($this->edition_id)) {
+				$sql .= ' AND dictionary.edition_id=:edition_id';
+				$sql_args[':edition_id'] = $this->edition_id;
+			}
 
 			$statement = $db->prepare($sql);
 			$result = $statement->execute($sql_args);
 
-			if ($result !== false && $statement->rowCount() > 0)
+			/*
+			 * If any terms are found, then add them to our $terms object.
+			 */
+			if ( ($statement->rowCount() > 0) )
 			{
 
 				/*
-				* Append these results to the existing $terms object, continuing to use the previously-
-				* defined $i counter.
-				*/
+				 * Build up the result as an object as we loop through the results.
+				 */
+				while ($term = $statement->fetch(PDO::FETCH_OBJ))
+				{
+					$terms[] = $term->term;
+				}
+
+			}
+
+			/*
+			 * Assemble a second query, this one against our generic legal dictionary, but only if we
+			 * have opted to include generic terms.
+			 */
+			if ($this->generic_terms === true)
+			{
+
+				$sql = 'SELECT term
+						FROM dictionary_general';
+				$sql_args = null;
+
+				$statement = $db->prepare($sql);
+				$result = $statement->execute($sql_args);
+
+				if ($result !== false && $statement->rowCount() > 0)
+				{
+
+					/*
+					* Append these results to the existing $terms object.
+					*/
+					while ($term = $statement->fetch(PDO::FETCH_OBJ))
+					{
+						$terms[] = $term->term;
+					}
+
+				}
+
+			}
+
+			$cache_key = $my_key;
+			$cache_terms = $terms;
+
+		}
+
+		/*
+		 * Add the terms whose definitions are scoped to this specific section. These vary from
+		 * law to law, which is why they are deliberately excluded from the cached list above.
+		 */
+		if (!$global_only && isset($this->section_id))
+		{
+
+			$sql = 'SELECT DISTINCT dictionary.term
+					FROM dictionary
+					WHERE dictionary.law_id=:section_id
+					AND dictionary.scope=:section_scope';
+			$sql_args = [
+				':section_id' => $this->section_id,
+				':section_scope' => 'section'
+			];
+
+			if(isset($this->edition_id)) {
+				$sql .= ' AND dictionary.edition_id=:edition_id';
+				$sql_args[':edition_id'] = $this->edition_id;
+			}
+
+			$statement = $db->prepare($sql);
+			$result = $statement->execute($sql_args);
+
+			if ( ($statement->rowCount() > 0) )
+			{
+
 				while ($term = $statement->fetch(PDO::FETCH_OBJ))
 				{
 					$terms[] = $term->term;

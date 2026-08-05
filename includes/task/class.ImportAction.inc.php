@@ -35,6 +35,17 @@ class ImportAction extends CliAction
 
 		$this->logger->message('Starting import.', 10);
 
+		$started = microtime(true);
+		$completed = false;
+
+		/*
+		 * The edition is not resolved until the database has been set up, several blocks down,
+		 * but the completion message at the end of this method needs its name. Keep it in a
+		 * variable that exists from the outset, so that the message does not depend on how far
+		 * the import got.
+		 */
+		$edition_name = 'unknown';
+
 		try {
 			$parser = new ParserController(
 				[
@@ -44,10 +55,6 @@ class ImportAction extends CliAction
 				]
 			);
 
-			$edition_args = $this->buildEditionArgs($parser);
-
-			$this->logger->message('Using edition ' . $edition_args['edition_name'], 10);
-
 			/*
 			 * Step through each parser method.
 			 */
@@ -55,8 +62,26 @@ class ImportAction extends CliAction
 			{
 				$this->logger->message('Environment test succeeded', 10);
 
+				/*
+				 * Create the tables and bring the schema up to date before anything reads from
+				 * the database. On a new installation there is nothing to read from yet.
+				 */
 				if ($parser->populate_db() !== false)
 				{
+
+					$pending_migrations = $parser->check_migrations();
+					if (count($pending_migrations) > 0)
+					{
+						$this->logger->message('Running ' . count($pending_migrations)
+							. ' pending database migration(s): '
+							. implode(', ', $pending_migrations), 5);
+						$parser->run_migrations();
+					}
+
+					$edition_args = $this->buildEditionArgs($parser);
+					$edition_name = $edition_args['edition_name'];
+
+					$this->logger->message('Using edition ' . $edition_name, 10);
 
 					$edition_errors = $parser->handle_editions($edition_args);
 
@@ -77,12 +102,26 @@ class ImportAction extends CliAction
 						{
 							$parser->build_permalinks();
 							$parser->write_api_key();
-							$parser->export();
+
+							/*
+							 * The laws are in the database at this point, so the remaining steps
+							 * still run and the import is allowed to finish. But a failed export
+							 * leaves the bulk downloads incomplete, so the import must not
+							 * report success.
+							 */
+							$export_ok = $parser->export();
+
 							$parser->generate_sitemap();
 							$parser->index_laws();
 							$parser->structural_stats_generate();
 							$parser->prune_views();
 							$parser->finish_import();
+
+							$completed = ($export_ok !== false);
+						}
+						else
+						{
+							$this->logger->message('Parsing failed; no data was imported.', 10);
 						}
 
 					}
@@ -97,11 +136,70 @@ class ImportAction extends CliAction
 			$varnish = new Varnish;
 			$varnish->purge();
 
-			$this->logger->message('Done.', 10);
+			/*
+			 * Say plainly whether the import finished, and how long it took. An import runs for
+			 * hours, so a log needs an unambiguous record of completion at the end of it -- and
+			 * this point is reached whether or not the import actually did anything, so the
+			 * message must distinguish the two.
+			 */
+			if ($completed === true)
+			{
+				$this->logger->message('Import complete. Imported ' .
+					number_format($this->countLaws()) . ' laws into edition “' .
+					$edition_name . '” in ' .
+					$parser->format_duration(microtime(true) - $started) . '.', 10);
+			}
+			elseif (isset($export_ok) && $export_ok === false)
+			{
+				/*
+				 * The laws are in the database, but the bulk downloads are not. Say which,
+				 * rather than implying that nothing was imported.
+				 */
+				$this->result = 1;
+
+				$message = 'Import finished, but the export failed: the bulk downloads for this '
+					. 'edition are incomplete. The laws themselves were imported.';
+
+				$this->logger->message($message, 10);
+				fwrite(STDERR, $message . "\n");
+			}
+			else
+			{
+				$this->result = 1;
+				$this->logger->message('Import did not complete.', 10);
+				fwrite(STDERR, "Import did not complete.\n");
+			}
 
 		}
-		catch(Exception $e) {
+		/*
+		 * Catch Throwable, not just Exception: a PHP Error (an undefined constant, a call to a
+		 * method that does not exist) is not an Exception, and would otherwise escape this
+		 * handler and end the import with a success exit code.
+		 */
+		catch(Throwable $e) {
+			fwrite(STDERR, 'Import failed: ' . $e->getMessage() . "\n");
+			fwrite(STDERR, $e->getFile() . ':' . $e->getLine() . "\n");
 			exit(1);
+		}
+
+	}
+
+	/*
+	 * How many laws are in the database now. Reported at the end of an import, as a rough
+	 * confirmation that it did what it set out to do.
+	 */
+	public function countLaws()
+	{
+
+		try
+		{
+			$statement = $this->db->prepare('SELECT COUNT(*) FROM laws');
+			$statement->execute();
+			return (int) $statement->fetchColumn();
+		}
+		catch (Throwable $e)
+		{
+			return 0;
 		}
 
 	}
@@ -163,7 +261,11 @@ class ImportAction extends CliAction
 
 	public function handleVerbosity()
 	{
-		$level = 10;
+		/*
+		 * By default, show phase-level messages (level 5 and up), so that a
+		 * long-running import narrates what it is doing. -v shows everything.
+		 */
+		$level = 5;
 		if(isset($this->options['v'])) {
 			if($this->options['v'] === true) {
 				$level = 1;
@@ -190,8 +292,9 @@ Usage:
 Available options:
 
   -v, -v=##
-      Show verbose output.  ## is an optional value of 1 (default,
-      all messages) to 10 (only important messages).
+      Show verbose output.  ## is an optional value of 1 (default
+      when -v is given: all messages) to 10 (only the most important
+      messages).  Without -v, messages of level 5 and up are shown.
 
   -d=directory
       Directory to import data from.  Defaults to IMPORT_DATA_DIR

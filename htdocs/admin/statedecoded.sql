@@ -1,3 +1,36 @@
+/*
+ * The State Decoded — baseline database schema
+ *
+ * IMPORTANT: This file is the *original* schema, as of the 1.0 release. It is
+ * deliberately not kept current, and it does not describe the schema of a
+ * running installation. Every change made since is expressed as a migration in
+ * includes/migrations/, and those migrations are applied on top of this file.
+ *
+ * Consequently, tables here are missing columns that the application requires.
+ * For example, laws_references has no edition_id column: that is added by
+ * includes/migrations/class.Migration_201410201839150001.inc.php. Do not
+ * conclude from reading this file that a column does not exist — check the
+ * migrations too, or inspect a migrated database.
+ *
+ * After loading this file, you MUST run the migrations:
+ *
+ *     php statedecoded migrate
+ *
+ * ParserController::populate_db() loads this file when the tables are absent,
+ * and ImportAction runs any pending migrations before importing. The CI build
+ * (.github/workflows/ci.yml) does the same in sequence: load this file, run
+ * migrations, then import. That sequence is what keeps the migration chain
+ * exercised, which is why this file is left at the 1.0 baseline rather than
+ * regenerated from a current database.
+ *
+ * Regenerating this file from a migrated database would break new installs
+ * unless the migrations table were also seeded with the already-applied
+ * migrations: MigrateAction determines what to run by diffing the files in
+ * includes/migrations/ against the rows in that table, which a fresh install
+ * starts out empty. Unguarded migrations would then fail against schema
+ * changes they had, in effect, already made.
+ */
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;

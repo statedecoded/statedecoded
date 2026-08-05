@@ -85,6 +85,25 @@ abstract class DatabaseMigration
 	}
 
 	/*
+	 * Queue a CREATE FUNCTION/PROCEDURE query only if the named routine does not already
+	 * exist. CREATE FUNCTION has no IF NOT EXISTS form in MySQL, so this guard is what
+	 * makes re-running the migration (or applying it to a database that already has the
+	 * routine some other way) safe.
+	 */
+	public function queueRoutine($routine_name, $query)
+	{
+		$statement = $this->db->prepare(
+			'SELECT COUNT(*) FROM information_schema.ROUTINES
+			 WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_NAME = ?'
+		);
+		$statement->execute([$routine_name]);
+		if ((int) $statement->fetchColumn() === 0)
+		{
+			$this->queries[] = $query;
+		}
+	}
+
+	/*
 	 * Queue a CHANGE/MODIFY column query only if the column is not already the target type.
 	 * $target_type should match the COLUMN_TYPE value from information_schema (e.g. 'int unsigned').
 	 */

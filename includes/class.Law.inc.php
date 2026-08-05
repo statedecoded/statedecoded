@@ -717,6 +717,18 @@ class Law
 		 */
 		$metadata = $statement->fetchAll(PDO::FETCH_OBJ);
 
+		return $this->rotate_metadata($metadata);
+
+	}
+
+	/**
+	 * Convert a list of metadata records, as stored in laws_meta, into an object with each
+	 * meta_key as a property name. Used by get_metadata(), and also by Structure::list_laws(),
+	 * which gathers the metadata records for many laws with a single query.
+	 */
+	public function rotate_metadata($metadata)
+	{
+
 		/*
 		 * Create a new object, to which we will port a rotated version of this object.
 		 */
@@ -967,54 +979,10 @@ class Law
 		if ( ($terms !== false) && is_array($terms) )
 		{
 			/*
-			 * Arrange our terms from longest to shortest. This is to ensure that the most specific
-			 * terms are defined (e.g. "person of interest") rather than the broadest terms (e.g.
-			 * "person").
+			 * Build the list of dictionary term patterns that we use to insert the definitions,
+			 * as required by preg_replace_callback.
 			 */
-			usort($terms, 'sort_by_length');
-
-			/*
-			 * Store a list of the dictionary terms as an array, which is required for
-			 * preg_replace_callback, the function that we use to insert the definitions.
-			 */
-			$term_pcres = [];
-			foreach ($terms as $term)
-			{
-
-				/*
-				 * Step through each character in this word.
-				 */
-				for ($i=0; $i<strlen($term); $i++)
-				{
-					/*
-					 * If there are any uppercase characters, then make this PCRE string case
-					 * sensitive.
-					 */
-					if ( ctype_upper($term[$i]) )
-					{
-						$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/';
-						$caps = true;
-						break;
-					}
-				}
-
-				/*
-				 * If we have determined that this term does not contain capitalized letters, then
-				 * create a case-insensitive PCRE string.
-				 */
-				if (!isset($caps))
-				{
-					$term_pcres[] = '/\b'.$term.'(s?)\b(?![^<]*>)/i';
-				}
-
-				/*
-				 * Unset our flag -- we don't want to have it set the next time through.
-				 */
-				if (isset($caps))
-				{
-					unset($caps);
-				}
-			}
+			$term_pcres = build_term_pcres($terms);
 		}
 
 		/*

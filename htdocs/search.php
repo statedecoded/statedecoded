@@ -15,7 +15,7 @@
 global $db;
 
 /*
- * Intialize Solarium and instruct it to use the correct request handler.
+ * Initialize the configured search engine.
  */
 $client = new SearchIndex(
 	[

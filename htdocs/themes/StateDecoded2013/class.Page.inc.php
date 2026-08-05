@@ -99,6 +99,16 @@ class StateDecoded2013__Page extends Page
 		$content->set('place_name', PLACE_NAME);
 
 		/*
+		 * Identify the software that generated this page.
+		 */
+		if (defined('VERSION'))
+		{
+			$content->set('generator',
+				'<meta name="generator" content="State Decoded v'
+				. htmlspecialchars(VERSION, ENT_QUOTES) . '" />');
+		}
+
+		/*
 		 * Get the edition data
 		 */
 		$search = new Search();
@@ -137,22 +147,6 @@ class StateDecoded2013__Page extends Page
 				ga('create', '" . GOOGLE_ANALYTICS_ID . "', 'auto');
 				ga('send', 'pageview');");
 
-		}
-
-		/*
-		 * If a Typekit ID has been provided, insert the JavaScript.
-		 */
-		if (defined('TYPEKIT_ID'))
-		{
-			$this->add_asset('typekit_js',
-				[
-					'path' => '//use.typekit.net/' .  TYPEKIT_ID . '.js',
-					'type' => 'javascript'
-				]
-			);
-
-			$content->append('javascript',
-				'try{Typekit.load();}catch(e){};');
 		}
 
 		/*

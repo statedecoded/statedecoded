@@ -82,7 +82,8 @@ class ParserController
 		/*
 		 * Set our objects
 		 */
-		$this->permalink_obj = new Permalink(['db' => $this->db]);
+		$this->permalink_obj = new Permalink(
+			['db' => $this->db, 'logger' => $this->logger]);
 
 		/*
 		 * Setup downloads directory.
@@ -187,14 +188,83 @@ class ParserController
 			 * didn't support multiple queries until PHP 5.3.
 			 */
 			$sql = file_get_contents(WEB_ROOT . '/admin/statedecoded.sql');
+
+			/*
+			 * DELIMITER is an instruction to the mysql command-line client, not SQL that the
+			 * server understands, so PDO chokes on it. It exists only to stop that client from
+			 * splitting a stored routine on the semicolons inside its body. Remove the
+			 * directives, and separate the routines from the rest of the file so that each can
+			 * be sent to the server on its own.
+			 */
+			list($sql, $routines) = $this->extract_routines($sql);
+
 			$result = $this->db->exec($sql);
 			if ($result === false)
 			{
 				return false;
 			}
+
+			foreach ($routines as $routine)
+			{
+				if ($this->db->exec($routine) === false)
+				{
+					$this->logger->message('Could not create a stored routine. If binary logging '
+						. 'is enabled, the database user may need log_bin_trust_function_creators '
+						. 'to be set.', 10);
+					return false;
+				}
+			}
 		}
 
 		return true;
+
+	}
+
+	/**
+	 * Separate stored routines from the rest of a SQL file.
+	 *
+	 * The mysql command-line client uses DELIMITER to change what it treats as the end of a
+	 * statement, so that a stored routine's internal semicolons do not split it. PDO has no
+	 * such concept: it passes the text straight to the server, which rejects DELIMITER as a
+	 * syntax error. So we strip the directives and hand back the routines separately, to be
+	 * executed one at a time.
+	 *
+	 * @param string $sql The contents of a SQL file.
+	 * @return array [the SQL with routines removed, an array of routine definitions]
+	 */
+	public function extract_routines($sql)
+	{
+
+		$routines = [];
+
+		/*
+		 * Match each DELIMITER <token> ... <token> DELIMITER ; block, capturing the statement
+		 * between the custom delimiters.
+		 */
+		$pattern = '/^[ \t]*DELIMITER[ \t]+(\S+)[ \t]*$(.*?)^[ \t]*\1[ \t]*$'
+			. '(?:\s*^[ \t]*DELIMITER[ \t]+;[ \t]*$)?/ms';
+
+		$sql = preg_replace_callback(
+			$pattern,
+			function ($matches) use (&$routines)
+			{
+				$routine = trim($matches[2]);
+
+				/*
+				 * A routine body ends with "END;" -- the semicolon belonging to the routine's
+				 * final statement, not a statement terminator we need to keep.
+				 */
+				if ($routine !== '')
+				{
+					$routines[] = $routine;
+				}
+
+				return '';
+			},
+			$sql
+		);
+
+		return [$sql, $routines];
 
 	}
 
@@ -782,6 +852,8 @@ class ParserController
 		/*
 		 * Break up law histories into their components and save those.
 		 */
+		$this->logger->message('Analyzing law histories', 5);
+
 		$sql = 'SELECT id, history
 				FROM laws';
 		$statement = $this->db->prepare($sql);
@@ -977,6 +1049,11 @@ class ParserController
 	public function build_permalinks()
 	{
 
+		$this->logger->message('Rebuilding permalinks. This can take several minutes on a large '
+			. 'legal code.', 5);
+
+		$started = microtime(true);
+
 		/*
 		 * Create a new instance of Parser.
 		 */
@@ -986,6 +1063,12 @@ class ParserController
 				 * Set the database
 				 */
 				'db' => $this->db,
+
+				/*
+				 * Share our Permalink object, so that the permalinks it creates are counted and
+				 * reported as progress. (Parser only creates its own if it is not given one.)
+				 */
+				'permalink_obj' => $this->permalink_obj,
 
 				/*
 				 * Set the edition
@@ -1012,7 +1095,99 @@ class ParserController
 
 		$parser->build_permalinks();
 
-		$this->logger->message('Constructed and stored the URLs for all laws', 5);
+		$this->logger->message('Constructed and stored the URLs for all laws: '
+			. number_format($this->permalink_obj->created_count) . ' permalinks in '
+			. $this->format_duration(microtime(true) - $started), 5);
+
+	}
+
+	/**
+	 * Point /downloads/current at the current edition's exports.
+	 *
+	 * This must happen whenever the current edition changes, not only when an edition is
+	 * exported: promoting an existing edition with "statedecoded edition current" does not
+	 * re-export anything, and without this the bulk downloads would go on serving the previous
+	 * edition's files indefinitely.
+	 *
+	 * Done in PHP rather than via exec() so it's portable and silent: shelling out to
+	 * "rm current" errored noisily when no symlink existed yet, and the old success check was
+	 * wrong (exec() returns the last line of output, not the exit code, so a successful run
+	 * looked like a failure).
+	 */
+	public function update_downloads_symlink()
+	{
+
+		if (!isset($this->edition))
+		{
+			return false;
+		}
+
+		$symlink = WEB_ROOT . '/downloads/current';
+
+		/*
+		 * There is nothing to point at until the edition has been exported. Saying so is more
+		 * use than a dangling symlink.
+		 */
+		if (!is_dir(WEB_ROOT . '/downloads/' . $this->edition->slug))
+		{
+			$this->logger->message('No exports for edition “' . $this->edition->slug
+				. '”, so the downloads “current” symlink was left alone. Run an import to '
+				. 'generate them.', 5);
+			return false;
+		}
+
+		/*
+		 * Remove any existing symlink (including a broken one) or leftover file so we can
+		 * recreate it. is_link() catches broken symlinks that file_exists() misses.
+		 */
+		if (is_link($symlink) || file_exists($symlink))
+		{
+			unlink($symlink);
+		}
+
+		if (symlink($this->edition->slug, $symlink))
+		{
+			$this->logger->message('Pointed the downloads “current” symlink at “'
+				. $this->edition->slug . '”', 5);
+			return true;
+		}
+
+		$this->logger->message('Could not create “current” symlink in /downloads/—it must '
+			. 'be created manually', 10);
+
+		return false;
+
+	}
+
+	/*
+	 * Express a number of seconds in units a person can read at a glance. Several of the import's
+	 * phases run for minutes or hours.
+	 */
+	public function format_duration($seconds)
+	{
+
+		$seconds = (int) round($seconds);
+
+		$hours = (int) floor($seconds / 3600);
+		$minutes = (int) floor(($seconds % 3600) / 60);
+		$seconds = $seconds % 60;
+
+		$parts = [];
+
+		if ($hours > 0)
+		{
+			$parts[] = $hours . ' hour' . ($hours == 1 ? '' : 's');
+		}
+		if ($minutes > 0)
+		{
+			$parts[] = $minutes . ' minute' . ($minutes == 1 ? '' : 's');
+		}
+		if ( ($seconds > 0) || (count($parts) === 0) )
+		{
+			$parts[] = $seconds . ' second' . ($seconds == 1 ? '' : 's');
+		}
+
+		return implode(', ', $parts);
 
 	}
 
@@ -1159,7 +1334,20 @@ class ParserController
 		 */
 
 
-		$this->events->trigger('finishExport', $this->downloads_dir);
+		/*
+		 * As with the individual records above, a failure to build the ZIP archives is tallied
+		 * and reported rather than aborting the run -- but it must not pass silently, which is
+		 * what happened while ZipArchive::close()'s return value was ignored.
+		 */
+		try
+		{
+			$this->events->trigger('finishExport', $this->downloads_dir);
+		}
+		catch (Throwable $e)
+		{
+			$this->export_errors++;
+			$this->logger->error('Could not finish the export: ' . $e->getMessage(), 10);
+		}
 
 
 		/*
@@ -1183,57 +1371,38 @@ class ParserController
 
 			if($dictionary !== false)
 			{
-				$this->events->trigger('exportDictionary', $dictionary, $this->downloads_dir);
-				$this->logger->message('Created a ZIP file of all dictionary terms as JSON', 3);
+				try
+				{
+					$this->events->trigger('exportDictionary', $dictionary,
+						$this->downloads_dir);
+				}
+				catch (Throwable $e)
+				{
+					$this->export_errors++;
+					$this->logger->error('Could not export the dictionary: '
+						. $e->getMessage(), 10);
+				}
 			}
 
 		}
 
 		if ($this->edition->current == '1')
 		{
-
-			/*
-			 * Point the "current" symlink at this edition. Done in PHP rather
-			 * than via exec() so it's portable and silent: shelling out to
-			 * "rm current" errored noisily when no symlink existed yet, and the
-			 * old success check was wrong (exec() returns the last line of
-			 * output, not the exit code, so a successful run looked like a
-			 * failure).
-			 */
-			$symlink = WEB_ROOT . '/downloads/current';
-
-			/*
-			 * Remove any existing symlink (including a broken one) or leftover
-			 * file so we can recreate it. is_link() catches broken symlinks that
-			 * file_exists() misses.
-			 */
-			if (is_link($symlink) || file_exists($symlink))
-			{
-				unlink($symlink);
-			}
-
-			if (symlink($this->edition->slug, $symlink))
-			{
-				$this->logger->message('Created downloads “current” symlink', 4);
-			}
-			else
-			{
-				$this->logger->message('Could not create “current” symlink in /downloads/—it must '
-					. 'be created manually', 10);
-			}
-
+			$this->update_downloads_symlink();
 		}
 
 		if ($this->export_errors > 0)
 		{
-			$this->logger->error('All bulk download files were exported, but '
-				. number_format($this->export_errors) . ' record(s) could not be exported '
-				. '(see the errors above)', 10);
+			$this->logger->error('The export failed: ' . number_format($this->export_errors)
+				. ' record(s) or archive(s) could not be written (see the errors above). The '
+				. 'bulk downloads for this edition are incomplete.', 10);
+
+			return false;
 		}
-		else
-		{
-			$this->logger->message('All bulk download files were exported', 5);
-		}
+
+		$this->logger->message('All bulk download files were exported', 5);
+
+		return true;
 
 	}
 
@@ -1473,6 +1642,23 @@ class ParserController
 	}
 
 	/**
+	 * Whether a file can be written: either it exists and is writable, or it
+	 * does not exist yet but the directory it would go in is writable.
+	 * (is_writable() alone returns false for a file that does not exist.)
+	 */
+	public function can_write_file($filename)
+	{
+
+		if (file_exists($filename))
+		{
+			return is_writable($filename);
+		}
+
+		return is_writable(dirname($filename));
+
+	}
+
+	/**
 	 * Create and save a sitemap.xml
 	 *
 	 * List every law in this legal code and create an XML file with an entry for every one of them.
@@ -1485,14 +1671,33 @@ class ParserController
 		 */
 		$sitemap_file = WEB_ROOT . '/sitemap.xml';
 
-		if (!is_writable($sitemap_file))
+		if (!$this->can_write_file($sitemap_file))
 		{
 			$this->logger->message('Do not have permissions to write to sitemap.xml', 3);
 			return false;
 		}
 
 		/*
-		 * List the ID of every law in the current edition. We cut it off at 50,000 laws because
+		 * The sitemap describes the edition being imported. Prefer the edition this parser is
+		 * working on: EDITION_ID is only defined when importing into the current edition, so
+		 * relying on it fatals when importing into any other one.
+		 */
+		if (isset($this->edition_id))
+		{
+			$edition_id = $this->edition_id;
+		}
+		elseif (defined('EDITION_ID'))
+		{
+			$edition_id = EDITION_ID;
+		}
+		else
+		{
+			$this->logger->message('No edition to write to sitemap.xml', 3);
+			return false;
+		}
+
+		/*
+		 * List the ID of every law in this edition. We cut it off at 50,000 laws because
 		 * that is the sitemap.xml limit.
 		 */
 		$sql = 'SELECT id
@@ -1501,7 +1706,7 @@ class ParserController
 				LIMIT 50000';
 
 		$sql_args = [
-			':edition_id' => EDITION_ID
+			':edition_id' => $edition_id
 		];
 
 		$statement = $this->db->prepare($sql);
@@ -1604,9 +1809,12 @@ class ParserController
 	{
 
 		/*
-		 * List all of the top-level structural units.
+		 * List all of the top-level structural units. The edition must be set explicitly:
+		 * Structure falls back to the EDITION_ID constant, which is only defined when
+		 * importing into the current edition.
 		 */
 		$struct = new Structure();
+		$struct->edition_id = $this->edition_id;
 		$structures = $struct->list_children();
 
 		/*
@@ -1684,6 +1892,7 @@ class ParserController
 			}
 
 			$structure_temp = new Structure();
+			$structure_temp->edition_id = $this->edition_id;
 			$structure_temp->structure_id = $structure_id;
 			$structure_temp->get_current();
 
@@ -1853,20 +2062,29 @@ class ParserController
 		}
 
 		/*
-		 * Make sure that the configuration file is writable.
+		 * Make sure that the configuration file is writable, since the importer writes the
+		 * edition ID and, on a new installation, the API key into it.
+		 *
+		 * Check the file that was actually loaded, rather than assuming it is
+		 * INCLUDE_PATH/config.inc.php: the CLI's -c switch can point anywhere, and a
+		 * deployment that runs with an alternate config has no config.inc.php at all.
 		 */
-		if (is_writable(INCLUDE_PATH . '/config.inc.php') !== true)
+		$config_file = defined('CONFIG_FILE') ? CONFIG_FILE : INCLUDE_PATH . '/config.inc.php';
+
+		if (is_writable($config_file) !== true)
 		{
-			$this->logger->message('config.inc.php must be writable by the server', 10);
+			$this->logger->message(basename($config_file)
+				. ' must be writable by the server (' . $config_file . ')', 10);
 			$error = true;
 		}
 
 		/*
-		 * Make sure that sitemap.xml is writable.
+		 * Make sure that sitemap.xml can be written, whether or not it exists yet.
 		 */
-		if (is_writable(WEB_ROOT . '/sitemap.xml') !== true)
+		if ($this->can_write_file(WEB_ROOT . '/sitemap.xml') !== true)
 		{
-			$this->logger->message('sitemap.xml must be writable by the server', 10);
+			$this->logger->message('sitemap.xml (or, if it does not exist yet, the directory '
+				. 'containing it) must be writable by the server', 10);
 			$error = true;
 		}
 
@@ -1889,25 +2107,6 @@ class ParserController
 			$error = true;
 		}
 
-		if(defined('SOLR_URL'))
-		{
-			/*
-			 * Make sure that Solr is responsive.
-			 */
-			$solr_config = json_decode(SEARCH_CONFIG, true);
-			$client = SolrSearchEngine::make_client($solr_config);
-			$ping = $client->createPing();
-			try
-			{
-				$result = $client->ping($ping);
-			}
-			catch(\Exception $e)
-			{
-				$this->logger->message('Solr must be installed, configured in config.inc.php, and running', 10);
-				$error = true;
-			}
-		}
-
 		if (isset($error))
 		{
 			return false;
@@ -1918,14 +2117,7 @@ class ParserController
 	}
 
 	/*
-	 * Pass each of the laws to Solr to be indexed.
-	 *
-	 * This code indexes each XML file, one at a time, by POSTing them to Solr.
-	 *
-	 * Although all other Solr-based functionality on the site is built on the Solarium library,
-	 * we do not use Solarium to index laws. That's because Solarium has no ability to post XML
-	 * files to Solr <http://www.solarium-project.org/forums/topic/index-via-xml-files/>. So,
-	 * instead, we do this via cURL.
+	 * Pass each of the laws to the configured search engine to be indexed.
 	 */
 	public function index_laws($args = [])
 	{
@@ -1942,7 +2134,7 @@ class ParserController
 
 		if(!defined('SEARCH_CONFIG'))
 		{
-			$this->logger->message('Solr is not in use, skipping index', 9);
+			$this->logger->message('Search is not configured, skipping index', 9);
 			return;
 		}
 
@@ -1986,7 +2178,7 @@ class ParserController
 				}
 				catch (Exception $error)
 				{
-					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
+					$this->logger->message('Search index error "' . $error->getMessage() .'"', 10);
 					return false;
 				}
 			}
@@ -2011,7 +2203,7 @@ class ParserController
 				}
 				catch (Exception $error)
 				{
-					$this->logger->message('Search index error "' . $error->getStatusMessage() .'"', 10);
+					$this->logger->message('Search index error "' . $error->getMessage() .'"', 10);
 					return false;
 				}
 			}
@@ -2055,77 +2247,6 @@ class ParserController
 
 	}
 
-	protected function handle_solr_request($fields = [], $multipart = false, $parameters = [])
-	{
-
-		$solr_update_url = SOLR_URL . 'update';
-
-		/*
-		 * Instruct Solr to return its response as JSON, and commit the change.
-		 */
-
-		$solr_parameters = array_merge($parameters, [
-				'wt' => 'json',
-				'commit' => 'true'
-				]
-			);
-
-		$url = $solr_update_url . '?' . http_build_query($solr_parameters);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		if($multipart)
-		{
-			curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form; charset=US-ASCII'] );
-		}
-		else
-		{
-			curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: text/xml; charset=US-ASCII'] );
-		}
-
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-
-		/*
-		 * Post this request to Solr via cURL, and save the response, which is provided as JSON.
-		 */
-		$response_json = curl_exec($ch);
-
-		/*
-		 * If cURL returned an error.
-		 */
-		if (curl_errno($ch) > 0)
-		{
-			$this->logger->message('The attempt to post files to Solr via cURL returned an '
-				. 'error code, ' . curl_errno($ch) . ', from cURL—could not index laws', 10);
-			return false;
-		}
-
-		if ( (false === $response_json) || !is_string($response_json) )
-		{
-			$this->logger->message('Could not connect to Solr', 10);
-			return false;
-		}
-
-		$response = json_decode($response_json);
-
-		if ( ($response === false) || empty($response) )
-		{
-			$this->logger->message('Solr returned invalid JSON', 8);
-			return false;
-		}
-
-		if (isset($response->error))
-		{
-			$this->logger->message('Solr returned the following unexpected error: '
-				. print_r($response, true),  8);
-			return false;
-		}
-
-		return true;
-	}
-
 	public function update_laws_references()
 	{
 		/*
@@ -2133,121 +2254,125 @@ class ParserController
 		 * the creation of these references, because many of the references are
 		 * at that time to not-yet-inserted sections.
 		 */
-		$this->logger->message('Updating laws_references', 3);
+		$this->logger->message('Crosslinking laws_references', 5);
 
 		/*
-		 * Since section numbers may be duplicated, make this a many-to-one
-		 * relationship.
+		 * Since section numbers may be duplicated, this is a many-to-one
+		 * relationship: a reference to a section number that matches N laws
+		 * must yield N rows, one per matching law.
+		 *
+		 * This is done with two set-based statements rather than by iterating
+		 * over every reference in PHP. Because the unique "overlap" key spans
+		 * (law_id, target_section_number, target_law_id, edition_id), a single
+		 * INSERT ... SELECT produces exactly one row per referencing law per
+		 * matching law, and the rows whose target_law_id is still 0 are cleaned
+		 * up below. Iterating instead re-ran an identical lookup and an
+		 * identical UPDATE once for every row sharing a section number, which
+		 * on a full-sized legal code meant tens of thousands of redundant
+		 * queries and holding the whole table in memory.
 		 */
 
 		/*
-		 * First, get our existing references.
+		 * Collect the section numbers that identify exactly one law into a
+		 * temporary table.
+		 *
+		 * The temporary table is not merely a convenience. laws.section is
+		 * collated utf8mb3_general_ci while laws_references.target_section_number
+		 * is utf8mb3_bin, so joining the two tables directly is not indexable and
+		 * MySQL falls back to scanning -- tens of seconds on a full legal code.
+		 * Declaring the key column in the same collation as the column it is
+		 * joined against, as a primary key, restores an indexed join.
 		 */
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS unique_sections');
+		$this->db->exec('CREATE TEMPORARY TABLE unique_sections (
+				section VARCHAR(255) COLLATE utf8mb3_bin NOT NULL PRIMARY KEY,
+				law_id INT UNSIGNED NOT NULL
+			) ENGINE=InnoDB');
 
-		$existing_sql = 'SELECT * FROM laws_references
-			WHERE edition_id = :edition_id';
-		$existing_args = [':edition_id' => $this->edition_id];
-		$existing_statement =  $this->db->prepare($existing_sql);
-		$existing_result = $existing_statement->execute($existing_args);
+		$collect_sql = 'INSERT INTO unique_sections (section, law_id)
+			SELECT section COLLATE utf8mb3_bin, MIN(id)
+			FROM laws
+			WHERE edition_id = :edition_id
+			GROUP BY section
+			HAVING COUNT(*) = 1';
+
+		$collect_statement = $this->db->prepare($collect_sql);
+		$collect_statement->execute([':edition_id' => $this->edition_id]);
 
 		/*
-		 * Let's build a few queries we'll be using later. Do this outside the
-		 * loop for better memory handling.
+		 * Resolve every reference whose section number matches exactly one law.
+		 * These are the overwhelming majority, and can be updated in place.
 		 */
-		$law_sql = 'SELECT laws.id FROM laws WHERE section = :section_number
-			AND edition_id = :edition_id';
-		$laws_statement = $this->db->prepare($law_sql);
+		$update_sql = 'UPDATE laws_references
+			INNER JOIN unique_sections
+				ON unique_sections.section = laws_references.target_section_number
+			SET laws_references.target_law_id = unique_sections.law_id
+			WHERE laws_references.edition_id = :edition_id';
 
-		$update_sql = 'UPDATE laws_references SET target_law_id = :target_law_id
-			WHERE target_section_number = :target_section_number AND
-			edition_id = :edition_id';
 		$update_statement = $this->db->prepare($update_sql);
+		$update_statement->execute([':edition_id' => $this->edition_id]);
 
-		$insert_sql = 'INSERT INTO laws_references (law_id, target_section_number,
-			target_law_id, mentions, date_created, edition_id) VALUES (:law_id,
-			:target_section_number, :target_law_id, :mentions, :date_created,
-			:edition_id) ON DUPLICATE KEY UPDATE mentions=mentions';
-		$insert_statement = $this->db->prepare($insert_sql);
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS unique_sections');
 
 		/*
-		 * We don't want anything weird to happen since we're messing with this
-		 * table while iterating over it. So let's fetchAll for safety's sake,
-		 * even if it's inefficient to keep all of this in memory.
+		 * Where a section number matches more than one law, add a row for each
+		 * match. The original, still-unresolved row (target_law_id = 0) is
+		 * deleted by the cleanup step below.
+		 *
+		 * As above, the section numbers are collected into a temporary table
+		 * whose key is in the collation of the column it will be joined
+		 * against, so that the join can use an index.
 		 */
-		$laws_references = $existing_statement->fetchAll(PDO::FETCH_ASSOC);
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS duplicate_sections');
+		$this->db->exec('CREATE TEMPORARY TABLE duplicate_sections (
+				section VARCHAR(255) COLLATE utf8mb3_bin NOT NULL,
+				law_id INT UNSIGNED NOT NULL,
+				PRIMARY KEY (section, law_id)
+			) ENGINE=InnoDB');
 
-		foreach($laws_references as $laws_reference)
-		{
-			$this->logger->message('Matching ' .
-				$laws_reference['target_section_number'], 1);
-			/*
-			 * We may have many-to-one, so handle that.
-			 */
-			$laws_args = [
-				':section_number' => $laws_reference['target_section_number'],
+		$collect_sql = 'INSERT INTO duplicate_sections (section, law_id)
+			SELECT laws.section COLLATE utf8mb3_bin, laws.id
+			FROM laws
+			INNER JOIN
+				(SELECT section
+					FROM laws
+					WHERE edition_id = :grouped_edition_id
+					GROUP BY section
+					HAVING COUNT(*) > 1) AS duplicated
+				ON duplicated.section = laws.section
+			WHERE laws.edition_id = :edition_id';
+
+		$collect_statement = $this->db->prepare($collect_sql);
+		$collect_statement->execute(
+			[
+				':grouped_edition_id' => $this->edition_id,
 				':edition_id' => $this->edition_id
-			];
-			$laws_result = $laws_statement->execute($laws_args);
+			]
+		);
 
-			/*
-			 * If we have precisely one record, we can just update in place.
-			 */
-			if($laws_statement->rowCount() == 1)
-			{
-				$law = $laws_statement->fetch(PDO::FETCH_ASSOC);
+		$insert_sql = 'INSERT INTO laws_references
+				(law_id, target_section_number, target_law_id, mentions,
+					date_created, edition_id)
+			SELECT unresolved.law_id, unresolved.target_section_number,
+				duplicate_sections.law_id, unresolved.mentions,
+				unresolved.date_created, unresolved.edition_id
+			FROM laws_references AS unresolved
+			INNER JOIN duplicate_sections
+				ON duplicate_sections.section = unresolved.target_section_number
+			WHERE unresolved.edition_id = :edition_id
+			AND unresolved.target_law_id = 0
+			ON DUPLICATE KEY UPDATE mentions = laws_references.mentions';
 
-				$this->logger->message('Updating  ' .
-					$laws_reference['target_section_number'] . ' with ' .
-					$law['id'], 1);
+		$insert_statement = $this->db->prepare($insert_sql);
+		$insert_statement->execute([':edition_id' => $this->edition_id]);
 
-				$update_args = [
-					':target_law_id' => $law['id'],
-					':target_section_number' =>
-						$laws_reference['target_section_number'],
-					':edition_id' => $this->edition_id
-				];
-				$update_statement->execute($update_args);
-			}
-
-			/*
-			 * If we have more than one, we must create new records.
-			 */
-			elseif($laws_statement->rowCount() > 1)
-			{
-				while($law = $laws_statement->fetch(PDO::FETCH_ASSOC))
-				{
-					$this->logger->message('Adding new records for ' .
-						$laws_reference['target_section_number'] . ' with ' .
-						$law['id'], 1);
-
-					$insert_args = [
-						':law_id' => $laws_reference['law_id'],
-						':target_section_number' =>
-							$laws_reference['target_section_number'],
-						':target_law_id' => $law['id'],
-						':mentions' => $laws_reference['mentions'],
-						':date_created' => $laws_reference['date_created'],
-						':edition_id' => $this->edition_id
-					];
-					$insert_statement->execute($insert_args);
-				}
-			}
-
-			/*
-			 * Otherwise, we have no match - do nothing.
-			 */
-			else
-			{
-				$this->logger->message('No match for  ' .
-					$laws_reference['target_section_number'], 1);
-			}
-		}
+		$this->db->exec('DROP TEMPORARY TABLE IF EXISTS duplicate_sections');
 
 		/*
 		 * Any unresolved target section numbers are spurious (strings that
 		 * happen to match our section PCRE), and can be deleted.
 		 */
-		$this->logger->message('Deleting unresolved laws_references', 3);
+		$this->logger->message('Deleting unresolved laws_references', 5);
 
 		$sql = 'DELETE FROM laws_references WHERE target_law_id = :target_law_id
 			AND edition_id = :edition_id';

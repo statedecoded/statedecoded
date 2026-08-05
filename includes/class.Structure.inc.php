@@ -615,6 +615,27 @@ class Structure
 		}
 
 		/*
+		 * Every law within a given structural unit yields an identical listing, and the export
+		 * process calls this method once per law, so remember the most recent result. Without
+		 * this, exporting a structural unit that contains N laws repeats N+1 queries N times.
+		 * A single-slot cache suffices, because callers proceed through laws one structural
+		 * unit at a time.
+		 */
+		static $cache_key;
+		static $cache_laws;
+
+		$my_key = $this->id . ':' . ($this->edition_id ?? '');
+
+		if ($cache_key === $my_key)
+		{
+			/*
+			 * Return a deep copy, so that any changes that a caller makes to the listing cannot
+			 * contaminate the cached original.
+			 */
+			return is_array($cache_laws) ? unserialize(serialize($cache_laws)) : $cache_laws;
+		}
+
+		/*
 		 * Assemble the SQL query. Only get sections that haven't been repealed. We order by the
 		 * order_by field primarily, but we also order by section as a backup, in case something
 		 * should fail with the order_by field. The section column is not wholly reliable for
@@ -666,6 +687,8 @@ class Structure
 
 		if ( ($result === false) || ($statement->rowCount() == 0) )
 		{
+			$cache_key = $my_key;
+			$cache_laws = false;
 			return false;
 		}
 
@@ -675,14 +698,8 @@ class Structure
 		$laws = [];
 
 		/*
-		 * Instantiate our laws class.
-		 */
-		$law = new Law(['db' => $this->db]);
-
-		/*
 		 * Return the result as an object, built up as we loop through the results.
 		 */
-		$i=0;
 		while ($section = $statement->fetch(PDO::FETCH_OBJ))
 		{
 
@@ -694,14 +711,70 @@ class Structure
 				$section->catch_line = '[Untitled]';
 			}
 
-			$law->section_id = $section->id;
-			$section->metadata = $law->get_metadata();
-
 			$laws[] = $section;
 
 		}
 
-		return $laws;
+		/*
+		 * Gather the metadata for all of these laws with a single query, rather than issuing
+		 * a query for every law individually.
+		 */
+		$sql_args = [];
+		$placeholders = [];
+		foreach ($laws as $key => $section)
+		{
+			$placeholders[] = ':law_id' . $key;
+			$sql_args[':law_id' . $key] = $section->id;
+		}
+
+		$sql = 'SELECT law_id, id, meta_key, meta_value
+				FROM laws_meta
+				WHERE law_id IN (' . implode(', ', $placeholders) . ')';
+
+		$statement = $this->db->prepare($sql);
+		$result = $statement->execute($sql_args);
+
+		/*
+		 * Group the metadata records by law.
+		 */
+		$law_metadata = [];
+
+		if ($result !== false)
+		{
+			while ($field = $statement->fetch(PDO::FETCH_OBJ))
+			{
+				$law_id = $field->law_id;
+				unset($field->law_id);
+				$law_metadata[$law_id][] = $field;
+			}
+		}
+
+		/*
+		 * Instantiate our laws class, to reformat each law's metadata records. A law with no
+		 * metadata gets FALSE, matching what Law::get_metadata() returns in that case.
+		 */
+		$law = new Law(['db' => $this->db]);
+
+		foreach ($laws as $section)
+		{
+			if (isset($law_metadata[$section->id]))
+			{
+				$section->metadata = $law->rotate_metadata($law_metadata[$section->id]);
+			}
+			else
+			{
+				$section->metadata = false;
+			}
+		}
+
+		/*
+		 * Save this listing, in case the next call is for the same structural unit, and return
+		 * a deep copy (as above).
+		 */
+		$cache_key = $my_key;
+		$cache_laws = $laws;
+
+		return unserialize(serialize($laws));
 	}
 
 	/**

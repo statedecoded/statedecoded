@@ -76,13 +76,34 @@ class ExportAction extends CliAction
 			 * Rebuild every bulk download file for this edition. This deletes the
 			 * existing downloads/<slug>/ directory and regenerates it from scratch.
 			 */
-			$parser->export();
+			/*
+			 * export() reports failures by returning false, having already logged each one, so
+			 * the exit code has to be set from its return value. Without this, an export that
+			 * wrote nothing at all still finished with "Done." and a success exit code.
+			 */
+			if ($parser->export() === false)
+			{
+				$this->result = 1;
+
+				$message = 'Export failed: the bulk downloads for edition "' . $edition->slug
+					. '" are incomplete.';
+
+				$this->logger->message($message, 10);
+				fwrite(STDERR, $message . "\n");
+
+				return '';
+			}
 
 			$this->logger->message('Done.', 10);
 		}
-		catch (Exception $e)
+		/*
+		 * Catch Throwable, not just Exception: a PHP Error is not an Exception, and would
+		 * otherwise escape this handler and end the export with a success exit code.
+		 */
+		catch (Throwable $e)
 		{
 			$this->result = 1;
+			fwrite(STDERR, 'Export failed: ' . $e->getMessage() . "\n");
 			return 'Export failed: ' . $e->getMessage();
 		}
 

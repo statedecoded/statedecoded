@@ -4,11 +4,79 @@
     &:hover {
       background-image: url('../images/nav-icons/nav_pinned-hover.svg');
     }
+
+    /*
+     * The badge is positioned against the link, which is otherwise static.
+     */
+    position: relative;
+  }
+}
+
+/*
+ * A count of pinned laws, overlapping the top right of the navigation icon.
+ *
+ * Hidden until there is something to count: .has-pins is added by
+ * favlaws.updateCount() whenever the count is one or more. Sized with
+ * min-width and horizontal padding rather than a fixed width, so that a
+ * three-character "99+" widens the badge instead of overflowing it.
+ */
+.pin-count {
+  display: none;
+
+  &.has-pins {
+    display: block;
+  }
+
+  background-color: $negative-red;
+  border-radius: 9px;
+  color: $white;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 18px;
+  min-width: 18px;
+  padding: 0 5px;
+  text-align: center;
+
+  position: absolute;
+    top: 4px;
+    /*
+     * The icon is 30px wide and centred, so its right edge sits 15px right of
+     * centre. Overlap it slightly.
+     */
+    left: 50%;
+  margin-left: 6px;
+
+  /*
+   * On smartphones the navigation becomes a stack of full-width rows with
+   * left-aligned text and no icon above the label, so the badge is placed
+   * against the right edge of the row instead.
+   */
+  @include respond-to(smartphone) {
+    top: 50%;
+    left: auto;
+    right: 15px;
+    margin-top: -9px;
+    margin-left: 0;
   }
 }
 
 .pinned-law-list {
   margin-left: 0;
+}
+
+/*
+ * The dialog's width lives here rather than in the JavaScript, which passes
+ * width: 'auto' and leaves the sizing to us.
+ *
+ * jQuery UI wraps the dialog in a generated .ui-dialog element and sets its
+ * width as an inline style, so the width must be set on that wrapper and must
+ * be !important to take effect. Capping with max-width keeps the dialog on
+ * screen at narrow viewports.
+ */
+.pinned-laws-dialog {
+  width: 400px !important;
+  max-width: 90vw;
 }
 
 #pinnedModal {

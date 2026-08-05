@@ -8,6 +8,8 @@ htdocs/themes/StateDecoded2013/static/css/jquery.qip.min.css
 htdocs/themes/StateDecoded2013/static/css/jquery.qip.min.map
 htdocs/themes/StateDecoded2013/static/css/images/
 htdocs/themes/StateDecoded2013/static/fonts/font-awesome/
+htdocs/themes/StateDecoded2013/static/fonts/webfonts/
+htdocs/themes/StateDecoded2013/static/scss/dependencies/_webfonts.scss
 htdocs/admin/.htpasswd
 htdocs/admin/xml/
 htdocs/admin/import-data/

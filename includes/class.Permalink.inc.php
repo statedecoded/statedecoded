@@ -16,6 +16,19 @@ class Permalink
 {
 	protected $db;
 
+	/*
+	 * How many permalinks this object has created. Rebuilding the permalinks for a full legal
+	 * code creates tens of thousands of them and takes many minutes, so we keep a count in order
+	 * to report progress.
+	 */
+	public $created_count = 0;
+
+	/*
+	 * How often to report that progress, in records. Reporting on every insert would bury the
+	 * rest of the log.
+	 */
+	public $report_every = 1000;
+
 	public function __construct($args = [])
 	{
 		/*
@@ -53,6 +66,21 @@ class Permalink
 		}
 
 		$insert_result = $insert_statement->execute();
+
+		/*
+		 * Report progress periodically. Rebuilding a full legal code's permalinks runs for many
+		 * minutes with nothing else to show for itself, which is indistinguishable from being
+		 * hung. The total is not known in advance -- the structure is walked recursively -- so
+		 * this is a running count rather than a proportion.
+		 */
+		$this->created_count++;
+
+		if ( isset($this->logger) && ($this->report_every > 0)
+			&& (($this->created_count % $this->report_every) === 0) )
+		{
+			$this->logger->message('Created ' . number_format($this->created_count)
+				. ' permalinks', 5);
+		}
 
 		return $insert_result;
 	}

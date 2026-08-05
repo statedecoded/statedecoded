@@ -17,6 +17,8 @@ class APISuggestController extends BaseAPIController
 	function handle($args)
 	{
 
+		global $db;
+
 		/*
 		 * Make sure we have a search term.
 		 */
@@ -32,39 +34,48 @@ class APISuggestController extends BaseAPIController
 		$term = filter_var($args['term'], FILTER_DEFAULT);
 
 		/*
-		 * Append an asterix to the search term, so that Solr can suggest autocomplete terms.
+		 * Suggest section numbers and catch lines that begin with the search term. Escape any
+		 * characters that LIKE treats as wildcards.
 		 */
-		$term .= '*';
+		$prefix = addcslashes($term, '%_') . '%';
+
+		$sql = 'SELECT DISTINCT section AS term FROM laws
+				WHERE section LIKE :prefix_section';
+		$sql_args = [
+			':prefix_section' => $prefix,
+			':prefix_catch_line' => $prefix
+		];
 
 		/*
-		 * Initialize Solarium.
+		 * Only suggest laws from the current edition, when we know what that is.
 		 */
-		$client = SolrSearchEngine::make_client(json_decode(SEARCH_CONFIG, true));
+		if (defined('EDITION_ID'))
+		{
+			$sql .= ' AND edition_id = :edition_id_section';
+			$sql_args[':edition_id_section'] = EDITION_ID;
+		}
 
-		/*
-		 * Set up our query.
-		 */
-		$query = $client->createSuggester();
-		$query->setHandler('suggest');
-		$query->setQuery($term);
-		$query->setCount(5);
+		$sql .= ' UNION
+				SELECT DISTINCT catch_line AS term FROM laws
+				WHERE catch_line LIKE :prefix_catch_line';
 
-		/*
-		 * Execute the query.
-		 */
-		$search_results = $client->suggester($query);
+		if (defined('EDITION_ID'))
+		{
+			$sql .= ' AND edition_id = :edition_id_catch_line';
+			$sql_args[':edition_id_catch_line'] = EDITION_ID;
+		}
 
-		/*
-		 * getAll() returns a flat array of all suggestion strings across all dictionaries.
-		 */
-		$all_suggestions = $search_results->getAll();
+		$sql .= ' LIMIT 5';
+
+		$statement = $db->prepare($sql);
+		$result = $statement->execute($sql_args);
 
 		$response = new stdClass();
 
 		/*
 		 * If there are no results.
 		 */
-		if (count($all_suggestions) == 0)
+		if ($result === false || $statement->rowCount() == 0)
 		{
 
 			$response->terms = false;
@@ -79,7 +90,7 @@ class APISuggestController extends BaseAPIController
 
 			$response->terms = [];
 			$i = 0;
-			foreach ($all_suggestions as $suggestion)
+			while ($suggestion = $statement->fetchColumn())
 			{
 				$response->terms[] = [
 					'id' => $i,

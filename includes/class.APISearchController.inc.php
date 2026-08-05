@@ -58,36 +58,32 @@ class APISearchController extends BaseAPIController
 		}
 
 		/*
-		 * Initialize Solarium.
+		 * Initialize the configured search engine.
 		 */
-		$client = SolrSearchEngine::make_client(json_decode(SEARCH_CONFIG, true));
+		$client = new SearchIndex(
+			[
+				'config' => json_decode(SEARCH_CONFIG, true)
+			]
+		);
 
 		/*
-		 * Set up our query.
+		 * Execute the query, returning the first 100 results.
 		 */
-		$query = $client->createSelect();
-		$query->setQuery($term);
-
-		/*
-		 * We want the most useful bits extracted as search results snippets.
-		 */
-		$hl = $query->getHighlighting();
-		$hl->setFields('catch_line, text');
-
-		/*
-		 * Specify that we want the first 100 results.
-		 */
-		$query->setStart(0)->setRows(100);
-
-		/*
-		 * Execute the query.
-		 */
-		$search_results = $client->select($query);
-
-		/*
-		 * Display uses of the search terms in a preview of the result.
-		 */
-		$highlighted = $search_results->getHighlighting();
+		try
+		{
+			$search_results = $client->search(
+				[
+					'q' => decode_entities($term),
+					'page' => 1,
+					'per_page' => 100
+				]
+			);
+		}
+		catch (Exception $error)
+		{
+			json_error('Search failed with the error "' . $error->getMessage() . '".');
+			die();
+		}
 
 		$response = new stdClass();
 		$response->results = new stdClass();
@@ -95,7 +91,7 @@ class APISearchController extends BaseAPIController
 		/*
 		 * If there are no results.
 		 */
-		if (count($search_results) == 0)
+		if ($search_results->get_count() == 0)
 		{
 
 			$response->records = 0;
@@ -103,63 +99,48 @@ class APISearchController extends BaseAPIController
 
 		}
 
-		/*
-		 * If we have results.
-		 */
-
-		/*
-		 * Instantiate the Law class.
-		 */
-		$law = new Law;
-
-		/*
-		 * Save an array of the legal code's structure, which we'll use to properly identify the structural
-		 * data returned by Solr. We hack off the last element of the array, since that identifies the laws
-		 * themselves, not a structural unit.
-		 */
-		$code_structures = array_slice(explode(',', STRUCTURE), 0, -1);
-
 		$i = 0;
-		foreach ($search_results as $document)
+		foreach ($search_results->get_results() as $result)
 		{
 
 			/*
-			 * Attempt to display a snippet of the indexed law.
+			 * The engine returns both laws and structural units; only laws belong in this
+			 * method's results.
 			 */
-			$snippet = $highlighted->getResult($document->id);
-			if ($snippet != false)
+			if ($result->object_type != 'law')
 			{
-
-				if (!isset($response->results->{$i}))
-				{
-					$response->results->{$i} = new stdClass();
-					$response->results->{$i}->excerpt = '';
-				}
-
-				/*
-				 * Build the snippet up from the snippet object.
-				 */
-				foreach ($snippet as $field => $highlight)
-				{
-					$response->results->{$i}->excerpt .= strip_tags( implode(' ... ', $highlight) )
-						. ' ... ';
-				}
-
-				/*
-				 * Use an appropriate closing ellipsis.
-				 */
-				if (substr($response->results->{$i}->excerpt, -6) == '. ... ')
-				{
-					$response->results->{$i}->excerpt = substr($response->results->{$i}->excerpt, 0, -6)
-						. '....';
-				}
-
-				$response->results->{$i}->excerpt = trim($response->results->{$i}->excerpt);
-
+				continue;
 			}
 
 			/*
-			 * At the default level of verbosity, just give the data indexed by Solr, plus the URL.
+			 * Retrieve the full law, which the search engine's lean result rows do not carry.
+			 */
+			$law = new Law;
+			$law->law_id = $result->id;
+			$document = $law->get_law();
+
+			if ($document === false)
+			{
+				continue;
+			}
+
+			/*
+			 * Display uses of the search terms in a preview of the result.
+			 */
+			$excerpt = $this->excerpt($document->full_text ?? '', $term);
+
+			if (!isset($response->results->{$i}))
+			{
+				$response->results->{$i} = new stdClass();
+			}
+
+			if ($excerpt !== false)
+			{
+				$response->results->{$i}->excerpt = $excerpt;
+			}
+
+			/*
+			 * At the default level of verbosity, just give the law's basic data, plus the URL.
 			 */
 			if ($detailed === false)
 			{
@@ -167,24 +148,30 @@ class APISearchController extends BaseAPIController
 				/*
 				 * Store the relevant fields within the response we'll send.
 				 */
-				$response->results->{$i}->section_number = $document->section;
+				$response->results->{$i}->section_number = $document->section_number;
 				$response->results->{$i}->catch_line = $document->catch_line;
-				$response->results->{$i}->text = $document->text;
-				$response->results->{$i}->url = $law->get_url($document->section);
-				$response->results->{$i}->score = $document->score;
-				$response->results->{$i}->ancestry = (object) array_combine($code_structures, explode('/', $document->structure));
+				$response->results->{$i}->text = $document->full_text;
+				$url = $law->get_url($result->object_id, $result->edition_id);
+				$response->results->{$i}->url = $url->url ?? null;
+				if (isset($document->ancestry))
+				{
+					$response->results->{$i}->ancestry = $document->ancestry;
+				}
 
 			}
 
 			/*
-			 * At a higher level of verbosity, replace the data indexed by Solr with the data provided
-			 * by Law::get_law(), at *its* default level of verbosity.
+			 * At a higher level of verbosity, provide the data returned by Law::get_law(), at
+			 * *its* default level of verbosity.
 			 */
 			else
 			{
-				$law->section_number = $document->section;
-				$response->results->{$i} = $law->get_law();
-				$response->results->{$i}->score = $document->score;
+				$excerpt_value = $response->results->{$i}->excerpt ?? null;
+				$response->results->{$i} = $document;
+				if ($excerpt_value !== null)
+				{
+					$response->results->{$i}->excerpt = $excerpt_value;
+				}
 			}
 
 			$i++;
@@ -192,12 +179,10 @@ class APISearchController extends BaseAPIController
 		}
 
 		/*
-		 * Provide the total number of available documents, beyond the number returned by or available
-		 * via the API.
+		 * Provide the total number of available records, beyond the number returned by or
+		 * available via the API. Note that this includes matching structural units, not just laws.
 		 */
-		$response->total_records = $search_results->getNumFound();
-
-
+		$response->total_records = $search_results->get_count();
 
 		/*
 		 * If the request contains a specific list of fields to be returned.
@@ -234,4 +219,55 @@ class APISearchController extends BaseAPIController
 		$this->render($response, 'OK');
 
 	} /* handle() */
-} /* class APIStructureController */
+
+	/*
+	 * Build a short excerpt of the law's text, centered on the first appearance of the search
+	 * term. Returns false if the text is empty.
+	 */
+	public function excerpt($text, $term, $radius = 150)
+	{
+
+		$text = trim(strip_tags($text));
+		if (strlen($text) == 0)
+		{
+			return false;
+		}
+
+		/*
+		 * Find the first search keyword that appears in the text, and center the excerpt on it.
+		 */
+		$position = false;
+		foreach (SqlSearchEngine::tokenize($term) as $keyword)
+		{
+			$position = stripos($text, $keyword);
+			if ($position !== false)
+			{
+				break;
+			}
+		}
+
+		if ($position === false)
+		{
+			$position = 0;
+		}
+
+		$start = max(0, $position - $radius);
+		$excerpt = substr($text, $start, $radius * 2);
+
+		/*
+		 * Trim to word boundaries, with ellipses marking elided text.
+		 */
+		if ($start > 0)
+		{
+			$excerpt = '... ' . preg_replace('/^\S*\s/', '', $excerpt);
+		}
+		if ( ($start + $radius * 2) < strlen($text) )
+		{
+			$excerpt = preg_replace('/\s\S*$/', '', $excerpt) . ' ...';
+		}
+
+		return $excerpt;
+
+	}
+
+} /* class APISearchController */

@@ -3,7 +3,7 @@
 /**
  * Abstract class for interfacing with a search engine results for The State
  * Decoded. Implement this and SearchEngineInterface to add your own search
- * engine interfaces.  See the Solr and Sql engines for examples.
+ * engine interfaces.  See the Sql engine for an example.
  *
  * PHP version 8
  *
