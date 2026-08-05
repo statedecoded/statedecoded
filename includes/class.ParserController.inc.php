@@ -2062,11 +2062,19 @@ class ParserController
 		}
 
 		/*
-		 * Make sure that the configuration file is writable.
+		 * Make sure that the configuration file is writable, since the importer writes the
+		 * edition ID and, on a new installation, the API key into it.
+		 *
+		 * Check the file that was actually loaded, rather than assuming it is
+		 * INCLUDE_PATH/config.inc.php: the CLI's -c switch can point anywhere, and a
+		 * deployment that runs with an alternate config has no config.inc.php at all.
 		 */
-		if (is_writable(INCLUDE_PATH . '/config.inc.php') !== true)
+		$config_file = defined('CONFIG_FILE') ? CONFIG_FILE : INCLUDE_PATH . '/config.inc.php';
+
+		if (is_writable($config_file) !== true)
 		{
-			$this->logger->message('config.inc.php must be writable by the server', 10);
+			$this->logger->message(basename($config_file)
+				. ' must be writable by the server (' . $config_file . ')', 10);
 			$error = true;
 		}
 
