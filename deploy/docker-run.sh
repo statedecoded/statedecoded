@@ -8,11 +8,24 @@ if [ ! -f ../.env ]; then
     echo "Created .env from .env.example — edit it if needed before re-running."
 fi
 
-if [ ! -f ../htdocs/themes/StateDecoded2013/static/js/vendor/jquery.min.js ]; then
-    echo "Front-end assets missing — running npm install && npm run build..."
-    (cd .. && npm install && npm run build)
-fi
+# Rebuild the front-end assets if any of them are missing. Each path below
+# stands for one group of build outputs, so that adding a new kind of asset --
+# the self-hosted webfonts, say -- causes an existing checkout to rebuild
+# rather than silently starting up without it.
+ASSET_ROOT=../htdocs/themes/StateDecoded2013/static
+for asset in \
+    "$ASSET_ROOT/js/vendor/jquery.min.js" \
+    "$ASSET_ROOT/css/application.css" \
+    "$ASSET_ROOT/fonts/font-awesome/fontawesome-webfont.woff2" \
+    "$ASSET_ROOT/fonts/webfonts/lato-latin-400-normal.woff2" \
     "$ASSET_ROOT/scss/dependencies/_webfonts.scss"
+do
+    if [ ! -f "$asset" ]; then
+        echo "Front-end assets missing ($(basename "$asset")) — running npm install && npm run build..."
+        (cd .. && npm install && npm run build)
+        break
+    fi
+done
 
 docker compose up --build -d
 docker compose ps
