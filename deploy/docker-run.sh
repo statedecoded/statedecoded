@@ -12,6 +12,7 @@ if [ ! -f ../htdocs/themes/StateDecoded2013/static/js/vendor/jquery.min.js ]; th
     echo "Front-end assets missing — running npm install && npm run build..."
     (cd .. && npm install && npm run build)
 fi
+    "$ASSET_ROOT/scss/dependencies/_webfonts.scss"
 
 docker compose up --build -d
 docker compose ps
