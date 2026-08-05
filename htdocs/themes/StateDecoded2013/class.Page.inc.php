@@ -150,22 +150,6 @@ class StateDecoded2013__Page extends Page
 		}
 
 		/*
-		 * If a Typekit ID has been provided, insert the JavaScript.
-		 */
-		if (defined('TYPEKIT_ID'))
-		{
-			$this->add_asset('typekit_js',
-				[
-					'path' => '//use.typekit.net/' .  TYPEKIT_ID . '.js',
-					'type' => 'javascript'
-				]
-			);
-
-			$content->append('javascript',
-				'try{Typekit.load();}catch(e){};');
-		}
-
-		/*
 		 * Setup assets
 		 */
 		$this->render_assets($template, $content);

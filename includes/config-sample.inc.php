@@ -283,23 +283,6 @@ define('PLUGINS', json_encode([
 // define('GOOGLE_ANALYTICS_ID', 'UA-XXXXX-X');
 
 /*
- * The default theme no longer requires Typekit: its typefaces (Lato,
- * Merriweather and Crimson Text) are self-hosted, installed from npm and
- * served from the theme's own fonts directory.
- *
- * This setting remains for deployments that use Typekit for other typefaces.
- * If you have a Portfolio-level Typekit account, enter the Typekit ID for your
- * website here. The Typekit ID is found in the HTML snippet that Typekit
- * provides you with, like such:
- *
- * <script type="text/javascript" src="http://use.typekit.net/abc1efg.js"></script>
- * <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
- *
- * The Typekit ID is "abc1efg".
- */
-// define('TYPEKIT_ID', 'abc1efg');
-
-/*
  * If you want to display court decisions that affect each law using CourtListener's REST API
  * <https://www.courtlistener.com/api/rest-info/>, you must register for an account and enter your
  * username and password here. See the get_court_decisions() method in class.State-sample.inc.php
