@@ -50,11 +50,11 @@ There are two ways.
 2. Skip XML entirely and [modify the included parser](https://docs.statedecoded.com/parser.html) to import it in the format in which you have it.
 
 ## Project documentation
-Project documentation can be found at [docs.statedecoded.com](https//docs.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](https://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](https://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
+Project documentation can be found at [docs.statedecoded.com](https://docs.statedecoded.com/), which explains how to install the software, configure it, customize it, use the API, and more. The documentation is stored [as a GitHub project](https://github.com/statedecoded/documentation/), with its content automatically published via [Jekyll](https://jekyllrb.com/), so in addition to reading the documentation, you are welcome to make improvements to it!
 
 ## How to help
 * Use State Decoded sites and share your feedback in the form of [filing issues](https://github.com/statedecoded/statedecoded/issues/new)—suggestions for new features, notifications of bugs, etc.
-* Write or edit documentation on [the wiki](https://github.com/statedecoded/statedecoded/wiki).
+* Write or edit [documentation](https://docs.statedecoded.com/).
 * Read through [unresolved issues](https://github.com/statedecoded/statedecoded/issues) and comment on those on which you have something to add, to help resolve them.
 * Contribute code to [fix bugs or add features](https://github.com/statedecoded/statedecoded/issues).
 * Comb through [existing code](https://github.com/statedecoded/statedecoded) to clean it up—standardizing code formatting, adding docblocks, or editing/adding comments.
