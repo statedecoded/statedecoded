@@ -19,6 +19,27 @@ require_once(INCLUDE_PATH . 'class.SearchEngineInterface.inc.php');
 class SqlSearchEngine extends SearchEngineInterface
 {
 	/*
+	 * A match on a structural unit's name is a match on a title, which is a
+	 * stronger signal than a match buried in the body of a law. Structures have
+	 * only a name to match against, so their relevance score is weighted up to
+	 * keep them competitive with laws in the combined ranking.
+	 */
+	const TITLE_RELEVANCE_WEIGHT = 2;
+
+	/*
+	 * InnoDB will not index tokens shorter than innodb_ft_min_token_size. The
+	 * default is 3, and the search falls back to REGEXP when a query has no
+	 * token at least this long. Read from the server at run time, since a
+	 * deployment may have configured it differently.
+	 */
+	protected $min_token_size;
+
+	/*
+	 * The indexer's stopword list, read once and reused.
+	 */
+	protected $stopword_cache;
+
+	/*
 	 * Search config.
 	 */
 	protected $config;
@@ -53,10 +74,6 @@ class SqlSearchEngine extends SearchEngineInterface
 	 */
 	protected $last_result;
 
-	/*
-	 * Allow tokenized matches (more expensive).
-	 */
-	public $use_token_match = true;
 
 	public function __construct($args = [])
 	{
@@ -148,10 +165,16 @@ class SqlSearchEngine extends SearchEngineInterface
 		if(isset($query['q']))
 		{
 			/*
-			 * If we have a search term, we first look for the term as an
-			 * individual word (using word boundaries and REGEXP). This is
-			 * weighted the highest for search results - first in the title,
-			 * then in the text.
+			 * Searches run against the full-text indexes on laws and structure
+			 * (see the migration that adds ft_laws_search and
+			 * ft_structure_search). This replaced a REGEXP-based search, which
+			 * no index could serve: every query read every row of every law.
+			 *
+			 * Boolean mode is used rather than natural language mode because it
+			 * supports quoted phrases and +/- operators, and because natural
+			 * language mode silently discards terms appearing in more than half
+			 * the rows -- surprising behaviour in a corpus where words like
+			 * "section" are ubiquitous.
 			 */
 
 			# Note: structure->metadata->text is serialized and not directly searchable in SQL.
@@ -159,83 +182,63 @@ class SqlSearchEngine extends SearchEngineInterface
 			$law_where_or = [];
 			$structure_where_or = [];
 
+			/*
+			 * A search for a section number should find that law, and section
+			 * numbers are not usefully tokenized by the full-text indexer. This
+			 * is an exact, indexed lookup.
+			 */
 			$law_where_or[] = 'section = :term';
 			$structure_where_or[] = 'name = :term';
 			$query_args[':term'] = $query['q'];
 
-			// Remove any quotes, and apply our regexp word boundaries.
-			$query_args[':term_boundary'] = SqlSearchEngine::word_boundary(
-				str_replace('"', '', $query['q'])
-			);
+			$boolean_query = $this->boolean_query($query['q']);
 
-			// Add our query
-			$law_where_or[] = 'catch_line REGEXP :term_boundary';
-			$law_where_or[] = 'text REGEXP :term_boundary';
-			$structure_where_or[] = 'name REGEXP :term_boundary';
-
-			// Add some fields to use in the order
-			$law_fields[] = 'catch_line REGEXP :term_boundary AS title_exect_match';
-			$law_fields[] = 'text REGEXP :term_boundary AS text_exect_match';
-			$structure_fields[] = 'name REGEXP :term_boundary AS title_exact_match';
-			$structure_fields[] = '0 AS text_exact_match';
-
-			// Order.  In the end, we want 1) exact title, 2) any title, 3) exact text,
-			// 4) any text.  This properly benefits structures as well as laws.
-			$order[0] = 'title_exect_match DESC';
-			$order[2] = 'text_exect_match DESC';
-
-			/*
-			 * If we have tokenized matches turned on, break the words up into
-			 * tokens and search for each.  This is more resource-intensive!
-			 * This is weighted lower, but still first in the title, then in the
-			 * text.
-			 */
-			if($this->use_token_match && strpos($query['q'], ' ') !== false)
+			if($boolean_query !== '')
 			{
-				// The function below handles quoted items.
-				$keywords = SqlSearchEngine::tokenize($query['q']);
+				$query_args[':match'] = $boolean_query;
 
-				// Only do this search if we have more than one keyword.
-				// Otherwise, we still only care about an exact match.
+				$law_where_or[] =
+					'MATCH(laws.catch_line, laws.text) AGAINST (:match IN BOOLEAN MODE)';
+				$structure_where_or[] =
+					'MATCH(structure.name) AGAINST (:match IN BOOLEAN MODE)';
 
-				if(count($keywords) > 1)
-				{
-					list($title_search, $new_args) =
-						SqlSearchEngine::build_keyword_search(
-						'catch_line', $keywords);
-					$query_args = array_merge($query_args, $new_args);
+				/*
+				 * Relevance, as scored by MySQL. A match in the title is worth
+				 * more than one in the body, so the title score is weighted up;
+				 * this preserves the old ordering, which put title matches
+				 * first, without hand-rolling the arithmetic.
+				 */
+				$law_fields[] = '(MATCH(laws.catch_line, laws.text) '
+					. 'AGAINST (:match_score IN BOOLEAN MODE)) AS relevance';
+				$structure_fields[] = '(MATCH(structure.name) '
+					. 'AGAINST (:match_score_structure IN BOOLEAN MODE) * '
+					. self::TITLE_RELEVANCE_WEIGHT . ') AS relevance';
 
-					$law_where_or[] = implode(' OR ', $title_search);
-					$law_fields[] = '( ' .
-						implode(' + ', array_map('SqlSearchEngine::ifify', $title_search))
-						. ' ) AS title_match';
+				$query_args[':match_score'] = $boolean_query;
+				$query_args[':match_score_structure'] = $boolean_query;
 
+				$order[0] = 'relevance DESC';
+			}
+			else
+			{
+				/*
+				 * Nothing in the search term survived tokenizing -- it is all
+				 * shorter than innodb_ft_min_token_size, or all stopwords. Fall
+				 * back to the old REGEXP search, which has no minimum length.
+				 * It is slow, but it is correct, and these searches are rare.
+				 */
+				$query_args[':term_boundary'] = SqlSearchEngine::word_boundary(
+					str_replace('"', '', $query['q'])
+				);
 
-					list($text_search, $new_args) =
-						SqlSearchEngine::build_keyword_search(
-						'text', $keywords);
-					$query_args = array_merge($query_args, $new_args);
+				$law_where_or[] = 'catch_line REGEXP :term_boundary';
+				$law_where_or[] = 'text REGEXP :term_boundary';
+				$structure_where_or[] = 'name REGEXP :term_boundary';
 
-					$law_where_or[] = implode(' OR ', $text_search);
-					$law_fields[] = '( ' .
-						implode(' + ', array_map('SqlSearchEngine::ifify', $text_search))
-						. ' ) AS text_match';
+				$law_fields[] = '(catch_line REGEXP :term_boundary) AS relevance';
+				$structure_fields[] = '(name REGEXP :term_boundary) AS relevance';
 
-					list($title_search, $new_args) =
-						SqlSearchEngine::build_keyword_search(
-						'name', $keywords);
-					$query_args = array_merge($query_args, $new_args);
-
-					$structure_where_or[] = implode(' OR ', $title_search);
-					$structure_fields[] = '( ' .
-						implode(' + ', array_map('SqlSearchEngine::ifify', $title_search))
-						. ' ) AS title_match';
-
-					$structure_fields[] = '"" AS text_match';
-
-					$order[1] = 'title_match DESC';
-					$order[3] = 'text_match DESC';
-				}
+				$order[0] = 'relevance DESC';
 			}
 
 			if(count($law_where_or))
@@ -319,36 +322,195 @@ class SqlSearchEngine extends SearchEngineInterface
 		return [$sql_query, $query_args];
 	}
 
-	public static function build_keyword_search($search_field, $keywords) {
-		$fields = [];
-		$sql_args = [];
+	/*
+	 * The smallest token InnoDB will index, per innodb_ft_min_token_size.
+	 *
+	 * Read from the server rather than assumed, because a deployment may have
+	 * raised or lowered it. Falls back to MySQL's default if the variable
+	 * cannot be read.
+	 */
+	public function min_token_size()
+	{
 
-		if($keywords) {
-			$i = 0;
-			foreach($keywords as $keyword)
+		if(isset($this->min_token_size))
+		{
+			return $this->min_token_size;
+		}
+
+		$this->min_token_size = 3;
+
+		try
+		{
+			$statement = $this->db->query('SELECT @@innodb_ft_min_token_size');
+			if($statement !== false)
 			{
-				$i++;
+				$size = $statement->fetchColumn();
+				if($size !== false && (int) $size > 0)
+				{
+					$this->min_token_size = (int) $size;
+				}
+			}
+		}
+		catch(Throwable $e)
+		{
+			// Keep the default.
+		}
 
-				// Add slash escaping
-				// This isn't necessary with PDO
-				// $keyword = SqlSearchEngine::escape_regexp($keyword);
+		return $this->min_token_size;
 
-				// Handle wildcards
-				$keyword = SqlSearchEngine::word_boundary($keyword);
+	}
 
-				// Replace remaining wildcards.
-				$keyword = str_replace('\*', '.*', $keyword);
+	/*
+	 * Turn a user's search string into a MySQL boolean-mode expression.
+	 *
+	 * Quoted sections are preserved as phrases; every other word becomes a
+	 * required term. Characters that are operators in boolean mode are stripped
+	 * from the user's words, so that a stray "+" or "-" cannot change the
+	 * meaning of the search or produce a syntax error.
+	 *
+	 * Returns an empty string when nothing usable survives -- when every word is
+	 * shorter than the indexer's minimum token size, for instance -- which tells
+	 * the caller to fall back to a REGEXP search.
+	 */
+	public function boolean_query($search_string)
+	{
 
-				// Build a placeholder token for sql.
-				$placeholder = ':token_' . $i;
+		$minimum = $this->min_token_size();
+		$stopwords = $this->stopwords();
+		$terms = [];
 
-				$fields[] = $search_field . ' REGEXP ' . $placeholder;
-				$sql_args[$placeholder] = $keyword;
+		foreach(SqlSearchEngine::tokenize_with_phrases($search_string) as $token)
+		{
+			/*
+			 * Strip the boolean-mode operators: + - > < ( ) ~ * " @ and the
+			 * comma, which MySQL treats specially inside distance searches.
+			 */
+			$clean = trim(preg_replace('/[+><\(\)~*"@,]+/', ' ', $token['value']));
+
+			if($clean === '')
+			{
+				continue;
+			}
+
+			/*
+			 * A term containing punctuation -- a section number such as
+			 * "18.2-12", say -- is tokenized by MySQL into its separate parts.
+			 * Searching for those parts individually is meaningless, so such a
+			 * term is quoted, which asks for the parts in that order.
+			 */
+			$is_phrase = $token['phrase'] || preg_match('/[^\p{L}\p{N}\s]/u', $clean);
+
+			/*
+			 * Words the indexer will not have stored are dropped: a required
+			 * "+the" matches nothing at all, which would turn a search
+			 * containing a common word into a search returning nothing.
+			 */
+			$words = preg_split('/\s+/', preg_replace('/[^\p{L}\p{N}\s]+/u', ' ', $clean));
+			$indexable = array_filter($words,
+				function($word) use ($minimum, $stopwords) {
+					return (strlen($word) >= $minimum)
+						&& !in_array(strtolower($word), $stopwords);
+				});
+
+			if(count($indexable) === 0)
+			{
+				continue;
+			}
+
+			if($is_phrase)
+			{
+				$terms[] = '+"' . $clean . '"';
+			}
+			else
+			{
+				$terms[] = '+' . $clean;
 			}
 		}
 
-		return [$fields, $sql_args];
+		return implode(' ', $terms);
 
+	}
+
+	/*
+	 * The words the full-text indexer ignores.
+	 *
+	 * Searching for a stopword as a required term matches nothing, so they are
+	 * dropped from the query; if that leaves nothing, the caller falls back to
+	 * a REGEXP search, which does find them.
+	 */
+	public function stopwords()
+	{
+
+		if(isset($this->stopword_cache))
+		{
+			return $this->stopword_cache;
+		}
+
+		$this->stopword_cache = [];
+
+		try
+		{
+			$statement = $this->db->query(
+				'SELECT value FROM information_schema.INNODB_FT_DEFAULT_STOPWORD');
+			if($statement !== false)
+			{
+				$this->stopword_cache = array_map('strtolower',
+					$statement->fetchAll(PDO::FETCH_COLUMN));
+			}
+		}
+		catch(Throwable $e)
+		{
+			// An empty list simply means nothing is treated as a stopword.
+		}
+
+		return $this->stopword_cache;
+
+	}
+
+	/*
+	 * Split a search string into tokens, keeping quoted phrases intact and
+	 * flagged as such.
+	 *
+	 * tokenize() discards the distinction between "water quality" and
+	 * water quality, which is exactly the distinction boolean mode can honour.
+	 */
+	public static function tokenize_with_phrases($string)
+	{
+		$tokens = [];
+		$buffer = '';
+		$in_quotes = false;
+
+		for($i = 0; $i < strlen($string); $i++)
+		{
+			if($string[$i] === '"')
+			{
+				if(strlen(trim($buffer)))
+				{
+					$tokens[] = ['value' => trim($buffer), 'phrase' => $in_quotes];
+				}
+				$buffer = '';
+				$in_quotes = !$in_quotes;
+			}
+			elseif($string[$i] === ' ' && !$in_quotes)
+			{
+				if(strlen(trim($buffer)))
+				{
+					$tokens[] = ['value' => trim($buffer), 'phrase' => false];
+				}
+				$buffer = '';
+			}
+			else
+			{
+				$buffer .= $string[$i];
+			}
+		}
+
+		if(strlen(trim($buffer)))
+		{
+			$tokens[] = ['value' => trim($buffer), 'phrase' => $in_quotes];
+		}
+
+		return $tokens;
 	}
 
 	/*
@@ -440,14 +602,6 @@ class SqlSearchEngine extends SearchEngineInterface
 		}
 
 		return $keyword;
-	}
-
-	/*
-	 * Used for counting, wraps everything in binary IF clauses.
-	 */
-	public static function ifify($string)
-	{
-		return 'IF(' . $string . ', 1,0)';
 	}
 
 	// We don't have a real index, so we don't do anything on delete, successfully.
