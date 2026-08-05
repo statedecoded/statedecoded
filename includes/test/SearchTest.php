@@ -110,4 +110,141 @@ class SearchTest extends PHPUnit\Framework\TestCase
 		$this->assertEquals($all->get_count(), $page->get_count(),
 			'The total count must be unaffected by pagination.');
 	}
+
+
+	// -----------------------------------------------------------------------
+	// Full-text search behaviour
+	//
+	// Searches run through MySQL's full-text indexes. These tests cover the
+	// behaviours that depends on -- phrases, required terms, relevance
+	// ordering -- and the cases that fall back to REGEXP because the full-text
+	// indexer cannot serve them.
+	// -----------------------------------------------------------------------
+
+	public function testMultiWordSearchRequiresEveryWord(): void
+	{
+		$both = $this->engine->search(
+			['q' => 'water quality', 'page' => 1, 'per_page' => 200]);
+		$one = $this->engine->search(
+			['q' => 'water', 'page' => 1, 'per_page' => 200]);
+
+		$this->assertGreaterThan(0, $both->get_count(),
+			'A multi-word search must still find the laws containing both words.');
+
+		$this->assertLessThanOrEqual($one->get_count(), $both->get_count(),
+			'Requiring both words cannot match more laws than requiring one of them.');
+	}
+
+	public function testPhraseSearchIsNarrowerThanItsWords(): void
+	{
+		$phrase = $this->engine->search(
+			['q' => '"water quality"', 'page' => 1, 'per_page' => 200]);
+		$words = $this->engine->search(
+			['q' => 'water quality', 'page' => 1, 'per_page' => 200]);
+
+		$this->assertLessThanOrEqual($words->get_count(), $phrase->get_count(),
+			'An exact phrase cannot appear in more laws than its words appear in together.');
+	}
+
+	public function testResultsAreOrderedByRelevance(): void
+	{
+		$results = $this->engine->search(['q' => 'water', 'page' => 1, 'per_page' => 20]);
+
+		$previous = null;
+		foreach ($results->get_results() as $row)
+		{
+			$this->assertObjectHasProperty('relevance', $row,
+				'Every result must carry a relevance score to be ordered by.');
+
+			if ($previous !== null)
+			{
+				$this->assertLessThanOrEqual((float) $previous, (float) $row->relevance,
+					'Results must be ordered from most to least relevant.');
+			}
+
+			$previous = $row->relevance;
+		}
+	}
+
+	/*
+	 * Stopwords ("the", "of") are absent from the full-text index, so a search
+	 * for one has to fall back to REGEXP rather than silently finding nothing.
+	 */
+	public function testStopwordSearchFallsBackRatherThanFindingNothing(): void
+	{
+		$results = $this->engine->search(['q' => 'the', 'page' => 1, 'per_page' => 10]);
+
+		$this->assertGreaterThan(0, $results->get_count(),
+			'A search for a stopword must fall back to REGEXP, not return nothing.');
+	}
+
+	/*
+	 * Likewise for words shorter than innodb_ft_min_token_size, which the
+	 * indexer never stored.
+	 */
+	public function testShortTermSearchFallsBack(): void
+	{
+		$engine = $this->engine;
+		$minimum = $engine->min_token_size();
+
+		$this->assertGreaterThan(0, $minimum,
+			'The engine must know the indexer minimum token size.');
+
+		$this->assertSame('', $engine->boolean_query(str_repeat('a', $minimum - 1)),
+			'A term below the minimum token size must produce no full-text query, '
+			. 'so that the caller falls back to REGEXP.');
+	}
+
+	public function testSectionNumberSearchIsUnaffectedByTokenizing(): void
+	{
+		$statement = $this->db->query(
+			'SELECT section FROM laws WHERE section LIKE "%.%-%" LIMIT 1');
+		$section = $statement->fetchColumn();
+
+		if ($section === false)
+		{
+			$this->markTestSkipped('No punctuated section numbers in the sample data.');
+		}
+
+		$results = $this->engine->search(['q' => $section, 'page' => 1, 'per_page' => 50]);
+
+		$this->assertGreaterThan(0, $results->get_count(),
+			'Searching for a section number must find the law that bears it.');
+
+		$found = false;
+		foreach ($results->get_results() as $row)
+		{
+			if ($row->object_type === 'law' && $row->id == $this->lawIdForSection($section))
+			{
+				$found = true;
+				break;
+			}
+		}
+
+		$this->assertTrue($found,
+			'The law whose section number was searched for must be among the results.');
+	}
+
+	/*
+	 * Boolean-mode operators in a user's search must not change its meaning or
+	 * cause a syntax error.
+	 */
+	public function testOperatorCharactersAreNeutralized(): void
+	{
+		foreach (['water +++', 'water ~()', '"unclosed quote', 'water @distance'] as $term)
+		{
+			$results = $this->engine->search(['q' => $term, 'page' => 1, 'per_page' => 5]);
+
+			$this->assertGreaterThanOrEqual(0, $results->get_count(),
+				'A search containing "' . $term . '" must execute without error.');
+		}
+	}
+
+	private function lawIdForSection(string $section)
+	{
+		$statement = $this->db->prepare('SELECT id FROM laws WHERE section = :s LIMIT 1');
+		$statement->execute([':s' => $section]);
+
+		return $statement->fetchColumn();
+	}
 }
