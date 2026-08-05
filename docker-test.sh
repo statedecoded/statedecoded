@@ -26,7 +26,7 @@ TEST_LAW_COUNT=$(docker compose -f deploy/docker-compose.yml exec -T db \
     mysql -u statedecoded -pstatedecoded statedecoded_test -sN \
     -e "SELECT COUNT(*) FROM laws;" 2>/dev/null || echo 0)
 if [ "${TEST_LAW_COUNT:-0}" = "0" ]; then
-    echo "Test database is empty — migrating and importing sample data..."
+    echo "Test database is empty — importing sample data..."
     docker compose -f deploy/docker-compose.yml exec -T app \
         php statedecoded \
             -c=deploy/docker/config/config-test.inc.docker.php \
@@ -37,6 +37,14 @@ if [ "${TEST_LAW_COUNT:-0}" = "0" ]; then
             import \
             -d=/var/www/html/deploy/import-data/
     echo "Import complete."
+else
+    # Bring an existing test database up to date. Migrations are cheap when
+    # there is nothing to do, and skipping this leaves anyone with an older
+    # test database failing against schema the tests now depend on.
+    docker compose -f deploy/docker-compose.yml exec -T app \
+        php statedecoded \
+            -c=deploy/docker/config/config-test.inc.docker.php \
+            migrate
 fi
 
 # Fetch a verified API key from the live DB for smoke tests.
