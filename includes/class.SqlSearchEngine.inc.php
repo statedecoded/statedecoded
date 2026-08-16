@@ -40,6 +40,14 @@ class SqlSearchEngine extends SearchEngineInterface
 	protected $stopword_cache;
 
 	/*
+	 * Whether the full-text indexes this engine searches against exist, read
+	 * once and reused. They are added by a migration, not by the baseline
+	 * schema, so an installation whose code has been updated without running
+	 * `statedecoded migrate` will not have them.
+	 */
+	protected $has_fulltext_indexes;
+
+	/*
 	 * Search config.
 	 */
 	protected $config;
@@ -191,7 +199,13 @@ class SqlSearchEngine extends SearchEngineInterface
 			$structure_where_or[] = 'name = :term';
 			$query_args[':term'] = $query['q'];
 
-			$boolean_query = $this->boolean_query($query['q']);
+			/*
+			 * With no full-text index to search, MATCH would fail with error
+			 * 1191 rather than return rows, so the REGEXP path is used instead.
+			 */
+			$boolean_query = $this->has_fulltext_indexes()
+				? $this->boolean_query($query['q'])
+				: '';
 
 			if($boolean_query !== '')
 			{
@@ -222,10 +236,13 @@ class SqlSearchEngine extends SearchEngineInterface
 			else
 			{
 				/*
-				 * Nothing in the search term survived tokenizing -- it is all
-				 * shorter than innodb_ft_min_token_size, or all stopwords. Fall
-				 * back to the old REGEXP search, which has no minimum length.
-				 * It is slow, but it is correct, and these searches are rare.
+				 * Either nothing in the search term survived tokenizing -- it
+				 * is all shorter than innodb_ft_min_token_size, or all
+				 * stopwords -- or this database has no full-text indexes to
+				 * search. Fall back to the old REGEXP search, which has no
+				 * minimum length and needs no index. It is slow, but it is
+				 * correct; on a properly migrated database these searches are
+				 * rare.
 				 */
 				$query_args[':term_boundary'] = SqlSearchEngine::word_boundary(
 					str_replace('"', '', $query['q'])
@@ -357,6 +374,64 @@ class SqlSearchEngine extends SearchEngineInterface
 		}
 
 		return $this->min_token_size;
+
+	}
+
+	/*
+	 * Whether both full-text indexes that this engine's MATCH clauses require
+	 * are present.
+	 *
+	 * These indexes are created by a migration rather than by the baseline
+	 * schema, so they are absent on an installation whose code was updated
+	 * without running `statedecoded migrate`. MySQL answers a MATCH against a
+	 * column list it has no index for with error 1191 rather than with rows, so
+	 * without this check every search on such an installation fails outright.
+	 * Knowing in advance lets the caller use the REGEXP path instead, which
+	 * needs no index.
+	 *
+	 * The column list must match the index exactly: MySQL will not use an index
+	 * on (catch_line, text) to serve MATCH(text) alone. Both columns of
+	 * ft_laws_search are therefore checked, not merely the index's existence.
+	 */
+	public function has_fulltext_indexes()
+	{
+
+		if(isset($this->has_fulltext_indexes))
+		{
+			return $this->has_fulltext_indexes;
+		}
+
+		/*
+		 * Assume the indexes are absent, so that a database we cannot
+		 * interrogate falls back to a search that always works rather than one
+		 * that always fails.
+		 */
+		$this->has_fulltext_indexes = false;
+
+		try
+		{
+			$statement = $this->db->prepare(
+				'SELECT COUNT(DISTINCT TABLE_NAME) FROM information_schema.STATISTICS
+				 WHERE TABLE_SCHEMA = DATABASE() AND INDEX_TYPE = "FULLTEXT"
+				 AND ((TABLE_NAME = "laws" AND COLUMN_NAME IN ("catch_line", "text"))
+				   OR (TABLE_NAME = "structure" AND COLUMN_NAME = "name"))
+				 GROUP BY TABLE_NAME HAVING COUNT(*) = IF(TABLE_NAME = "laws", 2, 1)');
+
+			if($statement !== false && $statement->execute())
+			{
+				/*
+				 * One row per table that is fully indexed; both must be.
+				 */
+				$this->has_fulltext_indexes =
+					count($statement->fetchAll(PDO::FETCH_COLUMN)) === 2;
+			}
+		}
+		catch(Throwable $e)
+		{
+			// Keep the assumption that they are absent.
+		}
+
+		return $this->has_fulltext_indexes;
 
 	}
 

@@ -240,6 +240,121 @@ class SearchTest extends PHPUnit\Framework\TestCase
 		}
 	}
 
+	// -----------------------------------------------------------------------
+	// Missing full-text indexes
+	//
+	// The indexes that MATCH searches against are created by a migration, not
+	// by the baseline schema, so an installation whose code was updated without
+	// running `statedecoded migrate` does not have them. MySQL answers a MATCH
+	// with no matching index with error 1191 rather than with rows, which took
+	// down search in production. Search must degrade to REGEXP instead.
+	// -----------------------------------------------------------------------
+
+	public function testFulltextIndexesAreDetectedWhenPresent(): void
+	{
+		$this->assertTrue($this->engine->has_fulltext_indexes(),
+			'The test database is migrated, so the full-text indexes must be detected.');
+	}
+
+	/*
+	 * MySQL matches MATCH(a, b) only to an index on exactly (a, b), so an index
+	 * covering some of the columns is as useless as no index at all and must be
+	 * reported as absent.
+	 */
+	public function testPartialFulltextIndexCountsAsMissing(): void
+	{
+		$this->withoutFulltextIndexes(function (): void
+		{
+			$this->db->exec('ALTER TABLE laws ADD FULLTEXT INDEX ft_laws_search (text)');
+
+			$engine = new SqlSearchEngine(['db' => $this->db]);
+
+			$this->assertFalse($engine->has_fulltext_indexes(),
+				'An index on (text) cannot serve MATCH(catch_line, text), '
+				. 'so it must count as missing.');
+		});
+	}
+
+	public function testSearchFallsBackWhenFulltextIndexesAreMissing(): void
+	{
+		$expected = $this->engine->search(['q' => 'water', 'page' => 1, 'per_page' => 50]);
+
+		$this->withoutFulltextIndexes(function () use ($expected): void
+		{
+			$engine = new SqlSearchEngine(['db' => $this->db]);
+
+			$this->assertFalse($engine->has_fulltext_indexes(),
+				'The indexes were just dropped, so they must be reported absent.');
+
+			$results = $engine->search(['q' => 'water', 'page' => 1, 'per_page' => 50]);
+
+			$this->assertGreaterThan(0, $results->get_count(),
+				'A search must still find laws with no full-text index to search.');
+
+			$this->assertEquals($expected->get_count(), $results->get_count(),
+				'The REGEXP fallback must find the same laws the full-text search does.');
+		});
+	}
+
+	/*
+	 * The count query and the results query are built separately, so both have
+	 * to take the fallback path; if only one did, the page would report a
+	 * number of results it could not then display.
+	 */
+	public function testFallbackReturnsRowsNotJustACount(): void
+	{
+		$this->withoutFulltextIndexes(function (): void
+		{
+			$engine = new SqlSearchEngine(['db' => $this->db]);
+			$results = $engine->search(['q' => 'water', 'page' => 1, 'per_page' => 10]);
+
+			$this->assertNotEmpty($results->get_results(),
+				'The fallback must return rows, not merely a count.');
+		});
+	}
+
+	/*
+	 * Run a test with the full-text indexes dropped, restoring them afterwards
+	 * even if it fails -- otherwise one failure leaves the test database broken
+	 * for every test that follows.
+	 */
+	private function withoutFulltextIndexes(callable $test): void
+	{
+		$this->db->exec('ALTER TABLE laws DROP INDEX ft_laws_search');
+		$this->db->exec('ALTER TABLE structure DROP INDEX ft_structure_search');
+
+		try
+		{
+			$test();
+		}
+		finally
+		{
+			/*
+			 * Dropping an index that a test already re-created would error, so
+			 * each is dropped again first if it is present.
+			 */
+			foreach ([['laws', 'ft_laws_search'], ['structure', 'ft_structure_search']] as $index)
+			{
+				list($table, $name) = $index;
+
+				$statement = $this->db->prepare(
+					'SELECT COUNT(*) FROM information_schema.STATISTICS
+					 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?');
+				$statement->execute([$table, $name]);
+
+				if ((int) $statement->fetchColumn() > 0)
+				{
+					$this->db->exec('ALTER TABLE `' . $table . '` DROP INDEX `' . $name . '`');
+				}
+			}
+
+			$this->db->exec(
+				'ALTER TABLE laws ADD FULLTEXT INDEX ft_laws_search (catch_line, text)');
+			$this->db->exec(
+				'ALTER TABLE structure ADD FULLTEXT INDEX ft_structure_search (name)');
+		}
+	}
+
 	private function lawIdForSection(string $section)
 	{
 		$statement = $this->db->prepare('SELECT id FROM laws WHERE section = :s LIMIT 1');
