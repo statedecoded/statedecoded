@@ -83,17 +83,44 @@ class Search
 		$output = '';
 		$editions = [];
 
-		// Since we don't have any conditions in our template, we have to build
-		// html here.
-		if(!isset($current_edition))
-		{
-			$current_edition = EDITION_ID;
-		}
-
 		try
 		{
 			$edition_object = new Edition();
 			$editions = $edition_object->all();
+
+			/*
+			 * Since we don't have any conditions in our template, we have to
+			 * build html here.
+			 *
+			 * Only null means "no edition specified". An empty string is the
+			 * "Search All Editions" option, a deliberate choice that must not
+			 * be overridden with a default.
+			 */
+			if(!isset($current_edition))
+			{
+				/*
+				 * Default to the edition the database marks as current, which
+				 * is the newest one. The EDITION_ID constant is not used for
+				 * this: it is written into .htaccess at import time and names
+				 * whichever edition was imported then, so it goes stale as soon
+				 * as a newer edition is published -- leaving the form defaulting
+				 * to an old edition of the code.
+				 */
+				$edition = $edition_object->current();
+
+				if($edition !== false)
+				{
+					$current_edition = $edition->id;
+				}
+				elseif(defined('EDITION_ID'))
+				{
+					/*
+					 * No edition is flagged as current, so fall back to the
+					 * constant rather than leaving the form with no selection.
+					 */
+					$current_edition = EDITION_ID;
+				}
+			}
 		}
 		catch(Exception $error)
 		{

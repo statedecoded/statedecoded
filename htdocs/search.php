@@ -100,10 +100,18 @@ if (!empty($_GET['q']))
 	$content->set('current_edition', $edition_id);
 
 	/*
+	 * An empty edition_id in the query string is the "Search All Editions"
+	 * option, which is a deliberate choice and must not be replaced with a
+	 * default. Its absence means no choice has been made yet, so the form
+	 * should default to the current edition; passing null asks for that.
+	 */
+	$form_edition_id = isset($_GET['edition_id']) ? $edition_id : null;
+
+	/*
 	 * Display our search form.
 	 */
 	$search->query = $q;
-	$body .= $search->display_form($edition_id);
+	$body .= $search->display_form($form_edition_id);
 
 	/*
 	 * Execute the query.
