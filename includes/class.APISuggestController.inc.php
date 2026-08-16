@@ -46,23 +46,25 @@ class APISuggestController extends BaseAPIController
 			':prefix_catch_line' => $prefix
 		];
 
+		$edition_id = $this->current_edition_id();
+
 		/*
 		 * Only suggest laws from the current edition, when we know what that is.
 		 */
-		if (defined('EDITION_ID'))
+		if ($edition_id !== false)
 		{
 			$sql .= ' AND edition_id = :edition_id_section';
-			$sql_args[':edition_id_section'] = EDITION_ID;
+			$sql_args[':edition_id_section'] = $edition_id;
 		}
 
 		$sql .= ' UNION
 				SELECT DISTINCT catch_line AS term FROM laws
 				WHERE catch_line LIKE :prefix_catch_line';
 
-		if (defined('EDITION_ID'))
+		if ($edition_id !== false)
 		{
 			$sql .= ' AND edition_id = :edition_id_catch_line';
-			$sql_args[':edition_id_catch_line'] = EDITION_ID;
+			$sql_args[':edition_id_catch_line'] = $edition_id;
 		}
 
 		$sql .= ' LIMIT 5';
@@ -103,4 +105,46 @@ class APISuggestController extends BaseAPIController
 		$this->render($response, 'OK');
 
 	} /* handle() */
+
+	/**
+	 * The ID of the edition to draw suggestions from, or false if it cannot be
+	 * determined and suggestions should come from every edition.
+	 *
+	 * Read from the database rather than from the EDITION_ID constant. That
+	 * constant is written into .htaccess at import time, so it names whichever
+	 * edition was imported then; if that write ever failed, or the current
+	 * edition was changed by other means, it goes on naming an older edition.
+	 * Because this scoping is exclusive -- suggestions come from the named
+	 * edition and no other -- a stale value means laws added since stop
+	 * autocompleting altogether. The constant remains a fallback for a database
+	 * with no edition flagged current.
+	 */
+	protected function current_edition_id()
+	{
+
+		global $db;
+
+		try
+		{
+			$edition_object = new Edition(['db' => $db]);
+			$edition = $edition_object->current();
+
+			if ($edition !== false)
+			{
+				return $edition->id;
+			}
+		}
+		catch (Exception $error)
+		{
+			// Fall through to the constant.
+		}
+
+		if (defined('EDITION_ID'))
+		{
+			return EDITION_ID;
+		}
+
+		return false;
+
+	} /* current_edition_id() */
 } /* class APISuggestController */
