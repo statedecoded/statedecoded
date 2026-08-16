@@ -181,6 +181,18 @@ class EditionAction extends CliAction
     }
 
     /*
+     * The edition is current in the database, but if the ID could not be
+     * written to .htaccess then EDITION_ID still names the old one, and parts
+     * of the site will go on serving it. The remaining steps below are still
+     * worth running, so this is reported at the end rather than returned here.
+     */
+    if($parser->edition_id_export_error !== true)
+    {
+      $this->result = 1;
+      $this->logger->message($parser->edition_id_export_error, 10);
+    }
+
+    /*
      * The site's URLs are derived from the current edition, so they must be
      * rebuilt, and any cached copies of the old URLs invalidated. Rebuilding
      * the permalinks is by far the slowest part of this, so each step says so
@@ -209,6 +221,12 @@ class EditionAction extends CliAction
     $this->logger->message('Purging the Varnish cache, if there is one.', 5);
     $varnish = new Varnish;
     $varnish->purge();
+
+    if($parser->edition_id_export_error !== true)
+    {
+      return 'Edition "' . $edition->name . '" is now current in the database, but the '
+        . 'edition ID could not be stored: ' . $parser->edition_id_export_error;
+    }
 
     return 'Edition "' . $edition->name . '" is now current. ('
       . $parser->format_duration(microtime(true) - $started) . ')';

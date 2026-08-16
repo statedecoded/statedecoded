@@ -117,7 +117,14 @@ class ImportAction extends CliAction
 							$parser->prune_views();
 							$parser->finish_import();
 
-							$completed = ($export_ok !== false);
+							/*
+							 * Likewise for a failed .htaccess write: the laws are imported, but
+							 * EDITION_ID still names the previous edition, so parts of the site
+							 * go on serving that one. Report it rather than claiming success.
+							 */
+							$edition_id_ok = ($parser->edition_id_export_error === true);
+
+							$completed = ($export_ok !== false) && $edition_id_ok;
 						}
 						else
 						{
@@ -159,6 +166,21 @@ class ImportAction extends CliAction
 
 				$message = 'Import finished, but the export failed: the bulk downloads for this '
 					. 'edition are incomplete. The laws themselves were imported.';
+
+				$this->logger->message($message, 10);
+				fwrite(STDERR, $message . "\n");
+			}
+			elseif (isset($edition_id_ok) && $edition_id_ok === false)
+			{
+				/*
+				 * The laws are imported and this edition is current in the database, but
+				 * .htaccess still names the old one. Say so: the symptom -- parts of the site
+				 * serving the previous edition -- is otherwise hard to trace back to here.
+				 */
+				$this->result = 1;
+
+				$message = 'Import finished, but the edition ID could not be stored: '
+					. $parser->edition_id_export_error;
 
 				$this->logger->message($message, 10);
 				fwrite(STDERR, $message . "\n");

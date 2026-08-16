@@ -152,6 +152,58 @@ class EditionActionTest extends PHPUnit\Framework\TestCase
 			'The promoted edition must be the current one.');
 	}
 
+	/*
+	 * A failed .htaccess write leaves EDITION_ID naming the previous edition,
+	 * so parts of the site go on serving it. That used to be a log message the
+	 * command printed on its way to reporting success; it now fails.
+	 */
+	public function testSetCurrentReportsAFailedEditionIdWrite(): void
+	{
+		$temp_id = $this->createTempEdition();
+
+		$parser = $this->stubbedParser();
+		$parser->method('export_edition_id')->willReturnCallback(
+			function ($edition_id) use ($parser)
+			{
+				$parser->edition_id_export_error = 'Cannot write to /path/to/.htaccess.';
+				return $parser->edition_id_export_error;
+			});
+
+		$action = new TestableEditionAction();
+		$action->parser = $parser;
+		$output = $action->execute(['current', self::TEMP_SLUG]);
+
+		$this->assertSame(1, $action->result,
+			'A failed edition ID write must not report success.');
+		$this->assertStringContainsString('could not be stored', $output);
+
+		/*
+		 * The promotion itself still happened, and the message has to say so
+		 * rather than implying the edition was not promoted at all.
+		 */
+		$this->assertStringContainsString('is now current in the database', $output);
+
+		$current = $this->pdo->query('SELECT id FROM editions WHERE current = 1')->fetchAll();
+		$this->assertEquals($temp_id, $current[0]->id,
+			'The edition must still be promoted in the database.');
+	}
+
+	/*
+	 * The stubbed parser returns null from export_edition_id() rather than
+	 * true, so "no answer" must not be mistaken for a failed write.
+	 */
+	public function testStubbedEditionIdWriteIsNotTreatedAsFailure(): void
+	{
+		$this->createTempEdition();
+
+		$action = new TestableEditionAction();
+		$action->parser = $this->stubbedParser();
+		$output = $action->execute(['current', self::TEMP_SLUG]);
+
+		$this->assertSame(0, $action->result);
+		$this->assertStringNotContainsString('could not be stored', $output);
+	}
+
 	public function testGetHelpDocumentsCurrent(): void
 	{
 		$this->assertStringContainsString('edition current', EditionAction::getHelp());
