@@ -81,7 +81,15 @@ class APISearchController extends BaseAPIController
 		}
 		catch (Exception $error)
 		{
-			json_error('Search failed with the error "' . $error->getMessage() . '".');
+			/*
+			 * The exception's message is the failed query, its bound parameters
+			 * and the schema details behind them, which must not be returned to
+			 * an API client. It goes to the server log instead.
+			 */
+			error_log('API search failed for query "' . $term . '": '
+				. $error->getMessage());
+
+			json_error('Search is temporarily unavailable. Please try again later.');
 			die();
 		}
 

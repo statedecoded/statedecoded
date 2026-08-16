@@ -121,8 +121,14 @@ if (!empty($_GET['q']))
 	}
 	catch (Exception $error)
 	{
-		$error_message = 'Search failed with the error "' . $error->getMessage() .'". ';
-		$error_message .= 'Please try again later.';
+		/*
+		 * The exception's message is the failed query, its bound parameters and
+		 * the schema details behind them, which must not be shown to the public.
+		 * It goes to the server log; the visitor gets an apology.
+		 */
+		error_log('Search failed for query "' . $q . '": ' . $error->getMessage());
+
+		$error_message = 'Search is temporarily unavailable. Please try again later.';
 
 		unset($results);
 	}
