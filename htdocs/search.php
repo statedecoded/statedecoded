@@ -222,11 +222,11 @@ if (!empty($_GET['q']))
 				$body .= '<li><div class="result">';
 				$body .= '<h1><a href="' . $url_string . '">';
 
-				if(strlen($result->catch_line))
+				if(strlen($result->catch_line ?? ''))
 				{
 					$body .= $result->catch_line;
 				}
-				elseif(strlen($result->name)) {
+				elseif(strlen($result->name ?? '')) {
 					$body .= $result->name;
 				}
 				else
@@ -235,7 +235,7 @@ if (!empty($_GET['q']))
 				}
 
 				$body .= ' (' . SECTION_SYMBOL . '&nbsp;';
-				if(strlen($result->section_number))
+				if(strlen($result->section_number ?? ''))
 				{
 					$body .= $result->section_number;
 				}
@@ -261,8 +261,12 @@ if (!empty($_GET['q']))
 
 				foreach (array_reverse((array) $law->ancestry) as $structure)
 				{
-					$body .= '<li><a href="' . $structure->url . '">' . $structure->identifier . ' ' .
-						$structure->name . '</a></li>';
+					/*
+					 * Structure::get_by_id() attaches the permalink as an object, so the URL is
+					 * one level down rather than a `url` property on the structure itself.
+					 */
+					$body .= '<li><a href="' . ($structure->permalink->url ?? '') . '">'
+						. $structure->identifier . ' ' . $structure->name . '</a></li>';
 				}
 				$body .= '</ul></div>';
 
@@ -337,8 +341,16 @@ if (!empty($_GET['q']))
 				 */
 				if(!strlen($edition_id))
 				{
-					$law_edition = $edition->find_by_id($struct->edition_id);
-					$body .= '<div class="edition_heading edition">' . $law_edition->name . '</div>';
+					/*
+					 * Structure::get_current() does not copy edition_id onto itself, so the
+					 * edition comes from the search result, which carries it.
+					 */
+					$structure_edition = $edition->find_by_id($result->edition_id);
+					if ($structure_edition !== false)
+					{
+						$body .= '<div class="edition_heading edition">' . $structure_edition->name
+							. '</div>';
+					}
 				}
 
 				/*
@@ -348,8 +360,8 @@ if (!empty($_GET['q']))
 
 				foreach ($struct->structure as $child)
 				{
-					$body .= '<li><a href="' . $child->url . '">' . $child->identifier
-						. ' ' . $child->name . '</a></li>';
+					$body .= '<li><a href="' . ($child->permalink->url ?? '') . '">'
+						. $child->identifier . ' ' . $child->name . '</a></li>';
 				}
 
 				$body .= '</ul></div>';
@@ -381,7 +393,7 @@ if (!empty($_GET['q']))
 				/*
 				 * If we can't get a highlighted snippet, just show the first few lines of the law.
 				 */
-				elseif($struct->metadata->text)
+				elseif(!empty($struct->metadata->text))
 				{
 					$body .= '<p>' . substr($struct->metadata->text, 0, 250) . ' .&thinsp;.&thinsp;.</p>';
 				}
