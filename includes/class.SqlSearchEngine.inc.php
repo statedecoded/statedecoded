@@ -27,6 +27,21 @@ class SqlSearchEngine extends SearchEngineInterface
 	const TITLE_RELEVANCE_WEIGHT = 2;
 
 	/*
+	 * An upper bound on a relevance score before it is weighted.
+	 *
+	 * The `OR section = :term` clause means MySQL cannot serve the WHERE with
+	 * the full-text index, so it scans the table and evaluates MATCH per row,
+	 * outside a full-text index scan. A relevance score computed that way is
+	 * not always a sane float, and multiplying one by the title weight can
+	 * exceed the range of a DOUBLE -- MySQL then aborts the whole query with
+	 * error 1690 rather than returning rows, taking search down.
+	 *
+	 * Clamping before the multiplication bounds the arithmetic. Real scores
+	 * are orders of magnitude below this, so ranking is unaffected.
+	 */
+	const MAX_RELEVANCE_SCORE = 1000;
+
+	/*
 	 * InnoDB will not index tokens shorter than innodb_ft_min_token_size. The
 	 * default is 3, and the search falls back to REGEXP when a query has no
 	 * token at least this long. Read from the server at run time, since a
@@ -220,12 +235,14 @@ class SqlSearchEngine extends SearchEngineInterface
 				 * Relevance, as scored by MySQL. A match in the title is worth
 				 * more than one in the body, so the title score is weighted up;
 				 * this preserves the old ordering, which put title matches
-				 * first, without hand-rolling the arithmetic.
+				 * first, without hand-rolling the arithmetic. The score is
+				 * clamped before weighting; see MAX_RELEVANCE_SCORE.
 				 */
 				$law_fields[] = '(MATCH(laws.catch_line, laws.text) '
 					. 'AGAINST (:match_score IN BOOLEAN MODE)) AS relevance';
-				$structure_fields[] = '(MATCH(structure.name) '
-					. 'AGAINST (:match_score_structure IN BOOLEAN MODE) * '
+				$structure_fields[] = '(LEAST(MATCH(structure.name) '
+					. 'AGAINST (:match_score_structure IN BOOLEAN MODE), '
+					. self::MAX_RELEVANCE_SCORE . ') * '
 					. self::TITLE_RELEVANCE_WEIGHT . ') AS relevance';
 
 				$query_args[':match_score'] = $boolean_query;
