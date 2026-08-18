@@ -242,7 +242,11 @@ class Search
 			 */
 			else
 			{
-				$this->paging .= '<li>' .  ($i + 1) . '</li>';
+				/*
+				 * The current page is marked, rather than left to be inferred
+				 * from the absence of a link, so that it can be styled.
+				 */
+				$this->paging .= '<li class="current">' .  ($i + 1) . '</li>';
 			}
 
 			/*

@@ -37,14 +37,66 @@
 
   }
   
+  // Paged navigation beneath the results. Every page is a link except the one
+  // being viewed, which display_paging() marks with .current.
   ul#paging {
-    margin: 0 auto;
+    margin: 30px 0 0;
+    padding: 0;
     text-align: center;
-  }
+    // Absorbs the gap below the last result, so the row is not pushed too far
+    // from the results it belongs to.
+    clear: both;
+
     li {
-      display: inline;
+      display: inline-block;
       list-style-type: none;
+      // Overrides the 30px bottom margin that the result items carry.
+      margin: 0 1px 4px;
+      padding: 0;
+      vertical-align: middle;
     }
+
+    a,
+    li.current {
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    a {
+      display: block;
+      min-width: 30px;
+      padding: 7px 7px;
+      border: 1px solid $gray-light;
+      border-radius: 4px;
+      background-color: #fff;
+      color: $link-color;
+      text-decoration: none;
+      transition: background-color 0.1s linear, border-color 0.1s linear;
+
+      &:hover,
+      &:focus {
+        border-color: $gray-dark;
+        background-color: $gray-lightest;
+        text-decoration: none;
+      }
+    }
+
+    // The page being viewed: same size and position as its neighbours, but
+    // filled in and unclickable, so the reader can see where they are.
+    li.current {
+      min-width: 30px;
+      padding: 7px 7px;
+      border: 1px solid $gray-dark;
+      border-radius: 4px;
+      background-color: $gray-dark;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    @include respond-to(print) {
+      display: none;
+    }
+  }
   form input[type=text] {
     width: 70%;
     margin-right: 5%;
