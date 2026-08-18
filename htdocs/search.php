@@ -453,17 +453,26 @@ $sidebar .= '
 		as “<code>radar detectors</code>”, “<code>insurance agents</code>”, or
 		“<code>assault</code>” (leaving out the quotation marks).</p>
 
-		<p>Also, advanced searches are supported, using the following terms:</p>
+		<p>A law has to contain <em>every</em> word you search for to be listed. Adding words
+		narrows your search down rather than broadening it, so if you get too few results, try
+		again with fewer words.</p>
+
+		<p>To search for an exact phrase, put quotation marks around it, like
+		<code>"assault and battery"</code>. Only laws containing those words together, in that
+		order, will be listed.</p>
+
+		<p>You can also search for a section number, like <code>18.2-57</code>, and the law
+		bearing that number will be listed first.</p>
+
+		<p>To broaden or narrow a search, these words can be used:</p>
 
 		<ul>
-			<li><code>AND</code>: Requires the words or phrases before and after the
-				<code>AND</code>, like <code>radar AND vehicle</code>.</li>
-			<li><code>+</code>: Requires that the following word or phrase be in the law, like
-				<code>insurance +agent</code>.</li>
-			<li><code>NOT</code>: Requires that the following word or phrase <em>not</em> be in the
-				law, like <code>assault NOT battery</code>.</li>
-			<li><code>OR</code>: Requires that either word or phrase (or both words or phrases) be
-				in the law, like <code>assault OR battery</code>.</li>
+			<li><code>OR</code>: Lists laws containing either word, like
+				<code>assault OR battery</code>.</li>
+			<li><code>NOT</code>: Leaves out laws containing the following word, like
+				<code>assault NOT battery</code>.</li>
+			<li><code>AND</code>: Requires both words, like <code>assault AND battery</code>.
+				This is what happens anyway, so it is never necessary.</li>
 		</ul>
 	</section>';
 

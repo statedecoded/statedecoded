@@ -436,12 +436,25 @@ class SqlSearchEngine extends SearchEngineInterface
 	}
 
 	/*
+	 * The operators a user may write, and what each does to the term that
+	 * follows it. Matched case-insensitively, but only when written as a word on
+	 * its own: a law about "not-for-profit" corporations is a search term, not
+	 * an instruction.
+	 */
+	const OPERATOR_NOT = 'NOT';
+	const OPERATOR_OR = 'OR';
+	const OPERATOR_AND = 'AND';
+
+	/*
 	 * Turn a user's search string into a MySQL boolean-mode expression.
 	 *
-	 * Quoted sections are preserved as phrases; every other word becomes a
-	 * required term. Characters that are operators in boolean mode are stripped
-	 * from the user's words, so that a stray "+" or "-" cannot change the
-	 * meaning of the search or produce a syntax error.
+	 * Quoted sections are preserved as phrases. AND, OR and NOT are honoured;
+	 * every other word is required, which is what AND already means, so AND is
+	 * accepted for the sake of people who write it but changes nothing.
+	 *
+	 * Characters that are operators in boolean mode are stripped from the user's
+	 * words, so that a stray "+" or "-" cannot change the meaning of the search
+	 * or produce a syntax error. Users write operators as words instead.
 	 *
 	 * Returns an empty string when nothing usable survives -- when every word is
 	 * shorter than the indexer's minimum token size, for instance -- which tells
@@ -450,59 +463,189 @@ class SqlSearchEngine extends SearchEngineInterface
 	public function boolean_query($search_string)
 	{
 
-		$minimum = $this->min_token_size();
-		$stopwords = $this->stopwords();
-		$terms = [];
+		$required = [];
+		$excluded = [];
+		$alternates = [];
+
+		/*
+		 * OR binds to the term before it as well as the one after it, so terms
+		 * are collected first and assembled afterwards.
+		 */
+		$pending_not = false;
+		$pending_or = false;
 
 		foreach(SqlSearchEngine::tokenize_with_phrases($search_string) as $token)
 		{
 			/*
-			 * Strip the boolean-mode operators: + - > < ( ) ~ * " @ and the
-			 * comma, which MySQL treats specially inside distance searches.
+			 * An operator is a bare word, never a quoted phrase: searching for
+			 * the phrase "not guilty" must look for those words.
 			 */
-			$clean = trim(preg_replace('/[+><\(\)~*"@,]+/', ' ', $token['value']));
-
-			if($clean === '')
+			if(!$token['phrase'])
 			{
+				$operator = strtoupper($token['value']);
+
+				if($operator === self::OPERATOR_NOT)
+				{
+					$pending_not = true;
+					continue;
+				}
+
+				if($operator === self::OPERATOR_OR)
+				{
+					$pending_or = true;
+					continue;
+				}
+
+				if($operator === self::OPERATOR_AND)
+				{
+					continue;
+				}
+			}
+
+			$term = $this->indexable_term($token);
+
+			if($term === false)
+			{
+				/*
+				 * The term was dropped as unindexable, so any operator waiting
+				 * for it has nothing to apply to.
+				 */
+				$pending_not = false;
+				$pending_or = false;
+				continue;
+			}
+
+			if($pending_not)
+			{
+				$excluded[] = $term;
+				$pending_not = false;
+				$pending_or = false;
+				continue;
+			}
+
+			if($pending_or)
+			{
+				/*
+				 * "a OR b" is a choice between the two, so the term before the
+				 * OR stops being required and joins the alternatives. Where
+				 * there is no preceding term -- a search opening with OR -- the
+				 * operator is meaningless and this is simply the first
+				 * alternative.
+				 */
+				if(count($alternates) === 0 && count($required) > 0)
+				{
+					$alternates[] = array_pop($required);
+				}
+
+				$alternates[] = $term;
+				$pending_or = false;
 				continue;
 			}
 
 			/*
-			 * A term containing punctuation -- a section number such as
-			 * "18.2-12", say -- is tokenized by MySQL into its separate parts.
-			 * Searching for those parts individually is meaningless, so such a
-			 * term is quoted, which asks for the parts in that order.
+			 * A term following a completed OR group starts a new requirement:
+			 * "a OR b c" requires c, and either a or b.
 			 */
-			$is_phrase = $token['phrase'] || preg_match('/[^\p{L}\p{N}\s]/u', $clean);
-
-			/*
-			 * Words the indexer will not have stored are dropped: a required
-			 * "+the" matches nothing at all, which would turn a search
-			 * containing a common word into a search returning nothing.
-			 */
-			$words = preg_split('/\s+/', preg_replace('/[^\p{L}\p{N}\s]+/u', ' ', $clean));
-			$indexable = array_filter($words,
-				function($word) use ($minimum, $stopwords) {
-					return (strlen($word) >= $minimum)
-						&& !in_array(strtolower($word), $stopwords);
-				});
-
-			if(count($indexable) === 0)
+			if(count($alternates) > 0)
 			{
+				$required[] = $term;
 				continue;
 			}
 
-			if($is_phrase)
-			{
-				$terms[] = '+"' . $clean . '"';
-			}
-			else
-			{
-				$terms[] = '+' . $clean;
-			}
+			$required[] = $term;
 		}
 
-		return implode(' ', $terms);
+		$clauses = [];
+
+		foreach($required as $term)
+		{
+			$clauses[] = '+' . $term;
+		}
+
+		/*
+		 * The alternatives become one required group, which is how boolean mode
+		 * expresses a disjunction: +(a b) matches a row containing either.
+		 */
+		if(count($alternates) > 1)
+		{
+			$clauses[] = '+(' . implode(' ', $alternates) . ')';
+		}
+		elseif(count($alternates) === 1)
+		{
+			$clauses[] = '+' . $alternates[0];
+		}
+
+		foreach($excluded as $term)
+		{
+			$clauses[] = '-' . $term;
+		}
+
+		/*
+		 * A search of nothing but exclusions matches everything the indexer
+		 * knows, which is not what the user meant and is expensive to return.
+		 * Treated as no query at all, so the caller falls back to REGEXP.
+		 */
+		if(count($required) === 0 && count($alternates) === 0)
+		{
+			return '';
+		}
+
+		return implode(' ', $clauses);
+
+	}
+
+	/*
+	 * A single search token as boolean mode should see it, or false if the
+	 * indexer will not have stored any part of it.
+	 *
+	 * Operator characters are stripped, since the user writes operators as words
+	 * instead. Words the indexer ignores are dropped: a required "+the" matches
+	 * nothing at all, which would turn a search containing a common word into a
+	 * search returning nothing.
+	 */
+	protected function indexable_term($token)
+	{
+
+		$minimum = $this->min_token_size();
+		$stopwords = $this->stopwords();
+
+		/*
+		 * Strip the boolean-mode operators: + - > < ( ) ~ * " @ and the comma,
+		 * which MySQL treats specially inside distance searches.
+		 */
+		$clean = trim(preg_replace('/[+><\(\)~*"@,]+/', ' ', $token['value']));
+
+		if($clean === '')
+		{
+			return false;
+		}
+
+		/*
+		 * A term containing punctuation -- a section number such as "18.2-12",
+		 * say -- is tokenized by MySQL into its separate parts. Searching for
+		 * those parts individually is meaningless, so such a term is quoted,
+		 * which asks for the parts in that order.
+		 */
+		$is_phrase = $token['phrase'] || preg_match('/[^\p{L}\p{N}\s]/u', $clean);
+
+		$words = preg_split('/\s+/', preg_replace('/[^\p{L}\p{N}\s]+/u', ' ', $clean));
+		$indexable = array_filter($words,
+			function($word) use ($minimum, $stopwords) {
+				return (strlen($word) >= $minimum)
+					&& !in_array(strtolower($word), $stopwords);
+			});
+
+		if(count($indexable) === 0)
+		{
+			return false;
+		}
+
+		if($is_phrase)
+		{
+			return '"' . $clean . '"';
+		}
+
+		return $clean;
 
 	}
 
