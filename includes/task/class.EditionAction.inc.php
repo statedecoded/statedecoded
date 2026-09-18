@@ -36,6 +36,9 @@ class EditionAction extends CliAction
       case 'delete' :
         return $this->deleteEdition($args);
 
+      case 'touch' :
+        return $this->touchEdition($args);
+
       case 'current' :
         if(count($args) > 0)
         {
@@ -246,6 +249,51 @@ class EditionAction extends CliAction
     );
   }
 
+  /*
+   * Record that the edition's source material was checked, without importing
+   * it. The monthly updater re-scrapes the code and skips the (expensive)
+   * import when nothing has changed; without this, the date shown to readers
+   * would stay frozen at the last import even though the text had just been
+   * confirmed current.
+   */
+  public function touchEdition($args = [])
+  {
+    $edition_obj = new Edition(['db' => $this->db]);
+
+    if(count($args) > 0)
+    {
+      $edition = $edition_obj->find_by_slug($args[0]);
+
+      if(!$edition)
+      {
+        $this->result = 1;
+        return 'Unable to find edition "' . $args[0] . '".';
+      }
+    }
+    else
+    {
+      $edition = $edition_obj->current();
+
+      if(!$edition)
+      {
+        $this->result = 1;
+        return 'No current edition.';
+      }
+    }
+
+    /*
+     * Called without a datetime, which stamps NOW() in the database's own
+     * timezone.
+     */
+    if(!$edition_obj->update_last_import($edition->id))
+    {
+      $this->result = 1;
+      return 'Unable to update edition "' . $edition->name . '".';
+    }
+
+    return 'Edition "' . $edition->name . '" marked as checked.';
+  }
+
   public function showCurrentEdition($args = [])
   {
     $edition_obj = new Edition(['db' => $this->db]);
@@ -285,6 +333,10 @@ Usage:
 
   statedecoded edition delete slug
     Delete an edition.
+
+  statedecoded edition touch [slug]
+    Records that the edition's source material was checked and found
+    unchanged, without importing it. Defaults to the current edition.
 
 Available options:
 
