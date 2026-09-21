@@ -70,7 +70,7 @@ $text-color-light: $gray-light !default;
 $placeholder-text-color: $gray-light !default;
 
 // Links
-$link-color: #558fae;
+$link-color: #00669F;
 $link-color-hover: adjust-color($base, $lightness: 10%, $saturation: 10%) !default;
 $link-color-active: adjust-color($base, $lightness: 10%, $saturation: 10%) !default;
 $link-color-visited: adjust-color($base, $lightness: -10%, $saturation: -50%) !default;
