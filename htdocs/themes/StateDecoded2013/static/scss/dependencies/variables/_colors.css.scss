@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // *****************************************************************************
 // COLORS
 // *****************************************************************************
@@ -6,9 +8,9 @@
 // ------------------------------------------------------------------
 
 $base:  #137da1; // Blue
-$base-light: adjust-color($base, $saturation: -20%, $lightness: 10%);
+$base-light: color.adjust($base, $saturation: -20%, $lightness: 10%);
 $base-lightest: #8fa9b2;
-$base-dark:  adjust-color(adjust-hue($base, 4deg), $saturation: -1%, $lightness: -7%);
+$base-dark:  color.adjust(color.adjust($base, $hue: 4deg, $space: hsl), $saturation: -1%, $lightness: -7%);
 $base-darkest: #526166;
 // Secondary Palette
 // ------------------------------------------------------------------
@@ -54,7 +56,7 @@ $glow-lighter: hsla(100,100%,100%,0.25) !default;
 $glow-light: hsla(100,100%,100%,0.5) !default;
 $glow: hsla(100,100%,100%,0.75) !default;
 
-$highlight: transparentize(#e9ba26, .7);
+$highlight: color.adjust(#e9ba26, $alpha: -.7);
 
 // ------------------------------------------------------------------
 //  COLORS 2 THINGS
@@ -71,26 +73,26 @@ $placeholder-text-color: $gray-light !default;
 
 // Links
 $link-color: #00669F;
-$link-color-hover: adjust-color($base, $lightness: 10%, $saturation: 10%) !default;
-$link-color-active: adjust-color($base, $lightness: 10%, $saturation: 10%) !default;
-$link-color-visited: adjust-color($base, $lightness: -10%, $saturation: -50%) !default;
+$link-color-hover: color.adjust($base, $lightness: 10%, $saturation: 10%) !default;
+$link-color-active: color.adjust($base, $lightness: 10%, $saturation: 10%) !default;
+$link-color-visited: color.adjust($base, $lightness: -10%, $saturation: -50%) !default;
 
 // Form states and alerts
 $warning-text: #c09853 !default;
 $warning-background: #fcf8e3 !default;
-$warning-border: darken(adjust-hue($warning-background, -10), 3%) !default;
+$warning-border: color.adjust(color.adjust($warning-background, $hue: -10, $space: hsl), $lightness: -3%, $space: hsl) !default;
 
 $error-text: #b94a48 !default;
 $error-background: #f2dede !default;
-$error-border: darken(adjust-hue($error-background, -10), 3%) !default;
+$error-border: color.adjust(color.adjust($error-background, $hue: -10, $space: hsl), $lightness: -3%, $space: hsl) !default;
 
 $success-text: #39b54a !default;
-$success-background: mix(white, $success-text, 80%) !default;
-$success-border: darken(adjust-hue($success-text, -10), 5%) !default;
+$success-background: color.mix(white, $success-text, 80%) !default;
+$success-border: color.adjust(color.adjust($success-text, $hue: -10, $space: hsl), $lightness: -5%, $space: hsl) !default;
 
 $info-text: #3a87ad !default;
 $info-background: #d9edf7 !default;
-$info-border: darken(adjust-hue($info-background, -10), 7%) !default;
+$info-border: color.adjust(color.adjust($info-background, $hue: -10, $space: hsl), $lightness: -7%, $space: hsl) !default;
 
 
 // States
@@ -120,7 +122,7 @@ $tooltip-arrow-color: $tooltip-background;
 
 $popover-background: $white;
 $popover-arrow-color: $white;
-$popover-title-background:  darken($popover-background, 3%);
+$popover-title-background:  color.adjust($popover-background, $lightness: -3%, $space: hsl);
 
 // Special enhancement for popovers
 $popover-arrow-outer-color:  rgba(0,0,0,.25);

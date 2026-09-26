@@ -1,3 +1,5 @@
+@use "../../dependencies/variables/_colors.css.scss" as colors;
+
 // *****************************************************************************
 // TABLES  - Striping
 // *****************************************************************************
@@ -7,7 +9,7 @@
 .table-striped {
   tr:nth-child(even) { // Table Striping
     td, th {
-      background-color: $gray-lightest;
+      background-color: colors.$gray-lightest;
     } // td, th
   } // tr:nth-child(odd;
 } // .table-striped
