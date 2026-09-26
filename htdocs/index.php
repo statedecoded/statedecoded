@@ -179,6 +179,13 @@ catch (PDOException $e)
 	{
 
 		/*
+		 * Send a 503, so that caches and crawlers don't store this error as the page's content.
+		 */
+		http_response_code(503);
+		header('Retry-After: 300');
+		header('Cache-Control: no-store');
+
+		/*
 		 * A specific error page has been created for database connection failures, display that.
 		 */
 		if (defined('ERROR_PAGE_DB'))
