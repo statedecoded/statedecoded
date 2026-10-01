@@ -1,3 +1,10 @@
+@use "../dependencies/mixins/non-semantic-helpers";
+@use "../dependencies/mixins/_gradient-overrides.css.scss" as gradient-overrides;
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../dependencies/variables/_typography.css.scss" as typography;
+
+@use "sass:color";
+
 // *****************************************************************************
 // BUTTONS
 // *****************************************************************************
@@ -10,10 +17,10 @@ $zindexDropdown:        1000 !default;
 $zindexPopover:         1010 !default;
 
 // Primary (Active) Buttons
-$primaryButtonBackground:    $link-color !default;
-$withStateButtonFontFamily: $statedecoded-stack3;
+$primaryButtonBackground:    colors.$link-color !default;
+$withStateButtonFontFamily: typography.$statedecoded-stack3;
 
-$buttonFontFamily: $statedecoded-stack3;
+$buttonFontFamily: typography.$statedecoded-stack3;
 
 // ------------------------------------------------------------------
 //  MIXIN FOR GENERATING BACKGROUNDS
@@ -21,7 +28,7 @@ $buttonFontFamily: $statedecoded-stack3;
 
 @mixin buttonBackground($startColor, $endColor) {
   // gradientBar will set the background to a pleasing blend of these, to support IE<=9
-  @include gradientBar($startColor, $endColor);
+  @include gradient-overrides.gradientBar($startColor, $endColor);
   // in these cases the gradient won't cover the background, so we override
   &:hover, &:active, &.active {
     background-color: $endColor;
@@ -29,18 +36,18 @@ $buttonFontFamily: $statedecoded-stack3;
 
   &.disabled, &[disabled]  {
     &:hover {
-      @include gradientBar($startColor, $endColor);
+      @include gradient-overrides.gradientBar($startColor, $endColor);
     }
   }
   // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
   &:active,
   &.active {
-    background-color: darken($endColor, 10%) #{"\9"};
-    @include gradientBar($endColor, $startColor);
+    background-color: color.adjust($endColor, $lightness: -10%, $space: hsl) #{"\9"};
+    @include gradient-overrides.gradientBar($endColor, $startColor);
   }
    ~ ul.dropdown-menu li a:hover {
     // gradientBar will set the background to a pleasing blend of these, to support IE<=9
-    @include gradientBar($startColor, $endColor);
+    @include gradient-overrides.gradientBar($startColor, $endColor);
     // in these cases the gradient won't cover the background, so we override
     &:hover, &:active, &.active {
       background-color: $endColor;
@@ -48,14 +55,14 @@ $buttonFontFamily: $statedecoded-stack3;
 
     &.disabled, &[disabled]  {
       &:hover {
-        @include gradientBar($startColor, $endColor);
+        @include gradient-overrides.gradientBar($startColor, $endColor);
       }
     }
     // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
     &:active,
     &.active {
-      background-color: darken($endColor, 10%) #{"\9"};
-      @include gradientBar($endColor, $startColor);
+      background-color: color.adjust($endColor, $lightness: -10%, $space: hsl) #{"\9"};
+      @include gradient-overrides.gradientBar($endColor, $startColor);
     }
    }
 }
@@ -65,29 +72,29 @@ $buttonFontFamily: $statedecoded-stack3;
 // ------------------------------------------------------------------
 
 button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
-  $shadow-for-box: inset 0 1px 0 $glow-lighter, 0 1px 2px $shadow-lightest;
+  $shadow-for-box: inset 0 1px 0 colors.$glow-lighter, 0 1px 2px colors.$shadow-lightest;
   border-radius: 4px;
   box-shadow: $shadow-for-box;
-  @include gradient-vertical-three-colors($white, $white, 25%, darken($white, 10%)); // Don't use .gradientbar() here since it does a three-color gradient
-  border: 1px solid $gray-lighter;
-  border-bottom-color: $gray-light;
+  @include gradient-overrides.gradient-vertical-three-colors(colors.$white, colors.$white, 25%, color.adjust(colors.$white, $lightness: -10%, $space: hsl)); // Don't use .gradientbar() here since it does a three-color gradient
+  border: 1px solid colors.$gray-lighter;
+  border-bottom-color: colors.$gray-light;
   cursor: pointer;
-  color: $gray-darker !important;
+  color: colors.$gray-darker !important;
   display: inline-block;
   font-family: $buttonFontFamily;
-  font-size: $base-font-size;
-  line-height: $base-line-height;
+  font-size: typography.$base-font-size;
+  line-height: typography.$base-line-height;
   padding: 4px 10px 4px;
   text-align: center;
   text-decoration: none !important;
-  text-shadow: 0 1px 1px $glow;
+  text-shadow: 0 1px 1px colors.$glow;
 
   // Hover state
   &:hover {
     transition: background-position .1s linear;
-    color: $gray-darker;
+    color: colors.$gray-darker;
     text-decoration: none;
-    background-color: darken($white, 10%);
+    background-color: color.adjust(colors.$white, $lightness: -10%, $space: hsl);
     background-position: 0 -15px;
   }
   // transition is only when going to hover, otherwise the background
@@ -100,12 +107,12 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
   // Active state
   &.active, &:active {
-    $shadow-for-box: inset 0 2px 4px $shadow-light, 0 1px 2px $shadow-lightest;
+    $shadow-for-box: inset 0 2px 4px colors.$shadow-light, 0 1px 2px colors.$shadow-lightest;
     box-shadow: $shadow-for-box;
     transition: background-position .1s linear;
     background-image: none;
-    background-color: darken($white, 10%);
-    color: $shadow-light;
+    background-color: color.adjust(colors.$white, $lightness: -10%, $space: hsl);
+    color: colors.$shadow-light;
     outline: 0;
   }
 
@@ -115,12 +122,12 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
     opacity: 0.65;
     cursor: default;
     background-image: none;
-    background-color: darken($white, 10%);
+    background-color: color.adjust(colors.$white, $lightness: -10%, $space: hsl);
     &:hover {
       transition: background-position .1s linear;
       background-color: none;
       background-position: none;
-      color: $gray-darker;
+      color: colors.$gray-darker;
       text-decoration: none;
     }
   }
@@ -133,7 +140,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
   // Large
   &.btn-large {
     padding: 9px 14px;
-    font-size: $base-font-size + 2px;
+    font-size: typography.$base-font-size + 2px;
     font-weight: bold;
     line-height: normal;
     border-radius: 5px;
@@ -145,8 +152,8 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
   // Small
   &.btn-small {
     padding: 5px 9px;
-    font-size: $base-font-size - 2px;
-    line-height: $base-line-height - 2px;
+    font-size: typography.$base-font-size - 2px;
+    line-height: typography.$base-line-height - 2px;
     [class^="icon-"] {
       margin-top: -1px;
     }
@@ -154,8 +161,8 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
   &.btn-mini {
     padding: 2px 6px;
-    font-size: $base-font-size - 2px;
-    line-height: $base-line-height - 4px;
+    font-size: typography.$base-font-size - 2px;
+    line-height: typography.$base-line-height - 4px;
   }
 
 // ------------------------------------------------------------------
@@ -164,13 +171,13 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
 @each $button-type in primary, warning, danger, success, info, inverse {
   &.btn-#{$button-type}, &.btn-#{$button-type}:hover {
-    color: $white !important;
+    color: colors.$white !important;
     font-family: $withStateButtonFontFamily;
     text-decoration: none !important;
-    text-shadow: 0 -1px 0 $shadow-lighter;
+    text-shadow: 0 -1px 0 colors.$shadow-lighter;
   }
    &.btn-#{$button-type}.active {
-      color: $glow;
+      color: colors.$glow;
    }
 }
 
@@ -178,7 +185,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 // Set the backgrounds
 // ------------------------------------------------------------------
   &.btn-primary {
-    @include buttonBackground($primaryButtonBackground, adjust-hue($primaryButtonBackground, 20));
+    @include buttonBackground($primaryButtonBackground, color.adjust($primaryButtonBackground, $hue: 20, $space: hsl));
   }
 
   &.btn-inverse {
@@ -187,7 +194,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
 // Warning appears are orange
   &.btn-warning {
-    @include buttonBackground(lighten($yellow, 15%), $yellow);
+    @include buttonBackground(color.adjust(colors.$yellow, $lightness: 15%, $space: hsl), colors.$yellow);
   }
 
 // Danger and error appear as red
@@ -225,8 +232,8 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
 // Optional: Group multiple button groups together for a toolbar
 .btn-toolbar {
-  margin-top: $base-line-height / 2;
-  margin-bottom: $base-line-height / 2;
+  margin-top: typography.$base-line-height * 0.5;
+  margin-bottom: typography.$base-line-height * 0.5;
   .btn-group {
     display: inline-block;
   }
@@ -284,18 +291,18 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
 // Give the line between buttons some depth
 .btn-group.dropdown > .dropdown-toggle {
-  $shadow-for-box: inset 1px 0 0 $glow-lightest, inset 0 1px 0 $glow-lighter, 0 1px 2px $shadow-lightest;
+  $shadow-for-box: inset 1px 0 0 colors.$glow-lightest, inset 0 1px 0 colors.$glow-lighter, 0 1px 2px colors.$shadow-lightest;
   box-shadow: $shadow-for-box;
   padding-left: 8px;
   padding-right: 8px;
   *padding-top: 3px;
   *padding-bottom: 3px;
   &:after {
-    border-top:   4px solid $gray-darker;
+    border-top:   4px solid colors.$gray-darker;
   }
   &.btn-primary, &.btn-danger, &.btn-info, &.btn-success, &.btn-inverse {
     &:after {
-      border-top-color: $white;
+      border-top-color: colors.$white;
       opacity: 0.75;
     }
   }
@@ -330,7 +337,7 @@ button,  input[type="button"], input[type="submit"], input[type="reset"], .btn {
 
   .dropdown-toggle {
     background-image: none;
-    $shadow-for-box: inset 0 1px 6px $shadow-lightest, 0 1px 2px $shadow-lightest;
+    $shadow-for-box: inset 0 1px 6px colors.$shadow-lightest, 0 1px 2px colors.$shadow-lightest;
     box-shadow: $shadow-for-box;
   }
 }

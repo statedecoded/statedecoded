@@ -1,3 +1,8 @@
+@use "../dependencies/mixins/non-semantic-helpers";
+@use "../vendor/font-awesome/font-awesome";
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../vendor/keanu";
+
 .pinned-laws {
   a {
     background-image: url('../images/nav-icons/nav_pinned.svg');
@@ -27,9 +32,9 @@
     display: block;
   }
 
-  background-color: $negative-red;
+  background-color: colors.$negative-red;
   border-radius: 9px;
-  color: $white;
+  color: colors.$white;
   font-size: 11px;
   font-weight: bold;
   letter-spacing: 0;
@@ -52,7 +57,7 @@
    * left-aligned text and no icon above the label, so the badge is placed
    * against the right edge of the row instead.
    */
-  @include respond-to(smartphone) {
+  @include keanu.respond-to(smartphone) {
     top: 50%;
     left: auto;
     right: 15px;
@@ -101,7 +106,7 @@
   text-decoration: none;
   font-size: 25px;
   float: right;
-  color: $gray-darker;
+  color: colors.$gray-darker;
   margin-right: 10px;
 
   transition: all 0.1s linear;
@@ -111,11 +116,11 @@
   }
 
   &:hover {
-    color: $base-light;
+    color: colors.$base-light;
   }
 
   &.pinned {
-    color: $base-light;
+    color: colors.$base-light;
     transform: rotate(45deg);
   }
 }

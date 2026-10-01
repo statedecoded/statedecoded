@@ -1,3 +1,5 @@
+@use "../vendor/font-awesome/font-awesome";
+
 .help {
   @extend .fa;
   @extend .fa-question-circle;

@@ -1,14 +1,21 @@
+@use "variables";
+
+/*!
+ *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+
 /* FONT PATH
  * -------------------------- */
 
 @font-face {
   font-family: 'FontAwesome';
-  src: url('#{$fa-font-path}/fontawesome-webfont.eot?v=#{$fa-version}');
-  src: url('#{$fa-font-path}/fontawesome-webfont.eot?#iefix&v=#{$fa-version}') format('embedded-opentype'),
-    url('#{$fa-font-path}/fontawesome-webfont.woff2?v=#{$fa-version}') format('woff2'),
-    url('#{$fa-font-path}/fontawesome-webfont.woff?v=#{$fa-version}') format('woff'),
-    url('#{$fa-font-path}/fontawesome-webfont.ttf?v=#{$fa-version}') format('truetype'),
-    url('#{$fa-font-path}/fontawesome-webfont.svg?v=#{$fa-version}#fontawesomeregular') format('svg');
+  src: url('#{variables.$fa-font-path}/fontawesome-webfont.eot?v=#{variables.$fa-version}');
+  src: url('#{variables.$fa-font-path}/fontawesome-webfont.eot?#iefix&v=#{variables.$fa-version}') format('embedded-opentype'),
+    url('#{variables.$fa-font-path}/fontawesome-webfont.woff2?v=#{variables.$fa-version}') format('woff2'),
+    url('#{variables.$fa-font-path}/fontawesome-webfont.woff?v=#{variables.$fa-version}') format('woff'),
+    url('#{variables.$fa-font-path}/fontawesome-webfont.ttf?v=#{variables.$fa-version}') format('truetype'),
+    url('#{variables.$fa-font-path}/fontawesome-webfont.svg?v=#{variables.$fa-version}#fontawesomeregular') format('svg');
 //  src: url('#{$fa-font-path}/FontAwesome.otf') format('opentype'); // used when developing fonts
   font-weight: normal;
   font-style: normal;

@@ -1,3 +1,8 @@
+@use "../dependencies/mixins/non-semantic-helpers";
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../dependencies/variables/_typography.css.scss" as typography;
+@use "../vendor/keanu";
+
 #container {
   min-height: 100%;
   position: relative;
@@ -10,42 +15,42 @@
 footer#page_footer {
   @extend %clearfix;
   clear: both;
-  background-color: $gray-darkest;
-  color: $gray;
-  font-family: $statedecoded-stack3;
+  background-color: colors.$gray-darkest;
+  color: colors.$gray;
+  font-family: typography.$statedecoded-stack3;
   height: 150px;
   margin-top: 20px;
   overflow: hidden;
   width: 100%;
-  @include respond-to(smartphone) {
+  @include keanu.respond-to(smartphone) {
     padding: 0 10px;
   }
-  @include respond-to(tablet) {
+  @include keanu.respond-to(tablet) {
     padding: 0 10px;
   }
 
-  @include respond-to(print) {
+  @include keanu.respond-to(print) {
     position: relative;
   }
   p {
     font-size: 75%;
 
     a {
-      color: $white-off;
+      color: colors.$white-off;
     } // a
 
     &.downloads {
       width: 20%;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         width: 100%;
       }
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         width: 30%;
       }
 
-      @include respond-to(print) {
+      @include keanu.respond-to(print) {
         display: none;
       }
     } // &.downloads
@@ -53,15 +58,15 @@ footer#page_footer {
     &.credits {
       @extend .downloads;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         width: 100%;
       }
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         width: 30%;
       }
 
-      @include respond-to(print) {
+      @include keanu.respond-to(print) {
         display: none;
       }
     } // &.credits
@@ -71,17 +76,17 @@ footer#page_footer {
       font-size: 68.75%;
       width: 75%;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         float: none;
         width: 100%;
       }
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         width: 70%;
       }
 
 
-      @include respond-to(print) {
+      @include keanu.respond-to(print) {
         float: none;
         font-style: italic;
         margin: 0 auto;

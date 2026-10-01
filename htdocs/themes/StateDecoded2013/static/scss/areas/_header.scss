@@ -1,23 +1,27 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../dependencies/variables/_typography.css.scss" as typography;
+@use "../vendor/keanu";
+
   header#page_header {
     // This is the big header. Small header is below
-    background-color: $base;
+    background-color: colors.$base;
     height: 345px;
     margin: 0;
     overflow: hidden;
     position: relative;
 
 
-  @include respond-to(smartphone) {
+  @include keanu.respond-to(smartphone) {
     padding-top: 10px;
     height: 400px;
   }
 
-  @include respond-to(tablet) {
+  @include keanu.respond-to(tablet) {
     padding-top: 0;
     height: 190px;
   }
 
-  @include respond-to(print) {
+  @include keanu.respond-to(print) {
     margin: 0;
     padding: 0;
     height: 0.5in;
@@ -28,7 +32,7 @@
     background-repeat: no-repeat;
     background-position: top left;
     background-size: auto;
-    color: $white;
+    color: colors.$white;
     -webkit-font-smoothing: antialiased;
     font-smoothing: antialiased;
     height: 117px;
@@ -38,7 +42,7 @@
       top: 70px;
     text-shadow: 0 -1px 1px rgba(0,0,0,0.35);
 
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       background-position: 0 10px;
       background-size: 88px 88px; //~75%
       clear: both;
@@ -48,7 +52,7 @@
         top: 0;
     }
 
-    @include respond-to(tablet) {
+    @include keanu.respond-to(tablet) {
       background-size: 88px 88px; //~75%
       float: left;
       padding-left: 100px;
@@ -58,7 +62,7 @@
       width: 40%;
     }
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       background-image: none;
       clear: both;
       height: 0.5in;
@@ -70,25 +74,25 @@
     }
 
     h1 {
-      font-family: $statedecoded-stack1;
+      font-family: typography.$statedecoded-stack1;
       font-size: 65px;
       line-height: 75px;
       font-weight: normal;
       margin: 0;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         font-size: 50px;
         line-height: 60px;
         margin: 0;
       }
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         font-size: 50px;
         line-height: 60px;
         margin: 0;
       }
 
-      @include respond-to(print) {
+      @include keanu.respond-to(print) {
         font-size: 0.3in;
         line-height: 0.35in;
         margin: 0;
@@ -96,26 +100,26 @@
     } //h1
 
     h2 {
-      font-family: $statedecoded-stack3;
+      font-family: typography.$statedecoded-stack3;
       font-size: 150%;
       font-weight: 100;
       letter-spacing: 0.75em;
       margin: 10px 0 0 5px ; // Override system-wide typography
       text-transform: uppercase;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         font-size: 125%;
         margin: 0;
       }
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         font-size: 120%;
         font-weight: 400;
         letter-spacing: 0.7em;
         margin: 0;
       }
 
-      @include respond-to(print) {
+      @include keanu.respond-to(print) {
         font-size: 0.15in;
         letter-spacing: 0.6em;
         position: absolute;
@@ -125,8 +129,8 @@
   } // #place_logo
 
   nav#main_navigation {
-    background-color: $base-dark;
-    font-family: $statedecoded-stack3;
+    background-color: colors.$base-dark;
+    font-family: typography.$statedecoded-stack3;
     font-size: 68.75%;
     height: 70px;
     letter-spacing: 0.1em;
@@ -136,17 +140,17 @@
       left: 0;
     width: 100%;
 
-    @include respond-to(tablet) {
+    @include keanu.respond-to(tablet) {
     }
 
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       height: 200px;
       position: absolute;
         top: 130px;
         left: 0;
     }
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       display: none;
     }
 
@@ -157,11 +161,11 @@
       margin: 0;
       padding: 0;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         height: auto;
       }
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         text-align: center;
       }
 
@@ -175,8 +179,8 @@
         text-align: center;
         width: 11%; // Not 12.5% due to video margin requirements
 
-        @include respond-to(smartphone) {
-          border-bottom: 1px solid $base;
+        @include keanu.respond-to(smartphone) {
+          border-bottom: 1px solid colors.$base;
           display: block;
           font-size: 150%;
           height: 50px;
@@ -185,7 +189,7 @@
           width: 100%;
         }
 
-        @include respond-to(tablet) {
+        @include keanu.respond-to(tablet) {
           width: 22%;
         }
 
@@ -193,7 +197,7 @@
           background-repeat: no-repeat;
           background-position: center 10px;
           background-size: 30px 30px;
-          color: $white;
+          color: colors.$white;
           display: block;
           font-weight: bold;
           height: $nav-height;
@@ -201,12 +205,12 @@
           text-align: center;
           text-decoration: none;
           text-transform: uppercase;
-          text-shadow: 0 -1px 1px $shadow-light;
+          text-shadow: 0 -1px 1px colors.$shadow-light;
           width: 100%;
           .lt-ie8 & {
             background-size: auto !important;
           }
-          @include respond-to(smartphone) {
+          @include keanu.respond-to(smartphone) {
             background-position: 20px center;
             height: 50px;
             line-height: 50px;
@@ -263,9 +267,9 @@
 .inside & {
 
 
- @include respond-to(desktop) {
+ @include keanu.respond-to(desktop) {
       // Style for the small header
-      border-bottom: 10px solid $base-dark;
+      border-bottom: 10px solid colors.$base-dark;
       height: 75px;
 
       .nest {
@@ -339,6 +343,6 @@
       } // nav#main_navigation
     } // .inside nav
   }
-  @include respond-to(tablet) {
+  @include keanu.respond-to(tablet) {
   }
 } // header#page_header

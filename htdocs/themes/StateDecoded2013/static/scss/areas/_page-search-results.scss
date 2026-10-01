@@ -1,3 +1,5 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+
 .search-results {
   margin: 0;
   padding: 0;
@@ -20,7 +22,7 @@
     }
 
     .result {
-      color: $gray-darker;
+      color: colors.$gray-darker;
       text-decoration: none;
       margin-bottom: 25px;
 

@@ -1,3 +1,7 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../dependencies/variables/_typography.css.scss" as typography;
+@use "../vendor/keanu";
+
 // *****************************************************************************
 // DEFAULT/BOILERPLATE
 // *****************************************************************************
@@ -13,7 +17,7 @@ body {
   padding: 0;
   height: 100%;
 
-  @include respond-to(print) {
+  @include keanu.respond-to(print) {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -25,27 +29,27 @@ html {
   text-align: center;
 }
 body {
-    background-color: $site-background-color;
-    color: $text-color;
-    font-family: $statedecoded-stack2;
-    font-size: $base-font-size;
-    line-height: $base-line-height;
+    background-color: colors.$site-background-color;
+    color: colors.$text-color;
+    font-family: typography.$statedecoded-stack2;
+    font-size: typography.$base-font-size;
+    line-height: typography.$base-line-height;
     margin: auto;
     min-height: 100%;
     text-align: left;
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       background-color: white;
       color: #000;
     }
 }
 p {
-  font-size: $base-font-size;
+  font-size: typography.$base-font-size;
   hyphenate: auto;
   hyphenate-lines: 3;
   hyphenate-before: 2;
   hyphenate-after: 3;
-  line-height: $base-line-height;
+  line-height: typography.$base-line-height;
   widows: 4;
   orphans: 4;
 }
@@ -55,51 +59,51 @@ p {
 }
 
 h1, h2, h3 {
-  color: $headings-font-color;
-  font-family: $headings-font-family;
-  font-weight: $headings-font-weight;
+  color: typography.$headings-font-color;
+  font-family: typography.$headings-font-family;
+  font-weight: typography.$headings-font-weight;
   page-break-before: auto;
   page-break-inside: never;
 } // h1, h2, h3
 h4, h5, h6 {
-  color: $subheadings-font-color;
-  font-family: $subheadings-font-family;
-  font-weight: $subheadings-font-weight;
+  color: typography.$subheadings-font-color;
+  font-family: typography.$subheadings-font-family;
+  font-weight: typography.$subheadings-font-weight;
   page-break-before: auto;
   page-break-inside: never;
 } // h4, h5, h6
 a, a:link {
-	color: $link-color;
+	color: colors.$link-color;
 } // a, a:link;
 a:hover {
-	color: $link-color-hover;
+	color: colors.$link-color-hover;
 } // a:hover;
 a:active {
-	color: $link-color-active;
+	color: colors.$link-color-active;
 } // a:active;
 a:visited {
-	color: $link-color-visited;
+	color: colors.$link-color-visited;
 } //  a:visited
 nav {
 }
 
 ::-moz-selection {
-	background-color: $link-color;
-	color: $white;
+	background-color: colors.$link-color;
+	color: colors.$white;
 	text-shadow: none;
 }
 
 ::selection {
-	background-color: $link-color;
-	color: $white;
+	background-color: colors.$link-color;
+	color: colors.$white;
 	text-shadow: none;
 }
 
 hr {
   border: 0;
-  border-bottom: 1px solid $white;
-  border-top: 1px solid $gray-lightest;
-  margin: $base-line-height 0;
+  border-bottom: 1px solid colors.$white;
+  border-top: 1px solid colors.$gray-lightest;
+  margin: typography.$base-line-height 0;
 }
 
 // Remove the gap between images and the bottom of their containers: h5bp.com/i/440
@@ -123,7 +127,7 @@ textarea {
   overflow:hidden;
   padding: 20px 0;
 
-  @include respond-to(smartphone) {
+  @include keanu.respond-to(smartphone) {
 	padding: 0 10px;
   }
 }
@@ -139,7 +143,7 @@ textarea {
 
 ul, ol {
   padding: 0;
-  margin: 0 0 $base-line-height / 2 25px;
+  margin: 0 0 typography.$base-line-height * 0.5 25px;
   ul, ol {
 	 margin-bottom: 0;
   }
@@ -160,14 +164,14 @@ ol, ol ol ol ol, ol ol ol ol ol ol ol {
 }
 
 li {
-  line-height: $base-line-height;
+  line-height: typography.$base-line-height;
 }
 
 // Chrome Frame prompt
 
 .chromeframe {
     background-color: #ccc;
-    color: $black;
+    color: colors.$black;
     margin: 0.2em 0;
     padding: 0.2em 0;
 }
@@ -181,13 +185,13 @@ li {
     max-width: none;
     padding: 0 40px;
     width: 100%;
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       padding: 0;
     }
 }
 
 .code {
-	font-family: $code-stack;
+	font-family: typography.$code-stack;
 }
 
 .narrow {

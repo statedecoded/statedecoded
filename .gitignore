@@ -22,4 +22,4 @@ htdocs/.sass-cache/
 includes/test/.phpunit.result.cache
 htdocs/downloads/*
 htdocs/sitemap.xml
-vendor/
+# vendor/

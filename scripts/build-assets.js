@@ -152,7 +152,7 @@ const scssEntry = path.join(root, 'htdocs/themes/StateDecoded2013/static/scss/ap
 const cssOut    = path.join(root, 'htdocs/themes/StateDecoded2013/static/css/application.css');
 const sass      = path.join(root, 'node_modules/.bin/sass');
 console.log('Compiling SCSS...');
-execSync(`"${sass}" "${scssEntry}" "${cssOut}" --style=compressed --no-source-map --silence-deprecation=import,slash-div,color-functions,global-builtin,function-units`, { stdio: 'inherit' });
+execSync(`"${sass}" "${scssEntry}" "${cssOut}" --style=compressed --no-source-map`, { stdio: 'inherit' });
 console.log(`  ${path.relative(root, cssOut)}`);
 
 console.log('Done.');

@@ -1,9 +1,11 @@
+@use "_colors.css.scss" as colors;
+
 // *****************************************************************************
 // DROP DOWN VARIABLES
 // *****************************************************************************
 
-$dropdownBackground: $white;
-$dropdownBorder: $shadow-lighter;
-$dropdownlink-color: $gray-dark;
-$dropdownlink-color-Hover: $white;
-$dropdownLinkBackgroundHover:   $link-color;
+$dropdownBackground: colors.$white;
+$dropdownBorder: colors.$shadow-lighter;
+$dropdownlink-color: colors.$gray-dark;
+$dropdownlink-color-Hover: colors.$white;
+$dropdownLinkBackgroundHover:   colors.$link-color;

@@ -1,14 +1,18 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../dependencies/variables/_typography.css.scss" as typography;
+@use "../vendor/keanu";
+
   section#search-form {
-    background-color: $base-light;
+    background-color: colors.$base-light;
     border: 1px solid rgba(255,255,255,0.5);
-    color: $white;
+    color: colors.$white;
     float: right;
-    font-family: $statedecoded-stack3;
+    font-family: typography.$statedecoded-stack3;
     margin: 70px 20px 0 0 ;
     padding: 10px;
     width: 50%;
 
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       background-color: transparent;
       border: none;
       float: none;
@@ -24,17 +28,17 @@
       }
     }
 
-    @include respond-to(desktop) {
+    @include keanu.respond-to(desktop) {
       min-width: 300px;
     }
 
-    @include respond-to(tablet) {
+    @include keanu.respond-to(tablet) {
       font-size: 75%;
       margin: 15px 10px 0 0 ;
       width: 55%;
     }
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       display: none;
     }
 
@@ -43,10 +47,10 @@
       display: block;
       font-size: 13px;
       margin-bottom: 8px;
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         display: none;
       }
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         font-size: 12px;
         margin-bottom: 0;
         .inside & {
@@ -56,14 +60,14 @@
     }
 
     input[type="submit"] {
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         font-size: 12px;
         padding: 0 8px;
       }
     }
 
     a {
-      color: $white;
+      color: colors.$white;
       font-size: 10px;
       line-height: 28px;
       margin-left: 20px;
@@ -101,7 +105,7 @@
 
   } // .search
 
-  @include respond-to(smartphone)
+  @include keanu.respond-to(smartphone)
   {
     section#search-form {
       margin: 10px;
