@@ -31,6 +31,11 @@ $content->set('page_title', '404, Not Found');
  */
 header('HTTP/1.1 404 Not Found');
 
+/*
+ * A missing page may turn up in the next import, so let it be cached only briefly.
+ */
+HttpCache::send('notfound');
+
 $body = '
 <p>The page that you’re looking for is nowhere to be found. Sorry! Here are a few potential
 solutions to the problem:</p>

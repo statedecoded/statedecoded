@@ -121,10 +121,12 @@ class BaseAPIController extends BaseController
 		
 			case 'BAD REQUEST':
 				header('HTTP/1.0 400 BAD REQUEST');
+				HttpCache::send('private');
 				break;
 
 			case 'NOT FOUND':
 				header('HTTP/1.0 404 NOT FOUND');
+				HttpCache::send('notfound');
 				break;
 
 			case 'OK':

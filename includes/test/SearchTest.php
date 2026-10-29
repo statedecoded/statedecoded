@@ -241,6 +241,185 @@ class SearchTest extends PHPUnit\Framework\TestCase
 	}
 
 	// -----------------------------------------------------------------------
+	// Search operators
+	//
+	// AND, OR and NOT are written as words, since the punctuation forms are
+	// stripped from user input. These were documented long before they worked:
+	// every token used to be marked required, so "OR" was silently discarded as
+	// a stopword and left both terms required, and "NOT" was required as a
+	// literal word -- the opposite of an exclusion.
+	// -----------------------------------------------------------------------
+
+	public function testEveryWordIsRequiredByDefault(): void
+	{
+		$this->assertSame('+radar +detectors',
+			$this->engine->boolean_query('radar detectors'));
+	}
+
+	/*
+	 * AND is what happens anyway, so it is accepted and changes nothing rather
+	 * than being required as a literal word.
+	 */
+	public function testAndIsAcceptedAndRedundant(): void
+	{
+		$this->assertSame($this->engine->boolean_query('assault battery'),
+			$this->engine->boolean_query('assault AND battery'),
+			'AND must mean what a space already means.');
+	}
+
+	public function testNotExcludesItsTerm(): void
+	{
+		$this->assertSame('+assault -battery',
+			$this->engine->boolean_query('assault NOT battery'));
+	}
+
+	/*
+	 * The disjunction is expressed as a required group, +(a b), which is how
+	 * boolean mode says "either of these". A bare "a b" would make both merely
+	 * optional, which matches every row the index knows about.
+	 */
+	public function testOrGroupsItsTerms(): void
+	{
+		$this->assertSame('+(assault battery)',
+			$this->engine->boolean_query('assault OR battery'));
+	}
+
+	public function testOrIsCaseInsensitive(): void
+	{
+		foreach (['assault or battery', 'assault Or battery', 'assault OR battery'] as $query)
+		{
+			$this->assertSame('+(assault battery)', $this->engine->boolean_query($query),
+				'"' . $query . '" must be read as an OR.');
+		}
+	}
+
+	public function testOrChainsIntoOneGroup(): void
+	{
+		$this->assertSame('+(assault battery robbery)',
+			$this->engine->boolean_query('assault OR battery OR robbery'));
+	}
+
+	/*
+	 * OR binds to the term before it as well as the one after, so the earlier
+	 * term stops being required.
+	 */
+	public function testOrCombinesWithRequiredTerms(): void
+	{
+		$this->assertSame('+vehicle +(assault battery)',
+			$this->engine->boolean_query('vehicle assault OR battery'));
+	}
+
+	public function testNotChains(): void
+	{
+		$this->assertSame('+vehicle -assault -battery',
+			$this->engine->boolean_query('vehicle NOT assault NOT battery'));
+	}
+
+	/*
+	 * An operator is a bare word. A quoted phrase containing one is a search for
+	 * those words, and a hyphenated word that merely starts with one is a term.
+	 */
+	public function testOperatorsInsideQuotesAreNotOperators(): void
+	{
+		$this->assertSame('+"not guilty"', $this->engine->boolean_query('"not guilty"'));
+	}
+
+	public function testHyphenatedWordIsNotAnOperator(): void
+	{
+		$this->assertSame('+"not-for-profit"',
+			$this->engine->boolean_query('not-for-profit'));
+	}
+
+	public function testAPhraseCanBeExcluded(): void
+	{
+		$this->assertSame('+assault -"assault and battery"',
+			$this->engine->boolean_query('assault NOT "assault and battery"'));
+	}
+
+	/*
+	 * A search of nothing but exclusions would match every indexed row, which is
+	 * not what was meant. Returning an empty query sends the caller to the
+	 * REGEXP fallback instead.
+	 */
+	public function testAnExclusionAloneIsNotASearch(): void
+	{
+		$this->assertSame('', $this->engine->boolean_query('NOT battery'));
+	}
+
+	/*
+	 * An operator with nothing to apply to is ignored rather than breaking the
+	 * query or being searched for as a word.
+	 */
+	public function testDanglingOperatorsAreIgnored(): void
+	{
+		$this->assertSame('+assault', $this->engine->boolean_query('assault OR'));
+		$this->assertSame('+battery', $this->engine->boolean_query('OR battery'));
+		$this->assertSame('+assault', $this->engine->boolean_query('assault NOT'));
+	}
+
+	/*
+	 * A term dropped for being unindexable takes any operator waiting on it with
+	 * it, rather than leaving the operator to attach to the next term.
+	 */
+	public function testAnOperatorOnADroppedTermIsDiscarded(): void
+	{
+		$this->assertSame('+assault', $this->engine->boolean_query('assault NOT xy'),
+			'Excluding a word too short to be indexed must not exclude anything else.');
+	}
+
+
+	// -----------------------------------------------------------------------
+	// Operators, executed
+	//
+	// The translations above have to mean what they say once MySQL runs them.
+	// -----------------------------------------------------------------------
+
+	public function testOrFindsMoreThanEitherWordAlone(): void
+	{
+		$either = $this->engine->search(
+			['q' => 'assault OR battery', 'page' => 1, 'per_page' => 200]);
+		$first = $this->engine->search(['q' => 'assault', 'page' => 1, 'per_page' => 200]);
+		$second = $this->engine->search(['q' => 'battery', 'page' => 1, 'per_page' => 200]);
+
+		$this->assertGreaterThanOrEqual($first->get_count(), $either->get_count(),
+			'An OR cannot match fewer laws than one of its terms.');
+		$this->assertGreaterThanOrEqual($second->get_count(), $either->get_count(),
+			'An OR cannot match fewer laws than one of its terms.');
+	}
+
+	public function testAndFindsFewerThanEitherWordAlone(): void
+	{
+		$both = $this->engine->search(
+			['q' => 'assault AND battery', 'page' => 1, 'per_page' => 200]);
+		$first = $this->engine->search(['q' => 'assault', 'page' => 1, 'per_page' => 200]);
+
+		$this->assertLessThanOrEqual($first->get_count(), $both->get_count(),
+			'Requiring both words cannot match more laws than requiring one.');
+	}
+
+	/*
+	 * The bug that prompted this: "assault NOT battery" used to return laws
+	 * containing "battery", because NOT was required as a literal word.
+	 */
+	public function testNotActuallyExcludes(): void
+	{
+		$results = $this->engine->search(
+			['q' => 'assault NOT battery', 'page' => 1, 'per_page' => 200]);
+
+		$this->assertGreaterThan(0, $results->get_count(),
+			'The sample data must contain laws mentioning assault but not battery.');
+
+		$statement = $this->db->prepare(
+			'SELECT COUNT(*) FROM laws
+			 WHERE MATCH(catch_line, text) AGAINST (:match IN BOOLEAN MODE)
+			 AND (catch_line LIKE "%battery%" OR text LIKE "%battery%")');
+		$statement->execute([':match' => $this->engine->boolean_query('assault NOT battery')]);
+
+		$this->assertSame(0, (int) $statement->fetchColumn(),
+			'No law containing the excluded word may be returned.');
+	}
+
+		// -----------------------------------------------------------------------
 	// Missing full-text indexes
 	//
 	// The indexes that MATCH searches against are created by a migration, not

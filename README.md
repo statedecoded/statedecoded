@@ -40,6 +40,16 @@ docker compose -f deploy/docker-compose.yml --profile cache up -d
 # Add CACHE_HOST=memcached and CACHE_PORT=11211 to .env and restart the app.
 ```
 
+**Optional: Cloudflare or another CDN**
+
+The site sends cache headers that work with or without a CDN. Browsers keep pages for an hour, and shared caches (a CDN, Varnish, a proxy) keep them for a day, which is safe even if nothing purges them after an import. CSS and JavaScript have versioned URLs and are cached for a year.
+
+If the site is behind Cloudflare:
+
+1. Create an API token with only the "Zone > Cache Purge" permission, and add `CLOUDFLARE_ZONE_ID` and `CLOUDFLARE_API_TOKEN` to `.env` (or `config.inc.php`). Cloudflare's cache is then emptied after every import and edition change, so pages are allowed to stay in it for 30 days (`CACHE_CDN_TTL`).
+2. Add `TRUSTED_PROXY=cloudflare` to `.env`, so that Apache records visitors' IP addresses rather than Cloudflare's. Outside Docker, enable `mod_remoteip` with `RemoteIPHeader CF-Connecting-IP` and a `RemoteIPTrustedProxy` line for each of [Cloudflare's IP ranges](https://www.cloudflare.com/ips/).
+3. In the Cloudflare dashboard, add a Cache Rule that makes requests eligible for cache, with Edge TTL set to "Use cache-control header if present", and that excludes `/admin/`. Without it, Cloudflare doesn't cache HTML at all. Under Caching > Configuration, set Browser Cache TTL to "Respect existing headers".
+
 ## Is this ready for prime time?
 The 1.0 release was used in production on a half-dozen different sites, with [no serious bugs](https://github.com/statedecoded/statedecoded/issues?direction=desc&labels=Bug&milestone=2&state=open), and is certainly in good enough shape to be used on websites that aren't official, government-run repositories of the law.
 

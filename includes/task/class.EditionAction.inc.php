@@ -36,6 +36,9 @@ class EditionAction extends CliAction
       case 'delete' :
         return $this->deleteEdition($args);
 
+      case 'touch' :
+        return $this->touchEdition($args);
+
       case 'current' :
         if(count($args) > 0)
         {
@@ -181,6 +184,18 @@ class EditionAction extends CliAction
     }
 
     /*
+     * The edition is current in the database, but if the ID could not be
+     * written to .htaccess then EDITION_ID still names the old one, and parts
+     * of the site will go on serving it. The remaining steps below are still
+     * worth running, so this is reported at the end rather than returned here.
+     */
+    if($parser->edition_id_export_error !== true)
+    {
+      $this->result = 1;
+      $this->logger->message($parser->edition_id_export_error, 10);
+    }
+
+    /*
      * The site's URLs are derived from the current edition, so they must be
      * rebuilt, and any cached copies of the old URLs invalidated. Rebuilding
      * the permalinks is by far the slowest part of this, so each step says so
@@ -206,9 +221,14 @@ class EditionAction extends CliAction
     $this->logger->message('Regenerating sitemap.xml.', 5);
     $parser->generate_sitemap();
 
-    $this->logger->message('Purging the Varnish cache, if there is one.', 5);
-    $varnish = new Varnish;
-    $varnish->purge();
+    $purger = new CachePurger;
+    $purger->purge_and_log($this->logger);
+
+    if($parser->edition_id_export_error !== true)
+    {
+      return 'Edition "' . $edition->name . '" is now current in the database, but the '
+        . 'edition ID could not be stored: ' . $parser->edition_id_export_error;
+    }
 
     return 'Edition "' . $edition->name . '" is now current. ('
       . $parser->format_duration(microtime(true) - $started) . ')';
@@ -226,6 +246,51 @@ class EditionAction extends CliAction
         'db' => &$this->db
       ]
     );
+  }
+
+  /*
+   * Record that the edition's source material was checked, without importing
+   * it. The monthly updater re-scrapes the code and skips the (expensive)
+   * import when nothing has changed; without this, the date shown to readers
+   * would stay frozen at the last import even though the text had just been
+   * confirmed current.
+   */
+  public function touchEdition($args = [])
+  {
+    $edition_obj = new Edition(['db' => $this->db]);
+
+    if(count($args) > 0)
+    {
+      $edition = $edition_obj->find_by_slug($args[0]);
+
+      if(!$edition)
+      {
+        $this->result = 1;
+        return 'Unable to find edition "' . $args[0] . '".';
+      }
+    }
+    else
+    {
+      $edition = $edition_obj->current();
+
+      if(!$edition)
+      {
+        $this->result = 1;
+        return 'No current edition.';
+      }
+    }
+
+    /*
+     * Called without a datetime, which stamps NOW() in the database's own
+     * timezone.
+     */
+    if(!$edition_obj->update_last_import($edition->id))
+    {
+      $this->result = 1;
+      return 'Unable to update edition "' . $edition->name . '".';
+    }
+
+    return 'Edition "' . $edition->name . '" marked as checked.';
   }
 
   public function showCurrentEdition($args = [])
@@ -267,6 +332,10 @@ Usage:
 
   statedecoded edition delete slug
     Delete an edition.
+
+  statedecoded edition touch [slug]
+    Records that the edition's source material was checked and found
+    unchanged, without importing it. Defaults to the current edition.
 
 Available options:
 

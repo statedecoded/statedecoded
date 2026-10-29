@@ -201,6 +201,18 @@ class Page
 			 * Drop the leading slash.
 			 */
 			$asset['resolved_path'] = $this->static_path . substr($asset['path'], 1);
+
+			/*
+			 * Add the file's modification time to the URL, so that a changed file gets a new URL.
+			 * This lets browsers and caches keep assets for a year (see .htaccess) without ever
+			 * serving a stale copy.
+			 */
+			$file = WEB_ROOT . '/' . ltrim($asset['resolved_path'], '/');
+			$mtime = @filemtime($file);
+			if ($mtime !== false)
+			{
+				$asset['resolved_path'] .= '?v=' . $mtime;
+			}
 		}
 		else
 		{

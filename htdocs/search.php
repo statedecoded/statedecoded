@@ -100,10 +100,18 @@ if (!empty($_GET['q']))
 	$content->set('current_edition', $edition_id);
 
 	/*
+	 * An empty edition_id in the query string is the "Search All Editions"
+	 * option, which is a deliberate choice and must not be replaced with a
+	 * default. Its absence means no choice has been made yet, so the form
+	 * should default to the current edition; passing null asks for that.
+	 */
+	$form_edition_id = isset($_GET['edition_id']) ? $edition_id : null;
+
+	/*
 	 * Display our search form.
 	 */
 	$search->query = $q;
-	$body .= $search->display_form($edition_id);
+	$body .= $search->display_form($form_edition_id);
 
 	/*
 	 * Execute the query.
@@ -214,11 +222,11 @@ if (!empty($_GET['q']))
 				$body .= '<li><div class="result">';
 				$body .= '<h1><a href="' . $url_string . '">';
 
-				if(strlen($result->catch_line))
+				if(strlen($result->catch_line ?? ''))
 				{
 					$body .= $result->catch_line;
 				}
-				elseif(strlen($result->name)) {
+				elseif(strlen($result->name ?? '')) {
 					$body .= $result->name;
 				}
 				else
@@ -227,7 +235,7 @@ if (!empty($_GET['q']))
 				}
 
 				$body .= ' (' . SECTION_SYMBOL . '&nbsp;';
-				if(strlen($result->section_number))
+				if(strlen($result->section_number ?? ''))
 				{
 					$body .= $result->section_number;
 				}
@@ -253,8 +261,12 @@ if (!empty($_GET['q']))
 
 				foreach (array_reverse((array) $law->ancestry) as $structure)
 				{
-					$body .= '<li><a href="' . $structure->url . '">' . $structure->identifier . ' ' .
-						$structure->name . '</a></li>';
+					/*
+					 * Structure::get_by_id() attaches the permalink as an object, so the URL is
+					 * one level down rather than a `url` property on the structure itself.
+					 */
+					$body .= '<li><a href="' . ($structure->permalink->url ?? '') . '">'
+						. $structure->identifier . ' ' . $structure->name . '</a></li>';
 				}
 				$body .= '</ul></div>';
 
@@ -329,8 +341,16 @@ if (!empty($_GET['q']))
 				 */
 				if(!strlen($edition_id))
 				{
-					$law_edition = $edition->find_by_id($struct->edition_id);
-					$body .= '<div class="edition_heading edition">' . $law_edition->name . '</div>';
+					/*
+					 * Structure::get_current() does not copy edition_id onto itself, so the
+					 * edition comes from the search result, which carries it.
+					 */
+					$structure_edition = $edition->find_by_id($result->edition_id);
+					if ($structure_edition !== false)
+					{
+						$body .= '<div class="edition_heading edition">' . $structure_edition->name
+							. '</div>';
+					}
 				}
 
 				/*
@@ -340,8 +360,8 @@ if (!empty($_GET['q']))
 
 				foreach ($struct->structure as $child)
 				{
-					$body .= '<li><a href="' . $child->url . '">' . $child->identifier
-						. ' ' . $child->name . '</a></li>';
+					$body .= '<li><a href="' . ($child->permalink->url ?? '') . '">'
+						. $child->identifier . ' ' . $child->name . '</a></li>';
 				}
 
 				$body .= '</ul></div>';
@@ -373,7 +393,7 @@ if (!empty($_GET['q']))
 				/*
 				 * If we can't get a highlighted snippet, just show the first few lines of the law.
 				 */
-				elseif($struct->metadata->text)
+				elseif(!empty($struct->metadata->text))
 				{
 					$body .= '<p>' . substr($struct->metadata->text, 0, 250) . ' .&thinsp;.&thinsp;.</p>';
 				}
@@ -445,17 +465,26 @@ $sidebar .= '
 		as “<code>radar detectors</code>”, “<code>insurance agents</code>”, or
 		“<code>assault</code>” (leaving out the quotation marks).</p>
 
-		<p>Also, advanced searches are supported, using the following terms:</p>
+		<p>A law has to contain <em>every</em> word you search for to be listed. Adding words
+		narrows your search down rather than broadening it, so if you get too few results, try
+		again with fewer words.</p>
+
+		<p>To search for an exact phrase, put quotation marks around it, like
+		<code>"assault and battery"</code>. Only laws containing those words together, in that
+		order, will be listed.</p>
+
+		<p>You can also search for a section number, like <code>18.2-57</code>, and the law
+		bearing that number will be listed first.</p>
+
+		<p>To broaden or narrow a search, these words can be used:</p>
 
 		<ul>
-			<li><code>AND</code>: Requires the words or phrases before and after the
-				<code>AND</code>, like <code>radar AND vehicle</code>.</li>
-			<li><code>+</code>: Requires that the following word or phrase be in the law, like
-				<code>insurance +agent</code>.</li>
-			<li><code>NOT</code>: Requires that the following word or phrase <em>not</em> be in the
-				law, like <code>assault NOT battery</code>.</li>
-			<li><code>OR</code>: Requires that either word or phrase (or both words or phrases) be
-				in the law, like <code>assault OR battery</code>.</li>
+			<li><code>OR</code>: Lists laws containing either word, like
+				<code>assault OR battery</code>.</li>
+			<li><code>NOT</code>: Leaves out laws containing the following word, like
+				<code>assault NOT battery</code>.</li>
+			<li><code>AND</code>: Requires both words, like <code>assault AND battery</code>.
+				This is what happens anyway, so it is never necessary.</li>
 		</ul>
 	</section>';
 

@@ -28,6 +28,13 @@ class ParserController
 	public $edition_id;
 	public $previous_edition_id;
 
+	/*
+	 * True when the edition ID was written to .htaccess, or a string explaining
+	 * why it could not be. Set by handle_editions(); read by the callers, which
+	 * report it rather than claiming an import succeeded outright.
+	 */
+	public $edition_id_export_error = true;
+
 	public $downloads_url;
 	public $downloads_dir;
 
@@ -500,7 +507,25 @@ class ParserController
 				if($this->edition->current)
 				{
 					$edition->unset_current($this->edition_id);
-					$this->export_edition_id($this->edition_id);
+
+					/*
+					 * A failed write is recorded rather than returned as an
+					 * error, because the callers treat an error here as fatal.
+					 * The edition is already current in the database, which is
+					 * what the rest of the import depends on; only the .htaccess
+					 * copy of the ID is missing. The caller reports it so that
+					 * the import does not claim success.
+					 *
+					 * Only a string counts as a failure, so that a caller which
+					 * stubs out export_edition_id() -- as the tests do -- is not
+					 * mistaken for a failed write.
+					 */
+					$export_result = $this->export_edition_id($this->edition_id);
+
+					if (is_string($export_result))
+					{
+						$this->edition_id_export_error = $export_result;
+					}
 				}
 			}
 			else
@@ -588,46 +613,73 @@ class ParserController
 
 	/**
 	 * Store the edition id in the .htaccess file.
+	 *
+	 * Returns true on success, or a string explaining the failure. The caller
+	 * reports that as an error rather than merely logging it: EDITION_ID is
+	 * where several queries get their default edition, so an import that leaves
+	 * it pointing at an older edition looks like a success while quietly
+	 * serving the wrong edition of the code.
 	 */
-
-
 	public function export_edition_id($edition_id)
 	{
+		$error = false;
+		$htaccess_path = WEB_ROOT . '/.htaccess';
+
 		/*
 		 * If possible, modify the .htaccess file, to store permanently the edition ID.
 		 */
-		if (is_writable(WEB_ROOT . '/.htaccess') == true)
+		if (is_writable($htaccess_path) == true)
 		{
 
-			$htaccess = file_get_contents(WEB_ROOT . '/.htaccess');
+			$htaccess = file_get_contents($htaccess_path);
 
-			/*
-			 * If there isn't already an edition ID in .htaccess, then write a new record.
-			 * Otherwise, update the existing record.
-			 */
-			if (strpos($htaccess, ' EDITION_ID ') === false)
+			if ($htaccess === false)
 			{
-				$htaccess .= PHP_EOL . PHP_EOL . 'SetEnv EDITION_ID ' . $edition_id . PHP_EOL;
+				$error = 'Could not read ' . $htaccess_path . ' to store the edition ID. '
+					. 'EDITION_ID still names the previous edition.';
 			}
+
 			else
 			{
-				$htaccess = preg_replace('/SetEnv EDITION_ID (\d+)/', 'SetEnv EDITION_ID ' . $edition_id, $htaccess);
-			}
-			$result = file_put_contents(WEB_ROOT . '/.htaccess', $htaccess);
+				/*
+				 * If there isn't already an edition ID in .htaccess, then write a new record.
+				 * Otherwise, update the existing record.
+				 */
+				if (strpos($htaccess, ' EDITION_ID ') === false)
+				{
+					$htaccess .= PHP_EOL . PHP_EOL . 'SetEnv EDITION_ID ' . $edition_id . PHP_EOL;
+				}
+				else
+				{
+					$htaccess = preg_replace('/SetEnv EDITION_ID (\d+)/', 'SetEnv EDITION_ID ' . $edition_id, $htaccess);
+				}
 
-			if ($result)
-			{
-				$this->logger->message('Wrote edition ID to .htaccess', 5);
-			}
-			else
-			{
-				$this->logger->message('Could not write edition ID to .htaccess', 10);
+				/*
+				 * Compare against false explicitly: file_put_contents() returns
+				 * the number of bytes written, and 0 is falsy but not an error.
+				 */
+				if (file_put_contents($htaccess_path, $htaccess) === false)
+				{
+					$error = 'Could not write the edition ID to ' . $htaccess_path . '. '
+						. 'EDITION_ID still names the previous edition.';
+				}
+				else
+				{
+					$this->logger->message('Wrote edition ID to .htaccess', 5);
+				}
 			}
 
 		}
 		else
 		{
-			$this->logger->message('Cannot write to .htaccess', 10);
+			$error = 'Cannot write to ' . $htaccess_path . ', so the edition ID could not be '
+				. 'stored. EDITION_ID still names the previous edition. Make the file writable '
+				. 'by the user running the import.';
+		}
+
+		if ($error !== false)
+		{
+			$this->logger->message($error, 10);
 		}
 
 		/*
@@ -638,6 +690,8 @@ class ParserController
 		{
 			define('EDITION_ID', $edition_id);
 		}
+
+		return $error === false ? true : $error;
 	}
 
 	/**

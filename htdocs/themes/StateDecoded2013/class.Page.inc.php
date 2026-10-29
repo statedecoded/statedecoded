@@ -113,14 +113,19 @@ class StateDecoded2013__Page extends Page
 		 */
 		$search = new Search();
 
-		// Since we don't have any conditions in our template, we have to build
-		// html here.
-		if(!$content->is_set('current_edition') && defined('EDITION_ID'))
-		{
-			$content->set('current_edition', EDITION_ID);
-		}
+		/*
+		 * When the page has not named an edition, leave the selection to
+		 * build_edition(), which defaults to the edition the database marks as
+		 * current. Seeding it from EDITION_ID here would override that with a
+		 * constant written into .htaccess at import time, which names whichever
+		 * edition was imported then rather than the newest one.
+		 */
 		$content->set('edition_select',
-			$search->build_edition( $content->get('current_edition') )
+			$search->build_edition(
+				$content->is_set('current_edition')
+					? $content->get('current_edition')
+					: null
+			)
 		);
 
 		/*

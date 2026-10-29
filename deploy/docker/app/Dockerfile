@@ -33,7 +33,7 @@ RUN pecl install memcached \
     && docker-php-ext-enable memcached
 
 # Apache modules
-RUN a2enmod env rewrite headers
+RUN a2enmod env rewrite headers remoteip
 
 # PHP runtime config
 COPY deploy/docker/app/php.ini /usr/local/etc/php/conf.d/statedecoded.ini

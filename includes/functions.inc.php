@@ -152,6 +152,12 @@ function json_error($text)
 	header("HTTP/1.0 400 Bad Request");
 
 	/*
+	 * Don't let anybody cache an error. It may be the result of a bad API key, which shouldn't be
+	 * remembered once the key is fixed.
+	 */
+	HttpCache::send('private');
+
+	/*
 	 * Send an HTTP header defining the content as JSON.
 	 */
 	header('Content-type: application/json');

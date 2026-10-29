@@ -270,6 +270,28 @@ define('PLUGINS', json_encode([
 // define('VARNISH_HOST', 'http://127.0.0.1:80/');
 
 /*
+ * If the site is behind Cloudflare, provide the zone ID (on the zone's Overview page) and an API
+ * token with only the "Zone > Cache Purge" permission, so that Cloudflare's cache is emptied
+ * after each import. Once a cache can be purged like this (or with VARNISH_HOST, above), pages
+ * are allowed to stay in it for CACHE_CDN_TTL, below. Leave these commented out if the site isn't
+ * behind Cloudflare.
+ */
+// define('CLOUDFLARE_ZONE_ID', '');
+// define('CLOUDFLARE_API_TOKEN', '');
+
+/*
+ * How long, in seconds, pages may be cached. Pages change only when an edition is imported, so
+ * these can be generous. The defaults are shown.
+ *
+ * CACHE_BROWSER_TTL  Visitors' browsers. Can't be purged, so keep this short.
+ * CACHE_SHARED_TTL   Any shared cache (CDN, Varnish, proxy). Used when none can be purged.
+ * CACHE_CDN_TTL      A CDN that is purged after each import (see above).
+ */
+// define('CACHE_BROWSER_TTL', 3600);
+// define('CACHE_SHARED_TTL', 86400);
+// define('CACHE_CDN_TTL', 2592000);
+
+/*
  * If you're running a Memcached or Redis server, and you want The State Decoded to cache assets
  * within that cache, provide the host and port here.
  */

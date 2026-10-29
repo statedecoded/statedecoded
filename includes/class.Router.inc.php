@@ -97,7 +97,7 @@ class Router
 
 			if (preg_match('#' . $route_regex . '#', $url, $matches))
 			{
-				return [$this->handlers[$name][1], $matches];
+				return [$this->handlers[$name][1], $matches, $name];
 			}
 
 		}
@@ -105,7 +105,7 @@ class Router
 		/*
 		 * The last route is the default.
 		 */
-		return [$this->handlers[end($this->routes)][1], []];
+		return [$this->handlers[end($this->routes)][1], [], end($this->routes)];
 
 	}
 }

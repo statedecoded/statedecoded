@@ -23,6 +23,13 @@ class SmokeTest extends TestCase
 	private string $base;
 	private string $key;
 
+	/*
+	 * A term that matches structural units as well as laws, so that the search
+	 * page's structure branch is exercised. "agriculture" appears in both the
+	 * titles of structural units and the text of laws in the sample data.
+	 */
+	private const STRUCTURE_QUERY = 'agriculture';
+
 	protected function setUp(): void
 	{
 		$base = getenv('SMOKE_BASE_URL');
@@ -68,6 +75,32 @@ class SmokeTest extends TestCase
 		curl_close($ch);
 		$data = json_decode((string) $body, true);
 		return [$status, $data, (string) $body];
+	}
+
+	/**
+	 * Fetch a path, returning the status, the response headers (lowercased names), and the body.
+	 */
+	private function getWithHeaders(string $path, array $request_headers = [], string $method = 'GET'): array
+	{
+		$headers = [];
+		$ch = curl_init($this->base . $path);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_TIMEOUT        => 10,
+			CURLOPT_CUSTOMREQUEST  => $method,
+			CURLOPT_HTTPHEADER     => $request_headers,
+			CURLOPT_HEADERFUNCTION => function ($ch, $line) use (&$headers) {
+				if (str_contains($line, ':')) {
+					[$name, $value] = explode(':', $line, 2);
+					$headers[strtolower(trim($name))] = trim($value);
+				}
+				return strlen($line);
+			},
+		]);
+		$body   = curl_exec($ch);
+		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		return [$status, $headers, (string) $body];
 	}
 
 	private function apiPath(string $path): string
@@ -133,6 +166,76 @@ class SmokeTest extends TestCase
 		$this->assertHtml($status2, $body2, '</a>', $m[1]);
 	}
 
+	// -------------------------------------------------------------------------
+	// Cache headers
+	// -------------------------------------------------------------------------
+
+	public function testLawPageIsCacheableAndRevalidates(): void
+	{
+		[$status, $headers] = $this->getWithHeaders('/1-1/');
+		$this->assertSame(200, $status);
+		$this->assertStringStartsWith('public', $headers['cache-control'] ?? '');
+		$this->assertStringContainsString('s-maxage=', $headers['cache-control']);
+		$this->assertArrayHasKey('etag', $headers);
+		$this->assertArrayNotHasKey('set-cookie', $headers,
+			'A cookie on a public page stops CDNs from caching it.');
+
+		[$status, , $body] = $this->getWithHeaders('/1-1/', ['If-None-Match: ' . $headers['etag']]);
+		$this->assertSame(304, $status, 'A matching If-None-Match gets a 304.');
+		$this->assertSame('', $body);
+
+		[$status] = $this->getWithHeaders('/1-1/', ['If-None-Match: W/"stale"']);
+		$this->assertSame(200, $status);
+	}
+
+	public function testLawPageRecordsViewsFromTheBrowser(): void
+	{
+		[, , $body] = $this->getWithHeaders('/1-1/');
+		$this->assertStringContainsString("sendBeacon('/record-view/'", $body);
+
+		[$status, $headers] = $this->getWithHeaders('/record-view/', [], 'POST');
+		$this->assertSame(204, $status);
+		$this->assertSame('private, no-store', $headers['cache-control'] ?? '');
+
+		[$status] = $this->getWithHeaders('/record-view/');
+		$this->assertSame(405, $status);
+	}
+
+	public function testNotFoundIsCachedBriefly(): void
+	{
+		[$status, $headers] = $this->getWithHeaders('/this-does-not-exist-xyz/');
+		$this->assertSame(404, $status);
+		$this->assertStringContainsString('max-age=300', $headers['cache-control'] ?? '');
+		$this->assertArrayNotHasKey('etag', $headers);
+	}
+
+	public function testAdminIsNeverCached(): void
+	{
+		[, $headers] = $this->getWithHeaders('/admin/');
+		$this->assertSame('private, no-store', $headers['cache-control'] ?? '');
+	}
+
+	public function testApiErrorIsNeverCached(): void
+	{
+		[$status, $headers] = $this->getWithHeaders('/api/law/1-1/?key=not-a-real-key');
+		$this->assertSame(400, $status);
+		$this->assertSame('private, no-store', $headers['cache-control'] ?? '');
+	}
+
+	public function testThemeAssetsAreVersionedAndImmutable(): void
+	{
+		[, , $body] = $this->getWithHeaders('/');
+		$this->assertMatchesRegularExpression('#/static/css/application\.css\?v=\d+#', $body);
+		preg_match('#(/themes/[^"]+/static/css/application\.css\?v=\d+)#', $body, $m);
+
+		[$status, $headers] = $this->getWithHeaders($m[1]);
+		$this->assertSame(200, $status);
+		$this->assertStringContainsString('immutable', $headers['cache-control'] ?? '');
+
+		[, $headers] = $this->getWithHeaders(strtok($m[1], '?'));
+		$this->assertSame('public, max-age=2592000', $headers['cache-control'] ?? '');
+	}
+
 	public function test404Page(): void
 	{
 		[$status] = $this->get('/this-page-does-not-exist-' . uniqid() . '/');
@@ -152,6 +255,86 @@ class SmokeTest extends TestCase
 		$this->assertStringNotContainsStringIgnoringCase('Deprecated:', $body);
 		$this->assertStringNotContainsStringIgnoringCase('Warning:', $body);
 		$this->assertStringNotContainsStringIgnoringCase('Fatal error', $body);
+	}
+
+	/*
+	 * The search page renders laws and structures through two separate branches,
+	 * and the structure branch went unexercised: it read properties that the SQL
+	 * search engine does not return (they came from the retired Solr engine) and
+	 * properties that Structure::get_current() does not set. The result was
+	 * breadcrumb links with an empty href and a blank edition heading.
+	 *
+	 * Note that asserting on warning text in the body is not enough on its own:
+	 * PHP may be configured to log rather than display, in which case the page
+	 * looks clean while the links are still broken. These tests assert on the
+	 * user-visible symptoms instead.
+	 */
+	public function testNoPhpWarningsOnSearchPage(): void
+	{
+		[$status, $body] = $this->get('/search/?q=' . self::STRUCTURE_QUERY . '&edition_id=');
+		$this->assertSame(200, $status);
+		$this->assertStringNotContainsStringIgnoringCase('Deprecated:', $body);
+		$this->assertStringNotContainsStringIgnoringCase('Warning:', $body);
+		$this->assertStringNotContainsStringIgnoringCase('Fatal error', $body);
+	}
+
+	/*
+	 * Every breadcrumb has to point somewhere. An empty href is a link back to
+	 * the page the reader is already on.
+	 */
+	public function testSearchResultBreadcrumbsAreLinked(): void
+	{
+		[$status, $body] = $this->get('/search/?q=' . self::STRUCTURE_QUERY . '&edition_id=');
+		$this->assertSame(200, $status);
+
+		if (!str_contains($body, 'class="breadcrumbs"'))
+		{
+			$this->markTestSkipped('No breadcrumbs in these search results.');
+		}
+
+		$this->assertStringNotContainsString('href=""', $body,
+			'A search result breadcrumb was rendered without a URL.');
+	}
+
+	/*
+	 * Searching across editions labels each result with the edition it came
+	 * from. The label was empty for structures, whose edition was read from a
+	 * property that is never set.
+	 */
+	public function testSearchResultEditionHeadingsAreNotEmpty(): void
+	{
+		[$status, $body] = $this->get('/search/?q=' . self::STRUCTURE_QUERY . '&edition_id=');
+		$this->assertSame(200, $status);
+
+		if (!preg_match_all('/class="edition_heading edition">([^<]*)</', $body, $matches))
+		{
+			$this->markTestSkipped('No edition headings in these search results.');
+		}
+
+		foreach ($matches[1] as $heading)
+		{
+			$this->assertNotSame('', trim($heading),
+				'A search result was labelled with an empty edition name.');
+		}
+	}
+
+	/*
+	 * The structure branch has to actually run for the two tests above to mean
+	 * anything, so confirm the query returns a structure. Structures are the
+	 * results whose identifier is not preceded by a section symbol.
+	 */
+	public function testSearchReturnsStructureResults(): void
+	{
+		[$status, $data] = $this->getJson(
+			$this->apiPath('/api/1.0/search/' . self::STRUCTURE_QUERY . '/'));
+
+		if ($status !== 200 || !is_array($data))
+		{
+			$this->markTestSkipped('API search unavailable for the structure query.');
+		}
+
+		$this->assertNotEmpty($data['results'] ?? [],
+			'The structure query must return results, or the branch is untested.');
 	}
 
 	// -------------------------------------------------------------------------

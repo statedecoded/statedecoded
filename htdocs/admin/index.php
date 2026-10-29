@@ -293,10 +293,23 @@ elseif ($action == 'parse')
 					$parser->finish_import();
 
 					/*
-					 * Attempt to purge Varnish's cache. (Fails silently if Varnish isn't installed or running.)
+					 * Purge any shared caches (Varnish, Cloudflare) that are configured, so that
+					 * visitors get the new laws right away. Does nothing if none are.
 					 */
-					$varnish = new Varnish;
-					$varnish->purge();
+					$purger = new CachePurger;
+					$purger->purge_and_log($parser->logger);
+				}
+
+				/*
+				 * The laws are imported and the edition is current in the database, but if
+				 * the ID could not be written to .htaccess then EDITION_ID still names the
+				 * previous edition, and parts of the site will go on serving it.
+				 */
+				if ($parser->edition_id_export_error !== true)
+				{
+					echo '<p><strong>Warning:</strong> '
+						. htmlspecialchars($parser->edition_id_export_error, ENT_QUOTES)
+						. '</p>';
 				}
 
 			}

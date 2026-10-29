@@ -34,6 +34,9 @@ $router->addRoute('api-activate-legacy', '^/api-key/\?secret=(?P<secret>.*)', ['
 // Create an API Key
 $router->addRoute('api-create', '^/api-key/$', ['ApiKeyController', 'requestKey']);
 
+// Record a view of a law (POSTed by law pages)
+$router->addRoute('record-view', '^/record-view/$', ['ViewController', 'record']);
+
 
 /**
  * Dynamic routes last, most specific to least specific
