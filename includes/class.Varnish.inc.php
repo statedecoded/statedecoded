@@ -35,6 +35,7 @@ class Varnish
 		/*
 		 * Set our Varnish options.
 		 */
+		if (empty($site_host))
 		$options = [
 			CURLOPT_URL				=>	'http://' . $_SERVER['SERVER_NAME'] . '/',
 			CURLOPT_CUSTOMREQUEST	=>	'BAN',
