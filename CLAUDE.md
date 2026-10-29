@@ -98,6 +98,7 @@ lexis-nexis.xsl sample.xsl   XSLTs for transforming source XML → State Decoded
 | `ParserController` (2.2k LOC) | The importer — environment tests, DB population, parsing, sitemap generation, indexing |
 | `AmericanLegal` / `Municode` / `State-sample` | Vendor- or jurisdiction-specific XML parsers (multi-thousand LOC each) |
 | `Autolinker`, `Search*`, `SqlSearchEngine` | Rewrites section/term references into hyperlinks; search runs against MySQL via `SqlSearchEngine` behind the `SearchIndex` abstraction. |
+| `HttpCache` / `CachePurger` | Cache headers and ETags for every response (policy chosen per route in `MasterController::cachePolicy()`); purging Varnish and/or Cloudflare after imports. Neither assumes a CDN exists. |
 | `Plugin` + `EventManager` | Hook/event system used by the export plugins |
 | `TaskRunner` + `task/*Action` | CLI dispatcher for the `statedecoded` script |
 

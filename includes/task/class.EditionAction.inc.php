@@ -221,9 +221,8 @@ class EditionAction extends CliAction
     $this->logger->message('Regenerating sitemap.xml.', 5);
     $parser->generate_sitemap();
 
-    $this->logger->message('Purging the Varnish cache, if there is one.', 5);
-    $varnish = new Varnish;
-    $varnish->purge();
+    $purger = new CachePurger;
+    $purger->purge_and_log($this->logger);
 
     if($parser->edition_id_export_error !== true)
     {

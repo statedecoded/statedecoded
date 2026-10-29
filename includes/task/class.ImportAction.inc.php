@@ -138,10 +138,11 @@ class ImportAction extends CliAction
 			}
 
 			/*
-			 * Attempt to purge Varnish's cache. (Fails silently if Varnish isn't installed or running.)
+			 * Purge any shared caches (Varnish, Cloudflare) that are configured, so that visitors
+			 * get the new laws right away. Does nothing if none are.
 			 */
-			$varnish = new Varnish;
-			$varnish->purge();
+			$purger = new CachePurger;
+			$purger->purge_and_log($this->logger);
 
 			/*
 			 * Say plainly whether the import finished, and how long it took. An import runs for

@@ -77,6 +77,22 @@ if (getenv('CACHE_HOST'))
 	define('CACHE_PORT', getenv('CACHE_PORT') ?: '11211');
 }
 
+// ------------------------------------------------------------------ CDN (optional)
+// Set these if the site is behind Cloudflare, so that its cache is purged after each import.
+if (getenv('CLOUDFLARE_ZONE_ID') && getenv('CLOUDFLARE_API_TOKEN'))
+{
+	define('CLOUDFLARE_ZONE_ID',   getenv('CLOUDFLARE_ZONE_ID'));
+	define('CLOUDFLARE_API_TOKEN', getenv('CLOUDFLARE_API_TOKEN'));
+}
+foreach (['CACHE_BROWSER_TTL', 'CACHE_SHARED_TTL', 'CACHE_CDN_TTL'] as $ttl)
+{
+	if (is_numeric(getenv($ttl)))
+	{
+		define($ttl, (int) getenv($ttl));
+	}
+}
+unset($ttl);
+
 // ------------------------------------------------------------------ email
 define('EMAIL_ADDRESS', getenv('EMAIL_ADDRESS') ?: '');
 define('EMAIL_NAME',    SITE_TITLE);

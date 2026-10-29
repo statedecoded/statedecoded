@@ -47,7 +47,32 @@ class MasterController
 		/*
 		 * Explode the request into a method and some args.
 		 */
-		list($handler, $args) = $this->parseRequest();
+		list($handler, $args, $route_name) = $this->parseRequest();
+
+		/*
+		 * Tell browsers and any shared cache how long they may keep this response. Handlers may
+		 * override this (e.g., a 404 or an API error).
+		 */
+		$policy = $this->cachePolicy($route_name);
+		HttpCache::send($policy);
+
+		/*
+		 * If the requester already has the current version of this page, say so and stop, rather
+		 * than building the page again.
+		 */
+		if ($policy === 'page' && $this->db)
+		{
+			$etag = HttpCache::etag($this->db, $this->cache);
+			if ($etag !== false)
+			{
+				header('ETag: ' . $etag);
+				if (HttpCache::matches($etag, $_SERVER['HTTP_IF_NONE_MATCH'] ?? ''))
+				{
+					http_response_code(304);
+					return;
+				}
+			}
+		}
 
 		/*
 		 * If we have a real handler, run it.
@@ -100,9 +125,41 @@ class MasterController
 			list($url, $query_string) = explode('?', $url);
 		}
 
-		list($handler, $args) = $router->getRoute($url);
+		list($handler, $args, $route_name) = $router->getRoute($url);
 
-		return [$handler, $args];
+		return [$handler, $args, $route_name];
+
+	}
+
+	/**
+	 * Choose the cache policy for a request (see HttpCache::headers_for()).
+	 *
+	 * Everything is public by default, because nearly everything changes only when an edition is
+	 * imported. The exceptions are anything that isn't a plain read, and the routes listed here.
+	 */
+	public function cachePolicy($route_name)
+	{
+
+		$private_routes = [
+			'admin',
+			'api-activate',
+			'api-activate-legacy',
+			'api-create',
+			'record-view',
+		];
+
+		$method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+		if ($method !== 'GET' && $method !== 'HEAD')
+		{
+			return 'private';
+		}
+
+		if (in_array($route_name, $private_routes, true))
+		{
+			return 'private';
+		}
+
+		return 'page';
 
 	}
 

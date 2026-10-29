@@ -77,6 +77,32 @@ class SmokeTest extends TestCase
 		return [$status, $data, (string) $body];
 	}
 
+	/**
+	 * Fetch a path, returning the status, the response headers (lowercased names), and the body.
+	 */
+	private function getWithHeaders(string $path, array $request_headers = [], string $method = 'GET'): array
+	{
+		$headers = [];
+		$ch = curl_init($this->base . $path);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_TIMEOUT        => 10,
+			CURLOPT_CUSTOMREQUEST  => $method,
+			CURLOPT_HTTPHEADER     => $request_headers,
+			CURLOPT_HEADERFUNCTION => function ($ch, $line) use (&$headers) {
+				if (str_contains($line, ':')) {
+					[$name, $value] = explode(':', $line, 2);
+					$headers[strtolower(trim($name))] = trim($value);
+				}
+				return strlen($line);
+			},
+		]);
+		$body   = curl_exec($ch);
+		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		return [$status, $headers, (string) $body];
+	}
+
 	private function apiPath(string $path): string
 	{
 		$sep = str_contains($path, '?') ? '&' : '?';
@@ -138,6 +164,76 @@ class SmokeTest extends TestCase
 		}
 		[$status2, $body2] = $this->get($m[1]);
 		$this->assertHtml($status2, $body2, '</a>', $m[1]);
+	}
+
+	// -------------------------------------------------------------------------
+	// Cache headers
+	// -------------------------------------------------------------------------
+
+	public function testLawPageIsCacheableAndRevalidates(): void
+	{
+		[$status, $headers] = $this->getWithHeaders('/1-1/');
+		$this->assertSame(200, $status);
+		$this->assertStringStartsWith('public', $headers['cache-control'] ?? '');
+		$this->assertStringContainsString('s-maxage=', $headers['cache-control']);
+		$this->assertArrayHasKey('etag', $headers);
+		$this->assertArrayNotHasKey('set-cookie', $headers,
+			'A cookie on a public page stops CDNs from caching it.');
+
+		[$status, , $body] = $this->getWithHeaders('/1-1/', ['If-None-Match: ' . $headers['etag']]);
+		$this->assertSame(304, $status, 'A matching If-None-Match gets a 304.');
+		$this->assertSame('', $body);
+
+		[$status] = $this->getWithHeaders('/1-1/', ['If-None-Match: W/"stale"']);
+		$this->assertSame(200, $status);
+	}
+
+	public function testLawPageRecordsViewsFromTheBrowser(): void
+	{
+		[, , $body] = $this->getWithHeaders('/1-1/');
+		$this->assertStringContainsString("sendBeacon('/record-view/'", $body);
+
+		[$status, $headers] = $this->getWithHeaders('/record-view/', [], 'POST');
+		$this->assertSame(204, $status);
+		$this->assertSame('private, no-store', $headers['cache-control'] ?? '');
+
+		[$status] = $this->getWithHeaders('/record-view/');
+		$this->assertSame(405, $status);
+	}
+
+	public function testNotFoundIsCachedBriefly(): void
+	{
+		[$status, $headers] = $this->getWithHeaders('/this-does-not-exist-xyz/');
+		$this->assertSame(404, $status);
+		$this->assertStringContainsString('max-age=300', $headers['cache-control'] ?? '');
+		$this->assertArrayNotHasKey('etag', $headers);
+	}
+
+	public function testAdminIsNeverCached(): void
+	{
+		[, $headers] = $this->getWithHeaders('/admin/');
+		$this->assertSame('private, no-store', $headers['cache-control'] ?? '');
+	}
+
+	public function testApiErrorIsNeverCached(): void
+	{
+		[$status, $headers] = $this->getWithHeaders('/api/law/1-1/?key=not-a-real-key');
+		$this->assertSame(400, $status);
+		$this->assertSame('private, no-store', $headers['cache-control'] ?? '');
+	}
+
+	public function testThemeAssetsAreVersionedAndImmutable(): void
+	{
+		[, , $body] = $this->getWithHeaders('/');
+		$this->assertMatchesRegularExpression('#/static/css/application\.css\?v=\d+#', $body);
+		preg_match('#(/themes/[^"]+/static/css/application\.css\?v=\d+)#', $body, $m);
+
+		[$status, $headers] = $this->getWithHeaders($m[1]);
+		$this->assertSame(200, $status);
+		$this->assertStringContainsString('immutable', $headers['cache-control'] ?? '');
+
+		[, $headers] = $this->getWithHeaders(strtok($m[1], '?'));
+		$this->assertSame('public, max-age=2592000', $headers['cache-control'] ?? '');
 	}
 
 	public function test404Page(): void

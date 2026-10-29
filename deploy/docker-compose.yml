@@ -24,6 +24,12 @@ services:
       LAWS_NAME: ${LAWS_NAME:-Code of State}
       SEARCH_ENGINE: ${SEARCH_ENGINE:-SqlSearchEngine}
       DEBUG_LEVEL: ${DEBUG_LEVEL:-5}
+      CLOUDFLARE_ZONE_ID: ${CLOUDFLARE_ZONE_ID:-}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-}
+      TRUSTED_PROXY: ${TRUSTED_PROXY:-}
+      CACHE_BROWSER_TTL: ${CACHE_BROWSER_TTL:-}
+      CACHE_SHARED_TTL: ${CACHE_SHARED_TTL:-}
+      CACHE_CDN_TTL: ${CACHE_CDN_TTL:-}
     volumes:
       # Bind-mount the repo root so edits are reflected immediately
       - ..:/var/www/html

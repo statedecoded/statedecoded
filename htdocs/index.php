@@ -168,6 +168,7 @@ catch (PDOException $e)
 		if (strpos($_SERVER['REQUEST_URI'], '/admin') === false)
 		{
 			header('Location: /admin/');
+			header('Cache-Control: no-store');
 			exit;
 		}
 	}

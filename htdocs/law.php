@@ -66,11 +66,6 @@ if (count($laws) === 0)
 }
 
 /*
- * Store a record that this section was viewed.
- */
-$law_object->record_view();
-
-/*
  * If this is a request for a plain text version of this law, simply display that and exit.
  */
 if (isset($_GET['plain_text']))
@@ -106,6 +101,17 @@ $content = new Content();
 $content->set('javascript', "var section_number = '" . $laws[0]->section_number . "';");
 $content->append('javascript', "var edition_id = '" . $laws[0]->edition_id . "';");
 $content->append('javascript', "var api_key = '" . API_KEY . "';");
+
+/*
+ * Record that this section was viewed. This is done by the browser, rather than here, because
+ * pages are cached by browsers and perhaps by a CDN, in which case this script never runs.
+ */
+if ( !defined('RECORD_VIEWS') || (RECORD_VIEWS !== false) )
+{
+	$content->append('javascript', "if (navigator.sendBeacon) { var view = new FormData(); "
+		. "view.append('section', " . json_encode($laws[0]->section_number) . "); "
+		. "navigator.sendBeacon('/record-view/', view); }");
+}
 
 /*
  * Define the browser title.
