@@ -1,4 +1,5 @@
 @use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../vendor/keanu";
 
 .search-results {
   margin: 0;
@@ -68,17 +69,17 @@
       display: block;
       min-width: 30px;
       padding: 7px 7px;
-      border: 1px solid $gray-light;
+      border: 1px solid colors.$gray-light;
       border-radius: 4px;
       background-color: #fff;
-      color: $link-color;
+      color: colors.$link-color;
       text-decoration: none;
       transition: background-color 0.1s linear, border-color 0.1s linear;
 
       &:hover,
       &:focus {
-        border-color: $gray-dark;
-        background-color: $gray-lightest;
+        border-color: colors.$gray-dark;
+        background-color: colors.$gray-lightest;
         text-decoration: none;
       }
     }
@@ -88,14 +89,14 @@
     li.current {
       min-width: 30px;
       padding: 7px 7px;
-      border: 1px solid $gray-dark;
+      border: 1px solid colors.$gray-dark;
       border-radius: 4px;
-      background-color: $gray-dark;
+      background-color: colors.$gray-dark;
       color: #fff;
       font-weight: bold;
     }
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       display: none;
     }
   }
