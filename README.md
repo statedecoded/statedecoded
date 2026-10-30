@@ -3,7 +3,8 @@
 ## What is The State Decoded?
 The State Decoded is a free, open source, web-based application to display laws online. Although it's meant for laws, it'll basically work for any structured legal text. It makes legal text searchable, interconnected, and machine-readable, adding an API, bulk downloads, and powerful semantic analysis tools. With The State Decoded, legal codes become vastly easier to read, more useful, and more open. Here's an actual before-and-after from the Code of Virginia:
 
-![Before and After](https://s3.amazonaws.com/statedecoded.com/comparison.jpg)
+![Before and After](https://raw.githubusercontent.com/statedecoded/documentation/fe5ea8c1e641a0ff8f7ea591be743b21f66bf3a8/images/comparison.jpg)
+
 
 ## Can I try it out?
 Sure! This project can be seen in action on the site for [Virginia](https://vacode.org/). If you want to install it, you can [download and run it in Docker](https://github.com/statedecoded/statedecoded/releases).
