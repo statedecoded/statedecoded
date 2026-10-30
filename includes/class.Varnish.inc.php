@@ -16,6 +16,11 @@
  
 class Varnish
 {
+
+	/*
+	 * A single URL to purge. If unset, the whole site is purged.
+	 */
+	public $url = null;
 	
 	/*
 	 * Remove a given URL (or all URLs) from Varnish. If $this->url is not set, then it will
@@ -33,32 +38,41 @@ class Varnish
 		}
 		
 		/*
-		 * Set our Varnish options.
+		 * Send the request to Varnish itself, naming the site in the Host header, so that this
+		 * works from the command line (where imports run) as well as from the web. Without a
+		 * specific URL, the whole site is banned.
 		 */
-		if (empty($site_host))
-		$options = [
-			CURLOPT_URL				=>	'http://' . $_SERVER['SERVER_NAME'] . '/',
-			CURLOPT_CUSTOMREQUEST	=>	'BAN',
-			CURLOPT_RETURNTRANSFER	=>	true,
-			CURLOPT_HTTPHEADER		=> 	 ['Host: ' . VARNISH_HOST ],
-		];
-		
-		/*
-		 * If a URL has been specified, then replace the default URL (for the entire site)
-		 */
+		$url = rtrim(VARNISH_HOST, '/') . '/';
 		if (isset($this->url))
 		{
-			$options['CURLOPT_URL'] = $this->url;
+			$url = rtrim(VARNISH_HOST, '/') . '/' . ltrim(parse_url($this->url, PHP_URL_PATH) ?? '', '/');
 		}
-		
+
+		$site_host = defined('SITE_URL') ? parse_url(SITE_URL, PHP_URL_HOST) : null;
+		if (empty($site_host))
+		{
+			$site_host = $_SERVER['SERVER_NAME'] ?? 'localhost';
+		}
+
+		$options = [
+			CURLOPT_URL				=>	$url,
+			CURLOPT_CUSTOMREQUEST	=>	'BAN',
+			CURLOPT_RETURNTRANSFER	=>	true,
+			CURLOPT_CONNECTTIMEOUT	=>	5,
+			CURLOPT_TIMEOUT			=>	15,
+			CURLOPT_HTTPHEADER		=> 	['Host: ' . $site_host],
+		];
+
 		/*
 		 * Run cURL to execute the URL ban (as Varnish calls it).
 		 */
 		$request = curl_init();
 		curl_setopt_array($request, $options);
-		curl_exec($request);
-		
-		return true;
+		$result = curl_exec($request);
+		$status = curl_getinfo($request, CURLINFO_HTTP_CODE);
+		curl_close($request);
+
+		return ($result !== false && $status >= 200 && $status < 300);
 		
 	}
 	
