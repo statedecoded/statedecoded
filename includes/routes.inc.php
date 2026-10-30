@@ -27,11 +27,9 @@ $router->addRoute('editions', '^/editions/?(.*)', ['EditionController', 'handle'
 // Search
 $router->addRoute('search', '^/search/?(.*)', 'search.php');
 
-// New activation
-$router->addRoute('api-activate', '^/api-key/activate/(?P<secret>.*)', ['ApiKeyController', 'activateKey']);
-// Old activation
-$router->addRoute('api-activate-legacy', '^/api-key/\?secret=(?P<secret>.*)', ['ApiKeyController', 'activateKey']);
-// Create an API Key
+// API key activation (now handled by the downloads page; see ApiKeyController)
+$router->addRoute('api-activate', '^/api-key/activate/(?P<secret>[^/]+)/?$', ['ApiKeyController', 'activateKey']);
+// API key requests, and old activation links of the form /api-key/?secret=...
 $router->addRoute('api-create', '^/api-key/$', ['ApiKeyController', 'requestKey']);
 
 // Record a view of a law (POSTed by law pages)

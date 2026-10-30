@@ -143,7 +143,6 @@ class MasterController
 		$private_routes = [
 			'admin',
 			'api-activate',
-			'api-activate-legacy',
 			'api-create',
 			'record-view',
 		];
