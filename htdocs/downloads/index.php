@@ -67,6 +67,11 @@ if($download_content && is_array($download_content)) {
 $api = new API();
 
 /*
+ * The sidebar is filled in below, depending on what this request is doing.
+ */
+$sidebar = '';
+
+/*
  * If the form on this page is being submitted, process the submitted data.
  */
 if (isset($_POST['form_data']))
@@ -163,14 +168,17 @@ else
 				documentation</a> for details.</p>';
 
 	$sidebar .= $api->display_form();
-
-	$sidebar .= '<h1>Documentation</h1>
-
-				<p>A great deal of information is available about how to use ' . SITE_TITLE .'’s
-				API and downloads, plus much more, within
-				<a href="http://statedecoded.github.io/documentation/">the documentation</a> for
-				The State Decoded, the software that drives this website.</p>';
 }
+
+/*
+ * Point to the documentation, whatever else the page is showing.
+ */
+$sidebar .= '<h1>Documentation</h1>
+
+			<p>A great deal of information is available about how to use ' . SITE_TITLE .'’s
+			API and downloads, plus much more, within
+			<a href="http://statedecoded.github.io/documentation/">the documentation</a> for
+			The State Decoded, the software that drives this website.</p>';
 
 /*
  * Put the shorthand $body variable into its proper place.
