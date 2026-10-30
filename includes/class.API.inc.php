@@ -338,7 +338,19 @@ class API
 		 */
 		if ( !isset($this->suppress_activation_email) || ($this->suppress_activation_email !== true) )
 		{
-			API::send_activation_email();
+
+			/*
+			 * If the e-mail can't be sent, the key could never be activated, so remove it and
+			 * tell the user, rather than leaving them waiting for an e-mail that won't arrive.
+			 */
+			if (API::send_activation_email() === false)
+			{
+				$statement = $db->prepare('DELETE FROM api_keys WHERE api_key = :key');
+				$statement->execute([':key' => $this->key]);
+				throw new Exception('The activation e-mail could not be sent, so your API key '
+					. 'was not created. Please try again later.');
+			}
+
 		}
 
 	}
@@ -419,23 +431,11 @@ class API
 			return false;
 		}
 
-		$url = 'http://';
-		if ( (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] == 443) )
-		{
-			$url = 'https://';
-		}
-		$url .= $_SERVER['SERVER_NAME'];
-
-		if($_SERVER['SERVER_PORT'] != '80')
-		{
-			$url .= ':80';
-		}
-
-		$url .= '/downloads/?secret=' . $this->secret;
+		$url = rtrim(SITE_URL, '/') . '/downloads/?secret=' . $this->secret;
 
 		$email = new stdClass();
 		$email->body = 'Click on the following link to activate your ' . SITE_TITLE . ' API key.'
-			. "\r\r"
+			. "\n\n"
 			. $url;
 		$email->subject = SITE_TITLE . ' API Registration';
 		$email->headers = 'From: ' . EMAIL_NAME . ' <' . EMAIL_ADDRESS . ">\n"
@@ -445,11 +445,10 @@ class API
 		$email->parameters = '-f' . EMAIL_ADDRESS;
 
 		/*
-		 * Send the e-mail.
+		 * Send the e-mail. mail() returns false if the server couldn't hand it off for delivery
+		 * (e.g., no sendmail is installed).
 		 */
-		mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
-
-		return true;
+		return mail($this->email, $email->subject, $email->body, $email->headers, $email->parameters);
 	}
 
 
