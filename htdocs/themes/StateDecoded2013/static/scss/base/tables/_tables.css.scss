@@ -1,3 +1,8 @@
+@use "../../dependencies/mixins/non-semantic-helpers";
+@use "../_buttons.css.scss" as buttons;
+@use "../../dependencies/variables/_colors.css.scss" as colors;
+@use "../../dependencies/variables/_typography.css.scss" as typography;
+
 // *****************************************************************************
 // TABLES
 // Tables for, you guessed it, tabular data
@@ -7,12 +12,12 @@
 //  Table Color Variables
 // ------------------------------------------------------------------
 
-$table-header-color-dark: hsla(0,0,0,1);
-$table-header-color-light: $gray-darker;
+$table-header-color-dark: hsla(0,0%,0%,1);
+$table-header-color-light: colors.$gray-darker;
 $table-background: transparent; // overall background-color
 $table-background-accent: #f9f9f9; // for striping
 $table-background-hover: #f5f5f5; // for hover
-$table-border-color: $gray-lighter; // table and cell border
+$table-border-color: colors.$gray-lighter; // table and cell border
 
 // Data Tables ... In a perfect world this would just be on the table class above :(
 // ------------------------------------------------------------------
@@ -20,7 +25,7 @@ $table-border-color: $gray-lighter; // table and cell border
 .table { // This is a data table. In theory tables should only ever be data tables, but lets be honest with reality here.
   border-radius: 4px;
   border: none;
-  margin-bottom: $base-line-height;
+  margin-bottom: typography.$base-line-height;
   width: 100%;
 
   caption {
@@ -42,7 +47,7 @@ $table-border-color: $gray-lighter; // table and cell border
   }
 
   thead, tfoot {
-    background-color: $gray-darker;
+    background-color: colors.$gray-darker;
     &:first-child {
       tr {
         &:first-child th {
@@ -72,13 +77,13 @@ $table-border-color: $gray-lighter; // table and cell border
       }
     }
     th {
-      background-color: $gray-darker;
-      color: $white;
+      background-color: colors.$gray-darker;
+      color: colors.$white;
       font-size: 11px;
       padding: 0 5px;
       text-transform: uppercase;
       vertical-align: middle;
-      border-right: 1px solid $white;
+      border-right: 1px solid colors.$white;
       &:last-child {
         border-right: none;
       }
@@ -115,7 +120,7 @@ $table-border-color: $gray-lighter; // table and cell border
         border-top: 1px solid $table-border-color;
         font-weight: bold;
         padding: 8px;
-        line-height: $base-line-height;
+        line-height: typography.$base-line-height;
         text-align: left;
         text-transform: uppercase;
         vertical-align: middle;
@@ -124,7 +129,7 @@ $table-border-color: $gray-lighter; // table and cell border
         border: none;
         border-top: 1px solid $table-border-color;
         padding: 4px 5px;
-        line-height: $base-line-height;
+        line-height: typography.$base-line-height;
         text-align: left;
         vertical-align: top;
         &.is-number {
@@ -163,15 +168,15 @@ table {
 } // table
 
 colgroup.is-active {
-  background-color: $highlight !important;
+  background-color: colors.$highlight !important;
   td, th {
-    background-color: $highlight !important;
+    background-color: colors.$highlight !important;
   }  // td, th
 } // colgroup.is-active
 tbody {
   .is-active {
     td {
-      background-color: $highlight !important;
+      background-color: colors.$highlight !important;
     } // td
   } // &.is-active
 } // tbody

@@ -1,6 +1,8 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+
 .ac_results {
 	padding: 0px;
-	border: 1px solid $gray-darkest;
+	border: 1px solid colors.$gray-darkest;
 	background-color: white;
 	overflow: hidden;
 	z-index: 99999;
@@ -39,10 +41,10 @@
 }
 
 .ac_odd {
-	background-color: $gray-lighter;
+	background-color: colors.$gray-lighter;
 }
 
 .ac_over {
-	background-color: $gray-darkest;
+	background-color: colors.$gray-darkest;
 	color: white;
 }

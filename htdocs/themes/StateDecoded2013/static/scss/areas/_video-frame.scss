@@ -1,5 +1,8 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../vendor/keanu";
+
 div.video-frame {
-  background-color: $white;
+  background-color: colors.$white;
   box-shadow: 0 0 20px rgba(0,0,0,0.75);
   float: right;
   margin-top: -150px;
@@ -7,7 +10,7 @@ div.video-frame {
   width: 50%;
   z-index: 100;
 
-  @include respond-to(smartphone) {
+  @include keanu.respond-to(smartphone) {
     float: none;
     margin: 1em 0;
     position: relative;
@@ -15,7 +18,7 @@ div.video-frame {
     width:100%;
   }
 
-  @include respond-to(tablet) {
+  @include keanu.respond-to(tablet) {
     float: none;
     margin: 2em 0;
     position: relative;
@@ -42,7 +45,7 @@ div.video-frame {
       height: 100%;
       z-index: 1000;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         border: 5px solid white;
       }
     }

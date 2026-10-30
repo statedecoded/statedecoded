@@ -1,3 +1,5 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+
 /*
  * qTip2 - Pretty powerful tooltips - v2.0.1-108
  * http://qtip2.com
@@ -105,27 +107,27 @@
 .qtip-default{
 	border-width: 1px;
 	border-style: solid;
-	border-color: $qtip-border-color;
+	border-color: colors.$qtip-border-color;
   box-shadow: 0 2px 5px rgba(111,114,117,.15); // drop shadow
 
 
-	background-color: $qtip-bkgnd-color;
-	color: $qtip-color;
+	background-color: colors.$qtip-bkgnd-color;
+	color: colors.$qtip-color;
 }
 
 	.qtip-default .qtip-titlebar{
-		background-color: $qtip-titlebar-bkgnd-color;
+		background-color: colors.$qtip-titlebar-bkgnd-color;
 	}
 
 	.qtip-default .qtip-icon{
-		border-color: $qtip-icon-border-color;
-		background: $qtip-icon-bkgnd;
-		color: $qtip-icon-color;
+		border-color: colors.$qtip-icon-border-color;
+		background: colors.$qtip-icon-bkgnd;
+		color: colors.$qtip-icon-color;
 	}
 
 	.qtip-default .qtip-titlebar .qtip-close{
-		border-color: $qtip-close-border-color;
-		color: $qtip-close-color;
+		border-color: colors.$qtip-close-border-color;
+		color: colors.$qtip-close-color;
 	}
 
 
@@ -335,7 +337,7 @@
 	.qtip-jtools .qtip-titlebar,
 	.qtip-jtools .qtip-content{
 		background: transparent;
-		color: $white;
+		color: colors.$white;
 		border: 0 dashed transparent;
 	}
 
@@ -463,7 +465,7 @@
 
 	/** Taken from Bootstrap .popover */
 	padding: 1px;
-	background-color: $white;
+	background-color: colors.$white;
 	border: 1px solid #ccc;
 	border: 1px solid rgba(0, 0, 0, 0.2);
 	-webkit-border-radius: 6px;
@@ -540,15 +542,15 @@
 			font-size: 20px;
 			font-weight: bold;
 			line-height: 18px;
-			color: $black;
-			text-shadow: 0 1px 0 $white;
+			color: colors.$black;
+			text-shadow: 0 1px 0 colors.$white;
 			opacity: 0.2;
 			filter: alpha(opacity=20);
 		}
 
 		.qtip-bootstrap .qtip-icon .ui-icon:hover{
 			/* Taken from Bootstrap .close:hover */
-			color: $black;
+			color: colors.$black;
 			text-decoration: none;
 			cursor: pointer;
 			opacity: 0.4;

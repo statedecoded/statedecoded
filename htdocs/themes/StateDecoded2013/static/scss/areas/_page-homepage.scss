@@ -1,3 +1,6 @@
+@use "../dependencies/variables/_typography.css.scss" as typography;
+@use "../vendor/keanu";
+
 .homepage {
 
   #place_logo {
@@ -5,7 +8,7 @@
     margin-top: 2em;
 
     h1 {
-      font-family: $statedecoded-stack1;
+      font-family: typography.$statedecoded-stack1;
       font-size: 225%;
       font-weight: normal;
       line-height: 100%;
@@ -13,14 +16,14 @@
     } //h1
 
     h2 {
-      font-family: $statedecoded-stack3;
+      font-family: typography.$statedecoded-stack3;
       font-size: 87.5%;
       font-weight: normal;
       letter-spacing: 0.1em;
       line-height: 87.5%;
       text-transform: uppercase;
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         margin: 0;
       }
     } //h2
@@ -31,12 +34,12 @@
     margin-top: 30px;
     width: 50%;
 
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       float: none;
       width: 100%;
     }
 
-    @include respond-to(tablet) {
+    @include keanu.respond-to(tablet) {
       margin-left: 20px;
       float: none;
       width: 100%;
@@ -54,13 +57,13 @@
         margin-right: 5%;
         width: 50%;
 
-        @include respond-to(smartphone) {
+        @include keanu.respond-to(smartphone) {
           border-right: none;
           float: none;
           width: 100%;
         }
 
-        @include respond-to(tablet) {
+        @include keanu.respond-to(tablet) {
         }
       }
 
@@ -69,12 +72,12 @@
         margin-bottom: 20px;
         width: 39%;
 
-        @include respond-to(smartphone) {
+        @include keanu.respond-to(smartphone) {
           float: none;
           width: 100%;
         }
 
-        @include respond-to(tablet) {
+        @include keanu.respond-to(tablet) {
           float: left;
         }
       }
@@ -92,11 +95,11 @@
         overflow: hidden;
         width: 100%;
 
-        @include respond-to(smartphone) {
+        @include keanu.respond-to(smartphone) {
           height: 75px;
         }
 
-        @include respond-to(tablet) {
+        @include keanu.respond-to(tablet) {
           height: 100px;
         }
 
@@ -106,18 +109,18 @@
             left: 0;
           width: 100%;
 
-          @include respond-to(smartphone) {
+          @include keanu.respond-to(smartphone) {
             top: -70px;
           }
 
-          @include respond-to(tablet) {
+          @include keanu.respond-to(tablet) {
             top:-150px;
           }
         }
       } // figure
 
       h1 {
-        font-family: $statedecoded-stack3;
+        font-family: typography.$statedecoded-stack3;
         font-size: 107.1428%;
         font-weight: normal;
         margin: 0;

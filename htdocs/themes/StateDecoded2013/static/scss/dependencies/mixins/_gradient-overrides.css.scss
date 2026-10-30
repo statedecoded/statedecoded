@@ -1,3 +1,7 @@
+@use "../variables/_colors.css.scss" as colors;
+
+@use "sass:color";
+
 @mixin gradient-vertical($startColor: #555, $endColor: #333) {
   background-color: $endColor;
   background-image: linear-gradient(to bottom, $startColor, $endColor);
@@ -13,6 +17,6 @@
 // Gradient Bar Colors for buttons and alerts
 @mixin gradientBar($primaryColor, $secondaryColor) {
   @include gradient-vertical($primaryColor, $secondaryColor);
-  border-color: $secondaryColor $secondaryColor darken($secondaryColor, 15%);
-  border-color: $shadow-lightest $shadow-lightest fade-in($shadow-lightest, 0.15);
+  border-color: $secondaryColor $secondaryColor color.adjust($secondaryColor, $lightness: -15%, $space: hsl);
+  border-color: colors.$shadow-lightest colors.$shadow-lightest color.adjust(colors.$shadow-lightest, $alpha: 0.15);
 }

@@ -1,3 +1,5 @@
+@use "../vendor/keanu";
+
 /*
 ###############################################################################
 # UI Elements
@@ -52,7 +54,7 @@ section#sidebar section#keyboard-guide {
      -moz-box-shadow: 3px 3px 7px 1px #666;
           box-shadow: 3px 3px 7px 1px #666;
 
-  @include respond-to(desktop) {
+  @include keanu.respond-to(desktop) {
     width: 50%;
   }
 

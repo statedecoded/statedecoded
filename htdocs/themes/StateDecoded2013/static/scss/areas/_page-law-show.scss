@@ -1,3 +1,9 @@
+@use "../dependencies/mixins/non-semantic-helpers";
+@use "../base/default";
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../dependencies/variables/_typography.css.scss" as typography;
+@use "../vendor/keanu";
+
 /*
 ################################################################################
 # Law page
@@ -8,23 +14,23 @@
   // Width for right column Masonry.js stuff
   width: 100%;
 
-  @include respond-to(desktop) {
+  @include keanu.respond-to(desktop) {
     width: 13%;
   }
 
-  @include respond-to(laptop) {
+  @include keanu.respond-to(laptop) {
     width: 13%;
   }
 
-  @include respond-to(tablet-portrait) {
+  @include keanu.respond-to(tablet-portrait) {
     width: 26%;
   }
 
-  @include respond-to(tablet-landscape) {
+  @include keanu.respond-to(tablet-landscape) {
     width: 26%;
   }
 
-  @include respond-to(smartphone) {
+  @include keanu.respond-to(smartphone) {
     width: 40%;
   }
 }
@@ -34,7 +40,7 @@
     overflow: hidden;
     padding-bottom: 150px; // Footer fixed hack
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       padding-bottom: 0;
     }
   }
@@ -42,7 +48,7 @@
   .nest {
     @extend .wide;
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       margin: 0 0 0 0.25in;
       padding: 0;
       width: 7in;
@@ -53,7 +59,7 @@
     display: block;
     padding: 20px;
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       padding: 0;
     }
   }
@@ -78,18 +84,18 @@
     padding: 20px;
     width: 49%;
 
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       float: none;
       width: 100%
     }
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       float: none;
       width: 100%;
     }
 
     h1 {
-      font-family: $statedecoded-stack1;
+      font-family: typography.$statedecoded-stack1;
       font-size: 200%;
       line-height: 105%;
       font-weight: 100;
@@ -98,7 +104,7 @@
 
     .section_id {
       display: block;
-      font-family: $statedecoded-stack1;
+      font-family: typography.$statedecoded-stack1;
       font-size: 65%;
       font-variant: small-caps;
       letter-spacing: 0.05em;
@@ -184,12 +190,12 @@
     padding: 20px;
     width: 39%;
 
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       float: none;
       width: 100%;
     }
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       float: none;
       padding: 0;
       width: 100%;
@@ -206,11 +212,11 @@
     .ad {
       margin: 0 auto 20px auto ;
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         max-width: 100%;
       }
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         max-width: 100%;
       }
 
@@ -222,12 +228,12 @@
       text-align: left;
       width: 101.5%;
 
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         float: none;
         width: 100%;
       }
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         float: none;
         width: 100%;
       }
@@ -251,15 +257,15 @@
       text-align: left;
       width: 100%;
 
-      @include respond-to(tablet-landscape) {
+      @include keanu.respond-to(tablet-landscape) {
         width: 100%;
       }
 
-      @include respond-to(tablet-portrait) {
+      @include keanu.respond-to(tablet-portrait) {
         width: 100%;
       }
 
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         width: 100%;
       }
 
@@ -268,7 +274,7 @@
       }
 
       h1 {
-        font-family: $statedecoded-stack3;
+        font-family: typography.$statedecoded-stack3;
         font-size:16px;
         font-style: italic;
         margin: 0.5em 0;
@@ -324,12 +330,12 @@
             margin-bottom: 15px;
             width: 49%;
 
-            @include respond-to(smartphone) {
+            @include keanu.respond-to(smartphone) {
               float: none;
               width: 100%;
             }
 
-            @include respond-to(tablet) {
+            @include keanu.respond-to(tablet) {
               float: none;
               width: 100%;
             }
@@ -337,7 +343,7 @@
             article {
 
               h1 {
-                font-family: $statedecoded-stack2;
+                font-family: typography.$statedecoded-stack2;
               }
 
               &.legal-reference {
@@ -376,7 +382,7 @@
 
         article.court-decision {
           h1 {
-            font-family: $statedecoded-stack2;
+            font-family: typography.$statedecoded-stack2;
             margin: 1em 0 0 0;
           }
 
@@ -394,12 +400,12 @@
     }
 
     p.keyboard {
-      font-family: $statedecoded-stack3;
+      font-family: typography.$statedecoded-stack3;
       font-size: 0.9em;
       text-transform: uppercase;
 
       a#keyhelp {
-        @include respond-to(print) {
+        @include keanu.respond-to(print) {
           display: none;
         }
       }
@@ -464,11 +470,11 @@
 
     // Disabled state sets text to gray and nukes hover/tab effects
     &.disabled > a {
-      color: $gray-lightest;
+      color: colors.$gray-lightest;
 
       &:hover,
       &:focus {
-        color: $gray-lighter;
+        color: colors.$gray-lighter;
         text-decoration: none;
         background-color: transparent;
         cursor: not-allowed;
@@ -482,7 +488,7 @@
     &:hover,
     &:focus {
       background-color: white;
-      border-color: $gray-lighter;
+      border-color: colors.$gray-lighter;
     }
   }
 
@@ -512,7 +518,7 @@ $border-radius-base: 6px;
       border: 1px solid transparent;
       border-radius: $border-radius-base $border-radius-base 0 0;
       &:hover {
-        border-color: $gray-lighter $gray-lighter $gray-lighter;
+        border-color: colors.$gray-lighter colors.$gray-lighter colors.$gray-lighter;
       }
     }
 
@@ -526,18 +532,18 @@ $border-radius-base: 6px;
         margin-right: 3px;
         margin-bottom: 1px;
         text-decoration: none;
-        color: $black;
-        background-color: $base-lightest;
-        border: 1px solid $gray-darkest;
-        border-bottom-color: $gray-darkest;
+        color: colors.$black;
+        background-color: colors.$base-lightest;
+        border: 1px solid colors.$gray-darkest;
+        border-bottom-color: colors.$gray-darkest;
         cursor: default;
       }
     }
     &.active > a {
       margin-bottom: 0;
-      border: 1px solid $gray-darkest;
+      border: 1px solid colors.$gray-darkest;
       border-bottom-color: transparent;
-      background-color: $gray-lightest;
+      background-color: colors.$gray-lightest;
     }
   }
   // pulling this in mainly for less shorthand
@@ -553,8 +559,8 @@ $border-radius-base: 6px;
 }
 
 .tab-pane {
-  border: 1px solid $gray-darkest;
-  background-color: $gray-lightest;
+  border: 1px solid colors.$gray-darkest;
+  background-color: colors.$gray-lightest;
   padding: 1em 1em;
   display: none;
 
@@ -617,7 +623,7 @@ $border-radius-base: 6px;
     color: inherit;
   }
   15% {
-    color: $success-text;
+    color: colors.$success-text;
   }
 }
 // If the permalink is inside of a section, we need to adjust it's position.

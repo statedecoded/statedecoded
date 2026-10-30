@@ -1,3 +1,9 @@
+@use "../dependencies/mixins/non-semantic-helpers";
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../vendor/keanu";
+
+@use "sass:color";
+
 // Function Specific Mixins
 // ------------------------------------------------------------------
 
@@ -48,7 +54,7 @@ nav.prevnext {
     }
   }
 
-  @include respond-to(print) {
+  @include keanu.respond-to(print) {
     display: none;
   }
 }
@@ -60,7 +66,7 @@ nav.prevnext {
   font: 18px Helvetica, Arial, Sans-Serif;
   @extend %clearfix;
 
-  @include respond-to(print) {
+  @include keanu.respond-to(print) {
     margin: 0;
     padding: 0;
   }
@@ -68,7 +74,7 @@ nav.prevnext {
   li {
     float: left;
 
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       border: none;
       clear: both;
       float: none;
@@ -78,10 +84,10 @@ nav.prevnext {
       font-size: 12px;
       height: $top-bottom-width * 2;
       line-height: $top-bottom-width * 2;
-      color: $white;
+      color: colors.$white;
       text-decoration: none;
       padding: 0px 0 0px (5+$side-width);
-      background: $base-lightest;
+      background: colors.$base-lightest;
       position: relative;
       display: block;
       float: left;
@@ -92,13 +98,13 @@ nav.prevnext {
         height: 0;
         border-top: $top-bottom-width solid transparent;
         border-bottom: $top-bottom-width solid transparent;
-        border-left: $side-width solid $white;
+        border-left: $side-width solid colors.$white;
         position: absolute;
         margin-left: 1px;
         left: 100%;
         z-index: 1;
 
-        @include respond-to(print) {
+        @include keanu.respond-to(print) {
           border: none;
           clear: both;
           float: none;
@@ -112,35 +118,35 @@ nav.prevnext {
         height: 0;
         border-top: $top-bottom-width solid transparent;
         border-bottom: $top-bottom-width solid transparent;
-        border-left: $side-width solid $base-lightest;
+        border-left: $side-width solid colors.$base-lightest;
         position: absolute;
         top: 0;
 
         left: 100%;
         z-index: 2;
 
-        @include respond-to(print) {
+        @include keanu.respond-to(print) {
           border: none;
         }
       }
       &:hover {
-        background: darken($base-lightest, 20%);
+        background: color.adjust(colors.$base-lightest, $lightness: -20%, $space: hsl);
       }
       &:hover:after {
-        border-left-color: darken($base-lightest, 20%);
+        border-left-color: color.adjust(colors.$base-lightest, $lightness: -20%, $space: hsl);
       }
     }
     &:first-child a {
       padding-left: 5px;
     }
     &:last-child a {
-      background: $base-darkest;
+      background: colors.$base-darkest;
       &:after {
         border-top: $top-bottom-width solid transparent;           /* Go big on the size, and let overflow hide */
         border-bottom: $top-bottom-width solid transparent;
-        border-left: $side-width solid $base-darkest;
+        border-left: $side-width solid colors.$base-darkest;
 
-        @include respond-to(print) {
+        @include keanu.respond-to(print) {
           border: none;
           clear: both;
           float: none;
@@ -172,7 +178,7 @@ nav.prevnext {
 .paging {
   .prev,
   .next {
-    @include respond-to(print) {
+    @include keanu.respond-to(print) {
       display: none;
     }
   }

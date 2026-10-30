@@ -1,3 +1,8 @@
+@use "../dependencies/mixins/non-semantic-helpers";
+@use "../dependencies/variables/_colors.css.scss" as colors;
+@use "../dependencies/variables/_typography.css.scss" as typography;
+@use "../dependencies/variables/_z-index.css.scss" as z-index;
+
 // *****************************************************************************
 // MODALS
 // *****************************************************************************
@@ -6,22 +11,22 @@ $modal-width: 560px;
 $modal-height: 500px;
 
 .modal-open {
-  .dropdown-menu {  z-index: $zindex-drop-down + $zindex-modal; }
-  .dropdown.open { *z-index: $zindex-drop-down + $zindex-modal; }
-  .popover {  z-index: $zindex-popover  + $zindex-modal; }
-  .tooltip  {  z-index: $zindex-tooltip  + $zindex-modal; }
+  .dropdown-menu {  z-index: z-index.$zindex-drop-down + z-index.$zindex-modal; }
+  .dropdown.open { *z-index: z-index.$zindex-drop-down + z-index.$zindex-modal; }
+  .popover {  z-index: z-index.$zindex-popover  + z-index.$zindex-modal; }
+  .tooltip  {  z-index: z-index.$zindex-tooltip  + z-index.$zindex-modal; }
 } // .modal-open
 
 // Background
 .modal-backdrop {
   opacity: .8;
-  background-color: $black;
+  background-color: colors.$black;
   position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     top: 0;
-  z-index: $zindex-modal-backdrop-hidden;
+  z-index: z-index.$zindex-modal-backdrop-hidden;
   // Fade for backdrop
   &.fade {
     opacity: 0;
@@ -30,9 +35,9 @@ $modal-height: 500px;
     } // &.in
   } // fade
   &.in {
-     z-index: $zindex-modal-backdrop;
+     z-index: z-index.$zindex-modal-backdrop;
      ~ .modal {
-        z-index: $zindex-modal;
+        z-index: z-index.$zindex-modal;
      }
   } // in
 } // .modal-backgdrop
@@ -40,23 +45,23 @@ $modal-height: 500px;
 // Base Modal
 .modal {
   background-clip: padding-box;
-  background-color: $white;
-  border: 1px solid $shadow-lighter;
+  background-color: colors.$white;
+  border: 1px solid colors.$shadow-lighter;
   border-radius: 6px;
-  box-shadow: 0 3px 7px $shadow-lighter;
+  box-shadow: 0 3px 7px colors.$shadow-lighter;
   display: none;
   left: 50%;
-  margin-left: -($modal-width/2);
-  margin-top: -($modal-height/2);
+  margin-left: -($modal-width*0.5);
+  margin-top: -($modal-height*0.5);
   overflow: auto;
   padding: 10px;
   position: fixed;
   top: 50%;
   width: $modal-width;
-  z-index: $zindex-modal-hidden;
+  z-index: z-index.$zindex-modal-hidden;
   &.in {
     display: block;
-    z-index: $zindex-modal;
+    z-index: z-index.$zindex-modal;
   }
   &.fade {
     top: -25%;
@@ -66,15 +71,15 @@ $modal-height: 500px;
   } // .fade
 
   .modal-header {
-    background: $gray-lighter;
+    background: colors.$gray-lighter;
     border-radius: 6px 6px 0 0;
-    border-bottom: 1px solid $gray-lightest;
+    border-bottom: 1px solid colors.$gray-lightest;
     padding: 9px 15px;
     text-transform: uppercase;
     h3 {
-      font-size: $base-font-size * 2;
+      font-size: typography.$base-font-size * 2;
       font-weight: normal;
-      line-height: $base-line-height * 2;
+      line-height: typography.$base-line-height * 2;
       margin: 0;
       text-transform: none;
     } // h3
@@ -83,11 +88,11 @@ $modal-height: 500px;
       background: transparent;
       border: 0;
       box-shadow: none;
-      color: $gray-darkest;
+      color: colors.$gray-darkest;
       cursor: pointer;
       float: right;
-      font-size: $base-line-height * 2;
-      line-height: $base-line-height * 2;
+      font-size: typography.$base-line-height * 2;
+      line-height: typography.$base-line-height * 2;
       margin-top: 2px;
       opacity: .7;
       padding: 0;
@@ -112,9 +117,9 @@ $modal-height: 500px;
   .modal-footer {
     @extend %clearfix;
     border-radius: 0 0 6px 6px;
-    background-color: $gray-lightest;
+    background-color: colors.$gray-lightest;
     border-top: 1px solid #ddd;
-    box-shadow: inset 0 1px 0 $white;
+    box-shadow: inset 0 1px 0 colors.$white;
     margin-bottom: 0;
     padding: 14px 15px 15px;
     text-align: right; // right align buttons

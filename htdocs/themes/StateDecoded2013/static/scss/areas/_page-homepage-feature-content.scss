@@ -1,3 +1,5 @@
+@use "../vendor/keanu";
+
   section.feature-content {
     float: left;
     margin-right: 1%;
@@ -9,22 +11,22 @@
       padding: 0 20px;
     }
 
-    @include respond-to(smartphone) {
+    @include keanu.respond-to(smartphone) {
       float: none;
       width: 100%;
     }
 
-    @include respond-to(tablet) {
+    @include keanu.respond-to(tablet) {
       float: none;
       width: 100%;
     }
 
     img.ad {
       margin: 20px 0;
-      @include respond-to(smartphone) {
+      @include keanu.respond-to(smartphone) {
         max-width: 100%;
       }
-      @include respond-to(tablet) {
+      @include keanu.respond-to(tablet) {
         margin-left: 20px;
       }
     }

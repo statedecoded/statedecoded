@@ -1,10 +1,12 @@
+@use "../dependencies/variables/_colors.css.scss" as colors;
+
 /*
  * The progress bars are based heavily on Bootstrap's progress bars.
  *
  * Bootstrap is released under the  MIT license and copyright 2016 Twitter.
  */
 
-$bar-color: $base;
+$bar-color: colors.$base;
 
 // WebKit
 @-webkit-keyframes progress-bar-stripes {
@@ -29,7 +31,7 @@ $bar-color: $base;
   overflow: hidden;
   height: 20px;
   margin-bottom: 20px;
-  background-color: $gray;
+  background-color: colors.$gray;
   border-radius: 5px;
   box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
 }
@@ -42,7 +44,7 @@ $bar-color: $base;
   height: 100%;
   font-size: 12px;
   line-height: 20px;
-  color: $white;
+  color: colors.$white;
   text-align: center;
   background-color: $bar-color;
   box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
@@ -78,6 +80,6 @@ $bar-color: $base;
 
 .progress-bar-done {
   background-image: none;
-  background-color: $positive-green;
+  background-color: colors.$positive-green;
 }
 
