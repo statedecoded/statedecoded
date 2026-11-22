@@ -61,7 +61,7 @@ foreach($editions as $edition)
 
 	if($edition->last_import)
 	{
-		$body .= ' - updated ' . date('M d, Y', strtotime($edition->last_import)) . '';
+		$body .= ' - updated ' . date('M j, Y', strtotime($edition->last_import)) . '';
 	}
 	if($edition->current)
 	{
