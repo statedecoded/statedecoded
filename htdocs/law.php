@@ -449,24 +449,61 @@ if ( isset($laws[0]->amendment_attempts) && ($laws[0]->amendment_attempts != fal
 {
 
 	$sidebar .= '<section class="info-box" id="amendment-attempts">
-				<h1>Amendment Attempts</h1>
-				<ul>';
+				<h1>Amendment Attempts</h1>';
 
+	/*
+	 * Group the bills by year, newest first.
+	 */
+	$bills_by_year = array();
 	foreach ($laws[0]->amendment_attempts as $bill)
 	{
+		$bills_by_year[(string) $bill->year][] = $bill;
+	}
+	krsort($bills_by_year, SORT_NUMERIC);
 
-		$sidebar .= '<li><a href="' . $bill->url . '">' . $bill->number . '</a>: '
-			. $bill->catch_line;
-		if (!empty($bill->outcome))
+	/*
+	 * Within a year, list bills before resolutions, and each chamber's in numeric order (e.g.,
+	 * HB102, HB1469, SB12, HJ5, SJ3).
+	 */
+	$bill_sort_key = function ($number)
+	{
+		preg_match('/^([A-Za-z]*)\D*(\d*)/', (string) $number, $matches);
+		$prefix = strtoupper($matches[1]);
+		return array(substr($prefix, -1) === 'B' ? 0 : 1, $prefix, (int) $matches[2]);
+	};
+
+	foreach ($bills_by_year as $year => $bills)
+	{
+
+		usort($bills, function ($a, $b) use ($bill_sort_key)
 		{
-			$sidebar .= ' (' . $bill->outcome . ')';
+			return $bill_sort_key($a->number) <=> $bill_sort_key($b->number);
+		});
+
+		if ($year !== '')
+		{
+			$sidebar .= '<h2>' . htmlspecialchars((string) $year) . '</h2>';
 		}
-		$sidebar .= '</li>';
+		$sidebar .= '<ul>';
+
+		foreach ($bills as $bill)
+		{
+
+			$sidebar .= '<li><a href="' . $bill->url . '">' . $bill->number . '</a>: '
+				. $bill->catch_line;
+			if (!empty($bill->outcome))
+			{
+				$sidebar .= ' (' . $bill->outcome . ')';
+			}
+			$sidebar .= '</li>';
+
+		}
+
+		$sidebar .= '</ul>';
 
 	}
 
-	$sidebar .= '</ul>
-			</section>';
+	$sidebar .= '</section>';
 
 }
 
